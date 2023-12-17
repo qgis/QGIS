@@ -119,14 +119,14 @@ class CORE_EXPORT QgsClipper
      * \note Not available in Python bindings
      * \since QGIS 3.26
      */
-    static void trimPolygon( QVector< double > &x, QVector< double > &y, QVector< double> &z, const QgsBox3d &clipRect ) SIP_SKIP;
+    static void trimPolygon( QVector< double > &x, QVector< double > &y, QVector< double> &z, const QgsBox3D &clipRect ) SIP_SKIP;
 
     /**
      * Takes a line with 3D coordinates and clips it to clipExtent.
      * \note Not available in Python bindings
      * \since QGIS 3.26
      */
-    static void clipped3dLine( const QVector< double > &xIn, const QVector< double > &yIn, const QVector<double> &zIn, QVector< double > &x, QVector< double > &y, QVector< double > &z, const QgsBox3d &clipExtent ) SIP_SKIP;
+    static void clipped3dLine( const QVector< double > &xIn, const QVector< double > &yIn, const QVector<double> &zIn, QVector< double > &x, QVector< double > &y, QVector< double > &z, const QgsBox3D &clipExtent ) SIP_SKIP;
 
     /**
      * Takes a linestring and clips it to clipExtent
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsClipper
     static inline void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
 
     static inline void trimPolygonToBoundary( const QVector<double> &inX, const QVector<double> &inY, const QVector< double > &inZ,
-        QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3d &rect, Boundary boundary, double boundaryValue );
+        QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3D &rect, Boundary boundary, double boundaryValue );
 
     // Determines if a point is inside or outside the given boundary
     static inline bool inside( double x, double y, Boundary b );
@@ -202,9 +202,9 @@ class CORE_EXPORT QgsClipper
 
     static inline void intersectRect( double x1, double y1, double z1, double x2, double y2, double z2,
                                       double &xOut, double &yOut, double &zOut,
-                                      Boundary boundary, const QgsBox3d &rect );
+                                      Boundary boundary, const QgsBox3D &rect );
 
-    static bool clipLineSegment( const QgsBox3d &extent, double &x0, double &y0, double &z0, double &x1, double &y1, double &z1 );
+    static bool clipLineSegment( const QgsBox3D &extent, double &x0, double &y0, double &z0, double &x1, double &y1, double &z1 );
 
     /**
      * Connects two lines split by the clip (by inserting points on the clip border)
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsClipper
      * \param ptsZ: in/out array of clipped points z
       */
     static void connectSeparatedLines( double x0, double y0, double z0, double x1, double y1, double z1,
-                                       const QgsBox3d &clipRect, QVector< double > &ptsX, QVector< double > &ptsY, QVector<double> &ptsZ );
+                                       const QgsBox3D &clipRect, QVector< double > &ptsX, QVector< double > &ptsY, QVector<double> &ptsZ );
 
     //low level clip methods for fast clip algorithm
     static void clipStartTop( double &x0, double &y0, double x1, double y1, double yMax );
@@ -296,7 +296,7 @@ inline void QgsClipper::trimPolygon( QPolygonF &pts, const QgsRectangle &clipRec
   trimPolygonToBoundary( tmpPts, pts, clipRect, YMin, clipRect.yMinimum() );
 }
 
-inline void QgsClipper::trimPolygon( QVector<double> &x, QVector<double> &y, QVector<double> &z, const QgsBox3d &clipRect )
+inline void QgsClipper::trimPolygon( QVector<double> &x, QVector<double> &y, QVector<double> &z, const QgsBox3D &clipRect )
 {
   QVector< double > tempX;
   QVector< double > tempY;
@@ -439,7 +439,7 @@ inline void QgsClipper::trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF
 }
 
 inline void QgsClipper::trimPolygonToBoundary( const QVector<double> &inX, const QVector<double> &inY, const QVector< double > &inZ,
-    QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3d &rect, Boundary boundary, double boundaryValue )
+    QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3D &rect, Boundary boundary, double boundaryValue )
 {
   const double len = inX.length();
   if ( len == 0 )
@@ -675,7 +675,7 @@ inline QPointF QgsClipper::intersectRect( QPointF pt1,
 inline void QgsClipper::intersectRect( const double x1, const double y1, const double z1,
                                        const double x2, const double y2, const double z2,
                                        double &xOut, double &yOut, double &zOut,
-                                       Boundary boundary, const QgsBox3d &rect )
+                                       Boundary boundary, const QgsBox3D &rect )
 {
   // This function assumes that the two given points (x1, y1, z1), and
   // (x2, y2, z2) cross the given boundary. Making this assumption allows
@@ -769,7 +769,7 @@ inline void QgsClipper::clipEndLeft( double x0, double y0, double &x1, double &y
   x1 = xMin;
 }
 
-inline bool QgsClipper::clipLineSegment( const QgsBox3d &clipExtent, double &x0, double &y0, double &, double &x1, double &y1, double & )
+inline bool QgsClipper::clipLineSegment( const QgsBox3D &clipExtent, double &x0, double &y0, double &, double &x1, double &y1, double & )
 {
   // TODO: while waiting for a valid 3d solution, using the 2d one:
   return clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),

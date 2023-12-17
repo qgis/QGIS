@@ -47,7 +47,7 @@ class CORE_EXPORT QgsElevationMap
     QgsElevationMap() = default;
 
     //! Constructs an elevation map with the given width and height
-    explicit QgsElevationMap( const QSize &size );
+    explicit QgsElevationMap( const QSize &size, float devicePixelRatio = 1.0 );
 
     /**
      * Constructs an elevation map from an existing raw elevation \a image.
@@ -100,6 +100,15 @@ class CORE_EXPORT QgsElevationMap
 
     //! Returns raw elevation image with elevations encoded as color values
     QImage rawElevationImage() const { return mElevationImage; }
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns pointer to the actual elevation image data
+     * \since QGIS 3.36
+     */
+    QRgb *rawElevationImageData() { return reinterpret_cast<QRgb *>( mElevationImage.bits() ); }
+#endif
 
     //! Returns painter to the underlying QImage with elevations
     QPainter *painter() const;

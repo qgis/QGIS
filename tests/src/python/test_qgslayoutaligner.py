@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '3/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsLayout,
@@ -21,12 +20,13 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutAligner(unittest.TestCase):
+class TestQgsLayoutAligner(QgisTestCase):
 
     def testAlign(self):
         p = QgsProject()

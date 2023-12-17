@@ -149,7 +149,7 @@ void QgsAuthMethodRegistry::init()
     {
       if ( fi.fileName().indexOf( fileRegexp ) == -1 )
       {
-        QgsDebugMsg( "auth method " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
+        QgsDebugError( "auth method " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;
       }
     }
@@ -157,7 +157,7 @@ void QgsAuthMethodRegistry::init()
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugError( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
@@ -171,7 +171,7 @@ void QgsAuthMethodRegistry::init()
       {
         if ( findMetadata_( mAuthMethods, meta->key() ) )
         {
-          QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
+          QgsDebugError( QStringLiteral( "Checking %1: ...invalid (key %2 already registered)" ).arg( myLib.fileName() ).arg( meta->key() ) );
           delete meta;
           continue;
         }

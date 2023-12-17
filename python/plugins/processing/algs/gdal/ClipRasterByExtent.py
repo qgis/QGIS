@@ -54,7 +54,7 @@ class ClipRasterByExtent(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
 
-        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64', 'Int8']
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
@@ -130,13 +130,16 @@ class ClipRasterByExtent(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = [
-            '-projwin',
-            str(bbox.xMinimum()),
-            str(bbox.yMaximum()),
-            str(bbox.xMaximum()),
-            str(bbox.yMinimum()),
-        ]
+        arguments = []
+
+        if not bbox.isNull():
+            arguments.extend([
+                '-projwin',
+                str(bbox.xMinimum()),
+                str(bbox.yMaximum()),
+                str(bbox.xMaximum()),
+                str(bbox.yMinimum()),
+            ])
 
         crs = inLayer.crs()
         if override_crs and crs.isValid():
@@ -147,10 +150,17 @@ class ClipRasterByExtent(GdalAlgorithm):
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:
+            if self.TYPES[data_type] == 'Int8' and GdalUtils.version() < 3070000:
+                raise QgsProcessingException(self.tr('Int8 data type requires GDAL version 3.7 or later'))
+
             arguments.append('-ot ' + self.TYPES[data_type])
 
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments.append(output_format)
 
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))

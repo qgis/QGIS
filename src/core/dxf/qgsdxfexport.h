@@ -552,6 +552,8 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 
     QHash< const QgsSymbolLayer *, QString > mLineStyles; //symbol layer name types
     QHash< const QgsSymbolLayer *, QString > mPointSymbolBlocks; //reference to point symbol blocks
+    QHash< const QgsSymbolLayer *, double > mPointSymbolBlockSizes; //reference to point symbol size used to create its block
+    QHash< const QgsSymbolLayer *, double > mPointSymbolBlockAngles; //reference to point symbol size used to create its block
 
     //AC1009
     void writeHeader( const QString &codepage );
@@ -611,7 +613,8 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
 
     QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers( QgsRenderContext &context );
     static int nLineTypes( const QList< QPair< QgsSymbolLayer *, QgsSymbol *> > &symbolLayers );
-    static bool hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
+    static bool hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol );
+
     double dashSize() const;
     double dotSize() const;
     double dashSeparatorSize() const;

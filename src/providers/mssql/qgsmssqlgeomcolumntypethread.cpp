@@ -66,7 +66,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                                             " [%1].HasM"
                                             " FROM %2"
                                             " WHERE [%1] IS NOT NULL %4"
-                                            " GROUP BY [%1].STGeometryType(), [%1].STSrid" )
+                                            " GROUP BY [%1].STGeometryType(), [%1].STSrid, [%1].HasZ, [%1].HasM" )
                             .arg( layerProperty.geometryColName,
                                   table,
                                   mUseEstimatedMetadata ? "TOP 1" : "",
@@ -76,7 +76,7 @@ void QgsMssqlGeomColumnTypeThread::run()
       std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
       if ( !db->isValid() )
       {
-        QgsDebugMsg( db->errorText() );
+        QgsDebugError( db->errorText() );
         continue;
       }
 
@@ -84,7 +84,7 @@ void QgsMssqlGeomColumnTypeThread::run()
       q.setForwardOnly( true );
       if ( !q.exec( query ) )
       {
-        QgsDebugMsg( q.lastError().text() );
+        QgsDebugError( q.lastError().text() );
       }
 
       QString type;
@@ -97,23 +97,19 @@ void QgsMssqlGeomColumnTypeThread::run()
 
         while ( q.next() )
         {
-          QString type = q.value( 0 ).toString().toUpper();
-          const QString srid = q.value( 1 ).toString();
           const bool hasZ { q.value( 2 ).toString() == '1' };
           const bool hasM { q.value( 3 ).toString() == '1' };
+          const int dimensions { 2 + ( ( hasZ &&hasM ) ? 2 : ( ( hasZ || hasM ) ? 1 : 0 ) ) };
+          QString typeName { q.value( 0 ).toString().toUpper() };
+          if ( hasM && ! typeName.endsWith( 'M' ) )
+          {
+            typeName.append( 'M' );
+          }
+          const QString type { QgsMssqlProvider::typeFromMetadata( typeName, dimensions ) };
+          const QString srid = q.value( 1 ).toString();
 
           if ( type.isEmpty() )
             continue;
-
-          if ( hasZ )
-          {
-            type.append( 'Z' );
-          }
-
-          if ( hasM )
-          {
-            type.append( 'M' );
-          }
 
           types << type;
           srids << srid;

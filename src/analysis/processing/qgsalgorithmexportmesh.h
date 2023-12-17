@@ -33,7 +33,7 @@ struct DataGroup
   QgsMeshDatasetGroupMetadata metadata;
   QgsMeshDataBlock datasetValues;
   QgsMeshDataBlock activeFaces;
-  QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+  QgsMesh3DDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
 };
 
 class QgsExportMeshOnElement : public QgsProcessingAlgorithm

@@ -213,7 +213,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
       }
     }
   }
-  QgsDebugMsg( "Connection type is=" + connectionType + " and uri=" + uri );
+  QgsDebugMsgLevel( "Connection type is=" + connectionType + " and uri=" + uri, 2 );
   return uri;
 }
 
@@ -274,7 +274,7 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
   {
     uri = QStringLiteral( "WFS3:%1" ).arg( url );
   }
-  QgsDebugMsg( "Connection type is=" + type + " and uri=" + uri );
+  QgsDebugMsgLevel( "Connection type is=" + type + " and uri=" + uri, 2 );
   // Update URI with authentication information
   if ( ! configId.isEmpty() )
   {

@@ -24,11 +24,11 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsTilingScheme : public QObject
+class TestQgsTilingScheme : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsTilingScheme() = default;
+    TestQgsTilingScheme() : QgsTest( QStringLiteral( "Test QgsTilingScheme" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -46,6 +46,7 @@ void TestQgsTilingScheme::initTestCase()
 //runs after all tests
 void TestQgsTilingScheme::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsTilingScheme::testTileTransforms()

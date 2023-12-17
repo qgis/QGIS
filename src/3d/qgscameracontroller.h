@@ -48,6 +48,7 @@ class QgsCameraPose;
 class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
+class QgsCameraController4Test;
 
 /**
  * \ingroup 3d
@@ -224,6 +225,32 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
 
+    //! List of possible operations with the mouse in TerrainBased navigation
+    enum class MouseOperation
+    {
+      None = 0,       // no operation
+      Translation,    // left button pressed, no modifier
+      RotationCamera, // left button pressed + ctrl modifier
+      RotationCenter, // left button pressed + shift modifier
+      Zoom,           // right button pressed
+      ZoomWheel       // mouse wheel scroll
+    };
+
+    // This list gathers all the rotation and translation operations.
+    // It is used to update the appropriate parameters when successive
+    // translation and rotation happen.
+    const QList<MouseOperation> mTranslateOrRotate =
+    {
+      MouseOperation::Translation,
+      MouseOperation::RotationCamera,
+      MouseOperation::RotationCenter
+    };
+
+    // check that current sequence (current operation and new operation) is a rotation or translation
+    bool isATranslationRotationSequence( MouseOperation newOperation ) const;
+
+    void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint() );
+
   signals:
     //! Emitted when camera has been updated
     void cameraChanged();
@@ -277,9 +304,11 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
+#ifndef SIP_RUN
+    //! Converts screen point to world position
     bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
+#endif
 
-  private:
     //! The 3d scene the controller uses
     Qgs3DMapScene *mScene = nullptr;
 
@@ -291,28 +320,25 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     //! Last mouse position recorded
     QPoint mMousePos;
-    bool mMousePressed = false;
-    Qt3DInput::QMouseEvent::Buttons mPressedButton = Qt3DInput::QMouseEvent::Buttons::NoButton;
+
+    //! click point for a rotation or a translation
+    QPoint mClickPoint;
 
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
 
-    QPoint mMiddleButtonClickPos;
+    std::unique_ptr< Qt3DRender::QCamera > mCameraBefore;
+
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
     double mRotationDistanceFromCenter;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeRotation;
 
-    QPoint mDragButtonClickPos;
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeDrag;
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
     double mDragDepth;
 
-    bool mIsInZoomInState = false;
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
     bool mZoomPointCalculated = false;
     QVector3D mZoomPoint;
 
@@ -329,6 +355,9 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     double mCumulatedWheelY = 0;
 
+    MouseOperation mCurrentOperation = MouseOperation::None;
+
+    friend QgsCameraController4Test;
 };
 
 #endif // QGSCAMERACONTROLLER_H

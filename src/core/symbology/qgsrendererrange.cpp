@@ -18,24 +18,28 @@
 #include "qgssymbol.h"
 
 #include <QLocale>
+#include <QUuid>
 
 
-QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render )
+QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render, const QString &uuid )
   : mLowerValue( range.lowerBound() )
   , mUpperValue( range.upperBound() )
   , mSymbol( symbol )
   , mLabel( range.label() )
   , mRender( render )
 {
+  mUuid = !uuid.isEmpty() ? uuid : QUuid::createUuid().toString();
 }
 
-QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render )
+QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render, const QString &uuid )
   : mLowerValue( lowerValue )
   , mUpperValue( upperValue )
   , mSymbol( symbol )
   , mLabel( label )
   , mRender( render )
-{}
+{
+  mUuid = !uuid.isEmpty() ? uuid : QUuid::createUuid().toString();
+}
 
 QgsRendererRange::QgsRendererRange( const QgsRendererRange &range )
   : mLowerValue( range.mLowerValue )
@@ -43,6 +47,7 @@ QgsRendererRange::QgsRendererRange( const QgsRendererRange &range )
   , mSymbol( range.mSymbol ? range.mSymbol->clone() : nullptr )
   , mLabel( range.mLabel )
   , mRender( range.mRender )
+  , mUuid( range.mUuid )
 {}
 
 QgsRendererRange::~QgsRendererRange() = default;
@@ -69,6 +74,12 @@ void QgsRendererRange::swap( QgsRendererRange &other )
   std::swap( mUpperValue, other.mUpperValue );
   std::swap( mSymbol, other.mSymbol );
   std::swap( mLabel, other.mLabel );
+  std::swap( mUuid, other.mUuid );
+}
+
+QString QgsRendererRange::uuid() const
+{
+  return mUuid;
 }
 
 double QgsRendererRange::lowerValue() const

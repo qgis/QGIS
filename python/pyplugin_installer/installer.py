@@ -42,11 +42,20 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
-import qgis
-from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
+from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsNetworkAccessManager, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
-from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin, OverrideCursor,
-                        reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
+from qgis.utils import (
+    iface,
+    startPlugin,
+    unloadPlugin,
+    loadPlugin,
+    OverrideCursor,
+    reloadPlugin,
+    updateAvailablePlugins,
+    plugins_metadata_parser,
+    isPluginLoaded,
+    HOME_PLUGIN_PATH
+)
 from .installer_data import (repositories, plugins, officialRepo,
                              reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -155,30 +164,30 @@ class QgsPluginInstaller(QObject):
         plugins.rebuild()
         # look for news in the repositories
         plugins.markNews()
-        status = None
         # then check for updates (and eventually overwrite status)
-        updatable_count = 0
-        updatable_plugin_name = None
+        updatable_plugin_names = []
         for _, properties in plugins.all().items():
             if properties["status"] == "upgradeable":
-                updatable_count += 1
-                updatable_plugin_name = properties["name"]
+                updatable_plugin_names.append(properties["name"])
 
-        if updatable_count:
-            if updatable_count > 1:
-                status = self.tr("Multiple plugin updates are available")
-            else:
-                status = self.tr("An update to the {} plugin is available").format(updatable_plugin_name)
-            tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
+        if not updatable_plugin_names:
+            return
 
-        # finally set the notify label
-        if status:
-            bar = iface.messageBar()
-            self.message_bar_widget = bar.createMessage('', status)
-            update_button = QPushButton("Install Updates…")
-            update_button.pressed.connect(partial(self.showPluginManagerWhenReady, tabIndex))
-            self.message_bar_widget.layout().addWidget(update_button)
-            bar.pushWidget(self.message_bar_widget, Qgis.Info)
+        if len(updatable_plugin_names) >= 2:
+            status = self.tr("Multiple plugin updates are available")
+        else:
+            status = self.tr("An update to the {} plugin is available").format(updatable_plugin_names[0])
+
+        QgsMessageLog.logMessage(
+            "Plugin update(s) available : {}".format(','.join(updatable_plugin_names)), self.tr("Plugins"))
+
+        bar = iface.messageBar()
+        self.message_bar_widget = bar.createMessage('', status)
+        update_button = QPushButton(self.tr("Install Updates…"))
+        tab_index = 3  # PLUGMAN_TAB_UPGRADEABLE
+        update_button.pressed.connect(partial(self.showPluginManagerWhenReady, tab_index))
+        self.message_bar_widget.layout().addWidget(update_button)
+        bar.pushWidget(self.message_bar_widget, Qgis.Info)
 
     # ----------------------------------------- #
     def exportRepositoriesToManager(self):
@@ -315,13 +324,21 @@ class QgsPluginInstaller(QObject):
             if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
                 return
 
+        # if plugin is active, unload it before update, see https://github.com/qgis/QGIS/issues/54968
+        pluginWasLoaded = isPluginLoaded(plugin["id"])
+        if pluginWasLoaded:
+            unloadPlugin(plugin["id"])
+
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
-        plugin_path = qgis.utils.home_plugin_path + "/" + key
+        plugin_path = HOME_PLUGIN_PATH + "/" + key
         if dlg.result():
             error = True
             infoString = (self.tr("Plugin installation failed"), dlg.result())
+            # download failed or aborted. If plugin was active before the update, let's try to load it back
+            if pluginWasLoaded and loadPlugin(plugin["id"]):
+                startPlugin(plugin["id"])
         elif not QDir(plugin_path).exists():
             error = True
             infoString = (
@@ -379,7 +396,7 @@ class QgsPluginInstaller(QObject):
                 dlg.exec_()
                 if dlg.result():
                     # revert installation
-                    pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
+                    pluginDir = HOME_PLUGIN_PATH + "/" + plugin["id"]
                     result = removeDir(pluginDir)
                     if QDir(pluginDir).exists():
                         error = True
@@ -428,7 +445,7 @@ class QgsPluginInstaller(QObject):
             unloadPlugin(key)
         except:
             pass
-        pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
+        pluginDir = HOME_PLUGIN_PATH + "/" + plugin["id"]
         result = removeDir(pluginDir)
         if result:
             QApplication.restoreOverrideCursor()
@@ -564,14 +581,17 @@ class QgsPluginInstaller(QObject):
 
         if not plugin_id or not vote:
             return False
-        url = "http://plugins.qgis.org/plugins/RPC2/"
+        url = "https://plugins.qgis.org/plugins/RPC2/"
         params = {"id": "djangorpc", "method": "plugin.vote", "params": [str(plugin_id), str(vote)]}
         req = QNetworkRequest(QUrl(url))
         req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstaller")
         req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorRequestId), "sendVote")
         req.setRawHeader(b"Content-Type", b"application/json")
-        QgsNetworkAccessManager.instance().post(req, bytes(json.dumps(params), "utf-8"))
-        return True
+        reply = QgsNetworkAccessManager.instance().blockingPost(req, bytes(json.dumps(params), "utf-8"))
+        if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
+            return True
+        else:
+            return False
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):
@@ -601,11 +621,15 @@ class QgsPluginInstaller(QObject):
                 QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
             return
 
-        pluginsDirectory = qgis.utils.home_plugin_path
+        pluginsDirectory = HOME_PLUGIN_PATH
         if not QDir(pluginsDirectory).exists():
             QDir().mkpath(pluginsDirectory)
 
         pluginDirectory = QDir.cleanPath(os.path.join(pluginsDirectory, pluginName))
+
+        # if plugin is active, unload it before update, see https://github.com/qgis/QGIS/issues/54968
+        if isPluginLoaded(pluginName):
+            unloadPlugin(pluginName)
 
         # If the target directory already exists as a link,
         # remove the link without resolving

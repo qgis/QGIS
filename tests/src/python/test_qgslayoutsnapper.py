@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QPointF, QRectF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsLineItem
 from qgis.PyQt.QtXml import QDomDocument
@@ -26,12 +25,13 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutSnapper(unittest.TestCase):
+class TestQgsLayoutSnapper(QgisTestCase):
 
     def testGettersSetters(self):
         p = QgsProject()

@@ -27,6 +27,8 @@
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
 #include "qgslabelingresults.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QImageWriter>
 #include <QSize>
@@ -143,6 +145,10 @@ class LayoutItemHider
 };
 
 ///@endcond PRIVATE
+
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingImage = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-image" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported image file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingPdf = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-pdf" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported PDF file with the default viewer after exporting a print layout" ) );
+const QgsSettingsEntryBool *QgsLayoutExporter::settingOpenAfterExportingSvg = new QgsSettingsEntryBool( QStringLiteral( "open-after-exporting-svg" ), QgsSettingsTree::sTreeLayout, false, QObject::tr( "Whether to open the exported SVG file with the default viewer after exporting a print layout" ) );
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
@@ -558,6 +564,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // in items missing from the output
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
   mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+  // Force synchronous legend graphics requests. Necessary for WMS GetPrint,
+  // as otherwise processing the request ends before remote graphics are downloaded.
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagSynchronousLegendGraphics, true );
+
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 
@@ -1240,17 +1251,19 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPagedPaintDevice 
 
 void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize )
 {
-  if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
+  if ( QPdfWriter *pdf = dynamic_cast<QPdfWriter *>( device ) )
+  {
+    pdf->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
+  }
+#ifndef QT_NO_PRINTER
+  else if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     printer->setFullPage( true );
     printer->setColorMode( QPrinter::Color );
     //set user-defined resolution
     printer->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
   }
-  else if ( QPdfWriter *pdf = dynamic_cast<QPdfWriter *>( device ) )
-  {
-    pdf->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
-  }
+#endif
 
   if ( setFirstPageSize )
   {
@@ -1281,6 +1294,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPagedPaintDevi
   // layout starts page numbering at 0
   int fromPage = 0;
   int toPage = mLayout->pageCollection()->pageCount() - 1;
+
+#ifndef QT_NO_PRINTER
   if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     if ( printer->fromPage() >= 1 )
@@ -1288,6 +1303,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPagedPaintDevi
     if ( printer->toPage() >= 1 )
       toPage = printer->toPage() - 1;
   }
+#endif
 
   bool pageExported = false;
   if ( rasterize )
@@ -1352,10 +1368,12 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPagedPaintDev
   device->setPageLayout( pageLayout );
   device->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 
+#ifndef QT_NO_PRINTER
   if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     printer->setFullPage( true );
   }
+#endif
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, unsigned int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const

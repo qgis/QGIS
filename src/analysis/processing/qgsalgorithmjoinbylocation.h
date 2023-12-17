@@ -48,11 +48,25 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     QString shortDescription() const override;
     QgsJoinByLocationAlgorithm *createInstance() const override SIP_FACTORY;
 
+    /**
+     * Returns a translated list of predicate names, in the order expected by the algorithm's enum parameter.
+     */
+    static QStringList translatedPredicates();
+
+    /**
+     * Sorts a list of predicates so that faster ones are tested first
+     */
+    static void sortPredicates( QList<int > &predicates );
+
+    /**
+     * Returns TRUE if \a feature satisfies any of the predicates.
+     */
+    static bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature, const QList<int> &predicates );
+
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     bool processFeatureFromJoinSource( QgsFeature &joinFeature, QgsProcessingFeedback *feedback );
     bool processFeatureFromInputSource( QgsFeature &inputFeature, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
-    bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature ) const;
 
   private:
 
@@ -76,7 +90,6 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     JoinMethod mJoinMethod = OneToMany;
     QList<int> mPredicates;
 
-    static void sortPredicates( QList<int > &predicates );
 };
 
 ///@endcond PRIVATE

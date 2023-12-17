@@ -9,15 +9,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '05/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsPanelWidget, QgsPanelWidgetStack
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPanelWidgetStack(unittest.TestCase):
+class TestQgsPanelWidgetStack(QgisTestCase):
 
     def testMainPanel(self):
         """ test mainPanel methods """

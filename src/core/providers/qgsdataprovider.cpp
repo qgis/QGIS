@@ -28,6 +28,13 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
   mReadFlags = flags;
 }
 
+QString QgsDataProvider::htmlMetadata() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
 Qgis::DataProviderFlags QgsDataProvider::flags() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -43,6 +50,20 @@ QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
 }
 
 const QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return nullptr;
+}
+
+QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return nullptr;
+}
+
+const QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -119,4 +140,9 @@ void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &
 QString QgsDataProvider::sublayerSeparator()
 {
   return SUBLAYER_SEPARATOR;
+}
+
+Qgis::ProviderStyleStorageCapabilities QgsDataProvider::styleStorageCapabilities() const
+{
+  return Qgis::ProviderStyleStorageCapabilities();
 }

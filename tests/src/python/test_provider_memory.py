@@ -31,7 +31,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
@@ -40,7 +41,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def createLayer(cls):
@@ -532,6 +533,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), 'my name')
         self.assertTrue(layer.fields().isEmpty())
+        self.assertFalse(layer.dataProvider().crs().isValid())
 
         # similar layers should have unique sources
         layer2 = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields())
@@ -626,6 +628,22 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(layer.fields()[i].type(), fields[i].type())
             self.assertEqual(layer.fields()[i].length(), fields[i].length())
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
+
+    def testChangeAttributeValuesInvalidFieldIndex(self):
+        """
+        Test there's no crash when changeAttributeValues is called with a non existing field index  (https://github.com/qgis/QGIS/issues/54817)
+        """
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer', 'test', 'memory')
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([0])
+        self.assertTrue(provider.addFeatures([f]))
+
+        saved_feature = next(provider.getFeatures())
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {-1: 42}}))
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {42: 42}}))
+        self.assertTrue(provider.changeAttributeValues({saved_feature.id(): {'fortytwo': 42}}))
 
     def testAddChangeFeatureConvertAttribute(self):
         """
@@ -1011,7 +1029,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[13].typeName(), vl2.fields()[13].typeName())
 
 
-class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
+class TestPyQgsMemoryProviderIndexed(QgisTestCase, ProviderTestCase):
     """Runs the provider test suite against an indexed memory layer"""
 
     @classmethod

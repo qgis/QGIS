@@ -14,7 +14,8 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsProviderRegistry,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '14/11/2017'
@@ -42,7 +43,7 @@ TEST_URIS = {
 }
 
 
-class TestAuthManager(unittest.TestCase):
+class TestAuthManager(QgisTestCase):
 
     @classmethod
     def setUpAuth(cls):
@@ -90,6 +91,24 @@ class TestAuthManager(unittest.TestCase):
         for uri, expanded in TEST_URIS.items():
             pr.setDataSourceUri((uri + '|sublayer1') % self.authcfg)
             self.assertEqual(pr.dataSourceUri(True).split('|')[1], "sublayer1", pr.dataSourceUri(True))
+
+    def testQuotesAndComma(self):
+        """
+        Test for issue GH #54493
+        """
+        authm = QgsApplication.authManager()
+        auth_config = QgsAuthMethodConfig("Basic")
+        auth_config.setConfig('username', 'qgis,\"rocks\"')
+        auth_config.setConfig('password', '\"quoted\"')
+        auth_config.setName('test_basic_auth_config_quoted')
+        assert (authm.storeAuthenticationConfig(auth_config)[0])
+        assert auth_config.isValid()
+        authcfg = auth_config.id()
+        pr = QgsProviderRegistry.instance().createProvider('ogr', '')
+        uri = 'MySQL:hostname authcfg=\'%s\''
+        pr.setDataSourceUri(uri % authcfg)
+        expanded = pr.dataSourceUri(True)
+        self.assertEqual(expanded, r'MySQL:hostname,user="qgis,\"rocks\"",password="\"quoted\""')
 
 
 if __name__ == '__main__':

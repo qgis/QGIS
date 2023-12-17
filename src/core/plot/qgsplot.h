@@ -200,6 +200,46 @@ class CORE_EXPORT QgsPlotAxis
      */
     void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
+    /**
+     * Returns the axis label suffix, or an empty string if no label suffix is to be used.
+     *
+     * \see setLabelSuffix()
+     * \see labelSuffixPlacement()
+     *
+     * \since QGIS 3.32
+     */
+    QString labelSuffix() const;
+
+    /**
+     * Sets the axis label \a suffix. Set to an empty string if no label suffix is to be used.
+     *
+     * \see labelSuffix()
+     * \see setLabelSuffixPlacement()
+     *
+     * \since QGIS 3.32
+     */
+    void setLabelSuffix( const QString &suffix );
+
+    /**
+     * Returns the placement for the axis label suffixes.
+     *
+     * \see setLabelSuffixPlacement()
+     * \see labelSuffix()
+     *
+     * \since QGIS 3.32
+     */
+    Qgis::PlotAxisSuffixPlacement labelSuffixPlacement() const;
+
+    /**
+     * Sets the \a placement for the axis label suffixes.
+     *
+     * \see labelSuffixPlacement()
+     * \see setLabelSuffix()
+     *
+     * \since QGIS 3.32
+     */
+    void setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement );
+
   private:
 
 #ifdef SIP_RUN
@@ -210,6 +250,9 @@ class CORE_EXPORT QgsPlotAxis
     double mGridIntervalMajor = 5;
 
     double mLabelInterval = 1;
+
+    QString mLabelSuffix;
+    Qgis::PlotAxisSuffixPlacement mSuffixPlacement = Qgis::PlotAxisSuffixPlacement::EveryLabel;
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 

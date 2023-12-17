@@ -11,7 +11,6 @@ __author__ = 'Denis Rouzaud'
 __date__ = '05.06.2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 
 from PyQt5.QtCore import QVariant
 from qgis.core import (
@@ -62,12 +61,13 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsVertexId,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestPython__repr__(unittest.TestCase):
+class TestPython__repr__(QgisTestCase):
 
     def testQgsGeometryRepr(self):
 
@@ -257,9 +257,9 @@ class TestPython__repr__(unittest.TestCase):
 
     def testQgsBookmark(self):
         b = QgsBookmark()
-        self.assertEqual(b.__repr__(), "<QgsBookmark: '' (0 0, 0 0 - )>")
+        self.assertEqual(b.__repr__(), "<QgsBookmark: '' (EMPTY)>")
         b.setName('test bookmark')
-        self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (0 0, 0 0 - )>")
+        self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (EMPTY)>")
         b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (1 2, 3 4 - EPSG:3111)>")
 

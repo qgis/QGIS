@@ -235,7 +235,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
        && ( mAltDown || mShiftDown )
        && !mSyncGroup.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Alt or Shift key down, syncing group" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Alt or Shift key down, syncing group" ), 2 );
     // get pointer to parent or grandparent widget
     if ( auto *lParentWidget = parentWidget() )
     {
@@ -256,7 +256,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 
     if ( mSyncParent )
     {
-      QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
+      QgsDebugMsgLevel( "found sync parent: " + mSyncParent->objectName(), 2 );
 
       const bool thisCollapsed = mCollapsed; // get state of current box before its changed
       const auto groupBoxes {mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>()};
@@ -281,7 +281,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "did not find a sync parent" ) );
+      QgsDebugMsgLevel( QStringLiteral( "did not find a sync parent" ), 2 );
     }
   }
 

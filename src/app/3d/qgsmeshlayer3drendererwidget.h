@@ -24,7 +24,7 @@
 
 class QCheckBox;
 
-class QgsMesh3dSymbolWidget;
+class QgsMesh3DSymbolWidget;
 class QgsMeshLayer;
 class QgsMapCanvas;
 
@@ -51,7 +51,7 @@ class QgsMeshLayer3DRendererWidget : public QgsMapLayerConfigWidget
 
   private:
     QCheckBox *mChkEnabled = nullptr;
-    QgsMesh3dSymbolWidget *mWidgetMesh = nullptr;
+    QgsMesh3DSymbolWidget *mWidgetMesh = nullptr;
     std::unique_ptr<QgsMeshLayer3DRenderer> mRenderer;
 };
 

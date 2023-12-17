@@ -254,7 +254,24 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
     return;
   }
 
-  const QgsCoordinateTransform transform( target.toGeographicCrs(), target, QgsCoordinateTransformContext() );
+  QgsCoordinateReferenceSystem source;
+  try
+  {
+    if ( target.celestialBodyName() == QLatin1String( "Earth" ) )
+    {
+      source = QgsCoordinateReferenceSystem( "EPSG:4326" );
+    }
+    else
+    {
+      source = target.toGeographicCrs();
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+    source = target.toGeographicCrs();
+  }
+
+  const QgsCoordinateTransform transform( source, target, QgsCoordinateTransformContext() );
   try
   {
     const QgsPointXY res = transform.transform( QgsPointXY( longitude, latitude ) );
@@ -274,8 +291,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
 QString QgsCrsDefinitionWidget::multiLineWktToSingleLine( const QString &wkt )
 {
   QString res = wkt;
-  QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ) );
-  re.setPatternOptions( QRegularExpression::MultilineOption );
+  const thread_local QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ), QRegularExpression::MultilineOption );
   res.replace( re, QString() );
   return res;
 }

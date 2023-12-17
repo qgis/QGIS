@@ -24,7 +24,7 @@
     <number>0</number>
    </property>
    <item row="0" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinHeight">
+    <widget class="QgsDoubleSpinBox" name="spinOffset">
      <property name="minimum">
       <double>-99999.000000000000000</double>
      </property>
@@ -112,23 +112,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QComboBox" name="cboCullingMode">
-     <item>
-      <property name="text">
-       <string>No Culling</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Front</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Back</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="cboCullingMode"/>
    </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="cboAltBinding">
@@ -234,9 +218,9 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="labelOffset">
      <property name="text">
-      <string>Height</string>
+      <string>Offset</string>
      </property>
     </widget>
    </item>
@@ -307,7 +291,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>spinHeight</tabstop>
+  <tabstop>spinOffset</tabstop>
   <tabstop>btnHeightDD</tabstop>
   <tabstop>spinExtrusion</tabstop>
   <tabstop>btnExtrusionDD</tabstop>

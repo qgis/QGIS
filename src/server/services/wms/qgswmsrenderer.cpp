@@ -31,6 +31,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
+#include "qgsmaprenderertask.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -214,7 +215,7 @@ namespace QgsWms
     return image.release();
   }
 
-  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model )
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model, const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
@@ -226,11 +227,51 @@ namespace QgsWms
 
     // init renderer
     QgsLegendSettings settings = legendSettings();
+    settings.setJsonRenderFlags( jsonRenderFlags );
     QgsLegendRenderer renderer( &model, settings );
 
     // rendering
     QgsRenderContext renderContext;
     return renderer.exportLegendToJson( renderContext );
+  }
+
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModelLegendNode &legendNode, const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
+  {
+    // get layers
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
+
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
+
+    // init renderer
+    QgsLegendSettings settings = legendSettings();
+    settings.setJsonRenderFlags( jsonRenderFlags );
+
+    // rendering
+    QgsRenderContext renderContext;
+    QJsonObject jsonSymbol { legendNode.exportSymbolToJson( settings, renderContext ) };
+
+    if ( jsonRenderFlags.testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( legendNode.layerNode() );
+      if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+      {
+        if ( vLayer->renderer() )
+        {
+          const QString ruleKey { legendNode.data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+          bool ok;
+          const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+          if ( ok )
+          {
+            jsonSymbol[ QStringLiteral( "rule" ) ] = ruleExp;
+          }
+        }
+      }
+    }
+
+    return jsonSymbol;
   }
 
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
@@ -449,15 +490,19 @@ namespace QgsWms
           }
 
           filterString.append( " )" );
+
         }
 
         atlas->setFilterFeatures( true );
+
         QString errorString;
         atlas->setFilterExpression( filterString, errorString );
+
         if ( !errorString.isEmpty() )
         {
           throw QgsException( QStringLiteral( "An error occurred during the Atlas print: %1" ).arg( errorString ) );
         }
+
       }
     }
 
@@ -630,8 +675,37 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
-      // Set scales
-      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
+      // Set scales. 1. Prio: request, 2. Prio: predefined mapscales in layout
+      QVector<qreal> requestMapScales = mWmsParameters.pdfPredefinedMapScales();
+      if ( requestMapScales.size() > 0 )
+      {
+        exportSettings.predefinedMapScales = requestMapScales;
+      }
+      else
+      {
+        exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
+      }
+      // Export themes
+      QStringList exportThemes = mWmsParameters.pdfExportMapThemes();
+      if ( exportThemes.size() > 0 )
+      {
+        exportSettings.exportThemes = exportThemes;
+      }
+      exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
+      exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
+      exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
+      exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
+      exportSettings.simplifyGeometries = mWmsParameters.pdfSimplifyGeometries();
+      exportSettings.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
+      exportSettings.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
+      if ( mWmsParameters.pdfLosslessImageCompression() )
+      {
+        exportSettings.flags |= QgsLayoutRenderContext::FlagLosslessImageRendering;
+      }
+      if ( mWmsParameters.pdfDisableTiledRasterRendering() )
+      {
+        exportSettings.flags |= QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+      }
 
       // Export all pages
       if ( atlas )
@@ -662,7 +736,7 @@ namespace QgsWms
     return tempOutputFile.readAll();
   }
 
-  bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint )
+  bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, QgsLayoutAtlas *atlas )
   {
 
     c->renderContext().setSelectionColor( mapSettings.selectionColor() );
@@ -684,7 +758,7 @@ namespace QgsWms
         cMapParams.mLayers = mWmsParameters.composerMapParameters( -1 ).mLayers;
       }
 
-      if ( !atlasPrint || !map->atlasDriven() ) //No need to extent, scal, rotation set with atlas feature
+      if ( !atlas || !map->atlasDriven() ) //No need to extent, scale, rotation set with atlas feature
       {
         //map extent is mandatory
         if ( !cMapParams.mHasExtent )
@@ -722,6 +796,7 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
+
         QList<QgsMapLayer *> layerSet;
 
         for ( const auto &layer : std::as_const( cMapParams.mLayers ) )
@@ -769,6 +844,15 @@ namespace QgsWms
         QMap<QString, QString> layersStyle;
         if ( map->followVisibilityPreset() )
         {
+
+          if ( atlas )
+          {
+            // Possibly triggers a refresh of the DD visibility preset (theme) name
+            // see issue GH #54475
+            atlas->updateFeatures();
+            atlas->first();
+          }
+
           const QString presetName = map->followVisibilityPresetName();
           if ( layerSet.isEmpty() )
           {
@@ -978,7 +1062,13 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image ) );
+    QPainter *renderedPainter = layersRendering( mapSettings, *image );
+    if ( !renderedPainter ) // job has been canceled
+    {
+      return nullptr;
+    }
+
+    painter.reset( renderedPainter );
 
     // rendering step for annotations
     annotationsRendering( painter.get(), mapSettings );
@@ -997,10 +1087,6 @@ namespace QgsWms
 
   std::unique_ptr<QgsDxfExport> QgsRenderer::getDxf()
   {
-    // init layer restorer before doing anything
-    std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
-
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers );
@@ -1079,7 +1165,7 @@ namespace QgsWms
     dxf->addLayers( dxfLayers );
     dxf->setLayerTitleAsName( mWmsParameters.dxfUseLayerTitleAsName() );
     dxf->setSymbologyExport( mWmsParameters.dxfMode() );
-    if ( mWmsParameters.dxfFormatOptions().contains( QgsWmsParameters::DxfFormatOption::SCALE ) )
+    if ( mWmsParameters.formatOptions<QgsWmsParameters::DxfFormatOption>().contains( QgsWmsParameters::DxfFormatOption::SCALE ) )
     {
       dxf->setSymbologyScale( mWmsParameters.dxfScale() );
     }
@@ -1092,6 +1178,37 @@ namespace QgsWms
     dxf->setFlags( flags );
 
     return dxf;
+  }
+
+  std::unique_ptr<QgsMapRendererTask>  QgsRenderer::getPdf( const QString &tmpFileName )
+  {
+    QgsMapSettings ms;
+    ms.setExtent( mWmsParameters.bboxAsRectangle() );
+    ms.setLayers( mContext.layersToRender() );
+    ms.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWmsParameters.crs() ) );
+    ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
+    ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
+
+    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails;
+    if ( mWmsParameters.pdfExportMetadata() )
+    {
+      pdfExportDetails.author = QgsProject::instance()->metadata().author();
+      pdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      pdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      pdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+      pdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+      pdfExportDetails.title = QgsProject::instance()->metadata().title();
+      pdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+    }
+    pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
+    pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
+    const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
+    if ( mWmsParameters.pdfAppendGeoreference() )
+    {
+      pdf->setSaveWorldFile( true );
+    }
+    return pdf;
   }
 
   static void infoPointToMapCoordinates( int i, int j, QgsPointXY *infoPoint, const QgsMapSettings &mapSettings )
@@ -1335,6 +1452,12 @@ namespace QgsWms
     mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
 
     mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, mContext.renderMapTiles() );
+
+    // enable profiling
+    if ( mContext.settings().logProfile() )
+    {
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RecordProfile );
+    }
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
@@ -1616,7 +1739,7 @@ namespace QgsWms
       }
     }
 
-    if ( featuresRect )
+    if ( featuresRect && ! featuresRect->isNull() )
     {
       if ( infoFormat == QgsWmsParameters::Format::GML )
       {
@@ -1994,7 +2117,7 @@ namespace QgsWms
     }
 
     //skip attribute if it is explicitly excluded from WMS publication
-    if ( fields.at( attributeIndex ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+    if ( fields.at( attributeIndex ).configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
     {
       return;
     }
@@ -2196,11 +2319,7 @@ namespace QgsWms
       return false;
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList tokens = filter.split( ' ', QString::SkipEmptyParts );
-#else
     QStringList tokens = filter.split( ' ', Qt::SkipEmptyParts );
-#endif
     groupStringList( tokens, QStringLiteral( "'" ) );
     groupStringList( tokens, QStringLiteral( "\"" ) );
 
@@ -2824,7 +2943,7 @@ namespace QgsWms
     {
       QString attributeName = fields.at( i ).name();
       //skip attribute if it is explicitly excluded from WMS publication
-      if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+      if ( fields.at( i ).configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
       {
         continue;
       }
@@ -3129,7 +3248,8 @@ namespace QgsWms
     filters.addProvider( mContext.accessControl() );
 #endif
     QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
-    renderJob.render( mapSettings, &image );
+
+    renderJob.render( mapSettings, &image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
     if ( !renderJob.errors().isEmpty() )
@@ -3164,6 +3284,12 @@ namespace QgsWms
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
           vl->setOpacity( opacity / 255. );
+          // Labeling
+          if ( vl->labelsEnabled() && vl->labeling() )
+          {
+            QgsAbstractVectorLayerLabeling *labeling { vl->labeling() };
+            labeling->multiplyOpacity( opacity / 255. );
+          }
           break;
         }
 
@@ -3187,6 +3313,7 @@ namespace QgsWms
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledScene:
           break;
       }
     }
@@ -3515,8 +3642,12 @@ namespace QgsWms
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
     renderContext.setFlag( Qgis::RenderContextFlag::RenderBlocking );
+    renderContext.setFeedback( mContext.socketFeedback() );
+
     for ( QgsAnnotation *annotation : annotations )
     {
+      if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+        break;
       if ( !annotation || !annotation->isVisible() )
         continue;
 

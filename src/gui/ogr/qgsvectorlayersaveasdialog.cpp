@@ -235,7 +235,6 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
   for ( it = options.constBegin(); it != options.constEnd(); ++it )
   {
     QgsVectorFileWriter::Option *option = it.value();
-    QLabel *label = new QLabel( it.key() );
     QWidget *control = nullptr;
     switch ( option->type )
     {
@@ -294,6 +293,8 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
     if ( control )
     {
+      QLabel *label = new QLabel( it.key() );
+
       // Pack the tooltip in some html element, so it gets linebreaks.
       label->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString.toHtmlEscaped() ) );
       control->setToolTip( QStringLiteral( "<p>%1</p>" ).arg( option->docString.toHtmlEscaped() ) );
@@ -431,14 +432,23 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   Q_UNUSED( idx )
 
   mFilename->setEnabled( true );
-  mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );
+  QString filter = QgsVectorFileWriter::filterForDriver( format() );
+  // A bit of hack to solve https://github.com/qgis/QGIS/issues/54566
+  // to be able to select an existing File Geodatabase, we add in the filter
+  // the "gdb" file that is found in all File Geodatabase .gdb directory
+  // to allow the user to select it. We need to detect this particular case
+  // in QgsFileWidget::openFileDialog() to remove this gdb file from the
+  // selected filename
+  if ( format() == QLatin1String( "OpenFileGDB" ) || format() == QLatin1String( "FileGDB" ) )
+    filter = QStringLiteral( "%1 (*.gdb *.GDB gdb)" ).arg( tr( "ESRI File Geodatabase" ) );
+  mFilename->setFilter( filter );
 
   // if output filename already defined we need to replace old suffix
   // to avoid double extensions like .gpkg.shp
   if ( !mFilename->filePath().isEmpty() )
   {
     const thread_local QRegularExpression rx( "\\.(.*?)[\\s]" );
-    const QString ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
+    const QString ext = rx.match( filter ).captured( 1 );
     if ( !ext.isEmpty() )
     {
       QFileInfo fi( mFilename->filePath() );
@@ -681,7 +691,18 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
   if ( hDriver )
   {
-    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
+    const bool canReopen = GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr;
+    if ( mAddToCanvas->isEnabled() && !canReopen )
+    {
+      mAddToCanvasStateOnOpenCompatibleDriver = mAddToCanvas->isChecked();
+      mAddToCanvas->setChecked( false );
+      mAddToCanvas->setEnabled( false );
+    }
+    else if ( !mAddToCanvas->isEnabled() && canReopen )
+    {
+      mAddToCanvas->setChecked( mAddToCanvasStateOnOpenCompatibleDriver );
+      mAddToCanvas->setEnabled( true );
+    }
   }
 }
 
@@ -948,7 +969,8 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
+          if ( !opt->mValue.isEmpty() )
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -1007,7 +1029,8 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
         {
           QgsVectorFileWriter::HiddenOption *opt =
             dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
+          if ( !opt->mValue.isEmpty() )
+            options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
       }
@@ -1064,12 +1087,14 @@ QStringList QgsVectorLayerSaveAsDialog::attributesExportNames() const
 
 bool QgsVectorLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
+  return mAddToCanvas->isChecked();
 }
 
 void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )
 {
-  mAddToCanvas->setChecked( enabled );
+  mAddToCanvasStateOnOpenCompatibleDriver = enabled;
+  if ( mAddToCanvas->isEnabled() )
+    mAddToCanvas->setChecked( enabled );
 }
 
 Qgis::FeatureSymbologyExport QgsVectorLayerSaveAsDialog::symbologyExport() const

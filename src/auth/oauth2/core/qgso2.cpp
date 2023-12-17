@@ -29,10 +29,8 @@
 #include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QCryptographicHash>
 #include <QRandomGenerator>
-#endif
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
@@ -57,7 +55,7 @@ QgsO2::~QgsO2()
   {
     if ( !QFile::remove( mTokenCacheFile ) )
     {
-      QgsDebugMsg( QStringLiteral( "Could not remove temp token cache file: %1" ).arg( mTokenCacheFile ) );
+      QgsDebugError( QStringLiteral( "Could not remove temp token cache file: %1" ).arg( mTokenCacheFile ) );
     }
   }
 }
@@ -70,7 +68,7 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  const QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
+  const QString localpolicy = QStringLiteral( "http://%1:% 1/%2" ).arg( mOAuth2Config->redirectHost(), mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
   QgsDebugMsgLevel( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
@@ -89,6 +87,14 @@ void QgsO2::initOAuthConfig()
 
   switch ( mOAuth2Config->grantFlow() )
   {
+    case QgsAuthOAuth2Config::Pkce:
+      setGrantFlow( O2::GrantFlowPkce );
+      setRequestUrl( mOAuth2Config->requestUrl() );
+      setClientId( mOAuth2Config->clientId() );
+      // No client secret with PKCE
+      //setClientSecret( mOAuth2Config->clientSecret() );
+
+      break;
     case QgsAuthOAuth2Config::AuthCode:
       setGrantFlow( O2::GrantFlowAuthorizationCode );
       setRequestUrl( mOAuth2Config->requestUrl() );
@@ -176,7 +182,7 @@ void QgsO2::link()
   setRefreshToken( QString() );
   setExpires( 0 );
 
-  if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit )
+  if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit || grantFlow_ == GrantFlowPkce )
   {
     if ( mIsLocalHost )
     {
@@ -188,11 +194,22 @@ void QgsO2::link()
     }
     // Assemble initial authentication URL
     QList<QPair<QString, QString> > parameters;
-    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode ) ?
+    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ?
                                   QString( O2_OAUTH2_GRANT_TYPE_CODE ) :
                                   QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_CLIENT_ID ), clientId_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_REDIRECT_URI ), redirectUri_ ) );
+
+    if ( grantFlow_ == GrantFlowPkce )
+    {
+      pkceCodeVerifier_ = ( QUuid::createUuid().toString( QUuid::WithoutBraces ) +
+                            QUuid::createUuid().toString( QUuid::WithoutBraces ) ).toLatin1();
+      pkceCodeChallenge_ = QCryptographicHash::hash( pkceCodeVerifier_, QCryptographicHash::Sha256 ).toBase64(
+                             QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
+      parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_PARAM ), pkceCodeChallenge_ ) );
+      parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_PARAM ), QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_S256 ) ) );
+    }
+
     if ( !scope_.isEmpty() )
       parameters.append( qMakePair( QString( O2_OAUTH2_SCOPE ), scope_ ) );
     if ( !state_.isEmpty() )
@@ -253,12 +270,7 @@ void QgsO2::link()
 
 void QgsO2::setState( const QString & )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  qsrand( QTime::currentTime().msec() );
-  state_ = QString::number( qrand() );
-#else
   state_ = QString::number( QRandomGenerator::system()->generate() );
-#endif
   Q_EMIT stateChanged();
 }
 
@@ -299,7 +311,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     setCode( response.value( QString( O2_OAUTH2_GRANT_TYPE_CODE ) ) );
   }
 
-  if ( grantFlow_ == GrantFlowAuthorizationCode )
+  if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce )
   {
 
     // Exchange access code for access/refresh tokens
@@ -312,18 +324,22 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
     parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
-    parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+    //No client secret with PKCE
+    if ( grantFlow_ != GrantFlowPkce )
+    {
+      parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+    }
     parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
     parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
+    if ( grantFlow() == GrantFlowPkce )
+    {
+      parameters.insert( O2_OAUTH2_PKCE_CODE_VERIFIER_PARAM, pkceCodeVerifier_ );
+    }
     const QByteArray data = buildRequestBody( parameters );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    connect( tokenReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
-#else
     connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
-#endif
   }
   else if ( grantFlow_ == GrantFlowImplicit )
   {
@@ -405,7 +421,11 @@ void QgsO2::refreshSynchronous()
   refreshRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
   QMap<QString, QString> parameters;
   parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
-  parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+  // No secret with PKCE
+  if ( grantFlow_ != GrantFlowPkce )
+  {
+    parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+  }
   parameters.insert( O2_OAUTH2_REFRESH_TOKEN, refreshToken() );
   parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN );
 

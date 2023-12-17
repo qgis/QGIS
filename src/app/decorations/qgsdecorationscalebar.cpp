@@ -240,14 +240,9 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   //Get canvas dimensions
   QPaintDevice *device = context.painter()->device();
-  const int deviceHeight = device->height() / device->devicePixelRatioF();
-  const int deviceWidth = device->width() / device->devicePixelRatioF();
-  const QgsSettings settings;
-  bool ok = false;
-  Qgis::DistanceUnit preferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "qgis/measure/displayunits" ) ).toString(), &ok );
-  if ( !ok )
-    preferredUnits = Qgis::DistanceUnit::Meters;
-
+  const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
+  const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
+  const Qgis::DistanceUnit preferredUnits = QgsProject::instance()->distanceUnits();
   Qgis::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
 
   //Get map units per pixel
@@ -436,7 +431,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originY = deviceHeight - originY - size.height();
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   const QgsScopedQPainterState painterState( context.painter() );

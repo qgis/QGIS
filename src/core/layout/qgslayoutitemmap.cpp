@@ -113,7 +113,7 @@ QIcon QgsLayoutItemMap::icon() const
 
 QgsLayoutItem::Flags QgsLayoutItemMap::itemFlags() const
 {
-  return QgsLayoutItem::FlagOverridesPaint;
+  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
 }
 
 void QgsLayoutItemMap::assignFreeId()
@@ -242,27 +242,31 @@ void QgsLayoutItemMap::zoomToExtent( const QgsRectangle &extent )
   //Make sure the width/height ratio is the same as the current layout map extent.
   //This is to keep the map item frame size fixed
   double currentWidthHeightRatio = 1.0;
-  if ( !currentExtent.isNull() )
+  if ( !currentExtent.isEmpty() )
     currentWidthHeightRatio = currentExtent.width() / currentExtent.height();
   else
     currentWidthHeightRatio = rect().width() / rect().height();
-  double newWidthHeightRatio = newExtent.width() / newExtent.height();
 
-  if ( currentWidthHeightRatio < newWidthHeightRatio )
+  if ( currentWidthHeightRatio != 0 && ! std::isnan( currentWidthHeightRatio ) && !newExtent.isEmpty() )
   {
-    //enlarge height of new extent, ensuring the map center stays the same
-    double newHeight = newExtent.width() / currentWidthHeightRatio;
-    double deltaHeight = newHeight - newExtent.height();
-    newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
-    newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
-  }
-  else
-  {
-    //enlarge width of new extent, ensuring the map center stays the same
-    double newWidth = currentWidthHeightRatio * newExtent.height();
-    double deltaWidth = newWidth - newExtent.width();
-    newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
-    newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+    double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+    if ( currentWidthHeightRatio < newWidthHeightRatio )
+    {
+      //enlarge height of new extent, ensuring the map center stays the same
+      double newHeight = newExtent.width() / currentWidthHeightRatio;
+      double deltaHeight = newHeight - newExtent.height();
+      newExtent.setYMinimum( newExtent.yMinimum() - deltaHeight / 2 );
+      newExtent.setYMaximum( newExtent.yMaximum() + deltaHeight / 2 );
+    }
+    else
+    {
+      //enlarge width of new extent, ensuring the map center stays the same
+      double newWidth = currentWidthHeightRatio * newExtent.height();
+      double deltaWidth = newWidth - newExtent.width();
+      newExtent.setXMinimum( newExtent.xMinimum() - deltaWidth / 2 );
+      newExtent.setXMaximum( newExtent.xMaximum() + deltaWidth / 2 );
+    }
   }
 
   if ( mExtent == newExtent )
@@ -331,7 +335,31 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layers() const
 
 void QgsLayoutItemMap::setLayers( const QList<QgsMapLayer *> &layers )
 {
-  mLayers = _qgis_listRawToRef( layers );
+  mGroupLayers.clear();
+
+  QList<QgsMapLayer *> layersCopy { layers };
+
+  // Group layers require special handling because they are just containers for child layers
+  // which are removed/added when group visibility changes,
+  // see issue https://github.com/qgis/QGIS/issues/53379
+  for ( auto it = layersCopy.begin(); it != layersCopy.end(); ++it )
+  {
+    if ( const QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( *it ) )
+    {
+      auto existingIt = mGroupLayers.find( groupLayer->id() );
+      if ( existingIt != mGroupLayers.end( ) )
+      {
+        *it = ( *existingIt ).second.get();
+      }
+      else
+      {
+        std::unique_ptr<QgsGroupLayer> groupLayerClone { groupLayer->clone() };
+        mGroupLayers[ groupLayer->id() ] = std::move( groupLayerClone );
+        *it = mGroupLayers[ groupLayer->id() ].get();
+      }
+    }
+  }
+  mLayers = _qgis_listRawToRef( layersCopy );
 }
 
 void QgsLayoutItemMap::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
@@ -470,15 +498,60 @@ bool QgsLayoutItemMap::containsWmsLayer() const
 
 bool QgsLayoutItemMap::requiresRasterization() const
 {
-  if ( QgsLayoutItem::requiresRasterization() )
+  if ( blendMode() != QPainter::CompositionMode_SourceOver )
     return true;
 
   // we MUST force the whole layout to render as a raster if any map item
   // uses blend modes, and we are not drawing on a solid opaque background
   // because in this case the map item needs to be rendered as a raster, but
   // it also needs to interact with items below it
-  if ( !containsAdvancedEffects() )
+
+  // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+  // BIG WARNING -- we CANNOT just check containsAdvancedEffects here, as that method MUST
+  // return true if the map item has transparency.
+  // BUT, we **DO NOT HAVE TO** force the WHOLE layout to be rasterized if a map item
+  // is semi-opaque, as we have logic in QgsLayoutItemMap::paint to automatically render the
+  // map to a temporary image surface. I.e, we can get away with just rasterising the map
+  // alone and leaving the rest of the content as vector.
+
+  // SO this logic is a COPY of containsAdvancedEffects, without the opacity check
+
+  auto containsAdvancedEffectsIgnoreItemOpacity = [ = ]()-> bool
+  {
+    if ( QgsLayoutItem::containsAdvancedEffects() )
+      return true;
+
+    //check easy things first
+
+    // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+    //overviews
+    if ( mOverviewStack->containsAdvancedEffects() )
+    {
+      return true;
+    }
+
+    // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+    //grids
+    if ( mGridStack->containsAdvancedEffects() )
+    {
+      return true;
+    }
+
+    // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
+
+    QgsMapSettings ms;
+    ms.setLayers( layersToRender() );
+    return ( !QgsMapSettingsUtils::containsAdvancedEffects( ms ).isEmpty() );
+    // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
+  };
+
+  if ( !containsAdvancedEffectsIgnoreItemOpacity() )
     return false;
+
+  // WARNING -- modifying this logic? Then ALSO update containsAdvancedEffects accordingly!
 
   if ( hasBackground() && qgsDoubleNear( backgroundColor().alphaF(), 1.0 ) )
     return false;
@@ -488,10 +561,12 @@ bool QgsLayoutItemMap::requiresRasterization() const
 
 bool QgsLayoutItemMap::containsAdvancedEffects() const
 {
-  if ( QgsLayoutItem::containsAdvancedEffects() )
+  if ( QgsLayoutItem::containsAdvancedEffects() || mEvaluatedOpacity < 1.0 )
     return true;
 
   //check easy things first
+
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
 
   //overviews
   if ( mOverviewStack->containsAdvancedEffects() )
@@ -499,15 +574,20 @@ bool QgsLayoutItemMap::containsAdvancedEffects() const
     return true;
   }
 
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
+
   //grids
   if ( mGridStack->containsAdvancedEffects() )
   {
     return true;
   }
 
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
+
   QgsMapSettings ms;
   ms.setLayers( layersToRender() );
   return ( !QgsMapSettingsUtils::containsAdvancedEffects( ms ).isEmpty() );
+  // WARNING -- modifying this logic? Then ALSO update requiresRasterization accordingly!
 }
 
 void QgsLayoutItemMap::setMapRotation( double rotation )
@@ -582,6 +662,27 @@ QgsLayoutItemMapOverview *QgsLayoutItemMap::overview()
   return mOverviewStack->overview( 0 );
 }
 
+double QgsLayoutItemMap::estimatedFrameBleed() const
+{
+  double frameBleed = QgsLayoutItem::estimatedFrameBleed();
+
+  // Check if any of the grids are enabled
+  if ( mGridStack )
+  {
+    for ( int i = 0; i < mGridStack->size(); ++i )
+    {
+      const QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( mGridStack->item( i ) );
+      if ( grid->mEvaluatedEnabled )
+      {
+        // Grid bleed is the grid frame width + grid frame offset + half the pen width
+        frameBleed = std::max( frameBleed, grid->mEvaluatedGridFrameWidth + grid->mEvaluatedGridFrameMargin + grid->mEvaluatedGridFrameLineThickness / 2.0 );
+      }
+    }
+  }
+
+  return frameBleed;
+}
+
 void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & )
 {
 }
@@ -635,13 +736,40 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
     if ( !layerRef )
       continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
-    QDomText layerIdText = doc.createTextNode( layerRef.layerId );
+    QString layerId;
+    const auto it = std::find_if( mGroupLayers.cbegin(), mGroupLayers.cend(), [ &layerRef ]( const std::pair<const QString, std::unique_ptr<QgsGroupLayer>> &groupLayer )  -> bool
+    {
+      return groupLayer.second.get() == layerRef.get();
+    } );
+
+    if ( it != mGroupLayers.end() )
+    {
+      layerId = it->first;
+    }
+    else
+    {
+      layerId = layerRef.layerId;
+    }
+
+    QDomText layerIdText = doc.createTextNode( layerId );
     layerElem.appendChild( layerIdText );
 
     layerElem.setAttribute( QStringLiteral( "name" ), layerRef.name );
     layerElem.setAttribute( QStringLiteral( "source" ), layerRef.source );
     layerElem.setAttribute( QStringLiteral( "provider" ), layerRef.provider );
 
+    if ( it != mGroupLayers.end() )
+    {
+      const auto childLayers { it->second->childLayers() };
+      QDomElement childLayersElement = doc.createElement( QStringLiteral( "childLayers" ) );
+      for ( const QgsMapLayer *childLayer : std::as_const( childLayers ) )
+      {
+        QDomElement childElement = doc.createElement( QStringLiteral( "child" ) );
+        childElement.setAttribute( QStringLiteral( "layerid" ), childLayer->id() );
+        childLayersElement.appendChild( childElement );
+      }
+      layerElem.appendChild( childLayersElement );
+    }
     layerSetElem.appendChild( layerElem );
   }
   mapElem.appendChild( layerSetElem );
@@ -768,14 +896,13 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
 
   mLayerStyleOverrides.clear();
 
-  //mLayers
-  mLayers.clear();
+  QList<QgsMapLayerRef> layerSet;
   QDomNodeList layerSetNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerSet" ) );
   if ( !layerSetNodeList.isEmpty() )
   {
     QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
     QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( QStringLiteral( "Layer" ) );
-    mLayers.reserve( layerIdNodeList.size() );
+    layerSet.reserve( layerIdNodeList.size() );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
       QDomElement layerElem = layerIdNodeList.at( i ).toElement();
@@ -785,10 +912,45 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
       QString layerProvider = layerElem.attribute( QStringLiteral( "provider" ) );
 
       QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
-      ref.resolveWeakly( mLayout->project() );
-      mLayers << ref;
+      if ( ref.resolveWeakly( mLayout->project() ) )
+      {
+        layerSet << ref;
+      }
     }
   }
+
+  setLayers( _qgis_listRefToRaw( layerSet ) );
+
+  // Restore group layers configuration
+  if ( !layerSetNodeList.isEmpty() )
+  {
+    QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
+    QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( QStringLiteral( "Layer" ) );
+    for ( int i = 0; i < layerIdNodeList.size(); ++i )
+    {
+      QDomElement layerElem = layerIdNodeList.at( i ).toElement();
+      const QString layerId = layerElem.text();
+      const auto it = mGroupLayers.find( layerId );
+      if ( it != mGroupLayers.cend() )
+      {
+        QList<QgsMapLayerRef> childSet;
+        const QDomNodeList childLayersElements = layerElem.elementsByTagName( QStringLiteral( "childLayers" ) );
+        const QDomNodeList children = childLayersElements.at( 0 ).childNodes();
+        for ( int i = 0; i < children.size(); ++i )
+        {
+          const QDomElement childElement = children.at( i ).toElement();
+          const QString id = childElement.attribute( QStringLiteral( "layerid" ) );
+          QgsMapLayerRef layerRef{ id };
+          if ( layerRef.resolveWeakly( mLayout->project() ) )
+          {
+            childSet.push_back( layerRef );
+          }
+        }
+        it->second->setChildLayers( _qgis_listRefToRaw( childSet ) );
+      }
+    }
+  }
+
 
   // override styles
   QDomNodeList layerStylesNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerStyles" ) );
@@ -955,6 +1117,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       QgsScopedQPainterState rotatedPainterState( painter );
 
       painter->translate( mLastRenderedImageOffsetX + mXOffset, mLastRenderedImageOffsetY + mYOffset );
+      painter->setCompositionMode( blendModeForRender() );
       painter->scale( scale, scale );
       painter->drawImage( 0, 0, *mCacheFinalImage );
 
@@ -989,7 +1152,8 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
-    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
+    if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
+         && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
     {
       // rasterize
       double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter ) * 25.4;
@@ -1040,6 +1204,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       drawAnnotations( &p );
 
       QgsScopedQPainterState painterState( painter );
+      painter->setCompositionMode( blendModeForRender() );
       painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
       painter->drawImage( QPointF( -tl.x()* dotsPerMM, -tl.y() * dotsPerMM ), image );
       painter->scale( dotsPerMM, dotsPerMM );
@@ -1136,7 +1301,7 @@ bool QgsLayoutItemMap::nextExportPart()
         mCurrentExportPart = Background;
         return true;
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Background:
       mCurrentExportPart = Layer;
@@ -1165,7 +1330,7 @@ bool QgsLayoutItemMap::nextExportPart()
         mCurrentExportPart = Grid;
         return true;
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Grid:
       for ( int i = 0; i < mOverviewStack->size(); ++i )
@@ -1177,7 +1342,7 @@ bool QgsLayoutItemMap::nextExportPart()
           return true;
         }
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case OverviewMapExtent:
       if ( frameEnabled() )
@@ -1186,7 +1351,7 @@ bool QgsLayoutItemMap::nextExportPart()
         return true;
       }
 
-      FALLTHROUGH
+      [[fallthrough]];
 
     case Frame:
       if ( isSelected() && !mLayout->renderContext().isPreviewRender() )
@@ -1194,7 +1359,7 @@ bool QgsLayoutItemMap::nextExportPart()
         mCurrentExportPart = SelectionBoxes;
         return true;
       }
-      FALLTHROUGH
+      [[fallthrough]];
 
     case SelectionBoxes:
       mCurrentExportPart = End;
@@ -1978,6 +2143,7 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
 
 void QgsLayoutItemMap::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )
 {
+
   if ( !mLayers.isEmpty() || mLayerStyleOverrides.isEmpty() )
   {
     for ( QgsMapLayer *layer : layers )
@@ -1985,6 +2151,25 @@ void QgsLayoutItemMap::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layer
       mLayerStyleOverrides.remove( layer->id() );
     }
     _qgis_removeLayers( mLayers, layers );
+  }
+
+  for ( QgsMapLayer *layer : std::as_const( layers ) )
+  {
+    // Remove groups
+    if ( mGroupLayers.erase( layer->id() ) == 0 )
+    {
+      // Remove group children
+      for ( auto it = mGroupLayers.begin(); it != mGroupLayers.end(); ++it )
+      {
+        QgsGroupLayer *groupLayer = it->second.get();
+        if ( groupLayer->childLayers().contains( layer ) )
+        {
+          QList<QgsMapLayer *> childLayers { groupLayer->childLayers() };
+          childLayers.removeAll( layer );
+          groupLayer->setChildLayers( childLayers );
+        }
+      }
+    }
   }
 }
 

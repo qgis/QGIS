@@ -30,6 +30,7 @@
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgslabelingresults.h"
 #include "qgsfillsymbol.h"
+#include "qgsruntimeprofiler.h"
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
@@ -257,6 +258,12 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
 
 void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 {
+  std::unique_ptr< QgsScopedRuntimeProfile > registeringProfile;
+  if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+  {
+    registeringProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Registering labels" ), QStringLiteral( "rendering" ) );
+  }
+
   QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
 
   if ( feedback )
@@ -416,6 +423,12 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
 {
   QElapsedTimer t;
   t.start();
+
+  std::unique_ptr< QgsScopedRuntimeProfile > drawingProfile;
+  if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
+  {
+    drawingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering labels" ), QStringLiteral( "rendering" ) );
+  }
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 

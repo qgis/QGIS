@@ -250,6 +250,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
        */
       const QgsTextDocumentMetrics *textDocumentMetrics = nullptr;
 
+      /**
+       * Destination screen properties.
+       *
+       * \since QGIS 3.32
+       */
+      QgsScreenProperties screenProperties;
+
     };
 
     struct ItemMetrics
@@ -419,7 +426,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Set the icon size
      * \since QGIS 2.10
      */
-    void setIconSize( QSize sz ) { mIconSize = sz; }
+    void setIconSize( QSize sz );
     //! \since QGIS 2.10
     QSize iconSize() const { return mIconSize; }
 
@@ -756,7 +763,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
   private:
 
     // Lazily initializes mImage
-    QImage getLegendGraphic() const;
+    QImage getLegendGraphic( bool synchronous = false ) const;
 
     QImage renderMessage( const QString &msg ) const;
 

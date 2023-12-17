@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     Qgis,
@@ -21,12 +20,13 @@ from qgis.core import (
     QgsTextDocument,
     QgsTextFragment,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextDocument(unittest.TestCase):
+class TestQgsTextDocument(QgisTestCase):
 
     def testConstructors(self):
         # empty

@@ -9,7 +9,6 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '26/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -21,7 +20,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -50,7 +50,7 @@ def createLayerWithFivePoints():
     return layer
 
 
-class TestQgsFeatureSource(unittest.TestCase):
+class TestQgsFeatureSource(QgisTestCase):
 
     def testUniqueValues(self):
         """

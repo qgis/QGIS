@@ -108,11 +108,11 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      */
     QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
-    /**
-     * Tests whether the geometry is intersected by \a ray.
-     * In case of success, the \a intersectionPoint and the corresponding \a fid are updated.
-     */
-    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint, QgsFeatureId &fid );
+    //! Returns included feature ids
+    QVector<QgsFeatureId> featureIds() const { return mTriangleIndexFids; }
+
+    //! Returns triangle index for features. For a feature featureIds()[i], matching triangles start at triangleIndexStartingIndices()[i]
+    QVector<uint> triangleIndexStartingIndices() const { return mTriangleIndexStartingIndices; }
 
     friend class Qgs3DSceneExporter;
   private:

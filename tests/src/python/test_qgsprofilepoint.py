@@ -9,15 +9,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsProfilePoint
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProfilePoint(unittest.TestCase):
+class TestQgsProfilePoint(QgisTestCase):
 
     def testBasic(self):
         point = QgsProfilePoint()

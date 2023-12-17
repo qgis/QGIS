@@ -209,7 +209,7 @@ class PyProvider(QgsVectorDataProvider):
         self._wkbType = mlayer.wkbType()
         self._features = {}
         self._extent = QgsRectangle()
-        self._extent.setMinimal()
+        self._extent.setNull()
         self._subset_string = ''
         self._crs = mlayer.crs()
         self._spatialindex = None
@@ -402,7 +402,7 @@ class PyProvider(QgsVectorDataProvider):
 
     def extent(self):
         if self._extent.isEmpty() and self._features:
-            self._extent.setMinimal()
+            self._extent.setNull()
             if not self._subset_string:
                 # fast way - iterate through all features
                 for feat in self._features.values():
@@ -414,11 +414,11 @@ class PyProvider(QgsVectorDataProvider):
                         self._extent.combineExtentWith(f.geometry().boundingBox())
 
         elif not self._features:
-            self._extent.setMinimal()
+            self._extent.setNull()
         return QgsRectangle(self._extent)
 
     def updateExtents(self):
-        self._extent.setMinimal()
+        self._extent.setNull()
 
     def isValid(self):
         return True

@@ -199,13 +199,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *showFeatureCount = actions->actionShowFeatureCount( menu );
         menu->addAction( showFeatureCount );
         showFeatureCount->setEnabled( vlayer->isValid() );
+      }
 
-        const QString iconName = vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" )
+      if ( vlayer || vectorTileLayer )
+      {
+        const QString iconName = vectorTileLayer || ( vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" ) )
                                  ? QStringLiteral( "labelingRuleBased.svg" )
                                  : QStringLiteral( "labelingSingle.svg" );
         QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
         actionShowLabels->setCheckable( true );
-        actionShowLabels->setChecked( vlayer->labelsEnabled() );
+        actionShowLabels->setChecked( vectorTileLayer ? vectorTileLayer->labelsEnabled() : vlayer->labelsEnabled() );
         connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
         menu->addAction( actionShowLabels );
       }
@@ -579,6 +582,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           case Qgis::LayerType::Mesh:
           case Qgis::LayerType::VectorTile:
           case Qgis::LayerType::PointCloud:
+          case Qgis::LayerType::TiledScene:
           {
             bool enableSaveAs = ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) ||
                                 ( rlayer && rlayer->isValid() );
@@ -1335,22 +1339,30 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
   const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
   for ( QgsLayerTreeLayer *l : selectedLayerNodes )
   {
-    QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( l->layer() );
-    if ( !vlayer || !vlayer->isSpatial() )
-      continue;
+    if ( QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( l->layer() ) )
+    {
+      if ( !vlayer->isSpatial() )
+        continue;
 
-    if ( enabled && !vlayer->labeling() )
-    {
-      // no labeling setup - create default labeling for layer
-      const QgsPalLayerSettings settings = QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( vlayer );
-      vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
-      vlayer->setLabelsEnabled( true );
+      if ( enabled && !vlayer->labeling() )
+      {
+        // no labeling setup - create default labeling for layer
+        const QgsPalLayerSettings settings = QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( vlayer );
+        vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+        vlayer->setLabelsEnabled( true );
+      }
+      else
+      {
+        vlayer->setLabelsEnabled( enabled );
+      }
+      vlayer->emitStyleChanged();
+      vlayer->triggerRepaint();
     }
-    else
+    else if ( QgsVectorTileLayer *vectorTilelayer = qobject_cast< QgsVectorTileLayer * >( l->layer() ) )
     {
-      vlayer->setLabelsEnabled( enabled );
+      vectorTilelayer->setLabelsEnabled( enabled );
+      vectorTilelayer->emitStyleChanged();
+      vectorTilelayer->triggerRepaint();
     }
-    vlayer->emitStyleChanged();
-    vlayer->triggerRepaint();
   }
 }

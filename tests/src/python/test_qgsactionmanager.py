@@ -15,7 +15,6 @@ import os
 import platform
 import time
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
 from qgis.core import (
     QgsAction,
@@ -26,12 +25,13 @@ from qgis.core import (
     QgsFields,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsActionManager(unittest.TestCase):
+class TestQgsActionManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -156,7 +156,7 @@ class TestQgsActionManager(unittest.TestCase):
             output = result.read()
         return output
 
-    @unittest.expectedFailure(platform.system() != 'Linux')
+    @QgisTestCase.expectedFailure(platform.system() != 'Linux')
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test is flaky on Travis environment')
     def testDoAction(self):
         """ test running action """

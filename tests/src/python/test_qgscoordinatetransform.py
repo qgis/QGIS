@@ -9,7 +9,6 @@ __author__ = '(C) 2012 by Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -18,12 +17,13 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCoordinateTransform(unittest.TestCase):
+class TestQgsCoordinateTransform(QgisTestCase):
 
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""

@@ -74,8 +74,8 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
 
     //angle calculation
     double resultAngle = azimuthTwo - azimuthOne;
-    QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
-    QgsDebugMsg( QString::number( M_PI ) );
+    QgsDebugMsgLevel( QString::number( std::fabs( resultAngle ) ), 2 );
+    QgsDebugMsgLevel( QString::number( M_PI ), 2 );
     if ( std::fabs( resultAngle ) > M_PI )
     {
       if ( resultAngle < 0 )
@@ -213,8 +213,8 @@ void QgsMapToolMeasureAngle::updateSettings()
     return;
   }
   double resultAngle = azimuthTwo - azimuthOne;
-  QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
-  QgsDebugMsg( QString::number( M_PI ) );
+  QgsDebugMsgLevel( QString::number( std::fabs( resultAngle ) ), 2 );
+  QgsDebugMsgLevel( QString::number( M_PI ), 2 );
   if ( std::fabs( resultAngle ) > M_PI )
   {
     if ( resultAngle < 0 )

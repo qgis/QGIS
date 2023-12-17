@@ -196,11 +196,11 @@ void QgsOWSSourceSelect::populateFormats()
   for ( int i = 0; i < layersFormats.size(); i++ )
   {
     const QString format = layersFormats.value( i );
-    QgsDebugMsg( "server format = " + format );
+    QgsDebugMsgLevel( "server format = " + format, 2 );
     const QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegularExpression( "_.*" ) );
-    QgsDebugMsg( "server simpleFormat = " + simpleFormat );
+    QgsDebugMsgLevel( "server simpleFormat = " + simpleFormat, 2 );
     const QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
-    QgsDebugMsg( "server mimeFormat = " + mimeFormat );
+    QgsDebugMsgLevel( "server mimeFormat = " + mimeFormat, 2 );
 
     QString label = format;
 
@@ -224,7 +224,7 @@ void QgsOWSSourceSelect::populateFormats()
     {
       // We cannot always say that the format is not supported by GDAL because
       // server can use strange names, but format itself is supported
-      QgsDebugMsg( QStringLiteral( "format %1 unknown" ).arg( format ) );
+      QgsDebugMsgLevel( QStringLiteral( "format %1 unknown" ).arg( format ), 2 );
     }
 
     mFormatComboBox->insertItem( i, label );
@@ -341,7 +341,7 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   const QMap<int, int> &layerParents,
   const QMap<int, QStringList> &layerParentNames )
 {
-  QgsDebugMsg( QStringLiteral( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ), 2 );
   if ( items.contains( id ) )
     return items[id];
 
@@ -386,7 +386,7 @@ void QgsOWSSourceSelect::mConnectButton_clicked()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsDebugMsg( QStringLiteral( "call populateLayerList" ) );
+  QgsDebugMsgLevel( QStringLiteral( "call populateLayerList" ), 3 );
   populateLayerList();
 
   QApplication::restoreOverrideCursor();
@@ -485,7 +485,7 @@ void QgsOWSSourceSelect::populateCrs()
     mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
     mChangeCRSButton->setEnabled( true );
   }
-  QgsDebugMsg( "mSelectedCRS = " + mSelectedCRS );
+  QgsDebugMsgLevel( "mSelectedCRS = " + mSelectedCRS, 2 );
 }
 
 void QgsOWSSourceSelect::clearCrs()
@@ -507,7 +507,7 @@ void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *ite
   mTilesetsTableWidget->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsg( QStringLiteral( "selecting current row %1" ).arg( mTilesetsTableWidget->currentRow() ) );
+    QgsDebugMsgLevel( QStringLiteral( "selecting current row %1" ).arg( mTilesetsTableWidget->currentRow() ), 2 );
     mTilesetsTableWidget->selectRow( mTilesetsTableWidget->currentRow() );
     mCurrentTileset = rowItem;
   }

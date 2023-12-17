@@ -9,7 +9,6 @@ __author__ = '(C) 2019 by Nyall Dawson'
 __date__ = '02/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, Qt
 from qgis.core import (
     QgsBookmark,
@@ -21,7 +20,8 @@ from qgis.core import (
     QgsReferencedRectangle,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -29,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsBookmarkManagerModel(unittest.TestCase):
+class TestQgsBookmarkManagerModel(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

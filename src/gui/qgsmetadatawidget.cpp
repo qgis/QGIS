@@ -41,6 +41,9 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   // Disable the encoding
   encodingFrame->setHidden( true );
 
+  spinBoxZMinimum->setClearValue( 0 );
+  spinBoxZMaximum->setClearValue( 0 );
+
   // Default categories, we want them translated, so we are not using a CSV.
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
   mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
@@ -749,7 +752,7 @@ void QgsMetadataWidget::saveMetadata( QgsAbstractMetadataBase *metadata )
 
       // Extent
       QgsLayerMetadata::SpatialExtent spatialExtent;
-      spatialExtent.bounds = QgsBox3d( spatialExtentSelector->outputExtent() );
+      spatialExtent.bounds = QgsBox3D( spatialExtentSelector->outputExtent() );
       spatialExtent.bounds.setZMinimum( spinBoxZMinimum->value() );
       spatialExtent.bounds.setZMaximum( spinBoxZMaximum->value() );
       spatialExtent.extentCrs = spatialExtentSelector->outputCrs();
@@ -882,7 +885,7 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return countries;
   }
 
@@ -900,7 +903,7 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   QFile secondFile( path );
   if ( !secondFile.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return countries;
   }
 
@@ -925,7 +928,7 @@ QStringList QgsMetadataWidget::parseLicenses()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -949,7 +952,7 @@ QStringList QgsMetadataWidget::parseLinkTypes()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -973,7 +976,7 @@ QStringList QgsMetadataWidget::parseMimeTypes()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -994,7 +997,7 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugError( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return types;
   }
 

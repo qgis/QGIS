@@ -1,5 +1,9 @@
 name: 🪟 MingW64 Windows 64bit Build
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -28,7 +32,13 @@ jobs:
         - ${{ github.workspace }}:/w
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      # To be removed
+      # Workaround a bug where the initial /etc/dnf/dnf.conf file contains
+      # just the "tsflags=nodocs" line
+      - name: Replace broken dnf.conf
+        run: printf '[main]\ngpgcheck=True\ninstallonly_limit=3\nclean_requirements_on_remove=True\nbest=False\nskip_if_unavailable=True\ntsflags=nodocs' > /etc/dnf/dnf.conf
 
       - name: Update system
         run: dnf -y update
@@ -40,7 +50,7 @@ jobs:
         run: ./ms-windows/mingw/mingwdeps.sh
 
       # Node.js and Yarn for server landingpage webapp
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: '17'
 
@@ -91,6 +101,15 @@ jobs:
           sudo mv $DISTROOT QGIS-Portable
           zip -r qgis-portable-win64.zip QGIS-Portable
           (cd $DEBUGROOT && zip -r - *) > qgis-portable-win64-debugsym.zip
+
+      - name: Save PR number to zips
+        run: |
+          echo ${{ github.event.number }} | tee pr_number
+          zip -u qgis-portable-win64.zip pr_number
+          zip -u qgis-portable-win64-debugsym.zip pr_number
+          echo ${{ github.event.pull_request.head.sha }} | tee git_commit
+          zip -u qgis-portable-win64.zip git_commit
+          zip -u qgis-portable-win64-debugsym.zip git_commit
 
       - name: Upload QGIS for Windows 64bit
         uses: actions/upload-artifact@v3

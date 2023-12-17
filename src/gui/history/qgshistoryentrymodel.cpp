@@ -97,7 +97,7 @@ QgsHistoryEntryModel::QgsHistoryEntryModel( const QString &providerId, Qgis::His
     if ( !provider )
       continue;
 
-    if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry, mContext ) )
+    if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry, mContext ) )
     {
       mIdToNodeHash.insert( entry.id, node );
       mRootNode->addEntryNode( entry, node, nullptr );
@@ -203,7 +203,7 @@ void QgsHistoryEntryModel::entryAdded( long long id, const QgsHistoryEntry &entr
   if ( !provider )
     return;
 
-  if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry.entry, mContext ) )
+  if ( QgsHistoryEntryNode *node = provider->createNodeForEntry( entry, mContext ) )
   {
     mIdToNodeHash.insert( id, node );
     mRootNode->addEntryNode( entry, node, this );

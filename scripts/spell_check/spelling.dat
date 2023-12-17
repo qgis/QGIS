@@ -162,7 +162,7 @@ acknowleges:acknowledges
 acknowleging:acknowledging
 ackowledge:acknowledge
 ackowledged:acknowledged
-ackward:awkward*
+ackward:awkward:*
 acommodate:accommodate
 acommodated:accommodated
 acommodates:accommodates
@@ -230,7 +230,7 @@ addjusted:adjusted
 addjusting:adjusting
 addjusts:adjusts
 addmission:admission
-addopt:adopt*
+addopt:adopt:*
 addopted:adopted
 addoptive:adoptive
 addres:address
@@ -566,7 +566,7 @@ apperances:appearances
 appereance:appearance
 appereances:appearances
 appered:appeared
-appers:appears*
+appers:appears:*
 applicaiton:application
 applicaitons:applications
 appliction:application
@@ -856,7 +856,7 @@ authrorities:authorities
 autochtonous:autochthonous
 autoctonous:autochthonous
 autoincrememnt:autoincrement
-automaticall:automatically*
+automaticall:automatically:*
 automaticaly:automatically
 automaticly:automatically
 automatize:automate
@@ -999,7 +999,6 @@ beseiging:besieging
 beteen:between
 beteween:between
 betweeen:between
-betweeness:betweenness
 betwen:between
 beween:between
 bewteen:between
@@ -1298,7 +1297,7 @@ chemcial:chemical
 chemcially:chemically
 chemestry:chemistry
 chemicaly:chemically
-childen:children
+childen:children:*
 chilren:children
 childern:children
 childs:children:*
@@ -1697,6 +1696,7 @@ consonents:consonants
 consorcium:consortium
 conspiracys:conspiracies
 conspiriator:conspirator
+constrast:contrast
 constains:contains
 constaints:constraints
 constanly:constantly
@@ -1827,7 +1827,7 @@ coorperation:corporation
 coorperations:corporations
 copmetitors:competitors
 coputer:computer
-copyed:copied*
+copyed:copied:*
 copyrigth:copyright
 copyrigthed:copyrighted
 copyrigths:copyrights
@@ -3036,7 +3036,7 @@ fatc:fact
 fatser:faster
 fature:feature
 faught:fought
-favourite:favorite*
+favourite:favorite:*
 favoutrable:favourable
 feasable:feasible
 featre:feature
@@ -3089,7 +3089,7 @@ fisrt:first
 fitering:filtering
 fitler:filter
 fitlers:filters
-flaged:flagged
+flaged:flagged:*
 flakyness:flakiness
 flamable:flammable
 flavour:flavor
@@ -6241,8 +6241,8 @@ rewitten:rewritten
 rewriet:rewrite
 rewriten:rewritten
 rewuired:required
-rference:reference
-rferences:references
+rference:reference:*
+rferences:references:*
 rhymme:rhyme
 rhythem:rhythm
 rhythim:rhythm
@@ -7375,7 +7375,7 @@ unconditionaly:unconditionally
 unconfortability:discomfort
 uncontitutional:unconstitutional
 unconvential:unconventional
-uncorrect:incorrect
+uncorrect:incorrect:*
 uncorrectly:incorrectly
 uncoverted:unconverted
 uncrypted:unencrypted

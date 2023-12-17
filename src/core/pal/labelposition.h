@@ -83,7 +83,7 @@ namespace pal
        * \param y1 down-left y coordinate
        * \param w label width
        * \param h label height
-       * \param alpha rotation in rad
+       * \param alpha rotation in radians
        * \param cost geographic cost
        * \param feature labelpos owners
        * \param isReversed label is reversed
@@ -270,9 +270,10 @@ namespace pal
       double getHeight() const { return h; }
 
       /**
-       * Returns the angle to rotate text (in rad).
+       * Returns the angle to rotate text (in radians).
        */
       double getAlpha() const;
+
       bool getReversed() const { return reversed; }
       bool getUpsideDown() const { return upsideDown; }
 
@@ -368,7 +369,9 @@ namespace pal
 
       int nbOverlap;
 
+      //! Rotation in radians
       double alpha;
+
       double w;
       double h;
 

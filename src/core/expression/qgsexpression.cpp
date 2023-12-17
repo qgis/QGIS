@@ -36,6 +36,8 @@ Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
 HelpTextHash QgsExpression::sFunctionHelpTexts;
+QRecursiveMutex QgsExpression::sFunctionsMutex;
+QMap< QString, int> QgsExpression::sFunctionIndexMap;
 
 ///@cond PRIVATE
 HelpTextHash &QgsExpression::functionHelpTexts()
@@ -130,17 +132,31 @@ bool QgsExpression::isFunctionName( const QString &name )
 
 int QgsExpression::functionIndex( const QString &name )
 {
-  int count = functionCount();
-  for ( int i = 0; i < count; i++ )
+  QMutexLocker locker( &sFunctionsMutex );
+
+  auto it = sFunctionIndexMap.constFind( name );
+  if ( it != sFunctionIndexMap.constEnd() )
+    return *it;
+
+  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
+  int i = 0;
+  for ( const QgsExpressionFunction *function : functions )
   {
-    if ( QString::compare( name, QgsExpression::Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( name, function->name(), Qt::CaseInsensitive ) == 0 )
+    {
+      sFunctionIndexMap.insert( name, i );
       return i;
-    const QStringList aliases = QgsExpression::Functions()[i]->aliases();
+    }
+    const QStringList aliases = function->aliases();
     for ( const QString &alias : aliases )
     {
       if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
+      {
+        sFunctionIndexMap.insert( name, i );
         return i;
+      }
     }
+    i++;
   }
   return -1;
 }
@@ -458,12 +474,8 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     QgsExpression exp( toReplace );
     if ( exp.hasParserError() )
     {
-      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      expr_action += action.midRef( start, index - start );
-#else
+      QgsDebugError( "Expression parser error: " + exp.parserErrorString() );
       expr_action += QStringView {action} .mid( start, index - start );
-#endif
       continue;
     }
 
@@ -477,25 +489,21 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
 
     if ( exp.hasEvalError() )
     {
-      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      expr_action += action.midRef( start, index - start );
-#else
+      QgsDebugError( "Expression parser eval error: " + exp.evalErrorString() );
       expr_action += QStringView {action} .mid( start, index - start );
-#endif
       continue;
     }
 
-    QgsDebugMsgLevel( "Expression result is: " + result.toString(), 3 );
-    expr_action += action.mid( start, pos - start ) + result.toString();
+    QString resultString;
+    if ( !QgsVariantUtils::isNull( result ) )
+      resultString = result.toString();
+
+    QgsDebugMsgLevel( "Expression result is: " + resultString, 3 );
+
+    expr_action += action.mid( start, pos - start ) + resultString;
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-  expr_action += action.midRef( index );
-#else
   expr_action += QStringView {action} .mid( index ).toString();
-#endif
-
   return expr_action;
 }
 
@@ -617,7 +625,7 @@ QString QgsExpression::helpText( QString name )
             helpContents += delim;
             helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
                               a.mArg,
-                              a.mDefaultVal.isEmpty() ? QString() : '=' + a.mDefaultVal
+                              a.mDefaultVal.isEmpty() ? QString() : ":=" + a.mDefaultVal
                             );
 
             if ( a.mOptional )
@@ -750,6 +758,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Ellipsoid acronym of current layer CRS." ) );
 
   //feature variables
   sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );

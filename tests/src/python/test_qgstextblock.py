@@ -11,15 +11,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsStringUtils, QgsTextBlock, QgsTextFragment
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextBlock(unittest.TestCase):
+class TestQgsTextBlock(QgisTestCase):
 
     def testConstructors(self):
         # empty

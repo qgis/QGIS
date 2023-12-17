@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.core import (
     QgsProject,
     QgsVectorLayer,
@@ -19,7 +18,8 @@ from qgis.gui import (
     QgsLayerTreeMapCanvasBridge,
     QgsMapCanvas,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -27,11 +27,11 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
+class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
     def testLayerOrderUpdatedThroughBridge(self):
         """ test that project layer order is updated when layer tree changes """

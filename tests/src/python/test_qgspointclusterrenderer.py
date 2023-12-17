@@ -48,7 +48,8 @@ from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsRendererCategory
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -58,7 +59,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsPointClusterRenderer(unittest.TestCase):
+class TestQgsPointClusterRenderer(QgisTestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -127,8 +128,8 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
     def test_legend_keys(self):
         symbol1 = QgsMarkerSymbol()
         symbol2 = QgsMarkerSymbol()
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1', True, '0'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2', True, '1')
                                                             ])
 
         renderer = QgsPointClusterRenderer()

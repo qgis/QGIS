@@ -291,7 +291,7 @@ void QgsPropertyCollection::rescan() const
       if ( it.value().isActive() )
       {
         mHasActiveProperties = true;
-        if ( it.value().propertyType() != QgsProperty::StaticProperty )
+        if ( it.value().propertyType() != Qgis::PropertyType::Static )
         {
           mHasDynamicProperties = true;
         }
@@ -374,8 +374,8 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
     mHasDynamicProperties = mHasDynamicProperties ||
                             ( prop.isActive() &&
-                              ( prop.propertyType() == QgsProperty::FieldBasedProperty ||
-                                prop.propertyType() == QgsProperty::ExpressionBasedProperty ) );
+                              ( prop.propertyType() == Qgis::PropertyType::Field ||
+                                prop.propertyType() == Qgis::PropertyType::Expression ) );
   }
   return true;
 }

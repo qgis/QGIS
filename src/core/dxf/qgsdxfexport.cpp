@@ -379,7 +379,7 @@ void QgsDxfExport::writeTables()
     if ( !ml )
       continue;
 
-    if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
+    if ( hasBlockBreakingDataDefinedProperties( ml, symbolLayer.second ) )
       continue;
 
     QString name = QStringLiteral( "symbolLayer%1" ).arg( i++ );
@@ -614,7 +614,7 @@ void QgsDxfExport::writeBlocks()
     QgsSymbolRenderContext ctx( ct, Qgis::RenderUnit::MapUnits, symbolLayer.second->opacity(), false, symbolLayer.second->renderHints(), nullptr );
 
     // markers with data defined properties are inserted inline
-    if ( hasDataDefinedProperties( ml, symbolLayer.second ) )
+    if ( hasBlockBreakingDataDefinedProperties( ml, symbolLayer.second ) )
     {
       continue;
     }
@@ -649,6 +649,8 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
 
     mPointSymbolBlocks.insert( ml, block );
+    mPointSymbolBlockSizes.insert( ml, ml->dxfSize( *this, ctx ) );
+    mPointSymbolBlockAngles.insert( ml, ml->dxfAngle( ctx ) );
   }
   endSection();
 }
@@ -953,6 +955,8 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   }
   else
   {
+    const double scale = symbolLayer->dxfSize( *this, ctx ) / mPointSymbolBlockSizes.value( symbolLayer );
+
     // insert block reference
     writeGroup( 0, QStringLiteral( "INSERT" ) );
     writeHandle();
@@ -960,7 +964,12 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
     writeGroup( 100, QStringLiteral( "AcDbBlockReference" ) );
     writeGroup( 8, layer );
     writeGroup( 2, blockIt.value() ); // Block name
-    writeGroup( 50, angle ); // angle
+    writeGroup( 50, mPointSymbolBlockAngles.value( symbolLayer ) - angle );
+    if ( std::isfinite( scale ) && scale != 1.0 )
+    {
+      writeGroup( 41, scale );
+      writeGroup( 42, scale );
+    }
     writeGroup( 0, pt );  // Insertion point (in OCS)
   }
 }
@@ -970,13 +979,13 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
   int n = line.size();
   if ( n == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
   if ( n < 2 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -1054,7 +1063,7 @@ void QgsDxfExport::appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QV
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unexpected curve type %1" ).arg( c.wktTypeStr() ) );
+      QgsDebugError( QStringLiteral( "Unexpected curve type %1" ).arg( c.wktTypeStr() ) );
       break;
   }
 }
@@ -1108,13 +1117,13 @@ void QgsDxfExport::writePolyline( const QgsCurve &curve, const QString &layer, c
   int n = curve.numPoints();
   if ( n == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
   if ( n < 2 )
   {
-    QgsDebugMsg( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
+    QgsDebugError( QStringLiteral( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer, lineStyleName ) );
     return;
   }
 
@@ -1522,7 +1531,7 @@ void QgsDxfExport::writeMText( const QString &layer, const QString &text, const 
   if ( !mTextStream.codec()->canEncode( text ) )
   {
     // TODO return error
-    QgsDebugMsg( QStringLiteral( "could not encode:%1" ).arg( text ) );
+    QgsDebugError( QStringLiteral( "could not encode:%1" ).arg( text ) );
     return;
   }
 #endif
@@ -1810,13 +1819,13 @@ int QgsDxfExport::color_distance( QRgb p1, int index )
   double greenDiff = qGreen( p1 ) - sDxfColors[index][1];
   double blueDiff = qBlue( p1 ) - sDxfColors[index][2];
 #if 0
-  QgsDebugMsg( QStringLiteral( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
-               .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
-               .arg( index )
-               .arg( mDxfColors[index][0] )
-               .arg( mDxfColors[index][1] )
-               .arg( mDxfColors[index][2] )
-               .arg( redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff ) );
+  QgsDebugMsgLevel( QStringLiteral( "color_distance( r:%1 g:%2 b:%3 <=> i:%4 r:%5 g:%6 b:%7 ) => %8" )
+                    .arg( qRed( p1 ) ).arg( qGreen( p1 ) ).arg( qBlue( p1 ) )
+                    .arg( index )
+                    .arg( mDxfColors[index][0] )
+                    .arg( mDxfColors[index][1] )
+                    .arg( mDxfColors[index][2] )
+                    .arg( redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff ), 2 );
 #endif
   return redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff;
 }
@@ -2059,19 +2068,24 @@ void QgsDxfExport::addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx,
   }
 }
 
-bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol )
+bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *sl, const QgsSymbol *symbol )
 {
   if ( !sl || !symbol )
   {
     return false;
   }
 
-  if ( symbol->renderHints() & Qgis::SymbolRenderHint::DynamicRotation )
+  bool blockBreak = false;
+  if ( sl->hasDataDefinedProperties() )
   {
-    return true;
+    QSet<int> properties = sl->dataDefinedProperties().propertyKeys();
+    // Remove data defined properties handled through DXF property codes
+    properties.remove( QgsSymbolLayer::PropertySize );
+    properties.remove( QgsSymbolLayer::PropertyAngle );
+    blockBreak = !properties.isEmpty();
   }
 
-  return sl->hasDataDefinedProperties();
+  return blockBreak;
 }
 
 double QgsDxfExport::dashSize() const

@@ -9,7 +9,6 @@ __author__ = 'Chris Crook'
 __date__ = '3/10/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
@@ -26,7 +25,8 @@ from qgis.core import (
     QgsRendererRangeLabelFormat,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -149,7 +149,7 @@ def dumpGraduatedRenderer(r):
 # Tests
 
 
-class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
+class TestQgsGraduatedSymbolRenderer(QgisTestCase):
 
     def testQgsRendererRange_1(self):
         """Test QgsRendererRange getter/setter functions"""
@@ -355,6 +355,10 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         range = QgsRendererRange(20.0, 25.5, symbol.clone(), 'Third range', False)
         renderer.addClassRange(range)
 
+        # Add classification method label and precision
+        renderer.classificationMethod().setLabelFormat("111")
+        renderer.classificationMethod().setLabelPrecision(1)
+
         # Add class by lower and upper
         renderer.addClassLowerUpper(25.5, 30.5)
         # (Update label for sorting tests)
@@ -388,6 +392,10 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             dumpGraduatedRenderer(renderer2),
             "Save/create from DOM doesn't replicate renderer properly"
         )
+
+        # Check classification method label and precision properly created from DOM
+        self.assertEqual(renderer2.classificationMethod().labelFormat(), "111")
+        self.assertEqual(renderer2.classificationMethod().labelPrecision(), 1)
 
         # Check sorting
 
@@ -489,11 +497,11 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertFalse(renderer.legendKeys())
 
         symbol_a = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a'))
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a', True, '0'))
         symbol_b = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b'))
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b', True, '1'))
         symbol_c = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False))
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False, '2'))
 
         self.assertEqual(renderer.legendKeys(), {'0', '1', '2'})
 
@@ -509,11 +517,11 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertFalse(ok)
 
         symbol_a = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a'))
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a', True, '0'))
         symbol_b = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b'))
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b', True, '1'))
         symbol_c = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False))
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False, '2'))
 
         exp, ok = renderer.legendKeyToExpression('0', None)
         self.assertTrue(ok)

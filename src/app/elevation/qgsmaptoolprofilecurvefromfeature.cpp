@@ -60,7 +60,7 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Could not transform geometry from layer CRS" ) );
+        QgsDebugError( QStringLiteral( "Could not transform geometry from layer CRS" ) );
       }
       emit curveCaptured( geom );
     }

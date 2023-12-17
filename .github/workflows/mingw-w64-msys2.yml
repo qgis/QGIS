@@ -33,7 +33,7 @@ jobs:
         shell: msys2 {0}
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install core & build dependencies
         uses: msys2/setup-msys2@v2
@@ -83,12 +83,10 @@ jobs:
             -DWITH_3D=ON \
             -DWITH_PDAL=OFF \
             -DWITH_CUSTOM_WIDGETS=ON \
-            -DWITH_QWTPOLAR=ON \
-            -DQWTPOLAR_LIBRARY=${MINGW_PREFIX}/lib/libqwt-qt5.dll.a \
-            -DQWTPOLAR_INCLUDE_DIR=${MINGW_PREFIX}/include/qwt-qt5 \
-            -DWITH_INTERNAL_QWTPOLAR=OFF \
+            -DWITH_QWTPOLAR=OFF \
             -DWITH_BINDINGS=OFF \
             -DWITH_GRASS=OFF \
+            -DWITH_DRACO=OFF \
             -DUSE_CCACHE=ON \
             -S . \
             -B build

@@ -9,7 +9,6 @@ __author__ = 'Samweli Mwakisambwe'
 __date__ = '6/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -19,7 +18,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -27,7 +27,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectTimeSettings(unittest.TestCase):
+class TestQgsProjectTimeSettings(QgisTestCase):
 
     def testTemporalRange(self):
         p = QgsProjectTimeSettings()

@@ -57,6 +57,7 @@
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgstiledownloadmanager.h"
+#include "qgstiledscenerendererregistry.h"
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
@@ -205,7 +206,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
 
   // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
-  if ( platformName != QStringLiteral( "desktop" ) )
+  if ( platformName != QLatin1String( "desktop" ) )
   {
     mApplicationMembers = new ApplicationMembers();
     mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
@@ -220,7 +221,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 void QgsApplication::init( QString profileFolder )
 {
   // Initialize application members in desktop app (at this point, profile folder is known)
-  if ( platform() == QStringLiteral( "desktop" ) )
+  if ( platform() == QLatin1String( "desktop" ) )
   {
     instance()->mApplicationMembers = new ApplicationMembers();
     instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
@@ -458,9 +459,29 @@ void QgsApplication::init( QString profileFolder )
 
 void QgsApplication::installTranslators()
 {
+  // Remove translators if any are already installed
+  if ( mQgisTranslator )
+  {
+    removeTranslator( mQgisTranslator );
+    delete mQgisTranslator;
+    mQgisTranslator = nullptr;
+  }
+  if ( mQtTranslator )
+  {
+    removeTranslator( mQtTranslator );
+    delete mQtTranslator;
+    mQtTranslator = nullptr;
+  }
+  if ( mQtBaseTranslator )
+  {
+    removeTranslator( mQtBaseTranslator );
+    delete mQtBaseTranslator;
+    mQtBaseTranslator = nullptr;
+  }
+
   if ( *sTranslation() != QLatin1String( "C" ) )
   {
-    mQgisTranslator = new QTranslator();
+    mQgisTranslator = new QTranslator( this );
     if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + *sTranslation(), i18nPath() ) )
     {
       installTranslator( mQgisTranslator );
@@ -481,7 +502,7 @@ void QgsApplication::installTranslators()
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
 #endif
 
-    mQtTranslator = new QTranslator();
+    mQtTranslator = new QTranslator( this );
     if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtTranslator );
@@ -491,7 +512,7 @@ void QgsApplication::installTranslators()
       QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
 
-    mQtBaseTranslator = new QTranslator();
+    mQtBaseTranslator = new QTranslator( this );
     if ( mQtBaseTranslator->load( QStringLiteral( "qtbase_" ) + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtBaseTranslator );
@@ -771,7 +792,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
+      QgsDebugError( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
       return QIcon();
     }
 
@@ -937,11 +958,7 @@ QString QgsApplication::resolvePkgPath()
       QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      *sCfgIntDir() = prefix.split( '/', QString::SkipEmptyParts ).last();
-#else
       *sCfgIntDir() = prefix.split( '/', Qt::SkipEmptyParts ).last();
-#endif
       qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
 #endif
     }
@@ -1791,13 +1808,8 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList targetElems = tPathUrl.split( '/', QString::SkipEmptyParts );
-  QStringList aPathElems = aPathUrl.split( '/', QString::SkipEmptyParts );
-#else
   QStringList targetElems = tPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList aPathElems = aPathUrl.split( '/', Qt::SkipEmptyParts );
-#endif
 
   targetElems.removeAll( QStringLiteral( "." ) );
   aPathElems.removeAll( QStringLiteral( "." ) );
@@ -1855,13 +1867,8 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   bool uncPath = targetPathUrl.startsWith( "//" );
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList srcElems = rPathUrl.split( '/', QString::SkipEmptyParts );
-  QStringList targetElems = targetPathUrl.split( '/', QString::SkipEmptyParts );
-#else
   QStringList srcElems = rPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList targetElems = targetPathUrl.split( '/', Qt::SkipEmptyParts );
-#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -2340,7 +2347,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
     if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
+      QgsDebugError( QStringLiteral( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
     }
 
     if ( sqlite3_exec( database.get(),
@@ -2426,6 +2433,11 @@ QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
 QgsPointCloudRendererRegistry *QgsApplication::pointCloudRendererRegistry()
 {
   return members()->mPointCloudRendererRegistry;
+}
+
+QgsTiledSceneRendererRegistry *QgsApplication::tiledSceneRendererRegistry()
+{
+  return members()->mTiledSceneRendererRegistry;
 }
 
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
@@ -2653,7 +2665,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
-    profiler->start( tr( "Create metadata provider registry" ) );
+    profiler->start( tr( "Create layer metadata provider registry" ) );
     mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
     profiler->end();
   }
@@ -2738,6 +2750,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup tiled scene renderer registry" ) );
+    mTiledSceneRendererRegistry = new QgsTiledSceneRendererRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup GPS registry" ) );
     mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
     profiler->end();
@@ -2789,16 +2806,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup 3D renderer registry" ) );
     m3DRendererRegistry = new Qgs3DRendererRegistry();
-    profiler->end();
-  }
-  {
-    profiler->start( tr( "Setup project storage registry" ) );
-    mProjectStorageRegistry = new QgsProjectStorageRegistry();
-    profiler->end();
-  }
-  {
-    profiler->start( tr( "Setup layer metadata provider registry" ) );
-    mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
     profiler->end();
   }
   {
@@ -2861,6 +2868,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mSensorRegistry;
   delete mLayoutItemRegistry;
   delete mPointCloudRendererRegistry;
+  delete mTiledSceneRendererRegistry;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;

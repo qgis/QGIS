@@ -54,7 +54,7 @@ class QgsCellStatisticsAlgorithmBase : public QgsProcessingAlgorithm
     QgsCoordinateReferenceSystem mCrs;
     double mRasterUnitsPerPixelX = 0;
     double mRasterUnitsPerPixelY = 0;
-    QgsRasterDataProvider *mOutputRasterDataProvider = nullptr;
+    std::unique_ptr< QgsRasterDataProvider > mOutputRasterDataProvider;
 };
 
 class QgsCellStatisticsAlgorithm : public QgsCellStatisticsAlgorithmBase

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '30/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QListView
 from qgis.core import (
@@ -21,7 +20,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExpressionBuilderWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -61,7 +61,7 @@ def createReferencedLayer():
     return layer
 
 
-class TestQgsExpressionBuilderWidget(unittest.TestCase):
+class TestQgsExpressionBuilderWidget(QgisTestCase):
 
     def setUp(self):
         self.referencedLayer = createReferencedLayer()

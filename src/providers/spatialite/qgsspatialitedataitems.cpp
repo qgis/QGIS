@@ -33,7 +33,7 @@
 
 bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause )
 {
-  QgsDebugMsg( "deleting layer " + tableName );
+  QgsDebugMsgLevel( "deleting layer " + tableName, 2 );
 
   QgsSqliteHandle *hndl = QgsSqliteHandle::openDb( dbPath );
   if ( !hndl )
@@ -56,7 +56,7 @@ bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableNa
   ret = sqlite3_exec( sqlite_handle, "VACUUM", nullptr, nullptr, nullptr );
   if ( ret != SQLITE_OK )
   {
-    QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
+    QgsDebugError( "Failed to run VACUUM after deleting table on database " + dbPath );
   }
 
   QgsSqliteHandle::closeDb( hndl );
@@ -244,11 +244,11 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause
 
 bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
 {
-  QgsDebugMsg( QStringLiteral( "creating a new db" ) );
+  QgsDebugMsgLevel( QStringLiteral( "creating a new db" ), 2 );
 
   const QFileInfo fullPath = QFileInfo( dbPath );
   const QDir path = fullPath.dir();
-  QgsDebugMsg( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ) );
+  QgsDebugMsgLevel( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ), 2 );
 
   // Must be sure there is destination directory ~/.qgis
   QDir().mkpath( path.absolutePath() );

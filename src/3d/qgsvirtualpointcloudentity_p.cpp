@@ -56,7 +56,9 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity( QgsPointCloudLayer *laye
   }
 
   updateBboxEntity();
+  connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
+
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -115,9 +117,12 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneState &state )
     const float distance = bbox.distanceFromPoint( state.cameraPos );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, state.screenSizePx, state.cameraFov );
     constexpr float THRESHOLD = .2;
-    const bool displayAsBbox = sse < THRESHOLD;
+
+    // always display as bbox for the initial temporary camera pos (0, 0, 0)
+    // then once the camera changes we display as bbox depending on screen space error
+    const bool displayAsBbox = state.cameraPos.isNull() || sse < THRESHOLD;
     if ( !displayAsBbox && !subIndexes.at( i ).index() )
-      provider()->loadSubIndex( i );
+      emit subIndexNeedsLoading( i );
 
     setRenderSubIndexAsBbox( i, displayAsBbox );
     if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
@@ -146,18 +151,11 @@ QgsRange<float> QgsVirtualPointCloudEntity::getNearFarPlaneRange( const QMatrix4
   {
     for ( const QgsAABB &bbox : mBboxes )
     {
-      for ( int i = 0; i < 8; ++i )
-      {
-        const QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
-                           ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
-                           ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
-
-        const QVector4D pc = viewMatrix * p;
-
-        const float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
-        fnear = std::min( fnear, dst );
-        ffar = std::max( ffar, dst );
-      }
+      float bboxfnear;
+      float bboxffar;
+      Qgs3DUtils::computeBoundingBoxNearFarPlanes( bbox, viewMatrix, bboxfnear, bboxffar );
+      fnear = std::min( fnear, bboxfnear );
+      ffar = std::max( ffar, bboxffar );
     }
   }
 

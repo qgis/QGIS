@@ -20,8 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingparameters.h"
-
+#include "qgsprocessing.h"
 //
 // Output definitions
 //
@@ -49,6 +48,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputRasterLayer;
     else if ( sipCpp->type() == QgsProcessingOutputPointCloudLayer::typeName() )
       sipType = sipType_QgsProcessingOutputPointCloudLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputVectorTileLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputVectorTileLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
       sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMultipleLayers::typeName() )
@@ -67,6 +68,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputFile;
     else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
       sipType = sipType_QgsProcessingOutputConditionalBranch;
+    else if ( sipCpp->type() == QgsProcessingOutputVariant::typeName() )
+      sipType = sipType_QgsProcessingOutputVariant;
     else
       sipType = nullptr;
     SIP_END
@@ -303,6 +306,29 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
     QString type() const override { return typeName(); }
 };
 
+
+/**
+ * \class QgsProcessingOutputVariant
+ * \ingroup core
+ * \brief A variant output for processing algorithms, capable of storing any QVariant value.
+  * \since QGIS 3.34
+ */
+class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputVariant.
+     */
+    QgsProcessingOutputVariant( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputVariant" ); }
+    QString type() const override;
+};
+
 /**
  * \class QgsProcessingOutputNumber
  * \ingroup core
@@ -434,6 +460,28 @@ class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOut
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputBranch" ); }
+    QString type() const override { return typeName(); }
+};
+
+/**
+ * \class QgsProcessingOutputVectorTileLayer
+ * \ingroup core
+ * \brief A vector tile layer output for processing algorithms.
+  * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputVectorTileLayer.
+     */
+    QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputVectorTile" ); }
     QString type() const override { return typeName(); }
 };
 

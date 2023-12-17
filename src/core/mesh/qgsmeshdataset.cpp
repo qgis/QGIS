@@ -329,39 +329,39 @@ void QgsMeshDataBlock::setValid( bool valid )
   mIsValid = valid;
 }
 
-QgsMesh3dDataBlock::QgsMesh3dDataBlock() = default;
+QgsMesh3DDataBlock::QgsMesh3DDataBlock() = default;
 
-QgsMesh3dDataBlock::~QgsMesh3dDataBlock() {};
+QgsMesh3DDataBlock::~QgsMesh3DDataBlock() {};
 
-QgsMesh3dDataBlock::QgsMesh3dDataBlock( int count, bool isVector )
+QgsMesh3DDataBlock::QgsMesh3DDataBlock( int count, bool isVector )
   : mSize( count )
   , mIsVector( isVector )
 {
 }
 
-bool QgsMesh3dDataBlock::isValid() const
+bool QgsMesh3DDataBlock::isValid() const
 {
   return mIsValid;
 }
 
-bool QgsMesh3dDataBlock::isVector() const
+bool QgsMesh3DDataBlock::isVector() const
 {
   return mIsVector;
 }
 
-int QgsMesh3dDataBlock::count() const
+int QgsMesh3DDataBlock::count() const
 {
   return mSize;
 }
 
-int QgsMesh3dDataBlock::firstVolumeIndex() const
+int QgsMesh3DDataBlock::firstVolumeIndex() const
 {
   if ( mFaceToVolumeIndex.empty() )
     return -1;
   return mFaceToVolumeIndex[0];
 }
 
-int QgsMesh3dDataBlock::lastVolumeIndex() const
+int QgsMesh3DDataBlock::lastVolumeIndex() const
 {
   if ( mFaceToVolumeIndex.empty() || mVerticalLevelsCount.empty() )
     return -1;
@@ -370,54 +370,54 @@ int QgsMesh3dDataBlock::lastVolumeIndex() const
   return lastVolumeStartIndex + volumesCountInLastRow;
 }
 
-int QgsMesh3dDataBlock::volumesCount() const
+int QgsMesh3DDataBlock::volumesCount() const
 {
   return lastVolumeIndex() - firstVolumeIndex();
 }
 
-QVector<int> QgsMesh3dDataBlock::verticalLevelsCount() const
+QVector<int> QgsMesh3DDataBlock::verticalLevelsCount() const
 {
   Q_ASSERT( isValid() );
   return mVerticalLevelsCount;
 }
 
-void QgsMesh3dDataBlock::setFaceToVolumeIndex( const QVector<int> &faceToVolumeIndex )
+void QgsMesh3DDataBlock::setFaceToVolumeIndex( const QVector<int> &faceToVolumeIndex )
 {
   Q_ASSERT( faceToVolumeIndex.size() == count() );
   mFaceToVolumeIndex = faceToVolumeIndex;
 }
 
-void QgsMesh3dDataBlock::setVerticalLevelsCount( const QVector<int> &verticalLevelsCount )
+void QgsMesh3DDataBlock::setVerticalLevelsCount( const QVector<int> &verticalLevelsCount )
 {
   Q_ASSERT( verticalLevelsCount.size() == count() );
   mVerticalLevelsCount = verticalLevelsCount;
 }
 
-QVector<double> QgsMesh3dDataBlock::verticalLevels() const
+QVector<double> QgsMesh3DDataBlock::verticalLevels() const
 {
   Q_ASSERT( isValid() );
   return mVerticalLevels;
 }
 
-void QgsMesh3dDataBlock::setVerticalLevels( const QVector<double> &verticalLevels )
+void QgsMesh3DDataBlock::setVerticalLevels( const QVector<double> &verticalLevels )
 {
   Q_ASSERT( verticalLevels.size() == volumesCount() + count() );
   mVerticalLevels = verticalLevels;
 }
 
-QVector<int> QgsMesh3dDataBlock::faceToVolumeIndex() const
+QVector<int> QgsMesh3DDataBlock::faceToVolumeIndex() const
 {
   Q_ASSERT( isValid() );
   return mFaceToVolumeIndex;
 }
 
-QVector<double> QgsMesh3dDataBlock::values() const
+QVector<double> QgsMesh3DDataBlock::values() const
 {
   Q_ASSERT( isValid() );
   return mDoubleBuffer;
 }
 
-QgsMeshDatasetValue QgsMesh3dDataBlock::value( int volumeIndex ) const
+QgsMeshDatasetValue QgsMesh3DDataBlock::value( int volumeIndex ) const
 {
   if ( !isValid() )
     return QgsMeshDatasetValue();
@@ -431,13 +431,13 @@ QgsMeshDatasetValue QgsMesh3dDataBlock::value( int volumeIndex ) const
          );
 }
 
-void QgsMesh3dDataBlock::setValues( const QVector<double> &doubleBuffer )
+void QgsMesh3DDataBlock::setValues( const QVector<double> &doubleBuffer )
 {
   Q_ASSERT( doubleBuffer.size() == ( isVector() ? 2 * volumesCount() : volumesCount() ) );
   mDoubleBuffer = doubleBuffer;
 }
 
-void QgsMesh3dDataBlock::setValid( bool valid )
+void QgsMesh3DDataBlock::setValid( bool valid )
 {
   mIsValid = valid;
 }

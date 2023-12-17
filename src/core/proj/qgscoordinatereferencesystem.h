@@ -724,6 +724,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString toProj() const;
 
     /**
+     * Returns the type of the CRS.
+     *
+     * \since QGIS 3.34
+     */
+    Qgis::CrsType type() const;
+
+    /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */
@@ -744,6 +751,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If the CRS does not use a datum ensemble then an invalid QgsDatumEnsemble will
      * be returned.
+     *
+     * \note In the case of a compound crs, this method will always return the datum ensemble for the horizontal component.
      *
      * \warning This method requires PROJ 8.0 or later
      *
@@ -836,8 +845,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsProjOperation operation() const;
 
     /**
-     * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
+     * Returns whether the axis order is inverted for the CRS compared to the order east/north (longitude/latitude).
+     * E.g. with WMS 1.3 the axis order for EPSG:4326 is north/east (latitude/longitude), i.e. inverted.
      * \returns TRUE if CRS axis is inverted
+     *
+     * \see axisOrdering()
      */
     bool hasAxisInverted() const;
 
@@ -888,6 +900,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the units for the projection used by the CRS.
+     *
+     * \note In the case of a compound CRS, this method will always return the units for the horizontal component.
      */
     Qgis::DistanceUnit mapUnits() const;
 

@@ -28,7 +28,6 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 
-import qgis  # NOQA
 
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
@@ -57,7 +56,8 @@ from qgis.PyQt.QtCore import (
     QUrl,
     QVariant,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from utilities import compareUrl, compareWkt, unitTestDataPath
 
 start_app()
@@ -139,7 +139,7 @@ class MessageLogger(QObject):
         return self.log
 
 
-class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
+class TestQgsDelimitedTextProviderXY(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -172,7 +172,7 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
         return False
 
 
-class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
+class TestQgsDelimitedTextProviderWKT(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -218,7 +218,7 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
         return False
 
 
-class TestQgsDelimitedTextProviderOther(unittest.TestCase):
+class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -34,7 +34,7 @@ QString QgsPostgresStringUtils::getNextString( const QString &txt, int &i, const
   QString cur = txt.mid( i );
   if ( cur.startsWith( '"' ) )
   {
-    const QRegularExpression stringRe( QRegularExpression::anchoredPattern( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
+    const thread_local QRegularExpression stringRe( QRegularExpression::anchoredPattern( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
     const QRegularExpressionMatch match = stringRe.match( cur );
     if ( !match.hasMatch() )
     {

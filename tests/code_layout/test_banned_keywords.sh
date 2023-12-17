@@ -147,7 +147,7 @@ pushd "${DIR}" > /dev/null || exit
 
 for i in "${!KEYWORDS[@]}"
 do
-  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp' -- ':!*qtermwidget*' | grep --invert-match skip-keyword-check)
+  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp' | grep --invert-match skip-keyword-check)
 
   if [[  ${FOUND} ]]; then
     echo "Found source files with banned keyword: ${KEYWORDS[$i]}!"

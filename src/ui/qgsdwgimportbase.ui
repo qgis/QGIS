@@ -6,115 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
-    <height>415</height>
+    <width>935</width>
+    <height>705</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DWG/DXF Import</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="8" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,10,0">
+   <item row="0" column="0">
+    <widget class="QgsMessageBar" name="bar" native="true"/>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="mGroupBox">
-     <property name="title">
-      <string>Layers to Import into Project</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="0" colspan="3">
-       <widget class="QTableWidget" name="mLayers">
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="sortingEnabled">
-         <bool>true</bool>
-        </property>
-        <column>
-         <property name="text">
-          <string>Layer</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Visible</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="leLayerGroup"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Group name</string>
-        </property>
-        <property name="buddy">
-         <cstring>leLayerGroup</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="3">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QCheckBox" name="cbMergeLayers">
-          <property name="text">
-           <string>Merge layers</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbDeselectAll">
-          <property name="text">
-           <string>Deselect All</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbSelectAll">
-          <property name="text">
-           <string>Select All</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Import Drawing into GeoPackage</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -123,23 +33,19 @@
       <item row="3" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLineEdit" name="leDrawing">
-          <property name="readOnly">
-           <bool>true</bool>
+         <widget class="QgsFileWidget" name="mDatabaseFileWidget" native="true">
+          <property name="dialogTitle" stdset="0">
+           <string>Select GeoPackage Database</string>
+          </property>
+          <property name="filter" stdset="0">
+           <string notr="true">*.gpkg;;*.GPKG</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pbImportDrawing">
+         <widget class="QPushButton" name="pbLoadDatabase">
           <property name="text">
-           <string>Reload</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbBrowseDrawing">
-          <property name="text">
-           <string>Import</string>
+           <string>Load layers</string>
           </property>
          </widget>
         </item>
@@ -148,17 +54,17 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Source drawing</string>
+         <string>Target package</string>
         </property>
         <property name="buddy">
-         <cstring>leDrawing</cstring>
+         <cstring>mSourceDrawingFileWidget</cstring>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Target package</string>
+         <string>Source drawing</string>
         </property>
        </widget>
       </item>
@@ -175,19 +81,19 @@
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QgsFileWidget" name="mDatabaseFileWidget">
-          <property name="dialogTitle">
-           <string>Select GeoPackage Database</string>
+         <widget class="QgsFileWidget" name="mSourceDrawingFileWidget" native="true">
+          <property name="dialogTitle" stdset="0">
+           <string>Select DWG/DXF file</string>
           </property>
-          <property name="filter">
-           <string notr="true">*.gpkg;;*.GPKG</string>
+          <property name="filter" stdset="0">
+           <string notr="true">*.dwg;;*.DWG;;*.dxf;;*.DXF</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pbLoadDatabase">
+         <widget class="QPushButton" name="pbImportDrawing">
           <property name="text">
-           <string>Load layers</string>
+           <string>Import</string>
           </property>
          </widget>
         </item>
@@ -203,11 +109,7 @@
       <item row="7" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QCheckBox" name="cbExpandInserts">
-          <property name="text">
-           <string>Expand block references</string>
-          </property>
-         </widget>
+         <widget class="QComboBox" name="mBlockModeComboBox"/>
         </item>
         <item>
          <widget class="QCheckBox" name="cbUseCurves">
@@ -221,12 +123,133 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QgsMessageBar" name="bar" native="true"/>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="mGroupBox">
+     <property name="title">
+      <string>Layers to import into the project</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QSplitter" name="splitter">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <widget class="QWidget" name="gridLayoutWidget">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0" colspan="2">
+           <widget class="QTableWidget" name="mLayers">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="sortingEnabled">
+             <bool>true</bool>
+            </property>
+            <column>
+             <property name="text">
+              <string>Layer</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Visible</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="leLayerGroup"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Group name</string>
+            </property>
+            <property name="buddy">
+             <cstring>leLayerGroup</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="cbMergeLayers">
+              <property name="text">
+               <string>Merge layers</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pbDeselectAll">
+              <property name="text">
+               <string>Deselect All</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pbSelectAll">
+              <property name="text">
+               <string>Select All</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="verticalLayoutWidget">
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="0,50">
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Preview</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsMapCanvas" name="mMapCanvas"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsMapCanvas</class>
+   <extends>QGraphicsView</extends>
+   <header>qgsmapcanvas.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
@@ -246,12 +269,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>pbLoadDatabase</tabstop>
-  <tabstop>mCrsSelector</tabstop>
-  <tabstop>leDrawing</tabstop>
+  <tabstop>mSourceDrawingFileWidget</tabstop>
   <tabstop>pbImportDrawing</tabstop>
-  <tabstop>pbBrowseDrawing</tabstop>
-  <tabstop>cbExpandInserts</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>mDatabaseFileWidget</tabstop>
+  <tabstop>pbLoadDatabase</tabstop>
+  <tabstop>mBlockModeComboBox</tabstop>
   <tabstop>cbUseCurves</tabstop>
   <tabstop>leLayerGroup</tabstop>
   <tabstop>mLayers</tabstop>

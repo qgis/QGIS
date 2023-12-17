@@ -115,6 +115,14 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     void setNullRepresentation( const QString &null );
 
+    /**
+     * Reimplemented to enable/disable the clear action
+     * depending on read-only status
+     *
+     * \since QGIS 3.34
+     */
+    bool event( QEvent *event ) override;
+
   signals:
 
     /**

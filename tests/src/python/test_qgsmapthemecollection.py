@@ -9,16 +9,16 @@ __author__ = 'Nyall Dawson'
 __date__ = '8/03/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsMapThemeCollection, QgsProject, QgsVectorLayer
 from qgis.gui import QgsLayerTreeMapCanvasBridge, QgsMapCanvas
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsMapThemeCollection(unittest.TestCase):
+class TestQgsMapThemeCollection(QgisTestCase):
 
     def setUp(self):
         pass

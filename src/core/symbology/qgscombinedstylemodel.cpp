@@ -69,11 +69,16 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
   addSourceModel( titleModel );
   mTitleModels.insert( style, titleModel );
 
-  QgsStyleModel *styleModel = new QgsStyleModel( style );
+  QgsStyleModel *styleModel = new QgsStyleModel( style, this );
 
   for ( QSize size : std::as_const( mAdditionalSizes ) )
   {
     styleModel->addDesiredIconSize( size );
+  }
+
+  for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
+  {
+    styleModel->addTargetScreenProperties( *it );
   }
 
   addSourceModel( styleModel );
@@ -130,6 +135,11 @@ void QgsCombinedStyleModel::addDefaultStyle()
     styleModel->addDesiredIconSize( size );
   }
 
+  for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
+  {
+    styleModel->addTargetScreenProperties( *it );
+  }
+
   addSourceModel( styleModel );
 }
 
@@ -151,5 +161,21 @@ void QgsCombinedStyleModel::addDesiredIconSize( QSize size )
   if ( mStyles.contains( QgsStyle::defaultStyle() ) )
   {
     QgsApplication::defaultStyleModel()->addDesiredIconSize( size );
+  }
+}
+
+void QgsCombinedStyleModel::addTargetScreenProperties( const QgsScreenProperties &properties )
+{
+  if ( !mTargetScreenProperties.contains( properties ) )
+    mTargetScreenProperties.insert( properties );
+
+  for ( auto it = mOwnedStyleModels.constBegin(); it != mOwnedStyleModels.constEnd(); ++it )
+  {
+    it.value()->addTargetScreenProperties( properties );
+  }
+
+  if ( mStyles.contains( QgsStyle::defaultStyle() ) )
+  {
+    QgsApplication::defaultStyleModel()->addTargetScreenProperties( properties );
   }
 }

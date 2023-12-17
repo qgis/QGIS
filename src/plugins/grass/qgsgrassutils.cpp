@@ -41,7 +41,7 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
   }
   catch ( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( e.what() );
+    QgsDebugError( e.what() );
     return;
   }
 

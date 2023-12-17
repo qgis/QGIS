@@ -32,7 +32,7 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
     const QString sep = sSeps.at( bits.length() );
     if ( current.startsWith( '"' ) )
     {
-      const QRegularExpression re( QStringLiteral( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
+      const thread_local QRegularExpression re( QStringLiteral( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
       const QRegularExpressionMatch match = re.match( current );
       bits << QString();
       if ( match.hasMatch() )

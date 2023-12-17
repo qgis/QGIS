@@ -17,8 +17,12 @@ set(TESTS
   testqgsattributetable.cpp
   testqgsapplocatorfilters.cpp
   testqgsdecorationscalebar.cpp
+  testqgsdwgimportdialog.cpp
   testqgsfieldcalculator.cpp
+  testqgslayerpropertiesdialogs.cpp
   testqgsmapcanvasdockwidget.cpp
+  testqgsmaptooladdpart.cpp
+  testqgsmaptooladdring.cpp
   testqgsmaptooleditannotation.cpp
   testqgsmaptoolidentifyaction.cpp
   testqgsmaptoollabel.cpp

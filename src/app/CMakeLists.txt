@@ -11,7 +11,6 @@ set(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
-  qgsalignrasterdialog.cpp
   qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
   qgsappcoordinateoperationhandlers.cpp
@@ -72,6 +71,7 @@ set(QGIS_APP_SRCS
   qgstemporalcontrollerdockwidget.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
+  qgsrecentprojectsmenueventfilter.cpp
   qgsvectorlayerdigitizingproperties.cpp
   qgswelcomepage.cpp
 
@@ -127,12 +127,17 @@ set(QGIS_APP_SRCS
   decorations/qgsdecorationscalebardialog.cpp
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
+  decorations/qgsdecorationoverlay.cpp
 
   pointcloud/qgspointcloudelevationpropertieswidget.cpp
   pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
 
   raster/qgsrasterelevationpropertieswidget.cpp
+
+  tiledscene/qgstiledsceneelevationpropertieswidget.cpp
+  tiledscene/qgstiledscenelayerproperties.cpp
+  tiledscene/qgstiledscenelayerstylewidget.cpp
 
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
@@ -224,6 +229,7 @@ set(QGIS_APP_SRCS
   locator/qgslocatoroptionswidget.cpp
 
   maptools/qgsappmaptools.cpp
+  maptools/qgsavoidintersectionsoperation.cpp
   maptools/qgsmaptoolsdigitizingtechniquemanager.cpp
 
   maptools/qgsmaptoolshapecircleabstract.cpp
@@ -252,6 +258,7 @@ set(QGIS_APP_SRCS
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
   options/qgscustomprojectionoptions.cpp
+  options/qgselevationoptions.cpp
   options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
   options/qgsgpsoptions.cpp
@@ -359,6 +366,7 @@ if (WITH_3D)
     3d/qgsrulebased3drendererwidget.cpp
     3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
+    3d/qgstiledscenelayer3drendererwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
@@ -377,11 +385,17 @@ endif()
 find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
 set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar is available or whether functionality requiring QwtPolar should be disabled.")
-
-if (WITH_QWTPOLAR)
+# Once we bump the minimum QWT VERSION to 6.2 or newer, we should get rid of WITH_QWTPOLAR
+if(Qwt_VERSION_STRING VERSION_GREATER_EQUAL 6.2 OR WITH_QWTPOLAR)
   add_definitions(-DWITH_QWTPOLAR)
-  # Try to find QwtPolar on the system
-  find_package(QwtPolar)
+
+  if(Qwt_VERSION_STRING VERSION_LESS 6.2)
+    find_package(QwtPolar REQUIRED)
+  else()
+    set(FOUND_QwtPolar TRUE)
+    set(QWTPOLAR_LIBRARY ${QWT_LIBRARY})
+    set(QWTPOLAR_INCLUDE_DIR ${QWT_INCLUDE_DIR})
+  endif()
   # If not found on the system, offer the possibility to build QwtPolar
   # internally
   if(NOT FOUND_QwtPolar)
@@ -475,13 +489,6 @@ if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
-if (WITH_PDAL)
-  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
-  if(MSVC)
-    add_definitions(-DWIN32_LEAN_AND_MEAN)
-  endif()
-endif()
-
 if(ENABLE_MODELTEST)
   include_directories(../../tests/qt_modeltest)
 endif()
@@ -525,6 +532,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
   ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
+  ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
@@ -537,6 +545,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/options
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
   ${CMAKE_SOURCE_DIR}/src/app/settings
+  ${CMAKE_SOURCE_DIR}/src/app/tiledscene
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
@@ -588,15 +597,6 @@ endif()
 
 if (WITH_3D)
   target_link_libraries(qgis_app qgis_3d)
-endif()
-
-if (HAVE_GEOREFERENCER)
-  include_directories(SYSTEM
-    ${GSL_INCLUDE_DIR}
-  )
-  target_link_libraries(qgis_app
-    ${GSL_LIBRARIES}
-  )
 endif()
 
 GENERATE_EXPORT_HEADER(

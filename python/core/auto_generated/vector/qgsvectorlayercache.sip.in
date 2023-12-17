@@ -65,9 +65,26 @@ Returns ``True`` if the cache will fetch and cache feature geometries.
 
     void setCacheSubsetOfAttributes( const QgsAttributeList &attributes );
 %Docstring
-Set the subset of attributes to be cached
+Set the list (possibly a subset) of attributes to be cached.
+
+.. note::
+
+   By default the cache will store all layer's attributes.
 
 :param attributes: The attributes to be cached
+%End
+
+    QgsAttributeList cacheSubsetOfAttributes( ) const;
+%Docstring
+Returns the list (possibly a subset) of cached attributes.
+
+.. note::
+
+   By default the cache will store all layer's attributes.
+
+.. seealso:: :py:func:`setCacheSubsetOfAttributes`
+
+.. versionadded:: 3.32
 %End
 
     void setCacheAddedAttributes( bool cacheAddedAttributes );
@@ -179,6 +196,25 @@ Gets the feature at the given feature id. Considers the changed, added, deleted 
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
 :return: ``True`` in case of success
+%End
+
+    bool featureAtIdWithAllAttributes( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
+%Docstring
+Gets the feature at the given feature id with all attributes, if the cached feature
+already contains all attributes, calling this function has the same effect as calling
+:py:func:`~QgsVectorLayerCache.featureAtId`.
+
+Considers the changed, added, deleted and permanent features
+
+:param featureId: The id of the feature to query
+:param feature: The result of the operation will be written to this feature
+:param skipCache: Will query the layer regardless if the feature is in the cache already
+
+:return: ``True`` in case of success
+
+.. seealso:: :py:func:`featureAtId`
+
+.. versionadded:: 3.32
 %End
 
     bool removeCachedFeature( QgsFeatureId fid );

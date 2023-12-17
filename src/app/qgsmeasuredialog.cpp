@@ -38,6 +38,7 @@ const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSe
 
 const QgsSettingsEntryString *QgsMeasureDialog::settingClipboardSeparator = new QgsSettingsEntryString( QStringLiteral( "clipboard-separator" ), QgsSettingsTree::sTreeMeasure, QStringLiteral( "\t" ), QObject::tr( "Separator between the measure columns copied to the clipboard" ) );
 
+const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardAlwaysUseDecimalPoint = new QgsSettingsEntryBool( QStringLiteral( "clipboard-use-decimal-point" ), QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether to use the locale decimal separator or always use the decimal point. Needed to export data as csv with a locale that uses a comma as its decimal separator." ) );
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
@@ -154,11 +155,13 @@ void QgsMeasureDialog::updateSettings()
 
   mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
   mCanvasUnits = mCanvas->mapUnits();
+
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mMapDistanceUnits = QgsProject::instance()->crs().mapUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  updateUnitsMembers();
 
   // Calling projChanged() will set the ellipsoid and clear then re-populate the table
   projChanged();
@@ -180,6 +183,20 @@ void QgsMeasureDialog::unitsChanged( int index )
   if ( mMeasureArea )
   {
     mAreaUnits = static_cast< Qgis::AreaUnit >( mUnitsCombo->itemData( index ).toInt() );
+  }
+  else
+  {
+    mDistanceUnits = static_cast< Qgis::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
+  }
+
+  updateUnitsMembers();
+  updateUi();
+}
+
+void QgsMeasureDialog:: updateUnitsMembers()
+{
+  if ( mMeasureArea )
+  {
     if ( mAreaUnits == Qgis::AreaUnit::Unknown )
     {
       mUseMapUnits = true;
@@ -192,7 +209,6 @@ void QgsMeasureDialog::unitsChanged( int index )
   }
   else
   {
-    mDistanceUnits = static_cast< Qgis::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
     if ( mDistanceUnits == Qgis::DistanceUnit::Unknown )
     {
       mUseMapUnits = true;
@@ -203,8 +219,6 @@ void QgsMeasureDialog::unitsChanged( int index )
       mUseMapUnits = false;
     }
   }
-
-  updateUi();
 }
 
 void QgsMeasureDialog::restart()
@@ -720,10 +734,16 @@ double QgsMeasureDialog::convertArea( double area, Qgis::AreaUnit toUnit ) const
 
 void QgsMeasureDialog::copyMeasurements()
 {
-  bool includeHeader = settingClipboardHeader->value();
+  const bool includeHeader = settingClipboardHeader->value();
+  const bool alwaysUseDecimalPoint = settingClipboardAlwaysUseDecimalPoint->value();
 
   // Get the separator
   QString separator = settingClipboardSeparator->value();
+
+  // If the field separator is a comma and the locale uses a comma as decimal separator, change to a semicolon
+  if ( separator == QLatin1String( "," ) && !alwaysUseDecimalPoint && QLocale().decimalPoint() == QLatin1String( "," ) )
+    separator = QStringLiteral( ";" );
+
   if ( separator.isEmpty() )
     separator = QStringLiteral( "\t" );
 
@@ -738,11 +758,20 @@ void QgsMeasureDialog::copyMeasurements()
     text += mTable->headerItem()->text( Columns::Distance ) + QStringLiteral( "\n" );
   }
 
+
+  auto replaceDecimalSeparator = [ alwaysUseDecimalPoint ]( const QString & value ) -> QString
+  {
+    QString result = value;
+    if ( alwaysUseDecimalPoint && QLocale().decimalPoint() != QLatin1String( "." ) )
+      result.replace( QLocale().decimalPoint(), QStringLiteral( "." ) );
+    return result;
+  };
+
   while ( *it )
   {
-    text += ( *it )->text( Columns::X ) + separator;
-    text += ( *it )->text( Columns::Y ) + separator;
-    text += ( *it )->text( Columns::Distance ) + QStringLiteral( "\n" );
+    text += replaceDecimalSeparator( ( *it )->text( Columns::X ) ) + separator;
+    text += replaceDecimalSeparator( ( *it )->text( Columns::Y ) ) + separator;
+    text += replaceDecimalSeparator( ( *it )->text( Columns::Distance ) ) + QStringLiteral( "\n" );
     it++;
   }
 

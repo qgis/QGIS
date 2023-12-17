@@ -9,7 +9,6 @@ __author__ = '(C) 2019 by Nyall Dawson'
 __date__ = '11/03/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsLayoutItem,
@@ -21,7 +20,8 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.gui import QgsLayoutItemComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -29,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemComboBox(unittest.TestCase):
+class TestQgsLayoutItemComboBox(QgisTestCase):
 
     def setUp(self):
         """Run before each test."""

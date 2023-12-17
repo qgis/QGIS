@@ -12,10 +12,10 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import os
 import shutil
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryFile
 from qgis.core import QgsExifTools, QgsPointXY
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -24,7 +24,7 @@ TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
-class TestQgsExifUtils(unittest.TestCase):
+class TestQgsExifUtils(QgisTestCase):
 
     def testReadTags(self):
         photos_folder = os.path.join(TEST_DATA_DIR, 'photos')

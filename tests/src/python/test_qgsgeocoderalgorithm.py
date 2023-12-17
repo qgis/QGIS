@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '02/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.analysis import QgsBatchGeocodeAlgorithm
 from qgis.core import (
@@ -27,7 +26,8 @@ from qgis.core import (
     QgsRectangle,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -114,7 +114,7 @@ class TestGeocoderAlgorithm(QgsBatchGeocodeAlgorithm):
         return TestGeocoderAlgorithm(self.geocoder)
 
 
-class TestQgsBatchGeocodeAlgorithm(unittest.TestCase):
+class TestQgsBatchGeocodeAlgorithm(QgisTestCase):
 
     def test_algorithm(self):
         geocoder = TestGeocoder()

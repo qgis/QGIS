@@ -34,6 +34,7 @@
 #include "qgsgui.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qscreen.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -117,14 +118,16 @@ void DataDefinedRestorer::restore()
 class SymbolLayerItem : public QStandardItem
 {
   public:
-    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer )
+    explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, QScreen *screen )
       : mVectorLayer( vectorLayer )
+      , mScreen( screen )
     {
       setLayer( layer, symbolType );
     }
 
-    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer )
+    explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen )
       : mVectorLayer( vectorLayer )
+      , mScreen( screen )
     {
       setSymbol( symbol );
     }
@@ -155,12 +158,12 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer ); //todo: make unit a parameter
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
       else
       {
         QgsExpressionContext expContext;
         expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr ) );
+        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, QgsScreenProperties( mScreen.data() ) ) );
       }
       setIcon( icon );
 
@@ -238,6 +241,7 @@ class SymbolLayerItem : public QStandardItem
     bool mIsLayer = false;
     QSize mSize;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
+    QPointer< QScreen > mScreen;
 };
 
 ///@endcond
@@ -269,7 +273,35 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
   iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
-  btnLock->setIcon( iconLock );
+
+  QIcon iconColorLock;
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
+  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+
+  mLockColorAction = new QAction( tr( "Lock Color" ), this );
+  mLockColorAction->setToolTip( tr( "Avoid changing the color of the layer when the symbol color is changed" ) );
+  mLockColorAction->setCheckable( true );
+  mLockColorAction->setIcon( iconColorLock );
+
+  QIcon iconSelectLock;
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
+  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+
+  mLockSelectionColorAction = new QAction( tr( "Lock Color When Selected" ), this );
+  mLockSelectionColorAction->setToolTip( tr( "Avoid changing the color of the layer when a feature is selected" ) );
+  mLockSelectionColorAction->setCheckable( true );
+  mLockSelectionColorAction->setIcon( iconSelectLock );
+
+  QMenu *lockMenu = new QMenu( this );
+  lockMenu->addAction( mLockColorAction );
+  lockMenu->addAction( mLockSelectionColorAction );
+  btnLock->setMenu( lockMenu );
+  btnLock->setPopupMode( QToolButton::InstantPopup );
+
   btnDuplicate->setIcon( QIcon( QgsApplication::iconPath( "mActionDuplicateLayer.svg" ) ) );
   btnUp->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowUp.svg" ) ) );
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
@@ -307,9 +339,23 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( btnDown, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::moveLayerDown );
   connect( btnAddLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::addLayer );
   connect( btnRemoveLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::removeLayer );
-  connect( btnLock, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::lockLayer );
+  connect( mLockColorAction, &QAction::toggled, this, &QgsSymbolSelectorWidget::lockLayer );
+  connect( mLockSelectionColorAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    QgsSymbolLayer *layer = currentLayer();
+    if ( !layer )
+      return;
+
+    Qgis::SymbolLayerUserFlags flags = layer->userFlags();
+    flags.setFlag( Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring, checked );
+    layer->setUserFlags( flags );
+    updateLockButtonIcon();
+    emit symbolModified();
+  } );
   connect( btnDuplicate, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::duplicateLayer );
   connect( this, &QgsSymbolSelectorWidget::symbolModified, this, &QgsPanelWidget::widgetChanged );
+
+  updateLockButtonIcon();
 
   updateUi();
 
@@ -338,6 +384,14 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
+}
+
+QgsSymbolSelectorWidget *QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
+{
+  QgsSymbolSelectorWidget *widget = new QgsSymbolSelectorWidget( symbol.get(), style, vl, parent );
+  // transfer ownership of symbol to widget, so that we are guaranteed it will last for the duration of the widget
+  widget->mOwnedSymbol = std::move( symbol );
+  return widget;
 }
 
 QMenu *QgsSymbolSelectorWidget::advancedMenu()
@@ -391,7 +445,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
     parent = static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() );
   }
 
-  SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol, mVectorLayer );
+  SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol, mVectorLayer, screen() );
   QFont boldFont = symbolItem->font();
   boldFont.setBold( true );
   symbolItem->setFont( boldFont );
@@ -400,7 +454,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
   const int count = symbol->symbolLayerCount();
   for ( int i = count - 1; i >= 0; i-- )
   {
-    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ), symbol->type(), mVectorLayer );
+    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ), symbol->type(), mVectorLayer, screen() );
     layerItem->setEditable( false );
     symbolItem->appendRow( layerItem );
     if ( symbol->symbolLayer( i )->subSymbol() )
@@ -457,7 +511,7 @@ void QgsSymbolSelectorWidget::updatePreview()
     return;
 
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
-  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
+  const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, QgsScreenProperties( screen() ) );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   if ( !mBlockModified )
@@ -583,7 +637,22 @@ void QgsSymbolSelectorWidget::updateLockButton()
   QgsSymbolLayer *layer = currentLayer();
   if ( !layer )
     return;
-  btnLock->setChecked( layer->isLocked() );
+  mLockColorAction->setChecked( layer->isLocked() );
+  mLockSelectionColorAction->setChecked( layer->userFlags() & Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring );
+
+  updateLockButtonIcon();
+}
+
+void QgsSymbolSelectorWidget::updateLockButtonIcon()
+{
+  if ( mLockColorAction->isChecked() && mLockSelectionColorAction->isChecked() )
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "locked.svg" ) ) );
+  else if ( mLockColorAction->isChecked() )
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconColorLocked.svg" ) ) );
+  else if ( mLockSelectionColorAction->isChecked() )
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSelectLocked.svg" ) ) );
+  else
+    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "unlocked.svg" ) ) );
 }
 
 void QgsSymbolSelectorWidget::addLayer()
@@ -627,7 +696,7 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer );
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
@@ -699,7 +768,8 @@ void QgsSymbolSelectorWidget::lockLayer()
   QgsSymbolLayer *layer = currentLayer();
   if ( !layer )
     return;
-  layer->setLocked( btnLock->isChecked() );
+  layer->setLocked( mLockColorAction->isChecked() );
+  updateLockButtonIcon();
   emit symbolModified();
 }
 
@@ -727,7 +797,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   else
     parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer );
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   if ( newLayer->subSymbol() )
   {

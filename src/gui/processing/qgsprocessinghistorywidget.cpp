@@ -62,6 +62,9 @@ void QgsProcessingHistoryWidget::saveLog()
                      tr( "Save File" ),
                      QDir::homePath(),
                      tr( "Log files (*.log *.LOG)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 
   if ( fileName.isEmpty() )
     return;
@@ -78,7 +81,7 @@ void QgsProcessingHistoryWidget::saveLog()
     for ( const QgsHistoryEntry &entry : entries )
     {
       logOut << QStringLiteral( "ALGORITHM%1%2%3%4\n" ).arg( logSeparator,
-             entry.timestamp.toString( "YYYY-mm-dd HH:MM:ss" ),
+             entry.timestamp.toString( "yyyy-MM-dd HH:mm:ss" ),
              logSeparator,
              entry.entry.value( QStringLiteral( "python_command" ) ).toString() );
     }
@@ -102,15 +105,11 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   mWidget = new QgsProcessingHistoryWidget();
   vl->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox();
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Help );
 
   QPushButton *clearButton = new QPushButton( tr( "Clear" ) );
   clearButton->setToolTip( tr( "Clear history" ) );
   mButtonBox->addButton( clearButton, QDialogButtonBox::ActionRole );
-
-  QPushButton *helpButton = new QPushButton( tr( "Help" ) );
-  helpButton->setToolTip( tr( "Show help" ) );
-  mButtonBox->addButton( helpButton, QDialogButtonBox::HelpRole );
 
   QPushButton *saveButton = new QPushButton( tr( "Save As…" ) );
   saveButton->setToolTip( tr( "Save history" ) );
@@ -118,7 +117,8 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
 
   connect( clearButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::clearHistory );
   connect( saveButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::saveLog );
-  connect( helpButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
+  connect( mButtonBox->button( QDialogButtonBox::Help ), &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
+  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [ = ]() { close(); } );
 
   vl->addWidget( mButtonBox );
 

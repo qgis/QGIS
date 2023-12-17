@@ -35,6 +35,7 @@
 #include <QByteArray>
 
 #include "qgsmeshlayer.h"
+#include "qgs3dutils.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
 
@@ -108,7 +109,7 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
 
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
+QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer,
                                       const QgsDateTimeRange &timeRange,
                                       const QgsVector3D &origin,
                                       const QgsMesh3DSymbol *symbol,
@@ -122,35 +123,40 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
   configure();
 
   // this method has to be called even if there isn't arrows (terrain) because it configures the parameter of shaders
-  // If al the parameters ("uniform" in shaders) are not defined in QGis, the shaders it happens the sahder doesn't work (depend on hardware?)
+  // If all the parameters ("uniform" in shaders) are not defined in QGIS, the shaders sometimes don't work (depends on hardware?)
   configureArrows( layer, timeRange );
 
   eff->addTechnique( mTechnique );
   setEffect( eff );
 }
 
-void QgsMesh3dMaterial::configure()
+void QgsMesh3DMaterial::configure()
 {
   // Create the texture to pass the color ramp
-  Qt3DRender::QTexture1D *colorRampTexture = nullptr;
+  Qt3DRender::QTexture1D *colorRampTexture = new Qt3DRender::QTexture1D( this );
   if ( mSymbol->colorRampShader().colorRampItemList().count() > 0 )
   {
-    colorRampTexture = new Qt3DRender::QTexture1D( this );
     switch ( mMagnitudeType )
     {
-      case QgsMesh3dMaterial::ZValue:
+      case QgsMesh3DMaterial::ZValue:
         // if the color shading is done with the Z value of vertices, the color ramp has to be adapted with vertical scale
         colorRampTexture->addTextureImage( new QgsColorRampTexture( mSymbol->colorRampShader(), mSymbol->verticalScale() ) );
         break;
-      case QgsMesh3dMaterial::ScalarDataSet:
+      case QgsMesh3DMaterial::ScalarDataSet:
         // if the color shading is done with scalar dataset, no vertical scale to use
         colorRampTexture->addTextureImage( new QgsColorRampTexture( mSymbol->colorRampShader(), 1 ) );
         break;
     }
 
-    colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
-    colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
   }
+  else
+  {
+    // create a simple texture to have a valid parameter in the shader and avoid undefined behaviors
+    colorRampTexture->addTextureImage( new QgsColorRampTexture( QgsColorRampShader(), 1 ) );
+  }
+
+  colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
+  colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
 
   // Create and configure technique
   mTechnique = new Qt3DRender::QTechnique();
@@ -165,6 +171,10 @@ void QgsMesh3dMaterial::configure()
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
+
+  Qt3DRender::QCullFace *cullingFace = new Qt3DRender::QCullFace();
+  cullingFace->setMode( Qgs3DUtils::qt3DcullingMode( mSymbol->cullingMode() ) );
+  renderPass->addRenderState( cullingFace );
 
   //Load shader programs
   const QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
@@ -184,17 +194,16 @@ void QgsMesh3dMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineColor", QVector4D( wireframecolor.redF(), wireframecolor.greenF(), wireframecolor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "wireframeEnabled", mSymbol->wireframeEnabled() ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "textureType", int( mSymbol->renderingStyle() ) ) );
-  if ( colorRampTexture )
-    mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
+  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol->colorRampShader().colorRampItemList().count() ) );
   const int colorRampType = mSymbol->colorRampShader().colorRampType();
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
   const QColor meshColor = mSymbol->singleMeshColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
-  mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3dMaterial::ScalarDataSet ) ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3DMaterial::ScalarDataSet ) ) );
 }
 
-void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
+void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
   QgsMeshDatasetIndex datasetIndex;
   QColor arrowsColor;
@@ -203,8 +212,8 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   if ( layer )
     datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
 
-  QVector<QgsVector> vectors;
-  QSize gridSize;
+  QVector<QgsVector> vectors( 1 );
+  QSize gridSize( 1, 1 );
   QgsPointXY minCorner;
   std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = std::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
   if ( !layer || mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol->arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )

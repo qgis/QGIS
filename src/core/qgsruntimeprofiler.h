@@ -47,12 +47,15 @@ class CORE_EXPORT QgsRuntimeProfilerNode
       Group, //!< Node group
       Elapsed, //!< Node elapsed time
       ParentElapsed, //!< Total elapsed time for node's parent
+      Id, //!< Internal node ID (since QGIS 3.34)
     };
 
     /**
      * Constructor for QgsRuntimeProfilerNode, with the specified \a group and \a name.
+     *
+     * Since QGIS 3.34 an internal \a id can be specified to disambiguate entries with duplicate names.
      */
-    QgsRuntimeProfilerNode( const QString &group, const QString &name );
+    QgsRuntimeProfilerNode( const QString &group, const QString &name, const QString &id = QString() );
 
     //! QgsRuntimeProfilerNode cannot be copied
     QgsRuntimeProfilerNode( const QgsRuntimeProfilerNode &other ) = delete;
@@ -70,6 +73,8 @@ class CORE_EXPORT QgsRuntimeProfilerNode
 
     /**
      * Returns the full path to the node's parent.
+     *
+     * This will contain node IDs if set, otherwise node names.
      */
     QStringList fullParentPath() const;
 
@@ -96,10 +101,10 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     int indexOf( QgsRuntimeProfilerNode *child ) const;
 
     /**
-     * Finds the child with matching \a group and \a name. Returns NULLPTR if
+     * Finds the child with matching \a group, \a name and \a id (since QGIS 3.34). Returns NULLPTR if
      * a matching child was not found.
      */
-    QgsRuntimeProfilerNode *child( const QString &group, const QString &name );
+    QgsRuntimeProfilerNode *child( const QString &group, const QString &name, const QString &id = QString() );
 
     /**
      * Returns the child at the specified \a index.
@@ -151,6 +156,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     QElapsedTimer mProfileTime;
     double mElapsed = 0;
 
+    QString mId;
     QString mName;
     QString mGroup;
 
@@ -211,13 +217,26 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      * \brief Start a profile event with the given name.
      * The \a name of the profile event. Will have the name of
      * the active \a group appended after ending.
+     *
+     * Since QGIS 3.34, the optional \a id argument can be used to provide a unique
+     * ID to disambiguate nodes with the same \a name.
      */
-    void start( const QString &name, const QString &group = "startup" );
+    void start( const QString &name, const QString &group = "startup", const QString &id = QString() );
 
     /**
      * \brief End the current profile event.
      */
     void end( const QString &group = "startup" );
+
+    /**
+     * Manually adds a profile event with the given name and total \a time (in seconds).
+     *
+     * The optional \a id argument can be used to provider a unique
+     * ID to disambiguate nodes with the same \a name.
+     *
+     * \since QGIS 3.34
+     */
+    void record( const QString &name, double time, const QString &group = "startup", const QString &id = QString() );
 
     /**
      * Returns the profile time for the specified \a name.
@@ -263,12 +282,19 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
+    /**
+     * Returns the model as a multi-line text string.
+     * \param group A group name to filter the model against.
+     * \since QGIS 3.34
+     */
+    QString asText( const QString &group = QString() );
+
 #ifndef SIP_RUN
     ///@cond PRIVATE
   signals:
 
-    void started( const QString &group, const QStringList &path, const QString &name );
-    void ended( const QString &group, const QStringList &path, const QString &name, double elapsed );
+    void started( const QString &group, const QStringList &path, const QString &name, const QString &id );
+    void ended( const QString &group, const QStringList &path, const QString &name, const QString &id, double elapsed );
 ///@endcond
 #endif
 
@@ -279,8 +305,8 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
 
   private slots:
 
-    void otherProfilerStarted( const QString &group, const QStringList &path, const QString &name );
-    void otherProfilerEnded( const QString &group, const QStringList &path, const QString &name, double elapsed );
+    void otherProfilerStarted( const QString &group, const QStringList &path, const QString &name, const QString &id );
+    void otherProfilerEnded( const QString &group, const QStringList &path, const QString &name, const QString &id, double elapsed );
 
   private:
 
@@ -293,6 +319,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     QgsRuntimeProfilerNode *pathToNode( const QString &group, const QStringList &path ) const;
     QModelIndex node2index( QgsRuntimeProfilerNode *node ) const;
     QModelIndex indexOfParentNode( QgsRuntimeProfilerNode *parentNode ) const;
+    void extractModelAsText( QStringList &lines, const QString &group, const QModelIndex &parent = QModelIndex(), int level = 0 );
 
     /**
      * Returns node for given index. Returns root node for invalid index.
@@ -333,8 +360,11 @@ class CORE_EXPORT QgsScopedRuntimeProfile
      *
      * Automatically registers the operation in the QgsApplication::profiler() instance
      * and starts recording the run time of the operation.
+     *
+     * Since QGIS 3.34, the optional \a id argument can be used to provide a unique
+     * ID to disambiguate nodes with the same \a name.
      */
-    QgsScopedRuntimeProfile( const QString &name, const QString &group = "startup" );
+    QgsScopedRuntimeProfile( const QString &name, const QString &group = "startup", const QString &id = QString() );
 
     /**
      * Records the final runtime of the operation in the profiler instance.

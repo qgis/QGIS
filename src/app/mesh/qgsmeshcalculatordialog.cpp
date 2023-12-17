@@ -46,7 +46,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  cboLayerMask->setFilters( QgsMapLayerProxyModel::PolygonLayer );
+  cboLayerMask->setFilters( Qgis::LayerFilter::PolygonLayer );
   QgsMeshDatasetGroupListModel *model = new QgsMeshDatasetGroupListModel( this );
   model->syncToLayer( meshLayer );
   model->setDisplayProviderName( true );

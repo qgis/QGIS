@@ -21,7 +21,8 @@ from qgis.core import (
     QgsFields,
     QgsMarkerSymbol,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -30,7 +31,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsConditionalStyle(unittest.TestCase):
+class TestPyQgsConditionalStyle(QgisTestCase):
 
     def new_context(self):
         feature = QgsFeature()

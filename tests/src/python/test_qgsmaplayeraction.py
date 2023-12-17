@@ -11,21 +11,21 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-import qgis  # NOQA switch sip api
 from qgis.core import QgsMapLayer, QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMapLayerAction
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsMapLayerAction(unittest.TestCase):
+class TestQgsMapLayerAction(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         self.vector_layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
                                            "test_layer", "memory")

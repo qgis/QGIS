@@ -48,6 +48,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCa
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapOverviewCanvas::transformContextChanged );
+  connect( mMapCanvas, &QgsMapCanvas::canvasColorChanged, this, &QgsMapOverviewCanvas::refresh );
 
   connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::presetFullExtentChanged, this, &QgsMapOverviewCanvas::refresh );
 }
@@ -73,10 +74,14 @@ void QgsMapOverviewCanvas::showEvent( QShowEvent *e )
 
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 {
+  QPainter paint( this );
   if ( !mPixmap.isNull() )
   {
-    QPainter paint( this );
     paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
+  }
+  else
+  {
+    paint.fillRect( pe->rect(), QBrush( mSettings.backgroundColor() ) );
   }
 }
 
@@ -202,13 +207,13 @@ void QgsMapOverviewCanvas::refresh()
 
   if ( mJob )
   {
-    QgsDebugMsg( QStringLiteral( "oveview - canceling old" ) );
+    QgsDebugMsgLevel( QStringLiteral( "oveview - canceling old" ), 2 );
     mJob->cancel();
-    QgsDebugMsg( QStringLiteral( "oveview - deleting old" ) );
+    QgsDebugMsgLevel( QStringLiteral( "oveview - deleting old" ), 2 );
     delete mJob; // get rid of previous job (if any)
   }
 
-  QgsDebugMsg( QStringLiteral( "oveview - starting new" ) );
+  QgsDebugMsgLevel( QStringLiteral( "oveview - starting new" ), 2 );
 
   // TODO: setup overview mode
   mJob = new QgsMapRendererSequentialJob( mSettings );
@@ -226,7 +231,7 @@ void QgsMapOverviewCanvas::refresh()
 
 void QgsMapOverviewCanvas::mapRenderingFinished()
 {
-  QgsDebugMsg( QStringLiteral( "overview - finished" ) );
+  QgsDebugMsgLevel( QStringLiteral( "overview - finished" ), 2 );
   mPixmap = QPixmap::fromImage( mJob->renderedImage() );
 
   delete mJob;

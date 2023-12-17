@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/06/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     Qgis,
@@ -24,7 +23,8 @@ from qgis.core import (
     QgsRectangle,
     QgsSimplifyMethod,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,11 +32,11 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsFeatureRequest(unittest.TestCase):
+class TestQgsFeatureRequest(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
     def testConstructors(self):
         req = QgsFeatureRequest()

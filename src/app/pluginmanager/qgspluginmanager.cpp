@@ -393,8 +393,8 @@ void QgsPluginManager::getCppPluginsMetadata()
       void *handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
       if ( !handle )
       {
-        QgsDebugMsg( QStringLiteral( "Error in dlopen: " ) );
-        QgsDebugMsg( dlerror() );
+        QgsDebugError( QStringLiteral( "Error in dlopen: " ) );
+        QgsDebugError( dlerror() );
       }
       else
       {
@@ -518,12 +518,12 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       catch ( QgsSettingsException &ex )
       {
-        QgsDebugMsg( QStringLiteral( "Unhandled settings exception loading %1: %2" ).arg( lib, ex.what() ) );
+        QgsDebugError( QStringLiteral( "Unhandled settings exception loading %1: %2" ).arg( lib, ex.what() ) );
         continue;
       }
       catch ( ... )
       {
-        QgsDebugMsg( QStringLiteral( "Unhandled exception loading %1" ).arg( lib ) );
+        QgsDebugError( QStringLiteral( "Unhandled exception loading %1" ).arg( lib ) );
         continue;
       }
     }
@@ -908,7 +908,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
-  const QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
+  const thread_local QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
 
   QString name = metadata->value( QStringLiteral( "name" ) );
   name = name.remove( stripHtml );
@@ -922,7 +922,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
     // The regular expression ensures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
-    about = about.replace( QRegularExpression( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) ), QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
+    const thread_local QRegularExpression pTagRe( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) );
+    about = about.replace( pTagRe, QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
     html += about.replace( '\n', QLatin1String( "<br/>" ) );
     html += QLatin1String( "<br/><br/>" );
   }
@@ -1024,6 +1025,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                                  ver );
   }
 
+  // use a localized date/time short format string
+  QString dateTimeFormat = QLocale().dateTimeFormat( QLocale::FormatType::ShortFormat );
+  if ( !dateTimeFormat.contains( "yyyy" ) )
+  {
+    // enforce year with 4 digits
+    dateTimeFormat.replace( "yy", "yyyy" );
+  }
   // if we allow experimental, we show both stable and experimental versions
   if ( ! metadata->value( QStringLiteral( "version_available_stable" ) ).isEmpty() )
   {
@@ -1039,7 +1047,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdated.isValid() )
-        dateUpdatedStr += tr( "updated at %1" ).arg( dateUpdated.toString() );
+        dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
@@ -1063,7 +1071,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_experimental" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdated.isValid() )
-        dateUpdatedStr += tr( "updated at %1" ).arg( dateUpdated.toString() );
+        dateUpdatedStr += tr( "updated at %1" ).arg( QLocale().toString( dateUpdated, dateTimeFormat ) );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"

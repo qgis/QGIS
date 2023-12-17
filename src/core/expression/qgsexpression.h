@@ -24,6 +24,8 @@
 #include <QDomDocument>
 #include <QCoreApplication>
 #include <QSet>
+#include <QRecursiveMutex>
+
 #include <functional>
 
 #include "qgis.h"
@@ -825,6 +827,10 @@ class CORE_EXPORT QgsExpression
     static void initFunctionHelp() SIP_SKIP;
     //! \note not available in Python bindings
     static void initVariableHelp() SIP_SKIP;
+
+    friend class QgsExpressionNodeFunction;
+    static QRecursiveMutex sFunctionsMutex;
+    static QMap< QString, int> sFunctionIndexMap;
 
     friend class QgsOgcUtils;
 };

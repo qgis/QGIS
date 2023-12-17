@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '2021-07'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     Qgis,
@@ -19,10 +18,11 @@ from qgis.core import (
     QgsBabelSimpleImportFormat,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestQgsBabelGpsFormat(unittest.TestCase):
+class TestQgsBabelGpsFormat(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

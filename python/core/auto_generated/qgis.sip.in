@@ -84,7 +84,30 @@ The development version
       Annotation,
       PointCloud,
       Group,
+      TiledScene,
     };
+
+    enum class LayerFilter
+      {
+      RasterLayer,
+      NoGeometry,
+      PointLayer,
+      LineLayer,
+      PolygonLayer,
+      HasGeometry,
+      VectorLayer,
+      PluginLayer,
+      WritableLayer,
+      MeshLayer,
+      VectorTileLayer,
+      PointCloudLayer,
+      AnnotationLayer,
+      TiledSceneLayer,
+      All,
+      SpatialLayer
+    };
+    typedef QFlags<Qgis::LayerFilter> LayerFilters;
+
 
     enum class WkbType
       {
@@ -261,6 +284,14 @@ The development version
     typedef QFlags<Qgis::SettingsTreeNodeOption> SettingsTreeNodeOptions;
 
 
+    enum class PropertyType
+      {
+      Invalid,
+      Static,
+      Field,
+      Expression,
+    };
+
     enum class SldExportOption
     {
       NoOptions,
@@ -313,6 +344,12 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
+    enum class SymbolRotationMode
+    {
+      RespectMapRotation,
+      IgnoreMapRotation,
+    };
+
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
@@ -332,6 +369,14 @@ The development version
       DisableFeatureClipping,
     };
     typedef QFlags<Qgis::SymbolLayerFlag> SymbolLayerFlags;
+
+
+    enum class SymbolLayerUserFlag
+    {
+      DisableSelectionRecoloring,
+    };
+
+    typedef QFlags<Qgis::SymbolLayerUserFlag> SymbolLayerUserFlags;
 
 
     enum class BrowserItemType
@@ -383,7 +428,8 @@ The development version
       Plugin,
       Mesh,
       VectorTile,
-      PointCloud
+      PointCloud,
+      TiledScene,
     };
 
     enum class BrowserDirectoryMonitoring
@@ -456,6 +502,7 @@ The development version
       Remote,
       CdRom,
       RamDisk,
+      Cloud,
     };
 
     enum class ActionStart
@@ -569,6 +616,7 @@ The development version
       MeshDataset,
       PointCloud,
       VectorTile,
+      TiledScene,
     };
 
     enum class SublayerQueryFlag
@@ -646,6 +694,23 @@ The development version
       Athematic
     };
 
+    enum class RasterExportType
+      {
+      Raw,
+      RenderedImage
+    };
+
+    enum class RasterFileWriterResult
+      {
+      Success,
+      SourceProviderError,
+      DestinationProviderError,
+      CreateDatasourceError,
+      WriteError,
+      NoDataConflict,
+      Canceled,
+    };
+
     enum class MeshEditingErrorType
     {
       NoError,
@@ -671,11 +736,29 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class FieldConfigurationFlag
+    {
+      NoFlag,
+      NotSearchable,
+      HideFromWms,
+      HideFromWfs,
+    };
+
+    typedef QFlags<Qgis::FieldConfigurationFlag> FieldConfigurationFlags;
+
+
     enum class FieldMetadataProperty
     {
       GeometryCrs,
       GeometryWkbType,
       CustomProperty,
+    };
+
+    enum class SelectionRenderingMode
+    {
+      Default,
+      CustomColor,
+      CustomSymbol,
     };
 
     enum class SelectBehavior
@@ -849,6 +932,7 @@ The development version
       AddRingNotInExistingFeature,
       // Split features
       SplitCannotSplitPoint,
+      GeometryTypeHasChanged,
     };
 
     enum class GeometryValidityFlag
@@ -884,6 +968,13 @@ The development version
       Bevel,
     };
 
+    enum class CoverageValidityResult
+    {
+      Invalid,
+      Valid,
+      Error,
+    };
+
     enum class MakeValidMethod
     {
       Linework,
@@ -913,12 +1004,36 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
+    enum class AutoRefreshMode
+    {
+      Disabled,
+      ReloadData,
+      RedrawOnly,
+    };
+
     enum class DataProviderFlag
     {
       IsBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
+
+    enum class CrsType
+    {
+      Unknown,
+      Geodetic,
+      Geocentric,
+      Geographic2d,
+      Geographic3d,
+      Vertical,
+      Projected,
+      Compound,
+      Temporal,
+      Engineering,
+      Bound,
+      Other,
+      DerivedProjected,
+    };
 
     enum class CrsAxisDirection
     {
@@ -971,6 +1086,13 @@ The development version
       YX,
     };
 
+    enum class Axis
+    {
+      X,
+      Y,
+      Z
+    };
+
     enum class AnnotationItemFlag
     {
       ScaleDependentBoundingBox,
@@ -995,6 +1117,32 @@ The development version
       Success,
       Invalid,
       ItemCleared,
+    };
+
+    enum class TemporalNavigationMode
+      {
+      Disabled,
+      Animated,
+      FixedRange,
+      Movie,
+    };
+
+    enum class AnimationState
+      {
+      Forward,
+      Reverse,
+      Idle,
+    };
+
+    enum class PlaybackOperation
+    {
+      SkipToStart,
+      PreviousFrame,
+      PlayReverse,
+      Pause,
+      PlayForward,
+      NextFrame,
+      SkipToEnd,
     };
 
     enum class VectorTemporalMode
@@ -1078,6 +1226,7 @@ The development version
       HighQualityImageTransforms,
       SkipSymbolRendering,
       ForceRasterMasks,
+      RecordProfile,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1103,8 +1252,18 @@ The development version
       RenderingSubSymbol,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      RecordProfile,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
+
+
+    enum class MapLayerRendererFlag
+    {
+      RenderPartialOutputs,
+      RenderPartialOutputOverPreviousCachedImage,
+    };
+
+    typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
 
 
 
@@ -1320,6 +1479,15 @@ The development version
       Size,
     };
 
+    enum class PlotAxisSuffixPlacement
+    {
+      NoLabels,
+      EveryLabel,
+      FirstLabel,
+      LastLabel,
+      FirstAndLastLabels,
+    };
+
     enum class DpiMode
     {
       All,
@@ -1366,6 +1534,7 @@ The development version
       {
       Clockwise,
       CounterClockwise,
+      NoOrientation,
     };
 
     enum class RendererUsage
@@ -1397,6 +1566,16 @@ The development version
     };
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
+
+    enum class ProcessingModelChildParameterSource
+    {
+      ModelParameter,
+      ChildOutput,
+      StaticValue,
+      Expression,
+      ExpressionText,
+      ModelOutput,
+    };
 
     enum class CrsDefinitionFormat
       {
@@ -1513,6 +1692,7 @@ The development version
     {
       Line,
       FillBelow,
+      FillAbove,
     };
 
     enum class VectorProfileType
@@ -1529,6 +1709,13 @@ The development version
     };
     typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
 
+
+    enum class ProfileExportType
+    {
+      Features3D,
+      Profile2D,
+      DistanceVsElevationTable,
+    };
 
     enum class PointCloudSymbol
       {
@@ -1682,6 +1869,14 @@ The development version
     };
 
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
+
+
+
+    enum class LegendJsonRenderFlag
+    {
+      ShowRuleDetails,
+    };
+    typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
 
 
     enum class ActionType
@@ -1840,6 +2035,13 @@ The development version
       USCS,
     };
 
+    enum class MapToolUnit
+      {
+      Layer,
+      Pixels,
+      Project
+    };
+
     enum class UnitType
       {
       Distance,
@@ -1962,6 +2164,12 @@ The development version
       ScreenUnits
     };
 
+    enum class InputControllerType
+    {
+      Map2D,
+      Map3D
+    };
+
     enum class PostgresRelKind
     {
       NotSet,
@@ -1983,6 +2191,15 @@ The development version
       SetFieldAlias,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
+
+
+    enum class ProviderStyleStorageCapability
+    {
+      SaveToDatabase,
+      LoadFromDatabase,
+      DeleteFromDatabase
+    };
+    typedef QFlags<Qgis::ProviderStyleStorageCapability> ProviderStyleStorageCapabilities;
 
 
     enum class UserProfileSelectionPolicy
@@ -2038,6 +2255,7 @@ The development version
     {
       Qgis,
       PointCloud,
+      RasterCalculator,
     };
 
     enum class FeatureSymbologyExport
@@ -2071,6 +2289,69 @@ The development version
       UseLowerZoomLevelTile,
     };
 
+    enum class TiledSceneProviderCapability
+    {
+      ReadLayerMetadata,
+    };
+
+    typedef QFlags<Qgis::TiledSceneProviderCapability> TiledSceneProviderCapabilities;
+
+
+    enum class TiledSceneBoundingVolumeType
+    {
+      Region,
+      OrientedBox,
+      Sphere,
+    };
+
+    enum class TileRefinementProcess
+    {
+      Replacement,
+      Additive,
+    };
+
+    enum class TileChildrenAvailability
+    {
+      NoChildren,
+      Available,
+      NeedFetching,
+    };
+
+    enum class TiledSceneRequestFlag
+    {
+      NoHierarchyFetch,
+    };
+
+    typedef QFlags<Qgis::TiledSceneRequestFlag> TiledSceneRequestFlags;
+
+
+    enum class TiledSceneRendererFlag
+    {
+      RequiresTextures,
+      ForceRasterRender,
+      RendersTriangles,
+      RendersLines,
+    };
+
+    typedef QFlags<Qgis::TiledSceneRendererFlag> TiledSceneRendererFlags;
+
+
+    enum class GdalResampleAlgorithm
+    {
+      RA_NearestNeighbour,
+      RA_Bilinear,
+      RA_Cubic,
+      RA_CubicSpline,
+      RA_Lanczos,
+      RA_Average,
+      RA_Mode,
+      RA_Max,
+      RA_Min,
+      RA_Median,
+      RA_Q1,
+      RA_Q3,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2091,7 +2372,7 @@ The development version
 
     static const double DEFAULT_SNAP_TOLERANCE;
 
-    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+    static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
     static QString defaultProjectScales();
 %Docstring
@@ -2137,97 +2418,114 @@ GEOS string version linked
 };
 
 
-QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
-
-QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
-
-QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
-
-QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
-
-QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
-
-QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
-
-QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
-
-QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
-
-QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
-
-QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
-
-QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
-
-QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
-
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
 QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
 
-QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
-QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
 
-QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
-
-QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
-
-QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
-
-QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
-
-QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
-
-QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
-
-QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
-
-QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
-
-QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
-
-QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
-
-QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
-
-QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
+QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
-QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
 
-QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
+QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
-QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
+QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
 
-QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
+QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
 
 QFlags<Qgis::GpsInformationComponent> operator|(Qgis::GpsInformationComponent f1, QFlags<Qgis::GpsInformationComponent> f2);
 
-QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
+QFlags<Qgis::HistoryProviderBackend> operator|(Qgis::HistoryProviderBackend f1, QFlags<Qgis::HistoryProviderBackend> f2);
 
-QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
-
-QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
-
-QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
-
-QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
-
-QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
+QFlags<Qgis::LabelingFlag> operator|(Qgis::LabelingFlag f1, QFlags<Qgis::LabelingFlag> f2);
 
 QFlags<Qgis::LabelLinePlacementFlag> operator|(Qgis::LabelLinePlacementFlag f1, QFlags<Qgis::LabelLinePlacementFlag> f2);
 
 QFlags<Qgis::LabelPolygonPlacementFlag> operator|(Qgis::LabelPolygonPlacementFlag f1, QFlags<Qgis::LabelPolygonPlacementFlag> f2);
 
-QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+QFlags<Qgis::LayerTreeFilterFlag> operator|(Qgis::LayerTreeFilterFlag f1, QFlags<Qgis::LayerTreeFilterFlag> f2);
+
+QFlags<Qgis::LegendJsonRenderFlag> operator|(Qgis::LegendJsonRenderFlag f1, QFlags<Qgis::LegendJsonRenderFlag> f2);
+
+QFlags<Qgis::MapLayerActionFlag> operator|(Qgis::MapLayerActionFlag f1, QFlags<Qgis::MapLayerActionFlag> f2);
+
+QFlags<Qgis::MapLayerActionTarget> operator|(Qgis::MapLayerActionTarget f1, QFlags<Qgis::MapLayerActionTarget> f2);
+
+QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis::MapLayerProperty> f2);
+
+QFlags<Qgis::MapLayerRendererFlag> operator|(Qgis::MapLayerRendererFlag f1, QFlags<Qgis::MapLayerRendererFlag> f2);
+
+QFlags<Qgis::MapSettingsFlag> operator|(Qgis::MapSettingsFlag f1, QFlags<Qgis::MapSettingsFlag> f2);
+
+QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags<Qgis::MarkerLinePlacement> f2);
+
+QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
+
+QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
+
+QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
+
+QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
+
+QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+
+QFlags<Qgis::RelationshipCapability> operator|(Qgis::RelationshipCapability f1, QFlags<Qgis::RelationshipCapability> f2);
+
+QFlags<Qgis::RenderContextFlag> operator|(Qgis::RenderContextFlag f1, QFlags<Qgis::RenderContextFlag> f2);
+
+QFlags<Qgis::ScriptLanguageCapability> operator|(Qgis::ScriptLanguageCapability f1, QFlags<Qgis::ScriptLanguageCapability> f2);
+
+QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
+
+QFlags<Qgis::SettingsTreeNodeOption> operator|(Qgis::SettingsTreeNodeOption f1, QFlags<Qgis::SettingsTreeNodeOption> f2);
+
+QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
+
+QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
+
+QFlags<Qgis::SublayerFlag> operator|(Qgis::SublayerFlag f1, QFlags<Qgis::SublayerFlag> f2);
+
+QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
+
+QFlags<Qgis::SymbolLayerFlag> operator|(Qgis::SymbolLayerFlag f1, QFlags<Qgis::SymbolLayerFlag> f2);
+
+QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags<Qgis::SymbolLayerUserFlag> f2);
+
+QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
+
+QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCapability f1, QFlags<Qgis::TiledSceneProviderCapability> f2);
+
+QFlags<Qgis::TiledSceneRendererFlag> operator|(Qgis::TiledSceneRendererFlag f1, QFlags<Qgis::TiledSceneRendererFlag> f2);
+
+QFlags<Qgis::FieldConfigurationFlag> operator|(Qgis::FieldConfigurationFlag f1, QFlags<Qgis::FieldConfigurationFlag> f2);
+
+QFlags<Qgis::LayerFilter> operator|(Qgis::LayerFilter f1, QFlags<Qgis::LayerFilter> f2);
+
+QFlags<Qgis::TiledSceneRequestFlag> operator|(Qgis::TiledSceneRequestFlag f1, QFlags<Qgis::TiledSceneRequestFlag> f2);
+
+QFlags<Qgis::VectorDataProviderAttributeEditCapability> operator|(Qgis::VectorDataProviderAttributeEditCapability f1, QFlags<Qgis::VectorDataProviderAttributeEditCapability> f2);
 
 QFlags<Qgis::VectorFileWriterCapability> operator|(Qgis::VectorFileWriterCapability f1, QFlags<Qgis::VectorFileWriterCapability> f2);
 
-QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+QFlags<Qgis::VectorLayerTypeFlag> operator|(Qgis::VectorLayerTypeFlag f1, QFlags<Qgis::VectorLayerTypeFlag> f2);
 
 QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCapability f1, QFlags<Qgis::VectorTileProviderCapability> f2);
+
+QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
+
 
 
 
@@ -2400,7 +2698,6 @@ const double DEFAULT_SEGMENT_EPSILON;
 
 
 typedef unsigned long long qgssize;
-
 
 
 

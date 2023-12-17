@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -25,7 +24,8 @@ from qgis.core import (
     QgsReferencedRectangle,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -33,7 +33,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsBookmarkManager(unittest.TestCase):
+class TestQgsBookmarkManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

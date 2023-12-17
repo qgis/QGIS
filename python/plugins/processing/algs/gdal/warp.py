@@ -61,19 +61,19 @@ class warp(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.methods = ((self.tr('Nearest Neighbour'), 'near'),
-                        (self.tr('Bilinear'), 'bilinear'),
-                        (self.tr('Cubic'), 'cubic'),
-                        (self.tr('Cubic Spline'), 'cubicspline'),
-                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
+                        (self.tr('Bilinear (2x2 Kernel)'), 'bilinear'),
+                        (self.tr('Cubic (4x4 Kernel)'), 'cubic'),
+                        (self.tr('Cubic B-Spline (4x4 Kernel)'), 'cubicspline'),
+                        (self.tr('Lanczos (6x6 Kernel)'), 'lanczos'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Mode'), 'mode'),
                         (self.tr('Maximum'), 'max'),
                         (self.tr('Minimum'), 'min'),
                         (self.tr('Median'), 'med'),
-                        (self.tr('First Quartile'), 'q1'),
-                        (self.tr('Third Quartile'), 'q3'))
+                        (self.tr('First Quartile (Q1)'), 'q1'),
+                        (self.tr('Third Quartile (Q3)'), 'q3'))
 
-        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+        self.TYPES = [self.tr('Use Input Layer Data Type'), 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64', 'Int8']
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterCrs(self.SOURCE_CRS,
@@ -163,7 +163,7 @@ class warp(GdalAlgorithm):
         return 'gdalwarp'
 
     def tags(self):
-        tags = self.tr('transform,reproject,crs,srs').split(',')
+        tags = self.tr('transform,reproject,crs,srs,resample').split(',')
         tags.extend(super().tags())
         return tags
 
@@ -219,12 +219,20 @@ class warp(GdalAlgorithm):
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
         if data_type:
+            if self.TYPES[data_type] == 'Int8' and GdalUtils.version() < 3070000:
+                raise QgsProcessingException(self.tr('Int8 data type requires GDAL version 3.7 or later'))
+
             arguments.append('-ot ' + self.TYPES[data_type])
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
+
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments.append(output_format)
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:

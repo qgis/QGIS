@@ -49,7 +49,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   // TODO expression widget shouldn't require a non-const layer
   mExpressionWidget->setLayer( const_cast< QgsVectorLayer * >( mLayer ) );
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
-  mExpressionWidget->setField( initialState.propertyType() == QgsProperty::ExpressionBasedProperty ? initialState.expressionString() : initialState.field() );
+  mExpressionWidget->setField( initialState.propertyType() == Qgis::PropertyType::Expression ? initialState.expressionString() : initialState.field() );
 
   if ( auto *lTransformer = initialState.transformer() )
   {

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '31/08/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -20,12 +19,13 @@ from qgis.core import (
     QgsReferencedGeometry,
     QgsGeometry
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsReferencedGeometry(unittest.TestCase):
+class TestQgsReferencedGeometry(QgisTestCase):
 
     def testRectangle(self):
         rect = QgsReferencedRectangle(QgsRectangle(0.0, 1.0, 20.0, 10.0), QgsCoordinateReferenceSystem('epsg:3111'))

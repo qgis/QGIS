@@ -2297,4 +2297,64 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudAttribute : public QgsProc
     }
 };
 
+/**
+ * \brief A vector tile layer destination parameter, for specifying the destination path for a vector tile layer
+ * created by the algorithm.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('vectorTileDestination')
+ * \since QGIS 3.32
+ */
+class CORE_EXPORT QgsProcessingParameterTypeVectorTileDestination : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterVectorTileDestination( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A vector tiles layer destination parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Vector Tile Destination" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "vectorTileDestination" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterVectorTileDestination" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterVectorTileDestination" );
+    }
+
+    ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      return flags;
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Path for new vector tile layer" );
+    }
+};
+
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

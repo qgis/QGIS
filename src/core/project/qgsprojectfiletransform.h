@@ -57,7 +57,7 @@ class CORE_EXPORT QgsProjectFileTransform
     bool updateRevision( const QgsProjectVersion &version );
 
     /**
-     * Prints the contents via QgsDebugMsg()
+     * Prints the contents via QgsDebugMsgLevel()
      */
     void dump();
 

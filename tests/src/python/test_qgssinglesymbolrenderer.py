@@ -24,7 +24,6 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFeatureRequest,

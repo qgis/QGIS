@@ -207,7 +207,7 @@ void QgsLegendPatchShapeButton::prepareMenu()
     {
       if ( const QgsSymbol *symbol = QgsStyle::defaultStyle()->previewSymbolForPatchShape( shape ) )
       {
-        QIcon icon = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( iconSize, iconSize ), 1, nullptr, false, nullptr, &shape );
+        QIcon icon = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( iconSize, iconSize ), 1, nullptr, false, nullptr, &shape, QgsScreenProperties( screen() ) );
         QAction *action = new QAction( name, this );
         action->setIcon( icon );
         connect( action, &QAction::triggered, this, [ = ] { loadPatchFromStyle( name ); } );
@@ -287,7 +287,7 @@ void QgsLegendPatchShapeButton::updatePreview()
   }
 
   //create an icon pixmap
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mPreviewSymbol.get(), currentIconSize, currentIconSize.height() / 10, &mShape );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mPreviewSymbol.get(), currentIconSize, currentIconSize.height() / 10, &mShape, QgsScreenProperties( screen() ) );
   setIconSize( currentIconSize );
   setIcon( icon );
 
@@ -297,11 +297,11 @@ void QgsLegendPatchShapeButton::updatePreview()
   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( mPreviewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, &mShape );
+  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( mPreviewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, &mShape, QgsScreenProperties( screen() ) );
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
-  setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) ) );
+  setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width ) );
 }
 
 void QgsLegendPatchShapeButton::setDialogTitle( const QString &title )

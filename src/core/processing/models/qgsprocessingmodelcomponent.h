@@ -52,33 +52,33 @@ class CORE_EXPORT QgsProcessingModelComponent
     void setDescription( const QString &description );
 
     /**
-     * Returns the position of the model component within the graphical modeler.
+     * Returns the position of the model component within the model designer.
      * \see setPosition()
      */
     QPointF position() const;
 
     /**
-     * Sets the \a position of the model component within the graphical modeler.
+     * Sets the \a position of the model component within the model designer.
      * \see position()
      */
     void setPosition( QPointF position );
 
     /**
-     * Returns the size of the model component within the graphical modeler.
+     * Returns the size of the model component within the model designer.
      * \see setSize()
      * \since QGIS 3.14
      */
     QSizeF size() const;
 
     /**
-     * Sets the \a size of the model component within the graphical modeler.
+     * Sets the \a size of the model component within the model designer.
      * \see size()
      * \since QGIS 3.14
      */
     void setSize( QSizeF size );
 
     /**
-     * Returns the color of the model component within the graphical modeler.
+     * Returns the color of the model component within the model designer.
      *
      * An invalid color indicates that the default color for the component should be used.
      *
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsProcessingModelComponent
     QColor color() const;
 
     /**
-     * Sets the \a color of the model component within the graphical modeler. An invalid \a color
+     * Sets the \a color of the model component within the model designer. An invalid \a color
      * indicates that the default color for the component should be used.
      *
      * \see color()
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsProcessingModelComponent
 
     /**
      * Sets whether the link points for the specified \a edge for this component should be shown collapsed
-     * in the graphical modeler.
+     * in the model designer.
      * \see linksCollapsed()
      */
     void setLinksCollapsed( Qt::Edge edge, bool collapsed );

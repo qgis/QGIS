@@ -57,6 +57,9 @@ QDomElement QgsVectorLayerElevationProperties::writeXml( QDomElement &parentElem
   element.setAttribute( QStringLiteral( "binding" ), qgsEnumValueToKey( mBinding ) );
   element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
   element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+  if ( !std::isnan( mElevationLimit ) )
+    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
+
   element.setAttribute( QStringLiteral( "respectLayerSymbol" ), mRespectLayerSymbology ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "showMarkerSymbolInSurfacePlots" ), mShowMarkerSymbolInSurfacePlots ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
@@ -90,6 +93,11 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   mEnableExtrusion = elevationElement.attribute( QStringLiteral( "extrusionEnabled" ), QStringLiteral( "0" ) ).toInt();
   mExtrusionHeight = elevationElement.attribute( QStringLiteral( "extrusion" ), QStringLiteral( "0" ) ).toDouble();
   mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
+    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  else
+    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+
   mShowMarkerSymbolInSurfacePlots = elevationElement.attribute( QStringLiteral( "showMarkerSymbolInSurfacePlots" ), QStringLiteral( "0" ) ).toInt();
 
   mRespectLayerSymbology = elevationElement.attribute( QStringLiteral( "respectLayerSymbol" ), QStringLiteral( "1" ) ).toInt();
@@ -153,6 +161,7 @@ QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() co
   res->setProfileMarkerSymbol( mProfileMarkerSymbol->clone() );
   res->setRespectLayerSymbology( mRespectLayerSymbology );
   res->setProfileSymbology( mSymbology );
+  res->setElevationLimit( mElevationLimit );
   res->setShowMarkerSymbolInSurfacePlots( mShowMarkerSymbolInSurfacePlots );
   res->copyCommonProperties( this );
   return res.release();
@@ -179,13 +188,13 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
   {
     switch ( mDataDefinedProperties.property( Property::ZOffset ).propertyType() )
     {
-      case QgsProperty::InvalidProperty:
-      case QgsProperty::StaticProperty:
+      case Qgis::PropertyType::Invalid:
+      case Qgis::PropertyType::Static:
         break;
-      case QgsProperty::FieldBasedProperty:
+      case Qgis::PropertyType::Field:
         properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( Property::ZOffset ).field() );
         break;
-      case QgsProperty::ExpressionBasedProperty:
+      case Qgis::PropertyType::Expression:
         properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( Property::ZOffset ).expressionString() );
         break;
     }
@@ -201,13 +210,13 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
     {
       switch ( mDataDefinedProperties.property( Property::ExtrusionHeight ).propertyType() )
       {
-        case QgsProperty::InvalidProperty:
-        case QgsProperty::StaticProperty:
+        case Qgis::PropertyType::Invalid:
+        case Qgis::PropertyType::Static:
           break;
-        case QgsProperty::FieldBasedProperty:
+        case Qgis::PropertyType::Field:
           properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( Property::ExtrusionHeight ).field() );
           break;
-        case QgsProperty::ExpressionBasedProperty:
+        case Qgis::PropertyType::Expression:
           properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( Property::ExtrusionHeight ).expressionString() );
           break;
       }
@@ -347,6 +356,21 @@ void QgsVectorLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfac
     return;
 
   mSymbology = symbology;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+double QgsVectorLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsVectorLayerElevationProperties::setElevationLimit( double limit )
+{
+  if ( qgsDoubleNear( mElevationLimit, limit ) )
+    return;
+
+  mElevationLimit = limit;
   emit changed();
   emit profileRenderingPropertyChanged();
 }

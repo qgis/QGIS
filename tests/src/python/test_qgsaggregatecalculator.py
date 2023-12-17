@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.core import (
     NULL,
@@ -24,14 +23,15 @@ from qgis.core import (
     QgsInterval,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt
 
 start_app()
 
 
-class TestQgsAggregateCalculator(unittest.TestCase):
+class TestQgsAggregateCalculator(QgisTestCase):
 
     def testLayer(self):
         """ Test setting/retrieving layer """

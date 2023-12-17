@@ -429,20 +429,20 @@ void TestQgsMapLayer::customEnumFlagProperties()
   QCOMPARE( v3ss, QStringLiteral( "Centimeters" ) );
 
   // Flags
-  const QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
-  const QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
+  const Qgis::LayerFilters pointAndLine = Qgis::LayerFilters( Qgis::LayerFilter::PointLayer | Qgis::LayerFilter::LineLayer );
+  const Qgis::LayerFilters pointAndPolygon = Qgis::LayerFilters( Qgis::LayerFilter::PointLayer | Qgis::LayerFilter::PolygonLayer );
   ml->setCustomProperty( QStringLiteral( "my_property_for_a_flag" ), 1e8 ); // invalid
-  const QgsMapLayerProxyModel::Filters v4 = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag" ), pointAndLine );
+  const Qgis::LayerFilters v4 = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag" ), pointAndLine );
   QCOMPARE( v4, pointAndLine );
 
   ml->setCustomProperty( QStringLiteral( "my_property_for_a_flag" ), static_cast<int>( pointAndPolygon ) );
-  const QgsMapLayerProxyModel::Filters v5 = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag" ), pointAndLine );
+  const Qgis::LayerFilters v5 = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag" ), pointAndLine );
   QCOMPARE( v5, pointAndPolygon );
   // auto conversion of old property (int to str)
   QCOMPARE( ml->customProperty( "my_property_for_a_flag" ).toString(), QStringLiteral( "PointLayer|PolygonLayer" ) );
 
   ml->setCustomFlagProperty( QStringLiteral( "my_property_for_a_flag_as_string" ), pointAndPolygon );
-  const QgsMapLayerProxyModel::Filters v5s = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag_as_string" ), pointAndLine );
+  const Qgis::LayerFilters v5s = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag_as_string" ), pointAndLine );
   QCOMPARE( v5s, pointAndPolygon );
   const QString v5ss = ml->customProperty( QStringLiteral( "my_property_for_a_flag_as_string" ), QStringLiteral( "myDummyString" ) ).toString();
   QCOMPARE( v5ss, QStringLiteral( "PointLayer|PolygonLayer" ) );

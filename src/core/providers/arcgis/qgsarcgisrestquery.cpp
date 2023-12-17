@@ -83,17 +83,11 @@ QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const 
   const QVariantMap res = queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
   if ( res.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "getExtent failed: %1 - %2" ).arg( errorTitle, errorText ) );
+    QgsDebugError( QStringLiteral( "getExtent failed: %1 - %2" ).arg( errorTitle, errorText ) );
     return QgsRectangle();
   }
 
-  QgsRectangle rect;
-  const QVariantMap coords = res.value( QStringLiteral( "extent" ) ).toMap();
-  rect.setXMinimum( coords.value( QStringLiteral( "xmin" ) ).toDouble() );
-  rect.setYMinimum( coords.value( QStringLiteral( "ymin" ) ).toDouble() );
-  rect.setXMaximum( coords.value( QStringLiteral( "xmax" ) ).toDouble() );
-  rect.setYMaximum( coords.value( QStringLiteral( "ymax" ) ).toDouble() );
-  return rect;
+  return QgsArcGisRestUtils::convertRectangle( res.value( QStringLiteral( "extent" ) ) );
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
@@ -186,7 +180,7 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
   // Handle network errors
   if ( error != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
     errorTitle = QStringLiteral( "Network error" );
     errorText = networkRequest.errorMessage();
 
@@ -225,7 +219,7 @@ QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QS
   {
     errorTitle = QStringLiteral( "Parsing error" );
     errorText = err.errorString();
-    QgsDebugMsg( QStringLiteral( "Parsing error: %1" ).arg( err.errorString() ) );
+    QgsDebugError( QStringLiteral( "Parsing error: %1" ).arg( err.errorString() ) );
     return QVariantMap();
   }
   const QVariantMap res = doc.object().toVariantMap();
@@ -255,7 +249,7 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url, bool *isTestEndpoint )
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
     modifiedUrlString.replace( QLatin1String( "fake_qgis_http_endpoint/" ), QLatin1String( "fake_qgis_http_endpoint_" ) );
-    QgsDebugMsg( QStringLiteral( "Get %1" ).arg( modifiedUrlString ) );
+    QgsDebugMsgLevel( QStringLiteral( "Get %1" ).arg( modifiedUrlString ), 2 );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
     QString args = modifiedUrlString.indexOf( '?' ) >= 0 ? modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) ) : QString();
     if ( modifiedUrlString.size() > 150 )
@@ -284,11 +278,11 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url, bool *isTestEndpoint )
     }
 #endif
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
-    QgsDebugMsg( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
+    QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 2 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
     if ( !QFile::exists( modifiedUrlString ) )
     {
-      QgsDebugMsg( QStringLiteral( "Local test file %1 for URL %2 does not exist!!!" ).arg( modifiedUrlString, url.toString() ) );
+      QgsDebugError( QStringLiteral( "Local test file %1 for URL %2 does not exist!!!" ).arg( modifiedUrlString, url.toString() ) );
     }
   }
 
@@ -461,6 +455,28 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     }
   }
 
+  const QVariantList tableInfoList = serviceData.value( QStringLiteral( "tables" ) ).toList();
+  for ( const QVariant &tableInfo : tableInfoList )
+  {
+    const QVariantMap tableInfoMap = tableInfo.toMap();
+    const QString id = tableInfoMap.value( QStringLiteral( "id" ) ).toString();
+    const QString parentLayerId = tableInfoMap.value( QStringLiteral( "parentLayerId" ) ).toString();
+    const QString name = tableInfoMap.value( QStringLiteral( "name" ) ).toString();
+    const QString description = tableInfoMap.value( QStringLiteral( "description" ) ).toString();
+
+    if ( serviceMayHaveQueryCapability && ( filter == ServiceTypeFilter::Vector || filter == ServiceTypeFilter::AllTypes ) )
+    {
+      if ( !tableInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+      {
+        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, true, QString(), format );
+      }
+      else
+      {
+        visitor( parentLayerId, ServiceTypeFilter::Vector, Qgis::GeometryType::Null, id, name, description, parentUrl + '/' + id, false, authid, format );
+      }
+    }
+  }
+
   // Add root MapServer as raster layer when multiple layers are listed
   if ( filter != ServiceTypeFilter::Vector && layerInfoList.count() > 1 && serviceData.contains( QStringLiteral( "supportedImageFormatTypes" ) ) )
   {
@@ -526,7 +542,7 @@ void QgsArcGisAsyncQuery::handleReply()
   // Handle network errors
   if ( mReply->error() != QNetworkReply::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( mReply->errorString() ) );
+    QgsDebugError( QStringLiteral( "Network error: %1" ).arg( mReply->errorString() ) );
     emit failed( QStringLiteral( "Network error" ), mReply->errorString() );
     return;
   }
@@ -537,7 +553,7 @@ void QgsArcGisAsyncQuery::handleReply()
   {
     QNetworkRequest request = mReply->request();
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
-    QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
+    QgsDebugMsgLevel( "redirecting to " + redirect.toUrl().toString(), 2 );
     request.setUrl( redirect.toUrl() );
     mReply = QgsNetworkAccessManager::instance()->get( request );
     connect( mReply, &QNetworkReply::finished, this, &QgsArcGisAsyncQuery::handleReply );
@@ -610,7 +626,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncParallelQuery" ) );
-    QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
+    QgsDebugMsgLevel( "redirecting to " + redirect.toUrl().toString(), 2 );
     request.setUrl( redirect.toUrl() );
     reply = QgsNetworkAccessManager::instance()->get( request );
     reply->setProperty( "idx", idx );

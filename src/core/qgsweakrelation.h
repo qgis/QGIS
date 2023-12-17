@@ -29,7 +29,7 @@
  * implemented and can be used to create a QgsRelation after the
  * dependent layers are loaded and available.
  *
- * In constrast to QgsRelation, QgsWeakRelation can be used to encapsulate
+ * In contrast to QgsRelation, QgsWeakRelation can be used to encapsulate
  * information about a relationship which does not currently exist in a QGIS project.
  * E.g. it can be used to represent a relationship which exists in a database
  * backend (but not within a QGIS project). Accordingly, some properties

@@ -152,7 +152,7 @@ void QgsCodeEditorPython::initializeLexer()
       {
         if ( !QFileInfo::exists( path ) )
         {
-          QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
+          QgsDebugError( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
         }
         else
         {
@@ -166,7 +166,7 @@ void QgsCodeEditorPython::initializeLexer()
   {
     if ( !QFileInfo::exists( mAPISFilesList[0] ) )
     {
-      QgsDebugMsg( QStringLiteral( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
+      QgsDebugError( QStringLiteral( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
       return;
     }
     mPapFile = mAPISFilesList[0];
@@ -178,7 +178,7 @@ void QgsCodeEditorPython::initializeLexer()
     {
       if ( !QFileInfo::exists( path ) )
       {
-        QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
+        QgsDebugError( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
       }
       else
       {
@@ -391,7 +391,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
 
     if ( !QgsPythonRunner::run( defineSortImports ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineSortImports ) );
+      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineSortImports ) );
       return string;
     }
 
@@ -410,7 +410,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
       return newText;
     }
   }
@@ -432,7 +432,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
 
     if ( !QgsPythonRunner::run( defineReformat ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
+      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
       return newText;
     }
 
@@ -451,7 +451,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
       return newText;
     }
   }
@@ -478,7 +478,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
 
     if ( !QgsPythonRunner::run( defineReformat ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
+      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineReformat ) );
       return string;
     }
 
@@ -497,7 +497,7 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+      QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
       return newText;
     }
   }
@@ -557,7 +557,7 @@ void QgsCodeEditorPython::autoComplete()
 void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {
   mAPISFilesList = filenames;
-  //QgsDebugMsg( QStringLiteral( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
+  //QgsDebugMsgLevel( QStringLiteral( "The apis files: %1" ).arg( mAPISFilesList[0] ), 2 );
   initializeLexer();
 }
 
@@ -571,6 +571,9 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
   }
 
   QTextStream in( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  in.setCodec( "UTF-8" );
+#endif
 
   setText( in.readAll().trimmed() );
   file.close();
@@ -581,9 +584,7 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
 
 bool QgsCodeEditorPython::isCursorInsideStringLiteralOrComment() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  int position = positionFromLineIndex( line, index );
+  int position = linearPosition();
 
   // Special case: cursor at the end of the document. Style will always be Default,
   // so  we have to  check the style of the previous character.
@@ -618,9 +619,7 @@ bool QgsCodeEditorPython::isCursorInsideStringLiteralOrComment() const
 
 QString QgsCodeEditorPython::characterBeforeCursor() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  int position = positionFromLineIndex( line, index );
+  int position = linearPosition();
   if ( position <= 0 )
   {
     return QString();
@@ -630,9 +629,7 @@ QString QgsCodeEditorPython::characterBeforeCursor() const
 
 QString QgsCodeEditorPython::characterAfterCursor() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  int position = positionFromLineIndex( line, index );
+  int position = linearPosition();
   if ( position >= length() )
   {
     return QString();
@@ -680,7 +677,7 @@ bool QgsCodeEditorPython::checkSyntax()
 
   if ( !QgsPythonRunner::run( defineCheckSyntax ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( defineCheckSyntax ) );
+    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( defineCheckSyntax ) );
     return true;
   }
 
@@ -708,7 +705,7 @@ bool QgsCodeEditorPython::checkSyntax()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
     return true;
   }
 }

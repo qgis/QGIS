@@ -584,7 +584,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+      QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
       return 2;
     }
   }
@@ -674,7 +674,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 {
   if ( mode() == CaptureNone )
   {
-    QgsDebugMsg( QStringLiteral( "invalid capture mode" ) );
+    QgsDebugError( QStringLiteral( "invalid capture mode" ) );
     return 2;
   }
 
@@ -1391,6 +1391,27 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
+
+        //does compoundcurve contain circular strings?
+        //does provider support circular strings?
+        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        {
+          const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+          const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+
+          if ( hasCurvedSegments && providerSupportsCurvedSegments )
+          {
+            curveToAdd = captureCurve()->clone();
+          }
+          else
+          {
+            curveToAdd = captureCurve()->curveToLine();
+          }
+        }
+        else
+        {
+          curveToAdd = captureCurve()->clone();
+        }
         QgsCurvePolygon *poly = new QgsCurvePolygon();
         poly->setExteriorRing( curveToAdd );
         g = QgsGeometry( poly );

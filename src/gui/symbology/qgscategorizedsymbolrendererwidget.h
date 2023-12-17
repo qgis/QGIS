@@ -25,6 +25,7 @@
 
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
+class QgsSymbolSelectorWidget;
 
 #include "ui_qgscategorizedsymbolrendererwidget.h"
 #include "qgis_gui.h"
@@ -37,7 +38,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsCategorizedSymbolRendererModel( QObject *parent = nullptr );
+    QgsCategorizedSymbolRendererModel( QObject *parent = nullptr, QScreen *screen = nullptr );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -66,6 +67,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
   private:
     QgsCategorizedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
+    QPointer< QScreen > mScreen;
 };
 
 /**
@@ -190,8 +192,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
   private slots:
 
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
-    void updateSymbolsFromWidget();
+    void updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget );
     void updateSymbolsFromButton();
     void dataDefinedSizeLegend();
 

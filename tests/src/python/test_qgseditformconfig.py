@@ -14,7 +14,6 @@ import os
 import socketserver
 import threading
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -30,14 +29,15 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
-class TestQgsEditFormConfig(unittest.TestCase):
+class TestQgsEditFormConfig(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -119,7 +119,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
 
     # Failing on Travis, seg fault in event loop, no idea why
     """
-    @unittest.expectedFailure
+    @QgisTestCase.expectedFailure
     def testFormPy(self):
         layer = self.createLayer()
         config = layer.editFormConfig()

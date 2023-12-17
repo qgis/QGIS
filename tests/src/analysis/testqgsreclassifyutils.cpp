@@ -19,11 +19,18 @@
 #include "qgsreclassifyutils.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterfilewriter.h"
-#include <QTemporaryFile>
+#include <QTemporaryDir>
 
-class TestQgsReclassifyUtils: public QObject
+class TestQgsReclassifyUtils: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsReclassifyUtils()
+      : QgsTest( QStringLiteral( "Reclassify Utils Test" ) )
+    {}
+
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -191,12 +198,12 @@ void TestQgsReclassifyUtils::testReclassify()
   };
 
   // generate unique filename (need to open the file first to generate it)
-  QTemporaryFile tmpFile;
-  tmpFile.open();
-  tmpFile.close();
+  const QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  const QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
 
   // create a GeoTIFF - this will create data provider in editable mode
-  QString filename = tmpFile.fileName();
+  QString filename = dirPath + QStringLiteral( "/test.tif" );
 
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( filename );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -221,12 +228,9 @@ void TestQgsReclassifyUtils::testReclassify()
   QVERIFY( dp->setEditable( false ) );
 
   // make destination raster
-  QTemporaryFile tmpFile2;
-  tmpFile2.open();
-  tmpFile2.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
-  filename = tmpFile2.fileName();
+  filename = dirPath + QStringLiteral( "/test2.tif" );
   std::unique_ptr< QgsRasterDataProvider > dp2( QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, static_cast< Qgis::DataType >( dataType ), 10, 10, tform, crs ) );
   QVERIFY( dp2->isValid() );
 

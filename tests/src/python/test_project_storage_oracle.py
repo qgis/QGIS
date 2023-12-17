@@ -13,14 +13,14 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from PyQt5.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
     QgsDataSourceUri,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_project_storage_base import TestPyQgsProjectStorageBase
 from utilities import unitTestDataPath
@@ -29,7 +29,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsProjectStorageOracle(unittest.TestCase, TestPyQgsProjectStorageBase):
+class TestPyQgsProjectStorageOracle(QgisTestCase, TestPyQgsProjectStorageBase):
 
     @classmethod
     def setUpClass(cls):

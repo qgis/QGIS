@@ -103,7 +103,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildrenOapif()
 QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 {
   const QgsDataSourceUri uri( mUri );
-  QgsDebugMsg( "mUri = " + mUri );
+  QgsDebugMsgLevel( "mUri = " + mUri, 2 );
 
   const bool synchronous = true;
   const bool forceRefresh = false;

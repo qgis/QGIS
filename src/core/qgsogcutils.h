@@ -31,6 +31,8 @@ class QgsGeometry;
 class QgsPointXY;
 class QgsRectangle;
 class QgsVectorLayer;
+class QgsMapLayer;
+
 
 #include "qgsgeometry.h"
 #include "qgsexpression.h"

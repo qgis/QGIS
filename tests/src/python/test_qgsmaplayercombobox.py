@@ -9,17 +9,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '14/06/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
-    QgsMapLayerProxyModel,
+    Qgis,
     QgsMeshLayer,
     QgsProject,
     QgsVectorLayer,
 )
 from qgis.gui import QgsMapLayerComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -35,7 +35,7 @@ def create_mesh_layer(name):
     return layer
 
 
-class TestQgsMapLayerComboBox(unittest.TestCase):
+class TestQgsMapLayerComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test combo getters/setters """
@@ -45,8 +45,8 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
         l2 = create_layer('l2')
         QgsProject.instance().addMapLayer(l2)
 
-        m.setFilters(QgsMapLayerProxyModel.LineLayer | QgsMapLayerProxyModel.WritableLayer)
-        self.assertEqual(m.filters(), QgsMapLayerProxyModel.LineLayer | QgsMapLayerProxyModel.WritableLayer)
+        m.setFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer)
+        self.assertEqual(m.filters(), Qgis.LayerFilters(Qgis.LayerFilter.LineLayer | Qgis.LayerFilter.WritableLayer))
 
         m.setExceptedLayerList([l2])
         self.assertEqual(m.exceptedLayerList(), [l2])
@@ -61,8 +61,8 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
         l2 = create_layer('l2')
         QgsProject.instance().addMapLayer(l2)
 
-        m.setFilters(QgsMapLayerProxyModel.MeshLayer)
-        self.assertEqual(m.filters(), QgsMapLayerProxyModel.MeshLayer)
+        m.setFilters(Qgis.LayerFilter.MeshLayer)
+        self.assertEqual(m.filters(), Qgis.LayerFilter.MeshLayer)
 
         self.assertEqual(m.count(), 1)
         self.assertEqual(m.itemText(0), 'l1')
@@ -84,39 +84,39 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
                             'layer 4', "memory")
         QgsProject.instance().addMapLayer(l4)
 
-        m.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+        m.setFilters(Qgis.LayerFilter.PolygonLayer)
         self.assertEqual(m.count(), 1)
         self.assertEqual(m.itemText(0), 'layer 2')
 
-        m.setFilters(QgsMapLayerProxyModel.PointLayer)
+        m.setFilters(Qgis.LayerFilter.PointLayer)
         self.assertEqual(m.count(), 1)
         self.assertEqual(m.itemText(0), 'layer 1')
 
-        m.setFilters(QgsMapLayerProxyModel.LineLayer)
+        m.setFilters(Qgis.LayerFilter.LineLayer)
         self.assertEqual(m.count(), 1)
         self.assertEqual(m.itemText(0), 'layer 4')
 
-        m.setFilters(QgsMapLayerProxyModel.NoGeometry)
+        m.setFilters(Qgis.LayerFilter.NoGeometry)
         self.assertEqual(m.count(), 1)
         self.assertEqual(m.itemText(0), 'layer 3')
 
-        m.setFilters(QgsMapLayerProxyModel.HasGeometry)
+        m.setFilters(Qgis.LayerFilter.HasGeometry)
         self.assertEqual(m.count(), 3)
         self.assertEqual(m.itemText(0), 'layer 1')
         self.assertEqual(m.itemText(1), 'layer 2')
         self.assertEqual(m.itemText(2), 'layer 4')
 
-        m.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        m.setFilters(Qgis.LayerFilter.VectorLayer)
         self.assertEqual(m.count(), 4)
         self.assertEqual(m.itemText(0), 'layer 1')
         self.assertEqual(m.itemText(1), 'layer 2')
         self.assertEqual(m.itemText(2), 'layer 3')
         self.assertEqual(m.itemText(3), 'layer 4')
 
-        m.setFilters(QgsMapLayerProxyModel.PluginLayer)
+        m.setFilters(Qgis.LayerFilter.PluginLayer)
         self.assertEqual(m.count(), 0)
 
-        m.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        m.setFilters(Qgis.LayerFilter.RasterLayer)
         self.assertEqual(m.count(), 0)
 
     def testFilterByLayer(self):

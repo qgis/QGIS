@@ -23,7 +23,7 @@ QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersWidget( QgsProject
   mInputLayersModel( project )
 {
   setupUi( this );
-  mComboLayers->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mComboLayers->setFilters( Qgis::LayerFilter::VectorLayer );
 
   connect( mComboLayers, &QgsMapLayerComboBox::layerChanged, this, &QgsProcessingTinInputLayersWidget::onLayerChanged );
   connect( mButtonAdd, &QToolButton::clicked, this, &QgsProcessingTinInputLayersWidget::onCurrentLayerAdded );

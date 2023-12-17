@@ -15,6 +15,9 @@
 
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgs3dutils.h"
+#include "qgsline3dsymbol.h"
+#include "qgspoint3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -46,12 +49,13 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   }
 
   QgsVectorLayer *layer = mFactory->mLayer;
+  mLayerName = mFactory->mLayer->name();
   const Qgs3DMapSettings &map = mFactory->mMap;
 
   QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
   if ( !handler )
   {
-    QgsDebugMsg( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
+    QgsDebugError( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + mFactory->mSymbol->type() );
     return;
   }
   mHandler.reset( handler );
@@ -63,7 +67,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   QSet<QString> attributeNames;
   if ( !mHandler->prepare( mContext, attributeNames ) )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+    QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
     return;
   }
 
@@ -119,16 +123,22 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 {
   if ( mNode->level() < mFactory->mLeafLevel )
   {
-    return new Qt3DCore::QEntity( parent );  // dummy entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );  // dummy entity
+    entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
+    return entity;
   }
 
   if ( mHandler->featureCount() == 0 )
   {
     // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
+    mNode->setExactBbox( QgsAABB() );
+    mNode->updateParentBoundingBoxesRecursively();
     return nullptr;
   }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  entity->setObjectName( mLayerName + "_" + mNode->tileId().text() );
   mHandler->finalize( entity, mContext );
 
   // fix the vertical range of the node from the estimated vertical range to the true range
@@ -179,7 +189,10 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, do
                       new QgsVectorLayerChunkLoaderFactory( map, vl, symbol, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
 {
   mTransform = new Qt3DCore::QTransform;
-  mTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  if ( applyTerrainOffset() )
+  {
+    mTransform->setTranslation( QVector3D( 0.0f, map.terrainElevationOffset(), 0.0f ) );
+  }
   this->addComponent( mTransform );
 
   connect( &map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
@@ -193,9 +206,53 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
   cancelActiveJobs();
 }
 
+// if the AltitudeClamping is `Absolute`, do not apply the offset
+bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
+{
+  QgsVectorLayerChunkLoaderFactory *loaderFactory = static_cast<QgsVectorLayerChunkLoaderFactory *>( mChunkLoaderFactory );
+  if ( loaderFactory )
+  {
+    QString symbolType = loaderFactory->mSymbol.get()->type();
+    if ( symbolType == "line" )
+    {
+      QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( loaderFactory->mSymbol.get() );
+      if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+      {
+        return false;
+      }
+    }
+    else if ( symbolType == "point" )
+    {
+      QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( loaderFactory->mSymbol.get() );
+      if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+      {
+        return false;
+      }
+    }
+    else if ( symbolType == "polygon" )
+    {
+      QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loaderFactory->mSymbol.get() );
+      if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
+      {
+        return false;
+      }
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::applyTerrainOffset, unhandled symbol type %1" ).arg( symbolType ), 2 );
+    }
+  }
+
+  return true;
+}
+
 void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged( float newOffset )
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged" ), 2 );
+  if ( !applyTerrainOffset() )
+  {
+    newOffset = 0.0;
+  }
   mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
 }
 
@@ -246,8 +303,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         }
 
         QVector3D nodeIntPoint;
-        QgsFeatureId fid = FID_NULL;
-        if ( polygonGeom->rayIntersection( ray, transformMatrix, nodeIntPoint, fid ) )
+        int triangleIndex = -1;
+
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, transformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;
@@ -257,7 +315,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
           {
             minDist = dist;
             intersectionPoint = nodeIntPoint;
-            nearestFid = fid;
+            nearestFid = polygonGeom->triangleIndexToFeatureId( triangleIndex );
           }
         }
       }

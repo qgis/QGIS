@@ -162,8 +162,11 @@ class CORE_EXPORT QgsMapToPixel
     void transformInPlace( QVector<T> &x, QVector<T> &y ) const
     {
       assert( x.size() == y.size() );
-      for ( int i = 0; i < x.size(); ++i )
-        transformInPlace( x[i], y[i] );
+      T *xData = x.data();
+      T *yData = y.data();
+      const auto size = x.size();
+      for ( int i = 0; i < size; ++i )
+        transformInPlace( *xData++, *yData++ );
     }
 #endif
 

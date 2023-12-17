@@ -187,8 +187,13 @@ class CORE_EXPORT QgsDataSourceUri
 
     /**
      * Removes the password element from a URI.
+     *
+     * \param aUri A data source uri
+     * \param hide TRUE to replace the password value with 'xxxxxxxx', FALSE to remove password (key and value) (since QGIS 3.34)
+     *
+     * \returns The data source uri without the password
      */
-    static QString removePassword( const QString &aUri );
+    static QString removePassword( const QString &aUri, bool hide = false );
 
     /**
      * Returns any associated authentication configuration ID stored in the URI.

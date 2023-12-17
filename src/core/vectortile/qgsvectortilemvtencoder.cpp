@@ -177,7 +177,7 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
   }
   catch ( const QgsCsException & )
   {
-    QgsDebugMsg( "Failed to reproject tile extent to the layer" );
+    QgsDebugError( "Failed to reproject tile extent to the layer" );
     return;
   }
 
@@ -227,7 +227,7 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugMsg( "Failed to reproject geometry " + QString::number( f.id() ) );
+      QgsDebugError( "Failed to reproject geometry " + QString::number( f.id() ) );
       continue;
     }
 

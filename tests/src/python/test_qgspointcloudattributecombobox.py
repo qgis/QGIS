@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsPointCloudAttribute,
@@ -19,7 +18,8 @@ from qgis.core import (
     QgsProviderRegistry,
 )
 from qgis.gui import QgsPointCloudAttributeComboBox
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -36,7 +36,7 @@ def create_attributes():
     return collection
 
 
-class TestQgsPointCloudAttributeComboBox(unittest.TestCase):
+class TestQgsPointCloudAttributeComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test combobox getters/setters """

@@ -78,7 +78,7 @@ QgsImportPhotosAlgorithm *QgsImportPhotosAlgorithm::createInstance() const
 
 QVariant QgsImportPhotosAlgorithm::parseMetadataValue( const QString &value )
 {
-  const QRegularExpression numRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
+  const thread_local QRegularExpression numRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
   const QRegularExpressionMatch numMatch = numRx.match( value );
   if ( numMatch.hasMatch() )
   {
@@ -221,7 +221,7 @@ QVariant QgsImportPhotosAlgorithm::extractTimestampFromMetadata( const QVariantM
   if ( !ts.isValid() )
     return ts;
 
-  const QRegularExpression dsRegEx( QStringLiteral( "(\\d+):(\\d+):(\\d+)\\s+(\\d+):(\\d+):(\\d+)" ) );
+  const thread_local QRegularExpression dsRegEx( QStringLiteral( "(\\d+):(\\d+):(\\d+)\\s+(\\d+):(\\d+):(\\d+)" ) );
   const QRegularExpressionMatch dsMatch = dsRegEx.match( ts.toString() );
   if ( dsMatch.hasMatch() )
   {
@@ -241,7 +241,7 @@ QVariant QgsImportPhotosAlgorithm::extractTimestampFromMetadata( const QVariantM
 
 QVariant QgsImportPhotosAlgorithm::parseCoord( const QString &string )
 {
-  const QRegularExpression coordRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
+  const thread_local QRegularExpression coordRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
   const QRegularExpressionMatch coordMatch = coordRx.match( string );
   if ( coordMatch.hasMatch() )
   {
@@ -259,7 +259,7 @@ QVariant QgsImportPhotosAlgorithm::parseCoord( const QString &string )
 QVariantMap QgsImportPhotosAlgorithm::parseMetadataList( const QStringList &input )
 {
   QVariantMap results;
-  const QRegularExpression splitRx( QStringLiteral( "(.*?)=(.*)" ) );
+  const thread_local QRegularExpression splitRx( QStringLiteral( "(.*?)=(.*)" ) );
   for ( const QString &item : input )
   {
     const QRegularExpressionMatch match = splitRx.match( item );

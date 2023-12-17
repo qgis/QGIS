@@ -214,7 +214,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
     }
     else
     {
-      QgsDebugMsg( "The polymorphic relation is invalid" );
+      QgsDebugError( "The polymorphic relation is invalid" );
       conditions << QStringLiteral( " FALSE " );
     }
   }
@@ -424,7 +424,7 @@ void QgsRelation::updateRelationStatus()
 
   if ( d->mRelationId.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid relation: no ID" ) );
+    QgsDebugError( QStringLiteral( "Invalid relation: no ID" ) );
     d->mValidationError = QObject::tr( "Relationship has no ID" );
     d->mValid = false;
   }
@@ -455,14 +455,14 @@ void QgsRelation::updateRelationStatus()
       {
         if ( -1 == d->mReferencingLayer->fields().lookupField( pair.first ) )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() ) );
+          QgsDebugError( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() ) );
           d->mValidationError = QObject::tr( "Field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() );
           d->mValid = false;
           break;
         }
         else if ( -1 == d->mReferencedLayer->fields().lookupField( pair.second ) )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayer->name() ) );
+          QgsDebugError( QStringLiteral( "Invalid relation: field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayer->name() ) );
           d->mValidationError = QObject::tr( "Field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayer->name() );
           d->mValid = false;
           break;

@@ -62,7 +62,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     catch ( QgsProviderConnectionException &ex )
     {
       // This should never happen but it's not critical, we can safely continue.
-      QgsDebugMsg( QStringLiteral( "Error retrieving tables from connection: %1" ).arg( ex.what() ) );
+      QgsDebugError( QStringLiteral( "Error retrieving tables from connection: %1" ).arg( ex.what() ) );
     }
   };
 
@@ -768,7 +768,7 @@ QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( const
     }
   }
   // This should never happen!
-  QgsDebugMsg( QStringLiteral( "Cannot get field native type for: %1" ).arg( typeName ) );
+  QgsDebugError( QStringLiteral( "Cannot get field native type for: %1" ).arg( typeName ) );
   return mNativeTypes.first();
 }
 
@@ -779,7 +779,7 @@ QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( int r
     return nativeType( mFields.at( row ).typeName() );
   }
   // This should never happen!
-  QgsDebugMsg( QStringLiteral( "Cannot get field for row: %1" ).arg( row ) );
+  QgsDebugError( QStringLiteral( "Cannot get field for row: %1" ).arg( row ) );
   return mNativeTypes.first();
 }
 

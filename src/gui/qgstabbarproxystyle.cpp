@@ -83,13 +83,21 @@ QSize QgsTabBar::tabSizeHint( int index ) const
 {
   if ( mTabBarStyle->tabStyles().contains( index ) )
   {
-    const QSize s = QTabBar::tabSizeHint( index );
-    const QFontMetrics fm( font() );
-    const int w = fm.horizontalAdvance( tabText( index ) );
-    const QFont f = mTabBarStyle->tabStyles().value( index ).font;
-    const QFontMetrics bfm( f );
-    const int bw = bfm.horizontalAdvance( tabText( index ) );
-    return QSize( s.width() - w + bw, s.height() );
+    const QgsAttributeEditorElement::LabelStyle tabStyle = mTabBarStyle->tabStyles().value( index );
+    if ( tabStyle.overrideFont )
+    {
+      const QSize s = QTabBar::tabSizeHint( index );
+      const QFontMetrics fm( font() );
+      const int w = fm.horizontalAdvance( tabText( index ) );
+      const QFont f = tabStyle.font;
+      const QFontMetrics bfm( f );
+      const int bw = bfm.horizontalAdvance( tabText( index ) );
+      return QSize( s.width() - w + bw, s.height() );
+    }
+    else
+    {
+      return QTabBar::tabSizeHint( index );
+    }
   }
   else
   {

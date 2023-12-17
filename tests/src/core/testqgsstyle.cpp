@@ -553,11 +553,11 @@ void TestStyle::testLoadColorRamps()
   colorTests.insert( QStringLiteral( "test_cc3" ), qMakePair( 0, QColor( "#0000ff" ) ) );
   colorTests.insert( QStringLiteral( "test_cc3" ), qMakePair( 1, QColor( "#ff0000" ) ) );
 
-  QgsDebugMsg( QStringLiteral( "loaded colorRamps: " ) + colorRamps.join( ' ' ) );
+  QgsDebugMsgLevel( QStringLiteral( "loaded colorRamps: " ) + colorRamps.join( ' ' ), 1 );
 
   for ( const QString &name : colorRampsTest )
   {
-    QgsDebugMsg( "colorRamp " + name );
+    QgsDebugMsgLevel( "colorRamp " + name, 1 );
     QVERIFY( colorRamps.contains( name ) );
     QgsColorRamp *ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != nullptr );
@@ -579,13 +579,13 @@ void TestStyle::testSaveLoad()
 {
   // basic test to see that ramp is present
   const QStringList colorRamps = mStyle->colorRampNames();
-  QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
+  QgsDebugMsgLevel( "loaded colorRamps: " + colorRamps.join( " " ), 1 );
 
   const QStringList colorRampsTest = QStringList() << QStringLiteral( "test_gradient" );
 
   for ( const QString &name : colorRampsTest )
   {
-    QgsDebugMsg( "colorRamp " + name );
+    QgsDebugMsgLevel( "colorRamp " + name, 1 );
     QVERIFY( colorRamps.contains( name ) );
     QgsColorRamp *ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != nullptr );

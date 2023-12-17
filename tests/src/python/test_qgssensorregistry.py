@@ -9,10 +9,10 @@ __author__ = 'Mathieu Pellerin'
 __date__ = '19/03/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsSensorRegistry, QgsSensorAbstractMetadata, QgsTcpSocketSensor, QgsUdpSocketSensor
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -35,7 +35,7 @@ class TestUdpSensorMetadata(QgsSensorAbstractMetadata):
         return QgsUdpSocketSensor(parent)
 
 
-class TestQgsSensorRegistry(unittest.TestCase):
+class TestQgsSensorRegistry(QgisTestCase):
 
     def testRegistry(self):
         registry = QgsSensorRegistry()

@@ -173,7 +173,7 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
       break;
 
     default:
-      QgsDebugMsg( QStringLiteral( "unexpected index" ) );
+      QgsDebugError( QStringLiteral( "unexpected index" ) );
       break;
   }
 }
@@ -229,7 +229,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> > &at )
     QTreeWidgetItem *item = *it;
     const QString type = QStringLiteral( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
-    QgsDebugMsg( QStringLiteral( "appending %1//%2" ).arg( item->text( 0 ), type ) );
+    QgsDebugMsgLevel( QStringLiteral( "appending %1//%2" ).arg( item->text( 0 ), type ), 2 );
     ++it;
   }
 }
@@ -359,7 +359,7 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   QString fileName = geomDialog.filename();
 
   const QString enc = geomDialog.selectedFileEncoding();
-  QgsDebugMsg( QStringLiteral( "New file format will be: %1" ).arg( fileformat ) );
+  QgsDebugMsgLevel( QStringLiteral( "New file format will be: %1" ).arg( fileformat ), 2 );
 
   QList< QPair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
@@ -381,7 +381,7 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   else
   {
     errorMessage = QObject::tr( "Geometry type not recognised" );
-    QgsDebugMsg( errorMessage );
+    QgsDebugError( errorMessage );
     return QString();
   }
 

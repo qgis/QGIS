@@ -20,6 +20,6 @@
 
 int QgsLineSegment2D::pointLeftOfLine( const QgsPointXY &point ) const
 {
-  return QgsGeometryUtils::leftOfLine( point.x(), point.y(), mStart.x(), mStart.y(), mEnd.x(), mEnd.y() );
+  return QgsGeometryUtilsBase::leftOfLine( point.x(), point.y(), mStart.x(), mStart.y(), mEnd.x(), mEnd.y() );
 }
 

@@ -40,6 +40,7 @@
 #include "qgstextlabelfeature.h"
 #include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometryutils_base.h"
 #include "qgslabeling.h"
 #include "qgspolygon.h"
 #include "qgstextrendererutils.h"
@@ -546,8 +547,24 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
   double distanceToLabel = getLabelDistance();
   const QgsMargins &visualMargin = mLF->visualMargin();
 
-  double symbolWidthOffset = ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds ? mLF->symbolSize().width() / 2.0 : 0.0 );
-  double symbolHeightOffset = ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
+  double symbolWidthOffset{ 0 };
+  double symbolHeightOffset{ 0 };
+
+  if ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds )
+  {
+    // Multi?
+    if ( mLF->feature().geometry().constParts().hasNext() )
+    {
+      const QgsGeometry geom{ QgsGeos::fromGeos( mLF->geometry() ) };
+      symbolWidthOffset = ( mLF->symbolSize().width() - geom.boundingBox().width() ) / 2.0;
+      symbolHeightOffset = ( mLF->symbolSize().height() - geom.boundingBox().height() ) / 2.0;
+    }
+    else
+    {
+      symbolWidthOffset = mLF->symbolSize().width() / 2.0;
+      symbolHeightOffset = mLF->symbolSize().height() / 2.0;
+    }
+  }
 
   double cost = 0.0001;
   std::size_t i = lPos.size();
@@ -785,7 +802,7 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
     else
       distanceToSegment[i] = distanceToSegment[i - 1] + segmentLengths[i - 1];
 
-    segmentLengths[i] = GeomFunction::dist_euc2d( x[i], y[i], x[i + 1], y[i + 1] );
+    segmentLengths[i] = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[i + 1], y[i + 1] );
     totalLineLength += segmentLengths[i];
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
@@ -884,7 +901,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     if ( qgsDoubleNear( y1, y2 ) && qgsDoubleNear( x1, x2 ) )
       continue;
     double vertexAngle = M_PI - ( std::atan2( y3 - y2, x3 - x2 ) - std::atan2( y2 - y1, x2 - x1 ) );
-    vertexAngle = QgsGeometryUtils::normalizedAngle( vertexAngle );
+    vertexAngle = QgsGeometryUtilsBase::normalizedAngle( vertexAngle );
 
     // extreme angles form more than 45 degree angle at a node - these are the ones we don't want labels to cross
     if ( vertexAngle < M_PI * 135.0 / 180.0 || vertexAngle > M_PI * 225.0 / 180.0 )
@@ -917,13 +934,13 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     else
       distanceToSegment[i] = distanceToSegment[i - 1] + segmentLengths[i - 1];
 
-    segmentLengths[i] = GeomFunction::dist_euc2d( x[i], y[i], x[i + 1], y[i + 1] );
+    segmentLengths[i] = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[i + 1], y[i + 1] );
     totalLineLength += segmentLengths[i];
     if ( extremeAngleNodes.contains( i ) )
     {
       // at an extreme angle node, so reset counters
       straightSegmentLengths << currentStraightSegmentLength;
-      straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
+      straightSegmentAngles << QgsGeometryUtilsBase::normalizedAngle( std::atan2( y[i] - segmentStartY, x[i] - segmentStartX ) );
       longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
       currentStraightSegmentLength = 0;
       segmentStartX = x[i];
@@ -933,7 +950,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
   straightSegmentLengths << currentStraightSegmentLength;
-  straightSegmentAngles << QgsGeometryUtils::normalizedAngle( std::atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
+  straightSegmentAngles << QgsGeometryUtilsBase::normalizedAngle( std::atan2( y[numberNodes - 1] - segmentStartY, x[numberNodes - 1] - segmentStartX ) );
   longestSegmentLength = std::max( longestSegmentLength, currentStraightSegmentLength );
   const double lineAnchorPoint = totalLineLength * mLF->lineAnchorPercent();
 
@@ -986,7 +1003,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateStartX, &candidateStartY );
       line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine + labelWidth, &candidateEndX, &candidateEndY );
 
-      candidateLength = std::sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
+      candidateLength = QgsGeometryUtilsBase::distance2D( candidateEndX, candidateEndY, candidateStartX, candidateStartY );
 
 
       // LOTS OF DIFFERENT COSTS TO BALANCE HERE - feel free to tweak these, but please add a unit test
@@ -1134,7 +1151,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     else
       distanceToSegment[i] = distanceToSegment[i - 1] + segmentLengths[i - 1];
 
-    segmentLengths[i] = GeomFunction::dist_euc2d( x[i], y[i], x[i + 1], y[i + 1] );
+    segmentLengths[i] = QgsGeometryUtilsBase::distance2D( x[i], y[i], x[i + 1], y[i + 1] );
     totalLineLength += segmentLengths[i];
   }
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
@@ -1207,12 +1224,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     if ( currentDistanceAlongLine < 0 )
     {
       // label is bigger than line, use whole available line
-      candidateLength = std::sqrt( ( x[nbPoints - 1] - x[0] ) * ( x[nbPoints - 1] - x[0] )
-                                   + ( y[nbPoints - 1] - y[0] ) * ( y[nbPoints - 1] - y[0] ) );
+      candidateLength = QgsGeometryUtilsBase::distance2D( x[nbPoints - 1], y[nbPoints - 1], x[0], y[0] );
     }
     else
     {
-      candidateLength = std::sqrt( ( candidateEndX - candidateStartX ) * ( candidateEndX - candidateStartX ) + ( candidateEndY - candidateStartY ) * ( candidateEndY - candidateStartY ) );
+      candidateLength = QgsGeometryUtilsBase::distance2D( candidateEndX, candidateEndY, candidateStartX, candidateStartY );
     }
 
     cost = candidateLength / labelWidth;
@@ -1699,10 +1715,10 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
   QLinkedList<PointSet *> shapes_final = splitPolygons( mapShape, labelWidth, labelHeight );
 #if 0
-  QgsDebugMsg( QStringLiteral( "PAL split polygons resulted in:" ) );
+  QgsDebugMsgLevel( QStringLiteral( "PAL split polygons resulted in:" ), 2 );
   for ( PointSet *ps : shapes_final )
   {
-    QgsDebugMsg( ps->toWkt() );
+    QgsDebugMsgLevel( ps->toWkt(), 2 );
   }
 #endif
 
@@ -2130,11 +2146,11 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
 std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( Pal *pal )
 {
   std::vector< std::unique_ptr< LabelPosition > > lPos;
-  double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
+  double angleInRadians = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
   if ( mLF->hasFixedPosition() )
   {
-    lPos.emplace_back( std::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver ) );
+    lPos.emplace_back( std::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angleInRadians ), getLabelHeight( angleInRadians ), angleInRadians, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver ) );
   }
   else
   {
@@ -2142,11 +2158,11 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
     {
       case GEOS_POINT:
         if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
-          createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angle );
+          createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angleInRadians );
         else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OverPoint || mLF->hasFixedQuadrant() )
-          createCandidatesOverPoint( x[0], y[0], lPos, angle );
+          createCandidatesOverPoint( x[0], y[0], lPos, angleInRadians );
         else
-          createCandidatesAroundPoint( x[0], y[0], lPos, angle );
+          createCandidatesAroundPoint( x[0], y[0], lPos, angleInRadians );
         break;
 
       case GEOS_LINESTRING:
@@ -2190,15 +2206,15 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
                 double cx, cy;
                 getCentroid( cx, cy, mLF->layer()->centroidInside() );
                 if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
-                  created += createCandidateCenteredOverPoint( cx, cy, lPos, angle );
-                created += createCandidatesAroundPoint( cx, cy, lPos, angle );
+                  created += createCandidateCenteredOverPoint( cx, cy, lPos, angleInRadians );
+                created += createCandidatesAroundPoint( cx, cy, lPos, angleInRadians );
                 break;
               }
               case Qgis::LabelPlacement::OverPoint:
               {
                 double cx, cy;
                 getCentroid( cx, cy, mLF->layer()->centroidInside() );
-                created += createCandidatesOverPoint( cx, cy, lPos, angle );
+                created += createCandidatesOverPoint( cx, cy, lPos, angleInRadians );
                 break;
               }
               case Qgis::LabelPlacement::Line:

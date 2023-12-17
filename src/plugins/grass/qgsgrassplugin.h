@@ -154,7 +154,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! GRASS tools
     QgsGrassTools *mTools = nullptr;
     //! Pointer to QgsGrassNewMapset
-    QgsGrassNewMapset *mNewMapset = nullptr;
+    QPointer< QgsGrassNewMapset > mNewMapset;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mCoordinateTransform;

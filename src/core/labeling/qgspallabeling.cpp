@@ -448,13 +448,18 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
 
   // rect for clipping
   QgsRectangle r1 = mapSettings.visibleExtent();
+  QgsDebugMsgLevel( QStringLiteral( "Visible extent: %1" ).arg( r1.toString() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "mapSetting extentBuffer: %1" ).arg( mapSettings.extentBuffer() ), 2 );
   r1.grow( mapSettings.extentBuffer() );
+  QgsDebugMsgLevel( QStringLiteral( "Grown visible extent: %1" ).arg( r1.toString() ), 2 );
   extentGeom = QgsGeometry::fromRect( r1 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent geom  %1" ).arg( extentGeom.asWkt() ), 2 );
 
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
+    QgsDebugMsgLevel( QStringLiteral( "Rotated extent geom  %1" ).arg( extentGeom.asWkt() ), 2 );
   }
 
   mFeatsSendingToPal = 0;
@@ -1357,18 +1362,21 @@ void QgsPalLayerSettings::setCallout( QgsCallout *callout )
   mCallout.reset( callout );
 }
 
-QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding )
+QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText, int padding, const QgsScreenProperties &screen )
 {
+  const double devicePixelRatio = screen.isValid() ? screen.devicePixelRatio() : 1;
+
   // for now, just use format
   QgsTextFormat tempFormat = settings.format();
-  QPixmap pixmap( size );
+  QPixmap pixmap( size * devicePixelRatio );
   pixmap.fill( Qt::transparent );
+  pixmap.setDevicePixelRatio( devicePixelRatio );
   QPainter painter;
   painter.begin( &pixmap );
 
   painter.setRenderHint( QPainter::Antialiasing );
 
-  QRect rect( 0, 0, size.width(), size.height() );
+  const QRectF rect( 0, 0, size.width(), size.height() );
 
   // shameless eye candy - use a subtle gradient when drawing background
   painter.setPen( Qt::NoPen );
@@ -1405,9 +1413,25 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   context.setMapToPixel( newCoordXForm );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
-  QWidget *activeWindow = QApplication::activeWindow();
-  const double logicalDpiX = activeWindow && activeWindow->screen() ? activeWindow->screen()->logicalDotsPerInchX() : 96.0;
-  context.setScaleFactor( logicalDpiX / 25.4 );
+  if ( screen.isValid() )
+  {
+    screen.updateRenderContextForScreen( context );
+  }
+  else
+  {
+    QWidget *activeWindow = QApplication::activeWindow();
+    if ( QScreen *screen = activeWindow ? activeWindow->screen() : nullptr )
+    {
+      context.setScaleFactor( screen->physicalDotsPerInch() / 25.4 );
+      context.setDevicePixelRatio( screen->devicePixelRatio() );
+    }
+    else
+    {
+      context.setScaleFactor( 96.0 / 25.4 );
+      context.setDevicePixelRatio( 1.0 );
+    }
+  }
+
   context.setUseAdvancedEffects( true );
   context.setPainter( &painter );
 
@@ -2052,7 +2076,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         numberFormat.append( '+' );
       }
       numberFormat.append( "%1" );
-      labelText = numberFormat.arg( d, 0, 'f', decimalPlaces );
+      labelText = numberFormat.arg( QLocale().toString( d, 'f', decimalPlaces ) );
     }
   }
 
@@ -2224,7 +2248,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   QgsLabelLineSettings lineSettings = mLineSettings;
   lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
 
-  if ( geom.type() == Qgis::GeometryType::Line )
+  if ( geom.type() == Qgis::GeometryType::Line || placement == Qgis::LabelPlacement::Line || placement == Qgis::LabelPlacement::PerimeterCurved )
   {
     switch ( lineSettings.anchorClipping() )
     {
@@ -2325,7 +2349,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   //data defined position / alignment / rotation?
   bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
-  double xPos = 0.0, yPos = 0.0, angle = 0.0;
+  double xPos = 0.0, yPos = 0.0;
+  double angleInRadians = 0.0;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
   QgsPointXY anchorPosition;
@@ -2442,7 +2467,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   if ( !qgsDoubleNear( angleOffset, 0.0 ) )
   {
     layerDefinedRotation = true;
-    angle = ( 360 - angleOffset ) * M_PI / 180; // convert to radians counterclockwise
+    angleInRadians = ( 360 - angleOffset ) * M_PI / 180; // convert to radians counterclockwise
   }
 
   const QgsMapToPixel &m2p = context.mapToPixel();
@@ -2465,7 +2490,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         // TODO: add setting to disable having data defined rotation follow
         //       map rotation ?
         rotationDegrees += m2p.mapRotation();
-        angle = ( 360 - rotationDegrees ) * M_PI / 180.0;
+        angleInRadians = ( 360 - rotationDegrees ) * M_PI / 180.0;
       }
     }
   }
@@ -2531,7 +2556,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         // layer rotation set, but don't rotate pinned labels unless data defined
         if ( layerDefinedRotation && !dataDefinedRotation )
         {
-          angle = 0.0;
+          angleInRadians = 0.0;
         }
 
         //horizontal alignment
@@ -2589,8 +2614,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         if ( dataDefinedRotation )
         {
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
-          double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
-          double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
+          double xd = xdiff * std::cos( angleInRadians ) - ydiff * std::sin( angleInRadians );
+          double yd = xdiff * std::sin( angleInRadians ) + ydiff * std::cos( angleInRadians );
           xdiff = xd;
           ydiff = yd;
         }
@@ -2706,8 +2731,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setHasFixedPosition( hasDataDefinedPosition );
   labelFeature->setFixedPosition( QgsPointXY( xPos, yPos ) );
   // use layer-level defined rotation, but not if position fixed
-  labelFeature->setHasFixedAngle( dataDefinedRotation || ( !hasDataDefinedPosition && !qgsDoubleNear( angle, 0.0 ) ) );
-  labelFeature->setFixedAngle( angle );
+  labelFeature->setHasFixedAngle( dataDefinedRotation || ( !hasDataDefinedPosition && !qgsDoubleNear( angleInRadians, 0.0 ) ) );
+  labelFeature->setFixedAngle( angleInRadians );
   labelFeature->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
   labelFeature->setPositionOffset( QgsPointXY( offsetX, offsetY ) );
   labelFeature->setOffsetType( offsetType );
@@ -3240,7 +3265,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
   if ( ddBold || ddItalic )
   {
     // new font needs built, since existing style needs removed
-    newFont = QFont( !ddFontFamily.isEmpty() ? ddFontFamily : labelFont.family() );
+    newFont = QgsFontUtils::createFont( !ddFontFamily.isEmpty() ? ddFontFamily : labelFont.family() );
     newFontBuilt = true;
     newFont.setBold( ddBold );
     newFont.setItalic( ddItalic );
@@ -3281,7 +3306,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     }
     else
     {
-      newFont = QFont( ddFontFamily );
+      newFont = QgsFontUtils::createFont( ddFontFamily );
       newFontBuilt = true;
     }
   }
@@ -3891,6 +3916,7 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       return false;
   }
   return false;
@@ -4028,7 +4054,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     QgsPointXY center = context.mapExtent().center();
     if ( geom.rotate( m2p.mapRotation(), center ) != Qgis::GeometryOperationResult::Success )
     {
-      QgsDebugMsg( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
+      QgsDebugError( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
       return QgsGeometry();
     }
   }
@@ -4081,7 +4107,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       QgsGeometry bufferGeom = geom.makeValid();
       if ( bufferGeom.isNull() )
       {
-        QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
+        QgsDebugError( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
         return QgsGeometry();
       }
       geom = bufferGeom;

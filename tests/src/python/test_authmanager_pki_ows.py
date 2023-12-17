@@ -35,7 +35,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.PyQt.QtNetwork import QSslCertificate
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath, waitServer
 
 try:
@@ -50,7 +51,7 @@ os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
 qgis_app = start_app()
 
 
-class TestAuthManager(unittest.TestCase):
+class TestAuthManager(QgisTestCase):
 
     @classmethod
     def setUpAuth(cls):

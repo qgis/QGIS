@@ -35,6 +35,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortileutils.h"
 #include "qgsproject.h"
@@ -442,7 +443,14 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
       }
     }
 
-    const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( mCanvas->scale() );
+    const double tileScale = layer->tileMatrixSet().calculateTileScaleForMap(
+                               mCanvas->scale(),
+                               mCanvas->mapSettings().destinationCrs(),
+                               mCanvas->mapSettings().extent(),
+                               mCanvas->size(),
+                               mCanvas->logicalDpiX() );
+
+    const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( tileScale );
     const QgsTileMatrix tileMatrix = layer->tileMatrixSet().tileMatrix( tileZoom );
     const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
@@ -450,12 +458,12 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
     for ( const QgsTileXYZ &tileID : tiles )
     {
-      QByteArray data = layer->getRawTile( tileID );
-      if ( data.isEmpty() )
+      const QgsVectorTileRawData data = layer->getRawTile( tileID );
+      if ( data.data.isEmpty() )
         continue;  // failed to get data
 
       QgsVectorTileMVTDecoder decoder( layer->tileMatrixSet() );
-      if ( !decoder.decode( tileID, data ) )
+      if ( !decoder.decode( data ) )
         continue;  // failed to decode
 
       QMap<QString, QgsFields> perLayerFields;
@@ -494,7 +502,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
   return featureCount > 0;
@@ -539,7 +547,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
-    QgsDebugMsg( QStringLiteral( "Out of scale limits" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
     return false;
   }
 
@@ -624,7 +632,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   {
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
   bool filter = false;
@@ -671,12 +679,7 @@ int QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qgs
     if ( renderer && !renderer->willRenderFeature( feature, context ) )
       continue;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    derivedAttributes.unite( deriveAttributesForFeature( feature ) );
-#else
     derivedAttributes.insert( deriveAttributesForFeature( feature ) );
-#endif
-
     derivedAttributes.insert( tr( "Feature ID" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), feature, derivedAttributes ) );
@@ -690,7 +693,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   if ( ! vId.isValid( ) )
   {
     // We should not get here ...
-    QgsDebugMsg( "Invalid vertex id!" );
+    QgsDebugError( "Invalid vertex id!" );
     return;
   }
 
@@ -950,7 +953,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
 
 bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, const QgsIdentifyContext &identifyContext )
 {
-  QgsDebugMsg( "point = " + point.toString() );
+  QgsDebugMsgLevel( "point = " + point.toString(), 2 );
   if ( !layer )
     return false;
 
@@ -978,10 +981,10 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsg( QStringLiteral( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
     return false;
   }
-  QgsDebugMsg( QStringLiteral( "point = %1 %2" ).arg( point.x() ).arg( point.y() ) );
+  QgsDebugMsgLevel( QStringLiteral( "point = %1 %2" ).arg( point.x() ).arg( point.y() ), 2 );
 
   if ( !layer->extent().contains( point ) )
     return false;
@@ -1041,23 +1044,39 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     int width = static_cast< int >( std::round( viewExtent.width() / mapUnitsPerPixel ) );
     int height = static_cast< int >( std::round( viewExtent.height() / mapUnitsPerPixel ) );
 
-    QgsDebugMsg( QStringLiteral( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
-    QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ) );
-    QgsDebugMsg( QStringLiteral( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ) );
+    QgsDebugMsgLevel( QStringLiteral( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ), 2 );
 
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  derivedAttributes.unite( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
-#else
   derivedAttributes.insert( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
-#endif
+
+  const double xres = layer->rasterUnitsPerPixelX();
+  const double yres = layer->rasterUnitsPerPixelY();
+  QgsRectangle pixelRect;
+  // Don't derive clicked column/row for providers that serve dynamically rendered map images
+  if ( ( dprovider->capabilities() & QgsRasterDataProvider::Size ) && !qgsDoubleNear( xres, 0 ) && !qgsDoubleNear( yres, 0 ) )
+  {
+    // Try to determine the clicked column/row (0-based) in the raster
+    const QgsRectangle extent = dprovider->extent();
+
+    const int rasterCol = static_cast< int >( std::floor( ( point.x() - extent.xMinimum() ) / xres ) );
+    const int rasterRow = static_cast< int >( std::floor( ( extent.yMaximum() - point.y() ) / yres ) );
+
+    derivedAttributes.insert( tr( "Column (0-based)" ), QLocale().toString( rasterCol ) );
+    derivedAttributes.insert( tr( "Row (0-based)" ), QLocale().toString( rasterRow ) );
+
+    pixelRect = QgsRectangle( rasterCol * xres + extent.xMinimum(),
+                              extent.yMaximum() - ( rasterRow + 1 ) * yres,
+                              ( rasterCol + 1 ) * xres + extent.xMinimum(),
+                              extent.yMaximum() - ( rasterRow * yres ) );
+  }
 
   if ( identifyResult.isValid() )
   {
     QMap<int, QVariant> values = identifyResult.results();
-    QgsGeometry geometry;
     if ( format == Qgis::RasterIdentifyFormat::Value )
     {
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
@@ -1129,7 +1148,15 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       }
 
       QString label = layer->name();
-      results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
+      QgsFeature feature;
+      if ( !pixelRect.isNull() )
+      {
+        feature.setGeometry( QgsGeometry::fromRect( pixelRect ) );
+      }
+
+      IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ), label, QgsFields(), feature, derivedAttributes );
+      result.mAttributes = attributes;
+      results->append( result );
     }
     else if ( format == Qgis::RasterIdentifyFormat::Feature )
     {
@@ -1181,11 +1208,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             }
 
             QMap< QString, QString > derAttributes = derivedAttributes;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-            derAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
-#else
             derAttributes.insert( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
-#endif
 
             IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( QLatin1String( " / " ) ), featureStore.fields(), feature, derAttributes );
 
@@ -1197,7 +1220,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else // text or html
     {
-      QgsDebugMsg( QStringLiteral( "%1 HTML or text values" ).arg( values.size() ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1 HTML or text values" ).arg( values.size() ), 2 );
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QString value = it.value().toString();
@@ -1388,6 +1411,7 @@ void QgsMapToolIdentify::fromElevationProfileLayerIdentificationToIdentifyResult
 
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::TiledScene:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
       break;

@@ -34,6 +34,11 @@ QString QgsLayerMetadataSourceSelectProvider::text() const
   return QObject::tr( "Metadata Search" );
 }
 
+QString QgsLayerMetadataSourceSelectProvider::toolTip() const
+{
+  return QObject::tr( "Find layers by metadata" );
+}
+
 QIcon QgsLayerMetadataSourceSelectProvider::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "search.svg" ) );

@@ -1,5 +1,9 @@
 name: 🧪 QGIS tests
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -77,8 +81,17 @@ jobs:
       runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
+
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: false
+          docker-images: false
+          swap-storage: true
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set vars
         env:
@@ -101,11 +114,11 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v6
+        uses: whoan/docker-build-with-cache-action@v8
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-build-deps-${{ matrix.distro-version }}
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
@@ -318,13 +331,16 @@ jobs:
 
     steps:
 
-      - name: Print disk space
-        run: |
-          echo "DF -H"
-          sudo df -h
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: false
+          docker-images: false
+          swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set vars
         env:
@@ -343,11 +359,11 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v6
+        uses: whoan/docker-build-with-cache-action@v8
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--target ${{ matrix.docker-target }} --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
@@ -389,6 +405,7 @@ jobs:
         env:
           TEST_BATCH: ${{matrix.test-batch}}
           QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
@@ -397,14 +414,30 @@ jobs:
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
-          mkdir -p /tmp/minio_tests/test_bucket && chmod -R 777 /tmp/minio_tests
-          docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+          mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
+          docker-compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+
+      - name: Fix permissions on test report
+        if: ${{ failure() }}
+        run: |
+          sudo chmod -R 777 qgis_test_report
+
+      - name: Dump report contents
+        if: ${{ failure() }}
+        run: |
+          MD_REPORT_FILE="qgis_test_report/summary.md"; [ -f "$MD_REPORT_FILE" ] && cat "$MD_REPORT_FILE" || true
+
+      - name: Save PR number to test report
+        if: ${{ failure() }}
+        run: |
+          echo ${{ github.event.number }} | tee qgis_test_report/pr_number
+          echo ${{ github.event.pull_request.head.sha }} | tee qgis_test_report/git_commit
 
       - name: Archive test results report
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
         with:
-          name: test-results
+          name: test-results-qt${{ matrix.qt-version }}
           path: qgis_test_report
 
   clang-tidy:
@@ -419,18 +452,26 @@ jobs:
             qt-version: 5
 
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: false
+          docker-images: false
+          swap-storage: true
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: whoan/docker-build-with-cache-action@v6
+        uses: whoan/docker-build-with-cache-action@v8
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"

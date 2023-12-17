@@ -17,7 +17,8 @@ import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject
 from qgis.core import QgsApplication, QgsArcGisPortalUtils, QgsSettings
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 def sanitize(endpoint, x):
@@ -59,7 +60,7 @@ class MessageLogger(QObject):
         return self.log
 
 
-class TestPyQgsArcGisPortalUtils(unittest.TestCase):
+class TestPyQgsArcGisPortalUtils(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

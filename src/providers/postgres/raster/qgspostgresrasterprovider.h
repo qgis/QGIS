@@ -60,7 +60,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback ) override;
 
     // QgsRasterDataProvider interface
-    virtual QString htmlMetadata() override;
+    virtual QString htmlMetadata() const override;
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;
@@ -126,9 +126,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Has spatial index
     bool mHasSpatialIndex = false;
     //! Raster size x
-    long mWidth = 0;
+    qlonglong mWidth = 0;
     //! Raster size y
-    long mHeight = 0;
+    qlonglong mHeight = 0;
     //! Raster tile size x
     int mTileWidth = 0;
     //! Raster tile size y
@@ -223,7 +223,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     /**
      * Returns the quoted SQL frament to retrieve the PK from the raster table
      */
-    QString pkSql();
+    QString pkSql() const;
 
     /**
      * Returns table comment

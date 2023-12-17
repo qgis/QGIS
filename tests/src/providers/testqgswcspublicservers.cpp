@@ -34,7 +34,7 @@
 #include "qgsrasterlayer.h"
 #include "qgswcscapabilities.h"
 #include "testqgswcspublicservers.h"
-#include "qgssettings.h"
+#include "qgsnetworkaccessmanager.h"
 
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */
@@ -57,8 +57,7 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString &cacheDirPath, i
 
 TestQgsWcsPublicServers::~TestQgsWcsPublicServers()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mOrigTimeout );
+  QgsNetworkAccessManager::settingsNetworkTimeout->setValue( mOrigTimeout );
 }
 
 //runs before all tests
@@ -68,9 +67,8 @@ void TestQgsWcsPublicServers::init()
 
   // Unfortunately this seems to be the only way to set timeout, we try to reset it
   // at the end but it can be canceled before ...
-  QgsSettings settings;
-  mOrigTimeout = settings.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt();
-  settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mTimeout );
+  mOrigTimeout = QgsNetworkAccessManager::settingsNetworkTimeout->value();
+  QgsNetworkAccessManager::settingsNetworkTimeout->setValue( mTimeout );
 
   //mCacheDir = QDir( "./wcstestcache" );
   mCacheDir = QDir( mCacheDirPath );
@@ -79,7 +77,7 @@ void TestQgsWcsPublicServers::init()
     QDir myDir = QDir::root();
     if ( !myDir.mkpath( mCacheDir.absolutePath() ) )
     {
-      QgsDebugMsg( "Cannot create cache dir " + mCacheDir.absolutePath() );
+      QgsDebugError( "Cannot create cache dir " + mCacheDir.absolutePath() );
       QCoreApplication::exit( 1 );
     }
   }
@@ -111,7 +109,7 @@ void TestQgsWcsPublicServers::init()
   if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     QString data = file.readAll();
-    //QgsDebugMsg("servers: \n"  + str );
+    //QgsDebugMsgLevel("servers: \n"  + str, 1 );
     file.close();
     QJsonDocument doc = QJsonDocument::fromJson( data.toUtf8() );
     const QJsonObject result = doc.object();
@@ -122,7 +120,7 @@ void TestQgsWcsPublicServers::init()
       const QJsonObject serverObject = serverIt.value().toObject();
       const QString serverUrl = serverObject.value( QLatin1String( "url" ) ).toString();
 
-      QgsDebugMsg( "serverUrl: " + serverUrl );
+      QgsDebugMsgLevel( "serverUrl: " + serverUrl, 1 );
 
       Server server( serverUrl );
       server.description = serverObject.value( QLatin1String( "description" ) ).toString();
@@ -131,7 +129,7 @@ void TestQgsWcsPublicServers::init()
       QJsonObject::ConstIterator paramsIt = serverParams.constBegin();
       for ( ; paramsIt != serverParams.constEnd(); paramsIt++ )
       {
-        QgsDebugMsg( QStringLiteral( "params value: %1" ).arg( paramsIt.value().toString() ) );
+        QgsDebugMsgLevel( QStringLiteral( "params value: %1" ).arg( paramsIt.value().toString() ), 1 );
         server.params.insert( paramsIt.key(), paramsIt.value().toString() );
       }
 
@@ -143,7 +141,7 @@ void TestQgsWcsPublicServers::init()
         QJsonObject issueObject = issuesIt.value().toObject();
 
         QString description = issueObject.value( QLatin1String( "description" ) ).toString();
-        QgsDebugMsg( "description: " + description );
+        QgsDebugMsgLevel( "description: " + description, 1 );
         Issue issue( description );
 
         issue.offender = issueObject.value( QLatin1String( "offender" ) ).toString();
@@ -170,7 +168,7 @@ void TestQgsWcsPublicServers::init()
   }
   else
   {
-    QgsDebugMsg( "Cannot open " + path );
+    QgsDebugError( "Cannot open " + path );
   }
 }
 
@@ -269,7 +267,7 @@ void TestQgsWcsPublicServers::test()
     QString myServerDirName = serverUrl;
     myServerDirName.replace( QRegularExpression( "[:/]+" ), QStringLiteral( "." ) );
     myServerDirName.remove( QRegularExpression( "\\.$" ) );
-    QgsDebugMsg( "myServerDirName = " + myServerDirName );
+    QgsDebugMsgLevel( "myServerDirName = " + myServerDirName, 1 );
 
     QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
 
@@ -282,7 +280,7 @@ void TestQgsWcsPublicServers::test()
 
     for ( const QString &version : versions )
     {
-      QgsDebugMsg( "server: " + serverUrl + " version: " + version );
+      QgsDebugMsgLevel( "server: " + serverUrl + " version: " + version, 1 );
       QStringList myVersionLog;
       myVersionLog << "version:" + version;
 
@@ -317,7 +315,7 @@ void TestQgsWcsPublicServers::test()
 
       if ( !myCapabilities.lastError().isEmpty() )
       {
-        QgsDebugMsg( myCapabilities.lastError() );
+        QgsDebugError( myCapabilities.lastError() );
         myVersionLog << "error:" +  myCapabilities.lastError().replace( '\n', ' ' );
         continue;
       }
@@ -327,7 +325,7 @@ void TestQgsWcsPublicServers::test()
       QVector<QgsWcsCoverageSummary> myCoverages;
       if ( !myCapabilities.supportedCoverages( myCoverages ) )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot get list of coverages" ) );
+        QgsDebugError( QStringLiteral( "Cannot get list of coverages" ) );
         myVersionLog << QStringLiteral( "error:Cannot get list of coverages" );
         continue;
       }
@@ -340,7 +338,7 @@ void TestQgsWcsPublicServers::test()
       bool myCoverageFound = false;
       for ( QgsWcsCoverageSummary myCoverage : myCoverages )
       {
-        QgsDebugMsg( "coverage: " + myCoverage.identifier );
+        QgsDebugMsgLevel( "coverage: " + myCoverage.identifier, 1 );
         if ( !mCoverage.isEmpty() && myCoverage.identifier != mCoverage ) continue;
         myCoverageFound = true;
 
@@ -459,7 +457,7 @@ void TestQgsWcsPublicServers::test()
 
             // Save rendered image
             QString myPngPath = myPath + "-" + provider + ".png";
-            QgsDebugMsg( "myPngPath = " + myPngPath );
+            QgsDebugMsgLevel( "myPngPath = " + myPngPath, 1 );
             myImage.save( myPngPath );
 
             // Verify data
@@ -479,7 +477,7 @@ void TestQgsWcsPublicServers::test()
               }
               delete myBlock;
             }
-            QgsDebugMsg( QStringLiteral( "%1 values" ).arg( myValues.size() ) );
+            QgsDebugMsgLevel( QStringLiteral( "%1 values" ).arg( myValues.size() ), 1 );
             myLog << provider + QStringLiteral( "_valuesCount:%1" ).arg( myValues.size() );
 
             // Verify image colors
@@ -492,12 +490,12 @@ void TestQgsWcsPublicServers::test()
                 if ( !myColors.contains( color ) ) myColors.insert( color );
               }
             }
-            QgsDebugMsg( QStringLiteral( "%1 colors" ).arg( myColors.size() ) );
+            QgsDebugMsgLevel( QStringLiteral( "%1 colors" ).arg( myColors.size() ), 1 );
             myLog << provider + QStringLiteral( "_colorsCount:%1" ).arg( myColors.size() );
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Layer is not valid" ) );
+            QgsDebugError( QStringLiteral( "Layer is not valid" ) );
             myLog << provider + "_error:Layer is not valid";
           }
           myLog << provider + QStringLiteral( "_time:%1" ).arg( time.elapsed() / 1000., 0, 'f', 2 );
@@ -516,7 +514,7 @@ void TestQgsWcsPublicServers::test()
       }
       if ( !mCoverage.isEmpty() && ! myCoverageFound )
       {
-        QgsDebugMsg( QStringLiteral( "Coverage not found" ) );
+        QgsDebugError( QStringLiteral( "Coverage not found" ) );
       }
       QFile myVersionLogFile( myVersionLogPath );
       Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
@@ -542,7 +540,7 @@ void TestQgsWcsPublicServers::writeReport( const QString &report )
     myStream << report;
     myFile.close();
   }
-  QgsDebugMsg( "Report written to " + myReportFile );
+  QgsDebugMsgLevel( "Report written to " + myReportFile, 1 );
 }
 
 void TestQgsWcsPublicServers::report()
@@ -930,16 +928,16 @@ int main( int argc, char *argv[] )
         return 2;   // XXX need standard exit codes
 
       default:
-        QgsDebugMsg( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugMsgLevel( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ), 1 );
         return 1;   // XXX need standard exit codes
     }
 
   }
 
-  QgsDebugMsg( QStringLiteral( "myServer = %1" ).arg( myServer ) );
-  QgsDebugMsg( QStringLiteral( "myCoverage = %1" ).arg( myCoverage ) );
-  QgsDebugMsg( QStringLiteral( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
-  QgsDebugMsg( QStringLiteral( "myVersion = %1" ).arg( myVersion ) );
+  QgsDebugMsgLevel( QStringLiteral( "myServer = %1" ).arg( myServer ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "myCoverage = %1" ).arg( myCoverage ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "myMaxCoverages = %1" ).arg( myMaxCoverages ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "myVersion = %1" ).arg( myVersion ), 1 );
 
   if ( !myCoverage.isEmpty() && myServer.isEmpty() )
   {
@@ -947,7 +945,7 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QgsDebugMsg( QStringLiteral( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
+  QgsDebugMsgLevel( QStringLiteral( "optind = %1 argc = %2" ).arg( optind ).arg( argc ), 1 );
   if ( optind > argc - 1 )
   {
     std::cerr << "CACHE_DIR missing.\n";
@@ -963,7 +961,7 @@ int main( int argc, char *argv[] )
 
   QString myCacheDirPath = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind] ) ).absoluteFilePath() );
 
-  QgsDebugMsg( "myCacheDirPath = " + myCacheDirPath );
+  QgsDebugMsgLevel( "myCacheDirPath = " + myCacheDirPath, 1 );
 
 #else
   // Not yet supported on Windows (missing options parser)

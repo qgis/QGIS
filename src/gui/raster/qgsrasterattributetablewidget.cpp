@@ -170,6 +170,7 @@ void QgsRasterAttributeTableWidget::updateButtons()
 {
   const bool enableEditingButtons( static_cast<bool>( mAttributeTableBuffer ) && mEditable && mRATView->selectionModel()->currentIndex().isValid() );
   mActionToggleEditing->setChecked( mEditable );
+  mActionToggleEditing->setEnabled( enableEditingButtons );
   mActionAddColumn->setEnabled( mEditable );
   mActionRemoveColumn->setEnabled( enableEditingButtons );
   mActionAddRow->setEnabled( enableEditingButtons );
@@ -247,7 +248,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
     QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( mCurrentBand ) };
     if ( ! attributeTable )
     {
-      QgsDebugMsg( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
+      QgsDebugError( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
     }
     else
     {

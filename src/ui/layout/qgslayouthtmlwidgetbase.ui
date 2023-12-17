@@ -38,7 +38,7 @@
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
+      <string notr="true">padding: 2px; font-weight: bold; background-color: palette(mid);</string>
      </property>
      <property name="text">
       <string>HTML frame</string>

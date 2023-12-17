@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -34,26 +33,19 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVector3D,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
+class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsPointCloudAttributeByRampRenderer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return 'pointcloudrenderer'
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testSetLayer(self):
@@ -195,13 +187,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_render')
-        result = renderchecker.runTest('expected_ramp_render')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_render', 'ramp_render', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderX(self):
@@ -229,13 +217,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_xrender')
-        result = renderchecker.runTest('expected_ramp_xrender')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_xrender', 'ramp_xrender', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderY(self):
@@ -263,13 +247,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_yrender')
-        result = renderchecker.runTest('expected_ramp_yrender')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_yrender', 'ramp_yrender', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderZ(self):
@@ -297,13 +277,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_zrender')
-        result = renderchecker.runTest('expected_ramp_zrender')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_zrender', 'ramp_zrender', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderCrsTransform(self):
@@ -329,13 +305,10 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         mapsettings.setExtent(QgsRectangle(152.980508492, -26.662023491, 152.980586020, -26.662071137))
         mapsettings.setLayers([layer])
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_render_crs_transform')
-        result = renderchecker.runTest('expected_ramp_render_crs_transform')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+
+        self.assertTrue(
+            self.render_map_settings_check('ramp_render_crs_transform', 'ramp_render_crs_transform', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderPointSize(self):
@@ -362,13 +335,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_pointsize')
-        result = renderchecker.runTest('expected_ramp_pointsize')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_pointsize', 'ramp_pointsize', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderZRange(self):
@@ -396,13 +365,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setLayers([layer])
         mapsettings.setZRange(QgsDoubleRange(74.7, 75))
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_zfilter')
-        result = renderchecker.runTest('expected_ramp_zfilter')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_zfilter', 'ramp_zfilter', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderTopToBottom(self):
@@ -431,13 +396,9 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_top_to_bottom')
-        result = renderchecker.runTest('expected_ramp_top_to_bottom')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_top_to_bottom', 'ramp_top_to_bottom', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderBottomToTop(self):
@@ -466,13 +427,40 @@ class TestQgsPointCloudAttributeByRampRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_ramp_bottom_to_top')
-        result = renderchecker.runTest('expected_ramp_bottom_to_top')
-        TestQgsPointCloudAttributeByRampRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('ramp_bottom_to_top', 'ramp_bottom_to_top', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTriangles(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute('Intensity')
+        renderer.setMinimum(200)
+        renderer.setMaximum(1000)
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(200, 1000, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+        renderer.setRenderAsTriangles(True)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('ramp_triangles', 'ramp_triangles', mapsettings)
+        )
 
 
 if __name__ == '__main__':

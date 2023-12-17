@@ -21,6 +21,7 @@
 #include "qgspointlocator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmeshdataprovider.h"
+
 #include <QString>
 #include <QVariantMap>
 
@@ -30,6 +31,7 @@ class QgsLayout;
 class QgsSymbol;
 class QgsLayoutAtlas;
 class QgsLayoutItem;
+class QgsMapSettings;
 class QgsProcessingAlgorithm;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingContext;

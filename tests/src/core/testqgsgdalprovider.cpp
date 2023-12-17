@@ -57,6 +57,8 @@ class TestQgsGdalProvider : public QgsTest
     void encodeUri(); // test encode URI implementation
     void scaleDataType(); //test resultant data types for int raster with float scale (#11573)
     void warpedVrt(); //test loading raster which requires a warped vrt
+    void testVrtAlphaBandRequired();
+    void testVrtAlphaBandNotRequired();
     void noData();
     void noDataOutsideExtent();
     void invalidNoDataInSourceIgnored();
@@ -191,6 +193,35 @@ void TestQgsGdalProvider::warpedVrt()
   QGSCOMPARENEAR( rp->extent().yMinimum(), 2281355, 1 );
   QGSCOMPARENEAR( rp->extent().yMaximum(), 3129683, 1 );
   delete provider;
+}
+
+void TestQgsGdalProvider::testVrtAlphaBandRequired()
+{
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rotated_rgb.png";
+  std::unique_ptr< QgsDataProvider > provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
+  QVERIFY( rp );
+
+  QCOMPARE( rp->bandCount(), 4 );
+  QCOMPARE( rp->colorInterpretation( 1 ), Qgis::RasterColorInterpretation::RedBand );
+  QCOMPARE( rp->colorInterpretation( 2 ), Qgis::RasterColorInterpretation::GreenBand );
+  QCOMPARE( rp->colorInterpretation( 3 ), Qgis::RasterColorInterpretation::BlueBand );
+  QCOMPARE( rp->colorInterpretation( 4 ), Qgis::RasterColorInterpretation::AlphaBand );
+}
+
+void TestQgsGdalProvider::testVrtAlphaBandNotRequired()
+{
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/72_528t50dgm.txt";
+  std::unique_ptr< QgsDataProvider > provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
+  QVERIFY( rp );
+
+  QGSCOMPARENEAR( rp->extent().xMinimum(), 719975, 0.0001 );
+  QGSCOMPARENEAR( rp->extent().xMaximum(), 720075, 0.0001 );
+  QGSCOMPARENEAR( rp->extent().yMinimum(), 5279975, 0.0001 );
+  QGSCOMPARENEAR( rp->extent().yMaximum(), 5280075, 0.0001 );
+  QCOMPARE( rp->bandCount(), 1 );
+  QCOMPARE( rp->colorInterpretation( 1 ), Qgis::RasterColorInterpretation::Undefined );
 }
 
 void TestQgsGdalProvider::noData()

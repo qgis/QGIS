@@ -145,7 +145,7 @@ QgsGrassImport::~QgsGrassImport()
 
 void QgsGrassImport::setError( const QString &error )
 {
-  QgsDebugMsg( "error: " + error );
+  QgsDebugError( "error: " + error );
   mError = error;
 }
 
@@ -483,7 +483,7 @@ bool QgsGrassRasterImport::import()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      QgsDebugMsg( QString( "Cannot create group: %1" ).arg( e.what() ) );
+      QgsDebugError( QString( "Cannot create group: %1" ).arg( e.what() ) );
     }
   }
   return true;

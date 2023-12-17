@@ -3,7 +3,7 @@
 # This test checks that all source files correctly have license headers
 
 INCLUDE_EXTENSIONS="h|cpp|hpp|py|c"
-EXCLUDE_LIST="(.*\\/(qtermwidget)\\/|.*\\/(auto_additions)\\/|ui_defaults\\.h|qgspluginmanager_texts\\.cpp|src\\/analysis\\/vector\\/mersenne-twister\\.|^[^.]*$|.*\\.(?!($INCLUDE_EXTENSIONS)$))"
+EXCLUDE_LIST="(.*\\/(auto_additions)\\/|ui_defaults\\.h|qgspluginmanager_texts\\.cpp|src\\/analysis\\/vector\\/mersenne-twister\\.|^[^.]*$|.*\\.(?!($INCLUDE_EXTENSIONS)$))"
 LICENSE_CHECK="external/licensecheck/licensecheck.pl"
 
 DIR=$(git rev-parse --show-toplevel)

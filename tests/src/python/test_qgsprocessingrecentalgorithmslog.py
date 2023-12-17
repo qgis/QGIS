@@ -13,12 +13,13 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui, QgsProcessingRecentAlgorithmLog
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProcessingRecentAlgorithmLog(unittest.TestCase):
+class TestQgsProcessingRecentAlgorithmLog(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

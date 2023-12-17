@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import time
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -39,12 +38,13 @@ from qgis.core import (
     QgsVectorLayer
 )
 from qgis.gui import QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapToolEmitPoint
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsMapCanvas(unittest.TestCase):
+class TestQgsMapCanvas(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"

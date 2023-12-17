@@ -145,7 +145,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   }
   else
   {
-    QgsDebugMsg( "Failed to add style: " + text );
+    QgsDebugError( "Failed to add style: " + text );
   }
 }
 
@@ -162,7 +162,7 @@ void QgsMapLayerStyleGuiUtils::useStyle()
   const bool res = layer->styleManager()->setCurrentStyle( name );
   if ( !res )
   {
-    QgsDebugMsg( "Failed to set current style: " + name );
+    QgsDebugError( "Failed to set current style: " + name );
   }
 }
 
@@ -179,7 +179,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   const bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
   if ( !res )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
+    QgsDebugError( QStringLiteral( "Failed to remove current style" ) );
   }
 }
 
@@ -205,6 +205,6 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
   const bool res = layer->styleManager()->renameStyle( name, text );
   if ( !res )
   {
-    QgsDebugMsg( "Failed to rename style: " + name );
+    QgsDebugError( "Failed to rename style: " + name );
   }
 }

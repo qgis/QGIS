@@ -22,7 +22,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -34,7 +35,7 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
-class PyQgsGdalProvider(unittest.TestCase):
+class PyQgsGdalProvider(QgisTestCase):
 
     def checkBlockContents(self, block, expected):
         res = []
@@ -319,6 +320,40 @@ class PyQgsGdalProvider(unittest.TestCase):
         self.assertEqual(rl.metadata().title(), 'Raster title')
         self.assertEqual(rl.metadata().type(), 'dataset')
         self.assertEqual(rl.metadata().abstract(), 'My description (abstract)\n\nmy raster summary')
+
+    def testBandDescription(self):
+        """Test band description getter"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testInt8.tif')
+        ds = gdal.GetDriverByName('GTiff').Create(tmpfile, 2, 2, 1, gdal.GDT_Byte)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack('b' * 4, 1, 127, 0, -128))
+        band = ds.GetRasterBand(1)
+        band.SetDescription('my description')
+        ds.FlushCache()
+        ds = None
+
+        rl = QgsRasterLayer(tmpfile)
+        self.assertEqual(rl.dataProvider().bandDescription(1), 'my description')
+
+        ds = gdal.OpenEx(tmpfile)
+        band = ds.GetRasterBand(1)
+        band.SetMetadataItem('DESCRIPTION', 'my metadata description')
+        ds.FlushCache()
+        ds = None
+
+        rl = QgsRasterLayer(tmpfile)
+        self.assertEqual(rl.dataProvider().bandDescription(1), 'my metadata description')
+
+    def testDisplayBandNameBadLayer(self):
+        """Test crash from issue GH #54702"""
+
+        rl = QgsRasterLayer("https://FAKESERVER/ImageServer/WCSServer", "BadWCS", "wcs")
+        self.assertFalse(rl.isValid())
+        # This was triggering a std::bad_alloc exception:
+        self.assertEqual(rl.dataProvider().displayBandName(1), 'Band 1')
+        # This was triggering another crash:
+        self.assertEqual(rl.dataProvider().colorInterpretationName(1), 'Undefined')
 
 
 if __name__ == '__main__':

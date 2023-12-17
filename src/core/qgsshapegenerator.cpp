@@ -130,14 +130,14 @@ QPainterPath QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const Q
       {
         double x = 0;
         double y = 0;
-        QgsGeometryUtils::pointOnLineWithDistance( minEdge.p2().x(), minEdge.p2().y(), minEdge.p1().x(), minEdge.p1().y(), clampedWedgeWidth, x, y );
+        QgsGeometryUtilsBase::pointOnLineWithDistance( minEdge.p2().x(), minEdge.p2().y(), minEdge.p1().x(), minEdge.p1().y(), clampedWedgeWidth, x, y );
         balloonSegmentPoint1 = QPointF( x, y );
       }
 
       {
         double x = 0;
         double y = 0;
-        QgsGeometryUtils::pointOnLineWithDistance( balloonSegmentPoint1.x(), balloonSegmentPoint1.y(), minEdge.p2().x(), minEdge.p2().y(), clampedWedgeWidth, x, y );
+        QgsGeometryUtilsBase::pointOnLineWithDistance( balloonSegmentPoint1.x(), balloonSegmentPoint1.y(), minEdge.p2().x(), minEdge.p2().y(), clampedWedgeWidth, x, y );
         balloonSegmentPoint2 = QPointF( x, y );
       }
     }

@@ -11,8 +11,7 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '10/08/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -31,14 +30,14 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsMultiRenderChecker,
     QgsRenderContext,
     QgsTextFormat,
     QgsVertexId,
     QgsLineString,
     QgsMapUnitScale,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, unitTestDataPath
 
@@ -46,19 +45,11 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationLineTextItem(unittest.TestCase):
+class TestQgsAnnotationLineTextItem(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsAnnotationLineTextItem Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return "annotation_layer"
 
     def testBasic(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 13))))
@@ -241,7 +232,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('linetext_item', 'linetext_item', image))
+        self.assertTrue(self.image_check('linetext_item', 'linetext_item', image))
 
     def testRenderLineOffsetPositive(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
@@ -275,7 +266,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('linetext_item_offset_positive', 'linetext_item_offset_positive', image))
+        self.assertTrue(self.image_check('linetext_item_offset_positive', 'linetext_item_offset_positive', image))
 
     def testRenderLineOffsetNegative(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
@@ -309,7 +300,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('linetext_item_offset_negative', 'linetext_item_offset_negative', image))
+        self.assertTrue(self.image_check('linetext_item_offset_negative', 'linetext_item_offset_negative', image))
 
     def testRenderLineTruncate(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
@@ -341,7 +332,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('linetext_item_truncate', 'linetext_item_truncate', image))
+        self.assertTrue(self.image_check('linetext_item_truncate', 'linetext_item_truncate', image))
 
     def testRenderLineTextExpression(self):
         item = QgsAnnotationLineTextItem('[% 1 + 1.5 %]', QgsLineString(((12, 13), (13, 13.1), (14, 12))))
@@ -373,7 +364,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('linetext_item_expression', 'linetext_item_expression', image))
+        self.assertTrue(self.image_check('linetext_item_expression', 'linetext_item_expression', image))
 
     def testRenderWithTransform(self):
         item = QgsAnnotationLineTextItem('my text', QgsLineString(
@@ -407,21 +398,7 @@ class TestQgsAnnotationLineTextItem(unittest.TestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.imageCheck('linetext_item_transform', 'linetext_item_transform', image))
-
-    def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLineTextItem.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'annotation_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsMultiRenderChecker()
-        checker.setControlPathPrefix("annotation_layer")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.runTest(name, 20)
-        TestQgsAnnotationLineTextItem.report += checker.report()
-        return result
+        self.assertTrue(self.image_check('linetext_item_transform', 'linetext_item_transform', image))
 
 
 if __name__ == '__main__':

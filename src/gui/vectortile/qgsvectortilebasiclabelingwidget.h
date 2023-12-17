@@ -59,6 +59,7 @@ class GUI_EXPORT QgsVectorTileBasicLabelingWidget : public QgsMapLayerConfigWidg
     void editStyleAtIndex( const QModelIndex &index );
     void removeStyle();
 
+    void labelModeChanged();
     void updateLabelingFromWidget();
 
   private:

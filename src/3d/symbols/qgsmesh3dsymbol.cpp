@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dsymbol.h"
+#include "qgs3dtypes.h"
 #include "qgssymbollayerutils.h"
 #include "qgs3dutils.h"
 #include "qgsphongmaterialsettings.h"
@@ -34,6 +35,7 @@ QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
   result->mHeight = mHeight;
   result->mMaterialSettings.reset( mMaterialSettings->clone() );
   result->mAddBackFaces = mAddBackFaces;
+  result->mCullingMode = mCullingMode;
   result->mEnabled = mEnabled;
   result->mSmoothedTriangles = mSmoothedTriangles;
   result->mWireframeEnabled = mWireframeEnabled;
@@ -73,6 +75,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   //Advanced symbol
   QDomElement elemAdvancedSettings = doc.createElement( QStringLiteral( "advanced-settings" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "renderer-3d-enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "culling-mode" ), Qgs3DUtils::cullingModeToString( mCullingMode ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "smoothed-triangle" ), mSmoothedTriangles ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
@@ -110,6 +113,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   //Advanced symbol
   const QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
   mEnabled = elemAdvancedSettings.attribute( QStringLiteral( "renderer-3d-enabled" ) ).toInt();
+  mCullingMode = Qgs3DUtils::cullingModeFromString( elemAdvancedSettings.attribute( QStringLiteral( "culling-mode" ), QStringLiteral( "back" ) ) );
   mSmoothedTriangles = elemAdvancedSettings.attribute( QStringLiteral( "smoothed-triangle" ) ).toInt();
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
   mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
@@ -292,6 +296,15 @@ void QgsMesh3DSymbol::setEnabled( bool enabled )
   mEnabled = enabled;
 }
 
+Qgs3DTypes::CullingMode QgsMesh3DSymbol::cullingMode() const
+{
+  return mCullingMode;
+}
+
+void QgsMesh3DSymbol::setCullingMode( const Qgs3DTypes::CullingMode &mode )
+{
+  mCullingMode = mode;
+}
 
 QgsAbstractMaterialSettings *QgsMesh3DSymbol::materialSettings() const
 {

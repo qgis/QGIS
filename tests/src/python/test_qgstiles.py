@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '04/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -24,12 +23,13 @@ from qgis.core import (
     QgsTileXYZ,
     QgsVectorTileMatrixSet,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTiles(unittest.TestCase):
+class TestQgsTiles(QgisTestCase):
 
     def testQgsTileXYZ(self):
         tile = QgsTileXYZ(1, 2, 3)
@@ -115,10 +115,17 @@ class TestQgsTiles(unittest.TestCase):
         self.assertAlmostEqual(matrix_set.tileMatrix(1).scale(), 776503144, -1)
         self.assertEqual(matrix_set.scaleToZoom(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
-        self.assertEqual(matrix_set.scaleToZoom(76503144), 1)
+        # overzooming past max zoom level
+        self.assertAlmostEqual(matrix_set.scaleToZoom(76503144), 3.423637, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(6503144), 6.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(1625786), 8.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(50805.8125), 13.928011, 5)
         self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 1)
+        # turn off zoom level clamping to minimum / maximum zoom values
+        self.assertEqual(matrix_set.scaleToZoomLevel(76503144, False), 3)
+        self.assertEqual(matrix_set.scaleToZoomLevel(1625786, False), 9)
 
         # add a second level
         matrix_set.addMatrix(
@@ -150,8 +157,11 @@ class TestQgsTiles(unittest.TestCase):
 
         self.assertAlmostEqual(matrix_set.scaleToZoom(776503144), 1, 5)
         self.assertEqual(matrix_set.scaleToZoom(1776503144), 1)
-        self.assertAlmostEqual(matrix_set.scaleToZoom(76503144), 2, 5)
-        self.assertEqual(matrix_set.scaleToZoom(6503144), 2)
+        # overzooming past max zoom level
+        self.assertAlmostEqual(matrix_set.scaleToZoom(76503144), 3.423637, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(6503144), 6.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(1625786), 8.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(50805.8125), 13.928011, 5)
         self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 2)
@@ -175,7 +185,11 @@ class TestQgsTiles(unittest.TestCase):
         self.assertAlmostEqual(matrix_set.scaleToZoom(288251572), 1.515, 2)
         self.assertAlmostEqual(matrix_set.scaleToZoom(194125786), 2, 5)
         self.assertAlmostEqual(matrix_set.scaleToZoom(188251572), 2.060519, 3)
-        self.assertEqual(matrix_set.scaleToZoom(6503144), 3)
+        # overzooming past max zoom level
+        self.assertAlmostEqual(matrix_set.scaleToZoom(76503144), 3.423637, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(6503144), 6.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(1625786), 8.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(50805.8125), 13.928011, 5)
         self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 3)
@@ -193,8 +207,11 @@ class TestQgsTiles(unittest.TestCase):
         self.assertAlmostEqual(matrix_set.scaleToZoom(388251572), 2, 5)
         self.assertAlmostEqual(matrix_set.scaleToZoom(288251572), 2.515, 2)
         self.assertAlmostEqual(matrix_set.scaleToZoom(194125786), 3, 5)
-        self.assertAlmostEqual(matrix_set.scaleToZoom(188251572), 3.0, 3)
-        self.assertEqual(matrix_set.scaleToZoom(6503144), 3)
+        # overzooming past max zoom level
+        self.assertAlmostEqual(matrix_set.scaleToZoom(188251572), 3.0605, 3)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(6503144), 7.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(1625786), 9.928011, 5)
+        self.assertAlmostEqual(matrix_set.scaleToZoom(50805.8125), 14.928011, 5)
         self.assertEqual(matrix_set.scaleToZoomLevel(776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(1776503144), 1)
         self.assertEqual(matrix_set.scaleToZoomLevel(76503144), 3)

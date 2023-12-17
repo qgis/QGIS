@@ -419,7 +419,10 @@ void QgsPgSourceSelect::addButtonClicked()
       for ( const auto &u : std::as_const( rasterTables ) )
       {
         // Use "gdal" to proxy rasters to GDAL provider, or "postgresraster" for native PostGIS raster provider
+        Q_NOWARN_DEPRECATED_PUSH
         emit addRasterLayer( u.second, u.first, QLatin1String( "postgresraster" ) );
+        Q_NOWARN_DEPRECATED_POP
+        emit addLayer( Qgis::LayerType::Raster, u.second, u.first, QLatin1String( "postgresraster" ) );
       }
     }
 
@@ -451,7 +454,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
   // populate the table list
   QgsDataSourceUri uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
-  QgsDebugMsg( "Connection info: " + uri.connectionInfo( false ) );
+  QgsDebugMsgLevel( "Connection info: " + uri.connectionInfo( false ), 2 );
 
   mDataSrcUri = uri;
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
@@ -526,7 +529,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "schema item found" ) );
+    QgsDebugMsgLevel( QStringLiteral( "schema item found" ), 2 );
     return;
   }
 
@@ -535,7 +538,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel->layerURI( index, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "no uri" ) );
+    QgsDebugMsgLevel( QStringLiteral( "no uri" ), 2 );
     return;
   }
 

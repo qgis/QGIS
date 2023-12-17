@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderwidget.cpp - A generic expression string builder widget.
+    qgisexpressionbuilderwidget.cpp - A generic expression builder widget.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -381,6 +381,9 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   if ( myFile.open( QIODevice::WriteOnly | QFile::Truncate ) )
   {
     QTextStream myFileStream( &myFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    myFileStream.setCodec( "UTF-8" );
+#endif
     myFileStream << txtPython->text() << Qt::endl;
     myFile.close();
   }
@@ -441,6 +444,7 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
   if ( ok && !text.isEmpty() )
   {
     newFunctionFile( text );
+    btnRemoveFile->setEnabled( cmbFileNames->count() > 0 );
   }
 }
 
@@ -1059,6 +1063,9 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
                            lastSaveDir,
                            tr( "User expressions" ) + " (*.json)" );
 
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( saveFileName.isEmpty() )
     return;
 

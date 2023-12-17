@@ -1,0 +1,739 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingutils.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProcessingUtils
+{
+%Docstring(signature="appended")
+Utility functions for use with processing classes.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingutils.h"
+%End
+  public:
+
+    static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of raster layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+%End
+
+    static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
+        const QList< int > &sourceTypes = QList< int >(),
+        bool sort = true );
+%Docstring
+Returns a list of vector layers from a ``project`` which are compatible with the processing
+framework.
+
+The ``sourceTypes`` list should be filled with a list of :py:class:`QgsProcessing`.SourceType values.
+If the ``sourceTypes`` list is non-empty then the layers will be sorted so that only
+layers with the specified source type included in the list will be returned. Leaving the ``sourceTypes``
+list empty will cause all vector layers, regardless of their geometry type, to be returned.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+%End
+
+    static QList<QgsMeshLayer *> compatibleMeshLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of mesh layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.6
+%End
+
+    static QList<QgsPluginLayer *> compatiblePluginLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of plugin layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
+%End
+
+    static QList<QgsPointCloudLayer *> compatiblePointCloudLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of point cloud layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
+%End
+
+    static QList<QgsAnnotationLayer *> compatibleAnnotationLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of annotation layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
+%End
+
+    static QList<QgsVectorTileLayer *> compatibleVectorTileLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of vector tile layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.32
+%End
+
+    static QList<QgsTiledSceneLayer *> compatibleTiledSceneLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of tiled scene layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.34
+%End
+
+    static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of map layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+%End
+
+    static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
+%Docstring
+Encodes a provider key and layer ``uri`` to a single string, for use with
+:py:func:`~QgsProcessingUtils.decodeProviderKeyAndUri`
+
+.. versionadded:: 3.14
+%End
+
+    static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey /Out/, QString &uri /Out/ );
+%Docstring
+Decodes a provider key and layer ``uri`` from an encoded string, for use with
+:py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
+
+:param string: encoded string, as returned by :py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
+
+:return: - ``True`` if ``string`` was successfully decoded
+         - providerKey: ID key for corresponding data provider
+         - uri: decoded layer uri
+
+.. versionadded:: 3.14
+%End
+
+    enum class LayerHint /BaseType=IntFlag/
+    {
+      UnknownType,
+      Vector,
+      Raster,
+      Mesh,
+      PointCloud,
+      Annotation,
+      VectorTile,
+      TiledScene,
+    };
+
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
+%Docstring
+Interprets a string as a map layer within the supplied ``context``.
+
+The method will attempt to
+load a layer matching the passed ``string``. E.g. if the string matches a layer ID or name
+within the context's project or temporary layer store then this layer will be returned.
+If the string is a file path and ``allowLoadingNewLayers`` is ``True``, then the layer at this
+file path will be loaded and added to the context's temporary layer store.
+Ownership of the layer remains with the ``context`` or the context's current project.
+
+The ``typeHint`` can be used to dictate the type of map layer expected.
+%End
+
+    static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) /Factory/;
+%Docstring
+Converts a variant ``value`` to a new feature source.
+
+Sources will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``.
+
+The optional ``fallbackValue`` can be used to specify a "default" value which is used
+if ``value`` cannot be successfully converted to a source.
+
+This function creates a new object and the caller takes responsibility for deleting the returned object.
+%End
+
+    static QgsCoordinateReferenceSystem variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
+%Docstring
+Converts a variant ``value`` to a coordinate reference system.
+
+The optional ``fallbackValue`` can be used to specify a "default" value which is used
+if ``value`` cannot be successfully converted to a CRS.
+
+.. versionadded:: 3.12
+%End
+
+    static QString normalizeLayerSource( const QString &source ) /HoldGIL/;
+%Docstring
+Normalizes a layer ``source`` string for safe comparison across different
+operating system environments.
+%End
+
+    static QString variantToPythonLiteral( const QVariant &value );
+%Docstring
+Converts a variant to a Python literal.
+
+.. seealso:: :py:func:`stringToPythonLiteral`
+
+.. versionadded:: 3.6
+%End
+
+    static QString stringToPythonLiteral( const QString &string ) /HoldGIL/;
+%Docstring
+Converts a string to a Python string literal. E.g. by replacing ' with \'.
+
+.. seealso:: :py:func:`variantToPythonLiteral`
+%End
+
+
+    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
+%Docstring
+Creates a feature sink ready for adding features. The ``destination`` specifies a destination
+URI for the resultant layer. It may be updated in place to reflect the actual destination
+for the layer.
+
+Sink parameters such as desired ``fields``, ``geometryType`` and ``crs`` must be specified.
+
+The ``createOptions`` map can be used to specify additional sink creation options, which
+are passed to the underlying provider when creating new layers. Known options also
+include 'fileEncoding', which is used to specify a file encoding to use for created
+files. If 'fileEncoding' is not specified, the default encoding from the ``context`` will be used.
+
+If a layer is created for the feature sink, the layer will automatically be added to the ``context``'s
+temporary layer store.
+
+.. note::
+
+   this version of the :py:func:`~QgsProcessingUtils.createFeatureSink` function has an API designed around use from the
+   SIP bindings. c++ code should call the other :py:func:`~QgsProcessingUtils.createFeatureSink` version.
+
+.. note::
+
+   available in Python bindings as :py:func:`~QgsProcessingUtils.createFeatureSink`
+%End
+
+
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context );
+%Docstring
+Combines the extent of several map ``layers``. If specified, the target ``crs``
+will be used to transform the layer's extent to the desired output reference system
+using the specified ``context``.
+
+.. versionadded:: 3.8
+%End
+
+ static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) /Deprecated/;
+%Docstring
+Combines the extent of several map ``layers``. If specified, the target ``crs``
+will be used to transform the layer's extent to the desired output reference system.
+
+.. deprecated::
+   Use version with :py:class:`QgsProcessingContext` argument instead
+%End
+
+    static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
+%Docstring
+Converts an ``input`` parameter value for use in source iterating mode, where one individual sink
+is created per input feature.
+The ``id`` parameter represents the unique ID for this output, which is embedded into the resulting
+parameter value.
+%End
+
+    static QString tempFolder( const QgsProcessingContext *context = 0 );
+%Docstring
+Returns a session specific processing temporary folder for use in processing algorithms.
+
+.. seealso:: :py:func:`generateTempFilename`
+%End
+
+    static QString generateTempFilename( const QString &basename, const QgsProcessingContext *context = 0 );
+%Docstring
+Returns a temporary filename for a given file, putting it into
+a temporary folder (creating that folder in the process),
+but not changing the ``basename``.
+
+.. seealso:: :py:func:`tempFolder`
+%End
+
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+%Docstring
+Returns a HTML formatted version of the help text encoded in a variant ``map`` for
+a specified ``algorithm``.
+%End
+
+    static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
+%Docstring
+Converts a source vector ``layer`` to a file path of a vector layer of compatible format.
+
+If the specified ``layer`` is not of the format listed in the
+``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+in a temporary location using ``baseName``. The function will then return the path to that temporary file.
+
+``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+layer export is required. This defaults to shapefiles.
+
+The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
+
+Since QGIS 3.32, the optional ``filterExpression`` argument can be used to specify a expression to use
+to filter the features read from the layer.
+
+When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
+to use :py:func:`~QgsProcessingUtils.convertToCompatibleFormatAndLayerName` which may avoid conversion in more situations.
+
+.. seealso:: :py:func:`convertToCompatibleFormatAndLayerName`
+%End
+
+    static QString convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback,
+        QString &layerName /Out/,
+        long long featureLimit = -1,
+        const QString &filterExpression = QString() );
+%Docstring
+Converts a source vector ``layer`` to a file path and layer name of a vector layer of compatible format.
+
+If the specified ``layer`` is not of the format listed in the
+``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+in a temporary location using ``baseName``. The function will then return the path to that temporary file.
+
+``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
+
+The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+layer export is required. This defaults to shapefiles.
+
+This method should be preferred over :py:func:`~QgsProcessingUtils.convertToCompatibleFormat` when an algorithm is able
+to correctly handle files with multiple layers. Unlike :py:func:`~QgsProcessingUtils.convertToCompatibleFormat`, it will not force
+a conversion in this case and will return the target layer name in the ``layerName`` argument.
+
+:param layer: source layer to convert (if required)
+:param selectedFeaturesOnly: ``True`` if only selected features from the layer should be used
+:param baseName: base file name for converted layer, if required
+:param compatibleFormats: a list of lowercase file extensions compatible with the algorithm
+:param preferredFormat: preferred format extension to use if conversion if required
+:param context: processing context
+:param feedback: feedback object
+:param layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+:param featureLimit: can be used to place a limit on the maximum number of features read from the layer
+:param filterExpression: optional expression for filtering features read from the layer (since QGIS 3.32)
+
+:return: path to source layer, or nearly converted compatible layer
+
+
+.. seealso:: :py:func:`convertToCompatibleFormat`
+
+.. versionadded:: 3.10
+%End
+
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() ) /HoldGIL/;
+%Docstring
+Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
+
+Duplicate field names will be altered to "name_2", "name_3", etc, finding the first
+non-duplicate name.
+
+.. note::
+
+   Some output file formats (e.g. shapefiles) have restrictions on the maximum
+   length of field names, so be aware that the results of calling this method may
+   be truncated when saving to these formats.
+%End
+
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields ) /HoldGIL/;
+%Docstring
+Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
+If the list of field names is empty, it is assumed that all fields are required.
+
+.. versionadded:: 3.2
+%End
+
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields ) /HoldGIL/;
+%Docstring
+Returns a subset of fields based on the indices of desired fields.
+
+.. versionadded:: 3.2
+%End
+
+    static QString defaultVectorExtension();
+%Docstring
+Returns the default vector extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "gpkg".
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
+.. versionadded:: 3.10
+%End
+
+    static QString defaultRasterExtension();
+%Docstring
+Returns the default raster extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns the user-set default extension from the processing settings, or
+a fallback value of "tif".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
+.. versionadded:: 3.10
+%End
+
+    static QString defaultPointCloudExtension();
+%Docstring
+Returns the default point cloud extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns a fallback value of "las".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
+.. versionadded:: 3.24
+%End
+
+    static QString defaultVectorTileExtension();
+%Docstring
+Returns the default vector tile extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns a fallback value of "mbtiles".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
+.. versionadded:: 3.32
+%End
+
+    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
+%Docstring
+Removes any raw pointer values from an input ``map``, replacing them with
+appropriate string values where possible.
+
+.. versionadded:: 3.26
+%End
+
+    static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
+%Docstring
+Pre-processes a set of ``parameter`` values for the qgis_process command.
+
+In particular, this function upgrades encoded data defined values to :py:class:`QgsProperty` objects.
+
+.. versionadded:: 3.30
+%End
+
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+%Docstring
+Returns the default encoding.
+
+The default encoding could be the one from "/Processing/encoding" or when it's not an allowed encoding name
+like "System", the default encoding system (mostly UTF-8 on Unix-like, windows-1252 on Windows).
+
+.. versionadded:: 3.32
+%End
+
+};
+
+class QgsProcessingFeatureSource : QgsFeatureSource
+{
+%Docstring(signature="appended")
+:py:class:`QgsFeatureSource` subclass which proxies methods to an underlying :py:class:`QgsFeatureSource`, modifying
+results according to the settings in a :py:class:`QgsProcessingContext`.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingutils.h"
+%End
+  public:
+
+    enum Flag
+    {
+      FlagSkipGeometryValidityChecks,
+    };
+    typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
+
+
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
+                                long long featureLimit = -1, const QString &filterExpression = QString() );
+%Docstring
+Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
+and processing ``context``.
+Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is ``False``,
+ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
+If ``ownsOriginalSource`` is ``True``, then this object will take ownership of ``originalSource``.
+
+If ``featureLimit`` is set to a value > 0, then a limit is placed on the maximum number of features which will be
+read from the source.
+
+Since QGIS 3.32, the optional ``filterExpression`` can be used to specify an expression based filter for the source.
+%End
+
+    ~QgsProcessingFeatureSource();
+
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+%Docstring
+Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
+An optional ``request`` can be used to optimise the returned
+iterator, eg by restricting the returned attributes or geometry.
+%End
+
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+    virtual QgsFields fields() const;
+
+    virtual Qgis::WkbType wkbType() const;
+
+    virtual long long featureCount() const;
+
+    virtual QString sourceName() const;
+
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+
+    virtual QVariant minimumValue( int fieldIndex ) const;
+
+    virtual QVariant maximumValue( int fieldIndex ) const;
+
+    virtual QgsRectangle sourceExtent() const;
+
+    virtual QgsFeatureIds allFeatureIds() const;
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+
+
+    QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
+%Docstring
+Returns an expression context scope suitable for this source.
+%End
+
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+%Docstring
+Overrides the default geometry check method for the source.
+
+.. seealso:: :py:func:`invalidGeometryCheck`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+%Docstring
+Returns the geometry check method for the source.
+
+.. seealso:: :py:func:`setInvalidGeometryCheck`
+
+.. versionadded:: 3.36
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingutils.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

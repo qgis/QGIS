@@ -6,6 +6,7 @@ set (WMS_SRCS
   qgswms.cpp
   qgswmsutils.cpp
   qgsdxfwriter.cpp
+  qgspdfwriter.cpp
   qgswmsdescribelayer.cpp
   qgswmsgetcapabilities.cpp
   qgswmsgetcontext.cpp
@@ -45,7 +46,6 @@ foreach(_library_type MODULE STATIC)
   target_compile_features(${_library_name} PRIVATE cxx_std_17)
 
   include_directories(${_library_name} SYSTEM PUBLIC
-    ${GDAL_INCLUDE_DIR}
     ${POSTGRES_INCLUDE_DIR}
   )
 

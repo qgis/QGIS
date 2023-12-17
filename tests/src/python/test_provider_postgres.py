@@ -23,7 +23,6 @@ import time
 from datetime import datetime
 
 import psycopg2
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QByteArray,
     QDate,
@@ -31,6 +30,7 @@ from qgis.PyQt.QtCore import (
     QDir,
     QObject,
     QTemporaryDir,
+    QTemporaryFile,
     QTime,
     QVariant,
 )
@@ -66,9 +66,11 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
+    QgsSettingsTree
 )
 from qgis.gui import QgsAttributeForm, QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
@@ -77,7 +79,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -1938,9 +1940,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         vl = self.getEditableLayer()
         self.assertTrue(vl.isValid())
-        self.assertTrue(
-            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
-        self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.DeleteFromDatabase, Qgis.ProviderStyleStorageCapability.DeleteFromDatabase)
 
         # table layer_styles does not exist
 
@@ -2115,41 +2117,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         styles = myPolygon.listStylesInDatabase()
         ids = styles[1]
         self.assertEqual(len(ids), 0)
-
-    def testSaveStyleInvalidXML(self):
-
-        self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')
-
-        vl = self.getEditableLayer()
-        self.assertTrue(vl.isValid())
-        self.assertTrue(
-            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
-        self.assertTrue(vl.dataProvider().isDeleteStyleFromDatabaseSupported())
-
-        mFilePath = QDir.toNativeSeparators(
-            f"{unitTestDataPath()}/symbol_layer/fontSymbol.qml")
-        status = vl.loadNamedStyle(mFilePath)
-        self.assertTrue(status)
-
-        errorMsg = vl.saveStyleToDatabase(
-            "fontSymbol", "font with invalid utf8 char", False, "")
-        self.assertEqual(errorMsg, "")
-
-        qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertEqual(errmsg, "")
-
-        found = False
-        for line in qml.split('\n'):
-            found = 'value="\u001E"' in qml and 'name="chr"' in qml
-            if found:
-                break
-        self.assertTrue(found, f"record separator character (\u001E) not found in qml: {qml}")
-
-        # Test loadStyle from metadata
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        qml = md.loadStyle(self.dbconn + " type=POINT table=\"qgis_test\".\"editData\" (geom)", 'fontSymbol')
-        self.assertTrue(qml.startswith('<!DOCTYPE qgi'), qml)
-        self.assertTrue('value="\u001E"' in qml)
 
     def testHasMetadata(self):
         # views don't have metadata
@@ -2524,7 +2491,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     def testValidLayerDiscoverRelations(self):
         """
-        Test implicit relations that can be discovers between tables, based on declared foreign keys.
+        Test implicit relations that can be discovered between tables, based on declared foreign keys.
         The test also checks that two distinct relations can be discovered when two foreign keys are declared (see #41138).
         """
         vl = QgsVectorLayer(
@@ -2543,11 +2510,28 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             vl
         ]
 
+    def testValidLayerDiscoverRelationsComposite(self):
+        """
+        Test implicit relations that can be discovered between tables, based on declared composite foreign keys.
+        """
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referencing_layer_composite"',
+            'referencing_layer', 'postgres')
+        vls = [
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_1\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_composite"',
+                'referenced_layer_1', 'postgres'),
+            vl
+        ]
+
         for lyr in vls:
             self.assertTrue(lyr.isValid())
             QgsProject.instance().addMapLayer(lyr)
         relations = vl.dataProvider().discoverRelations(vl, vls)
-        self.assertEqual(len(relations), 2)
+        self.assertEqual(len(relations), 1)
+        self.assertEqual(len(relations[0].fieldPairs()), 2)
         for i, r in enumerate(relations):
             self.assertEqual(r.referencedLayer(), vls[i])
 
@@ -2835,18 +2819,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 self.assertTrue(vl.isValid())
                 self.assertEqual(vl.hasSpatialIndex(), spatial_index)
 
-    def testBBoxFilterOnGeographyType(self):
-        """Test bounding box filter on geography type"""
-
+    def _doTestBBoxFilter(self, connString):
         vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."testgeog" (geog) sql=',
+            self.dbconn + connString,
             'test', 'postgres')
 
         self.assertTrue(vl.isValid())
 
-        def _test(vl, extent, ids):
-            request = QgsFeatureRequest().setFilterRect(extent)
+        def _test(vl, extent, ids, proj=None):
+            request = QgsFeatureRequest()
+            if proj:
+                request.setDestinationCrs(QgsCoordinateReferenceSystem(proj), QgsProject.instance().transformContext())
+            request.setFilterRect(extent)
             values = {feat['pk']: 'x' for feat in vl.getFeatures(request)}
             expected = {x: 'x' for x in ids}
             self.assertEqual(values, expected)
@@ -2865,7 +2849,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         _test(vl, QgsRectangle(40 - 5, -60 - 5, 40 + 5, -60 + 5), [3])
         _test(vl, QgsRectangle(40 - 5, -60 - 9.99, 40 + 5, -60 + 0.01), [3])
 
-        _test(vl, QgsRectangle(-181, -90, 181, 90), [1, 2, 3])  # no use of spatial index currently
+        _test(vl, QgsRectangle(-181, -90, 181, 90), [1, 2, 3, 4])  # no use of spatial index currently
+
+        # ================ tests with bbox around 180.
+        # in 3857: -20037699.584651027, 5621430.516018896, -20037317.10092746, 5621612.352543215
+        # in 4326: 179.99828204512598973 44.99942215015313707, -179.99828204512638763 45.00057718454320366
+
+        # good order with xMin < xMax
+        _test(vl, QgsRectangle(180.0 - 0.0017, 45.0 - 0.0001,
+                               180.0 + 0.0017, 45.0 + 0.0001), [4])
+
+        # good order but with xMin > xMax and normalization ==> nothing found
+        _test(vl, QgsRectangle(180.0 - 0.0017, 45.0 - 0.0001,
+                               -(180.0 - 0.0017), 45.0 + 0.0001), [])
+
+        # good order but with xMin > xMax and without normalization
+        _test(vl, QgsRectangle(180.0 - 0.0017, 45.0 - 0.0001,
+                               -(180.0 - 0.0017), 45.0 + 0.0001, False), [4])
+
+        # now from 3857
+        _test(vl, QgsRectangle(-20037699.584651027, 5621430.516018896, -20037317.10092746, 5621612.352543215), [4], "EPSG:3857")
+
+    def testBBoxFilterOnGeographyType(self):
+        """Test bounding box filter on geography type"""
+
+        self._doTestBBoxFilter(' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."testgeog" (geog) sql=')
+
+    def testBBoxFilterOnGeometryType(self):
+        """Test bounding box filter on somegeometry type"""
+
+        self._doTestBBoxFilter(
+            ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someBorderlineData" (geom) sql=')
 
     def testReadCustomSRID(self):
         """Test that we can correctly read the SRS from a custom SRID"""
@@ -3230,8 +3244,30 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             extracted_fids = [f['id'] for f in vl_result.getFeatures()]
             self.assertEqual(set(extracted_fids), {1, 2})  # Bug ?
 
+    def testGeographyAddFeature(self):
+        """Test issue GH #54572 Error saving edit on PostGIS geometry when table also contains geography"""
 
-class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."geom_and_geog" CASCADE')
+        self.execSQLCommand("""
+            CREATE TABLE qgis_test.geom_and_geog (
+                pkey SERIAL PRIMARY KEY,
+                geom geometry(POLYGON, 3857),
+                geog geography(POLYGON, 4326)
+            );""")
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pkey\' srid=3857 table="qgis_test"."geom_and_geog" (geom) sql=', 'geom_and_geog', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 0)
+        dp = vl.dataProvider()
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('POLYGON((28.030080546000004 -26.2055410477482,28.030103891999996 -26.20540054874821,28.030532775999998 -26.205458576748192,28.030553322999996 -26.2056050407482,28.030080546000004 -26.2055410477482))'))
+        f.setAttribute('geog', 'POLYGON((28.030080546000004 -26.2055410477482,28.030103891999996 -26.20540054874821,28.030532775999998 -26.205458576748192,28.030553322999996 -26.2056050407482,28.030080546000004 -26.2055410477482))')
+        self.assertTrue(dp.addFeature(f))
+        self.assertEqual(vl.featureCount(), 1)
+
+
+class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -3332,7 +3368,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.commitChanges())
 
 
-class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCase):
+class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -3903,6 +3939,66 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(vl.changeAttributeValue(8, 8, geom))
         self.assertEqual(vl.getFeature(8)['geom'].asWkt(), geom.asWkt())
         self.assertEqual(vl.getFeature(8)['geom'].crs(), geom.crs())
+
+
+class TestPyQgsPostgresProviderAsyncCreation(QgisTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.dbconn = 'service=qgis_test'
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        # Create test layers
+        vl1 = QgsVectorLayer(
+            cls.dbconn + ' sslmode=disable srid=4326 type=POINT table="qgis_test"."b31799_test_table" (geom) sql=',
+            'layer 1', 'postgres')
+
+        vl2 = QgsVectorLayer(
+            cls.dbconn + ' sslmode=disable srid=3857 type=POINT table="qgis_test"."array_tbl" (geom) sql=', 'layer 2',
+            'postgres')
+        cls.layers = [vl1, vl2]
+
+        cls.con = psycopg2.connect(cls.dbconn)
+        cls.projectTempFile = QTemporaryFile(QDir.temp().absoluteFilePath("XXXXXX_test.qgs"))
+        cls.projectTempFile.open()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+
+    def testReadProject(self):
+
+        self.assertTrue(len(self.layers) > 0)
+        for layer in self.layers:
+            self.assertTrue(layer.isValid())
+
+        project = QgsProject()
+        project.addMapLayers(self.layers)
+
+        project_layers = project.mapLayers(True)
+        self.assertEqual(len(project_layers), len(self.layers))
+
+        self.assertTrue(project.write(self.projectTempFile.fileName()))
+
+        settings = QgsSettingsTree.node('core').childSetting('provider-parallel-loading')
+        self.assertTrue(settings is not None)
+        current_value = settings.valueAsVariant()
+        settings.setVariantValue(True)
+
+        project = QgsProject()
+        self.assertTrue(project.read(self.projectTempFile.fileName()))
+        project_layers = project.mapLayers(True)
+        self.assertEqual(len(project_layers), len(self.layers))
+
+        settings.setVariantValue(False)
+
+        project = QgsProject()
+        self.assertTrue(project.read(self.projectTempFile.fileName()))
+        project_layers = project.mapLayers(True)
+        self.assertEqual(len(project_layers), len(self.layers))
+
+        settings.setVariantValue(current_value)
 
 
 if __name__ == '__main__':

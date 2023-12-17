@@ -55,6 +55,11 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
   chkAntiAliasing->setChecked( settings.value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() );
 }
 
+QString QgsRenderingOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#rendering-options" );
+}
+
 void QgsRenderingOptionsWidget::apply()
 {
   QgsSettings settings;

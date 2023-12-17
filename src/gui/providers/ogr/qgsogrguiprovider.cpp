@@ -43,6 +43,7 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
+    QgsSourceSelectProvider::Capabilities capabilities() override;
 };
 
 
@@ -57,6 +58,7 @@ class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 45; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override;
+    QgsSourceSelectProvider::Capabilities capabilities() override;
 };
 
 
@@ -84,9 +86,19 @@ QgsAbstractDataSourceWidget *QgsGeoPackageSourceSelectProvider::createDataSource
   return new QgsOgrDbSourceSelect( QStringLiteral( "GPKG" ), QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
 }
 
+QgsSourceSelectProvider::Capabilities QgsGeoPackageSourceSelectProvider::capabilities()
+{
+  return QgsSourceSelectProvider::Capability::ConfigureFromUri;
+}
+
 QgsAbstractDataSourceWidget *QgsOgrVectorSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
 {
   return new QgsOgrSourceSelect( parent, fl, widgetMode );
+}
+
+QgsSourceSelectProvider::Capabilities QgsOgrVectorSourceSelectProvider::capabilities()
+{
+  return QgsSourceSelectProvider::Capability::ConfigureFromUri;
 }
 
 QgsOgrGuiProviderMetadata::QgsOgrGuiProviderMetadata()

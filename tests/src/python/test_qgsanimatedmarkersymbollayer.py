@@ -21,7 +21,6 @@ __copyright__ = '(C) 2022, Nyall Dawson'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.core import (
     QgsAnimatedMarkerSymbolLayer,
@@ -33,7 +32,8 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -41,7 +41,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnimatedMarkerSymbolLayer(unittest.TestCase):
+class TestQgsAnimatedMarkerSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsAnimatedMarkerSymbolLayer Tests</h1>\n"

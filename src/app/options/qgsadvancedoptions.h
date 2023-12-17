@@ -46,6 +46,7 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
      */
     QgsAdvancedSettingsWidget( QWidget *parent );
     ~QgsAdvancedSettingsWidget() override;
+    QString helpKey() const override;
     void apply() override;
 
   private:

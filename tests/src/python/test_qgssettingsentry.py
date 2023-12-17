@@ -29,7 +29,8 @@ from qgis.core import (
     QgsSettingsTree,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Damiano Lombardi'
 __date__ = '02/04/2021'
@@ -39,7 +40,7 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 start_app()
 
 
-class TestQgsSettingsEntry(unittest.TestCase):
+class TestQgsSettingsEntry(QgisTestCase):
 
     cnt = 0
 
@@ -414,9 +415,9 @@ class TestQgsSettingsEntry(unittest.TestCase):
         settingsKey = "settingsEntryFlag/flagValue"
         settingsKeyComplete = f"plugins/{self.pluginName}/{settingsKey}"
 
-        pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
-        pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
-        hasGeometry = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.HasGeometry)
+        pointAndLine = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.LineLayer)
+        pointAndPolygon = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.PolygonLayer)
+        hasGeometry = Qgis.LayerFilters(Qgis.LayerFilter.HasGeometry)
 
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)

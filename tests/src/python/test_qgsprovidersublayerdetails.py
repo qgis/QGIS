@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.core import (
     Qgis,
     QgsCoordinateTransformContext,
@@ -20,7 +19,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -29,7 +29,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsProviderSublayerDetails(unittest.TestCase):
+class TestQgsProviderSublayerDetails(QgisTestCase):
 
     def testGettersSetters(self):
         """

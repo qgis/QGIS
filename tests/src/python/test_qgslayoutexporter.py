@@ -13,7 +13,6 @@ import os
 import subprocess
 import tempfile
 
-import qgis  # NOQA
 from osgeo import gdal
 from qgis.PyQt.QtCore import (
     QDate,
@@ -58,7 +57,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getExecutablePath, unitTestDataPath
 
@@ -135,7 +135,7 @@ def svgToPng(svg_file_path, rendered_file_path, width):
 start_app()
 
 
-class TestQgsLayoutExporter(unittest.TestCase):
+class TestQgsLayoutExporter(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

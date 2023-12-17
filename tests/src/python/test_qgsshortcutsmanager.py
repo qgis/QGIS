@@ -9,15 +9,15 @@ __author__ = 'Nyall Dawson'
 __date__ = '28/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QShortcut, QWidget
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui, QgsShortcutsManager
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestQgsShortcutsManager(unittest.TestCase):
+class TestQgsShortcutsManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -22,7 +22,6 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-#include "qgsproviderguimetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
 #include <QDialog>
@@ -97,6 +96,16 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     virtual void reset();
 
+    /**
+     * Configure the widget from a layer \a uri by selecting the layer path or connection options.
+     * The base implementation does nothing and returns FALSE: providers with ConfigureSourceSelectFromUri capability
+     * must override to implement this functionality.
+     * \return TRUE on success.
+     * \note Not all data providers may be able to configure the widget from the provided uri, in that case this method returns FALSE.
+     * \since 3.38
+     */
+    virtual bool configureFromUri( const QString &uri );
+
   signals:
 
     /**
@@ -108,8 +117,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when a DB layer has been selected for addition
     void addDatabaseLayers( const QStringList &paths, const QString &providerKey );
 
-    //! Emitted when a raster layer has been selected for addition
-    void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
+    /**
+     * Emitted when a raster layer has been selected for addition
+     *
+     * \deprecated use addLayer() instead.
+     */
+    Q_DECL_DEPRECATED void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) SIP_DEPRECATED;
 
     /**
      * Emitted when one or more GDAL supported layers are selected for addition
@@ -123,26 +136,43 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      *
      * If \a providerKey is not specified, the default provider key associated with the source
      * will be used.
+     *
+     * \deprecated use addLayer() instead.
      */
-    void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
+    Q_DECL_DEPRECATED void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) SIP_DEPRECATED;
 
     /**
      * Emitted when a mesh layer has been selected for addition.
-     * \since QGIS 3.4
+     *
+     * \deprecated use addLayer() instead.
      */
-    void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+    Q_DECL_DEPRECATED void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) SIP_DEPRECATED;
 
     /**
      * Emitted when a vector tile layer has been selected for addition.
-     * \since QGIS 3.14
+     *
+     * \deprecated use addLayer() instead.
      */
-    void addVectorTileLayer( const QString &url, const QString &baseName );
+    Q_DECL_DEPRECATED void addVectorTileLayer( const QString &url, const QString &baseName ) SIP_DEPRECATED;
 
     /**
      * Emitted when a point cloud layer has been selected for addition.
-     * \since QGIS 3.18
+     *
+     * \deprecated use addLayer() instead.
      */
-    void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
+    Q_DECL_DEPRECATED void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) SIP_DEPRECATED;
+
+    /**
+     * Emitted when a layer has been selected for addition.
+     *
+     * This is a generic method, intended for replacing the specific layer type signals implemented above.
+     *
+     * \warning For QGIS versions < 4.x, the specific layer type added signals must be emitted for vector, raster,
+     * mesh, vector tile and point cloud layers in addition to this signal.
+     *
+     * \since QGIS 3.34
+     */
+    void addLayer( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey );
 
     /**
      * Emitted when one or more OGR supported layers are selected for addition

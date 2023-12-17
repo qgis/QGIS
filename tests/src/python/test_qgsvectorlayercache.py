@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '08/06/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.core import (
     NULL,
@@ -18,14 +17,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerCache,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from featuresourcetestbase import FeatureSourceTestCase
 
 start_app()
 
 
-class TestQgsVectorLayerCache(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerCache(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):

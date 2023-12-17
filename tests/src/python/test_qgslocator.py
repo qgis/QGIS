@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from time import sleep
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
@@ -24,7 +23,8 @@ from qgis.core import (
     QgsLocatorResult,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -81,7 +81,7 @@ class test_filter(QgsLocatorFilter):
             return QgsLocatorFilter.Medium
 
 
-class TestQgsLocator(unittest.TestCase):
+class TestQgsLocator(QgisTestCase):
 
     def testRegisteringFilters(self):
         l = QgsLocator()

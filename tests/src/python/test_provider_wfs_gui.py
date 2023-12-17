@@ -26,7 +26,8 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 def sanitize(endpoint, x):
@@ -42,7 +43,7 @@ def find_window(name):
     return None
 
 
-class TestPyQgsWFSProviderGUI(unittest.TestCase):
+class TestPyQgsWFSProviderGUI(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

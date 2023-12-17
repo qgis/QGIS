@@ -25,6 +25,7 @@
 
 class QgsWebPage;
 class QImage;
+class QgsLayoutItemLabel;
 class QgsVectorLayer;
 class QgsNetworkContentFetcher;
 
@@ -62,6 +63,13 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
      * Returns a new QgsLayoutItemHtml for the specified parent \a layout.
      */
     static QgsLayoutItemHtml *create( QgsLayout *layout ) SIP_FACTORY;
+
+    /**
+     * Returns a new QgsLayoutItemHtml matching the content and rendering of a given \a label.
+     *
+     * \since QGIS 3.32
+     */
+    static QgsLayoutItemHtml *createFromLabel( QgsLayoutItemLabel *label ) SIP_FACTORY;
 
     /**
      * Sets the source \a mode for item's HTML content.

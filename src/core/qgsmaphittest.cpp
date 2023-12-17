@@ -178,6 +178,8 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
     request.setFilterExpression( rendererFilterExpression );
   }
 
+  request.setExpressionContext( context.expressionContext() );
+
   QSet<QString> requiredAttributes = r->usedAttributes( context );
 
   QgsGeometry transformedPolygon = visibleExtent;
@@ -375,6 +377,7 @@ bool QgsMapHitTestTask::run()
   QPainter painter( &tmpImage );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
   std::size_t layerIdx = 0;

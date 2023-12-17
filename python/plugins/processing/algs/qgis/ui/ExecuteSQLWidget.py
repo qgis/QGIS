@@ -23,11 +23,14 @@ import os
 
 from qgis.PyQt import uic
 
-from qgis.core import (QgsExpressionContextScope,
-                       QgsProcessingParameterString,
-                       QgsProcessingParameterNumber,
-                       QgsExpression,
-                       QgsProcessingModelChildParameterSource)
+from qgis.core import (
+    Qgis,
+    QgsExpressionContextScope,
+    QgsProcessingParameterString,
+    QgsProcessingParameterNumber,
+    QgsExpression,
+    QgsProcessingModelChildParameterSource
+)
 
 from qgis.gui import QgsFieldExpressionWidget
 
@@ -78,7 +81,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
             if isinstance(value, list):
                 for v in value:
                     if isinstance(v, QgsProcessingModelChildParameterSource) \
-                            and v.source() == QgsProcessingModelChildParameterSource.ExpressionText:
+                            and v.source() == Qgis.ProcessingModelChildParameterSource.ExpressionText:
                         text = v.expressionText()
 
                         # replace parameter's name by expression (diverging after model save)

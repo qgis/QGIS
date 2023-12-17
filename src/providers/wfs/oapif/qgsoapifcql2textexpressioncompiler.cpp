@@ -165,9 +165,9 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       coordString += qgsDoubleToString( rect.yMaximum() );
       result = QStringLiteral( "S_INTERSECTS(" );
       result += quotedIdentifier( geometryColumn );
-      result += QStringLiteral( ",BBOX(" );
+      result += QLatin1String( ",BBOX(" );
       result += coordString;
-      result += QStringLiteral( "))" );
+      result += QLatin1String( "))" );
       mGeometryLiteralUsed = true;
       return Complete;
     }
@@ -202,9 +202,9 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       coordString += qgsDoubleToString( mInvertAxisOrientation ? point->x() : point->y() );
       result = QStringLiteral( "S_INTERSECTS(" );
       result += quotedIdentifier( geometryColumn );
-      result += QStringLiteral( ",POINT(" );
+      result += QLatin1String( ",POINT(" );
       result += coordString;
-      result += QStringLiteral( "))" );
+      result += QLatin1String( "))" );
       mGeometryLiteralUsed = true;
       return Complete;
     }

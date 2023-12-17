@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
@@ -50,8 +49,8 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
     def test_legend_keys(self):
         symbol1 = QgsFillSymbol()
         symbol2 = QgsFillSymbol()
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1', True, '0'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2', True, '1')
                                                             ])
 
         renderer = QgsMergedFeatureRenderer(sub_renderer)

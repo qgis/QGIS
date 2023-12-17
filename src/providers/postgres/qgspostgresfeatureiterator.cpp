@@ -400,7 +400,7 @@ bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod 
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
+      QgsDebugError( QStringLiteral( "Simplification method type (%1) is not recognised by PostgresFeatureIterator" ).arg( methodType ) );
     }
   }
   return QgsAbstractFeatureIterator::prepareSimplification( simplifyMethod );
@@ -474,6 +474,13 @@ bool QgsPostgresFeatureIterator::close()
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
   QgsRectangle rect = mFilterRect;
+
+  // in case coordinates are around 180.0°
+  if ( rect.xMinimum() > rect.xMaximum() && mSource->mCrs.isGeographic() )
+  {
+    rect.setXMaximum( rect.xMaximum() + 360.0 );
+  }
+
   if ( mSource->mSpatialColType == SctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( rect );
@@ -796,7 +803,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
       break;
 
     case PktUnknown:
-      QgsDebugMsg( QStringLiteral( "Cannot declare cursor without primary key." ) );
+      QgsDebugError( QStringLiteral( "Cannot declare cursor without primary key." ) );
       return false;
   }
 

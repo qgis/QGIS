@@ -194,8 +194,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   ProjData res = threadLocalProjData();
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( "From proj : " + mSourceCRS.toProj() );
-  QgsDebugMsg( "To proj   : " + mDestCRS.toProj() );
+  QgsDebugMsgLevel( "From proj : " + mSourceCRS.toProj(), 2 );
+  QgsDebugMsgLevel( "To proj   : " + mDestCRS.toProj(), 2 );
 #endif
 
   if ( !res )
@@ -204,22 +204,20 @@ bool QgsCoordinateTransformPrivate::initialize()
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   if ( mIsValid )
   {
-    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
-    QgsDebugMsg( QStringLiteral( "The OGR Coordinate transformation for this layer was set to" ) );
+    QgsDebugMsgLevel( QStringLiteral( "------------------------------------------------------------" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "The OGR Coordinate transformation for this layer was set to" ), 2 );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Input", mSourceCRS, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Output", mDestCRS, __FILE__, __FUNCTION__, __LINE__ );
-    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
+    QgsDebugMsgLevel( QStringLiteral( "------------------------------------------------------------" ), 2 );
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
-    QgsDebugMsg( QStringLiteral( "The OGR Coordinate transformation FAILED TO INITIALIZE!" ) );
-    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
+    QgsDebugError( QStringLiteral( "The OGR Coordinate transformation FAILED TO INITIALIZE!" ) );
   }
 #else
   if ( !mIsValid )
   {
-    QgsDebugMsg( QStringLiteral( "Coordinate transformation failed to initialize!" ) );
+    QgsDebugError( QStringLiteral( "Coordinate transformation failed to initialize!" ) );
   }
 #endif
 
@@ -267,7 +265,7 @@ static void proj_logger( void *, int level, const char *message )
     }
     else
     {
-      QgsDebugMsg( messageString );
+      QgsDebugError( messageString );
     }
   }
   else if ( level == PJ_LOG_DEBUG )

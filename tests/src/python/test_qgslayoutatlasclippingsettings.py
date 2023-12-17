@@ -9,7 +9,6 @@ __author__ = '(C) 2020 Nyall Dawson'
 __date__ = '03/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -21,7 +20,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -29,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemMapAtlasClippingSettings(unittest.TestCase):
+class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
 
     def testSettings(self):
         p = QgsProject()

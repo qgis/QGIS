@@ -117,6 +117,10 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot
           plotPainter.setRenderHint( QPainter::Antialiasing, true );
           QgsRenderContext plotRc = QgsRenderContext::fromQPainter( &plotPainter );
           plotRc.setDevicePixelRatio( devicePixelRatio );
+
+          const double mapUnitsPerPixel = ( xMaximum() - xMinimum() ) / plotArea.width();
+          plotRc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
           mRenderer->render( plotRc, plotArea.width(), plotArea.height(), xMinimum(), xMaximum(), yMinimum(), yMaximum(), source );
           plotPainter.end();
 
@@ -224,6 +228,7 @@ void QgsQuickElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, 
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 }

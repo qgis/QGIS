@@ -100,6 +100,11 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
       layerType = QStringLiteral( "vector-tile" );
       break;
     }
+    case Qgis::LayerType::TiledScene:
+    {
+      layerType = QStringLiteral( "tiled-scene" );
+      break;
+    }
 
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
@@ -283,7 +288,7 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
 {
   QString encoded;
   // Do not escape colon twice
-  const QRegularExpression re( QStringLiteral( "(?<!\\\\):" ) );
+  const thread_local QRegularExpression re( QStringLiteral( "(?<!\\\\):" ) );
   const auto constItems = items;
   for ( const QString &item : constItems )
   {

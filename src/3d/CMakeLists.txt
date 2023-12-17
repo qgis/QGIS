@@ -19,6 +19,7 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
+  qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
@@ -26,6 +27,8 @@ set(QGIS_3D_SRCS
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
+  qgstiledscenechunkloader_p.cpp
+  qgstiledscenelayer3drenderer.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
   qgsvectorlayerchunkloader_p.cpp
@@ -76,7 +79,6 @@ set(QGIS_3D_SRCS
   symbols/qgslinematerial_p.cpp
   symbols/qgslinevertexdata_p.cpp
   symbols/qgsmesh3dsymbol.cpp
-  symbols/qgsmesh3dsymbol_p.cpp
   symbols/qgspoint3dbillboardmaterial.cpp
   symbols/qgspoint3dsymbol.cpp
   symbols/qgspoint3dsymbol_p.cpp
@@ -120,11 +122,14 @@ set(QGIS_3D_HDRS
   qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
+  qgstiledscenechunkloader_p.h
+  qgstiledscenelayer3drenderer.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
   qgswindow3dengine.h
@@ -186,7 +191,6 @@ set(QGIS_3D_PRIVATE_HDRS
   symbols/qgsline3dsymbol_p.h
   symbols/qgslinematerial_p.h
   symbols/qgslinevertexdata_p.h
-  symbols/qgsmesh3dsymbol_p.h
   symbols/qgspoint3dsymbol_p.h
   symbols/qgspolygon3dsymbol_p.h
   symbols/qgspointcloud3dsymbol_p.h
@@ -237,6 +241,7 @@ target_include_directories(qgis_3d PUBLIC
 
   ${CMAKE_BINARY_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
+  ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
 if (BUILD_WITH_QT6)

@@ -37,7 +37,8 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -84,7 +85,7 @@ host all all 0.0.0.0/0 trust
 """
 
 
-class TestAuthManager(unittest.TestCase):
+class TestAuthManager(QgisTestCase):
 
     @classmethod
     def setUpAuth(cls):

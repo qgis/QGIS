@@ -75,6 +75,18 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   }
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+
+  if ( outputFile.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
+    throw QgsProcessingException(
+      QObject::tr( "This algorithm does not support output to COPC. Please use LAS or LAZ as the output format. "
+                   "LAS/LAZ files get automatically converted to COPC when loaded in QGIS, alternatively you can use "
+                   "\"Create COPC\" algorithm." ) );
+
+  if ( outputFile.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive ) )
+    throw QgsProcessingException(
+      QObject::tr( "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "
+                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." ) );
+
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args;
@@ -86,10 +98,23 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   applyCommonParameters( args, layers.at( 0 )->crs(), parameters, context );
   applyThreadsParameter( args, context );
 
+  const QString fileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "inputFiles.txt" ), &context );
+  QFile listFile( fileName );
+  if ( !listFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Could not create input file list %1" ).arg( fileName ) );
+  }
+
+  QTextStream out( &listFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  out.setCodec( "UTF-8" );
+#endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
-    args << layer->source();
+    out << layer->source() << "\n";
   }
+
+  args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
 
   return args;
 }

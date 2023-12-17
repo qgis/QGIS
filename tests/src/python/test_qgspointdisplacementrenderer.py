@@ -24,7 +24,6 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
@@ -53,7 +52,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -63,7 +63,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsPointDisplacementRenderer(unittest.TestCase):
+class TestQgsPointDisplacementRenderer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsPointDisplacementRenderer Tests</h1>\n"
@@ -488,8 +488,8 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
     def test_legend_keys(self):
         symbol1 = QgsMarkerSymbol()
         symbol2 = QgsMarkerSymbol()
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
+        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1', True, '0'),
+                                                            QgsRendererCategory('cat2', symbol2, 'cat2', True, '1')
                                                             ])
 
         renderer = QgsPointDisplacementRenderer()

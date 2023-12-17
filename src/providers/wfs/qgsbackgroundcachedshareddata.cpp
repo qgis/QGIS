@@ -24,6 +24,7 @@
 
 #include <QCryptographicHash>
 #include <QDir>
+#include <QJsonDocument>
 #include <QMutex>
 
 #include <set>
@@ -294,7 +295,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
       if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
@@ -303,7 +304,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
       if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
@@ -312,7 +313,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
       if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
@@ -324,7 +325,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
       if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
@@ -335,7 +336,7 @@ bool QgsBackgroundCachedSharedData::createCache()
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
-        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+        QgsDebugError( QStringLiteral( "%1 failed" ).arg( sql ) );
         if ( failedSql.isEmpty() ) failedSql = sql;
         ret = false;
       }
@@ -400,7 +401,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     ok &= mCacheIdDb.exec( QStringLiteral( "CREATE INDEX idx_qgisId ON id_cache(qgisId)" ), errorMsg ) == SQLITE_OK;
     if ( !ok )
     {
-      QgsDebugMsg( errorMsg );
+      QgsDebugError( errorMsg );
       return false;
     }
   }
@@ -628,6 +629,16 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
         const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
         if ( v.type() == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
+        else if ( v.type() == QVariant::Map  && !QgsVariantUtils::isNull( v ) )
+        {
+          QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( v ).toJson().constData() );
+          if ( stringValue.isEmpty() )
+          {
+            //store as string, because it's no valid QJson value
+            stringValue = v.toString();
+          }
+          cachedFeature.setAttribute( idx, stringValue );
+        }
         else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
           cachedFeature.setAttribute( idx, v );
         else
@@ -785,7 +796,7 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
     if ( featureCount == 0 && mRect.contains( mCapabilityExtent ) && !hasServerSideFilter() &&
          supportsFastFeatureCount() && hasGeometry() && !mTryFetchingOneFeature )
     {
-      QgsDebugMsg( QStringLiteral( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" ), 2 );
       mTryFetchingOneFeature = true;
       mComputedExtent = getExtentFromSingleFeatureRequest();
       if ( !mComputedExtent.isNull() &&
@@ -842,8 +853,8 @@ void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featu
       // contains duplicates. Actually happens with
       // http://demo.opengeo.org/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=osm:landcover_line
       // with gml.id=landcover_line.119246130 in particular
-      QgsDebugMsg( QStringLiteral( "raw features=%1, unique features=%2" ).
-                   arg( featureCount ).arg( mFeatureCount ) );
+      QgsDebugMsgLevel( QStringLiteral( "raw features=%1, unique features=%2" ).
+                        arg( featureCount ).arg( mFeatureCount ), 2 );
     }
   }
 
@@ -1060,7 +1071,7 @@ bool QgsBackgroundCachedSharedData::changeGeometryValues( const QgsGeometryMap &
     if ( stmt.step() != SQLITE_ROW )
     {
       // shouldn't happen normally
-      QgsDebugMsg( QStringLiteral( "cannot find dbId corresponding to qgisId = %1" ).arg( iter.key() ) );
+      QgsDebugError( QStringLiteral( "cannot find dbId corresponding to qgisId = %1" ).arg( iter.key() ) );
       continue;
     }
     QgsFeatureId dbId = stmt.columnAsInt64( 0 );
@@ -1105,7 +1116,7 @@ bool QgsBackgroundCachedSharedData::changeAttributeValues( const QgsChangedAttri
     if ( stmt.step() != SQLITE_ROW )
     {
       // shouldn't happen normally
-      QgsDebugMsg( QStringLiteral( "cannot find dbId corresponding to qgisId = %1" ).arg( iter.key() ) );
+      QgsDebugError( QStringLiteral( "cannot find dbId corresponding to qgisId = %1" ).arg( iter.key() ) );
       continue;
     }
     QgsFeatureId dbId = stmt.columnAsInt64( 0 );

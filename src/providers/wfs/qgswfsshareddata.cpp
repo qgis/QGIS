@@ -136,7 +136,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
     if ( !select )
     {
       // Makes Coverity happy, but cannot happen in practice
-      QgsDebugMsg( QStringLiteral( "should not happen" ) );
+      QgsDebugError( QStringLiteral( "should not happen" ) );
       return false;
     }
     const QList<QgsSQLStatement::NodeColumnSorted *> orderBy = select->orderBy();
@@ -448,7 +448,7 @@ long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   QDomDocument domDoc;
   if ( !domDoc.setContent( buffer, true, &error ) )
   {
-    QgsDebugMsg( QStringLiteral( "parsing failed: " ) + error );
+    QgsDebugError( QStringLiteral( "parsing failed: " ) + error );
     return -1;
   }
 

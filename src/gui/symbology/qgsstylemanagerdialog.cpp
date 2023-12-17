@@ -502,6 +502,8 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
   }
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
+
   mModel->setFilterString( searchBox->text() );
 
   listItems->setModel( mModel );
@@ -707,11 +709,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     if ( !ok )
       return;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QStringList parts = tags.split( ',', QString::SkipEmptyParts );
-#else
     const QStringList parts = tags.split( ',', Qt::SkipEmptyParts );
-#endif
     QStringList additionalTags;
     additionalTags.reserve( parts.count() );
     for ( const QString &tag : parts )
@@ -1600,7 +1598,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   {
     // Q_ASSERT( 0 && "invalid ramp type" );
     // bailing out is rather harsh!
-    QgsDebugMsg( QStringLiteral( "invalid ramp type %1" ).arg( rampType ) );
+    QgsDebugError( QStringLiteral( "invalid ramp type %1" ).arg( rampType ) );
     return QString();
   }
 
@@ -2180,6 +2178,9 @@ void QgsStyleManagerDialog::addStyleDatabase( bool createNew )
                            tr( "Add Style Database" ),
                            initialFolder,
                            tr( "Style databases" ) + " (*.db *.xml)" );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( ! databasePath.isEmpty() )
   {
     QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );
@@ -2655,7 +2656,7 @@ void QgsStyleManagerDialog::groupRenamed( QStandardItem *item )
   if ( isReadOnly() )
     return;
 
-  QgsDebugMsg( QStringLiteral( "Symbol group edited: data=%1 text=%2" ).arg( item->data( Qt::UserRole + 1 ).toString(), item->text() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Symbol group edited: data=%1 text=%2" ).arg( item->data( Qt::UserRole + 1 ).toString(), item->text() ), 2 );
   int id = item->data( Qt::UserRole + 1 ).toInt();
   QString name = item->text();
   mBlockGroupUpdates++;

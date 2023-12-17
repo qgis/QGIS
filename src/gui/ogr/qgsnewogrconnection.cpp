@@ -106,7 +106,7 @@ void QgsNewOgrConnection::testConnection()
                            mAuthSettingsDatabase->username(),
                            mAuthSettingsDatabase->password(),
                            true );
-  QgsDebugMsg( "Connecting using uri = " + uri );
+  QgsDebugMsgLevel( "Connecting using uri = " + uri, 2 );
   OGRRegisterAll();
   OGRDataSourceH       poDS;
   OGRSFDriverH         pahDriver;

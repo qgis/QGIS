@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QPointF, QSizeF
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -22,7 +21,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsMapCanvas, QgsMapCanvasAnnotationItem
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -30,7 +30,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
+class TestQgsMapCanvasAnnotationItem(QgisTestCase):
 
     def testPosition(self):
         """ test that map canvas annotation item syncs position correctly """

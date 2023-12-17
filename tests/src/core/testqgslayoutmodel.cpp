@@ -19,22 +19,22 @@
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemmap.h"
 #include "qgsapplication.h"
-#include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemshape.h"
 #include <QObject>
+#include <QMimeData>
 #include "qgstest.h"
 #include <QList>
 #include <QSignalSpy>
 
-class TestQgsLayoutModel : public QObject
+class TestQgsLayoutModel : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutModel() = default;
+    TestQgsLayoutModel(): QgsTest( QStringLiteral( "Layout model test" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -595,22 +595,22 @@ void TestQgsLayoutModel::moveItem()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   QgsLayoutModel *model = layout.itemsModel();
-  QMimeData *mimedata = model->mimeData( QModelIndexList() << model->index( 2, 2 ) ); // get i2
-  model->dropMimeData( mimedata, Qt::MoveAction, 1, 2, QModelIndex() ); // move i2 at the top
+  std::unique_ptr< QMimeData > mimedata( model->mimeData( QModelIndexList() << model->index( 2, 2 ) ) ); // get i2
+  model->dropMimeData( mimedata.get(), Qt::MoveAction, 1, 2, QModelIndex() ); // move i2 at the top
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
-  mimedata = model->mimeData( QModelIndexList() << model->index( 1, 2 ) ); // get i2
-  model->dropMimeData( mimedata, Qt::MoveAction, -1, -1, QModelIndex() ); // move i2 at the bottom
+  mimedata.reset( model->mimeData( QModelIndexList() << model->index( 1, 2 ) ) ); // get i2
+  model->dropMimeData( mimedata.get(), Qt::MoveAction, -1, -1, QModelIndex() ); // move i2 at the bottom
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
 
-  mimedata = model->mimeData( QModelIndexList() << model->index( 3, 2 ) ); // get i2
-  model->dropMimeData( mimedata, Qt::MoveAction, 2, 2, QModelIndex() ); // move i2 between i3 and i1
+  mimedata.reset( model->mimeData( QModelIndexList() << model->index( 3, 2 ) ) ); // get i2
+  model->dropMimeData( mimedata.get(), Qt::MoveAction, 2, 2, QModelIndex() ); // move i2 between i3 and i1
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );

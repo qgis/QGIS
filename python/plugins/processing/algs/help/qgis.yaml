@@ -45,9 +45,6 @@ qgis:definecurrentprojection: >
 
   The .prj and .qpj files associated with the Shapefile will be overwritten - or created if missing - to match the provided CRS.
 
-qgis:delaunaytriangulation: >
-  This algorithm creates a polygon layer with the delaunay triangulation corresponding to a points layer.
-
 qgis:distancematrix: >
   This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer.
 
@@ -66,9 +63,9 @@ qgis:eliminateselectedpolygons: >
   Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
 
 qgis:executesql: >
-  Runs a simple or complex query with SQL syntax on the source layer.
+  Runs a simple or complex query with SQL syntax.
 
-  Input datasources are identified with input1, input2, ..., inputN and a simple query will look like: SELECT * FROM input1
+  Input data sources are identified with input1, input2, ..., inputN and a simple query will look like: SELECT * FROM input1
 
   The result of the query will be added as a new layer.
 
@@ -103,16 +100,6 @@ qgis:idwinterpolation: >
 
 qgis:importintospatialite: >
   This algorithm imports a vector layer into a SpatiaLite database, creating a new table.
-
-qgis:joinbylocationsummary: >
-  This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
-
-  The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
-
-  The algorithm calculates a statistical summary for the values from matching features in the second layer (e.g. maximum value, mean value, etc).
-
-qgis:keepnbiggestparts: >
-  This algorithm takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.
 
 qgis:knearestconcavehull: >
   This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
@@ -170,7 +157,7 @@ qgis:randompointsinlayerbounds: >
 
 qgis:randompointsinsidepolygons: >
   This algorithm creates a new point layer with random points inside the polygons of a given layer.
-  
+
   The number of points in each polygon can be defined as a fixed count or as a density value. The count/density value could also be taken from an attribute or an expression specified using the "Data defined override" functionality, so it can be different for each polygon in the input layer.
 
   A minimum distance can be specified, to avoid points being too close to each other.
@@ -236,16 +223,6 @@ qgis:statisticsbycategories: >
 qgis:texttofloat: >
   This algorithm modifies the type of a given attribute in a vector layer, converting a text attribute containing numeric strings into a numeric attribute.
 
-qgis:tilesxyzdirectory: >
-  This algorithm generates raster XYZ tiles of map canvas content.
-
-  Tile images are saved as individual images in directory structure.
-
-qgis:tilesxyzmbtiles: >
-  This algorithm generates raster XYZ tiles of map canvas content.
-
-  Tile images are saved as a single file in the “MBTiles” format.
-
 qgis:tininterpolation: >
   Generates a Triangulated Irregular Network (TIN) interpolation of a point vector layer.
 
@@ -278,6 +255,3 @@ qgis:vectorlayerhistogram: >
 
 qgis:vectorlayerscatterplot: >
   This algorithm creates a simple X - Y scatter plot for a vector layer.
-
-qgis:voronoipolygons: >
-  This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.

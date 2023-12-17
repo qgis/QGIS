@@ -31,7 +31,7 @@
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
-  , mExpressionDialogTitle( tr( "Expression Dialog" ) )
+  , mExpressionDialogTitle( tr( "Expression Builder" ) )
   , mDistanceArea( nullptr )
 
 {
@@ -54,11 +54,6 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
-
-  // give focus to the combo
-  // hence if the widget is used as a delegate
-  // it will allow pressing on the expression dialog button
-  setFocusProxy( mCombo );
 
   connect( mCombo->lineEdit(), &QLineEdit::textEdited, this, &QgsFieldExpressionWidget::expressionEdited );
   connect( mCombo->lineEdit(), &QLineEdit::editingFinished, this, &QgsFieldExpressionWidget::expressionEditingFinished );
@@ -195,6 +190,11 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
     return;
   }
 
+  if ( fieldName.size() > mCombo->lineEdit()->maxLength() )
+  {
+    mCombo->lineEdit()->setMaxLength( fieldName.size() );
+  }
+
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
   {
@@ -320,6 +320,21 @@ void QgsFieldExpressionWidget::setAllowEvalErrors( bool allowEvalErrors )
 
   mAllowEvalErrors = allowEvalErrors;
   emit allowEvalErrorsChanged();
+}
+
+
+bool QgsFieldExpressionWidget::buttonVisible() const
+{
+  return mButton->isVisibleTo( this );
+}
+
+void QgsFieldExpressionWidget::setButtonVisible( bool visible )
+{
+  if ( visible == buttonVisible() )
+    return;
+
+  mButton->setVisible( visible );
+  emit buttonVisibleChanged();
 }
 
 void QgsFieldExpressionWidget::currentFieldChanged()

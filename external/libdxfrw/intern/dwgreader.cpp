@@ -728,15 +728,15 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
   mit = ObjectMap.find( hdr.viewCtrl );
   if ( mit == ObjectMap.end() )
   {
-    QgsDebugMsg( "WARNING: View control not found" );
+    QgsDebugError( "WARNING: View control not found" );
     ret = false;
   }
   else
   {
-    QgsDebugMsg( "**********Parsing View control*******" );
+    QgsDebugMsgLevel( "**********Parsing View control*******", 2 );
     oc = mit->second;
     ObjectMap.erase( mit );
-    QgsDebugMsg( QString( "View Control Obj Handle=0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ) );
+    QgsDebugMsgLevel( QString( "View Control Obj Handle=0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ), 2 );
 
     DRW_ObjControl viewControl;
     dbuf->setPosition( oc.loc );
@@ -752,7 +752,7 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
     oType = buff.getObjType( version );
     if ( oType != 0x3C )
     {
-      QgsDebugMsg( QString( "WARNING: Not View control object, found oType 0x%1 instead of 0x3c" ).arg( oType, 0, 16 ) );
+      QgsDebugError( QString( "WARNING: Not View control object, found oType 0x%1 instead of 0x3c" ).arg( oType, 0, 16 ) );
       ret = false;
     }
     else   //reset position
@@ -768,15 +768,15 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
   mit = ObjectMap.find( hdr.ucsCtrl );
   if ( mit == ObjectMap.end() )
   {
-    QgsDebugMsg( "WARNING: Ucs control not found" );
+    QgsDebugError( "WARNING: Ucs control not found" );
     ret = false;
   }
   else
   {
     oc = mit->second;
     ObjectMap.erase( mit );
-    QgsDebugMsg( "**********Parsing Ucs control*******" );
-    QgsDebugMsg( QString( "Ucs Control Obj Handle=0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ) );
+    QgsDebugMsgLevel( "**********Parsing Ucs control*******", 2 );
+    QgsDebugMsgLevel( QString( "Ucs Control Obj Handle=0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ), 2 );
 
     DRW_ObjControl ucsControl;
     dbuf->setPosition( oc.loc );
@@ -792,7 +792,7 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
     oType = buff.getObjType( version );
     if ( oType != 0x3E )
     {
-      QgsDebugMsg( QString( "WARNING: Not Ucs control object, found oType 0x%1 instead of 0x3e" ).arg( oType, 0, 16 ) );
+      QgsDebugError( QString( "WARNING: Not Ucs control object, found oType 0x%1 instead of 0x3e" ).arg( oType, 0, 16 ) );
       ret = false;
     }
     else   //reset position
@@ -810,15 +810,15 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
     mit = ObjectMap.find( hdr.vpEntHeaderCtrl );
     if ( mit == ObjectMap.end() )
     {
-      QgsDebugMsg( "WARNING: vpEntHeader control not found" );
+      QgsDebugError( "WARNING: vpEntHeader control not found" );
       ret = false;
     }
     else
     {
-      QgsDebugMsg( "**********Parsing vpEntHeader control*******" );
+      QgsDebugMsgLevel( "**********Parsing vpEntHeader control*******", 2 );
       oc = mit->second;
       ObjectMap.erase( mit );
-      QgsDebugMsg( QString( "vpEntHeader Control Obj Handle=0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ) );
+      QgsDebugMsgLevel( QString( "vpEntHeader Control Obj Handle=0x%1 loc=%2" ).arg( oc.handle, 0, 16 ).arg( oc.loc ), 2 );
 
       DRW_ObjControl vpEntHeaderCtrl;
       dbuf->setPosition( oc.loc );
@@ -834,7 +834,7 @@ bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
       oType = buff.getObjType( version );
       if ( oType != 0x46 )
       {
-        QgsDebugMsg( QString( "WARNING: Not vpEntHeader control object, found oType 0x%1 instead of 0x46" ).arg( oType, 0, 16 ) );
+        QgsDebugError( QString( "WARNING: Not vpEntHeader control object, found oType 0x%1 instead of 0x46" ).arg( oType, 0, 16 ) );
         ret = false;
       }
       else   //reset position

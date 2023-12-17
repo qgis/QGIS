@@ -274,7 +274,7 @@ void QgsMeasureTool::keyPressEvent( QKeyEvent *e )
 
 void QgsMeasureTool::addPoint( const QgsPointXY &point )
 {
-  QgsDebugMsg( "point=" + point.toString() );
+  QgsDebugMsgLevel( "point=" + point.toString(), 2 );
 
   // don't add points with the same coordinates
   if ( !mPoints.isEmpty() && mPoints.last() == point )

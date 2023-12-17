@@ -29,6 +29,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgslinesymbol.h"
 #include <QTemporaryFile>
 #include <QRegularExpression>
@@ -48,6 +49,7 @@ class TestQgsDxfExport : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testPoints();
+    void testPointsDataDefinedSizeAngle();
     void testLines();
     void testPolygons();
     void testMultiSurface();
@@ -66,11 +68,13 @@ class TestQgsDxfExport : public QObject
     void testCurveExport_data();
     void testDashedLine();
     void testTransform();
+    void testDataDefinedPoints();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
     QgsVectorLayer *mPointLayerNoSymbols = nullptr;
     QgsVectorLayer *mPointLayerGeometryGenerator = nullptr;
+    QgsVectorLayer *mPointLayerDataDefinedSizeAngle = nullptr;
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
@@ -126,6 +130,21 @@ void TestQgsDxfExport::init()
 
   QgsProject::instance()->addMapLayer( mPointLayerGeometryGenerator );
 
+  // Point layer with data-defined size and angle
+  mPointLayerDataDefinedSizeAngle = new  QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  mPointLayerDataDefinedSizeAngle->setSubsetString( QStringLiteral( "\"Staff\" = 6" ) );
+  QVERIFY( mPointLayerDataDefinedSizeAngle );
+  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Triangle, 10.0, 0 );
+  QgsPropertyCollection properties;
+  properties.setProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( "coalesce( 10 + $id * 5, 10 )" ) );
+  properties.setProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( "coalesce( $id * 5, 0 )" ) );
+  markerSymbolLayer->setDataDefinedProperties( properties );
+  QgsSymbolLayerList symbolLayerList;
+  symbolLayerList << markerSymbolLayer;
+  QgsMarkerSymbol *markerDataDefinedSymbol = new QgsMarkerSymbol( symbolLayerList );
+  mPointLayerDataDefinedSizeAngle->setRenderer( new QgsSingleSymbolRenderer( markerDataDefinedSymbol ) );
+  QgsProject::instance()->addMapLayer( mPointLayerDataDefinedSizeAngle );
+
   filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   mLineLayer = new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( mLineLayer->isValid() );
@@ -174,6 +193,32 @@ void TestQgsDxfExport::testPoints()
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), mPointLayer->featureCount() );
   QCOMPARE( result->wkbType(), Qgis::WkbType::Point );
+}
+
+void TestQgsDxfExport::testPointsDataDefinedSizeAngle()
+{
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerDataDefinedSizeAngle ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerDataDefinedSizeAngle->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerDataDefinedSizeAngle );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerDataDefinedSizeAngle->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 2000000 );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+
+  const QString file = getTempFileName( "point_datadefined_size_angle" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  // Verify that blocks have been used even though size and angle were data defined properties
+  QVERIFY( fileContainsText( file, QStringLiteral( "symbolLayer0" ) ) );
 }
 
 void TestQgsDxfExport::testLines()
@@ -1235,6 +1280,76 @@ void TestQgsDxfExport::testTransform()
   it = result->getFeatures();
   QVERIFY( it.nextFeature( f2 ) );
   QCOMPARE( f2.geometry().asWkt( 0 ), QStringLiteral( "LineString (960862 6056454, 960915 6056455)" ) );
+}
+
+void TestQgsDxfExport::testDataDefinedPoints()
+{
+  std::unique_ptr<QgsSimpleMarkerSymbolLayer> symbolLayer = std::make_unique<QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::Circle, 2.0 );
+  QgsPropertyCollection properties;
+  properties.setProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( "200" ) );
+  symbolLayer->setDataDefinedProperties( properties );
+
+  QgsMarkerSymbol *symbol = new QgsMarkerSymbol();
+  symbol->changeSymbolLayer( 0, symbolLayer.release() );
+
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  const QgsGeometry g1 = QgsGeometry::fromWkt( "POINT (2000000 1000000)" );
+  QgsFeature f1;
+  f1.setGeometry( g1 );
+  const QgsGeometry g2 = QgsGeometry::fromWkt( "POINT (2000100 1000100)" );
+  QgsFeature f2;
+  f2.setGeometry( g2 );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
+
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( symbol );
+  vl->setRenderer( renderer );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent().buffered( 100.0 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  const QString file = getTempFileName( "data_defined_points_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QString debugInfo;
+
+  QVERIFY2( fileContainsText( file,
+                              "CONTINUOUS\n"
+                              "420\n"
+                              "2302755\n"
+                              " 90\n"
+                              "     2\n"
+                              " 70\n"
+                              "     1\n"
+                              " 43\n"
+                              "0.0\n"
+                              " 10\n"
+                              "-100.0\n"
+                              " 20\n"
+                              "0.0\n"
+                              " 42\n"
+                              "1.0\n"
+                              " 10\n"
+                              "100.0\n"
+                              " 20\n"
+                              "0.0\n"
+                              " 42\n"
+                              "1.0\n"
+                              "  0\n"
+                              "ENDBLK", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const

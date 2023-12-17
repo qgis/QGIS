@@ -333,14 +333,14 @@ bool QgsPdalProvider::load( const QString &uri )
   catch ( json::exception &error )
   {
     const QString errorString = QStringLiteral( "Error parsing table metadata: %1" ).arg( error.what() );
-    QgsDebugMsg( errorString );
+    QgsDebugError( errorString );
     appendError( errorString );
     return false;
   }
   catch ( pdal::pdal_error &error )
   {
     const QString errorString = QString::fromStdString( error.what() );
-    QgsDebugMsg( errorString );
+    QgsDebugError( errorString );
     appendError( errorString );
     return false;
   }
@@ -435,6 +435,7 @@ QString QgsPdalProviderMetadata::filters( Qgis::FileFilterType type )
     case Qgis::FileFilterType::Mesh:
     case Qgis::FileFilterType::MeshDataset:
     case Qgis::FileFilterType::VectorTile:
+    case Qgis::FileFilterType::TiledScene:
       return QString();
 
     case Qgis::FileFilterType::PointCloud:

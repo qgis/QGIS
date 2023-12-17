@@ -20,11 +20,13 @@
 
 #include "ui_qgsdwgimportbase.h"
 #include "qgshelp.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 class QgsLayerTreeGroup;
+class QgsMapToolPan;
 
-class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
+class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 {
     Q_OBJECT
   public:
@@ -33,21 +35,44 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 
   private slots:
     void buttonBox_accepted();
-    void pbBrowseDrawing_clicked();
     void pbImportDrawing_clicked();
     void pbLoadDatabase_clicked();
     void pbSelectAll_clicked();
     void pbDeselectAll_clicked();
     void mDatabaseFileWidget_textChanged( const QString &filename );
+    void drawingFileWidgetFileChanged( const QString &filename );
     void leLayerGroup_textChanged( const QString &text );
     void showHelp();
+    void layersClicked( QTableWidgetItem *item );
+    void blockModeCurrentIndexChanged();
+    void useCurvesClicked();
 
   private:
-    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table );
+
+    enum class ColumnIndex : int
+    {
+      Name = 0,
+      Visibility = 1
+    };
+
+    enum BlockImportFlag
+    {
+      BlockImportExpandGeometry = 1 << 0,
+      BlockImportAddInsertPoints = 1 << 1
+    };
+    Q_DECLARE_FLAGS( BlockImportFlags, BlockImportFlag )
+
+    QgsVectorLayer *createLayer( const QString &layer, const QString &table );
+    QList<QgsVectorLayer *> createLayers( const QStringList &layerNames );
     void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );
+
+    QgsMapToolPan *mPanTool = nullptr;
+    QList<QgsVectorLayer *> mPreviewLayers;
+
+    friend class TestQgsDwgImportDialog;
 };
 
 #endif // QGSDWGIMPORTDIALOG_H

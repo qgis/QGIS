@@ -195,7 +195,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
   if ( !defaultFontString.isEmpty() )
   {
     QFont font;
-    font.setFamily( defaultFontString );
+    QgsFontUtils::setFontFamily( font, defaultFontString );
     mAnnotationFormat.setFont( font );
   }
 
@@ -641,7 +641,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
         break;
       }
 
-      FALLTHROUGH
+      [[fallthrough]];
     case CM:
     case MM:
       drawGridNoTransform( context, dotsPerMM );
@@ -1762,7 +1762,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse )
-        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+        QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
       currentX += step;
@@ -1841,7 +1841,7 @@ int QgsLayoutItemMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, cons
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse )
-        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+        QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
       currentY += step;
@@ -2217,7 +2217,7 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
         break;
       }
     }
-    FALLTHROUGH
+    [[fallthrough]];
     case CM:
     case MM:
       drawGridNoTransform( context, 0, true );
@@ -2614,7 +2614,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
     return 1;
   }
   return 0;

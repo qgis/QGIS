@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsBearingNumericFormat,
@@ -17,14 +16,15 @@ from qgis.core import (
     QgsLocalDefaultSettings,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLocalDefaultSettings(unittest.TestCase):
+class TestQgsLocalDefaultSettings(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

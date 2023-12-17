@@ -219,10 +219,10 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   int errorLine;
   if ( !projectDom.setContent( &projectFile, &errorMessage, &errorLine ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error reading the project file %1 at line %2: %3" )
-                 .arg( projectFile.fileName() )
-                 .arg( errorLine )
-                 .arg( errorMessage ) );
+    QgsDebugError( QStringLiteral( "Error reading the project file %1 at line %2: %3" )
+                   .arg( projectFile.fileName() )
+                   .arg( errorLine )
+                   .arg( errorMessage ) );
     return;
   }
 

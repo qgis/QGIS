@@ -113,10 +113,8 @@ endif()
 
 target_link_libraries(qgis_server
   qgis_core
-  ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
-  ${GDAL_LIBRARY}
   ${QCA_LIBRARY}
 )
 
@@ -181,8 +179,6 @@ install(TARGETS
 )
 
 install(FILES
-  admin.sld
-  wms_metadata.xml
   DESTINATION ${QGIS_CGIBIN_DIR}
 )
 add_custom_target(qgis_server_full

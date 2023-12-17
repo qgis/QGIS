@@ -148,7 +148,7 @@ QgsProcessingAlgorithm *QgsWriteVectorTilesMbtilesAlgorithm::createInstance() co
 
 void QgsWriteVectorTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination MBTiles" ), QObject::tr( "MBTiles files (*.mbtiles)" ) ) );
+  addParameter( new QgsProcessingParameterVectorTileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination MBTiles" ) ) );
 
   addBaseParameters();
 

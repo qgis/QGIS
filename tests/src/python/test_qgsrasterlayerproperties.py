@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import pathlib
 import typing
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import QgsMapLayer, QgsProject, QgsRasterLayer
@@ -23,7 +22,9 @@ from qgis.gui import (
     QgsMapLayerConfigWidgetFactory,
     QgsRasterLayerProperties,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
+import tempfile
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsRasterLayerProperties(unittest.TestCase):
+class TestQgsRasterLayerProperties(QgisTestCase):
 
     def setUp(self):
         QgsProject.instance().removeAllMapLayers()
@@ -96,6 +97,29 @@ class TestQgsRasterLayerProperties(unittest.TestCase):
         dialog.accept()
         self.assertEqual(MyFactory.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::createWidget(...) not called')
         self.assertEqual(MyWidget.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::apply() not called')
+
+    def test_transparency_load(self):
+        """Test issue GH #54496"""
+
+        myCanvas = QgsMapCanvas()
+        myPath = pathlib.Path(unitTestDataPath('raster')) / 'band1_float32_noct_epsg4326.tif'
+        myRasterLayer = QgsRasterLayer(myPath.as_posix(), myPath.name)
+
+        assert myRasterLayer.isValid(), f'Raster not loaded {myPath}'
+
+        dialog = QgsRasterLayerProperties(myRasterLayer, myCanvas)
+
+        with tempfile.NamedTemporaryFile(suffix='.qml') as qml_file_object:
+            renderer = myRasterLayer.renderer()
+            renderer.setOpacity(0.5)
+            self.assertTrue(myRasterLayer.saveNamedStyle(qml_file_object.name)[1])
+            myRasterLayer.loadNamedStyle(qml_file_object.name)
+            dialog.syncToLayer()
+            renderer = myRasterLayer.renderer()
+            self.assertEqual(renderer.opacity(), 0.5)
+            dialog.apply()
+            renderer = myRasterLayer.renderer()
+            self.assertEqual(renderer.opacity(), 0.5)
 
 
 if __name__ == '__main__':

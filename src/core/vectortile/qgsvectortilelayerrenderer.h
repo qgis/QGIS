@@ -56,6 +56,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     // data coming from the vector tile layer
 
+    QString mLayerName;
+
     std::unique_ptr< QgsVectorTileDataProvider > mDataProvider;
 
     //! Tile renderer object to do rendering of individual tiles
@@ -70,12 +72,18 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     //! Whether to draw boundaries of tiles (useful for debugging)
     bool mDrawTileBoundaries = false;
 
+    //! True if labels are enabled
+    bool mLabelsEnabled = true;
+
     // temporary data used during rendering process
 
     //! Feedback object that may be used by the caller to cancel the rendering
     std::unique_ptr<QgsFeedback> mFeedback;
+    //! Zoom level used to fetch tiles
+    int mTileZoomToFetch = 0;
     //! Zoom level at which we will be rendering
-    int mTileZoom = 0;
+    int mTileZoomToRender = 0;
+
     //! Definition of the tile matrix for our zoom level
     QgsTileMatrix mTileMatrix;
     //!< Block of tiles we will be rendering in that zoom level
@@ -98,6 +106,9 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     double mLayerOpacity = 1.0;
 
     QgsVectorTileMatrixSet mTileMatrixSet;
+
+    bool mEnableProfile = false;
+    quint64 mPreparationTime = 0;
 
 };
 

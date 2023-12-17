@@ -24,6 +24,9 @@
 
 #include <QString>
 
+class QgsMapLayer;
+
+
 /**
  * \ingroup core
  * \brief Contains utility functions for creating map layers.

@@ -274,7 +274,7 @@ bool QgsVectorLayerExporter::flushBuffer()
     mErrorCount += mFeatureBuffer.count();
 
     mFeatureBuffer.clear();
-    QgsDebugMsg( mErrorMessage );
+    QgsDebugError( mErrorMessage );
     return false;
   }
 

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/12/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsAbstractValidityCheck,
@@ -20,7 +19,8 @@ from qgis.core import (
     QgsValidityCheckResult,
     check,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
@@ -68,7 +68,7 @@ def my_check2(context, feedback):
     return [res]
 
 
-class TestQgsValidityChecks(unittest.TestCase):
+class TestQgsValidityChecks(QgisTestCase):
 
     def testAppRegistry(self):
         # ensure there is an application instance

@@ -629,12 +629,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      */
     void printEntryList()
     {
-      QgsDebugMsg( QStringLiteral( "****************cache entry list*************************" ) );
-      QgsDebugMsg( "Cache size: " + QString::number( mTotalSize ) );
+      QgsDebugMsgLevel( QStringLiteral( "****************cache entry list*************************" ), 1 );
+      QgsDebugMsgLevel( "Cache size: " + QString::number( mTotalSize ), 1 );
       T *entry = mLeastRecentEntry;
       while ( entry )
       {
-        QgsDebugMsg( QStringLiteral( "***Entry:" ) );
+        QgsDebugMsgLevel( QStringLiteral( "***Entry:" ), 1 );
         entry->dump();
         entry = entry->nextEntry;
       }

@@ -130,6 +130,7 @@ class QgsTemporalControllerDockWidget;
 
 class QgsMapDecoration;
 class QgsDecorationItem;
+class QgsDecorationOverlay;
 class QgsMessageLogViewer;
 class QgsMessageBar;
 class QgsMessageBarItem;
@@ -908,6 +909,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the application vertex editor
     QgsVertexEditor *vertexEditor() { return mVertexEditorDock; }
 
+    /**
+     * Adds a layer directly without prompting user for location
+     * The caller must provide information needed for layer construction
+     * using the \a url and \a baseName. The \a baseName parameter is used
+     * in the Map Legend so it should be formed in a meaningful way.
+     */
+    template< typename L> L *addLayer( const QString &uri,
+                                       const QString &baseName,
+                                       const QString &provider );
+
   public slots:
     //! save current vector layer
     QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
@@ -1159,8 +1170,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \brief dataSourceManager Open the DataSourceManager dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
+     * \param layerUri optional layer URI for the source select widget configuration
      */
-    void dataSourceManager( const QString &pageName = QString() );
+    void dataSourceManager( const QString &pageName = QString(), const QString &layerUri = QString() );
 
     //! Add a virtual layer
     void addVirtualLayer();
@@ -1230,27 +1242,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * way.
      */
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
-
-    /**
-     * Adds a vector tile layer directly without prompting user for location
-     * The caller must provide information needed for layer construction
-     * using the \a url and \a baseName. The \a baseName parameter is used
-     * in the Map Legend so it should be formed in a meaningful way.
-     * \since QGIS 3.14
-     */
-    QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName );
-
-    /**
-     * Adds a vector tile layer directly without prompting user for location
-     * The caller must provide information needed for layer construction
-     * using the \a url and \a baseName. The \a baseName parameter is used
-     * in the Map Legend so it should be formed in a meaningful way.
-     * \since QGIS 3.18
-     */
-    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
-
-    //! Open a plugin layer using its provider
-    QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
 
     void versionReplyFinished();
 
@@ -1393,6 +1384,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns TRUE if saved or discarded, FALSE if canceled
      */
     bool saveDirty();
+
+    /**
+     * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user
+     * according to \a invalidGeometryCount and \a nTotalFeatures
+     * \note Setting the \a duplicateFeature to TRUE will handle the pasting of features as duplicates of pre-existing features
+     */
+    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features, bool duplicateFeature = false );
 
   public slots:
 
@@ -1685,8 +1683,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showRasterCalculator();
     //! Calculate new meshes from existing ones
     void showMeshCalculator();
-    //! Open dialog to align raster layers
-    void showAlignRasterTool();
 
     /**
      * Called whenever user wants to embed layers
@@ -1941,7 +1937,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addTextAnnotation();
     void addHtmlAnnotation();
     void addSvgAnnotation();
-    void modifyAnnotation();
     void reprojectAnnotations();
 
     //! Alerts user when commit errors occurred
@@ -2360,12 +2355,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
 
     /**
-     * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user
-     * according to \a invalidGeometryCount and \a nTotalFeatures
-     */
-    void pasteFeatures( QgsVectorLayer *pasteVectorLayer, int invalidGeometriesCount, int nTotalFeatures, QgsFeatureList &features );
-
-    /**
      * starts/stops for a vector layer \a vlayer
      */
     bool toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel = true );
@@ -2460,7 +2449,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapToolsDigitizingTechniqueManager *mDigitizingTechniqueManager = nullptr;
     std::unique_ptr< QgsAppMapTools > mMapTools;
 
-    QgsMapTool *mNonEditMapTool = nullptr;
+    QPointer< QgsMapTool > mNonEditMapTool;
 
     QgsTaskManagerStatusBarWidget *mTaskManagerWidget = nullptr;
 
@@ -2604,6 +2593,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
 
     QList<QgsDecorationItem *> mDecorationItems;
+    QgsDecorationOverlay *mDecorationOverlay = nullptr;
 
     //! Persistent GPS toolbox
     QgsAppGpsConnection *mGpsConnection = nullptr;

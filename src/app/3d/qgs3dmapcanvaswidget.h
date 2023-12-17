@@ -35,8 +35,11 @@ class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
+class QgsMapTool;
+class QgsMapToolExtent;
 class QgsMapCanvas;
 class QgsDockableWidgetHelper;
+class QgsMessageBar;
 class QgsRubberBand;
 
 class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
@@ -62,6 +65,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
 
+    void showAnimationWidget() { mActionAnim->trigger(); }
 
   private slots:
     void resetView();
@@ -74,6 +78,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
+    void setSceneExtentOn2DCanvas();
+    void setSceneExtent( const QgsRectangle &extent );
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
@@ -88,6 +94,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
     void onViewFrustumVisualizationEnabledChanged();
     void onExtentChanged();
+    void onGpuMemoryLimitReached();
 
   private:
     QString mCanvasName;
@@ -101,6 +108,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QTimer *mLabelNavSpeedHideTimeout = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
+    QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mOptionsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
@@ -111,11 +120,15 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync2DNavTo3D = nullptr;
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolyogon = nullptr;
+    QAction *mActionAnim = nullptr;
     QToolButton *mBtnOptions = nullptr;
+    QAction *mActionSetSceneExtent = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
     QObjectUniquePtr< QgsRubberBand > mViewExtentHighlight;
     QPointer<QDialog> mConfigureDialog;
+    QgsMessageBar *mMessageBar = nullptr;
+    bool mGpuMemoryLimitReachedReported = false;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

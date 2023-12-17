@@ -1253,7 +1253,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
   QList<QgsRasterAttributeTable::MinMaxClass> classes;
   if ( !isValid() )
   {
-    QgsDebugMsg( "minMaxClasses was called on an invalid RAT" );
+    QgsDebugError( "minMaxClasses was called on an invalid RAT" );
     return classes;
   }
 
@@ -1261,7 +1261,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
 
   if ( ! fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
   {
-    QgsDebugMsg( "minMaxClasses was called on a ramp raster" );
+    QgsDebugError( "minMaxClasses was called on a ramp raster" );
     return classes;
   }
 
@@ -1275,7 +1275,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
     const Field classificationField { mFields.at( classificationIndex ) };
     if ( ( classificationField.usage != Qgis::RasterAttributeTableFieldUsage::Name && classificationField.usage != Qgis::RasterAttributeTableFieldUsage::Generic ) )
     {
-      QgsDebugMsg( "minMaxClasses was called with a classification column which is not suitable for classification" );
+      QgsDebugError( "minMaxClasses was called with a classification column which is not suitable for classification" );
       return classes;
     }
   }
@@ -1297,7 +1297,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
   }
   else if ( classificationIndex >= mFields.count( ) )
   {
-    QgsDebugMsg( "minMaxClasses was called with a classification column out of range" );
+    QgsDebugError( "minMaxClasses was called with a classification column out of range" );
     return classes;
   }
 
@@ -1313,7 +1313,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
       // This should never happen, could eventually become a Q_ASSERT
       if ( ! ok )
       {
-        QgsDebugMsg( "minMaxClasses could not convert a MinMax value to double" );
+        QgsDebugError( "minMaxClasses could not convert a MinMax value to double" );
         return classes;
       }
       if ( labels.contains( label ) )
@@ -1531,35 +1531,38 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     pseudoColorRenderer->setClassificationMax( maximumValue() );
     // Use discrete for single colors, interpolated for ramps
     pseudoColorRenderer->createShader( ramp, hasRamp() ? QgsColorRampShader::Type::Interpolated : QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
-    pseudoColorRenderer->shader()->setMaximumValue( maximumValue() );
-    pseudoColorRenderer->shader()->setMinimumValue( minimumValue() );
-    // Set labels
-    if ( QgsColorRampShader *shaderFunction = static_cast<QgsColorRampShader *>( pseudoColorRenderer->shader()->rasterShaderFunction() ) )
+    if ( pseudoColorRenderer->shader() )
     {
-      shaderFunction->setMinimumValue( minimumValue() );
-      shaderFunction->setMaximumValue( maximumValue() );
-      const bool labelsAreUsable { ramp->count() > 2 && labels.count() == ramp->count() - 1 };
-
-      if ( labelsAreUsable )
+      pseudoColorRenderer->shader()->setMaximumValue( maximumValue() );
+      pseudoColorRenderer->shader()->setMinimumValue( minimumValue() );
+      // Set labels
+      if ( QgsColorRampShader *shaderFunction = static_cast<QgsColorRampShader *>( pseudoColorRenderer->shader()->rasterShaderFunction() ) )
       {
-        QList<QgsColorRampShader::ColorRampItem> newItemList;
-        const double range { maximumValue() - minimumValue() };
-        int stopIdx { 0 };
-        for ( const QString &label : std::as_const( labels ) )
-        {
-          if ( stopIdx >= ramp->count() - 2 )
-          {
-            break;
-          }
-          double value { minimumValue() + ramp->stops().at( stopIdx ).offset * range };
-          QgsColorRampShader::ColorRampItem item { value, ramp->stops().at( stopIdx ).color, label };
-          newItemList.push_back( item );
-          stopIdx++;
-        }
+        shaderFunction->setMinimumValue( minimumValue() );
+        shaderFunction->setMaximumValue( maximumValue() );
+        const bool labelsAreUsable { ramp->count() > 2 && labels.count() == ramp->count() - 1 };
 
-        QgsColorRampShader::ColorRampItem item { maximumValue(), ramp->color2(), labels.last() };
-        newItemList.push_back( item );
-        shaderFunction->setColorRampItemList( newItemList );
+        if ( labelsAreUsable )
+        {
+          QList<QgsColorRampShader::ColorRampItem> newItemList;
+          const double range { maximumValue() - minimumValue() };
+          int stopIdx { 0 };
+          for ( const QString &label : std::as_const( labels ) )
+          {
+            if ( stopIdx >= ramp->count() - 2 )
+            {
+              break;
+            }
+            double value { minimumValue() + ramp->stops().at( stopIdx ).offset * range };
+            QgsColorRampShader::ColorRampItem item { value, ramp->stops().at( stopIdx ).color, label };
+            newItemList.push_back( item );
+            stopIdx++;
+          }
+
+          QgsColorRampShader::ColorRampItem item { maximumValue(), ramp->color2(), labels.last() };
+          newItemList.push_back( item );
+          shaderFunction->setColorRampItemList( newItemList );
+        }
       }
     }
     renderer.reset( pseudoColorRenderer.release() );

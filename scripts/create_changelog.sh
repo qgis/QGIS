@@ -1,7 +1,7 @@
 #!/bin/sh
 # Convert git log to GNU-style ChangeLog file.
 # (C) Chris
-if test -d ".git"; then
+if test -e ".git"; then
     git log --date-order --date=short | \
     sed -e '/^commit.*$/d' | \
     awk '/^Author/ {sub(/\\$/,""); getline t; print $0 t; next}; 1' | \

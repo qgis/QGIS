@@ -184,7 +184,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
     case 29812: /* ST_GEOMETRY, ST_POINT */
       return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
     default:
-      QgsDebugMsg( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
+      QgsDebugError( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
       return QVariant();
   }
 }

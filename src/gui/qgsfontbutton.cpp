@@ -612,7 +612,7 @@ void QgsFontButton::prepareMenu()
   {
     QAction *fontAction = new QAction( family, recentFontMenu );
     QFont f = fontAction->font();
-    f.setFamily( family );
+    QgsFontUtils::setFontFamily( f, family );
     fontAction->setFont( f );
     fontAction->setToolTip( family );
     recentFontMenu->addAction( fontAction );
@@ -630,7 +630,7 @@ void QgsFontButton::prepareMenu()
         {
           QgsTextFormat newFormat = mFormat;
           QFont f = newFormat.font();
-          f.setFamily( family );
+          QgsFontUtils::setFontFamily( f, family );
           newFormat.setFont( f );
           setTextFormat( newFormat );
           QgsFontUtils::addRecentFontFamily( mFormat.font().family() );
@@ -639,7 +639,7 @@ void QgsFontButton::prepareMenu()
         case ModeQFont:
         {
           QFont font = mFont;
-          font.setFamily( family );
+          QgsFontUtils::setFontFamily( font, family );
           setCurrentFont( font );
           QgsFontUtils::addRecentFontFamily( family );
           break;
@@ -888,8 +888,9 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
   }
 
   //create an icon pixmap
-  QPixmap pixmap( currentIconSize );
+  QPixmap pixmap( currentIconSize * devicePixelRatioF() );
   pixmap.fill( Qt::transparent );
+  pixmap.setDevicePixelRatio( devicePixelRatioF() );
   QPainter p;
   p.begin( &pixmap );
   p.setRenderHint( QPainter::Antialiasing );
@@ -905,6 +906,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       context.setMapToPixel( newCoordXForm );
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
+      context.setDevicePixelRatio( devicePixelRatioF() );
       context.setUseAdvancedEffects( true );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );

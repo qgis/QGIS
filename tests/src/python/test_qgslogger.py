@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 
 (myFileHandle, myFilename) = tempfile.mkstemp()
 os.environ['QGIS_DEBUG'] = '2'

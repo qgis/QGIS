@@ -9,7 +9,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = '18/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
@@ -27,12 +26,13 @@ from qgis.core import (
     QgsWkbTypes,
     QgsXmlUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsXmlUtils(unittest.TestCase):
+class TestQgsXmlUtils(QgisTestCase):
 
     def test_invalid(self):
         """

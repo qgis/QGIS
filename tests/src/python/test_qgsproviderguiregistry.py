@@ -11,16 +11,16 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import sys
 
-import qgis  # NOQA
 from qgis.gui import QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 # Convenience instances in case you may need them
 # to find the srs.db
 start_app()
 
 
-class TestQgsProviderGuiRegistry(unittest.TestCase):
+class TestQgsProviderGuiRegistry(QgisTestCase):
 
     def testProviderList(self):
         """

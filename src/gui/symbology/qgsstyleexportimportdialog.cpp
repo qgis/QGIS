@@ -20,9 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorramp.h"
-#include "qgslogger.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsguiutils.h"
@@ -128,6 +125,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mModel = new QgsStyleProxyModel( dialogStyle, this );
 
   mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
 
   listItems->setModel( mModel );
 
@@ -158,6 +156,9 @@ void QgsStyleExportImportDialog::doExportImport()
     const QString lastUsedDir = settings.value( QStringLiteral( "StyleManager/lastExportDir" ), QDir::homePath(), QgsSettings::Gui ).toString();
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Styles" ), lastUsedDir,
                        tr( "XML files (*.xml *.XML)" ) );
+    // return dialog focus on Mac
+    activateWindow();
+    raise();
     if ( fileName.isEmpty() )
     {
       return;

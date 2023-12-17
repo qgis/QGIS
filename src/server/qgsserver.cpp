@@ -137,7 +137,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   if ( !projectFile.isEmpty() )
   {
     cfPath = projectFile;
-    QgsDebugMsg( QStringLiteral( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ) );
+    QgsDebugMsgLevel( QStringLiteral( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ), 2 );
   }
   else
   {
@@ -157,7 +157,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
     else
     {
       cfPath = configPath;
-      QgsDebugMsg( QStringLiteral( "MAP:%1" ).arg( cfPath ) );
+      QgsDebugMsgLevel( QStringLiteral( "MAP:%1" ).arg( cfPath ), 2 );
     }
   }
   return cfPath;
@@ -593,8 +593,12 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 
 
-  // Clear the profiler server section after each request
+  // Clear the profiler content after each request
+  QgsApplication::profiler()->clear( QStringLiteral( "startup" ) );
+  QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
+  QgsApplication::profiler()->clear( QStringLiteral( "rendering" ) );
   QgsApplication::profiler()->clear( QStringLiteral( "server" ) );
+
 
 }
 

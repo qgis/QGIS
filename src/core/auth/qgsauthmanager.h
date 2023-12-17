@@ -874,6 +874,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     const QString authDbTrustTable() const { return AUTH_TRUST_TABLE; }
 
+    QString authPasswordHelperKeyName() const;
+
     static QgsAuthManager *sInstance;
     static const QString AUTH_CONFIG_TABLE;
     static const QString AUTH_PASS_TABLE;
@@ -939,7 +941,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mPasswordHelperFailedInit = false;
 
     //! Master password name in the wallets
-    static const QLatin1String AUTH_PASSWORD_HELPER_KEY_NAME;
+    static const QLatin1String AUTH_PASSWORD_HELPER_KEY_NAME_BASE;
 
     //! password helper folder in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;

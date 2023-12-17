@@ -40,7 +40,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 
@@ -82,7 +83,7 @@ class MessageLogger(QObject):
         return self.log
 
 
-class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
     def treat_date_as_datetime(self):
         return True

@@ -138,7 +138,7 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
             catch ( QgsCsException &cse )
             {
               Q_UNUSED( cse )
-              QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+              QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
             }
           }
           else

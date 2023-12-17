@@ -96,13 +96,13 @@ void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
 {
-  QgsDebugMsg( QStringLiteral( "Remove capabilities cache entry because file changed" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Remove capabilities cache entry because file changed" ), 2 );
   removeCapabilitiesDocument( path );
 }
 
 void QgsCapabilitiesCache::removeOutdatedEntries()
 {
-  QgsDebugMsg( QStringLiteral( "Checking for outdated entries" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Checking for outdated entries" ), 2 );
   for ( auto it = mCachedCapabilitiesTimestamps.constBegin(); it != mCachedCapabilitiesTimestamps.constEnd(); it++ )
   {
     const QString configFilePath = it.key();

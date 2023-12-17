@@ -36,7 +36,8 @@ from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
 
 from qgis.gui import QgsMapLayerComboBox
 from qgis.utils import iface
-from qgis.core import (QgsProcessingParameterDefinition,
+from qgis.core import (Qgis,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameters,
                        QgsProject,
                        QgsReferencedRectangle,
@@ -63,7 +64,7 @@ class LayerSelectionDialog(QDialog):
         vl.addWidget(QLabel(self.tr('Use extent from')))
         self.combo = QgsMapLayerComboBox()
         self.combo.setFilters(
-            QgsMapLayerProxyModel.HasGeometry | QgsMapLayerProxyModel.RasterLayer | QgsMapLayerProxyModel.MeshLayer)
+            Qgis.LayerFilter.HasGeometry | Qgis.LayerFilter.RasterLayer | Qgis.LayerFilter.MeshLayer)
         self.combo.setShowCrs(ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF))
         vl.addWidget(self.combo)
 

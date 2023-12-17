@@ -68,6 +68,7 @@ from qgis.core import (
     QgsProcessingParameterMapLayer,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterMeshLayer,
+    QgsProcessingParameterPointCloudLayer,
     QgsProcessingParameterVectorLayer,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterRasterDestination,
@@ -315,6 +316,11 @@ class BatchPanelFillWidget(QToolButton):
         elif isinstance(self.parameterDefinition,
                         QgsProcessingParameterMultipleLayers) and self.parameterDefinition.layerType() == QgsProcessing.TypeMesh:
             layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition, QgsProcessingParameterPointCloudLayer):
+            layers = QgsProcessingUtils.compatiblePointCloudLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition,
+                        QgsProcessingParameterMultipleLayers) and self.parameterDefinition.layerType() == QgsProcessing.TypePointCloud:
+            layers = QgsProcessingUtils.compatiblePointCloudLayers(QgsProject.instance())
         else:
             datatypes = [QgsProcessing.TypeVectorAnyGeometry]
             if isinstance(self.parameterDefinition, QgsProcessingParameterFeatureSource):
@@ -771,6 +777,11 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             widget = self.tblParameters.cellWidget(row + 1, col)
             text = widget.getValue()
             if not warnOnInvalid or out.checkValueIsAcceptable(text):
+                ok, error = out.isSupportedOutputValue(text, createContext())
+                if not ok:
+                    self.parent.messageBar().pushMessage("", error, level=Qgis.Warning, duration=5)
+                    return {}, False
+
                 if isinstance(out, (QgsProcessingParameterRasterDestination,
                                     QgsProcessingParameterVectorDestination,
                                     QgsProcessingParameterFeatureSink)):

@@ -27,7 +27,7 @@
 #include "qgscompoundcurve.h"
 
 class QgsLineSegment2D;
-class QgsBox3d;
+class QgsBox3D;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -838,6 +838,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isClosed() const override SIP_HOLDGIL;
     bool isClosed2D() const override SIP_HOLDGIL;
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
      * Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
@@ -1052,15 +1053,32 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the minimal 3D bounding box for the geometry.
+     * Deprecated: use calculateBoundingBox3D instead
      * \see calculateBoundingBox()
      * \since QGIS 3.26
+     * \deprecated since QGIS 3.34
      */
-    QgsBox3d calculateBoundingBox3d() const;
+    Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
+
+    /**
+     * Calculates the minimal 3D bounding box for the geometry.
+     * \see calculateBoundingBox()
+     * \since QGIS 3.34
+     */
+    QgsBox3D calculateBoundingBox3D() const override;
+
+
+    /**
+     * Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+     * the measure between the supplied \a start and \a end values.
+     *
+     * \since QGIS 3.36
+     */
+    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
 
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
-    QgsRectangle calculateBoundingBox() const override;
 
   private:
     QVector<double> mX;

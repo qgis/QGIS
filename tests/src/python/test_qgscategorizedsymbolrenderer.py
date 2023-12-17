@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QLocale, QSize, Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
@@ -41,7 +40,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -73,7 +73,7 @@ def createFillSymbol():
     return symbol
 
 
-class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
+class TestQgsCategorizedSymbolRenderer(QgisTestCase):
 
     def testFilter(self):
         """Test filter creation"""
@@ -397,20 +397,20 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
 
         symbol_a = createMarkerSymbol()
         symbol_a.setColor(QColor(255, 0, 0))
-        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a', True, '0'))
         symbol_b = createMarkerSymbol()
         symbol_b.setColor(QColor(0, 255, 0))
-        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b'))
+        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b', True, '1'))
         symbol_c = createMarkerSymbol()
         symbol_c.setColor(QColor(0, 0, 255))
-        renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False))
+        renderer.addCategory(QgsRendererCategory('c', symbol_c, 'c', False, '2'))
         symbol_d = createMarkerSymbol()
         symbol_d.setColor(QColor(255, 0, 255))
-        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de', True, '3'))
         # add default category
         default_symbol = createMarkerSymbol()
         default_symbol.setColor(QColor(255, 255, 255))
-        renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
+        renderer.addCategory(QgsRendererCategory('', default_symbol, 'default', True, '4'))
 
         self.assertEqual(renderer.legendKeys(), {'0', '1', '2', '3', '4'})
 
@@ -837,13 +837,13 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertFalse(ok)
 
         symbol_a = createMarkerSymbol()
-        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a', True, '0'))
         symbol_b = createMarkerSymbol()
-        renderer.addCategory(QgsRendererCategory(5, symbol_b, 'b'))
+        renderer.addCategory(QgsRendererCategory(5, symbol_b, 'b', True, '1'))
         symbol_c = createMarkerSymbol()
-        renderer.addCategory(QgsRendererCategory(5.5, symbol_c, 'c', False))
+        renderer.addCategory(QgsRendererCategory(5.5, symbol_c, 'c', False, '2'))
         symbol_d = createMarkerSymbol()
-        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de'))
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de', True, '3'))
 
         exp, ok = renderer.legendKeyToExpression('0', None)
         self.assertTrue(ok)

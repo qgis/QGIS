@@ -24,6 +24,7 @@
 #include "qgstextrenderer.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsfontutils.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
@@ -105,7 +106,7 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
   mSizeScaleTransformer.reset( sizeTransformer ? sizeTransformer->clone() : nullptr );
 
   if ( mTitleLabel.isEmpty() )
-    mTitleLabel = ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString() : ddSize.field();
+    mTitleLabel = ddSize.propertyType() == Qgis::PropertyType::Expression ? ddSize.expressionString() : ddSize.field();
 
   // automatically generate classes if no classes are defined
   if ( sizeTransformer && mSizeClasses.isEmpty() )
@@ -397,8 +398,8 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
     QDomElement elemFont = elemTextStyle.firstChildElement( QStringLiteral( "font" ) );
     if ( !elemFont.isNull() )
     {
-      ddsLegend->setFont( QFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
-                                 elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
+      ddsLegend->setFont( QgsFontUtils::createFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
+                          elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
     }
     ddsLegend->setTextColor( QgsSymbolLayerUtils::decodeColor( elemTextStyle.attribute( QStringLiteral( "color" ) ) ) );
     ddsLegend->setTextAlignment( static_cast<Qt::AlignmentFlag>( elemTextStyle.attribute( QStringLiteral( "align" ) ).toInt() ) );

@@ -812,7 +812,7 @@ static inline QString dumpVariantMap( const QVariantMap &variantMap, const QStri
   return result;
 }
 
-QString QgsPostgresRasterProvider::htmlMetadata()
+QString QgsPostgresRasterProvider::htmlMetadata() const
 {
   // This must return the content of a HTML table starting by tr and ending by tr
   QVariantMap overviews;
@@ -1741,7 +1741,7 @@ bool QgsPostgresRasterProvider::loadFields()
         }
         else
         {
-          QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "numeric\\((\\d+),(\\d+)\\)" ) ) );
+          const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "numeric\\((\\d+),(\\d+)\\)" ) ) );
           const QRegularExpressionMatch match = re.match( formattedFieldType );
           if ( match.hasMatch() )
           {
@@ -1763,7 +1763,7 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "character varying\\((\\d+)\\)" ) ) );
+        const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "character varying\\((\\d+)\\)" ) ) );
         const QRegularExpressionMatch match = re.match( formattedFieldType );
         if ( match.hasMatch() )
         {
@@ -1815,7 +1815,7 @@ bool QgsPostgresRasterProvider::loadFields()
 
         fieldType = QVariant::String;
 
-        const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "character\\((\\d+)\\)" ) ) );
+        const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "character\\((\\d+)\\)" ) ) );
         const QRegularExpressionMatch match = re.match( formattedFieldType );
         if ( match.hasMatch() )
         {
@@ -1823,9 +1823,9 @@ bool QgsPostgresRasterProvider::loadFields()
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unexpected formatted field type '%1' for field %2" )
-                       .arg( formattedFieldType,
-                             fieldName ) );
+          QgsDebugError( QStringLiteral( "Unexpected formatted field type '%1' for field %2" )
+                         .arg( formattedFieldType,
+                               fieldName ) );
           fieldSize = -1;
           fieldPrec = 0;
         }
@@ -1834,7 +1834,7 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "char\\((\\d+)\\)" ) ) );
+        const thread_local QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "char\\((\\d+)\\)" ) ) );
         const QRegularExpressionMatch match = re.match( formattedFieldType );
         if ( match.hasMatch() )
         {
@@ -2260,7 +2260,7 @@ void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
 }
 
 
-QString QgsPostgresRasterProvider::pkSql()
+QString QgsPostgresRasterProvider::pkSql() const
 {
   switch ( mPrimaryKeyType )
   {
@@ -2281,7 +2281,7 @@ QString QgsPostgresRasterProvider::pkSql()
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Attribute not found %1" ).arg( keyIndex ) );
+            QgsDebugError( QStringLiteral( "Attribute not found %1" ).arg( keyIndex ) );
           }
         }
         return pkeys.join( ',' ).prepend( '(' ).append( ')' );
@@ -2302,7 +2302,7 @@ void QgsPostgresRasterProvider::findOverviews()
                                       "FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2" ).arg( quotedValue( mSchemaName ),
                                           quotedValue( mTableName ) );
 
-  //QgsDebugMsg( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ) );
+  //QgsDebugMsgLevel( QStringLiteral( "Raster overview information sql: %1" ).arg( sql ), 2 );
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
   if ( PGRES_TUPLES_OK == result.PQresultStatus() )
   {

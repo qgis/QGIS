@@ -240,7 +240,7 @@ void QgsPolymorphicRelation::updateRelationStatus()
 
   if ( d->mRelationId.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid relation: no ID" ) );
+    QgsDebugError( QStringLiteral( "Invalid relation: no ID" ) );
     d->mValid = false;
     return;
   }
@@ -290,7 +290,7 @@ void QgsPolymorphicRelation::updateRelationStatus()
   {
     if ( d->mReferencingLayer->fields().lookupField( pair.first ) == -1 )
     {
-      QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() ) );
+      QgsDebugError( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() ) );
       d->mValid = false;
       return;
     }
@@ -299,7 +299,7 @@ void QgsPolymorphicRelation::updateRelationStatus()
     {
       if ( d->mReferencedLayersMap[referencedLayerId]->fields().lookupField( pair.second ) == -1 )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayersMap[referencedLayerId]->name() ) );
+        QgsDebugError( QStringLiteral( "Invalid relation: field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayersMap[referencedLayerId]->name() ) );
         d->mValid = false;
         return;
       }

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '04/02/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsLabelObstacleSettings,
@@ -18,12 +17,13 @@ from qgis.core import (
     QgsPropertyCollection,
 )
 from qgis.gui import QgsLabelObstacleSettingsWidget, QgsLabelSettingsWidgetBase
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLabelSettingsWidget(unittest.TestCase):
+class TestQgsLabelSettingsWidget(QgisTestCase):
 
     def testBase(self):
         """ test base class """

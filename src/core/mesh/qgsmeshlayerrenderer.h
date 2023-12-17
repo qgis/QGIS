@@ -64,7 +64,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
   QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
-  std::unique_ptr<QgsMesh3dAveragingMethod> mScalarAveragingMethod;
+  std::unique_ptr<QgsMesh3DAveragingMethod> mScalarAveragingMethod;
 
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;
@@ -76,7 +76,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
   double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
   QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-  std::unique_ptr<QgsMesh3dAveragingMethod> mVectorAveragingMethod;
+  std::unique_ptr<QgsMesh3DAveragingMethod> mVectorAveragingMethod;
 };
 
 
@@ -118,6 +118,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool mIsEditable = false;
 
   protected:
+    QString mLayerName;
+
     //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
 
@@ -158,6 +160,9 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     double mElevationScale = 1.0;
     double mElevationOffset = 0.0;
     bool mRenderElevationMap = false;
+
+    bool mEnableProfile = false;
+    quint64 mPreparationTime = 0;
 
   private:
 

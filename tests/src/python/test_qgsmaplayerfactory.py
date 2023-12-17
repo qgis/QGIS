@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.core import (
     QgsAnnotationLayer,
     QgsCoordinateTransformContext,
@@ -24,14 +23,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorTileLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsMapLayerFactory(unittest.TestCase):
+class TestQgsMapLayerFactory(QgisTestCase):
 
     def testTypeFromString(self):
         """

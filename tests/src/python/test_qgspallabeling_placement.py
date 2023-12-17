@@ -16,7 +16,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import os
 import sys
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import qDebug
 from qgis.core import (
     Qgis,

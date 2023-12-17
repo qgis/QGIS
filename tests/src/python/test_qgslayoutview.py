@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QByteArray, QMimeData, QRectF
 from qgis.PyQt.QtGui import QTransform
@@ -29,12 +28,13 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsLayoutView
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutView(unittest.TestCase):
+class TestQgsLayoutView(QgisTestCase):
 
     def testScaleSafe(self):
         """ test scaleSafe method """

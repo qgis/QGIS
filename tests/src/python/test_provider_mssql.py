@@ -11,10 +11,10 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant
 from qgis.core import (
     NULL,
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
@@ -31,7 +31,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import unitTestDataPath
@@ -40,7 +41,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -402,8 +403,8 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
         vl = self.getSource()
         self.assertTrue(vl.isValid())
-        self.assertTrue(
-            vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
 
         # table layer_styles does not exist
 

@@ -816,30 +816,6 @@ Files: src/plugins/globe/featuresource/qgsglobefeatureoptions.h
 Copyright: osgEarth
 License: LGPL-2+
 
-Files: src/plugins/grass/qtermwidget/konsole_wcwidth.*
-Copyright: 2011, Markus Kuhn
-License: public-domain
- This file is in the public domain
-
-Files: src/plugins/grass/qtermwidget/kprocess.cpp
- src/plugins/grass/qtermwidget/kprocess.h
- src/plugins/grass/qtermwidget/kpty.cpp
- src/plugins/grass/qtermwidget/kpty.h
- src/plugins/grass/qtermwidget/kpty_p.h
- src/plugins/grass/qtermwidget/kptydevice.cpp
- src/plugins/grass/qtermwidget/kptydevice.h
- src/plugins/grass/qtermwidget/kptyprocess.cpp
- src/plugins/grass/qtermwidget/kptyprocess.h
- src/plugins/grass/qtermwidget/qtermwidget.cpp
- src/plugins/grass/qtermwidget/qtermwidget.h
- src/plugins/grass/qtermwidget/TerminalCharacterDecoder.cpp
- src/plugins/grass/qtermwidget/TerminalCharacterDecoder.h
-Copyright:  2002, Waldo Bastian <bastian@kde.org>
- 2002-2003, 2007, Oswald Buddenhagen <ossi@kde.org>
-            2008, e_k <e_k at users.sourceforge.net>
-            2010, KDE e.V. <kde-ev-board@kde.org>
-License: LGPL-2+
-
 Files: src/providers/oracle/ocispatial/main.cpp
  src/providers/oracle/ocispatial/main.h
  src/providers/oracle/ocispatial/qsql_ocispatial.cpp

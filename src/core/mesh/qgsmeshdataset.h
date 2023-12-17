@@ -233,7 +233,7 @@ class CORE_EXPORT QgsMeshDataBlock
 /**
  * \ingroup core
  *
- * \brief QgsMesh3dDataBlock is a block of 3d stacked mesh data related N
+ * \brief QgsMesh3DDataBlock is a block of 3d stacked mesh data related N
  * faces defined on base mesh frame.
  *
  * Data are implicitly shared, so the class can be quickly copied
@@ -241,19 +241,22 @@ class CORE_EXPORT QgsMeshDataBlock
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
+ * \note In QGIS 3.34 this class was renamed from QgsMesh3dDataBlock to QgsMesh3DDataBlock. The old QgsMesh3dDataBlock name
+ * remains available in PyQGIS for compatibility.
+ *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMesh3dDataBlock
+class CORE_EXPORT QgsMesh3DDataBlock
 {
   public:
     //! Constructs an invalid block
-    QgsMesh3dDataBlock();
+    QgsMesh3DDataBlock();
 
     //! Dtor
-    ~QgsMesh3dDataBlock();
+    ~QgsMesh3DDataBlock();
 
     //! Constructs a new block for count faces
-    QgsMesh3dDataBlock( int count, bool isVector );
+    QgsMesh3DDataBlock( int count, bool isVector );
 
     //! Sets block validity
     void setValid( bool valid );

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '14/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, Qt, QVariant
 from qgis.core import (
     QgsEditorWidgetSetup,
@@ -22,7 +21,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerJoinInfo,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -43,7 +43,7 @@ def create_model():
     return l, m
 
 
-class TestQgsFieldModel(unittest.TestCase):
+class TestQgsFieldModel(QgisTestCase):
 
     def testGettersSetters(self):
         """ test model getters/setters """

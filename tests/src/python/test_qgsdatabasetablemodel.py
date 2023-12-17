@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '07/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -23,10 +21,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsDatabaseTableModel(unittest.TestCase):
+class TestPyQgsDatabaseTableModel(QgisTestCase):
     # Provider test cases must define the string URI for the test
     uri = ''
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")

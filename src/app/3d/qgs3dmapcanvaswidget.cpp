@@ -30,6 +30,7 @@
 #include "qgscameracontroller.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolextent.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -96,9 +97,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionGroup->setExclusive( true );
   actionCameraControl->setChecked( true );
 
-  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
-                        tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
-  actionAnim->setCheckable( true );
+  mActionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
+                                    tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
+  mActionAnim->setCheckable( true );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage );
@@ -194,6 +195,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mOptionsMenu->addAction( mShowFrustumPolyogon );
 
+  mActionSetSceneExtent = mOptionsMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
+                          tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+  mActionSetSceneExtent->setCheckable( true );
+
   mOptionsMenu->addSeparator();
 
   QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
@@ -228,6 +233,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mAnimationWidget = new Qgs3DAnimationWidget( this );
   mAnimationWidget->setVisible( false );
 
+  mMessageBar = new QgsMessageBar( this );
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+
   QHBoxLayout *topLayout = new QHBoxLayout;
   topLayout->setContentsMargins( 0, 0, 0, 0 );
   topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
@@ -251,6 +259,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
+  layout->addWidget( mMessageBar );
   layout->addWidget( mCanvas );
   layout->addWidget( mAnimationWidget );
 
@@ -259,6 +268,12 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   onTotalPendingJobsCountChanged();
 
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
+  if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
+  {
+    QFontMetrics fm( font() );
+    const int initialSize = fm.horizontalAdvance( '0' ) * 75;
+    dialog->resize( initialSize, initialSize );
+  }
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
   toolBar->addWidget( toggleButton );
@@ -354,6 +369,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mCanvas->setMap( map );
 
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
+  connect( mCanvas->scene(), &Qgs3DMapScene::gpuMemoryLimitReached, this, &Qgs3DMapCanvasWidget::onGpuMemoryLimitReached );
 
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
   mAnimationWidget->setMap( map );
@@ -373,6 +389,10 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 {
   mMainCanvas = canvas;
+
+  mMapToolExtent = std::make_unique< QgsMapToolExtent >( canvas );
+  mMapToolExtent->setAction( mActionSetSceneExtent );
+  connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &Qgs3DMapCanvasWidget::setSceneExtent );
 
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
@@ -587,7 +607,7 @@ void Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged( QVector<QgsPointXY> ex
   if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) )
   {
     QgsRectangle extentRect;
-    extentRect.setMinimal();
+    extentRect.setNull();
     for ( QgsPointXY &pt : extent )
     {
       extentRect.include( pt );
@@ -635,4 +655,43 @@ void Qgs3DMapCanvasWidget::onExtentChanged()
     mViewExtentHighlight->addPoint( QgsPointXY( extent.xMaximum(), extent.yMinimum() ), false );
     mViewExtentHighlight->closePoints();
   }
+}
+
+void Qgs3DMapCanvasWidget::onGpuMemoryLimitReached()
+{
+  // let's report this issue just once, rather than spamming user if this happens repeatedly
+  if ( mGpuMemoryLimitReachedReported )
+    return;
+
+  const QgsSettings settings;
+  double memLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
+  mMessageBar->pushMessage( tr( "A map layer has used all graphics memory allowed (%1 MB). "
+                                "You may want to lower the amount of detail in the scene, or increase the limit in the options." )
+                            .arg( memLimit ), Qgis::MessageLevel::Warning );
+  mGpuMemoryLimitReachedReported = true;
+}
+
+void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()
+{
+  if ( !qobject_cast<QgsMapToolExtent *>( mMainCanvas->mapTool() ) )
+    mMapToolPrevious = mMainCanvas->mapTool();
+
+  mMainCanvas->setMapTool( mMapToolExtent.get() );
+  QgisApp::instance()->activateWindow();
+  QgisApp::instance()->raise();
+  mMessageBar->pushInfo( QString(), tr( "Drag a rectangle on the main 2D map view to define this 3D scene's extent" ) );
+}
+
+void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
+{
+  this->activateWindow();
+  this->raise();
+  mMessageBar->clearWidgets();
+  if ( !extent.isEmpty() )
+    mCanvas->map()->setExtent( extent );
+
+  if ( mMapToolPrevious )
+    mMainCanvas->setMapTool( mMapToolPrevious );
+  else
+    mMainCanvas->unsetMapTool( mMapToolExtent.get() );
 }

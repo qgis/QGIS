@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
 #include "qgselevationprofilelayertreeview.h"
+#include "ui_qgselevationprofileaddlayersdialogbase.h"
 
 #include <QWidgetAction>
 #include <QElapsedTimer>
@@ -50,6 +51,9 @@ class QLabel;
 class QgsProfilePoint;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryString;
+class QgsSettingsEntryColor;
+class QgsMapLayerProxyModel;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
 {
@@ -63,6 +67,26 @@ class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeV
     void contextMenuEvent( QContextMenuEvent *event ) override;
 };
 
+class QgsElevationProfileLayersDialog: public QDialog, private Ui::QgsElevationProfileAddLayersDialogBase
+{
+    Q_OBJECT
+
+  public:
+    QgsElevationProfileLayersDialog( QWidget *parent = nullptr );
+    void setVisibleLayers( const QList<QgsMapLayer *> &layers );
+    void setHiddenLayers( const QList<QgsMapLayer *> &layers );
+    QList< QgsMapLayer * > selectedLayers() const;
+
+  private slots:
+
+    void filterVisible( bool enabled );
+
+  private:
+
+    QgsMapLayerProxyModel *mModel = nullptr;
+    QList< QgsMapLayer * > mVisibleLayers;
+};
+
 class QgsElevationProfileWidget : public QWidget
 {
     Q_OBJECT
@@ -70,6 +94,9 @@ class QgsElevationProfileWidget : public QWidget
 
     static const QgsSettingsEntryDouble *settingTolerance;
     static const QgsSettingsEntryBool *settingShowLayerTree;
+    static const QgsSettingsEntryBool *settingLockAxis;
+    static const QgsSettingsEntryString *settingLastExportDir;
+    static const QgsSettingsEntryColor *settingBackgroundColor;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -92,6 +119,8 @@ class QgsElevationProfileWidget : public QWidget
     void toggleDockModeRequested( bool docked );
 
   private slots:
+    void addLayers();
+    void addLayersInternal( const QList<QgsMapLayer *> &layers );
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve, bool resetView );
@@ -101,9 +130,11 @@ class QgsElevationProfileWidget : public QWidget
     void clear();
     void exportAsPdf();
     void exportAsImage();
+    void exportResults( Qgis::ProfileExportType type );
     void nudgeLeft();
     void nudgeRight();
     void nudgeCurve( Qgis::BufferSide side );
+    void axisScaleLockToggled( bool active );
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
@@ -123,6 +154,8 @@ class QgsElevationProfileWidget : public QWidget
     QAction *mCaptureCurveFromFeatureAction = nullptr;
     QAction *mNudgeLeftAction = nullptr;
     QAction *mNudgeRightAction = nullptr;
+    QAction *mLockRatioAction = nullptr;
+    QMenu *mDistanceUnitMenu = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;

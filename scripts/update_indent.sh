@@ -57,7 +57,7 @@ true > $ASTYLEDIFF
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/plugins/grass/qtermwidget/*|external/astyle/*)
+	external/astyle/*)
 		echo $f skipped
 		continue
 		;;

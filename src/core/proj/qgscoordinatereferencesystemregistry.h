@@ -20,10 +20,35 @@
 
 #include <QObject>
 #include <QMap>
+#include <QSet>
 #include "qgscoordinatereferencesystem.h"
 
 class QgsCelestialBody;
 class QgsProjOperation;
+
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsCoordinateReferenceSystemDbDetails
+ * \ingroup core
+ * \brief Encapsulates a record from the QGIS srs db.
+ *
+ * \note Not available in Python bindings.
+ *
+ * \since QGIS 3.34
+ */
+struct CORE_EXPORT QgsCrsDbRecord
+{
+  QString description;
+  QString projectionAcronym;
+  QString srsId;
+  QString authName;
+  QString authId;
+  Qgis::CrsType type = Qgis::CrsType::Unknown;
+  bool deprecated = false;
+};
+#endif
 
 /**
  * \class QgsCoordinateReferenceSystemRegistry
@@ -145,6 +170,23 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     QList< QgsCelestialBody > celestialBodies() const;
 
+    /**
+     * Returns a list of all known authorities.
+     *
+     * \note authority names will always be returned in lower case
+     *
+     * \since QGIS 3.34
+     */
+    QSet< QString > authorities() const;
+
+    /**
+     * Returns the list of records from the QGIS srs db.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.34
+     */
+    QList< QgsCrsDbRecord > crsDbRecords() const SIP_SKIP;
+
   signals:
 
     /**
@@ -191,6 +233,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 
     mutable QList< QgsCelestialBody > mCelestialBodies;
     mutable QMap< QString, QgsProjOperation > mProjOperations;
+    mutable QSet< QString > mKnownAuthorities;
+    mutable QList< QgsCrsDbRecord > mCrsDbRecords;
 
 };
 

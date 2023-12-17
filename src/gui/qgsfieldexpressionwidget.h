@@ -36,7 +36,7 @@ class QgsExpressionContextGenerator;
 
 /**
  * \ingroup gui
- * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
+ * \brief The QgsFieldExpressionWidget class creates a widget to choose fields and edit expressions
  * It contains a combo box to display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
  * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
@@ -50,6 +50,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
+    Q_PROPERTY( bool buttonVisible READ buttonVisible WRITE setButtonVisible NOTIFY buttonVisibleChanged )
 
   public:
 
@@ -170,6 +171,24 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     void setAllowEvalErrors( bool allowEvalErrors );
 
+    /**
+     * Returns the visibility of the button
+     *
+     * If button is hidden, the widget essentially becomes an editable combo box
+     *
+     * \since QGIS 3.36
+     */
+    bool buttonVisible() const;
+
+    /**
+     * Set the visibility of the button
+     *
+     * If button is hidden, the widget essentially becomes an editable combo box
+     *
+     * \since QGIS 3.36
+     */
+    void setButtonVisible( bool visible );
+
   signals:
     //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
@@ -184,6 +203,13 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * \since QGIS 3.0
      */
     void allowEvalErrorsChanged();
+
+    /**
+     * Emitted when the button visibility changes
+     *
+     * \since QGIS 3.36
+     */
+    void buttonVisibleChanged();
 
   public slots:
 

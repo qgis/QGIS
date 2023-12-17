@@ -21,6 +21,7 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
+#include "qgsdatasourceuri.h"
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -88,18 +89,25 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     }
 
     case Qt::ToolTipRole:
-      return mRecentProjects.at( index.row() ).path;
+    case QgsProjectListItemDelegate::AnonymisedNativePathRole:
+    {
+      QString name = mRecentProjects.at( index.row() ).path;
+      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( name );
+      if ( storage )
+      {
+        name = QgsDataSourceUri::removePassword( name, true );
+      }
+      return name;
+    }
 
     default:
       return QVariant();
   }
 }
 
-
 Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) const
 {
-  QString path;
-  if ( !index.isValid() || !rowCount( index.parent() ) )
+  if ( !index.isValid() || !rowCount( index.parent() ) || index.row() >= mRecentProjects.size() )
     return Qt::NoItemFlags;
 
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
@@ -112,7 +120,7 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path );
     if ( storage )
     {
-      path = storage->filePath( projectData.path );
+      QString path = storage->filePath( projectData.path );
       if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
         projectData.exists = false;
       else
@@ -144,6 +152,27 @@ void QgsRecentProjectItemsModel::removeProject( const QModelIndex &index )
   beginRemoveRows( index, index.row(), index.row() );
   mRecentProjects.removeAt( index.row() );
   endRemoveRows();
+}
+
+void QgsRecentProjectItemsModel::clear( bool clearPinned )
+{
+  beginResetModel();
+  if ( clearPinned )
+  {
+    mRecentProjects.clear();
+  }
+  else
+  {
+    mRecentProjects.erase(
+      std::remove_if(
+        mRecentProjects.begin(),
+        mRecentProjects.end(),
+    []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+      ),
+    mRecentProjects.end()
+    );
+  }
+  endResetModel();
 }
 
 void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )

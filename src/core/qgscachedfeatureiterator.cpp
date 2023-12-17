@@ -76,14 +76,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       break;
 
     default:
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      mFeatureIds.clear();
-      mFeatureIds.reserve( static_cast< int >( mVectorLayerCache->mCacheOrderedKeys.size() ) );
-      for ( auto it = mVectorLayerCache->mCacheOrderedKeys.begin(); it != mVectorLayerCache->mCacheOrderedKeys.end(); ++it )
-        mFeatureIds << *it;
-#else
       mFeatureIds = QList( mVectorLayerCache->mCacheOrderedKeys.begin(), mVectorLayerCache->mCacheOrderedKeys.end() );
-#endif
       break;
   }
 
@@ -182,7 +175,7 @@ bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
   if ( mFeatIt.nextFeature( f ) )
   {
     // As long as features can be fetched from the provider: Write them to cache
-    mVectorLayerCache->cacheFeature( f );
+    mVectorLayerCache->cacheFeature( f, ! mRequest.flags().testFlag( QgsFeatureRequest::Flag::SubsetOfAttributes ) );
     mFids.insert( f.id() );
     geometryToDestinationCrs( f, mTransform );
     return true;

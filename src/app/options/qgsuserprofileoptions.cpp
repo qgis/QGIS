@@ -35,21 +35,21 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   mDefaultProfileComboBox->setEnabled( false );
   connect( mDefaultProfile, &QRadioButton::toggled, mDefaultProfileComboBox, &QComboBox::setEnabled );
 
-  // Disable Profile selector groupbox if Ask user is not selected
-  mProfileSelectorGroupBox->setEnabled( false );
-  connect( mAskUser, &QRadioButton::toggled, mProfileSelectorGroupBox, &QGroupBox::setEnabled );
+  // Disable Profile selector items if Ask user is not selected
+  mIconSizeLabel->setEnabled( false );
+  mIconSize->setEnabled( false );
+  connect( mAskUser, &QRadioButton::toggled, this, &QgsUserProfileOptionsWidget::onAskUserChanged );
 
   // Connect icon size and allow profile creation
-  mIconSize->setCurrentText( QString::number( QSettings().value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
-  connect( mIconSize, &QComboBox::currentTextChanged, this, []( const QString & text )
+  mIconSize->setCurrentText( QString::number( manager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
+  connect( mIconSize, &QComboBox::currentTextChanged, this, [manager]( const QString & text )
   {
-    QSettings settings;
-    settings.setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
-    settings.sync();
+    manager->settings()->setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
+    manager->settings()->sync();
   } );
 
   // Connect change icon button
-  connect( mChangeIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onChangeIconClicked );
+  connect( mActiveProfileIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onChangeIconClicked );
   connect( mResetIconButton, &QToolButton::clicked, this, &QgsUserProfileOptionsWidget::onResetIconClicked );
 
   // Init radio buttons
@@ -76,8 +76,13 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
   mDefaultProfileComboBox->setCurrentText( manager->defaultProfileName() );
 
   // Init Active profile name and icon
-  mChangeIconButton->setIcon( manager->userProfile()->icon() );
-  mActiveProfileGroupBox->setTitle( tr( "Active Profile (%1)", "Active profile name" ).arg( manager->userProfile()->name() ) );
+  mActiveProfileIconButton->setIcon( manager->userProfile()->icon() );
+  mActiveProfileIconLabel->setText( tr( "Active Profile (%1) icon", "Active profile icon" ).arg( manager->userProfile()->name() ) );
+}
+
+QString QgsUserProfileOptionsWidget::helpKey() const
+{
+  return QStringLiteral( "introduction/qgis_configuration.html#user-profiles" );
 }
 
 void QgsUserProfileOptionsWidget::apply()
@@ -116,11 +121,10 @@ void QgsUserProfileOptionsWidget::onChangeIconClicked()
     QFile::copy( iconPath, dstPath );
 
     // Update the button icon
-    mChangeIconButton->setIcon( QIcon( iconPath ) );
+    mActiveProfileIconButton->setIcon( QIcon( iconPath ) );
     mDefaultProfileComboBox->setItemIcon( mDefaultProfileComboBox->findText( activeProfile->name() ), activeProfile->icon() );
   }
 }
-
 
 void QgsUserProfileOptionsWidget::onResetIconClicked()
 {
@@ -132,10 +136,15 @@ void QgsUserProfileOptionsWidget::onResetIconClicked()
     dir.remove( file );
   }
   // Update the button icon
-  mChangeIconButton->setIcon( activeProfile->icon() );
+  mActiveProfileIconButton->setIcon( activeProfile->icon() );
   mDefaultProfileComboBox->setItemIcon( mDefaultProfileComboBox->findText( activeProfile->name() ), activeProfile->icon() );
 }
 
+void QgsUserProfileOptionsWidget::onAskUserChanged()
+{
+  mIconSizeLabel->setEnabled( mAskUser->isChecked() );
+  mIconSize->setEnabled( mAskUser->isChecked() );
+}
 
 //
 // QgsUserProfileOptionsFactory

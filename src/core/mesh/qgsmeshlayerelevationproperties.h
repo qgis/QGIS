@@ -102,6 +102,30 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
      */
     void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
 
+    /**
+     * Returns the elevation limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * By default this is NaN, which indicates that there is no elevation limit.
+     *
+     * \see setElevationLimit()
+     * \since QGIS 3.32
+     */
+    double elevationLimit() const;
+
+    /**
+     * Sets the elevation \a limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * Set to NaN to indicate that there is no elevation limit.
+     *
+     * \see elevationLimit()
+     * \since QGIS 3.32
+     */
+    void setElevationLimit( double limit );
+
   private:
 
     void setDefaultProfileLineSymbol( const QColor &color );
@@ -110,6 +134,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
+    double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 };
 
 #endif // QGSMESHLAYERELEVATIONPROPERTIES_H

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QEvent, QPoint, QPointF, Qt
 from qgis.PyQt.QtGui import QKeyEvent, QMouseEvent, QWheelEvent
 from qgis.core import (
@@ -20,7 +19,8 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.gui import QgsElevationProfileCanvas, QgsPlotMouseEvent, QgsPlotTool
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
@@ -53,7 +53,7 @@ class TestTool(QgsPlotTool):
         self.events.append(event)
 
 
-class TestQgsElevationProfileCanvas(unittest.TestCase):
+class TestQgsElevationProfileCanvas(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsElevationProfileCanvas Tests</h1>\n"

@@ -45,6 +45,10 @@ QgsProcessingOutputPointCloudLayer::QgsProcessingOutputPointCloudLayer( const QS
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
+
 QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -90,3 +94,14 @@ QString QgsProcessingOutputMultipleLayers::type() const
 QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{
+
+}
+
+QString QgsProcessingOutputVariant::type() const
+{
+  return typeName();
+}

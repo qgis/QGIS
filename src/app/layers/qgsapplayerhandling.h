@@ -25,12 +25,9 @@
 
 class QgsMapLayer;
 class QgsProviderSublayerDetails;
-class QgsPointCloudLayer;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsMeshLayer;
-class QgsPluginLayer;
-class QgsVectorTileLayer;
 
 /**
  * Contains logic related to general layer handling in QGIS app.
@@ -47,6 +44,25 @@ class APP_EXPORT QgsAppLayerHandling
       LoadAll,
       AbortLoading
     };
+
+    /**
+     * A generic template based method for adding a single layer from a \a uri
+     * to the project.
+     *
+     * This method should only be used when \a uri is a explicit path to
+     * a single layer, and not a container path which may contain multiple
+     * sub layers.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
+     * if a uri does not result in a valid layer.
+     */
+    template< typename L> static L *addLayer( const QString &uri,
+        const QString &baseName,
+        const QString &provider,
+        bool addToLegend = true,
+        bool showWarningOnInvalid = true );
 
     /**
      * Adds a vector layer from a given \a uri and \a provider.
@@ -99,37 +115,6 @@ class APP_EXPORT QgsAppLayerHandling
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
     static QgsMeshLayer *addMeshLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend = true );
-
-    /**
-     * Adds a point cloud layer from a given \a uri and \a provider.
-     *
-     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
-     *
-     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
-     * if the \a uri does not result in a valid point cloud layer.
-     */
-    static QgsPointCloudLayer *addPointCloudLayer( const QString &uri,
-        const QString &baseName,
-        const QString &provider,
-        bool addToLegend = true,
-        bool showWarningOnInvalid = true );
-
-    /**
-     * Adds a plugin layer from a given \a uri and \a provider.
-     *
-     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
-     */
-    static QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey, bool addToLegend = true );
-
-    /**
-     * Adds a vector tile layer from a given \a uri.
-     *
-     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
-     *
-     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
-     * if the \a uri does not result in a valid vector tile layer.
-     */
-    static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid = true, bool addToLegend = true );
 
     /**
      * Post processes an entire group of added \a layers.

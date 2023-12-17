@@ -17,7 +17,6 @@ add_library (wfs3 MODULE ${WFS3_SRCS})
 target_compile_features(wfs3 PRIVATE cxx_std_17)
 
 include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 

@@ -1024,60 +1024,145 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /**
-     * Sets the width for scaling the image used in the fill. The image's height will also be
-     * scaled to maintain the image's aspect ratio.
-     * \param width width for scaling the image
-     * \see width
-     * \see setWidthUnit
-     * \see setWidthMapUnitScale
+     * Sets the \a width for scaling the image used in the fill.
+     *
+     * If \a width is 0 then the width will be calculated automatically based on the image's height().
+     *
+     * \see width()
+     * \see height()
+     * \see setHeight()
+     * \see setSizeUnit()
+     * \see setSizeMapUnitScale()
      */
-    void setWidth( const double width ) { mWidth = width; }
+    void setWidth( double width ) { mWidth = width; }
 
     /**
-     * Returns the width used for scaling the image used in the fill. The image's height is
-     * scaled to maintain the image's aspect ratio.
-     * \returns width used for scaling the image
-     * \see setWidth
-     * \see widthUnit
-     * \see widthMapUnitScale
+     * Returns the width used for scaling the image used in the fill.
+     *
+     * If the width is 0 then the width will be calculated automatically based on the image's height().
+     *
+     * \see height()
+     * \see setWidth()
+     * \see sizeUnit()
+     * \see sizeMapUnitScale()
      */
     double width() const { return mWidth; }
 
     /**
-     * Sets the units for the image's width.
-     * \param unit units for width
-     * \see widthUnit
-     * \see setWidth
-     * \see setWidthMapUnitScale
+     * Sets the \a height for scaling the image.
+     *
+     * If \a height is 0 then the height will be calculated automatically based on the image's width().
+     *
+     * \see setWidth()
+     * \see height()
+     * \see width()
+     *
+     * \since QGIS 3.36
      */
-    void setWidthUnit( const Qgis::RenderUnit unit ) { mWidthUnit = unit; }
+    void setHeight( double height ) { mHeight = height; }
+
+    /**
+     * Returns the height used for scaling the image used in the fill.
+     *
+     * If the height is 0 then the height will be calculated automatically based on the image's width().
+     *
+     * \see width()
+     * \see setHeight()
+     *
+     * \since QGIS 3.36
+     */
+    double height() const { return mHeight; }
+
+    /**
+     * Sets the \a unit for the image's width.
+     *
+     * \see widthUnit()
+     * \see setWidth()
+     * \see setWidthMapUnitScale()
+     *
+     * \deprecated use setSizeUnit() instead.
+     */
+    Q_DECL_DEPRECATED void setWidthUnit( Qgis::RenderUnit unit ) SIP_DEPRECATED { mSizeUnit = unit; }
+
+    /**
+     * Sets the \a unit for the image's width and height.
+     *
+     * \see widthUnit()
+     * \see setWidth()
+     * \see setWidthMapUnitScale()
+     *
+     * \since QGIS 3.36
+     */
+    void setSizeUnit( Qgis::RenderUnit unit ) { mSizeUnit = unit; }
 
     /**
      * Returns the units for the image's width.
-     * \returns units for width
-     * \see setWidthUnit
-     * \see width
-     * \see widthMapUnitScale
+     *
+     * \see setWidthUnit()
+     * \see width()
+     * \see widthMapUnitScale()
+     *
+     * \deprecated use sizeUnit() instead.
      */
-    Qgis::RenderUnit widthUnit() const { return mWidthUnit; }
+    Q_DECL_DEPRECATED Qgis::RenderUnit widthUnit() const SIP_DEPRECATED { return mSizeUnit; }
 
     /**
-     * Sets the map unit scale for the image's width.
-     * \param scale map unit scale for width
-     * \see widthMapUnitScale
-     * \see setWidth
-     * \see setWidthUnit
+     * Returns the units for the image's width and height.
+     *
+     * \see setSizeUnit()
+     * \see width()
+     * \see height()
+     * \see sizeMapUnitScale()
+     *
+     * \since QGIS 3.36
      */
-    void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
+    Qgis::RenderUnit sizeUnit() const { return mSizeUnit; }
+
+    /**
+     * Sets the map unit \a scale for the image's width.
+     *
+     * \see widthMapUnitScale()
+     * \see setWidth()
+     * \see setWidthUnit()
+     *
+     * \deprecated use setSizeMapUnitScale() instead.
+     */
+    Q_DECL_DEPRECATED void setWidthMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mSizeMapUnitScale = scale; }
+
+    /**
+     * Sets the map unit \a scale for the image's width and height.
+     *
+     * \see sizeMapUnitScale()
+     * \see setWidth()
+     * \see setHeight()
+     * \see setSizeUnit()
+     *
+     * \since QGIS 3.36
+     */
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale ) { mSizeMapUnitScale = scale; }
 
     /**
      * Returns the map unit scale for the image's width.
-     * \returns map unit scale for width
-     * \see setWidthMapUnitScale
-     * \see width
-     * \see widthUnit
+     *
+     * \see setWidthMapUnitScale()
+     * \see width()
+     * \see widthUnit()
+     *
+     * \deprecated use sizeMapUnitScale() instead.
      */
-    const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
+    Q_DECL_DEPRECATED const QgsMapUnitScale &widthMapUnitScale() const SIP_DEPRECATED { return mSizeMapUnitScale; }
+
+    /**
+     * Returns the map unit scale for the image's width and height.
+     *
+     * \see setSizeMapUnitScale()
+     * \see width()
+     * \see height()
+     * \see sizeUnit()
+     *
+     * \since QGIS 3.36
+     */
+    const QgsMapUnitScale &sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
   protected:
 
@@ -1095,11 +1180,13 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mOffsetMapUnitScale;
 
     double mWidth = 0.0;
-    Qgis::RenderUnit mWidthUnit = Qgis::RenderUnit::Pixels;
-    QgsMapUnitScale mWidthMapUnitScale;
+    Qgis::RenderUnit mSizeUnit = Qgis::RenderUnit::Pixels;
+    QgsMapUnitScale mSizeMapUnitScale;
+
+    double mHeight = 0.0;
 
     //! Applies the image pattern to the brush
-    void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double opacity,
+    void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double height, double opacity,
                        const QgsSymbolRenderContext &context );
 };
 
@@ -1662,10 +1749,11 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 #endif
 
     //! Applies the svg pattern to the brush
-    void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double lineAngle, double distance );
+    bool applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double lineAngle, double distance );
 
     //! Fill line
     std::unique_ptr< QgsLineSymbol > mFillLineSymbol;
+    bool mFillLineSymbolRenderStarted = false;
 
     Qgis::LineClipMode mClipMode = Qgis::LineClipMode::ClipPainterOnly;
 };
@@ -2179,6 +2267,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    bool mMarkerSymbolRenderStarted = false;
     double mDistanceX = 15;
     Qgis::RenderUnit mDistanceXUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mDistanceXMapUnitScale;
@@ -2213,7 +2302,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer &other );
 #endif
 
-    void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
+    bool applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
                        double displacementX, double displacementY, double offsetX, double offsetY );
 
     Qgis::MarkerClipMode mClipMode = Qgis::MarkerClipMode::Shape;
@@ -2262,7 +2351,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     QColor color() const override;
 
     QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) FINAL;
 
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
@@ -2444,7 +2533,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     void setColor( const QColor &color ) override;
     QColor color() const override;
     QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) FINAL;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
     bool usesMapUnits() const override;
@@ -2516,6 +2605,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     bool mRenderingFeature = false;
     double mFeatureSymbolOpacity = 1;
+    bool mUseSelectedColor = false;
 
   private:
 #ifdef SIP_RUN

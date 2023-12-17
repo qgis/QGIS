@@ -59,6 +59,7 @@
 #include "qgsprojectstylesettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsannotationlayer.h"
 #include "qgspointcloudlayer.h"
@@ -70,6 +71,9 @@
 #include "qgsprojectgpssettings.h"
 #include "qgsthreadingutils.h"
 #include "qgssensormanager.h"
+#include "qgsproviderregistry.h"
+#include "qgsrunnableprovidercreator.h"
+#include "qgssettingsregistrycore.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -83,6 +87,7 @@
 #include <QStandardPaths>
 #include <QUuid>
 #include <QRegularExpression>
+#include <QThreadPool>
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -104,11 +109,7 @@ QgsProject *QgsProject::sProject = nullptr;
 QStringList makeKeyTokens_( const QString &scope, const QString &key )
 {
   QStringList keyTokens = QStringList( scope );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  keyTokens += key.split( '/', QString::SkipEmptyParts );
-#else
   keyTokens += key.split( '/', Qt::SkipEmptyParts );
-#endif
 
   // be sure to include the canonical root node
   keyTokens.push_front( QStringLiteral( "properties" ) );
@@ -460,6 +461,7 @@ QgsProject::~QgsProject()
   mIsBeingDeleted = true;
 
   clear();
+  releaseHandlesToProjectArchive();
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
@@ -521,9 +523,8 @@ void QgsProject::setFlags( Qgis::ProjectFlags flags )
     for ( auto layerIt = layers.constBegin(); layerIt != layers.constEnd(); ++layerIt )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() ) )
-      {
-        vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, newEvaluateDefaultValues );
-      }
+        if ( vl->dataProvider() )
+          vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, newEvaluateDefaultValues );
     }
   }
 
@@ -1018,6 +1019,8 @@ void QgsProject::clear()
 
   ScopedIntIncrementor snapSingleBlocker( &mBlockSnappingUpdates );
 
+  emit aboutToBeCleared();
+
   mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
@@ -1075,10 +1078,14 @@ void QgsProject::clear()
 
   mLabelingEngineSettings->clear();
 
+  // must happen BEFORE archive reset, because we need to release the hold on any files which
+  // exists within the archive. Otherwise the archive can't be removed.
+  releaseHandlesToProjectArchive();
+
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
   mArchive.reset( new QgsArchive() );
 
-  // must happen after archive reset!
+  // must happen AFTER archive reset, as it will populate a new style database within the new archive
   mStyleSettings->reset();
 
   emit labelingEngineSettingsChanged();
@@ -1173,13 +1180,13 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 
   if ( propertiesElem.firstChild().isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "empty ``properties'' XML tag ... bailing" ) );
+    QgsDebugError( QStringLiteral( "empty ``properties'' XML tag ... bailing" ) );
     return;
   }
 
   if ( ! project_properties.readXml( propertiesElem ) )
   {
-    QgsDebugMsg( QStringLiteral( "Project_properties.readXml() failed" ) );
+    QgsDebugError( QStringLiteral( "Project_properties.readXml() failed" ) );
   }
 }
 
@@ -1198,7 +1205,7 @@ QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, c
   {
     if ( !ddServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
     {
-      QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
+      QgsDebugError( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
     }
   }
   return ddServerProperties;
@@ -1246,7 +1253,7 @@ static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser,
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( "unable to find qgis element" ) );
+    QgsDebugError( QStringLiteral( "unable to find qgis element" ) );
     return;
   }
 
@@ -1264,7 +1271,7 @@ QgsProjectVersion getVersion( const QDomDocument &doc )
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( " unable to find qgis element in project file" ) );
+    QgsDebugError( QStringLiteral( " unable to find qgis element in project file" ) );
     return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
@@ -1303,6 +1310,146 @@ void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode m
 
   mAvoidIntersectionsMode = mode;
   emit avoidIntersectionsModeChanged();
+}
+
+static  QgsMapLayer::ReadFlags projectFlagsToLayerReadFlags( Qgis::ProjectReadFlags projectReadFlags, Qgis::ProjectFlags projectFlags )
+{
+  QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
+  if ( projectReadFlags & Qgis::ProjectReadFlag::DontResolveLayers )
+    layerFlags |= QgsMapLayer::FlagDontResolveLayers;
+  // Propagate trust layer metadata flag
+  if ( ( projectFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( projectReadFlags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
+    layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
+  // Propagate open layers in read-only mode
+  if ( ( projectReadFlags & Qgis::ProjectReadFlag::ForceReadOnlyLayers ) )
+    layerFlags |= QgsMapLayer::FlagForceReadOnly;
+
+  return layerFlags;
+}
+
+struct LayerToLoad
+{
+  QString layerId;
+  QString provider;
+  QString dataSource;
+  QgsDataProvider::ProviderOptions options;
+  QgsDataProvider::ReadFlags flags;
+  QDomElement layerElement;
+};
+
+void QgsProject::preloadProviders( const QVector<QDomNode> &parallelLayerNodes,
+                                   const QgsReadWriteContext &context,
+                                   QMap<QString, QgsDataProvider *> &loadedProviders,
+                                   QgsMapLayer::ReadFlags layerReadFlags,
+                                   int totalProviderCount )
+{
+  int i = 0;
+  QEventLoop loop;
+
+  QMap<QString, LayerToLoad> layersToLoad;
+
+  for ( const QDomNode &node : parallelLayerNodes )
+  {
+    LayerToLoad layerToLoad;
+
+    const QDomElement layerElement = node.toElement();
+    layerToLoad.layerElement = layerElement;
+    layerToLoad.layerId = layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text();
+    layerToLoad.provider = layerElement.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    layerToLoad.dataSource = layerElement.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
+
+    layerToLoad.dataSource = QgsProviderRegistry::instance()->relativeToAbsoluteUri( layerToLoad.provider, layerToLoad.dataSource, context );
+
+    layerToLoad.options = QgsDataProvider::ProviderOptions( {context.transformContext()} );
+    layerToLoad.flags = QgsMapLayer::providerReadFlags( node, layerReadFlags );
+
+    // Requesting credential from worker thread could lead to deadlocks because the main thread is waiting for worker thread to fininsh
+    layerToLoad.flags.setFlag( QgsDataProvider::SkipCredentialsRequest, true );
+    layerToLoad.flags.setFlag( QgsDataProvider::ParallelThreadLoading, true );
+
+    layersToLoad.insert( layerToLoad.layerId, layerToLoad );
+  }
+
+  while ( !layersToLoad.isEmpty() )
+  {
+    const QList<LayerToLoad> layersToAttemptInParallel = layersToLoad.values();
+    QString layerToAttemptInMainThread;
+
+    QHash<QString, QgsRunnableProviderCreator *> runnables;
+    QThreadPool threadPool;
+    threadPool.setMaxThreadCount( QgsSettingsRegistryCore::settingsLayerParallelLoadingMaxCount->value() );
+
+    for ( const LayerToLoad &lay : layersToAttemptInParallel )
+    {
+      QgsRunnableProviderCreator *run = new QgsRunnableProviderCreator( lay.layerId, lay.provider, lay.dataSource, lay.options, lay.flags );
+      runnables.insert( lay.layerId, run );
+
+      QObject::connect( run, &QgsRunnableProviderCreator::providerCreated, run, [&]( bool isValid, const QString & layId )
+      {
+        if ( isValid )
+        {
+          layersToLoad.remove( layId );
+          i++;
+          QgsRunnableProviderCreator *finishedRun = runnables.value( layId, nullptr );
+          Q_ASSERT( finishedRun );
+
+          std::unique_ptr<QgsDataProvider> provider( finishedRun->dataProvider() );
+          Q_ASSERT( provider && provider->isValid() );
+
+          loadedProviders.insert( layId, provider.release() );
+          emit layerLoaded( i, totalProviderCount );
+        }
+        else
+        {
+          if ( layerToAttemptInMainThread.isEmpty() )
+            layerToAttemptInMainThread = layId;
+          threadPool.clear(); //we have to stop all loading provider to try this layer in main thread and maybe have credentials
+        }
+
+        if ( i == parallelLayerNodes.count() || !isValid )
+          loop.quit();
+      } );
+      threadPool.start( run );
+    }
+    loop.exec();
+
+    threadPool.waitForDone(); // to be sure all threads are finished
+
+    qDeleteAll( runnables );
+
+    // We try with the first layer returned invalid but this time in the main thread to maybe have credentials and continue with others not loaded in parallel
+    auto it = layersToLoad.find( layerToAttemptInMainThread );
+    if ( it != layersToLoad.end() )
+    {
+      std::unique_ptr<QgsDataProvider> provider;
+      QString layerId;
+      {
+        const LayerToLoad &lay = it.value();
+        QgsDataProvider::ReadFlags providerFlags = lay.flags;
+        providerFlags.setFlag( QgsDataProvider::SkipCredentialsRequest, false );
+        providerFlags.setFlag( QgsDataProvider::ParallelThreadLoading, false );
+        QgsScopedRuntimeProfile profile( "Create data providers/" + lay.layerId, QStringLiteral( "projectload" ) );
+        provider.reset( QgsProviderRegistry::instance()->createProvider( lay.provider, lay.dataSource, lay.options, providerFlags ) );
+        i++;
+        if ( provider && provider->isValid() )
+        {
+          emit layerLoaded( i, totalProviderCount );
+        }
+        layerId = lay.layerId;
+        layersToLoad.erase( it );
+        // can't access "lay" anymore -- it's now been freed
+      }
+      loadedProviders.insert( layerId, provider.release() );
+    }
+
+    // if there still are some not loaded providers or some invalid in parallel thread we start again
+  }
+
+}
+
+void QgsProject::releaseHandlesToProjectArchive()
+{
+  mStyleSettings->removeProjectStyle();
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
@@ -1350,17 +1497,48 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
 
-  int i = 0;
-  for ( const QDomNode &node : sortedLayerNodes )
+  QVector<QDomNode> parallelLoading;
+  QMap<QString, QgsDataProvider *> loadedProviders;
+
+  if ( QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
+  {
+    profile.switchTask( tr( "Load providers in parallel" ) );
+    for ( const QDomNode &node : sortedLayerNodes )
+    {
+      const QDomElement element = node.toElement();
+      if ( element.attribute( QStringLiteral( "embedded" ) ) != QLatin1String( "1" ) )
+      {
+        const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
+        if ( !depSorter.isLayerDependent( layerId ) )
+        {
+          const QDomNode mnl = element.namedItem( QStringLiteral( "provider" ) );
+          const QDomElement mne = mnl.toElement();
+          const QString provider = mne.text();
+          QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( provider );
+          if ( meta && meta->providerCapabilities().testFlag( QgsProviderMetadata::ParallelCreateProvider ) )
+          {
+            parallelLoading.append( node );
+            continue;
+          }
+        }
+      }
+    }
+
+    QgsReadWriteContext context;
+    context.setPathResolver( pathResolver() );
+    if ( !parallelLoading.isEmpty() )
+      preloadProviders( parallelLoading, context, loadedProviders, projectFlagsToLayerReadFlags( flags, mFlags ), sortedLayerNodes.count() );
+  }
+
+  int i = loadedProviders.count();
+  for ( const QDomNode &node : std::as_const( sortedLayerNodes ) )
   {
     const QDomElement element = node.toElement();
-
     const QString name = translate( QStringLiteral( "project:layers:%1" ).arg( node.namedItem( QStringLiteral( "id" ) ).toElement().text() ), node.namedItem( QStringLiteral( "layername" ) ).toElement().text() );
     if ( !name.isNull() )
       emit loadingLayer( tr( "Loading layer %1" ).arg( name ) );
 
     profile.switchTask( name );
-
     if ( element.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
     {
       createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes, true, flags );
@@ -1371,8 +1549,9 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
       context.setPathResolver( pathResolver() );
       context.setProjectTranslator( this );
       context.setTransformContext( transformContext() );
+      QString layerId = element.namedItem( QStringLiteral( "id" ) ).toElement().text();
 
-      if ( !addLayer( element, brokenNodes, context, flags ) )
+      if ( !addLayer( element, brokenNodes, context, flags, loadedProviders.take( layerId ) ) )
       {
         returnStatus = false;
       }
@@ -1389,7 +1568,11 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
+bool QgsProject::addLayer( const QDomElement &layerElem,
+                           QList<QDomNode> &brokenNodes,
+                           QgsReadWriteContext &context,
+                           Qgis::ProjectReadFlags flags,
+                           QgsDataProvider *provider )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1403,7 +1586,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   const Qgis::LayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
   if ( !ok )
   {
-    QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
+    QgsDebugError( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
     return false;
   }
 
@@ -1427,6 +1610,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
     case Qgis::LayerType::PointCloud:
       mapLayer = std::make_unique<QgsPointCloudLayer>();
+      break;
+
+    case Qgis::LayerType::TiledScene:
+      mapLayer = std::make_unique<QgsTiledSceneLayer>();
       break;
 
     case Qgis::LayerType::Plugin:
@@ -1453,7 +1640,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   if ( !mapLayer )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
+    QgsDebugError( QStringLiteral( "Unable to create layer" ) );
     return false;
   }
 
@@ -1466,18 +1653,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   const bool layerWasStored { layerStore()->mapLayer( layerId ) != nullptr };
 
   // have the layer restore state that is stored in Dom node
-  QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
-  if ( flags & Qgis::ProjectReadFlag::DontResolveLayers )
-    layerFlags |= QgsMapLayer::FlagDontResolveLayers;
-  // Propagate trust layer metadata flag
-  if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
-    layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
-  // Propagate open layers in read-only mode
-  if ( ( flags & Qgis::ProjectReadFlag::ForceReadOnlyLayers ) )
-    layerFlags |= QgsMapLayer::FlagForceReadOnly;
+  QgsMapLayer::ReadFlags layerFlags = projectFlagsToLayerReadFlags( flags, mFlags );
 
   profile.switchTask( tr( "Load layer source" ) );
-  const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
+  const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags, provider ) && mapLayer->isValid();
 
   // apply specific settings to vector layer
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
@@ -1511,7 +1690,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     // It's a bad layer: do not add to legend (the user will decide if she wants to do so)
     addMapLayers( newLayers, false );
     newLayers.first();
-    QgsDebugMsg( "Unable to load " + type + " layer" );
+    QgsDebugError( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
   }
 
@@ -1591,6 +1770,7 @@ bool QgsProject::read( Qgis::ProjectReadFlags flags )
         std::unique_ptr<QgsArchive> archive( new QgsArchive() );
         if ( archive->unzip( attachmentsZip ) )
         {
+          releaseHandlesToProjectArchive();
           mArchive = std::move( archive );
         }
       }
@@ -1647,19 +1827,30 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     return false;
   }
 
+  QTextStream textStream( &projectFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  textStream.setCodec( "UTF-8" );
+#endif
+  QString projectString = textStream.readAll();
+  projectFile.close();
+
+  for ( int i = 0; i < 32; i++ )
+  {
+    if ( i == 9 || i == 10 || i == 13 )
+    {
+      continue;
+    }
+    projectString.replace( QChar( i ), QStringLiteral( "%1%2%1" ).arg( FONTMARKER_CHR_FIX, QString::number( i ) ) );
+  }
+
   // location of problem associated with errorMsg
   int line, column;
   QString errorMsg;
-
-  if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
+  if ( !doc->setContent( projectString, &errorMsg, &line, &column ) )
   {
     const QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
                                 .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
-
-    QgsDebugMsg( errorString );
-
-    projectFile.close();
-
+    QgsDebugError( errorString );
     setError( errorString );
 
     return false;
@@ -1709,11 +1900,24 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // start new project, just keep the file name and auxiliary storage
   profile.switchTask( tr( "Creating auxiliary storage" ) );
   const QString fileName = mFile.fileName();
+
+
+  // NOTE [ND] -- I suspect this is wrong, as the archive may contain any number of non-auxiliary
+  // storage related files from the previously loaded project.
   std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
   std::unique_ptr<QgsArchive> archive = std::move( mArchive );
+
   clear();
+  // this is ugly, but clear() will have created a new archive and started populating it. We
+  // need to release handles to this archive now as the subsequent call to move will need
+  // to delete it, and requires free access to do so.
+  releaseHandlesToProjectArchive();
+
   mAuxiliaryStorage = std::move( aStorage );
   mArchive = std::move( archive );
+
+
+
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
   mProjectScope.reset();
@@ -1915,11 +2119,11 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // review the integrity of the retrieved map layers
   if ( !clean && !( flags & Qgis::ProjectReadFlag::DontResolveLayers ) )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to get map layers from project file." ) );
+    QgsDebugError( QStringLiteral( "Unable to get map layers from project file." ) );
 
     if ( !brokenNodes.isEmpty() )
     {
-      QgsDebugMsg( "there are " + QString::number( brokenNodes.size() ) + " broken layers" );
+      QgsDebugError( "there are " + QString::number( brokenNodes.size() ) + " broken layers" );
     }
 
     // we let a custom handler decide what to do with missing layers
@@ -2122,7 +2326,10 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Loading style properties" ) );
   const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
   if ( !styleSettingsElement.isNull() )
+  {
+    mStyleSettings->removeProjectStyle();
     mStyleSettings->readXml( styleSettingsElement, context, flags );
+  }
 
   // restore time settings
   profile.switchTask( tr( "Loading temporal settings" ) );
@@ -2474,6 +2681,14 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
   {
     if ( ! layer->isValid() )
       return;
+
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
+    {
+      vlayer->setReadExtentFromXml( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics );
+      if ( vlayer->dataProvider() )
+        vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues,
+            ( bool )( mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) );
+    }
 
     connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
@@ -2856,7 +3071,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
+            QgsDebugError( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
           }
         }
 
@@ -3683,8 +3898,19 @@ QString QgsProject::homePath() const
   }
   else if ( !fileName().isEmpty() )
   {
-    mCachedHomePath = pfi.path();
 
+    // If it's not stored in the file system, try to get the path from the storage
+    if ( QgsProjectStorage *storage = projectStorage() )
+    {
+      const QString storagePath { storage->filePath( fileName() ) };
+      if ( ! storagePath.isEmpty() && QFileInfo::exists( storagePath ) )
+      {
+        mCachedHomePath = QFileInfo( storagePath ).path();
+        return mCachedHomePath;
+      }
+    }
+
+    mCachedHomePath = pfi.path();
     return mCachedHomePath;
   }
 
@@ -4087,6 +4313,7 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
   }
 
   // Keep the archive
+  releaseHandlesToProjectArchive();
   mArchive = std::move( archive );
 
   // load auxiliary storage
@@ -4155,6 +4382,7 @@ bool QgsProject::zip( const QString &filename )
     // fixes the current archive and keep the previous version of qgd
     if ( !mArchive->exists() )
     {
+      releaseHandlesToProjectArchive();
       mArchive.reset( new QgsProjectArchive() );
       mArchive->unzip( mFile.fileName() );
       static_cast<QgsProjectArchive *>( mArchive.get() )->clearProjectFile();

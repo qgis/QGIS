@@ -43,6 +43,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
   , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
+  , mPreviewRenderPainter( rh.mPreviewRenderPainter )
   , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
@@ -93,6 +94,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
+  mPreviewRenderPainter = rh.mPreviewRenderPainter;
   mMaskPainter = rh.mMaskPainter;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
@@ -148,7 +150,7 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   context.setPainter( painter );
   if ( painter && painter->device() )
   {
-    context.setScaleFactor( painter->device()->logicalDpiX() / 25.4 );
+    context.setScaleFactor( painter->device()->physicalDpiX() / 25.4 );
   }
   else
   {
@@ -253,6 +255,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Qgis::RenderContextFlag::Render3DMap, mapSettings.testFlag( Qgis::MapSettingsFlag::Render3DMap ) );
   ctx.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, mapSettings.testFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms ) );
   ctx.setFlag( Qgis::RenderContextFlag::SkipSymbolRendering, mapSettings.testFlag( Qgis::MapSettingsFlag::SkipSymbolRendering ) );
+  ctx.setFlag( Qgis::RenderContextFlag::RecordProfile, mapSettings.testFlag( Qgis::MapSettingsFlag::RecordProfile ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );
@@ -385,7 +388,7 @@ double QgsRenderContext::convertToPainterUnits( double size, Qgis::RenderUnit un
         size = convertMetersToMapUnits( size );
       unit = Qgis::RenderUnit::MapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
-      FALLTHROUGH
+      [[fallthrough]];
     }
     case Qgis::RenderUnit::MapUnits:
     {
@@ -481,7 +484,7 @@ double QgsRenderContext::convertToMapUnits( double size, Qgis::RenderUnit unit, 
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
-      FALLTHROUGH
+      [[fallthrough]];
     }
     case Qgis::RenderUnit::MapUnits:
     {

@@ -374,7 +374,7 @@ class CORE_EXPORT QgsGeometryEngine
     {
       if ( mLogErrors )
       {
-        QgsDebugMsg( QStringLiteral( "%1 notice: %2" ).arg( engineName, message ) );
+        QgsDebugError( QStringLiteral( "%1 notice: %2" ).arg( engineName, message ) );
         qWarning( "%s exception: %s", engineName.toLocal8Bit().constData(), message.toLocal8Bit().constData() );
       }
     }

@@ -51,6 +51,8 @@ email                : nyall dot dawson at gmail dot com
 
 Q_GLOBAL_STATIC( QRecursiveMutex, sGlobalMutex )
 
+static QAtomicInt sDeferDatasetClosingCounter = 0;
+
 //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
 typedef QMap< QString, int > OpenedDsCountMap;
 Q_GLOBAL_STATIC( OpenedDsCountMap, sMapCountOpenedDS )
@@ -581,11 +583,7 @@ QString createFilters( const QString &type )
         QString myGdalDriverLongName = GDALGetMetadataItem( driver, GDAL_DMD_LONGNAME, "" );
         if ( !( myGdalDriverExtensions.isEmpty() || myGdalDriverLongName.isEmpty() ) )
         {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-          const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', QString::SkipEmptyParts );
-#else
           const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', Qt::SkipEmptyParts );
-#endif
           QString glob;
 
           for ( const QString &ext : splitExtensions )
@@ -619,11 +617,7 @@ QString createFilters( const QString &type )
 
     // sort file filters alphabetically
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList filters = sFileFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
     QStringList filters = sFileFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
     filters.sort();
     sFileFilters = filters.join( QLatin1String( ";;" ) ) + ";;";
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
@@ -752,7 +746,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
          !uri.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
     {
       errorMessage = QObject::tr( "URI %1 doesn't end with .shp or .dbf" ).arg( uri );
-      QgsDebugMsg( errorMessage );
+      QgsDebugError( errorMessage );
       return false;
     }
 
@@ -1235,7 +1229,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
           }
           else if ( CPLGetLastErrorType() != CE_None )
           {
-            QgsDebugMsg( QStringLiteral( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+            QgsDebugError( QStringLiteral( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
           }
           GDALDatasetReleaseResultSet( hDS, hSqlLyr );
           CPLPopErrorHandler();
@@ -1336,7 +1330,7 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
   }
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
+QString QgsOgrProviderUtils::cleanSubsetString( const QString &subsetString )
 {
   // Remove any comments
   QStringList lines {subsetString.split( QChar( '\n' ) )};
@@ -1352,10 +1346,15 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     QChar literalChar { ' ' };
     for ( int i = 0; i < line.length(); ++i )
     {
-      if ( ( ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) && ( i == 0 || line[i - 1] != QChar( '\\' ) ) ) && ( line[i] != literalChar ) )
+      if ( !inLiteral && ( line[i] == QChar( '\'' ) || line[i] == QChar( '"' ) ) )
       {
-        inLiteral = !inLiteral;
-        literalChar = inLiteral ? line[i] : QChar( ' ' );
+        inLiteral = true;
+        literalChar = line[i];
+      }
+      else if ( inLiteral && line[i] == literalChar && line[i - 1] != QChar( '\\' ) )
+      {
+        inLiteral = false;
+        literalChar = QChar( ' ' );
       }
       if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
       {
@@ -1365,7 +1364,12 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
 
-  const QString cleanedSubsetString {lines.join( QChar( '\n' ) ).trimmed() };
+  return lines.join( QChar( '\n' ) ).trimmed();
+}
+
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
+{
+  const QString cleanedSubsetString {cleanSubsetString( subsetString )};
 
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
@@ -1382,7 +1386,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     }
   }
   OGRLayerH subsetLayer = nullptr;
-  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
+  if ( cleanedSubsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) ||
+       cleanedSubsetString.startsWith( QLatin1String( "WITH " ), Qt::CaseInsensitive ) )
   {
     QByteArray sql = encoding->fromUnicode( cleanedSubsetString );
 
@@ -1465,7 +1470,7 @@ QgsOgrDatasetSharedPtr QgsOgrProviderUtils::getAlreadyOpenedDataset( const QStri
       auto &datasetList = iter.value();
       for ( const auto &ds : datasetList )
       {
-        Q_ASSERT( ds->refCount > 0 );
+        Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
         return QgsOgrDataset::create( ident, ds );
       }
     }
@@ -1490,7 +1495,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       {
         if ( !ds->canBeShared )
           continue;
-        Q_ASSERT( ds->refCount > 0 );
+        Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
 
         QString layerName;
         OGRLayerH hLayer;
@@ -1546,7 +1551,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     {
       if ( !ds->canBeShared )
         continue;
-      Q_ASSERT( ds->refCount > 0 );
+      Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
 
       QString layerName;
       OGRLayerH hLayer;
@@ -1623,7 +1628,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       {
         if ( !ds->canBeShared )
           continue;
-        Q_ASSERT( ds->refCount > 0 );
+        Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
 
         auto iter2 = ds->setLayers.find( layerName );
         if ( iter2 == ds->setLayers.end() )
@@ -2010,7 +2015,7 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QStrin
   else if ( typeName == QLatin1String( "MultiSurfaceZ" ) )
     return wkbMultiSurfaceZ;
 
-  QgsDebugMsg( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
+  QgsDebugError( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
   return wkbUnknown;
 }
 
@@ -2187,7 +2192,7 @@ QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 {
   QString uri( dsName );
   // Check for authcfg
-  QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+  const thread_local QRegularExpression authcfgRe( " authcfg='([^']+)'" );
   QRegularExpressionMatch match;
   if ( uri.contains( authcfgRe, &match ) )
   {
@@ -2263,7 +2268,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
   {
-    QgsDebugMsg( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
+    QgsDebugMsgLevel( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ), 2 );
     invalidateCachedDatasets( dsName );
   }
 
@@ -2289,7 +2294,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     {
       if ( !ds->canBeShared )
         continue;
-      Q_ASSERT( ds->refCount > 0 );
+      Q_ASSERT( sDeferDatasetClosingCounter > 0 || ds->refCount > 0 );
 
       auto iter2 = ds->setLayers.find( layerName );
       if ( iter2 == ds->setLayers.end() )
@@ -2352,13 +2357,55 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getSqlLayer( QgsOgrLayer *baseLayer,
   return QgsOgrLayer::CreateForSql( ident, sql, baseLayer->ds, hSqlLayer );
 }
 
+void QgsOgrProviderUtils::incrementDeferDatasetClosingCounter()
+{
+  ++sDeferDatasetClosingCounter;
+}
+
+void QgsOgrProviderUtils::decrementDeferDatasetClosingCounter()
+{
+  if ( --sDeferDatasetClosingCounter == 0 )
+  {
+    QMutexLocker locker( sGlobalMutex() );
+    for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); )
+    {
+      auto &datasetList = iter.value();
+      QList<QgsOgrProviderUtils::DatasetWithLayers *>::iterator itDsList = datasetList.begin();
+      while ( itDsList != datasetList.end() )
+      {
+        QgsOgrProviderUtils::DatasetWithLayers *ds = *itDsList;
+        if ( ds->refCount == 0 )
+        {
+          QgsOgrProviderUtils::GDALCloseWrapper( ds->hDS );
+          delete ds;
+          itDsList = datasetList.erase( itDsList );
+        }
+        else
+        {
+          ++itDsList;
+        }
+      }
+
+      if ( datasetList.isEmpty() )
+        iter = sMapSharedDS.erase( iter );
+      else
+        ++iter;
+    }
+  }
+}
+
+
+
 void QgsOgrProviderUtils::releaseInternal( const DatasetIdentification &ident,
     DatasetWithLayers *ds,
     bool removeFromDatasetList )
 {
 
   ds->refCount --;
-  if ( ds->refCount == 0 )
+  // Release if the ref count has dropped to 0, unless we were asked to defer
+  // closing (but defer only if the number of opened dataset is not too large)
+  if ( ds->refCount == 0 &&
+       ( sDeferDatasetClosingCounter == 0 || sMapSharedDS.size() > 100 ) )
   {
     Q_ASSERT( ds->setLayers.isEmpty() );
 
@@ -2457,7 +2504,8 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   }
 
   Qgis::SublayerFlags layerFlags;
-  if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption ) ) )
+  const thread_local QRegularExpression sqliteSystemTableRegEx( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+  if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( sqliteSystemTableRegEx ) )
        || privateLayerNames.contains( layerName ) )
   {
     layerFlags |= Qgis::SublayerFlag::SystemTable;

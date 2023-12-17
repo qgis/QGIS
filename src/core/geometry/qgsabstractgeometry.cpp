@@ -18,6 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometrycollection.h"
 #include "qgsvertexid.h"
 #include "qgscurve.h"
+#include "qgsbox3d.h"
 
 #include <nlohmann/json.hpp>
 #include <limits>
@@ -113,31 +114,63 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 }
 
+QgsRectangle QgsAbstractGeometry::boundingBox() const
+{
+  return boundingBox3D().toRectangle();
+}
+
 QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const
+{
+  return calculateBoundingBox3D().toRectangle();
+}
+
+QgsBox3D QgsAbstractGeometry::calculateBoundingBox3D() const
 {
   double xmin = std::numeric_limits<double>::max();
   double ymin = std::numeric_limits<double>::max();
+  double zmin = std::numeric_limits<double>::max();
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
+  double zmax = -std::numeric_limits<double>::max();
 
   QgsVertexId id;
   QgsPoint vertex;
-  double x, y;
-  while ( nextVertex( id, vertex ) )
+  double x, y, z;
+  if ( is3D() )
   {
-    x = vertex.x();
-    y = vertex.y();
-    if ( x < xmin )
-      xmin = x;
-    if ( x > xmax )
-      xmax = x;
-    if ( y < ymin )
-      ymin = y;
-    if ( y > ymax )
-      ymax = y;
+    while ( nextVertex( id, vertex ) )
+    {
+      x = vertex.x();
+      y = vertex.y();
+      z = vertex.z();
+
+      xmin = std::min( xmin, x );
+      xmax = std::max( xmax, x );
+
+      ymin = std::min( ymin, y );
+      ymax = std::max( ymax, y );
+
+      zmin = std::min( zmin, z );
+      zmax = std::max( zmax, z );
+    }
+  }
+  else
+  {
+    while ( nextVertex( id, vertex ) )
+    {
+      x = vertex.x();
+      y = vertex.y();
+      xmin = std::min( xmin, x );
+      xmax = std::max( xmax, x );
+
+      ymin = std::min( ymin, y );
+      ymax = std::max( ymax, y );
+    }
+    zmin = std::numeric_limits<double>::quiet_NaN();
+    zmax = std::numeric_limits<double>::quiet_NaN();
   }
 
-  return QgsRectangle( xmin, ymin, xmax, ymax );
+  return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 }
 
 void QgsAbstractGeometry::clearCache() const
@@ -387,6 +420,11 @@ bool QgsAbstractGeometry::hasCurvedSegments() const
 bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
 {
   return boundingBox().intersects( rectangle );
+}
+
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsBox3D &box3d ) const
+{
+  return boundingBox3D().intersects( box3d );
 }
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const

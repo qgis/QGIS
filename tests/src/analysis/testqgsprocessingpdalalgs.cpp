@@ -24,9 +24,15 @@
 #include "qgspdalalgorithmbase.h"
 
 
-class TestQgsProcessingPdalAlgs: public QObject
+class TestQgsProcessingPdalAlgs: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsProcessingPdalAlgs()
+      : QgsTest( QStringLiteral( "Processing PDAL Algorithms Test" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -52,6 +58,8 @@ class TestQgsProcessingPdalAlgs: public QObject
     void tile();
 
   private:
+    void updateFileListArg( QStringList &args, const QString &fileName );
+
     QString mPointCloudLayerPath;
 };
 
@@ -81,6 +89,26 @@ void TestQgsProcessingPdalAlgs::cleanupTestCase()
 
 void TestQgsProcessingPdalAlgs::init()
 {
+}
+
+void TestQgsProcessingPdalAlgs::updateFileListArg( QStringList &args, const QString &fileName )
+{
+  int i = 0;
+  bool found = false;
+  for ( const QString &arg : args )
+  {
+    if ( arg.contains( fileName, Qt::CaseInsensitive ) )
+    {
+      found = true;
+      break;
+    }
+    i++;
+  }
+
+  if ( found )
+  {
+    args[ i ] = QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+  }
 }
 
 void TestQgsProcessingPdalAlgs::info()
@@ -445,12 +473,12 @@ void TestQgsProcessingPdalAlgs::density()
           );
 
   // change resolution
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 0.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=1000" )
           );
 
@@ -460,7 +488,7 @@ void TestQgsProcessingPdalAlgs::density()
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
           );
 
@@ -480,7 +508,7 @@ void TestQgsProcessingPdalAlgs::density()
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -492,7 +520,7 @@ void TestQgsProcessingPdalAlgs::density()
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -505,7 +533,7 @@ void TestQgsProcessingPdalAlgs::density()
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -519,7 +547,7 @@ void TestQgsProcessingPdalAlgs::density()
   QCOMPARE( args, QStringList() << QStringLiteral( "density" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -555,12 +583,12 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
           );
 
   // change resolution
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 0.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=1000" )
           );
 
@@ -570,7 +598,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
           );
 
@@ -590,7 +618,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -602,7 +630,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -615,7 +643,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -629,7 +657,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -659,54 +687,59 @@ void TestQgsProcessingPdalAlgs::tile()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputDir );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=1000" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempFolder )
-            << mPointCloudLayerPath
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // override temp folder
   context->setTemporaryFolder( tempDir );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=1000" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
-            << mPointCloudLayerPath
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // set tile length
   parameters.insert( QStringLiteral( "LENGTH" ), 150 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
-            << mPointCloudLayerPath
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // assign crs
   parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
             << QStringLiteral( "--a_srs=EPSG:4326" )
-            << mPointCloudLayerPath
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "tile" )
             << QStringLiteral( "--length=150" )
             << QStringLiteral( "--output=%1" ).arg( outputDir )
             << QStringLiteral( "--temp_dir=%1" ).arg( tempDir )
             << QStringLiteral( "--a_srs=EPSG:4326" )
             << QStringLiteral( "--threads=2" )
-            << mPointCloudLayerPath
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 }
 
@@ -748,13 +781,13 @@ void TestQgsProcessingPdalAlgs::exportRaster()
           );
 
   // change resolution
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+  parameters.insert( QStringLiteral( "RESOLUTION" ), 0.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" )
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=ReturnNumber" )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=1000" )
           );
 
@@ -765,7 +798,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=ReturnNumber" )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
           );
 
@@ -786,7 +819,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=ReturnNumber" )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -799,7 +832,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=ReturnNumber" )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -813,7 +846,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=ReturnNumber" )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -828,7 +861,7 @@ void TestQgsProcessingPdalAlgs::exportRaster()
             << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--attribute=ReturnNumber" )
-            << QStringLiteral( "--resolution=100" )
+            << QStringLiteral( "--resolution=0.5" )
             << QStringLiteral( "--tile-size=100" )
             << QStringLiteral( "--tile-origin-x=1" )
             << QStringLiteral( "--tile-origin-y=10" )
@@ -914,61 +947,51 @@ void TestQgsProcessingPdalAlgs::merge()
 
   QgsProcessingFeedback feedback;
 
-  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/lone-star.copc.laz";
-  const QString pointCloud2 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb16.copc.laz";
   const QString outputFile = QDir::tempPath() + "/merged.las";
 
-  // single layer
+  // default parameters
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 );
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPointCloudLayerPath );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
-          );
-
-  // multiple layers
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 << pointCloud2 );
-  args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
-            << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // filter expression
   parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--filter=Intensity > 50" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // filter extent
   parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--filter=Intensity > 50" )
             << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "merge" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--filter=Intensity > 50" )
             << QStringLiteral( "--bounds=([1, 3], [2, 4])" )
             << QStringLiteral( "--threads=2" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 }
 
@@ -982,74 +1005,64 @@ void TestQgsProcessingPdalAlgs::buildVpc()
 
   QgsProcessingFeedback feedback;
 
-  const QString pointCloud1 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/lone-star.copc.laz";
-  const QString pointCloud2 = QString( TEST_DATA_DIR ) + "/point_clouds/copc/rgb16.copc.laz";
   const QString outputFile = QDir::tempPath() + "/test.vpc";
 
-  // single layer
+  // default parameters
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 );
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPointCloudLayerPath );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
-          );
-
-  // multiple layers
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << pointCloud1 << pointCloud2 );
-  args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
-            << QStringLiteral( "--output=%1" ).arg( outputFile )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // calculate exact boundaries
   parameters.insert( QStringLiteral( "BOUNDARY" ), true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // calculate statistics
   parameters.insert( QStringLiteral( "STATISTICS" ), true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
             << QStringLiteral( "--stats" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // build overview
   parameters.insert( QStringLiteral( "OVERVIEW" ), true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
             << QStringLiteral( "--stats" )
             << QStringLiteral( "--overview" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
+  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
   QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" )
             << QStringLiteral( "--output=%1" ).arg( outputFile )
             << QStringLiteral( "--boundary" )
             << QStringLiteral( "--stats" )
             << QStringLiteral( "--overview" )
             << QStringLiteral( "--threads=2" )
-            << pointCloud1
-            << pointCloud2
+            << QStringLiteral( "--input-file-list=inputFiles.txt" )
           );
 }
 

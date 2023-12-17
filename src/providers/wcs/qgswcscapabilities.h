@@ -132,7 +132,7 @@ class QgsWcsCapabilities : public QObject
 
     void setUri( QgsDataSourceUri const &uri );
 
-    QgsWcsCapabilitiesProperty capabilities();
+    const QgsWcsCapabilitiesProperty &capabilities() const;
 
     /**
      * \brief   Returns a list of the supported layers of the WCS server
@@ -153,7 +153,7 @@ class QgsWcsCapabilities : public QObject
     QgsWcsCoverageSummary coverage( QString const &identifier );
 
     //! Gets list of all coverage summaries
-    QList<QgsWcsCoverageSummary> coverages();
+    QList<QgsWcsCoverageSummary> coverages() const;
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -273,7 +273,7 @@ class QgsWcsCapabilities : public QObject
     QgsWcsCoverageSummary *coverageSummary( QString const &identifier, QgsWcsCoverageSummary *parent = nullptr );
 
     //! Get list of all sub coverages
-    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary *parent = nullptr );
+    QList<QgsWcsCoverageSummary> coverageSummaries( const QgsWcsCoverageSummary *parent = nullptr ) const;
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
 

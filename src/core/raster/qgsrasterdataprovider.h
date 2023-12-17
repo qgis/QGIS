@@ -41,6 +41,7 @@
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterdataproviderelevationproperties.h"
 
 class QImage;
 class QByteArray;
@@ -274,6 +275,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
+    QgsRasterDataProviderElevationProperties *elevationProperties() override;
+    const QgsRasterDataProviderElevationProperties *elevationProperties() const override SIP_SKIP;
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }
@@ -377,12 +380,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see buildPyramids()
      */
     bool hasPyramids();
-
-    /**
-     * Returns metadata in a format suitable for feeding directly
-     * into a subset of the GUI raster properties "Metadata" tab.
-     */
-    virtual QString htmlMetadata() = 0;
 
     /**
      * Identify raster value(s) found on the point position. The context
@@ -828,6 +825,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT  = nullptr );
 
+    /**
+     * Returns the description for band \a bandNumber, or an empty string if the band is not valid or has not description.
+     * The default implementation returns an empty string.
+     * \since QGIS 3.34
+     */
+    // Note: This method is not const because GDAL init on demand
+    virtual QString bandDescription( int bandNumber );
+
 
   signals:
 
@@ -913,6 +918,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Data provider temporal properties
      */
     std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
+
+    std::unique_ptr< QgsRasterDataProviderElevationProperties > mElevationProperties;
 
     std::map<int, std::unique_ptr<QgsRasterAttributeTable>> mAttributeTables;
 

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDateTime, QSize
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.core import (
@@ -30,7 +29,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorSimplifyMethod,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -43,7 +43,7 @@ class TestFeatureHandler(QgsRenderedFeatureHandlerInterface):
         pass
 
 
-class TestQgsRenderContext(unittest.TestCase):
+class TestQgsRenderContext(QgisTestCase):
 
     def testGettersSetters(self):
         """

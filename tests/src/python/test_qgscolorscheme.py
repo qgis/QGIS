@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '25/07/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
@@ -18,7 +17,8 @@ from qgis.core import (
     QgsSettings,
     QgsUserColorScheme,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 # Make a dummy color scheme for testing
@@ -44,7 +44,7 @@ class DummyColorScheme(QgsColorScheme):
         return DummyColorScheme()
 
 
-class TestQgsColorScheme(unittest.TestCase):
+class TestQgsColorScheme(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

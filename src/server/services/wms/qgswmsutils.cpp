@@ -91,8 +91,8 @@ namespace QgsWms
     else
     {
       // lookup for png with mode
-      const QRegularExpression modeExpr = QRegularExpression( QStringLiteral( "image/png\\s*;\\s*mode=([^;]+)" ),
-                                          QRegularExpression::CaseInsensitiveOption );
+      const thread_local QRegularExpression modeExpr = QRegularExpression( QStringLiteral( "image/png\\s*;\\s*mode=([^;]+)" ),
+          QRegularExpression::CaseInsensitiveOption );
 
       const QRegularExpressionMatch match = modeExpr.match( format );
       const QString mode = match.captured( 1 );

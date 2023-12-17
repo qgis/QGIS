@@ -11,13 +11,13 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.core import (
     QgsProject,
     QgsRelation,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -45,7 +45,7 @@ def createReferencedLayer():
     return layer
 
 
-class TestQgsProjectRelationManager(unittest.TestCase):
+class TestQgsProjectRelationManager(QgisTestCase):
 
     def setUp(self):
         self.referencedLayer = createReferencedLayer()

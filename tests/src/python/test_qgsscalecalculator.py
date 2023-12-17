@@ -9,19 +9,19 @@ __author__ = 'Mathieu Pellerin'
 __date__ = '30/12/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     Qgis,
     QgsRectangle,
     QgsScaleCalculator
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsScaleCalculator(unittest.TestCase):
+class TestQgsScaleCalculator(QgisTestCase):
 
     def testCalculate(self):
         calculator = QgsScaleCalculator()

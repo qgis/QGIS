@@ -11,6 +11,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
+from qgis.PyQt.QtCore import Qt, QDateTime, QVariant
+
 from qgis.core import (
     QgsFeature,
     QgsPathResolver,
@@ -19,7 +21,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import unitTestDataPath
@@ -28,7 +31,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsGpxProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def createLayer(cls):
@@ -182,6 +185,9 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertFalse(vl.dataProvider().changeAttributeValues({1: {1: 'a'}}))
 
+        source = vl.dataProvider().featureSource()
+        self.assertFalse(list(source.getFeatures()))
+
     def test_encode_decode_uri(self):
         metadata = QgsProviderRegistry.instance().providerMetadata('gpx')
         self.assertIsNotNone(metadata)
@@ -215,6 +221,13 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
         self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
+
+    def test_waypoint_layer(self):
+        vl = QgsVectorLayer(f'{unitTestDataPath()}/gpx_test_suite.gpx' + "?type=waypoint", 'test2', 'gpx')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().field("time").type(), QVariant.DateTime)
+        values = [f["time"] for f in vl.getFeatures()]
+        self.assertEqual(values[0], QDateTime(2023, 4, 25, 9, 52, 14, 0, Qt.TimeSpec(1)))
 
 
 if __name__ == '__main__':

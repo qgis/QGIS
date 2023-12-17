@@ -9,9 +9,9 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/09/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, QSize, Qt
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsAbstract3DSymbol,
@@ -83,7 +83,7 @@ def createFillSymbol():
     return symbol
 
 
-class TestQgsStyleModel(unittest.TestCase):
+class TestQgsStyleModel(QgisTestCase):
 
     def test_style_with_symbols(self):
 

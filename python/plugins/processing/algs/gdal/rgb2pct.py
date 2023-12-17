@@ -80,11 +80,15 @@ class rgb2pct(GdalAlgorithm):
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
+        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        if not output_format:
+            raise QgsProcessingException(self.tr('Output format is invalid'))
+
         arguments = [
             '-n',
             str(self.parameterAsInt(parameters, self.NCOLORS, context)),
             '-of',
-            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            output_format,
             raster.source(),
             out
         ]

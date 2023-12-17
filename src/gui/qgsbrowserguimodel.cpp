@@ -32,6 +32,13 @@ QgsDataItemGuiContext QgsBrowserGuiModel::createDataItemContext() const
   return context;
 }
 
+struct QgsBrowserGuiModelCachedAcceptDropValue
+{
+  bool acceptDrop;
+  int numberOfProviders;
+};
+Q_DECLARE_METATYPE( QgsBrowserGuiModelCachedAcceptDropValue )
+
 Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
@@ -55,15 +62,43 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsDropEnabled;
   else
   {
-    // new support
+    // Cache the value of acceptDrop(), as it can be slow to evaluate.
+    // e.g. for a OGR datasource, this requires to open it. And this method
+    // is called each time the browser is redrawn.
+    // We cache the number of providers too, to be able to invalidate the
+    // cached value if new providers are installed.
+    QVariant cachedProperty = ptr->property( "_qgs_accept_drop_cached" );
     const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
-    for ( QgsDataItemGuiProvider *provider : providers )
+    bool refreshAcceptDrop = true;
+    if ( cachedProperty.isValid() )
     {
-      if ( provider->acceptDrop( ptr, createDataItemContext() ) )
+      QgsBrowserGuiModelCachedAcceptDropValue cached = cachedProperty.value<QgsBrowserGuiModelCachedAcceptDropValue>();
+      if ( cached.numberOfProviders == providers.size() )
       {
-        flags |= Qt::ItemIsDropEnabled;
-        break;
+        refreshAcceptDrop = false;
+        if ( cached.acceptDrop )
+          flags |= Qt::ItemIsDropEnabled;
       }
+    }
+
+    if ( refreshAcceptDrop )
+    {
+      // new support
+      for ( QgsDataItemGuiProvider *provider : providers )
+      {
+        if ( provider->acceptDrop( ptr, createDataItemContext() ) )
+        {
+          flags |= Qt::ItemIsDropEnabled;
+          break;
+        }
+      }
+
+      QgsBrowserGuiModelCachedAcceptDropValue cached;
+      cached.acceptDrop = ( flags & Qt::ItemIsDropEnabled ) != 0;
+      cached.numberOfProviders = providers.size();
+      QVariant var;
+      var.setValue( cached );
+      ptr->setProperty( "_qgs_accept_drop_cached", var );
     }
   }
   return flags;

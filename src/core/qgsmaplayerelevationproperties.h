@@ -28,6 +28,9 @@
 #include <QObject>
 #include <QDomElement>
 
+class QgsMapLayer;
+
+
 /**
  * \class QgsMapLayerElevationProperties
  * \ingroup core
@@ -45,6 +48,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsvectorlayerelevationproperties.h"
 #include "qgsmeshlayerelevationproperties.h"
+#include "qgstiledscenelayerelevationproperties.h"
 #endif
 
     Q_OBJECT
@@ -66,6 +70,10 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     else if ( qobject_cast<QgsMeshLayerElevationProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsMeshLayerElevationProperties;
+    }
+    else if ( qobject_cast<QgsTiledSceneLayerElevationProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsTiledSceneLayerElevationProperties;
     }
     else
     {

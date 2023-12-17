@@ -356,7 +356,7 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
     if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "width" ) ) )
     {
       const QString widthString = docElem.attribute( QStringLiteral( "width" ) );
-      const QRegularExpression measureRegEx( QStringLiteral( "([\\d\\.]+).*?$" ) );
+      const thread_local QRegularExpression measureRegEx( QStringLiteral( "([\\d\\.]+).*?$" ) );
       const QRegularExpressionMatch widthMatch = measureRegEx.match( widthString );
       if ( widthMatch.hasMatch() )
       {

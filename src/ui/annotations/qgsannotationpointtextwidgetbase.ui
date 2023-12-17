@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>321</width>
-    <height>325</height>
+    <height>526</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Point Text Annotation</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,7 +26,54 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
+   <item row="6" column="0" colspan="2">
+    <widget class="QgsAnnotationItemCommonPropertiesWidget" name="mPropertiesWidget" native="true"/>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Rotation</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Angle</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mSpinTextAngle">
+        <property name="wrapping">
+         <bool>true</bool>
+        </property>
+        <property name="suffix">
+         <string> °</string>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="mRotationModeCombo"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QWidget" name="mTextFormatWidgetContainer" native="true"/>
+   </item>
+   <item row="0" column="0" colspan="2">
     <widget class="QPlainTextEdit" name="mTextEdit">
      <property name="minimumSize">
       <size>
@@ -36,33 +83,37 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="QToolButton" name="mInsertExpressionButton">
      <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-        </sizepolicy>
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
-        <string>Insert/Edit Expression…</string>
+      <string>Insert/Edit Expression…</string>
      </property>
      <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
+      <enum>QToolButton::MenuButtonPopup</enum>
      </property>
      <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextOnly</enum>
+      <enum>Qt::ToolButtonTextOnly</enum>
      </property>
      <property name="arrowType">
-        <enum>Qt::DownArrow</enum>
+      <enum>Qt::DownArrow</enum>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QgsAnnotationItemCommonPropertiesWidget" name="mPropertiesWidget" native="true"/>
+   <item row="2" column="1">
+    <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
    </item>
    <item row="2" column="0">
-    <widget class="QWidget" name="mTextFormatWidgetContainer" native="true"/>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Alignment</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -72,6 +123,16 @@
    <extends>QWidget</extends>
    <header>qgsannotationitemcommonpropertieswidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

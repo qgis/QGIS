@@ -119,7 +119,7 @@ spatialite_functions = [  # from www.gaia-gis.it/spatialite-2.3.0/spatialite-sql
 ]
 
 qgis_functions = [
-    "atan2", "round", "rand", "randf", "clamp", "scale_linear", "scale_exp", "_pi", "to_int", "toint", "to_real", "toreal",
+    "atan2", "round", "rand", "randf", "clamp", "scale_linear", "scale_polynomial", "scale_exponential", "_pi", "to_int", "toint", "to_real", "toreal",
     "to_string", "tostring", "to_datetime", "todatetime", "to_date", "todate", "to_time", "totime", "to_interval", "tointerval",
     "regexp_match", "now", "_now", "age", "year", "month", "week", "day", "hour", "minute", "second", "day_of_week", "title",
     "levenshtein", "longest_common_substring", "hamming_distance", "wordwrap", "regexp_replace", "regexp_substr", "concat",

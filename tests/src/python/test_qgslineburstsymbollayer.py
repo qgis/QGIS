@@ -19,7 +19,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'October 2021'
 __copyright__ = '(C) 2021, Nyall Dawson'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
@@ -36,7 +35,8 @@ from qgis.core import (
     QgsRenderContext,
     QgsSymbolLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -44,7 +44,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLineburstSymbolLayer(unittest.TestCase):
+class TestQgsLineburstSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsLineburstSymbolLayer Tests</h1>\n"

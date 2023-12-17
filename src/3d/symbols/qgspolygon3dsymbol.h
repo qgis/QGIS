@@ -66,10 +66,33 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     //! Sets method that determines how altitude is bound to individual vertices
     void setAltitudeBinding( Qgis::AltitudeBinding altBinding ) { mAltBinding = altBinding; }
 
-    //! Returns height (altitude) of the symbol (in map units)
-    float height() const { return mHeight; }
-    //! Sets height (altitude) of the symbol (in map units)
-    void setHeight( float height ) { mHeight = height; }
+    /**
+     * Returns height (altitude) of the symbol (in map units)
+     *
+     * \deprecated since QGIS 3.36. Use offset() instead.
+     */
+    Q_DECL_DEPRECATED float height() const SIP_DEPRECATED { return mOffset; }
+
+    /**
+     * Sets height (altitude) of the symbol (in map units)
+     *
+     * \deprecated since QGIS 3.36. Use setOffset() instead.
+     */
+    Q_DECL_DEPRECATED void setHeight( float height ) SIP_DEPRECATED { mOffset = height; }
+
+    /**
+     * Returns vertical offset of the symbol (in map units)
+     *
+     * \since QGIS 3.36
+     */
+    float offset() const { return mOffset; }
+
+    /**
+     * Sets vertical offset of the symbol (in map units)
+     *
+     * \since QGIS 3.36
+     */
+    void setOffset( float offset ) { mOffset = offset; }
 
     //! Returns extrusion height (in map units)
     float extrusionHeight() const { return mExtrusionHeight; }
@@ -169,7 +192,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     //! how to handle clamping of vertices of individual features
     Qgis::AltitudeBinding mAltBinding = Qgis::AltitudeBinding::Centroid;
 
-    float mHeight = 0.0f;           //!< Base height of polygons
+    float mOffset = 0.0f;           //!< Vertical offset of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings; //!< Defines appearance of objects
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode

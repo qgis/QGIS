@@ -57,12 +57,12 @@ bool QgsXyzVectorTileDataProviderBase::supportsAsync() const
   return true;
 }
 
-QByteArray QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
+QgsVectorTileRawData QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
-  return loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), sourcePath(), mAuthCfg, mHeaders, feedback );
+  return QgsVectorTileRawData( id, loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), sourcePath(), mAuthCfg, mHeaders, feedback ) );
 }
 
-QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const QgsTileMatrixSet &set, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback ) const
+QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const QgsTileMatrixSet &set, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback, Qgis::RendererUsage usage ) const
 {
   QList<QgsVectorTileRawData> rawTiles;
   rawTiles.reserve( tiles.size() );
@@ -72,7 +72,7 @@ QList<QgsVectorTileRawData> QgsXyzVectorTileDataProviderBase::readTiles( const Q
     if ( feedback && feedback->isCanceled() )
       break;
 
-    const QByteArray rawData = loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), source, mAuthCfg, mHeaders, feedback );
+    const QByteArray rawData = loadFromNetwork( id, set.tileMatrix( id.zoomLevel() ), source, mAuthCfg, mHeaders, feedback, usage );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -124,9 +124,26 @@ QNetworkRequest QgsXyzVectorTileDataProviderBase::tileRequest( const QgsTileMatr
   return request;
 }
 
-QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback )
+QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback, Qgis::RendererUsage usage )
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
+
+  if ( url.contains( QLatin1String( "{usage}" ) ) )
+  {
+    switch ( usage )
+    {
+      case Qgis::RendererUsage::View:
+        url.replace( QLatin1String( "{usage}" ), QLatin1String( "view" ) );
+        break;
+      case Qgis::RendererUsage::Export:
+        url.replace( QLatin1String( "{usage}" ), QLatin1String( "export" ) );
+        break;
+      case Qgis::RendererUsage::Unknown:
+        url.replace( QLatin1String( "{usage}" ), QString() );
+        break;
+    }
+  }
+
   QNetworkRequest nr;
   nr.setUrl( QUrl( url ) );
 
@@ -138,7 +155,7 @@ QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &
   QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr, false, feedback );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
     return QByteArray();
   }
   QgsNetworkReplyContent reply = req.reply();
@@ -288,7 +305,7 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QString &uri, 
   const QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
+    QgsDebugError( QStringLiteral( "Invalid format of URL for XYZ source: " ) + sourcePath );
     mIsValid = false;
     return;
   }

@@ -87,7 +87,6 @@
          <widget class="QLabel" name="label_3">
           <property name="font">
            <font>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -157,34 +156,6 @@
           <property name="horizontalSpacing">
            <number>0</number>
           </property>
-          <item row="1" column="0">
-           <widget class="QTreeWidget" name="lstCoordinateSystems">
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="uniformRowHeights">
-             <bool>true</bool>
-            </property>
-            <property name="columnCount">
-             <number>3</number>
-            </property>
-            <column>
-             <property name="text">
-              <string>Coordinate Reference System</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Authority ID</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>ID</string>
-             </property>
-            </column>
-           </widget>
-          </item>
           <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="topMargin">
@@ -194,7 +165,6 @@
              <widget class="QLabel" name="label_4">
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -229,6 +199,16 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTreeView" name="lstCoordinateSystems">
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="uniformRowHeights">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -323,8 +303,6 @@
   <tabstop>cbxHideDeprecated</tabstop>
   <tabstop>lstCoordinateSystems</tabstop>
  </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

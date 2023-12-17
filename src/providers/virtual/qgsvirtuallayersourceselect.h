@@ -80,7 +80,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void testQuery();
     void browseCRS();
     void layerComboChanged( int );
-    void addLayer( bool browseForLayer = false );
+    void addLayerPrivate( bool browseForLayer = false );
     void removeLayer();
     void importLayer();
     void tableRowChanged( const QModelIndex &current, const QModelIndex &previous );

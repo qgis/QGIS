@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '11/01/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsApplication,
@@ -18,12 +17,13 @@ from qgis.core import (
     QgsPropertyDefinition,
 )
 from qgis.gui import QgsColorButton, QgsPropertyOverrideButton
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPropertyOverrideButton(unittest.TestCase):
+class TestQgsPropertyOverrideButton(QgisTestCase):
 
     def testProjectColor(self):
         scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]

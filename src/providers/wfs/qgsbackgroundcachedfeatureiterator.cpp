@@ -26,6 +26,7 @@
 #include <QDataStream>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
 #include <QMutex>
 #include <QPushButton>
 #include <QStyle>
@@ -605,7 +606,7 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
     mWriterFile.reset( new QFile( mWriterFilename ) );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
+      QgsDebugError( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
       mWriterFile.reset();
       mWriterFilename.clear();
       mShared->releaseCacheDirectory();
@@ -648,7 +649,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mTimeoutOrInterruptionOccurred )
       return false;
 
-    //QgsDebugMsg(QString("QgsBackgroundCachedSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
+    //QgsDebugMsgLevel(QString("QgsBackgroundCachedSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)"), 2 );
 
     if ( mShared->hasGeometry() && mFetchGeometry )
     {
@@ -667,7 +668,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         }
         catch ( const QgsWkbException & )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
+          QgsDebugError( QStringLiteral( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           cachedFeature.clearGeometry();
         }
       }
@@ -746,7 +747,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         mReaderFile.reset( new QFile( mReaderFilename ) );
         if ( !mReaderFile->open( QIODevice::ReadOnly ) )
         {
-          QgsDebugMsg( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
+          QgsDebugError( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
           mReaderFile.reset();
           return false;
         }
@@ -944,7 +945,9 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
       else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
         dstFeature.setAttribute( i, v );
       else if ( fieldType == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
-        dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
+        dstFeature.setAttribute( i, QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) );
+      else if ( fieldType == QVariant::Map && !QgsVariantUtils::isNull( v ) )
+        dstFeature.setAttribute( i, QJsonDocument::fromJson( v.toString().toUtf8() ).toVariant() );
       else
         dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );
     }

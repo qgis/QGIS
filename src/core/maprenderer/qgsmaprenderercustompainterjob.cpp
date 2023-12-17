@@ -168,7 +168,7 @@ void QgsMapRendererCustomPainterJob::cancelWithoutBlocking()
 {
   if ( !isActive() )
   {
-    QgsDebugMsg( QStringLiteral( "QPAINTER not running!" ) );
+    QgsDebugError( QStringLiteral( "QPAINTER not running!" ) );
     return;
   }
 
@@ -281,16 +281,16 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
   catch ( QgsException &e )
   {
     Q_UNUSED( e )
-    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    QgsDebugError( "Caught unhandled QgsException: " + e.what() );
   }
   catch ( std::exception &e )
   {
     Q_UNUSED( e )
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
+    QgsDebugError( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
   }
   catch ( ... )
   {
-    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
+    QgsDebugError( QStringLiteral( "Caught unhandled unknown exception" ) );
   }
 }
 
@@ -304,7 +304,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   const QgsElevationShadingRenderer mapShadingRenderer = mSettings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( mSettings.outputSize() ) );
+    mainElevationMap.reset( new QgsElevationMap( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() ) );
 
   for ( LayerRenderJob &job : mLayerJobs )
   {
@@ -324,6 +324,12 @@ void QgsMapRendererCustomPainterJob::doRender()
     {
       QElapsedTimer layerTime;
       layerTime.start();
+
+      if ( job.previewRenderImage && !job.previewRenderImageInitialized )
+      {
+        job.previewRenderImage->fill( 0 );
+        job.previewRenderImageInitialized = true;
+      }
 
       if ( job.img )
       {
@@ -365,6 +371,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   if ( mapShadingRenderer.isActive() &&  mainElevationMap )
   {
     QImage image( mainElevationMap->rawElevationImage().size(), QImage::Format_RGB32 );
+    image.setDevicePixelRatio( mSettings.devicePixelRatio() );
     image.fill( Qt::white );
     mapShadingRenderer.renderShading( *mainElevationMap.get(), image, QgsRenderContext::fromMapSettings( mSettings ) );
     mPainter->save();
@@ -430,6 +437,12 @@ void QgsMapRendererCustomPainterJob::doRender()
       {
         QElapsedTimer layerTime;
         layerTime.start();
+
+        if ( job.previewRenderImage && !job.previewRenderImageInitialized )
+        {
+          job.previewRenderImage->fill( 0 );
+          job.previewRenderImageInitialized = true;
+        }
 
         if ( job.img )
         {

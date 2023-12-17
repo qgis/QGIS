@@ -41,7 +41,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
   if ( r )
   {
     const QString err = QStringLiteral( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
-    QgsDebugMsg( err );
+    QgsDebugError( err );
     throw std::runtime_error( err.toUtf8().constData() );
   }
   // enable extended result codes

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject
@@ -18,12 +17,13 @@ from qgis.gui import (
     QgsProjectionSelectionTreeWidget,
     QgsProjectionSelectionWidget,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProjectionSelectionWidgets(unittest.TestCase):
+class TestQgsProjectionSelectionWidgets(QgisTestCase):
 
     def testShowingHiding(self):
         """ test showing and hiding options """
@@ -153,7 +153,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
     def testTreeWidgetGettersSetters(self):
         """ basic tests for QgsProjectionSelectionTreeWidget """
         w = QgsProjectionSelectionTreeWidget()
-        w.show()
         self.assertFalse(w.hasValidSelection())
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(w.crs().authid(), 'EPSG:3111')
@@ -161,9 +160,10 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
 
     def testTreeWidgetUnknownCrs(self):
         w = QgsProjectionSelectionTreeWidget()
-        w.show()
         self.assertFalse(w.hasValidSelection())
-        w.setCrs(QgsCoordinateReferenceSystem.fromWkt('GEOGCS["WGS 84",DATUM["unknown",SPHEROID["WGS84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]'))
+        crs = QgsCoordinateReferenceSystem.fromWkt('GEOGCS["WGS 84",DATUM["unknown",SPHEROID["WGS84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]')
+        self.assertTrue(crs.isValid())
+        w.setCrs(crs)
         self.assertTrue(w.crs().isValid())
         self.assertFalse(w.crs().authid())
         self.assertTrue(w.hasValidSelection())
@@ -172,7 +172,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
     def testTreeWidgetNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
         w = QgsProjectionSelectionTreeWidget()
-        w.show()
         w.setShowNoProjection(True)
         self.assertTrue(w.showNoProjection())
         w.setShowNoProjection(False)
@@ -187,14 +186,12 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
     def testDialogGettersSetters(self):
         """ basic tests for QgsProjectionSelectionTreeWidget """
         w = QgsProjectionSelectionDialog()
-        w.show()
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(w.crs().authid(), 'EPSG:3111')
 
     def testDialogNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
         w = QgsProjectionSelectionDialog()
-        w.show()
         w.setShowNoProjection(True)
         self.assertTrue(w.showNoProjection())
         w.setShowNoProjection(False)
@@ -234,7 +231,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         self.assertFalse(w.hasValidSelection())
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(len(spy), 1)
-        w.show()
         self.assertTrue(w.hasValidSelection())
         self.assertEqual(w.crs().authid(), 'EPSG:3111')
         self.assertEqual(len(spy), 1)
@@ -244,7 +240,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         self.assertFalse(w.hasValidSelection())
         w.setCrs(QgsCoordinateReferenceSystem())
         self.assertEqual(len(spy), 1)
-        w.show()
         self.assertTrue(w.hasValidSelection())
         self.assertFalse(w.crs().isValid())
         self.assertEqual(len(spy), 1)
@@ -263,7 +258,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         self.assertFalse(w.hasValidSelection())
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        w.show()
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(len(spy), 1)
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))

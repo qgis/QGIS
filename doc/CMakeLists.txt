@@ -93,6 +93,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/settings
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
+      ${CMAKE_SOURCE_DIR}/src/core/tiledscene
       ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/core/vector
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
@@ -109,6 +110,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/elevation
       ${CMAKE_SOURCE_DIR}/src/gui/history
+      ${CMAKE_SOURCE_DIR}/src/gui/inputcontroller
       ${CMAKE_SOURCE_DIR}/src/gui/labeling
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout
@@ -126,6 +128,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/settings
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+      ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
       ${CMAKE_SOURCE_DIR}/src/gui/vector
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis

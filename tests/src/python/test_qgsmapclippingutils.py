@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '2020-06'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -24,12 +23,13 @@ from qgis.core import (
     QgsRenderContext,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMapClippingUtils(unittest.TestCase):
+class TestQgsMapClippingUtils(QgisTestCase):
 
     def testClippingRegionsForLayer(self):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",

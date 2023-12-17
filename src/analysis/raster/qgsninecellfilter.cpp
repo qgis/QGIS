@@ -55,7 +55,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     {
       try
       {
-        QgsDebugMsg( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName( ) ) );
+        QgsDebugMsgLevel( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName( ) ), 2 );
         return processRasterGPU( source, feedback );
       }
       catch ( cl::Error &e )
@@ -288,14 +288,14 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       // Read scanline2: first real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
       }
       queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
       // Read scanline3: second real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
       }
       queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
     }
@@ -316,7 +316,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
-          QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+          QgsDebugError( QStringLiteral( "Raster IO Error" ) );
         }
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
@@ -337,7 +337,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
     }
     std::rotate( rowIndex.begin(), rowIndex.begin() + 1, rowIndex.end() );
   }
@@ -433,7 +433,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
       // Read scanline2
       if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine2[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
       }
     }
     else
@@ -457,7 +457,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
     {
       if ( GDALRasterIO( rasterBand, GF_Read, 0, yIndex + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
       }
     }
     // Set first and last extra columns to nodata
@@ -479,7 +479,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, yIndex, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugMsg( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
     }
   }
 

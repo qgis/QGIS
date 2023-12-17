@@ -34,7 +34,7 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
 
   QTextStream inputStream( &inputFile );
   int lineCounter = 0;
-  const QRegularExpression itemRegex( QStringLiteral( "^(.+?),(.+?),(.+?),(.+?),(.+?),(.+)$" ) );
+  const thread_local QRegularExpression itemRegex( QStringLiteral( "^(.+?),(.+?),(.+?),(.+?),(.+?),(.+)$" ) );
 
   //read through the input looking for valid data
   while ( !inputStream.atEnd() )

@@ -136,7 +136,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   return true;
 }
 
-QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   const bool found = fetchNodeHierarchy( n );
   if ( !found )
@@ -159,7 +159,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   file.read( rawBlockData.data(), blockSize );
   if ( !file )
   {
-    QgsDebugMsg( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
+    QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
     return nullptr;
   }
   QgsRectangle filterRect = request.filterRect();

@@ -29,8 +29,8 @@ from qgis.core import (QgsProcessingContext,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle)
 
-from qgis.testing import (start_app,
-                          unittest)
+from qgis.testing import (QgisTestCase,
+                          start_app)
 
 import AlgorithmsTestBase
 from processing.algs.gdal.ogr2ogr import ogr2ogr
@@ -45,7 +45,7 @@ from processing.algs.gdal.PointsAlongLines import PointsAlongLines
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):

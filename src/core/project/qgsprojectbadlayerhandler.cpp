@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsdatasourceuri.h"
 #include "qgsprojectbadlayerhandler.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -27,7 +28,7 @@ void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 
   for ( const QDomNode &layer : layers )
   {
-    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
+    QgsMessageLog::logMessage( QObject::tr( " * %1" ).arg( QgsDataSourceUri::removePassword( dataSource( layer ), true ) ) );
   }
 }
 
@@ -37,7 +38,7 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
   if ( type.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "cannot find ``type'' attribute" ) );
+    QgsDebugError( QStringLiteral( "cannot find ``type'' attribute" ) );
 
     return IS_BOGUS;
   }
@@ -66,7 +67,7 @@ QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
 
   if ( dataSourceNode.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "cannot find datasource node" ) );
+    QgsDebugError( QStringLiteral( "cannot find datasource node" ) );
 
     return QString();
   }
@@ -105,7 +106,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
       return IS_FILE;
 
     default:
-      QgsDebugMsg( QStringLiteral( "unknown ``type'' attribute" ) );
+      QgsDebugError( QStringLiteral( "unknown ``type'' attribute" ) );
   }
 
   return IS_Unknown;

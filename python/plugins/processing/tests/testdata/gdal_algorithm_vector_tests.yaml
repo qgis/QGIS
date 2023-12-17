@@ -156,7 +156,28 @@ tests:
 #        type: vector
 
   - algorithm: gdal:clipvectorbypolygon
-    name: Clip lines by multipolygons
+    name: Clip lines by multipolygons (GEOS >= 3.11)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: multipolys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/geos311/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by multipolygons (GEOS < 3.11)
+    condition:
+      geos:
+        less_than: 31100
     params:
       INPUT:
         name: lines.gml
@@ -185,7 +206,31 @@ tests:
         type: vector
 
   - algorithm: gdal:offsetcurve
-    name: Offset curve (right-sided)
+    name: Offset curve (right-sided) (GEOS >= 3.11)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      DISTANCE: -0.5
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/geos311/offset_lines.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            explode_collections: true
+
+  - algorithm: gdal:offsetcurve
+    name: Offset curve (right-sided) (GEOS < 3.11)
+    condition:
+      geos:
+        less_than: 31100
     params:
       DISTANCE: -0.5
       GEOMETRY: geometry
@@ -313,4 +358,3 @@ tests:
         compare:
           fields:
             fid: skip
-

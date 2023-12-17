@@ -119,8 +119,8 @@ void QgsPointCloudLayerExporter::setFilterGeometry( QgsMapLayer *layer, bool sel
   }
   catch ( const QgsCsException &cse )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
-    QgsDebugMsg( QStringLiteral( "FilterGeometry will be ignored." ) );
+    QgsDebugError( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
+    QgsDebugError( QStringLiteral( "FilterGeometry will be ignored." ) );
     return;
   }
   setFilterGeometry( unaryUnion.constGet() );
@@ -212,7 +212,7 @@ void QgsPointCloudLayerExporter::doExport()
     }
     catch ( const QgsCsException &cse )
     {
-      QgsDebugMsg( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ) );
+      QgsDebugError( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ) );
     }
   }
 
@@ -243,7 +243,7 @@ void QgsPointCloudLayerExporter::doExport()
       catch ( std::runtime_error &e )
       {
         setLastError( QString::fromLatin1( e.what() ) );
-        QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
+        QgsDebugError( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
       }
 #endif
       break;
@@ -252,7 +252,7 @@ void QgsPointCloudLayerExporter::doExport()
     case ExportFormat::Csv:
       layerCreationOptions << QStringLiteral( "GEOMETRY=AS_XYZ" )
                            << QStringLiteral( "SEPARATOR=COMMA" ); // just in case ogr changes the default lco
-      FALLTHROUGH
+      [[fallthrough]];
     case ExportFormat::Gpkg:
     case ExportFormat::Dxf:
     case ExportFormat::Shp:
@@ -357,7 +357,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   qint64 pointsExported = 0;
   for ( const IndexedPointCloudNode &node : nodes )
   {
-    block.reset( mParent->mIndex->nodeData( node, request ) );
+    block = mParent->mIndex->nodeData( node, request );
     const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
     const char *ptr = block->data();
     int count = block->pointCount();
@@ -408,7 +408,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       }
       catch ( const QgsCsException &cse )
       {
-        QgsDebugMsg( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
+        QgsDebugError( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
       }
     }
     handleNode();
@@ -594,7 +594,11 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
   {
     mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ QStringLiteral( "ScannerChannel" ) ].toInt() );
-    mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, map[ QStringLiteral( "ClassificationFlags" ) ].toInt() );
+    const int classificationFlags = ( map[ QStringLiteral( "Synthetic" ) ].toInt() & 0x01 ) << 0 |
+                                    ( map[ QStringLiteral( "KeyPoint" ) ].toInt() & 0x01 ) << 1 |
+                                    ( map[ QStringLiteral( "Withheld" ) ].toInt() & 0x01 ) << 2 |
+                                    ( map[ QStringLiteral( "Overlap" ) ].toInt() & 0x01 ) << 3;
+    mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, classificationFlags );
   }
 
   if ( mPointFormat != 0 && mPointFormat != 2 )

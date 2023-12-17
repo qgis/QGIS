@@ -218,13 +218,8 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
 
   rootLayout->addWidget( mStackedWidget );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
-           this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
-#else
   connect( mViewModeButtonGroup, &QButtonGroup::idClicked,
            this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
-#endif
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::toggleEditing );
   connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::saveEdits );
   connect( mAddFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeature );
@@ -824,7 +819,8 @@ QVariantMap QgsRelationEditorWidget::config() const
 {
   return QVariantMap( {{"buttons", qgsFlagValueToKeys( visibleButtons() )},
     {"show_first_feature", mShowFirstFeature},
-    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry }} );
+    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry }
+  } );
 }
 
 void QgsRelationEditorWidget::setConfig( const QVariantMap &config )

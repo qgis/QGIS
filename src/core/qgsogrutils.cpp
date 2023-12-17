@@ -46,6 +46,7 @@
 #endif
 
 #include <cmath>
+#include <limits>
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -232,7 +233,7 @@ int QgsOgrUtils::OGRTZFlagFromQt( const QDateTime &datetime )
   return 100 + datetime.offsetFromUtc() / ( 60 * 15 );
 }
 
-std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value )
+std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &value, OGRFieldType type )
 {
   std::unique_ptr< OGRField > res = std::make_unique< OGRField >();
 
@@ -242,56 +243,177 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
       OGR_RawField_SetUnset( res.get() );
       break;
     case QVariant::Bool:
-      res->Integer = value.toBool() ? 1 : 0;
+    {
+      const int val = value.toBool() ? 1 : 0;
+      if ( type == OFTInteger )
+        res->Integer = val;
+      else if ( type == OFTInteger64 )
+        res->Integer64 = val;
+      else if ( type == OFTReal )
+        res->Real = val;
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Bool" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Int:
-      res->Integer = value.toInt();
+    {
+      const int val = value.toInt();
+      if ( type == OFTInteger )
+        res->Integer = val;
+      else if ( type == OFTInteger64 )
+        res->Integer64 = val;
+      else if ( type == OFTReal )
+        res->Real = val;
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Int" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::LongLong:
-      res->Integer64 = value.toLongLong();
+    {
+      const qint64 val = value.toLongLong();
+      if ( type == OFTInteger )
+      {
+        if ( val <= std::numeric_limits<int>::max() &&
+             val >= std::numeric_limits<int>::min() )
+        {
+          res->Integer = static_cast<int>( val );
+        }
+        else
+        {
+          QgsDebugError( "Value does not fit on Integer" );
+          return nullptr;
+        }
+      }
+      else if ( type == OFTInteger64 )
+        res->Integer64 = val;
+      else if ( type == OFTReal )
+      {
+        res->Real = static_cast<double>( val );
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for LongLong" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Double:
-      res->Real = value.toDouble();
+    {
+      double val = value.toDouble();
+      if ( type == OFTInteger )
+      {
+        if ( val <= std::numeric_limits<int>::max() &&
+             val >= std::numeric_limits<int>::min() )
+        {
+          res->Integer = static_cast<int>( val );
+        }
+        else
+        {
+          QgsDebugError( "Value does not fit on Integer" );
+          return nullptr;
+        }
+      }
+      else if ( type == OFTInteger64 )
+      {
+        if ( val <= static_cast<double>( std::numeric_limits<qint64>::max() ) &&
+             val >= static_cast<double>( std::numeric_limits<qint64>::min() ) )
+        {
+          res->Integer64 = static_cast<qint64>( val );
+        }
+        else
+        {
+          QgsDebugError( "Value does not fit on Integer64" );
+          return nullptr;
+        }
+      }
+      else if ( type == OFTReal )
+      {
+        res->Real = val;
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for LongLong" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Char:
     case QVariant::String:
-      res->String = CPLStrdup( value.toString().toUtf8().constData() );
+    {
+      if ( type == OFTString )
+        res->String = CPLStrdup( value.toString().toUtf8().constData() );
+      else
+      {
+        QgsDebugError( "Unsupported output data type for String" );
+        return nullptr;
+      }
       break;
+    }
     case QVariant::Date:
     {
-      const QDate date = value.toDate();
-      res->Date.Day = date.day();
-      res->Date.Month = date.month();
-      res->Date.Year = date.year();
-      res->Date.TZFlag = 0;
+      if ( type == OFTDate )
+      {
+        const QDate date = value.toDate();
+        res->Date.Day = date.day();
+        res->Date.Month = date.month();
+        res->Date.Year = static_cast<GInt16>( date.year() );
+        res->Date.TZFlag = 0;
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Date" );
+        return nullptr;
+      }
       break;
     }
     case QVariant::Time:
     {
-      const QTime time = value.toTime();
-      res->Date.Hour = time.hour();
-      res->Date.Minute = time.minute();
-      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
-      res->Date.TZFlag = 0;
+      if ( type == OFTTime )
+      {
+        const QTime time = value.toTime();
+        res->Date.Hour = time.hour();
+        res->Date.Minute = time.minute();
+        res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
+        res->Date.TZFlag = 0;
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for Time" );
+        return nullptr;
+      }
       break;
     }
     case QVariant::DateTime:
     {
-      const QDateTime dt = value.toDateTime();
-      const QDate date = dt.date();
-      res->Date.Day = date.day();
-      res->Date.Month = date.month();
-      res->Date.Year = static_cast<GInt16>( date.year() );
-      const QTime time = dt.time();
-      res->Date.Hour = time.hour();
-      res->Date.Minute = time.minute();
-      res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
-      res->Date.TZFlag = OGRTZFlagFromQt( dt );
+      if ( type == OFTDateTime )
+      {
+        const QDateTime dt = value.toDateTime();
+        const QDate date = dt.date();
+        res->Date.Day = date.day();
+        res->Date.Month = date.month();
+        res->Date.Year = static_cast<GInt16>( date.year() );
+        const QTime time = dt.time();
+        res->Date.Hour = time.hour();
+        res->Date.Minute = time.minute();
+        res->Date.Second = static_cast<float>( time.second() + static_cast< double >( time.msec() ) / 1000 );
+        res->Date.TZFlag = OGRTZFlagFromQt( dt );
+      }
+      else
+      {
+        QgsDebugError( "Unsupported output data type for DateTime" );
+        return nullptr;
+      }
       break;
     }
 
     default:
-      QgsDebugMsg( "Unhandled variant type in variantToOGRField" );
+      QgsDebugError( "Unhandled variant type in variantToOGRField" );
       OGR_RawField_SetUnset( res.get() );
       break;
   }
@@ -410,7 +532,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     if ( ok )
       *ok = false;
 
-    QgsDebugMsg( QStringLiteral( "ogrFet->GetFieldDefnRef(attindex) returns NULL" ) );
+    QgsDebugError( QStringLiteral( "ogrFet->GetFieldDefnRef(attindex) returns NULL" ) );
     return QVariant();
   }
 
@@ -1287,11 +1409,11 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         unit = Qgis::RenderUnit::MapUnits;
         return true;
       }
-      QgsDebugMsg( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
+      QgsDebugError( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Could not parse style size %1" ).arg( size ) );
+      QgsDebugError( QStringLiteral( "Could not parse style size %1" ).arg( size ) );
     }
     return false;
   };
@@ -2196,8 +2318,10 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
 
     case Qgis::FieldDomainType::Range:
     {
-      std::unique_ptr< OGRField > min = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimum() );
-      std::unique_ptr< OGRField > max = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximum() );
+      std::unique_ptr< OGRField > min = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->minimum(), domainFieldType );
+      std::unique_ptr< OGRField > max = variantToOGRField( qgis::down_cast< const QgsRangeFieldDomain * >( domain )->maximum(), domainFieldType );
+      if ( !min || !max )
+        return nullptr;
       res = OGR_RangeFldDomain_Create(
               domain->name().toUtf8().constData(),
               domain->description().toUtf8().constData(),
@@ -2542,3 +2666,428 @@ gdal::relationship_unique_ptr QgsOgrUtils::convertRelationship( const QgsWeakRel
   return relationH;
 }
 #endif
+
+int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause )
+{
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
+    errCause = QObject::tr( "No styles available on DB" );
+    return 0;
+  }
+
+  if ( OGR_L_GetFeatureCount( hLayer, TRUE ) == 0 )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
+    errCause = QObject::tr( "No styles available on DB" );
+    return 0;
+  }
+
+  OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
+
+  OGR_L_ResetReading( hLayer );
+
+  QList<qlonglong> listTimestamp;
+  QMap<int, QString> mapIdToStyleName;
+  QMap<int, QString> mapIdToDescription;
+  QMap<qlonglong, QList<int> > mapTimestampToId;
+  int numberOfRelatedStyles = 0;
+
+  while ( true )
+  {
+    gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+    if ( !hFeature )
+      break;
+
+    QString tableName( QString::fromUtf8(
+                         OGR_F_GetFieldAsString( hFeature.get(),
+                             OGR_FD_GetFieldIndex( hLayerDefn, "f_table_name" ) ) ) );
+    QString geometryColumn( QString::fromUtf8(
+                              OGR_F_GetFieldAsString( hFeature.get(),
+                                  OGR_FD_GetFieldIndex( hLayerDefn, "f_geometry_column" ) ) ) );
+    QString styleName( QString::fromUtf8(
+                         OGR_F_GetFieldAsString( hFeature.get(),
+                             OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) ) );
+    QString description( QString::fromUtf8(
+                           OGR_F_GetFieldAsString( hFeature.get(),
+                               OGR_FD_GetFieldIndex( hLayerDefn, "description" ) ) ) );
+    int fid = static_cast<int>( OGR_F_GetFID( hFeature.get() ) );
+    if ( tableName == layerName &&
+         geometryColumn == geomColumn )
+    {
+      // Append first all related styles
+      QString id( QString::number( fid ) );
+      ids.append( id );
+      names.append( styleName );
+      descriptions.append( description );
+      ++ numberOfRelatedStyles;
+    }
+    else
+    {
+      int  year, month, day, hour, minute, second, TZ;
+      OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
+                                &year, &month, &day, &hour, &minute, &second, &TZ );
+      const qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
+                           static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
+
+      listTimestamp.append( ts );
+      mapIdToStyleName[fid] = styleName;
+      mapIdToDescription[fid] = description;
+      mapTimestampToId[ts].append( fid );
+    }
+  }
+
+  std::sort( listTimestamp.begin(), listTimestamp.end() );
+  // Sort from most recent to least recent
+  for ( int i = listTimestamp.size() - 1; i >= 0; i-- )
+  {
+    const QList<int> &listId = mapTimestampToId[listTimestamp[i]];
+    for ( int j = 0; j < listId.size(); j++ )
+    {
+      int fid = listId[j];
+      QString id( QString::number( fid ) );
+      ids.append( id );
+      names.append( mapIdToStyleName[fid] );
+      descriptions.append( mapIdToDescription[fid] );
+    }
+  }
+
+  return numberOfRelatedStyles;
+}
+
+bool QgsOgrUtils::styleExists( GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, const QString &styleId, QString &errorCause )
+{
+  errorCause.clear();
+
+  // check if layer_styles table exists
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+    return false;
+
+  const QString realStyleId = styleId.isEmpty() ? layerName : styleId;
+
+  const QString checkQuery = QStringLiteral( "f_table_schema=''"
+                             " AND f_table_name=%1"
+                             " AND f_geometry_column=%2"
+                             " AND styleName=%3" )
+                             .arg( QgsOgrProviderUtils::quotedValue( layerName ),
+                                   QgsOgrProviderUtils::quotedValue( geomColumn ),
+                                   QgsOgrProviderUtils::quotedValue( realStyleId ) );
+  OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
+  OGR_L_ResetReading( hLayer );
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_ResetReading( hLayer );
+
+  if ( hFeature )
+    return true;
+
+  return false;
+}
+
+QString QgsOgrUtils::getStyleById( GDALDatasetH hDS, const QString &styleId, QString &errCause )
+{
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
+    errCause = QObject::tr( "No styles available on DB" );
+    return QString();
+  }
+
+  bool ok;
+  int id = styleId.toInt( &ok );
+  if ( !ok )
+  {
+    errCause = QObject::tr( "Invalid style identifier" );
+    return QString();
+  }
+
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetFeature( hLayer, id ) );
+  if ( !hFeature )
+  {
+    errCause = QObject::tr( "No style corresponding to style identifier" );
+    return QString();
+  }
+
+  OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
+  QString styleQML( QString::fromUtf8(
+                      OGR_F_GetFieldAsString( hFeature.get(),
+                          OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) ) );
+  OGR_L_ResetReading( hLayer );
+
+  return styleQML;
+}
+
+bool QgsOgrUtils::deleteStyleById( GDALDatasetH hDS, const QString &styleId, QString &errCause )
+{
+  bool deleted;
+
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+
+  // check if layer_styles table already exist
+  if ( !hLayer )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    deleted = false;
+  }
+  else
+  {
+    if ( OGR_L_DeleteFeature( hLayer, styleId.toInt() ) != OGRERR_NONE )
+    {
+      errCause = QObject::tr( "Error executing the delete query." );
+      deleted = false;
+    }
+    else
+    {
+      deleted = true;
+    }
+  }
+  return deleted;
+}
+
+QString QgsOgrUtils::loadStoredStyle( GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, QString &styleName, QString &errCause )
+{
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No styles available on DB" ), 2 );
+    errCause = QObject::tr( "No styles available on DB" );
+    return QString();
+  }
+
+  QString selectQmlQuery = QStringLiteral( "f_table_schema=''"
+                           " AND f_table_name=%1"
+                           " AND f_geometry_column=%2"
+                           " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
+                           ",update_time DESC LIMIT 1" )
+                           .arg( QgsOgrProviderUtils::quotedValue( layerName ) )
+                           .arg( QgsOgrProviderUtils::quotedValue( geomColumn ) );
+  OGR_L_SetAttributeFilter( hLayer, selectQmlQuery.toUtf8().constData() );
+  OGR_L_ResetReading( hLayer );
+  OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
+  QString styleQML;
+  qlonglong moreRecentTimestamp = 0;
+  while ( true )
+  {
+    gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hLayer ) );
+    if ( !hFeat )
+      break;
+    if ( OGR_F_GetFieldAsInteger( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ) ) )
+    {
+      styleQML = QString::fromUtf8(
+                   OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
+      styleName = QString::fromUtf8(
+                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
+      break;
+    }
+
+    int  year, month, day, hour, minute, second, TZ;
+    OGR_F_GetFieldAsDateTime( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
+                              &year, &month, &day, &hour, &minute, &second, &TZ );
+    qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
+                   static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
+    if ( ts > moreRecentTimestamp )
+    {
+      moreRecentTimestamp = ts;
+      styleQML = QString::fromUtf8(
+                   OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
+      styleName = QString::fromUtf8(
+                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
+    }
+  }
+  OGR_L_ResetReading( hLayer );
+
+  return styleQML;
+}
+
+bool QgsOgrUtils::saveStyle(
+  GDALDatasetH hDS, const QString &layerName, const QString &geomColumn, const QString &qmlStyle, const QString &sldStyle,
+  const QString &styleName, const QString &styleDescription,
+  const QString &uiFileContent, bool useAsDefault, QString &errCause
+)
+{
+  // check if layer_styles table already exist
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
+  if ( !hLayer )
+  {
+    // if not create it
+    // Note: we use the same schema as in the SpatiaLite and postgres providers
+    //for cross interoperability
+
+    char **options = nullptr;
+    // TODO: might need change if other drivers than GPKG / SQLite
+    options = CSLSetNameValue( options, "FID", "id" );
+    hLayer = GDALDatasetCreateLayer( hDS, "layer_styles", nullptr, wkbNone, options );
+    QgsOgrProviderUtils::invalidateCachedDatasets( QString::fromUtf8( GDALGetDescription( hDS ) ) );
+    CSLDestroy( options );
+    if ( !hLayer )
+    {
+      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
+      return false;
+    }
+    bool ok = true;
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_table_catalog", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_table_schema", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_table_name", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_geometry_column", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "styleName", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 30 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "styleQML", OFTString ) );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "styleSLD", OFTString ) );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "useAsDefault", OFTInteger ) );
+      OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "description", OFTString ) );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "owner", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 30 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "ui", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 30 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    {
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "update_time", OFTDateTime ) );
+      OGR_Fld_SetDefault( fld.get(), "CURRENT_TIMESTAMP" );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
+    }
+    if ( !ok )
+    {
+      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
+      return false;
+    }
+  }
+
+  QString realStyleName =
+    styleName.isEmpty() ? layerName : styleName;
+
+  OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
+
+  if ( useAsDefault )
+  {
+    QString oldDefaultQuery = QStringLiteral( "useAsDefault = 1 AND f_table_schema=''"
+                              " AND f_table_name=%1"
+                              " AND f_geometry_column=%2" )
+                              .arg( QgsOgrProviderUtils::quotedValue( layerName ) )
+                              .arg( QgsOgrProviderUtils::quotedValue( geomColumn ) );
+    OGR_L_SetAttributeFilter( hLayer, oldDefaultQuery.toUtf8().constData() );
+    gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+    if ( hFeature )
+    {
+      OGR_F_SetFieldInteger( hFeature.get(),
+                             OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ),
+                             0 );
+      bool ok = OGR_L_SetFeature( hLayer, hFeature.get() ) == 0;
+      if ( !ok )
+      {
+        QgsDebugError( QStringLiteral( "Could not unset previous useAsDefault style" ) );
+      }
+    }
+  }
+
+  QString checkQuery = QStringLiteral( "f_table_schema=''"
+                                       " AND f_table_name=%1"
+                                       " AND f_geometry_column=%2"
+                                       " AND styleName=%3" )
+                       .arg( QgsOgrProviderUtils::quotedValue( layerName ) )
+                       .arg( QgsOgrProviderUtils::quotedValue( geomColumn ) )
+                       .arg( QgsOgrProviderUtils::quotedValue( realStyleName ) );
+  OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
+  OGR_L_ResetReading( hLayer );
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_ResetReading( hLayer );
+  bool bNew = true;
+
+  if ( hFeature )
+  {
+    bNew = false;
+  }
+  else
+  {
+    hFeature.reset( OGR_F_Create( hLayerDefn ) );
+    OGR_F_SetFieldString( hFeature.get(),
+                          OGR_FD_GetFieldIndex( hLayerDefn, "f_table_catalog" ),
+                          "" );
+    OGR_F_SetFieldString( hFeature.get(),
+                          OGR_FD_GetFieldIndex( hLayerDefn, "f_table_schema" ),
+                          "" );
+    OGR_F_SetFieldString( hFeature.get(),
+                          OGR_FD_GetFieldIndex( hLayerDefn, "f_table_name" ),
+                          layerName.toUtf8().constData() );
+    OGR_F_SetFieldString( hFeature.get(),
+                          OGR_FD_GetFieldIndex( hLayerDefn, "f_geometry_column" ),
+                          geomColumn.toUtf8().constData() );
+    OGR_F_SetFieldString( hFeature.get(),
+                          OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ),
+                          realStyleName.toUtf8().constData() );
+    if ( !uiFileContent.isEmpty() )
+    {
+      OGR_F_SetFieldString( hFeature.get(),
+                            OGR_FD_GetFieldIndex( hLayerDefn, "ui" ),
+                            uiFileContent.toUtf8().constData() );
+    }
+  }
+  OGR_F_SetFieldString( hFeature.get(),
+                        OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ),
+                        qmlStyle.toUtf8().constData() );
+  OGR_F_SetFieldString( hFeature.get(),
+                        OGR_FD_GetFieldIndex( hLayerDefn, "styleSLD" ),
+                        sldStyle.toUtf8().constData() );
+  OGR_F_SetFieldInteger( hFeature.get(),
+                         OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ),
+                         useAsDefault ? 1 : 0 );
+  OGR_F_SetFieldString( hFeature.get(),
+                        OGR_FD_GetFieldIndex( hLayerDefn, "description" ),
+                        ( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ).toUtf8().constData() );
+  OGR_F_SetFieldString( hFeature.get(),
+                        OGR_FD_GetFieldIndex( hLayerDefn, "owner" ),
+                        "" );
+
+  bool bFeatureOK;
+  if ( bNew )
+    bFeatureOK = OGR_L_CreateFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
+  else
+    bFeatureOK = OGR_L_SetFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
+
+  if ( !bFeatureOK )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error updating style" ) );
+    errCause = QObject::tr( "Error looking for style. The query was logged" );
+    return false;
+  }
+
+  return true;
+}

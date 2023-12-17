@@ -57,7 +57,43 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-if [[ -n "$QGIS_CHECK_SPELLING" && -x "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh ]]; then "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"; fi
+HAS_AG=false
+if command -v ag > /dev/null; then
+  HAS_AG=true
+fi
+
+HAS_UNBUFFER=false
+if command -v unbuffer > /dev/null; then
+  HAS_UNBUFFER=true
+fi
+
+# Run spell checker if requirements are met
+if test "$HAS_AG" != "true"; then
+  echo "WARNING: the ag(1) executable was not found, spell checker could not run" >&2
+elif test "$HAS_UNBUFFER" != "true"; then
+  echo "WARNING: the unbuffer(1) executable was not found, spell checker could not run" >&2
+else
+  "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"
+fi
+
+# Run doxygen layout test if requirements are met
+if test "$HAS_AG" != "true"; then
+  echo "WARNING: the ag(1) executable was not found, doxygen layout checker could not run" >&2
+elif test "$HAS_UNBUFFER" != "true"; then
+  echo "WARNING: the unbuffer(1) executable was not found, doxygen layout checker could not run" >&2
+else
+  "${TOPLEVEL}"/tests/code_layout/test_doxygen_layout.sh $MODIFIED
+fi
+
+MODIFIED_SHELLFILES=$(echo "${MODIFIED}" | grep '\.sh$' || true)
+if [ -n "$MODIFIED_SHELLFILES" ]; then
+  # Run shell checker if requirements are met
+  if command -v shellcheck > /dev/null; then
+    ${TOPLEVEL}/tests/code_layout/test_shellcheck.sh "${MODIFIED_SHELLFILES}"
+  else
+    echo "WARNING: the shellcheck(1) executable was not found, shell checker could not run" >&2
+  fi
+fi
 
 FILES_CHANGED=0
 
@@ -110,29 +146,37 @@ fi
 # verify SIP files
 SIPIFYDIFF=sipify.$REV.diff
 true > "$SIPIFYDIFF"
-for f in $MODIFIED; do
-  # if cpp header
-  if [[ $f =~ ^src\/(core|gui|analysis|server|3d)\/.*\.h$ ]]; then
-    # look if corresponding SIP file
-    sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)/@@; s@\.h$@.sip@' <<<"$f" )
-    pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< "$sip_file")
-    module=$(${GP}sed -r 's@src/(core|gui|analysis|server|3d)/.*$@\1@' <<<"$f" )
-    if grep -Fq "$sip_file" "${TOPLEVEL}"/python/"${module}"/"${module}"_auto.sip; then
-      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
-      m=python/$sip_file.$REV.prepare
-      if [ ! -f python/"$sip_file" ]; then
-        touch python/"$sip_file"
-      fi
-      cp python/"$sip_file" "$m"
-      "${TOPLEVEL}"/scripts/sipify.pl -s $m -p python/"${module}"/auto_additions/"${pyfile}" "$f"
-      # only replace sip files if they have changed
-      if ! diff -u python/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
-        echo "python/$sip_file is not up to date"
-        cp "$m" python/"$sip_file"
-      fi
-      rm "$m"
-    fi
+
+for root_dir in python python/PyQt6; do
+
+  if [[ $root_dir == "python/PyQt6" ]]; then
+    IS_QT6="--qt6"
   fi
+
+  for f in $MODIFIED; do
+    # if cpp header
+    if [[ $f =~ ^src\/(core|gui|analysis|server|3d)\/.*\.h$ ]]; then
+      # look if corresponding SIP file
+      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)/@@; s@\.h$@.sip@' <<<"$f" )
+      pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< "$sip_file")
+      module=$(${GP}sed -r 's@src/(core|gui|analysis|server|3d)/.*$@\1@' <<<"$f" )
+      if grep -Fq "$sip_file" "${TOPLEVEL}"/$root_dir/"${module}"/"${module}"_auto.sip; then
+        sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
+        m=$root_dir/$sip_file.$REV.prepare
+        if [ ! -f $root_dir/"$sip_file" ]; then
+          touch $root_dir/"$sip_file"
+        fi
+        cp $root_dir/"$sip_file" "$m"
+        "${TOPLEVEL}"/scripts/sipify.pl $IS_QT6 -s $m -p $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
+        # only replace sip files if they have changed
+        if ! diff -u $root_dir/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
+          echo "$root_dir/$sip_file is not up to date"
+          cp "$m" $root_dir/"$sip_file"
+        fi
+        rm "$m"
+      fi
+    fi
+  done
 done
 if [[ -s "$SIPIFYDIFF" ]]; then
   if tty -s; then

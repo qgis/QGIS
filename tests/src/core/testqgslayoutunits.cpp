@@ -24,9 +24,11 @@
 #include "qgslayoutmeasurementconverter.h"
 #include "qgis.h"
 
-class TestQgsLayoutUnits : public QObject
+class TestQgsLayoutUnits : public QgsTest
 {
     Q_OBJECT
+  public:
+    TestQgsLayoutUnits() : QgsTest( QStringLiteral( "Layout Units Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -1179,7 +1179,7 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 4 );
-  QgsDebugMsg( multi[0][0][0].toString() );
+  QgsDebugMsgLevel( multi[0][0][0].toString(), 1 );
   QCOMPARE( multi[0][0][0], QgsPointXY( 2, 49 ) );
   delete features[0].first;
 }

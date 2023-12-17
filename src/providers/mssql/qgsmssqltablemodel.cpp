@@ -70,15 +70,15 @@ bool QgsMssqlTableModel::searchableColumn( int column ) const
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
-  QgsDebugMsg( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8" )
-               .arg( layerProperty.schemaName,
-                     layerProperty.tableName,
-                     layerProperty.geometryColName,
-                     layerProperty.type,
-                     layerProperty.srid,
-                     layerProperty.pkCols.join( ',' ),
-                     layerProperty.sql,
-                     layerProperty.isView ? "yes" : "no" ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8" )
+                    .arg( layerProperty.schemaName,
+                          layerProperty.tableName,
+                          layerProperty.geometryColName,
+                          layerProperty.type,
+                          layerProperty.srid,
+                          layerProperty.pkCols.join( ',' ),
+                          layerProperty.sql,
+                          layerProperty.isView ? "yes" : "no" ), 2 );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;
@@ -249,13 +249,8 @@ void QgsMssqlTableModel::setSql( const QModelIndex &index, const QString &sql )
 
 void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerProperty )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList typeList = layerProperty.type.split( ',', QString::SkipEmptyParts );
-  QStringList sridList = layerProperty.srid.split( ',', QString::SkipEmptyParts );
-#else
   QStringList typeList = layerProperty.type.split( ',', Qt::SkipEmptyParts );
   QStringList sridList = layerProperty.srid.split( ',', Qt::SkipEmptyParts );
-#endif
   Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item

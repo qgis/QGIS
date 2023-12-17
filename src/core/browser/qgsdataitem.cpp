@@ -79,7 +79,7 @@ QgsDataItem::~QgsDataItem()
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     // this should not usually happen (until the item was deleted directly when createChildren was running)
-    QgsDebugMsg( QStringLiteral( "mFutureWatcher not finished (should not happen) -> waitForFinished()" ) );
+    QgsDebugError( QStringLiteral( "mFutureWatcher not finished (should not happen) -> waitForFinished()" ) );
     mDeferredDelete = true;
     mFutureWatcher->waitForFinished();
   }
@@ -118,7 +118,7 @@ void QgsDataItem::deleteLater()
 
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsg( QStringLiteral( "mFutureWatcher not finished -> schedule to delete later" ) );
+    QgsDebugMsgLevel( QStringLiteral( "mFutureWatcher not finished -> schedule to delete later" ), 2 );
     mDeferredDelete = true;
   }
   else
@@ -238,7 +238,7 @@ void QgsDataItem::childrenCreated()
 
   if ( deferredDelete() )
   {
-    QgsDebugMsg( QStringLiteral( "Item was scheduled to be deleted later" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Item was scheduled to be deleted later" ), 2 );
     QObject::deleteLater();
     return;
   }

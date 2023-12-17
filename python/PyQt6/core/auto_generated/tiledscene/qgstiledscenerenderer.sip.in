@@ -1,0 +1,288 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenerenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsTiledSceneRenderContext
+{
+%Docstring(signature="appended")
+
+Encapsulates the render context for a 2D tiled scene rendering operation.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenerenderer.h"
+%End
+  public:
+
+    QgsTiledSceneRenderContext( QgsRenderContext &context, QgsFeedback *feedback = 0 );
+%Docstring
+Constructor for QgsTiledSceneRenderContext.
+%End
+
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object used to cancel rendering
+
+.. versionadded:: 3.20
+%End
+
+    QImage textureImage() const;
+%Docstring
+Returns the current texture image.
+
+.. seealso:: :py:func:`setTextureImage`
+%End
+
+    void setTextureImage( const QImage &image );
+%Docstring
+Sets the current texture ``image``.
+
+.. seealso:: :py:func:`textureImage`
+%End
+
+    void setTextureCoordinates(
+      float textureX1, float textureY1,
+      float textureX2, float textureY2,
+      float textureX3, float textureY3
+    );
+%Docstring
+Sets the current texture coordinates.
+
+.. seealso:: :py:func:`textureCoordinates`
+%End
+
+    void textureCoordinates( float &textureX1 /Out/, float &textureY1 /Out/, float &textureX2 /Out/, float &textureY2 /Out/, float &textureX3 /Out/, float &textureY3 /Out/ ) const;
+%Docstring
+Returns the current texture coordinates.
+
+.. seealso:: :py:func:`setTextureCoordinates`
+%End
+
+  private:
+    QgsTiledSceneRenderContext( const QgsTiledSceneRenderContext &rh );
+};
+
+class QgsTiledSceneRenderer
+{
+%Docstring(signature="appended")
+
+Abstract base class for 2d tiled scene renderers.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenerenderer.h"
+%End
+%ConvertToSubClassCode
+
+    const QString type = sipCpp->type();
+    if ( type == QLatin1String( "texture" ) )
+      sipType = sipType_QgsTiledSceneTextureRenderer;
+    else if ( type == QLatin1String( "wireframe" ) )
+      sipType = sipType_QgsTiledSceneWireframeRenderer;
+    else
+      sipType = 0;
+
+%End
+  public:
+
+    QgsTiledSceneRenderer();
+%Docstring
+Constructor for QgsTiledSceneRenderer.
+%End
+
+    virtual ~QgsTiledSceneRenderer();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the identifier of the renderer type.
+%End
+
+    virtual QgsTiledSceneRenderer *clone() const = 0 /Factory/;
+%Docstring
+Create a deep copy of this renderer. Should be implemented by all subclasses
+and generate a proper subclass.
+%End
+
+
+
+    virtual Qgis::TiledSceneRendererFlags flags() const;
+%Docstring
+Returns flags which control how the renderer behaves.
+%End
+
+    static QgsTiledSceneRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a renderer from an XML ``element``.
+
+Caller takes ownership of the returned renderer.
+
+.. seealso:: :py:func:`save`
+%End
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Saves the renderer configuration to an XML element.
+
+.. seealso:: :py:func:`load`
+%End
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when rendering the tiled scene.
+
+Larger values result in a faster render with less detailed features rendered.
+
+Units are retrieved via :py:func:`~QgsTiledSceneRenderer.maximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when rendering the tiled scene.
+
+Larger values result in a faster render with less detailed features rendered.
+
+Units are set via :py:func:`~QgsTiledSceneRenderer.setMaximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+%End
+
+    Qgis::RenderUnit maximumScreenErrorUnit() const;
+%Docstring
+Returns the unit for the maximum screen error allowed when rendering the tiled scene.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+%End
+
+    void setMaximumScreenErrorUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the maximum screen error allowed when rendering the tiled scene.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+%End
+
+    void setTileBorderRenderingEnabled( bool enabled );
+%Docstring
+Sets whether to render the borders of tiles.
+
+.. seealso:: :py:func:`isTileBorderRenderingEnabled`
+%End
+
+    bool isTileBorderRenderingEnabled() const;
+%Docstring
+Returns whether to render also borders of tiles.
+
+see :py:func:`~QgsTiledSceneRenderer.setTileBorderRenderingEnabled`
+%End
+
+    virtual void startRender( QgsTiledSceneRenderContext &context );
+%Docstring
+Must be called when a new render cycle is started. A call to :py:func:`~QgsTiledSceneRenderer.startRender` must always
+be followed by a corresponding call to :py:func:`~QgsTiledSceneRenderer.stopRender` after all features have been rendered.
+
+.. seealso:: :py:func:`stopRender`
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsTiledSceneRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsTiledSceneRenderer.startRender`/:py:func:`~QgsTiledSceneRenderer.stopRender` called on the clone.
+%End
+
+    virtual void stopRender( QgsTiledSceneRenderContext &context );
+%Docstring
+Must be called when a render cycle has finished, to allow the renderer to clean up.
+
+Calls to :py:func:`~QgsTiledSceneRenderer.stopRender` must always be preceded by a call to :py:func:`~QgsTiledSceneRenderer.startRender`.
+
+.. warning::
+
+   This method is not thread safe. Before calling :py:func:`~QgsTiledSceneRenderer.startRender` in a non-main thread,
+   the renderer should instead be cloned and :py:func:`~QgsTiledSceneRenderer.startRender`/:py:func:`~QgsTiledSceneRenderer.stopRender` called on the clone.
+
+.. seealso:: :py:func:`startRender`
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+%Docstring
+Creates a set of legend nodes representing the renderer.
+%End
+
+    virtual QStringList legendRuleKeys() const;
+%Docstring
+Returns a list of all rule keys for legend nodes created by the renderer.
+%End
+
+    virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) = 0;
+%Docstring
+Renders a ``triangle``.
+%End
+
+    virtual void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) = 0;
+%Docstring
+Renders a ``line``.
+%End
+
+  protected:
+
+    void copyCommonProperties( QgsTiledSceneRenderer *destination ) const;
+%Docstring
+Copies common tiled scene renderer properties (such as screen error) to the ``destination`` renderer.
+%End
+
+    void restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Restores common renderer properties (such as screen error) from the
+specified DOM ``element``.
+
+.. seealso:: :py:func:`saveCommonProperties`
+%End
+
+    void saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Saves common renderer properties (such as point size and screen error) to the
+specified DOM ``element``.
+
+.. seealso:: :py:func:`restoreCommonProperties`
+%End
+
+  private:
+    QgsTiledSceneRenderer( const QgsTiledSceneRenderer &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenerenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

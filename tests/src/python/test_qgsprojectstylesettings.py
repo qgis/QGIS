@@ -9,7 +9,6 @@ __author__ = 'Mathieu Pellerin'
 __date__ = '09/05/2022'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QEvent,
@@ -33,7 +32,8 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -46,7 +46,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectViewSettings(unittest.TestCase):
+class TestQgsProjectViewSettings(QgisTestCase):
 
     def testDefaultSymbol(self):
         p = QgsProjectStyleSettings()

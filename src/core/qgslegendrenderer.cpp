@@ -117,6 +117,25 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
       {
         QJsonObject group = legendNodes.at( 0 )->exportToJson( mSettings, context );
         group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
+        if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
+        {
+          if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+          {
+            if ( vLayer->renderer() )
+            {
+              const QString ruleKey { legendNodes.at( 0 )->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+              if ( ! ruleKey.isEmpty() )
+              {
+                bool ok;
+                const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+                if ( ok )
+                {
+                  group[ QStringLiteral( "rule" ) ] = ruleExp;
+                }
+              }
+            }
+          }
+        }
         nodes.append( group );
       }
       else if ( legendNodes.count() > 1 )
@@ -130,6 +149,25 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
         {
           QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
           QJsonObject symbol = legendNode->exportToJson( mSettings, context );
+          if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
+          {
+            if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+            {
+              if ( vLayer->renderer() )
+              {
+                const QString ruleKey { legendNode->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+                if ( ! ruleKey.isEmpty() )
+                {
+                  bool ok;
+                  const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+                  if ( ok )
+                  {
+                    symbol[ QStringLiteral( "rule" ) ] = ruleExp;
+                  }
+                }
+              }
+            }
+          }
           symbols.append( symbol );
         }
         group[ QStringLiteral( "symbols" ) ] = symbols;
@@ -903,7 +941,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   component.item = symbolItem;
   component.symbolSize = im.symbolSize;
   component.labelSize = im.labelSize;
-  //QgsDebugMsg( QStringLiteral( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
+  //QgsDebugMsgLevel( QStringLiteral( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ), 2);
   // NOTE -- we hard code left/right margins below, because those are the only ones exposed for use currently.
   // ideally we could (should?) expose all these margins as settings, and then adapt the below to respect the current symbol/text alignment
   // and consider the correct margin sides...

@@ -94,6 +94,8 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   }
          );
 
+  treeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
+
   mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
 
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
@@ -251,7 +253,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
   }
 
   QList<QgsLayerTreeNode *> children = parentNode->children();
-  for ( int i = start; i <= end; ++i )
+  for ( int i = start; i <= end && i < children.count(); ++i )
   {
     updateExpandedStateFromNode( children[i] );
   }

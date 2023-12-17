@@ -86,6 +86,8 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+
   private:
 
     bool readFeature( const gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) const;
@@ -101,6 +103,7 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     bool mFetchGeometry = false;
 
     bool mExpressionCompiled = false;
+    bool mOrderByCompiled = false;
     // use std::set to get sorted ids (needed for efficient QgsFeatureRequest::FilterFids requests on OSM datasource)
     std::set<QgsFeatureId> mFilterFids;
     std::set<QgsFeatureId>::iterator mFilterFidsIt;

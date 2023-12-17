@@ -25,7 +25,6 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgssymbollayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
@@ -82,7 +81,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
   btnChangeSymbol->setEnabled( !mOverrideSymbol );
 
-  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize(), 0, nullptr, QgsScreenProperties( screen() ) );
   btnChangeSymbol->setIcon( icon );
 
   editTitle->setText( ddsLegend ? ddsLegend->title() : QString() );
@@ -212,7 +211,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
     return;
 
   mSourceSymbol = std::move( newSymbol );
-  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize(), 0, nullptr, QgsScreenProperties( screen() ) );
   btnChangeSymbol->setIcon( icon );
 
   emit widgetChanged();

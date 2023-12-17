@@ -498,14 +498,14 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( "schema item found" );
+    QgsDebugMsgLevel( "schema item found", 2 );
     return;
   }
 
   const QString uri = mTableModel->layerURI( index, mConnectionName, mConnectionInfo );
   if ( uri.isNull() )
   {
-    QgsDebugMsg( "no uri" );
+    QgsDebugMsgLevel( "no uri", 2 );
     return;
   }
 

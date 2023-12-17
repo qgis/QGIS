@@ -9,8 +9,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
-from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -20,7 +19,6 @@ from qgis.core import (
     QgsLayerTreeModelLegendNode,
     QgsMapSettings,
     QgsMapUnitScale,
-    QgsMultiRenderChecker,
     QgsPointCloudCategory,
     QgsPointCloudClassifiedRenderer,
     QgsPointCloudLayer,
@@ -34,26 +32,19 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVector3D,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
+class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsPointCloudClassifiedRenderer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return 'pointcloudrenderer'
 
     def testBasic(self):
         renderer = QgsPointCloudClassifiedRenderer()
@@ -144,13 +135,9 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_render')
-        result = renderchecker.runTest('expected_classified_render')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('classified_render', 'classified_render', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderCrsTransform(self):
@@ -170,13 +157,10 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         mapsettings.setExtent(QgsRectangle(152.980508492, -26.662023491, 152.980586020, -26.662071137))
         mapsettings.setLayers([layer])
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_render_crs_transform')
-        result = renderchecker.runTest('expected_classified_render_crs_transform')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_render_crs_transform', 'classified_render_crs_transform', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderPointSize(self):
@@ -197,13 +181,36 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_pointsize')
-        result = renderchecker.runTest('expected_classified_pointsize')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('classified_pointsize', 'classified_pointsize', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderClassificationOverridePointSizes(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(layer)
+        categories[0].setPointSize(1)
+        categories[2].setPointSize(.3)
+        categories[3].setPointSize(.5)
+
+        renderer = QgsPointCloudClassifiedRenderer('Classification', categories)
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(.15)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_override_pointsize', 'classified_override_pointsize', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderZRange(self):
@@ -225,13 +232,9 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setLayers([layer])
         mapsettings.setZRange(QgsDoubleRange(74.7, 75))
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_zfilter')
-        result = renderchecker.runTest('expected_classified_zfilter')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('classified_zfilter', 'classified_zfilter', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderOrderedTopToBottom(self):
@@ -253,13 +256,9 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_top_to_bottom')
-        result = renderchecker.runTest('expected_classified_top_to_bottom')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('classified_top_to_bottom', 'classified_top_to_bottom', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderOrderedBottomToTop(self):
@@ -281,13 +280,9 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_bottom_to_top')
-        result = renderchecker.runTest('expected_classified_bottom_to_top')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('classified_bottom_to_top', 'classified_bottom_to_top', mapsettings)
+        )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderFiltered(self):
@@ -309,22 +304,39 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
         mapsettings.setLayers([layer])
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_render_filtered')
-        result = renderchecker.runTest('expected_classified_render_filtered')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check('classified_render_filtered', 'classified_render_filtered', mapsettings)
+        )
 
         layer.setSubsetString('')
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('pointcloudrenderer')
-        renderchecker.setControlName('expected_classified_render_unfiltered')
-        result = renderchecker.runTest('expected_classified_render_unfiltered')
-        TestQgsPointCloudClassifiedRenderer.report += renderchecker.report()
-        self.assertTrue(result)
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_render_unfiltered', 'classified_render_unfiltered', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTriangles(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(layer)
+        renderer = QgsPointCloudClassifiedRenderer('Classification', categories)
+        renderer.setRenderAsTriangles(True)
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_triangles', 'classified_triangles', mapsettings)
+        )
 
 
 if __name__ == '__main__':

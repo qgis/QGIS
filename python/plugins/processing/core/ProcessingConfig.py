@@ -48,7 +48,7 @@ class ProcessingConfig:
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
-    PREFER_FILENAME_AS_LAYER_NAME = 'PREFER_FILENAME_AS_LAYER_NAME'
+    PREFER_FILENAME_AS_LAYER_NAME = 'prefer-filename-as-layer-name'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     PRE_EXECUTION_SCRIPT = 'PRE_EXECUTION_SCRIPT'
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
@@ -57,9 +57,9 @@ class ProcessingConfig:
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
     SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
     MAX_THREADS = 'MAX_THREADS'
-    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
-    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
-    TEMP_PATH = 'TEMP_PATH2'
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'default-output-raster-layer-ext'
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'default-output-vector-layer-ext'
+    TEMP_PATH = 'temp-path'
     RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
     VECTOR_FEATURE_COUNT = 'VECTOR_FEATURE_COUNT'
 
@@ -77,7 +77,8 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.PREFER_FILENAME_AS_LAYER_NAME,
-            ProcessingConfig.tr('Prefer output filename for layer names'), True))
+            ProcessingConfig.tr('Prefer output filename for layer names'), True,
+            hasSettingEntry=True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
@@ -156,7 +157,8 @@ class ProcessingConfig:
             ProcessingConfig.tr('Default output vector layer extension'),
             QgsVectorFileWriter.supportedFormatExtensions()[0],
             valuetype=Setting.SELECTION,
-            options=extensions))
+            options=extensions,
+            hasSettingEntry=True))
 
         extensions = QgsRasterFileWriter.supportedFormatExtensions()
         ProcessingConfig.addSetting(Setting(
@@ -165,14 +167,16 @@ class ProcessingConfig:
             ProcessingConfig.tr('Default output raster layer extension'),
             'tif',
             valuetype=Setting.SELECTION,
-            options=extensions))
+            options=extensions,
+            hasSettingEntry=True))
 
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.TEMP_PATH,
             ProcessingConfig.tr('Override temporary output folder path'), None,
             valuetype=Setting.FOLDER,
-            placeholder=ProcessingConfig.tr('Leave blank for default')))
+            placeholder=ProcessingConfig.tr('Leave blank for default'),
+            hasSettingEntry=True))
 
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
@@ -271,10 +275,13 @@ class Setting:
     MULTIPLE_FOLDERS = 6
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None,
-                 validator=None, options=None, placeholder=""):
+                 validator=None, options=None, placeholder="", hasSettingEntry=False):
+        """
+        hasSettingEntry is true if the given setting is part of QgsSettingsRegistry entries
+        """
         self.group = group
         self.name = name
-        self.qname = "Processing/Configuration/" + self.name
+        self.qname = ("qgis/configuration/" if hasSettingEntry else "Processing/Configuration/") + self.name
         self.description = description
         self.default = default
         self.hidden = hidden

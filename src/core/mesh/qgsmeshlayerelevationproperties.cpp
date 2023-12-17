@@ -44,6 +44,9 @@ QDomElement QgsMeshLayerElevationProperties::writeXml( QDomElement &parentElemen
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
   element.setAttribute( QStringLiteral( "symbology" ), qgsEnumValueToKey( mSymbology ) );
+  if ( !std::isnan( mElevationLimit ) )
+    element.setAttribute( QStringLiteral( "elevationLimit" ), qgsDoubleToString( mElevationLimit ) );
+
   writeCommonProperties( element, document, context );
 
   QDomElement profileLineSymbolElement = document.createElement( QStringLiteral( "profileLineSymbol" ) );
@@ -62,6 +65,10 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
   mSymbology = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "symbology" ) ), Qgis::ProfileSurfaceSymbology::Line );
+  if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
+    mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
+  else
+    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
 
   readCommonProperties( elevationElement, context );
 
@@ -94,6 +101,7 @@ QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
   res->setProfileSymbology( mSymbology );
+  res->setElevationLimit( mElevationLimit );
   res->copyCommonProperties( this );
   return res.release();
 }
@@ -135,11 +143,33 @@ QgsFillSymbol *QgsMeshLayerElevationProperties::profileFillSymbol() const
 void QgsMeshLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
   mProfileFillSymbol.reset( symbol );
+  emit changed();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsMeshLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology )
 {
+  if ( mSymbology == symbology )
+    return;
+
   mSymbology = symbology;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+double QgsMeshLayerElevationProperties::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsMeshLayerElevationProperties::setElevationLimit( double limit )
+{
+  if ( qgsDoubleNear( mElevationLimit, limit ) )
+    return;
+
+  mElevationLimit = limit;
+  emit changed();
+  emit profileRenderingPropertyChanged();
 }
 
 void QgsMeshLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )

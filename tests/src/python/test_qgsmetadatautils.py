@@ -12,7 +12,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 from qgis.PyQt.QtCore import QDateTime
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import Qgis, QgsMetadataUtils
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -20,7 +21,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsMetadataUtils(unittest.TestCase):
+class TestPyQgsMetadataUtils(QgisTestCase):
 
     def testConvertEsri(self):
         """

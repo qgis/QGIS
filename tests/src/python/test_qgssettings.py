@@ -15,7 +15,8 @@ from pathlib import Path
 
 from qgis.PyQt.QtCore import QSettings, QVariant
 from qgis.core import Qgis, QgsMapLayerProxyModel, QgsSettings, QgsTolerance
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
@@ -25,7 +26,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 start_app()
 
 
-class TestQgsSettings(unittest.TestCase):
+class TestQgsSettings(QgisTestCase):
 
     cnt = 0
 
@@ -418,27 +419,27 @@ class TestQgsSettings(unittest.TestCase):
         self.assertEqual(self.settings.value('testqQgisSettings/temp', section=QgsSettings.Core), None)
 
     def test_enumValue(self):
-        self.settings.setValue('enum', 'LayerUnits')
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
+        self.settings.setValue('enum', 'Layer')
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Layer)
         self.settings.setValue('enum', 'dummy_setting')
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
-        self.assertEqual(type(self.settings.enumValue('enum', QgsTolerance.Pixels)), QgsTolerance.UnitType)
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Pixels)
+        self.assertEqual(type(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels)), QgsTolerance.UnitType)
 
     def test_setEnumValue(self):
-        self.settings.setValue('enum', 'LayerUnits')
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.LayerUnits)
-        self.settings.setEnumValue('enum', QgsTolerance.Pixels)
-        self.assertEqual(self.settings.enumValue('enum', QgsTolerance.Pixels), QgsTolerance.Pixels)
+        self.settings.setValue('enum', 'Layer')
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Layer)
+        self.settings.setEnumValue('enum', Qgis.MapToolUnit.Pixels)
+        self.assertEqual(self.settings.enumValue('enum', Qgis.MapToolUnit.Pixels), Qgis.MapToolUnit.Pixels)
 
     def test_flagValue(self):
-        pointAndLine = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.LineLayer)
-        pointAndPolygon = QgsMapLayerProxyModel.Filters(QgsMapLayerProxyModel.PointLayer | QgsMapLayerProxyModel.PolygonLayer)
+        pointAndLine = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.LineLayer)
+        pointAndPolygon = Qgis.LayerFilters(Qgis.LayerFilter.PointLayer | Qgis.LayerFilter.PolygonLayer)
 
         self.settings.setValue('flag', 'PointLayer|PolygonLayer')
         self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndPolygon)
         self.settings.setValue('flag', 'dummy_setting')
         self.assertEqual(self.settings.flagValue('flag', pointAndLine), pointAndLine)
-        self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), QgsMapLayerProxyModel.Filters)
+        self.assertEqual(type(self.settings.flagValue('enum', pointAndLine)), Qgis.LayerFilters)
 
     def test_overwriteDefaultValues(self):
         """Test that unchanged values are not stored"""

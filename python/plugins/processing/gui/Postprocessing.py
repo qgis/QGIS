@@ -228,13 +228,16 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                 # Load layer to layer tree root or to a specific group
                 results_group = get_layer_tree_results_group(details, context)
 
-                map_layer = context.temporaryLayerStore().takeMapLayer(layer)
-                details.project.addMapLayer(map_layer, False)
+                # note here that we may not retrieve an owned layer -- eg if the
+                # output layer already exists in the destination project
+                owned_map_layer = context.temporaryLayerStore().takeMapLayer(layer)
+                if owned_map_layer:
+                    details.project.addMapLayer(owned_map_layer, False)
 
-                # we don't add the layer to the tree yet -- that's done
-                # later, after we've sorted all added layers
-                layer_tree_layer = create_layer_tree_layer(map_layer, details)
-                added_layers.append((results_group, layer_tree_layer))
+                    # we don't add the layer to the tree yet -- that's done
+                    # later, after we've sorted all added layers
+                    layer_tree_layer = create_layer_tree_layer(owned_map_layer, details)
+                    added_layers.append((results_group, layer_tree_layer))
 
                 if details.postProcessor():
                     # we defer calling the postProcessor set in the context

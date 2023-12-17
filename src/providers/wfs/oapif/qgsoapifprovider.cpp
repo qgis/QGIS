@@ -229,8 +229,16 @@ bool QgsOapifProvider::init()
     QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
-    mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
-    QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+    try
+    {
+      mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+      QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+    }
+    catch ( const QgsCsException &e )
+    {
+      QgsMessageLog::logMessage( tr( "Cannot compute layer extent: %1" ).arg( e.what() ), tr( "OAPIF" ) );
+      mShared->mCapabilityExtent = QgsRectangle();
+    }
   }
 
   // Merge contact info from /api
@@ -267,6 +275,29 @@ bool QgsOapifProvider::init()
   if ( mShared->mCapabilityExtent.isNull() )
   {
     mShared->mCapabilityExtent = itemsRequest.bbox();
+    if ( !mShared->mCapabilityExtent.isNull() )
+    {
+      QgsCoordinateReferenceSystem defaultCrs =
+        QgsCoordinateReferenceSystem::fromOgcWmsCrs(
+          QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+      if ( defaultCrs != mShared->mSourceCrs )
+      {
+        QgsCoordinateTransform ct( defaultCrs, mShared->mSourceCrs, transformContext() );
+        ct.setBallparkTransformsAreAppropriate( true );
+        QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
+        try
+        {
+          mShared->mCapabilityExtent = ct.transformBoundingBox( mShared->mCapabilityExtent );
+          QgsDebugMsgLevel( "after ext:" + mShared->mCapabilityExtent.toString(), 4 );
+        }
+        catch ( const QgsCsException &e )
+        {
+          QgsMessageLog::logMessage( tr( "Cannot compute layer extent: %1" ).arg( e.what() ), tr( "OAPIF" ) );
+          mShared->mCapabilityExtent = QgsRectangle();
+        }
+      }
+    }
+
   }
 
   mShared->mFields = itemsRequest.fields();
@@ -336,12 +367,14 @@ long long QgsOapifProvider::featureCount() const
     QgsFeature f;
     QgsFeatureRequest request;
     request.setNoAttributes();
+    constexpr int MAX_FEATURES = 1000;
+    request.setLimit( MAX_FEATURES + 1 );
     auto iter = getFeatures( request );
     long long count = 0;
     bool countExact = true;
     while ( iter.nextFeature( f ) )
     {
-      if ( count == 1000 ) // to avoid too long processing time
+      if ( count == MAX_FEATURES ) // to avoid too long processing time
       {
         countExact = false;
         break;
@@ -412,7 +445,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
     }
     QgsOapifOptionsRequest optionsOneItemRequest( uri );
     QString url( mShared->mItemsUrl );
-    url += QStringLiteral( "/" );
+    url += QLatin1Char( '/' );
     url += testId;
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
     if ( supportedOptions.contains( QLatin1String( "PUT" ) ) )
@@ -1058,7 +1091,7 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr,
       return true;
     }
     serverSideParameters = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
-    serverSideParameters += QStringLiteral( "&filter-lang=cql2-text" );
+    serverSideParameters += QLatin1String( "&filter-lang=cql2-text" );
     if ( compiler.geometryLiteralUsed() )
     {
       if ( mSourceCrs
@@ -1204,12 +1237,12 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       // Combine mServerFilter and mServerExpression
       QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
       QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
-      Q_ASSERT( components1[0].startsWith( QStringLiteral( "filter=" ) ) );
-      Q_ASSERT( components2[0].startsWith( QStringLiteral( "filter=" ) ) );
-      url += QStringLiteral( "filter=" );
+      Q_ASSERT( components1[0].startsWith( QLatin1String( "filter=" ) ) );
+      Q_ASSERT( components2[0].startsWith( QLatin1String( "filter=" ) ) );
+      url += QLatin1String( "filter=" );
       url += '(';
       url += components1[0].mid( static_cast<int>( strlen( "filter=" ) ) );
-      url += QStringLiteral( ") AND (" );
+      url += QLatin1String( ") AND (" );
       url += components2[0].mid( static_cast<int>( strlen( "filter=" ) ) );
       url += ')';
       // Add components1 extra parameters: filter-lang and filter-crs

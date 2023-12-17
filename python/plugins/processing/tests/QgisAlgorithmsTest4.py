@@ -28,12 +28,13 @@ import os
 from qgis.core import (QgsApplication,
                        QgsProcessingException)
 from qgis.analysis import (QgsNativeAlgorithms)
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.ModelerUtils import ModelerUtils
 
 
-class TestQgisAlgorithms4(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestQgisAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):

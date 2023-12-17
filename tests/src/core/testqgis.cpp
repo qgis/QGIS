@@ -567,7 +567,7 @@ void TestQgis::testQgsSetJoin()
 
   const QString res = qgsSetJoin( set, QStringLiteral( ", " ) );
 
-  QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
+  const thread_local QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
   QVERIFY( re.match( res ).hasMatch() );
   QVERIFY( res.contains( "3" ) );
   QVERIFY( res.contains( "4" ) );

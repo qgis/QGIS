@@ -28,6 +28,7 @@
 #include "qgstextformatwidget.h"
 #include "qgsapplication.h"
 #include "qgsrecentstylehandler.h"
+#include "qgsexpressionfinder.h"
 
 ///@cond PRIVATE
 
@@ -321,6 +322,13 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
 
   mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
 
+  mSpinTextAngle->setClearValue( 0 );
+
+  mRotationModeCombo->addItem( tr( "Ignore Map Rotation" ), QVariant::fromValue( Qgis::SymbolRotationMode::IgnoreMapRotation ) );
+  mRotationModeCombo->addItem( tr( "Rotate With Map" ), QVariant::fromValue( Qgis::SymbolRotationMode::RespectMapRotation ) );
+
+  mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
+
   mTextFormatWidget->setDockMode( dockMode() );
   connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
   {
@@ -338,6 +346,24 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
+
+  connect( mSpinTextAngle, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mRotationModeCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+  connect( mAlignmentComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
@@ -345,6 +371,9 @@ QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
   QgsAnnotationPointTextItem *newItem = mItem->clone();
   newItem->setFormat( mTextFormatWidget->format() );
   newItem->setText( mTextEdit->toPlainText() );
+  newItem->setAngle( mSpinTextAngle->value() );
+  newItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
+  newItem->setAlignment( mAlignmentComboBox->currentAlignment() );
   mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
@@ -355,6 +384,9 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
   {
     pointTextItem->setFormat( mTextFormatWidget->format() );
     pointTextItem->setText( mTextEdit->toPlainText() );
+    pointTextItem->setAngle( mSpinTextAngle->value() );
+    pointTextItem->setRotationMode( mRotationModeCombo->currentData().value< Qgis::SymbolRotationMode >() );
+    pointTextItem->setAlignment( mAlignmentComboBox->currentAlignment() );
     mPropertiesWidget->updateItem( pointTextItem );
   }
 }
@@ -393,6 +425,9 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
   mTextEdit->setPlainText( mItem->text() );
+  mSpinTextAngle->setValue( mItem->angle() );
+  mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( mItem->rotationMode() ) ) );
+  mAlignmentComboBox->setCurrentAlignment( mItem->alignment() & Qt::AlignHorizontal_Mask );
   mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
@@ -401,14 +436,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString selText = mTextEdit->textCursor().selectedText();
-
-  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -416,12 +444,12 @@ void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
       mTextEdit->insertPlainText( "[%" + expression + "%]" );
@@ -557,14 +585,7 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
 
 void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
 {
-  QString selText = mTextEdit->textCursor().selectedText();
-
-  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit );
 
   QgsExpressionContext expressionContext;
   if ( context().expressionContext() )
@@ -572,12 +593,12 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText().trimmed();
     if ( !expression.isEmpty() )
     {
       mTextEdit->insertPlainText( "[%" + expression + "%]" );

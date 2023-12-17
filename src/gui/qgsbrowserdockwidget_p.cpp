@@ -53,6 +53,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgslayeritem.h"
 #include "qgsdirectoryitem.h"
+#include "qgstiledscenelayer.h"
 
 /// @cond PRIVATE
 
@@ -232,6 +233,15 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       break;
     }
 
+    case Qgis::LayerType::TiledScene:
+    {
+      QgsDebugMsgLevel( QStringLiteral( "creating tiled scene layer" ), 2 );
+      QgsTiledSceneLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.skipCrsValidation = true;
+      mLayer = std::make_unique< QgsTiledSceneLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
@@ -401,7 +411,7 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent *e )
   // do not accept drops above/below items
   /*if ( dropIndicatorPosition() != QAbstractItemView::OnItem )
       {
-        QgsDebugMsg("drag not on item");
+        QgsDebugMsgLevel("drag not on item", 2);
         e->ignore();
         return;
       }*/

@@ -187,7 +187,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
+    QgsDebugError( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
@@ -517,20 +517,12 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
 {
   QgsPalettedRasterRenderer::ClassData classes;
 
-  const QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
+  const thread_local QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  const QStringList parts = string.split( '\n', QString::SkipEmptyParts );
-#else
   const QStringList parts = string.split( '\n', Qt::SkipEmptyParts );
-#endif
   for ( const QString &part : parts )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
-#else
     const QStringList lineParts = part.split( linePartRx, Qt::SkipEmptyParts );
-#endif
     bool ok = false;
     switch ( lineParts.count() )
     {

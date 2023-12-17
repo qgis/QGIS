@@ -349,7 +349,7 @@ void QgsGrassSelect::setLayers()
   }
   catch ( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( e.what() );
+    QgsDebugError( e.what() );
     return;
   }
 

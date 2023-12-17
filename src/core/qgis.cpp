@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgsgdalutils.h"
 #include "qgswkbtypes.h"
 
 #include <gdal.h>
@@ -60,7 +61,7 @@ const double Qgis::DEFAULT_M_COORDINATE = 0.0;
 
 const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
 
-const QgsTolerance::UnitType Qgis::DEFAULT_SNAP_UNITS = QgsTolerance::Pixels;
+const Qgis::MapToolUnit Qgis::DEFAULT_SNAP_UNITS = Qgis::MapToolUnit::Pixels;
 
 #ifdef Q_OS_WIN
 const double Qgis::UI_SCALE_FACTOR = 1.5;
@@ -93,20 +94,20 @@ void *qgsMalloc( size_t size )
 {
   if ( size == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Zero size requested" ) );
+    QgsDebugError( QStringLiteral( "Zero size requested" ) );
     return nullptr;
   }
 
   if ( ( size >> ( 8 * sizeof( size ) - 1 ) ) != 0 )
   {
-    QgsDebugMsg( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
+    QgsDebugError( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
     return nullptr;
   }
 
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugMsg( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugError( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
   }
   return p;
 }
@@ -191,27 +192,7 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 
 QString qgsVsiPrefix( const QString &path )
 {
-  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsizip/" );
-  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
-  {
-    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
-    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
-      return QString();
-    return QStringLiteral( "/vsizip/" );
-  }
-  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsizip/" );
-  else if ( path.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsitar/" );
-  else if ( path.startsWith( QLatin1String( "/vsigzip/" ), Qt::CaseInsensitive ) ||
-            path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
-    return QStringLiteral( "/vsigzip/" );
-  else
-    return QString();
+  return QgsGdalUtils::vsiPrefixForPath( path );
 }
 
 uint qHash( const QVariant &variant )

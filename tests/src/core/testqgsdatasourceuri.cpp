@@ -35,6 +35,7 @@ class TestQgsDataSourceUri: public QObject
     void checkConnectionInfo_data();
     void checkAuthParams();
     void checkParameterKeys();
+    void checkRemovePassword();
 };
 
 void TestQgsDataSourceUri::checkparser_data()
@@ -194,6 +195,75 @@ void TestQgsDataSourceUri::checkparser_data()
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "arcgis rest sql" )
+      << "crs='EPSG:2154' filter='' url='https://carto.isogeo.net/server/rest/services/scan_services_1/EMS_EFS_WMS_WFS/FeatureServer/2' table='' sql=abc='def'"
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << Qgis::WkbType::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // authcfg
+      << "" // dbname
+      << "" // host
+      << "" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "abc='def'" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "arcgis rest empty sql" )
+      << "crs='EPSG:2154' filter='' url='https://carto.isogeo.net/server/rest/services/scan_services_1/EMS_EFS_WMS_WFS/FeatureServer/2' table='' sql=''"
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << Qgis::WkbType::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // authcfg
+      << "" // dbname
+      << "" // host
+      << "" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "arcgis rest empty sql 2" )
+      << "crs='EPSG:2154' filter='' url='https://carto.isogeo.net/server/rest/services/scan_services_1/EMS_EFS_WMS_WFS/FeatureServer/2' table='' sql=\"\""
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << Qgis::WkbType::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "" // authcfg
+      << "" // dbname
+      << "" // host
+      << "" // port
       << "" // driver
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
@@ -492,6 +562,28 @@ void TestQgsDataSourceUri::checkAuthParams()
   QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "😁😂😍" ) );
   QCOMPARE( uri4.password(), QStringLiteral( "😁😂😍" ) );
 
+  // issue GH #53654
+  QgsDataSourceUri uri5;
+  uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+
+  uri5.setEncodedUri( QStringLiteral( "zmax=14&zmin=0&styleUrl=http://localhost:8000/&f=application/vnd.geoserver.mbstyle+json" ) );
+  QCOMPARE( uri5.param( QStringLiteral( "f" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+
+  // round trip through encodedUri/setEncodedUri should not lose "%2B" or "+"
+  QgsDataSourceUri uri6;
+  uri6.setParam( QStringLiteral( "percent" ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  uri6.setParam( QStringLiteral( "explicit" ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+  QCOMPARE( uri6.param( QStringLiteral( "percent" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  QCOMPARE( uri6.param( QStringLiteral( "explicit" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+
+  const QByteArray encodedTwo = uri6.encodedUri();
+
+  QgsDataSourceUri uri7;
+  uri7.setEncodedUri( encodedTwo );
+  QCOMPARE( uri7.param( QStringLiteral( "percent" ) ), QStringLiteral( "application%2Fvnd.geoserver.mbstyle%2Bjson" ) );
+  QCOMPARE( uri7.param( QStringLiteral( "explicit" ) ), QStringLiteral( "application/vnd.geoserver.mbstyle+json" ) );
+
 }
 
 void TestQgsDataSourceUri::checkParameterKeys()
@@ -500,6 +592,18 @@ void TestQgsDataSourceUri::checkParameterKeys()
   QCOMPARE( uri.parameterKeys().size(), 2 );
   QVERIFY( uri.parameterKeys().contains( QLatin1String( "dbname" ) ) );
   QVERIFY( uri.parameterKeys().contains( QLatin1String( "bar" ) ) );
+}
+
+void TestQgsDataSourceUri::checkRemovePassword()
+{
+  const QString uri0 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) );
+  QCOMPARE( uri0, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+
+  const QString uri1 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ), true );
+  QCOMPARE( uri1, QStringLiteral( "postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test" ) );
+
+  const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
 }
 
 QGSTEST_MAIN( TestQgsDataSourceUri )

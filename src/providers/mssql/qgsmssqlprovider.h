@@ -115,7 +115,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     bool isValid() const override;
 
-    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
@@ -135,6 +135,9 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     //! Convert a QgsField to work with MSSQL
     static bool convertField( QgsField &field );
+
+    // Parse type name and num coordinates as stored in geometry_columns tabe and returns normalized (M, Z or ZM) type name
+    static QString typeFromMetadata( const QString &typeName, int numCoords );
 
     //! Convert values to quoted values for database work
     static QString quotedValue( const QVariant &value );
@@ -333,6 +336,7 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+
 
   private:
 

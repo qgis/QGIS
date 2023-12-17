@@ -35,9 +35,6 @@ QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, f
   , mUpdaterFactory( nullptr )
   , mUpdater( nullptr )
 {
-  // TODO: still using a fixed size array. Use QVector instead?
-  for ( int i = 0; i < 8; ++i )
-    mChildren[i] = nullptr;
 }
 
 QgsChunkNode::~QgsChunkNode()
@@ -50,17 +47,14 @@ QgsChunkNode::~QgsChunkNode()
   Q_ASSERT( !mUpdater );
   Q_ASSERT( !mUpdaterFactory );
 
-  for ( int i = 0; i < childCount(); ++i )
-    delete mChildren[i];
+  qDeleteAll( mChildren );
 }
 
 bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
 {
-  Q_ASSERT( mChildCount != -1 );
+  Q_ASSERT( mChildrenPopulated );
   for ( int i = 0; i < childCount(); ++i )
   {
-    if ( !mChildren[i] )
-      return false;  // not even a skeleton
     if ( mChildren[i]->mHasData && !mChildren[i]->mEntity )
       return false;  // no there yet
     Q_UNUSED( currentTime ) // seems we do not need this extra time (it just brings extra problems)
@@ -72,10 +66,9 @@ bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
 
 void QgsChunkNode::populateChildren( const QVector<QgsChunkNode *> &children )
 {
-  Q_ASSERT( mChildCount == -1 );
-  mChildCount = children.count();
-  for ( int i = 0; i < mChildCount; ++i )
-    mChildren[i] = children[i];
+  Q_ASSERT( !mChildrenPopulated );
+  mChildrenPopulated = true;
+  mChildren = children;
 }
 
 int QgsChunkNode::level() const
@@ -97,8 +90,7 @@ QList<QgsChunkNode *> QgsChunkNode::descendants()
 
   for ( int i = 0; i < childCount(); ++i )
   {
-    if ( mChildren[i] )
-      lst << mChildren[i]->descendants();
+    lst << mChildren[i]->descendants();
   }
 
   return lst;
@@ -265,9 +257,15 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
     float yMax = -std::numeric_limits< float >::max();
     float zMin = std::numeric_limits< float >::max();
     float zMax = -std::numeric_limits< float >::max();
+
     for ( int i = 0; i < currentNode->childCount(); ++i )
     {
       const QgsAABB childBBox = currentNodeChildren[i]->bbox();
+
+      // Nodes without data have an empty bbox and should be skipped
+      if ( childBBox.isEmpty() )
+        continue;
+
       if ( childBBox.xMin < xMin )
         xMin = childBBox.xMin;
       if ( childBBox.yMin < yMin )
@@ -281,7 +279,12 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
       if ( childBBox.zMax > zMax )
         zMax = childBBox.zMax;
     }
-    currentNode->setExactBbox( QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax ) );
+
+    // QgsAABB is normalized in its constructor, so that min values are always smaller than max.
+    // If all child bboxes were empty, we can end up with min > max, so let's have an empty bbox instead.
+    const QgsAABB currentNodeBbox = xMin < xMax && yMin < yMax && zMin < zMax ? QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax ) : QgsAABB();
+
+    currentNode->setExactBbox( currentNodeBbox );
     currentNode = currentNode->parent();
   }
 }

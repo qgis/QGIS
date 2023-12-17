@@ -202,6 +202,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsRectangle sourceExtent() const override;
+    QgsBox3D sourceExtent3D() const override;
     QString sourceName() const override { return QString(); }
 
     /**
@@ -533,18 +534,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QStringList errors() const;
 
     /**
-     * It returns FALSE by default.
-     * Must be implemented by providers that support saving and loading styles to db returning TRUE
-     */
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
-
-    /**
-     * It returns FALSE by default.
-     * Must be implemented by providers that support delete styles from db returning TRUE
-     */
-    virtual bool isDeleteStyleFromDatabaseSupported() const;
-
-    /**
      * Creates a new vector layer feature renderer, using provider backend specific information.
      *
      * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
@@ -645,6 +634,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
+    QgsDataProviderElevationProperties *elevationProperties() override;
+    const QgsDataProviderElevationProperties *elevationProperties() const override SIP_SKIP;
+
   signals:
 
     /**
@@ -681,6 +673,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
+     * \note The default implementation simply calls the static version of this function.
      */
     QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 
@@ -699,6 +692,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     QTextCodec *textEncoding() const;
 
+    /**
+     * Converts the \a geometry to the provider geometry type \a providerGeometryType if possible / necessary
+     * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
+     * \since QGIS 3.34
+     */
+    static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
+
+
   private:
     mutable bool mCacheMinMaxDirty = true;
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
@@ -716,6 +717,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     mutable QStringList mErrors;
 
     std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
+    std::unique_ptr< QgsDataProviderElevationProperties > mElevationProperties;
 
     static QStringList sEncodings;
 

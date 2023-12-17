@@ -11,6 +11,7 @@
  ****************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 #include <thread>
 
@@ -36,6 +37,8 @@ void Merge::addArgs()
     argOutput = &programArgs.add("output,o", "Output virtual point cloud file", outputFile);
     // we set hasSingleInput=false so the default "input,i" argument is not added
     programArgs.add("files", "input files", inputFiles).setPositional();
+    programArgs.add("input-file-list", "Read input files from a text file", inputFileList);
+
 }
 
 bool Merge::checkArgs()
@@ -105,9 +108,25 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile)
     return manager;
 }
 
-void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &, point_count_t &totalPoints)
+void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
+    if (!inputFileList.empty())
+    {
+        std::ifstream inputFile(inputFileList);
+        std::string line;
+        if(!inputFile)
+        {
+            std::cerr << "failed to open input file list: " << inputFileList << std::endl;
+            return;
+        }
+
+        while (std::getline(inputFile, line))
+        {
+            inputFiles.push_back(line);
+        }
+    }
+
     tile.inputFilenames = inputFiles;
     tile.outputFilename = outputFile;
 
@@ -120,5 +139,4 @@ void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipe
         QuickInfo qi = getQuickInfo(f);
         totalPoints += qi.m_pointCount;
     }
-
 }

@@ -28,6 +28,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
@@ -339,6 +340,10 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
           layer = new QgsPointCloudLayer();
           break;
 
+        case Qgis::LayerType::TiledScene:
+          layer = new QgsTiledSceneLayer;
+          break;
+
         case Qgis::LayerType::Group:
           layer = new QgsGroupLayer( QString(), QgsGroupLayer::LayerOptions( QgsCoordinateTransformContext() ) );
           break;
@@ -369,14 +374,14 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QStringLiteral( "Can't open file" ) );
+    QgsDebugError( QStringLiteral( "Can't open file" ) );
     return QList<QgsMapLayer *>();
   }
 
   QDomDocument doc;
   if ( !doc.setContent( &file ) )
   {
-    QgsDebugMsg( QStringLiteral( "Can't set content" ) );
+    QgsDebugError( QStringLiteral( "Can't set content" ) );
     return QList<QgsMapLayer *>();
   }
 
@@ -438,6 +443,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
     else
     {
       layersToSort << qMakePair( id, layerElem );
+      mDependentLayerIds.insert( id );
     }
     layerElem = layerElem.nextSiblingElement( );
   }
@@ -527,6 +533,11 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
   ( void )pFile.open( QIODevice::ReadOnly );
   ( void )doc.setContent( &pFile );
   init( doc );
+}
+
+bool QgsLayerDefinition::DependencySorter::isLayerDependent( const QString &layerId ) const
+{
+  return mDependentLayerIds.contains( layerId );
 }
 
 

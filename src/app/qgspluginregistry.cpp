@@ -132,26 +132,26 @@ void QgsPluginRegistry::addPlugin( const QString &key, const QgsPluginMetadata &
 
 void QgsPluginRegistry::dump()
 {
-  QgsDebugMsg( QStringLiteral( "PLUGINS IN REGISTRY: key -> (name, library)" ) );
+  QgsDebugMsgLevel( QStringLiteral( "PLUGINS IN REGISTRY: key -> (name, library)" ), 1 );
   for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
-    QgsDebugMsg( QStringLiteral( "PLUGIN: %1 -> (%2, %3)" )
-                 .arg( it.key(),
-                       it->name(),
-                       it->library() ) );
+    QgsDebugMsgLevel( QStringLiteral( "PLUGIN: %1 -> (%2, %3)" )
+                      .arg( it.key(),
+                            it->name(),
+                            it->library() ), 1 );
   }
 
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsDebugMsg( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ) );
+    QgsDebugMsgLevel( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ), 1 );
     const auto constListActivePlugins = mPythonUtils->listActivePlugins();
     for ( const QString &pluginName : constListActivePlugins )
     {
       Q_UNUSED( pluginName )
-      QgsDebugMsg( pluginName );
+      QgsDebugMsgLevel( pluginName, 1 );
     }
   }
 #endif
@@ -160,7 +160,7 @@ void QgsPluginRegistry::dump()
 
 void QgsPluginRegistry::removePlugin( const QString &key )
 {
-  QgsDebugMsg( "removing plugin: " + key );
+  QgsDebugMsgLevel( "removing plugin: " + key, 2 );
   const QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
   {
@@ -182,7 +182,7 @@ void QgsPluginRegistry::unloadAll()
     }
     else
     {
-      QgsDebugMsg( "warning: plugin is NULL:" + it.key() );
+      QgsDebugError( "warning: plugin is NULL:" + it.key() );
     }
   }
 
@@ -442,7 +442,7 @@ void QgsPluginRegistry::unloadPythonPlugin( const QString &packageName )
   if ( isLoaded( packageName ) )
   {
     mPythonUtils->unloadPlugin( packageName );
-    QgsDebugMsg( "Python plugin successfully unloaded: " + packageName );
+    QgsDebugMsgLevel( "Python plugin successfully unloaded: " + packageName, 2 );
   }
 
   // disable the plugin no matter if successfully loaded or not
@@ -468,7 +468,7 @@ void QgsPluginRegistry::unloadCppPlugin( const QString &fullPathName )
     }
     // remove the plugin from the registry
     removePlugin( baseName );
-    QgsDebugMsg( "Cpp plugin successfully unloaded: " + baseName );
+    QgsDebugMsgLevel( "Cpp plugin successfully unloaded: " + baseName, 2 );
   }
 }
 

@@ -9,27 +9,31 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QDoubleSpinBox
-from qgis.core import QgsLayoutMeasurementConverter, QgsUnitTypes
-from qgis.testing import start_app, unittest
+from qgis.core import (
+    QgsLayoutMeasurementConverter,
+    QgsUnitTypes
+)
+from qgis.gui import QgsLayoutUnitsComboBox
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutUnitsComboBox(unittest.TestCase):
+class TestQgsLayoutUnitsComboBox(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """
-        w = qgis.gui.QgsLayoutUnitsComboBox()
+        w = QgsLayoutUnitsComboBox()
 
         w.setUnit(QgsUnitTypes.LayoutPixels)
         self.assertEqual(w.unit(), QgsUnitTypes.LayoutPixels)
 
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when setting unit"""
-        w = qgis.gui.QgsLayoutUnitsComboBox()
+        w = QgsLayoutUnitsComboBox()
 
         spy = QSignalSpy(w.changed)
         w.setUnit(QgsUnitTypes.LayoutPixels)
@@ -39,7 +43,7 @@ class TestQgsLayoutUnitsComboBox(unittest.TestCase):
 
     def testLinkedWidgets(self):
         """ test linking spin boxes to combobox"""
-        w = qgis.gui.QgsLayoutUnitsComboBox()
+        w = QgsLayoutUnitsComboBox()
         self.assertFalse(w.converter())
         c = QgsLayoutMeasurementConverter()
         w.setConverter(c)

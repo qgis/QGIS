@@ -70,7 +70,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldFilter = false;
     return QgsGeometry();
   }
@@ -116,7 +116,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldClip = false;
     return QgsGeometry();
   }
@@ -153,6 +153,7 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledScene:
         // for these layer types, we ignore the region's featureClip behavior.
         break;
 
@@ -221,7 +222,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
     shouldClip = false;
     return QgsGeometry();
   }

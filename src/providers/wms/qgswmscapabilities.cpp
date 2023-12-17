@@ -72,7 +72,17 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mMaxWidth = 0;
     mMaxHeight = 0;
     mHttpUri = uri.param( QStringLiteral( "url" ) );
+
+    // automatically replace outdated references to http OpenStreetMap tiles with correct https URI
+    const thread_local QRegularExpression sRegExOSMTiles( QStringLiteral( "^https?://(?:[a-z]\\.)?tile\\.openstreetmap\\.org" ) );
+    const QRegularExpressionMatch match = sRegExOSMTiles.match( mHttpUri );
+    if ( match.hasMatch() )
+    {
+      mHttpUri = QStringLiteral( "https://tile.openstreetmap.org" ) + mHttpUri.mid( match.captured( 0 ).length() );
+    }
+
     mBaseUrl = mHttpUri;
+
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = mInterpretation.isEmpty();
@@ -481,7 +491,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       mErrorFormat = QStringLiteral( "text/plain" );
       mError = QObject::tr( "empty capabilities document" );
     }
-    QgsDebugMsg( QStringLiteral( "response is empty" ) );
+    QgsDebugError( QStringLiteral( "response is empty" ) );
     return false;
   }
 
@@ -490,7 +500,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
   {
     mErrorFormat = QStringLiteral( "text/html" );
     mError = response;
-    QgsDebugMsg( QStringLiteral( "starts with <html>" ) );
+    QgsDebugError( QStringLiteral( "starts with <html>" ) );
     return false;
   }
 
@@ -507,7 +517,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
 
     // TODO[MD] mError += QObject::tr( "\nTried URL: %1" ).arg( url );
 
-    QgsDebugMsg( "!domOK: " + mError );
+    QgsDebugError( "!domOK: " + mError );
 
     return false;
   }
@@ -919,7 +929,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
       QgsWmsOperationType *operationType = nullptr;
       if ( href.isNull() )
       {
-        QgsDebugMsg( QStringLiteral( "http get missing from ows:Operation '%1'" ).arg( name ) );
+        QgsDebugError( QStringLiteral( "http get missing from ows:Operation '%1'" ).arg( name ) );
       }
       else if ( name == QLatin1String( "GetTile" ) )
       {
@@ -935,7 +945,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "ows:Operation %1 ignored" ).arg( name ) );
+        QgsDebugError( QStringLiteral( "ows:Operation %1 ignored" ).arg( name ) );
       }
 
       if ( operationType )
@@ -1355,7 +1365,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "CRS/SRS attribute not found in BoundingBox" ) );
+          QgsDebugError( QStringLiteral( "CRS/SRS attribute not found in BoundingBox" ) );
         }
       }
       else if ( tagName == QLatin1String( "Dimension" ) )
@@ -1707,7 +1717,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
           boundingBoxProperty.crs = nodeElement.attribute( QStringLiteral( "crs" ) );
         else
         {
-          QgsDebugMsg( QStringLiteral( "crs of bounding box undefined" ) );
+          QgsDebugError( QStringLiteral( "crs of bounding box undefined" ) );
         }
 
         if ( !boundingBoxProperty.crs.isEmpty() )
@@ -1725,7 +1735,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "tileset tag %1 ignored" ).arg( nodeElement.tagName() ) );
+        QgsDebugError( QStringLiteral( "tileset tag %1 ignored" ).arg( nodeElement.tagName() ) );
       }
     }
     node = node.nextSibling();
@@ -1827,7 +1837,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Could not parse topLeft" ) );
+        QgsDebugError( QStringLiteral( "Could not parse topLeft" ) );
         continue;
       }
 
@@ -1915,7 +1925,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           boundingBoxProperty.crs = bbox.attribute( QStringLiteral( "crs" ) );
         else
         {
-          QgsDebugMsg( QStringLiteral( "crs of bounding box undefined" ) );
+          QgsDebugError( QStringLiteral( "crs of bounding box undefined" ) );
         }
 
         if ( !boundingBoxProperty.crs.isEmpty() )
@@ -2032,7 +2042,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         fmt = Qgis::RasterIdentifyFormat::Feature;
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+        QgsDebugError( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
         continue;
       }
 
@@ -2175,7 +2185,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       if ( !mTileMatrixSets.contains( setLink.tileMatrixSet ) )
       {
-        QgsDebugMsg( QStringLiteral( "  TileMatrixSet %1 not found." ).arg( setLink.tileMatrixSet ) );
+        QgsDebugError( QStringLiteral( "  TileMatrixSet %1 not found." ).arg( setLink.tileMatrixSet ) );
         continue;
       }
 
@@ -2219,7 +2229,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "   TileMatrix id:%1 not found." ).arg( id ) );
+            QgsDebugError( QStringLiteral( "   TileMatrix id:%1 not found." ).arg( id ) );
           }
 
           QgsDebugMsgLevel( QStringLiteral( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" )
@@ -2281,7 +2291,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           fmt = Qgis::RasterIdentifyFormat::Feature;
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+          QgsDebugError( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
           continue;
         }
 
@@ -2290,10 +2300,10 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
-                     .arg( format,
-                           resourceType,
-                           tmpl ) );
+        QgsDebugError( QStringLiteral( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
+                       .arg( format,
+                             resourceType,
+                             tmpl ) );
       }
     }
 
@@ -2322,7 +2332,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     {
       if ( !detectTileLayerBoundingBox( tileLayer ) )
       {
-        QgsDebugMsg( "failed to detect bounding box for " + tileLayer.identifier + " - using extent of the whole world" );
+        QgsDebugError( "failed to detect bounding box for " + tileLayer.identifier + " - using extent of the whole world" );
 
         QgsWmsBoundingBoxProperty boundingBoxProperty;
         boundingBoxProperty.crs = DEFAULT_LATLON_CRS;
@@ -2395,42 +2405,44 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
   if ( tileLayer.setLinks.isEmpty() )
     return false;
 
-  // take first supported tile matrix set
-  const QgsWmtsTileMatrixSetLink &setLink = *tileLayer.setLinks.constBegin();
+  // add valid bounding boxes for all linked tile matrix set
+  const QList<QgsWmtsTileMatrixSetLink> links = tileLayer.setLinks.values();
+  for ( QgsWmtsTileMatrixSetLink setLink : links )
+  {
+    QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
+    if ( tmsIt == mTileMatrixSets.constEnd() )
+      continue;
 
-  QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
-  if ( tmsIt == mTileMatrixSets.constEnd() )
-    return false;
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tmsIt->crs );
+    if ( !crs.isValid() )
+      continue;
 
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tmsIt->crs );
-  if ( !crs.isValid() )
-    return false;
+    // take most coarse tile matrix ...
+    QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = --tmsIt->tileMatrices.constEnd();
+    if ( tmIt == tmsIt->tileMatrices.constEnd() )
+      continue;
 
-  // take most coarse tile matrix ...
-  QMap<double, QgsWmtsTileMatrix>::const_iterator tmIt = --tmsIt->tileMatrices.constEnd();
-  if ( tmIt == tmsIt->tileMatrices.constEnd() )
-    return false;
+    const QgsWmtsTileMatrix &tm = *tmIt;
+    double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
+    // the magic number below is "standardized rendering pixel size" defined
+    // in WMTS (and WMS 1.3) standard, being 0.28 pixel
+    double res = tm.scaleDenom * 0.00028 / metersPerUnit;
+    QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                            tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
-  const QgsWmtsTileMatrix &tm = *tmIt;
-  double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), Qgis::DistanceUnit::Meters );
-  // the magic number below is "standardized rendering pixel size" defined
-  // in WMTS (and WMS 1.3) standard, being 0.28 pixel
-  double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-  QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                          tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+    QgsDebugMsgLevel( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
+                      .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ), 2 );
 
-  QgsDebugMsgLevel( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
-                    .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ), 2 );
+    QgsRectangle extent( tm.topLeft, bottomRight );
+    extent.normalize();
 
-  QgsRectangle extent( tm.topLeft, bottomRight );
-  extent.normalize();
+    QgsWmsBoundingBoxProperty boundingBoxProperty;
+    boundingBoxProperty.box = extent;
+    boundingBoxProperty.crs = crs.authid();
+    tileLayer.boundingBoxes << boundingBoxProperty;
+  }
 
-  QgsWmsBoundingBoxProperty boundingBoxProperty;
-  boundingBoxProperty.box = extent;
-  boundingBoxProperty.crs = crs.authid();
-  tileLayer.boundingBoxes << boundingBoxProperty;
-
-  return true;
+  return !tileLayer.boundingBoxes.isEmpty();
 }
 
 

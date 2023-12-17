@@ -38,6 +38,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     static const QgsSettingsEntryBool *settingClipboardHeader;
     static const QgsSettingsEntryString *settingClipboardSeparator;
+    static const QgsSettingsEntryBool *settingClipboardAlwaysUseDecimalPoint;
 
     //! Constructor
     QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = Qt::WindowFlags() );
@@ -97,6 +98,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! formats area to most appropriate units
     QString formatArea( double area, bool convertUnits = true ) const;
+
+    //! update units-related members passed on selected area/distance unit type
+    void updateUnitsMembers();
 
     //! shows/hides table, shows correct units
     void updateUi();

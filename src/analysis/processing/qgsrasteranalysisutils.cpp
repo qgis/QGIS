@@ -199,6 +199,7 @@ void populateDataTypes()
     sDataTypes.append( qMakePair( QStringLiteral( "CInt32" ), Qgis::DataType::CInt32 ) );
     sDataTypes.append( qMakePair( QStringLiteral( "CFloat32" ), Qgis::DataType::CFloat32 ) );
     sDataTypes.append( qMakePair( QStringLiteral( "CFloat64" ), Qgis::DataType::CFloat64 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Int8" ), Qgis::DataType::Int8 ) );
   }
 }
 

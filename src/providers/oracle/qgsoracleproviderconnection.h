@@ -19,13 +19,11 @@
 
 #include <QSqlQuery>
 
+class QgsOracleQuery;
+
 struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-
-    QgsOracleProviderResultIterator( int columnCount, const QSqlQuery &query )
-      : mColumnCount( columnCount )
-      , mQuery( query )
-    {}
+    QgsOracleProviderResultIterator( int columnCount, std::unique_ptr<QgsOracleQuery> query );
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
@@ -33,7 +31,7 @@ struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnec
   private:
 
     int mColumnCount = 0;
-    QSqlQuery mQuery;
+    std::unique_ptr<QgsOracleQuery> mQuery;
     QVariantList mNextRow;
 
     QVariantList nextRowInternal();
@@ -67,7 +65,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QStringList schemas() const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
-        const TableFlags &flags = TableFlags() ) const override;
+        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;

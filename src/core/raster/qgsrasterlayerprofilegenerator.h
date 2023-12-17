@@ -22,11 +22,11 @@
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgscurve.h"
 
 #include <memory>
 
 class QgsProfileRequest;
-class QgsCurve;
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterBlockFeedback;

@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import (
@@ -22,10 +20,11 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsFieldMappingModel(unittest.TestCase):
+class TestPyQgsFieldMappingModel(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -91,7 +90,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 7), Qt.DisplayRole), 'my comment')
 
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'my alias')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
         self.assertEqual(model.data(model.index(1, 6), Qt.DisplayRole), 'my alias')
         self.assertFalse(model.data(model.index(1, 7), Qt.DisplayRole))
 
@@ -172,7 +171,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
         self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'my alias')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
         self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), '"source_field3"')
         self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
 

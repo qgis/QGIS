@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -23,14 +22,15 @@ from qgis.core import (
     QgsRasterLayer,
     QgsReadWriteContext,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsProjectElevationProperties(unittest.TestCase):
+class TestQgsProjectElevationProperties(QgisTestCase):
 
     def testBasic(self):
         props = QgsProjectElevationProperties(None)

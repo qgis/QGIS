@@ -1,0 +1,7 @@
+# The following has been generated automatically from src/gui/qgslayermetadataresultsmodel.h
+QgsLayerMetadataResultsModel.Metadata = QgsLayerMetadataResultsModel.Roles.Metadata
+QgsLayerMetadataResultsModel.Identifier = QgsLayerMetadataResultsModel.Sections.Identifier
+QgsLayerMetadataResultsModel.Title = QgsLayerMetadataResultsModel.Sections.Title
+QgsLayerMetadataResultsModel.Abstract = QgsLayerMetadataResultsModel.Sections.Abstract
+QgsLayerMetadataResultsModel.DataProviderName = QgsLayerMetadataResultsModel.Sections.DataProviderName
+QgsLayerMetadataResultsModel.GeometryType = QgsLayerMetadataResultsModel.Sections.GeometryType

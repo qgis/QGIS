@@ -115,8 +115,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
-    bool isSaveAndLoadStyleToDatabaseSupported() const override;
-    bool isDeleteStyleFromDatabaseSupported() const override;
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
     QString fileVectorFilters() const override;
     bool isValid() const override;
     QVariant minimumValue( int index ) const override;
@@ -200,6 +199,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
     bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
+
+    bool  createSpatialIndexImpl();
 
     QList< QgsProviderSublayerDetails > _subLayers( Qgis::SublayerQueryFlags flags ) const;
 
@@ -346,6 +347,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     //! Invalidate GDAL /vsicurl/ RAM cache for mFilePath
     void invalidateNetworkCache();
+
+    bool mShapefileHadSpatialIndex = false;
 };
 
 ///@endcond

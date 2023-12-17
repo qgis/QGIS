@@ -51,12 +51,14 @@ class QgsProject;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
+class QgsMapLayerSelectionProperties;
 class QgsSldExportContext;
 
 class QDomDocument;
 class QKeyEvent;
 class QPainter;
 class QgsRenderContext;
+class QgsBox3D;
 
 /*
  * Constants used to describe copy-paste MIME types
@@ -116,6 +118,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
           break;
         case Qgis::LayerType::Group:
           sipType = sipType_QgsGroupLayer;
+          break;
+        case Qgis::LayerType::TiledScene:
+          sipType = sipType_QgsTiledSceneLayer;
           break;
         default:
           sipType = nullptr;
@@ -540,6 +545,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
+     * Returns the 3D extent of the layer.
+     * \since QGIS 3.36
+     */
+    virtual QgsBox3D extent3D() const;
+
+    /**
      * Returns the WGS84 extent (EPSG:4326) of the layer according to
      * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
      * WGS84 extent read in the qgs project is returned. Otherwise, the actual
@@ -560,9 +571,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Gets a version of the internal layer definition that has sensitive
       *  bits removed (for example, the password). This function should
       * be used when displaying the source name for general viewing.
+      * \param hidePassword False, if the password should be removed or replaced by an arbitrary string, since QGIS 3.34
       * \see source()
      */
-    QString publicSource() const;
+    QString publicSource( bool hidePassword = false ) const;
 
     /**
      * Returns the source for the layer. This source may contain usernames, passwords
@@ -643,6 +655,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param layerElement The DOM element corresponding to ``maplayer'' tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
      * \param flags optional argument which can be used to control layer reading behavior.
+     * \param preloadedProvider optional preloaded data provider that will be used as data provider for this layer, takes ownership (since QGIS 3.32)
      * \note
      *
      * The DOM node corresponds to a DOM document project file XML element read
@@ -655,7 +668,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns TRUE if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context,
+                       QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags(), QgsDataProvider *preloadedProvider SIP_TRANSFER = nullptr );
 
     /**
      * Stores state in DOM node
@@ -715,6 +729,63 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     const QgsObjectCustomProperties &customProperties() const;
 
+    /**
+     * Lists all the style in db split into related to the layer and not related to
+     * \param ids the list in which will be stored the style db ids
+     * \param names the list in which will be stored the style names
+     * \param descriptions the list in which will be stored the style descriptions
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \returns the number of styles related to current layer (-1 on not implemented)
+     * \note Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
+     */
+    virtual int listStylesInDatabase( QStringList &ids SIP_OUT, QStringList &names SIP_OUT,
+                                      QStringList &descriptions SIP_OUT, QString &msgError SIP_OUT );
+
+    /**
+     * Returns the named style corresponding to style id provided
+     */
+    virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
+
+    /**
+     * Deletes a style from the database
+     * \param styleId the provider's layer_styles table id of the style to delete
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \returns TRUE in case of success
+     * \since QGIS 3.0
+     */
+    virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
+
+    /**
+     * Saves named and sld style of the layer to the style table in the db.
+     * \param name Style name
+     * \param description A description of the style
+     * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
+     * \param uiFileContent
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \param categories the style categories to be saved.
+     *
+     *
+     * \note Prior to QGIS 3.24, this method would show a message box warning when a
+     * style with the same \a styleName already existed to confirm replacing the style with the user.
+     * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
+     * Use QgsProviderRegistry::styleExists() to test in advance if a style already exists and handle this appropriately
+     * in your client code.
+     */
+    virtual void saveStyleToDatabase( const QString &name, const QString &description,
+                                      bool useAsDefault, const QString &uiFileContent,
+                                      QString &msgError SIP_OUT,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    /**
+     * Loads a named style from file/local db/datasource db
+     * \param theURI the URI of the style or the URI of the layer
+     * \param resultFlag will be set to TRUE if a named style is correctly loaded
+     * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
+     * \param categories the style categories to be loaded.
+     */
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
 #ifndef SIP_RUN
 
     /**
@@ -734,7 +805,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
 
       T v;
@@ -790,7 +861,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
     }
 
@@ -812,7 +883,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
 
       T v = defaultValue;
@@ -880,7 +951,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
       }
     }
 #endif
@@ -1238,47 +1309,93 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 
     /**
-     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * Updates the data source of the layer.
+     *
+     * The \a dataSource argument must specify the new data source string for the layer. The format varies depending on
+     * the specified data \a provider in use. See QgsDataSourceUri and the documentation for the various QgsMapLayer
+     * subclasses for further details on data source strings.
+     *
+     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()).
+     *
+     * The \a provider argument is used to specify the unique key of the data provider to use for
+     * the layer. This must match one of the values returned by QgsProviderRegistry::instance()->providerList().
+     * (See providerType()).
+     *
+     * If \a loadDefaultStyleFlag is set to TRUE then the layer's existing style will be reset to the default
+     * for the data source.
+     *
+     * \note If \a loadDefaultStyleFlag is FALSE then the layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * After setting a new data source callers can test isValid() to determine whether the new source
+     * and provider are valid and ready for use. If setting the new data source fails and the layer
+     * returns FALSE to isValid(), then descriptive errors relating to setting the data source can
+     * be retrieved by calling error().
      *
      * This method was defined in QgsVectorLayer since 2.10 and was marked as deprecated since 3.2
      *
-     * \param dataSource new layer data source
-     * \param baseName base name of the layer
-     * \param provider provider string
-     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
-     * data source
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * Updates the data source of the layer.
+     *
+     * The \a dataSource argument must specify the new data source string for the layer. The format varies depending on
+     * the specified data \a provider in use. See QgsDataSourceUri and the documentation for the various QgsMapLayer
+     * subclasses for further details on data source strings.
+     *
+     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()).
+     *
+     * The \a provider argument is used to specify the unique key of the data provider to use for
+     * the layer. This must match one of the values returned by QgsProviderRegistry::instance()->providerList().
+     * (See providerType()).
+     *
+     * The \a options argument can be used to pass additional layer properties to the new data provider.
+     *
+     * If \a loadDefaultStyleFlag is set to TRUE then the layer's existing style will be reset to the default
+     * for the data source.
+     *
+     * \note If \a loadDefaultStyleFlag is FALSE then the layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      *
-     * \param dataSource new layer data source
-     * \param baseName base name of the layer
-     * \param provider provider string
-     * \param options provider options
-     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
-     * data source
+     * After setting a new data source callers can test isValid() to determine whether the new source
+     * and provider are valid and ready for use. If setting the new data source fails and the layer
+     * returns FALSE to isValid(), then descriptive errors relating to setting the data source can
+     * be retrieved by calling error().
+     *
      * \see dataSourceChanged()
      * \since QGIS 3.6
      */
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 
     /**
-     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * Updates the data source of the layer.
+     *
+     * The \a dataSource argument must specify the new data source string for the layer. The format varies depending on
+     * the specified data \a provider in use. See QgsDataSourceUri and the documentation for the various QgsMapLayer
+     * subclasses for further details on data source strings.
+     *
+     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()).
+     *
+     * The \a provider argument is used to specify the unique key of the data provider to use for
+     * the layer. This must match one of the values returned by QgsProviderRegistry::instance()->providerList().
+     * (See providerType()).
+     *
+     * The \a options argument can be used to pass additional layer properties to the new data provider.
+     *
+     * The \a flags argument specifies provider read flags which control the data provider construction,
+     * such as QgsDataProvider::ReadFlag::FlagTrustDataSource, QgsDataProvider::ReadFlag::FlagLoadDefaultStyle, etc.
+     *
+     * \note The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      *
-     * Subclasses should override setDataSourcePrivate: default implementation does nothing.
+     * After setting a new data source callers can test isValid() to determine whether the new source
+     * and provider are valid and ready for use. If setting the new data source fails and the layer
+     * returns FALSE to isValid(), then descriptive errors relating to setting the data source can
+     * be retrieved by calling error().
      *
-     * \param dataSource new layer data source
-     * \param baseName base name of the layer
-     * \param provider provider string
-     * \param options provider options
-     * \param flags provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */
@@ -1398,9 +1515,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns TRUE if auto refresh is enabled for the layer.
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
-     * \since QGIS 3.0
+     * \deprecated use autoRefreshMode() instead.
      */
-    bool hasAutoRefreshEnabled() const;
+    Q_DECL_DEPRECATED bool hasAutoRefreshEnabled() const SIP_DEPRECATED;
+
+    /**
+     * Returns the layer's automatical refresh mode.
+     * \see autoRefreshInterval()
+     * \see setAutoRefreshMode()
+     * \since QGIS 3.34
+     */
+    Qgis::AutoRefreshMode autoRefreshMode() const;
 
     /**
      * Returns the auto refresh interval (in milliseconds). Note that
@@ -1414,7 +1539,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Sets the auto refresh interval (in milliseconds) for the layer. This
      * will cause the layer to be automatically redrawn on a matching interval.
-     * Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
+     * Note that auto refresh must be enabled by calling setAutoRefreshMode().
      *
      * Note that auto refresh triggers deferred repaints of the layer. Any map
      * canvas must be refreshed separately in order to view the refreshed layer.
@@ -1428,9 +1553,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets whether auto refresh is enabled for the layer.
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
-     * \since QGIS 3.0
+     * \deprecated Use setAutoRefreshMode() instead.
      */
-    void setAutoRefreshEnabled( bool enabled );
+    Q_DECL_DEPRECATED void setAutoRefreshEnabled( bool enabled ) SIP_DEPRECATED;
+
+    /**
+     * Sets the automatic refresh mode for the layer.
+     * \see autoRefreshMode()
+     * \see setAutoRefreshInterval()
+     * \since QGIS 3.34
+     */
+    void setAutoRefreshMode( Qgis::AutoRefreshMode mode );
 
     /**
      * Returns a reference to the layer's metadata store.
@@ -1517,6 +1650,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
+     * Returns the layer's selection properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.34
+     */
+    virtual QgsMapLayerSelectionProperties *selectionProperties() { return nullptr; }
+
+    /**
      * Returns the layer's temporal properties. This may be NULLPTR, depending on the layer type.
      *
      * \since QGIS 3.14
@@ -1585,6 +1725,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \since QGIS 3.32
      */
     bool mapTipsEnabled() const;
+
+    /**
+     * Returns provider read flag deduced from layer read flags \a layerReadFlags and a dom node \a layerNode
+     * that describes a layer (corresponding to ``maplayer'' tag in a DOM document project file read by QgsProject).
+     * This static method is used when loading a project.
+     *
+     * \since QGIS 3.32
+     */
+    static QgsDataProvider::ReadFlags providerReadFlags( const QDomNode &layerNode, QgsMapLayer::ReadFlags layerReadFlags );
 
   public slots:
 
@@ -1919,6 +2068,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
+    /**
+     * Sets the extent
+     * \since QGIS 3.36
+     */
+    virtual void setExtent3D( const QgsBox3D &box );
+
     //! Sets whether layer is valid or not
     void setValid( bool valid );
 
@@ -2113,6 +2268,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString generalHtmlMetadata() const;
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Optionally used when loading a project, it is released when the layer is effectively created
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.32
+     */
+    std::unique_ptr<QgsDataProvider> mPreloadedProvider;
+#endif
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;
@@ -2124,6 +2291,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     // const method because extents are mutable
     void updateExtent( const QgsRectangle &extent ) const;
+    void updateExtent( const QgsBox3D &extent ) const;
 
     /**
      * This method returns TRUE by default but can be overwritten to specify
@@ -2179,6 +2347,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Manager of multiple styles available for a layer (may be NULLPTR)
     QgsMapLayerStyleManager *mStyleManager = nullptr;
 
+    Qgis::AutoRefreshMode mAutoRefreshMode = Qgis::AutoRefreshMode::Disabled;
+
     //! Timer for triggering automatic refreshes of the layer
     QTimer *mRefreshTimer = nullptr;
 
@@ -2188,7 +2358,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
     //! Extent of the layer
-    mutable QgsRectangle mExtent;
+    mutable QgsBox3D mExtent;
 
     //! Extent of the layer in EPSG:4326
     mutable QgsRectangle mWgs84Extent;

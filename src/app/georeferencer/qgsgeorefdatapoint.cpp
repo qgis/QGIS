@@ -15,6 +15,7 @@
 #include <QPainter>
 
 #include "qgsmapcanvas.h"
+#include "qgsmaptool.h"
 #include "qgsgcpcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeorefdatapoint.h"
@@ -125,23 +126,32 @@ void QgsGeorefDataPoint::updateCoords()
   }
 }
 
-bool QgsGeorefDataPoint::contains( QPoint p, QgsGcpPoint::PointType type )
+bool QgsGeorefDataPoint::contains( QPoint p, QgsGcpPoint::PointType type, double &distance )
 {
+  const double searchRadiusMM = QgsMapTool::searchRadiusMM();
+  const double pixelsPerMM = mGCPSourceItem->canvas()->logicalDpiX() / 25.4;
+  const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
+
+  QPointF itemPos;
   switch ( type )
   {
     case QgsGcpPoint::PointType::Source:
     {
-      const QPointF pnt = mGCPSourceItem->mapFromScene( p );
-      return mGCPSourceItem->shape().contains( pnt );
+      itemPos = mGCPSourceItem->pos();
+      break;
     }
 
     case QgsGcpPoint::PointType::Destination:
     {
-      const QPointF pnt = mGCPDestinationItem->mapFromScene( p );
-      return mGCPDestinationItem->shape().contains( pnt );
+      itemPos = mGCPDestinationItem->pos();
+      break;
     }
   }
-  BUILTIN_UNREACHABLE
+
+  const double dx = p.x() - itemPos.x();
+  const double dy = p.y() - itemPos.y();
+  distance = std::sqrt( dx * dx + dy * dy );
+  return distance <= searchRadiusPx;
 }
 
 void QgsGeorefDataPoint::moveTo( QPoint canvasPixels, QgsGcpPoint::PointType type )

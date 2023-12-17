@@ -56,13 +56,13 @@ static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f
   QgsSymbolLayerAbstractMetadata *abstractMetadata = reg->symbolLayerMetadata( name );
   if ( !abstractMetadata )
   {
-    QgsDebugMsg( "Failed to find symbol layer's entry in registry: " + name );
+    QgsDebugError( "Failed to find symbol layer's entry in registry: " + name );
     return false;
   }
   QgsSymbolLayerMetadata *metadata = dynamic_cast<QgsSymbolLayerMetadata *>( abstractMetadata );
   if ( !metadata )
   {
-    QgsDebugMsg( "Failed to cast symbol layer's metadata: " + name );
+    QgsDebugError( "Failed to cast symbol layer's metadata: " + name );
     return false;
   }
   metadata->setWidgetFunction( f );
@@ -82,6 +82,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "InterpolatedLine" ), QgsInterpolatedLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "RasterLine" ), QgsRasterLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "Lineburst" ), QgsLineburstSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "FilledLine" ), QgsFilledLineSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );

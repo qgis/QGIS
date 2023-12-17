@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir, QIODevice, QBuffer
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -26,7 +25,8 @@ from qgis.core import (
     QgsProject,
     QgsSensorManager
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -57,7 +57,7 @@ class TestSensor(QgsIODeviceSensor):
         self.buffer.seek(0)
 
 
-class TestQgsSensorManager(unittest.TestCase):
+class TestQgsSensorManager(QgisTestCase):
 
     manager = None
     sensor = None

@@ -60,7 +60,7 @@ QgsPdalDensityAlgorithm *QgsPdalDensityAlgorithm::createInstance() const
 void QgsPdalDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), QgsProcessingParameterNumber::Double, 1, false, 1e-6 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), QgsProcessingParameterNumber::Integer, 1000, false, 1 ) );
 
   createCommonParameters();
@@ -94,8 +94,8 @@ QStringList QgsPdalDensityAlgorithm::createArgumentLists( const QVariantMap &par
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  int resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
-  int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
+  const double resolution = parameterAsDouble( parameters, QStringLiteral( "RESOLUTION" ), context );
+  const int tileSize = parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context );
 
   QStringList args = { QStringLiteral( "density" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),

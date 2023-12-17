@@ -177,7 +177,7 @@ void QgsQtLocationConnection::startGPS()
     else
     {
       // Not able to obtain the location data source
-      QgsDebugMsg( QStringLiteral( "No QtLocation Position Source" ) );
+      QgsDebugError( QStringLiteral( "No QtLocation Position Source" ) );
     }
   }
   else
@@ -219,7 +219,7 @@ void QgsQtLocationConnection::startSatelliteMonitor()
     else
     {
       // Not able to obtain the Satellite data source
-      QgsDebugMsg( QStringLiteral( "No QtLocation Satellite Source" ) );
+      QgsDebugError( QStringLiteral( "No QtLocation Satellite Source" ) );
     }
   }
   else

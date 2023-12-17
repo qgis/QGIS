@@ -19,6 +19,7 @@
 #define QGSANNOTATIONPOINTTEXTITEM_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
 #include "qgstextformat.h"
@@ -132,6 +133,22 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
      */
     void setAlignment( Qt::Alignment alignment );
 
+    /**
+     * Returns the rotation mode for the text item.
+     *
+     * \see setRotationMode()
+     * \since QGIS 3.32
+     */
+    Qgis::SymbolRotationMode rotationMode() const;
+
+    /**
+     * Sets the rotation \a mode for the text item.
+     *
+     * \see rotationMode()
+     * \since QGIS 3.32
+     */
+    void setRotationMode( Qgis::SymbolRotationMode mode );
+
   private:
 
     QString mText;
@@ -139,6 +156,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     QgsTextFormat mTextFormat;
     double mAngle = 0;
     Qt::Alignment mAlignment = Qt::AlignHCenter;
+    Qgis::SymbolRotationMode mRotationMode = Qgis::SymbolRotationMode::IgnoreMapRotation;
 
 #ifdef SIP_RUN
     QgsAnnotationPointTextItem( const QgsAnnotationPointTextItem &other );

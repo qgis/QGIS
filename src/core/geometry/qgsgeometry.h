@@ -251,6 +251,14 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry fromWkt( const QString &wkt );
     //! Creates a new geometry from a QgsPointXY object
     static QgsGeometry fromPointXY( const QgsPointXY &point ) SIP_HOLDGIL;
+
+    /**
+     * Creates a new geometry from a QgsPoint object.
+     *
+     * \since QGIS 3.34
+     */
+    static QgsGeometry fromPoint( const QgsPoint &point ) SIP_HOLDGIL;
+
     //! Creates a new geometry from a QgsMultiPointXY object
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 
@@ -317,6 +325,15 @@ class CORE_EXPORT QgsGeometry
 
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect ) SIP_HOLDGIL;
+
+    /**
+     * Creates a new geometry from a QgsBox3D object
+     *
+     * \since QGIS 3.34
+     */
+    static QgsGeometry fromBox3D( const QgsBox3D &box ) SIP_HOLDGIL;
+
+
     //! Creates a new multipart geometry from a list of QgsGeometry objects
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
@@ -988,10 +1005,10 @@ class CORE_EXPORT QgsGeometry
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
-     * \returns OperationResult a result code: success or reason of failure
+     * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT, bool splitFeature = true ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 
     /**
      * Splits this geometry according to a given line.
@@ -1003,7 +1020,7 @@ class CORE_EXPORT QgsGeometry
      * fix this bug?
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
-     * \returns OperationResult a result code: success or reason of failure
+     * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      *
      * Example:
      *
@@ -1015,7 +1032,108 @@ class CORE_EXPORT QgsGeometry
      *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
      * \endcode
      */
-    Qgis::GeometryOperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false );
+    Qgis::GeometryOperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false ) SIP_SKIP;
+
+
+    /*
+     This SIP code is to support overloaded methods of splitGeometry.
+     When the deprecated method is removed in QGIS 4.0 this code can be dropped
+     TODO QGIS 4 remove MethodCode
+    */
+#ifdef SIP_RUN
+
+    /**
+     * Splits this geometry according to a given line.
+     * \param splitLine the line that splits the geometry
+     * \param topological TRUE if topological editing is enabled
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
+     *
+     * \returns a tuple (Qgis.GeometryOperationResult, List[QgsGeometry], List[Union[QgsPoint, QgsPointXY]]) (result code, list of new geometries, list of topological points)
+     *
+     * Example:
+     *
+     * \code{.py}
+     *  geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
+     *  split_line = [QgsPoint(2749544.19, 1262914.79), QgsPoint(2749557.64, 1262897.30)]
+     *  result, new_geometries, point_xy = geometry.splitGeometry(split_line, False)
+     *  print(geometry.asWkt(2))
+     *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
+     * \endcode
+     */
+    SIP_PYOBJECT splitGeometry( SIP_PYOBJECT splitLine SIP_TYPEHINT( List[Union[QgsPoint, QgsPointXY]] ), bool topological, bool splitFeature = true ) SIP_TYPEHINT( Tuple[Qgis.GeometryOperationResult, Union[List[QgsPoint], List[QgsPointXY]], Union[List[QgsPoint], List[QgsPointXY]]] );
+    % MethodCode
+    {
+      int sipIsErr = 0;
+      int state;
+
+      if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
+      {
+        PyObject *p0 = PyList_GetItem( a0, 0 );
+        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+             sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+        {
+          QVector<QgsGeometry> newGeometries;
+          QVector<QgsPointXY> topologyTestPoints;
+
+          QVector<QgsPointXY> *splitLine = reinterpret_cast<QVector<QgsPointXY> *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( sipIsErr )
+          {
+            sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
+          }
+          else
+          {
+            Qgis::GeometryOperationResult result = sipCpp->splitGeometry( *splitLine, newGeometries, a1, topologyTestPoints, a2 );
+
+            PyObject *o0 = sipConvertFromEnum( static_cast<int>( result ), sipType_Qgis_GeometryOperationResult );
+            PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
+            PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPointXY, Py_None );
+
+            sipRes = PyTuple_New( 3 );
+            PyTuple_SET_ITEM( sipRes, 0, o0 );
+            PyTuple_SET_ITEM( sipRes, 1, o1 );
+            PyTuple_SET_ITEM( sipRes, 2, o2 );
+          }
+        }
+
+        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) &&
+                  sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+        {
+          QVector<QgsGeometry> newGeometries;
+          QVector<QgsPoint> topologyTestPoints;
+
+          QVector<QgsPoint> *splitLine = reinterpret_cast<QVector<QgsPoint> *>( sipConvertToType( a0, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( sipIsErr )
+          {
+            sipReleaseType( splitLine, sipType_QVector_0100QgsPoint, state );
+          }
+          else
+          {
+            Qgis::GeometryOperationResult result = sipCpp->splitGeometry( *splitLine, newGeometries, a1, topologyTestPoints, a2 );
+
+            PyObject *o0 = sipConvertFromEnum( static_cast<int>( result ), sipType_Qgis_GeometryOperationResult );
+            PyObject *o1 = sipConvertFromType( &newGeometries, sipType_QVector_0100QgsGeometry, Py_None );
+            PyObject *o2 = sipConvertFromType( &topologyTestPoints, sipType_QVector_0100QgsPoint, Py_None );
+
+            sipRes = PyTuple_New( 3 );
+            PyTuple_SET_ITEM( sipRes, 0, o0 );
+            PyTuple_SET_ITEM( sipRes, 1, o1 );
+            PyTuple_SET_ITEM( sipRes, 2, o2 );
+          }
+        }
+        else
+        {
+          sipIsErr = 1;
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Could not convert first argument to a list of QgsPoint or QgsPointXY." ).toUtf8().constData() );
+        }
+      }
+      else
+      {
+        sipIsErr = 1;
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "First argument is not a list of points or is empty." ).toUtf8().constData() );
+      }
+    }
+    % End
+#endif
 
     /**
      * Splits this geometry according to a given curve.
@@ -1057,6 +1175,13 @@ class CORE_EXPORT QgsGeometry
      * \see orientedMinimumBoundingBox()
      */
     QgsRectangle boundingBox() const;
+
+    /**
+     * Returns the 3D bounding box of the geometry.
+     *
+     * \since QGIS 3.34
+     */
+    QgsBox3D boundingBox3D() const;
 
     /**
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
@@ -1707,6 +1832,60 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
+     * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge
+     * geometry) to find places where the assumption of exactly matching edges is not met.
+     *
+     * The input geometry is the polygonal coverage to access, stored in a geometry collection. All members must be POLYGON
+     * or MULTIPOLYGON.
+     *
+     * \param gapWidth The maximum width of gaps to detect.
+     * \param invalidEdges When there are invalidities in the coverage, will be set with a geometry collection of the same length as the input, with a MULTILINESTRING of the error edges for each invalid polygon, or an EMPTY where the polygon is a valid participant in the coverage.
+     * \returns validity check result
+     *
+     * This method requires a QGIS build based on GEOS 3.12 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.11 or earlier.
+     * \see simplifyCoverageVW()
+     * \since QGIS 3.36
+     */
+    Qgis::CoverageValidityResult validateCoverage( double gapWidth, QgsGeometry *invalidEdges SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to apply
+     * a Visvalingam–Whyatt simplification to the edges, reducing complexity in proportion with the provided tolerance,
+     * while retaining a valid coverage (no edges will cross or touch after the simplification).
+     *
+     * Geometries never disappear, but they may be simplified down to just a triangle. Also, some invalid geoms
+     * (such as Polygons which have too few non-repeated points) will be returned unchanged.
+     *
+     * If the input dataset is not a valid coverage due to overlaps, it will still be simplified, but invalid topology
+     * such as crossing edges will still be invalid.
+     *
+     * \param tolerance A tolerance parameter in linear units.
+     * \param preserveBoundary Set to TRUE to preserve the outside edges of the coverage without simplification, or FALSE to allow them to be simplified.
+     *
+     * This method requires a QGIS build based on GEOS 3.12 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.11 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 3.36
+     */
+    QgsGeometry simplifyCoverageVW( double tolerance, bool preserveBoundary ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Optimized union algorithm for polygonal inputs that are correctly noded and do not overlap.
+     * It may generate an error (returning a null geometry) for inputs that do not satisfy this constraint,
+     * however this is not guaranteed.
+     *
+     * The input geometry is the polygonal coverage to union, stored in a geometry collection.
+     * All members must be POLYGON or MULTIPOLYGON.
+     *
+     * \see validateCoverage()
+     * \since QGIS 3.36
+     */
+    QgsGeometry unionCoverage() const;
 
     /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
@@ -2425,9 +2604,24 @@ class CORE_EXPORT QgsGeometry
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 1.5
+     * \deprecated QGIS 3.34
      */
-    int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-                            const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    Q_DECL_DEPRECATED int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) ) SIP_DEPRECATED;
+
+    /**
+     * Modifies geometry to avoid intersections with the layers specified in project properties
+     * \param avoidIntersectionsLayers list of layers to check for intersections
+     * \param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
+     * \returns Success                  in case of success
+     *          InvalidInputGeometryType if geometry is not of polygon type
+     *          GeometryTypeHasChanged   if avoid intersection has changed the geometry type
+     *          InvalidBaseGeometry      at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
+     *          NothingHappened          if the geometry is not intersected by one of the geometries present in the provided layers.
+     * \since QGIS 3.34
+     */
+    Qgis::GeometryOperationResult avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 
     /**
      * Attempts to make an invalid geometry valid without losing vertices.
@@ -2453,6 +2647,48 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Returns the orientation of the polygon.
+     * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
+     * you have to perform in deep verification.
+     *
+     * \warning returns Qgis::AngularDirection::NoOrientation if the geometry is not a polygon type or empty
+     *
+     * \since QGIS 3.36
+     */
+    Qgis::AngularDirection polygonOrientation() const;
+
+    /**
+     * Returns True if the Polygon is counter-clockwise.
+     *
+     * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
+     * you have to perform in deep verification.
+     *
+     * \warning returns false if the geometry is not a polygon type or empty
+     *
+     * \see isPolygonClockwise()
+     * \see forcePolygonClockwise()
+     * \see forcePolygonCounterClockwise()
+     * \since QGIS 3.36
+     */
+    bool isPolygonCounterClockwise() const { return polygonOrientation() == Qgis::AngularDirection::CounterClockwise; }
+
+    /**
+     * Returns True if the Polygon is clockwise.
+     *
+     * \warning Only the first exterior ring is taken to perform this operation. In case of degenerate orders,
+     * you have to perform in deep verification.
+     *
+     * \warning returns true if the geometry is not a polygon type or empty
+     *
+     * \see isPolygonCounterClockwise()
+     * \see forcePolygonClockwise()
+     * \see forcePolygonCounterClockwise()
+     * \since QGIS 3.36
+     */
+    bool isPolygonClockwise() const { return polygonOrientation() == Qgis::AngularDirection::Clockwise; }
+
+
+    /**
      * Forces geometries to respect the Right-Hand-Rule, in which the area that is bounded by a polygon
      * is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
      * and the interior rings in a counter-clockwise direction.
@@ -2460,6 +2696,8 @@ class CORE_EXPORT QgsGeometry
      * \warning Due to the conflicting definitions of the right-hand-rule in general use, it is recommended
      * to use the explicit forcePolygonClockwise() or forcePolygonCounterClockwise() methods instead.
      *
+     * \see isPolygonClockwise()
+     * \see isPolygonCounterClockwise()
      * \see forcePolygonClockwise()
      * \see forcePolygonCounterClockwise()
      * \since QGIS 3.6
@@ -2471,6 +2709,8 @@ class CORE_EXPORT QgsGeometry
      *
      * This convention is used primarily by ESRI software.
      *
+     * \see isPolygonClockwise()
+     * \see isPolygonCounterClockwise()
      * \see forcePolygonCounterClockwise()
      * \since QGIS 3.24
      */
@@ -2481,6 +2721,8 @@ class CORE_EXPORT QgsGeometry
      *
      * This convention matches the OGC Simple Features specification.
      *
+     * \see isPolygonClockwise()
+     * \see isPolygonCounterClockwise()
      * \see forcePolygonClockwise()
      * \since QGIS 3.24
      */

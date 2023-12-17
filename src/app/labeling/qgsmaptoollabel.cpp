@@ -34,7 +34,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgsfontutils.h"
 
 #include <QMouseEvent>
 
@@ -88,6 +88,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledScene:
           return true;
       }
     }
@@ -179,6 +180,7 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledScene:
           return true;
       }
     }
@@ -247,7 +249,8 @@ void QgsMapToolLabel::createRubberBands()
           // instead, just use the boundary of the polygon for the rubber band
           geom = QgsGeometry( geom.constGet()->boundary() );
         }
-        else if ( geom.type() == Qgis::GeometryType::Line )
+
+        if ( geom.type() == Qgis::GeometryType::Line || geom.type() == Qgis::GeometryType::Polygon )
         {
           mOffsetFromLineStartRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
           mOffsetFromLineStartRubberBand->setColor( lineColor );
@@ -508,7 +511,7 @@ QFont QgsMapToolLabel::currentLabelFont()
       int fmIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Family, labelSettings, vlayer );
       if ( fmIndx != -1 )
       {
-        font.setFamily( f.attribute( fmIndx ).toString() );
+        QgsFontUtils::setFontFamily( font, f.attribute( fmIndx ).toString() );
       }
 
       //underline
@@ -591,9 +594,9 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   QgsPointXY cp_0 = cornerPoints.at( 0 );
   QgsPointXY cp_1 = cornerPoints.at( 1 );
   QgsPointXY cp_3 = cornerPoints.at( 3 );
-  //  QgsDebugMsg( QStringLiteral( "cp_0: x=%1, y=%2" ).arg( cp_0.x() ).arg( cp_0.y() ) );
-  //  QgsDebugMsg( QStringLiteral( "cp_1: x=%1, y=%2" ).arg( cp_1.x() ).arg( cp_1.y() ) );
-  //  QgsDebugMsg( QStringLiteral( "cp_3: x=%1, y=%2" ).arg( cp_3.x() ).arg( cp_3.y() ) );
+  //  QgsDebugMsgLevel( QStringLiteral( "cp_0: x=%1, y=%2" ).arg( cp_0.x() ).arg( cp_0.y() ), 2 );
+  //  QgsDebugMsgLevel( QStringLiteral( "cp_1: x=%1, y=%2" ).arg( cp_1.x() ).arg( cp_1.y() ), 2 );
+  //  QgsDebugMsgLevel( QStringLiteral( "cp_3: x=%1, y=%2" ).arg( cp_3.x() ).arg( cp_3.y() ), 2 );
   double labelSizeX = std::sqrt( cp_0.sqrDist( cp_1 ) );
   double labelSizeY = std::sqrt( cp_0.sqrDist( cp_3 ) );
 
@@ -657,7 +660,7 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
       break;
   }
 
-  double angle = mCurrentLabel.pos.rotation;
+  double angle = mCurrentLabel.pos.rotation * M_PI / 180;
   double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
   double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
   if ( mCurrentLabel.pos.upsideDown && !ignoreUpsideDown )
@@ -700,18 +703,18 @@ QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p,
 
   switch ( property.propertyType() )
   {
-    case QgsProperty::InvalidProperty:
+    case Qgis::PropertyType::Invalid:
       break;
 
-    case QgsProperty::StaticProperty:
+    case Qgis::PropertyType::Static:
       status = PropertyStatus::Valid;
       break;
 
-    case QgsProperty::FieldBasedProperty:
+    case Qgis::PropertyType::Field:
       status = PropertyStatus::Valid;
       return property.field();
 
-    case QgsProperty::ExpressionBasedProperty:
+    case Qgis::PropertyType::Expression:
     {
       status = PropertyStatus::Valid;
 
@@ -1089,7 +1092,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
       xCol = -1;
       if ( QgsProperty ddX = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionX ) )
       {
-        if ( ddX.propertyType() == QgsProperty::FieldBasedProperty && ddX.isActive() )
+        if ( ddX.propertyType() == Qgis::PropertyType::Field && ddX.isActive() )
         {
           xCol = vlayer->fields().lookupField( ddX.field() );
         }
@@ -1097,7 +1100,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
       yCol = -1;
       if ( QgsProperty ddY = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionY ) )
       {
-        if ( ddY.propertyType() == QgsProperty::FieldBasedProperty && ddY.isActive() )
+        if ( ddY.propertyType() == Qgis::PropertyType::Field && ddY.isActive() )
         {
           yCol = vlayer->fields().lookupField( ddY.field() );
         }
@@ -1239,7 +1242,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
     {
       if ( QgsProperty ddShow = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::Show ) )
       {
-        if ( ddShow.propertyType() == QgsProperty::FieldBasedProperty && ddShow.isActive() )
+        if ( ddShow.propertyType() == Qgis::PropertyType::Field && ddShow.isActive() )
         {
           showCol = vlayer->fields().lookupField( ddShow.field() );
         }
@@ -1307,7 +1310,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
 
     // always use the default activated property
     QgsProperty prop = details.settings.dataDefinedProperties().property( p );
-    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
@@ -1320,8 +1323,9 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     indexes[p] = index;
   }
 
-  // Anchor properties are for linestrings only:
-  if ( vlayer->geometryType() == Qgis::GeometryType::Line )
+  // Anchor properties are for linestrings and polygons only:
+  if ( vlayer->geometryType() == Qgis::GeometryType::Line ||
+       vlayer->geometryType() == Qgis::GeometryType::Polygon )
   {
     for ( const QgsPalLayerSettings::Property &p : std::as_const( mPalAnchorProperties ) )
     {
@@ -1329,7 +1333,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
 
       // always use the default activated property
       QgsProperty prop = details.settings.dataDefinedProperties().property( p );
-      if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+      if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
       {
         index = vlayer->fields().lookupField( prop.field() );
       }
@@ -1382,7 +1386,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
 
     // always use the default activated property
     QgsProperty prop = vlayer->diagramLayerSettings()->dataDefinedProperties().property( p );
-    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
@@ -1432,7 +1436,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     // always use the default activated property
     QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout() ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( p ) :
                        QgsProperty();
-    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {
       index = vlayer->fields().lookupField( prop.field() );
     }

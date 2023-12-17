@@ -41,22 +41,30 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
 
 void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
 {
-  mLayer = layer;
-  mFeaturePickerWidget->setLayer( layer );
+  if ( layer != mLayer )
+  {
+    mLayer = layer;
+    mFeaturePickerWidget->setLayer( layer );
+  }
 }
 
 void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
 {
-  mExpressionText = expression;
-  refreshPreview();
+  if ( expression != mExpressionText )
+  {
+    mExpressionText = expression;
+    refreshPreview();
+  }
 }
 
 void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
 {
   // todo: update the combo box if it has been set externaly?
-
-  mExpressionContext.setFeature( feature );
-  refreshPreview();
+  if ( feature != mExpressionContext.feature() )
+  {
+    mExpressionContext.setFeature( feature );
+    refreshPreview();
+  }
 }
 
 void QgsExpressionPreviewWidget::setGeomCalculator( const QgsDistanceArea &da )

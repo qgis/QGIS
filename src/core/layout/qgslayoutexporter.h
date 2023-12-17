@@ -39,6 +39,7 @@ class QgsLayoutItemMap;
 class QgsAbstractLayoutIterator;
 class QgsFeedback;
 class QgsLabelingResults;
+class QgsSettingsEntryBool;
 
 /**
  * \ingroup core
@@ -50,6 +51,15 @@ class CORE_EXPORT QgsLayoutExporter
 {
 
   public:
+
+    //! Settings entry - Whether to automatically open images after exporting them \since QGIS 3.34
+    static const QgsSettingsEntryBool *settingOpenAfterExportingImage SIP_SKIP;
+
+    //! Settings entry - Whether to automatically open pdfs after exporting them \since QGIS 3.34
+    static const QgsSettingsEntryBool *settingOpenAfterExportingPdf SIP_SKIP;
+
+    //! Settings entry - Whether to automatically open svgs after exporting them \since QGIS 3.34
+    static const QgsSettingsEntryBool *settingOpenAfterExportingSvg SIP_SKIP;
 
     //! Contains details of a page being exported by the class
     struct PageExportDetails
@@ -387,7 +397,6 @@ class CORE_EXPORT QgsLayoutExporter
        * \since QGIS 3.10
        */
       QVector<qreal> predefinedMapScales;
-
     };
 
     /**

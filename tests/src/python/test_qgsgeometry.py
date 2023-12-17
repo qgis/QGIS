@@ -27,6 +27,7 @@ from qgis.PyQt.QtGui import (
 from qgis.core import (
     Qgis,
     QgsAbstractGeometryTransformer,
+    QgsBox3D,
     QgsCircle,
     QgsCircularString,
     QgsCompoundCurve,
@@ -54,7 +55,8 @@ from qgis.core import (
     QgsVertexId,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath, writeShape
 
@@ -64,11 +66,14 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsGeometry(unittest.TestCase):
+class TestQgsGeometry(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsGeometry Tests</h1>\n"
-        self.geos39 = Qgis.geosVersionInt() >= 30900
+        self.geos309 = 30900
+        self.geos310_4 = 31040
+        self.geos311 = 31100
+        self.geos312 = 31200
 
     def testBool(self):
         """ Test boolean evaluation of QgsGeometry """
@@ -229,9 +234,16 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(geom.constGet().geometryN(1).x(), 21)
         self.assertEqual(geom.constGet().geometryN(1).y(), 31)
 
-    def testFromPoint(self):
+    def testFromPointXY(self):
         myPoint = QgsGeometry.fromPointXY(QgsPointXY(10, 10))
         self.assertEqual(myPoint.wkbType(), QgsWkbTypes.Point)
+
+    def testFromPoint(self):
+        myPoint = QgsGeometry.fromPoint(QgsPoint(10, 3, 5))
+        self.assertEqual(myPoint.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(myPoint.constGet().x(), 10)
+        self.assertEqual(myPoint.constGet().y(), 3)
+        self.assertEqual(myPoint.constGet().z(), 5)
 
     def testFromMultiPoint(self):
         myMultiPoint = QgsGeometry.fromMultiPointXY([
@@ -264,6 +276,10 @@ class TestQgsGeometry(unittest.TestCase):
               QgsPointXY(2, 2)]]
         ])
         self.assertEqual(myMultiPolygon.wkbType(), QgsWkbTypes.MultiPolygon)
+
+    def testFromBox3D(self):
+        myBox3D = QgsGeometry.fromBox3D(QgsBox3D(1, 2, 3, 4, 5, 6))
+        self.assertEqual(myBox3D.asWkt(), "MultiPolygonZ (((1 2 3, 1 5 3, 4 5 3, 4 2 3, 1 2 3)),((1 2 3, 1 5 3, 1 5 6, 1 2 6, 1 2 3)),((1 2 3, 4 2 3, 4 2 6, 1 2 6, 1 2 3)),((4 5 6, 4 2 6, 1 2 6, 1 5 6, 4 5 6)),((4 5 6, 4 2 6, 4 2 3, 4 5 3, 4 5 6)),((4 5 6, 4 5 3, 1 5 3, 1 5 6, 4 5 6)))")
 
     def testLineStringPythonAdditions(self):
         """
@@ -536,6 +552,100 @@ class TestQgsGeometry(unittest.TestCase):
         # mixed array, because hey, why not?? :D
         line = QgsLineString([QgsPoint(1, 2), QgsPointXY(3, 4), [5, 6], (7, 8)])
         self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 5 6, 7 8)')
+
+    def testQgsMultiPointPythonConstructors(self):
+        """
+        Test various constructors for QgsMultiPoint in Python
+        """
+        point = QgsMultiPoint()
+        self.assertEqual(point.asWkt(), 'MultiPoint EMPTY')
+
+        # empty array
+        point = QgsMultiPoint([])
+        self.assertEqual(point.asWkt(), 'MultiPoint EMPTY')
+
+        # invalid array
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([1, 2, 3])
+
+        # array of QgsPoint
+        point = QgsMultiPoint([QgsPoint(1, 2), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(11 12))')
+
+        # array of QgsPoint with Z
+        point = QgsMultiPoint([QgsPoint(1, 2, 11), QgsPoint(3, 4, 13), QgsPoint(11, 12, 14)])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4 13),(11 12 14))')
+
+        # array of QgsPoint with Z, only first has z
+        point = QgsMultiPoint([QgsPoint(1, 2, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4),(11 12))')
+
+        # array of QgsPoint with M
+        point = QgsMultiPoint([QgsPoint(1, 2, None, 11), QgsPoint(3, 4, None, 13), QgsPoint(11, 12, None, 14)])
+        self.assertEqual(point.asWkt(), 'MultiPointM ((1 2 11),(3 4 13),(11 12 14))')
+
+        # array of QgsPoint with M, only first has M
+        point = QgsMultiPoint([QgsPoint(1, 2, None, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPointM ((1 2 11),(3 4),(11 12))')
+
+        # array of QgsPoint with ZM
+        point = QgsMultiPoint([QgsPoint(1, 2, 22, 11), QgsPoint(3, 4, 23, 13), QgsPoint(11, 12, 24, 14)])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 22 11),(3 4 23 13),(11 12 24 14))')
+
+        # array of QgsPoint with ZM, only first has ZM
+        point = QgsMultiPoint([QgsPoint(1, 2, 33, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 33 11),(3 4),(11 12))')
+
+        # array of QgsPointXY
+        point = QgsMultiPoint([QgsPointXY(1, 2), QgsPointXY(3, 4), QgsPointXY(11, 12)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(11 12))')
+
+        # array of array of bad values
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[QgsPolygon(), QgsPoint()]])
+
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[1, 2], [QgsPolygon(), QgsPoint()]])
+
+        # array of array of 1d floats
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[1], [3], [5]])
+
+        # array of array of floats
+        point = QgsMultiPoint([[1, 2], [3, 4], [5, 6]])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(5 6))')
+
+        # tuple of tuple of floats
+        point = QgsMultiPoint(((1, 2), (3, 4), (5, 6)))
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(5 6))')
+
+        # sequence
+        point = QgsMultiPoint([[c + 10, c + 11] for c in range(5)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((10 11),(11 12),(12 13),(13 14),(14 15))')
+
+        # array of array of 3d floats
+        point = QgsMultiPoint([[1, 2, 11], [3, 4, 12], [5, 6, 13]])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4 12),(5 6 13))')
+
+        # array of array of inconsistent 3d floats
+        point = QgsMultiPoint([[1, 2, 11], [3, 4], [5, 6]])
+        self.assertEqual(point.asWkt(), 'MultiPointZ ((1 2 11),(3 4),(5 6))')
+
+        # array of array of 4d floats
+        point = QgsMultiPoint([[1, 2, 11, 21], [3, 4, 12, 22], [5, 6, 13, 23]])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 11 21),(3 4 12 22),(5 6 13 23))')
+
+        # array of array of inconsistent 4d floats
+        point = QgsMultiPoint([[1, 2, 11, 21], [3, 4, 12], [5, 6]])
+        self.assertEqual(point.asWkt(), 'MultiPointZM ((1 2 11 21),(3 4 12),(5 6))')
+
+        # array of array of 5 floats
+        with self.assertRaises(TypeError):
+            point = QgsMultiPoint([[1, 2, 11, 21, 22], [3, 4, 12, 22, 23], [5, 6, 13, 23, 24]])
+
+        # mixed array, because hey, why not?? :D
+        point = QgsMultiPoint([QgsPoint(1, 2), QgsPointXY(3, 4), [5, 6], (7, 8)])
+        self.assertEqual(point.asWkt(), 'MultiPoint ((1 2),(3 4),(5 6),(7 8))')
 
     def testGeometryCollectionPythonAdditions(self):
         """
@@ -1181,7 +1291,10 @@ class TestQgsGeometry(unittest.TestCase):
                 # print 'Difference: %s' % myDifferenceGeometry.asWkt()
                 print(f'Symmetrical: {mySymmetricalGeometry.asWkt()}')
 
-                if self.geos39:
+                if Qgis.geosVersionInt() >= self.geos312:
+                    # See: https://github.com/libgeos/geos/pull/788
+                    myExpectedWkt = 'Polygon ((30 30, 30 20, 20 20, 20 30, 30 30))'
+                elif Qgis.geosVersionInt() >= self.geos309:
                     myExpectedWkt = 'Polygon ((20 30, 30 30, 30 20, 20 20, 20 30))'
                 else:
                     myExpectedWkt = 'Polygon ((20 20, 20 30, 30 30, 30 20, 20 20))'
@@ -2229,6 +2342,37 @@ class TestQgsGeometry(unittest.TestCase):
         points = []
         line = QgsGeometry.fromPolylineXY(points)
         assert line.boundingBox().isNull()
+
+    def testBoundingBox3D(self):
+        # null
+        points = []
+        geom = QgsGeometry.fromPolylineXY(points)
+        assert geom.boundingBox3D().isNull()
+
+        # fromBox3D
+        box3D = QgsBox3D(1, 2, 3, 4, 5, 6)
+        box3D_geom = QgsGeometry.fromBox3D(box3D)
+        result = box3D_geom.boundingBox3D()
+        self.assertEqual(
+            box3D, result,
+            f"Expected:\n{box3D.toString()}\nGot:\n{result.toString()}\n")
+
+        # 2D polyline
+        points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1),
+                  QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
+        polyline2D = QgsGeometry.fromPolylineXY(points)
+        expbb2D = QgsBox3D(0, 0, float("nan"), 5, 4, float("nan"))
+        bb2D = polyline2D.boundingBox3D()
+        self.assertEqual(
+            expbb2D, bb2D, f"Expected:\n{expbb2D.toString()}\nGot:\n{bb2D.toString()}\n")
+
+        # 3D polyline
+        points = [QgsPoint(5, 0, -3), QgsPoint(0, 0, 5), QgsPoint(0, 4, -3), QgsPoint(5, 4, 0), QgsPoint(5, 1, 1),
+                  QgsPoint(1, 1, 2), QgsPoint(1, 3, 5), QgsPoint(4, 3, 9), QgsPoint(4, 2, -6), QgsPoint(2, 2, 8)]
+        polyline3D = QgsGeometry.fromPolyline(points)
+        expbb3D = QgsBox3D(0, 0, -6, 5, 4, 9)
+        bb3D = polyline3D.boundingBox3D()
+        self.assertEqual(expbb3D, bb3D, f"Expected:\n{expbb3D.toString()}\nGot:\n{bb3D.toString()}\n")
 
     def testCollectGeometry(self):
         # collect points
@@ -4738,7 +4882,7 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
-        expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1.5 -0.5, 1 -1),(1 -1, 0 0)))"
+        expected_wkt = "CurvePolygon (CompoundCurve ((0 0, 2 0),CircularString (2 0, 1.5 -0.5, 1 -1),(1 -1, 0 0)))"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
@@ -4750,7 +4894,7 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
-        expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 1 -1),(1 -1, 0 0)))"
+        expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 2 0),(2 0, 1 -1),(1 -1, 0 0)))"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
         wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
@@ -5135,6 +5279,9 @@ class TestQgsGeometry(unittest.TestCase):
         result = extended.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         f"Extend line: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        expbb = QgsRectangle(-1, 0, 1, 3)
+        bb = extended.boundingBox()
+        self.assertEqual(expbb, bb, f"Extend line: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n")
 
         # multilinestring
         multilinestring = QgsGeometry.fromWkt('MultiLineString((0 0, 1 0, 1 1),(11 11, 11 10, 10 10))')
@@ -5142,7 +5289,10 @@ class TestQgsGeometry(unittest.TestCase):
         exp = 'MultiLineString((-1 0, 1 0, 1 3),(11 12, 11 10, 8 10))'
         result = extended.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"Extend line: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+                        f"Extend multiline: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        expbb = QgsRectangle(-1, 0, 11, 12)
+        bb = extended.boundingBox()
+        self.assertEqual(expbb, bb, f"Extend multiline: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n")
 
     def testRemoveRings(self):
         empty = QgsGeometry()
@@ -5359,11 +5509,15 @@ class TestQgsGeometry(unittest.TestCase):
         result = o.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
-
         input = QgsGeometry.fromWkt(
             "MULTIPOINT((-118.3964065 56.0557),(-118.396406 56.0475),(-118.396407 56.04),(-118.3968 56))")
         o = input.delaunayTriangulation(0.001, True)
-        exp = "MULTILINESTRING ((-118.3964065 56.0557, -118.396406 56.0475), (-118.396407 56.04, -118.396406 56.0475), (-118.3968 56, -118.396407 56.04))"
+        # Delaunay Triangulation computation change. See: https://github.com/libgeos/geos/pull/728
+        if Qgis.geosVersionInt() >= self.geos310_4:
+            exp = "MultiLineString ((-118.39679999999999893 56, -118.39640649999999766 56.05570000000000164),(-118.39679999999999893 56, -118.3964069999999964 56.03999999999999915),(-118.3964069999999964 56.03999999999999915, -118.39640599999999893 56.04749999999999943),(-118.39640649999999766 56.05570000000000164, -118.39640599999999893 56.04749999999999943),(-118.39679999999999893 56, -118.39640599999999893 56.04749999999999943))"
+        else:
+            exp = "MULTILINESTRING ((-118.3964065 56.0557, -118.396406 56.0475), (-118.396407 56.04, -118.396406 56.0475), (-118.3968 56, -118.396407 56.04))"
+
         result = o.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
@@ -5382,7 +5536,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         input = QgsGeometry.fromWkt("MULTIPOINT ((150 200), (180 270), (275 163))")
         o = input.voronoiDiagram()
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((25 38, 25 295, 221.20588235294118817 210.91176470588234793, 170.02400000000000091 38, 25 38)),Polygon ((400 38, 170.02400000000000091 38, 221.20588235294118817 210.91176470588234793, 400 369.65420560747656964, 400 38)),Polygon ((25 395, 400 395, 400 369.65420560747656964, 221.20588235294118817 210.91176470588234793, 25 295, 25 395)))"
         else:
             exp = "GeometryCollection (Polygon ((170.02400000000000091 38, 25 38, 25 295, 221.20588235294115975 210.91176470588234793, 170.02400000000000091 38)),Polygon ((400 369.65420560747662648, 400 38, 170.02400000000000091 38, 221.20588235294115975 210.91176470588234793, 400 369.65420560747662648)),Polygon ((25 295, 25 395, 400 395, 400 369.65420560747662648, 221.20588235294115975 210.91176470588234793, 25 295)))"
@@ -5392,7 +5546,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         input = QgsGeometry.fromWkt("MULTIPOINT ((280 300), (420 330), (380 230), (320 160))")
         o = input.voronoiDiagram()
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((110 500, 310.35714285714283278 500, 353.515625 298.59375, 306.875 231.96428571428572241, 110 175.71428571428572241, 110 500)),Polygon ((590 -10, 589.16666666666662877 -10, 306.875 231.96428571428572241, 353.515625 298.59375, 590 204, 590 -10)),Polygon ((110 -10, 110 175.71428571428572241, 306.875 231.96428571428572241, 589.16666666666662877 -10, 110 -10)),Polygon ((590 500, 590 204, 353.515625 298.59375, 310.35714285714283278 500, 590 500)))"
         else:
             exp = "GeometryCollection (Polygon ((110 175.71428571428572241, 110 500, 310.35714285714283278 500, 353.515625 298.59375, 306.875 231.96428571428572241, 110 175.71428571428572241)),Polygon ((590 204, 590 -10, 589.16666666666662877 -10, 306.875 231.96428571428572241, 353.515625 298.59375, 590 204)),Polygon ((589.16666666666662877 -10, 110 -10, 110 175.71428571428572241, 306.875 231.96428571428572241, 589.16666666666662877 -10)),Polygon ((310.35714285714283278 500, 590 500, 590 204, 353.515625 298.59375, 310.35714285714283278 500)))"
@@ -5402,7 +5556,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         input = QgsGeometry.fromWkt("MULTIPOINT ((320 170), (366 246), (530 230), (530 300), (455 277), (490 160))")
         o = input.voronoiDiagram()
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((110 -50, 110 349.02631578947364233, 405.31091180866962986 170.28550074738416242, 392.35294117647055145 -50, 110 -50)),Polygon ((740 -50, 392.35294117647055145 -50, 405.31091180866962986 170.28550074738416242, 429.91476778570188344 205.76082797008174907, 470.12061711079945781 217.78821879382888937, 740 63.57142857142859071, 740 -50)),Polygon ((110 510, 323.94382022471910432 510, 429.91476778570188344 205.76082797008174907, 405.31091180866962986 170.28550074738416242, 110 349.02631578947364233, 110 510)),Polygon ((424.57333333333326664 510, 499.70666666666664923 265, 470.12061711079945781 217.78821879382888937, 429.91476778570188344 205.76082797008174907, 323.94382022471910432 510, 424.57333333333326664 510)),Polygon ((740 63.57142857142859071, 470.12061711079945781 217.78821879382888937, 499.70666666666664923 265, 740 265, 740 63.57142857142859071)),Polygon ((740 510, 740 265, 499.70666666666664923 265, 424.57333333333326664 510, 740 510)))"
         else:
             exp = "GeometryCollection (Polygon ((392.35294117647055145 -50, 110 -50, 110 349.02631578947364233, 405.31091180866962986 170.28550074738416242, 392.35294117647055145 -50)),Polygon ((740 63.57142857142859071, 740 -50, 392.35294117647055145 -50, 405.31091180866962986 170.28550074738416242, 429.91476778570188344 205.76082797008174907, 470.12061711079945781 217.78821879382888937, 740 63.57142857142859071)),Polygon ((110 349.02631578947364233, 110 510, 323.94382022471910432 510, 429.91476778570188344 205.76082797008174907, 405.31091180866962986 170.28550074738416242, 110 349.02631578947364233)),Polygon ((323.94382022471910432 510, 424.57333333333326664 510, 499.70666666666664923 265, 470.12061711079945781 217.78821879382888937, 429.91476778570188344 205.76082797008174907, 323.94382022471910432 510)),Polygon ((740 265, 740 63.57142857142859071, 470.12061711079945781 217.78821879382888937, 499.70666666666664923 265, 740 265)),Polygon ((424.57333333333326664 510, 740 510, 740 265, 499.70666666666664923 265, 424.57333333333326664 510)))"
@@ -5413,7 +5567,7 @@ class TestQgsGeometry(unittest.TestCase):
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((280 200), (406 285), (580 280), (550 190), (370 190), (360 90), (480 110), (440 160), (450 180), (480 180), (460 160), (360 210), (360 220), (370 210), (375 227))")
         o = input.voronoiDiagram()
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((-20 585, 111.94841269841269593 585, 293.54906542056073704 315.803738317756995, 318.75 215, 323.2352941176470722 179.1176470588235361, 319.39560439560437999 144.560439560439562, -20 -102.27272727272726627, -20 585)),Polygon ((365 200, 365 215, 369.40909090909093493 219.40909090909090651, 414.21192052980131848 206.23178807947019209, 411.875 200, 365 200)),Polygon ((365 215, 365 200, 323.2352941176470722 179.1176470588235361, 318.75 215, 365 215)),Polygon ((-20 -210, -20 -102.27272727272726627, 319.39560439560437999 144.560439560439562, 388.97260273972602818 137.60273972602740855, 419.55882352941176805 102.64705882352940591, 471.66666666666674246 -210, -20 -210)),Polygon ((411.875 200, 410.29411764705884025 187.35294117647057988, 388.97260273972602818 137.60273972602740855, 319.39560439560437999 144.560439560439562, 323.2352941176470722 179.1176470588235361, 365 200, 411.875 200)),Polygon ((410.29411764705884025 187.35294117647057988, 411.875 200, 414.21192052980131848 206.23178807947019209, 431.62536593766145643 234.0192009643533595, 465 248.00476190476189231, 465 175, 450 167.5, 410.29411764705884025 187.35294117647057988)),Polygon ((293.54906542056073704 315.803738317756995, 339.65007656967839011 283.17840735068909908, 369.40909090909093493 219.40909090909090651, 365 215, 318.75 215, 293.54906542056073704 315.803738317756995)),Polygon ((501.69252873563220874 585, 492.56703910614527331 267.43296089385472669, 465 248.00476190476189231, 431.62536593766145643 234.0192009643533595, 339.65007656967839011 283.17840735068909908, 293.54906542056073704 315.803738317756995, 111.94841269841269593 585, 501.69252873563220874 585)),Polygon ((369.40909090909093493 219.40909090909090651, 339.65007656967839011 283.17840735068909908, 431.62536593766145643 234.0192009643533595, 414.21192052980131848 206.23178807947019209, 369.40909090909093493 219.40909090909090651)),Polygon ((388.97260273972602818 137.60273972602740855, 410.29411764705884025 187.35294117647057988, 450 167.5, 450 127, 419.55882352941176805 102.64705882352940591, 388.97260273972602818 137.60273972602740855)),Polygon ((465 175, 465 248.00476190476189231, 492.56703910614527331 267.43296089385472669, 505 255, 520.71428571428566556 145, 495 145, 465 175)),Polygon ((880 -210, 471.66666666666674246 -210, 419.55882352941176805 102.64705882352940591, 450 127, 495 145, 520.71428571428566556 145, 880 -169.375, 880 -210)),Polygon ((465 175, 495 145, 450 127, 450 167.5, 465 175)),Polygon ((880 585, 880 130, 505 255, 492.56703910614527331 267.43296089385472669, 501.69252873563220874 585, 880 585)),Polygon ((880 -169.375, 520.71428571428566556 145, 505 255, 880 130, 880 -169.375)))"
         else:
             exp = "GeometryCollection (Polygon ((-20 -102.27272727272726627, -20 585, 111.94841269841269593 585, 293.54906542056073704 315.803738317756995, 318.75 215, 323.2352941176470722 179.1176470588235361, 319.39560439560437999 144.560439560439562, -20 -102.27272727272726627)),Polygon ((365 200, 365 215, 369.40909090909093493 219.40909090909090651, 414.21192052980131848 206.23178807947019209, 411.875 200, 365 200)),Polygon ((365 215, 365 200, 323.2352941176470722 179.1176470588235361, 318.75 215, 365 215)),Polygon ((471.66666666666674246 -210, -20 -210, -20 -102.27272727272726627, 319.39560439560437999 144.560439560439562, 388.97260273972602818 137.60273972602738013, 419.55882352941176805 102.64705882352942012, 471.66666666666674246 -210)),Polygon ((411.875 200, 410.29411764705884025 187.35294117647057988, 388.97260273972602818 137.60273972602738013, 319.39560439560437999 144.560439560439562, 323.2352941176470722 179.1176470588235361, 365 200, 411.875 200)),Polygon ((410.29411764705884025 187.35294117647057988, 411.875 200, 414.21192052980131848 206.23178807947019209, 431.62536593766145643 234.0192009643533595, 465 248.00476190476189231, 465 175, 450 167.5, 410.29411764705884025 187.35294117647057988)),Polygon ((293.54906542056073704 315.803738317756995, 339.65007656967839011 283.17840735068909908, 369.40909090909093493 219.40909090909090651, 365 215, 318.75 215, 293.54906542056073704 315.803738317756995)),Polygon ((111.94841269841269593 585, 501.69252873563215189 585, 492.56703910614521646 267.43296089385472669, 465 248.00476190476189231, 431.62536593766145643 234.0192009643533595, 339.65007656967839011 283.17840735068909908, 293.54906542056073704 315.803738317756995, 111.94841269841269593 585)),Polygon ((369.40909090909093493 219.40909090909090651, 339.65007656967839011 283.17840735068909908, 431.62536593766145643 234.0192009643533595, 414.21192052980131848 206.23178807947019209, 369.40909090909093493 219.40909090909090651)),Polygon ((388.97260273972602818 137.60273972602738013, 410.29411764705884025 187.35294117647057988, 450 167.5, 450 127, 419.55882352941176805 102.64705882352942012, 388.97260273972602818 137.60273972602738013)),Polygon ((465 175, 465 248.00476190476189231, 492.56703910614521646 267.43296089385472669, 505 255, 520.71428571428566556 145, 495 145, 465 175)),Polygon ((880 -169.375, 880 -210, 471.66666666666674246 -210, 419.55882352941176805 102.64705882352942012, 450 127, 495 145, 520.71428571428566556 145, 880 -169.375)),Polygon ((465 175, 495 145, 450 127, 450 167.5, 465 175)),Polygon ((501.69252873563215189 585, 880 585, 880 130.00000000000005684, 505 255, 492.56703910614521646 267.43296089385472669, 501.69252873563215189 585)),Polygon ((880 130.00000000000005684, 880 -169.375, 520.71428571428566556 145, 505 255, 880 130.00000000000005684)))"
@@ -5424,7 +5578,7 @@ class TestQgsGeometry(unittest.TestCase):
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((100 200), (105 202), (110 200), (140 230), (210 240), (220 190), (170 170), (170 260), (213 245), (220 190))")
         o = input.voronoiDiagram(QgsGeometry(), 6)
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((-20 50, -20 380, -3.75 380, 105 235, 105 115, 77.1428571428571388 50, -20 50)),Polygon ((77.1428571428571388 50, 105 115, 145 195, 178.33333333333334281 211.66666666666665719, 183.51851851851850483 208.70370370370369528, 246.99999999999997158 50, 77.1428571428571388 50)),Polygon ((20.00000000000000711 380, 176.66666666666665719 223.33333333333334281, 178.33333333333334281 211.66666666666665719, 145 195, 105 235, -3.75 380, 20.00000000000000711 380)),Polygon ((105 115, 105 235, 145 195, 105 115)),Polygon ((255 380, 176.66666666666665719 223.33333333333334281, 20.00000000000000711 380, 255 380)),Polygon ((340 380, 340 240, 183.51851851851850483 208.70370370370369528, 178.33333333333334281 211.66666666666665719, 176.66666666666665719 223.33333333333334281, 255 380, 340 380)),Polygon ((340 50, 246.99999999999997158 50, 183.51851851851850483 208.70370370370369528, 340 240, 340 50)))"
         else:
             exp = "GeometryCollection (Polygon ((77.1428571428571388 50, -20 50, -20 380, -3.75 380, 105 235, 105 115, 77.1428571428571388 50)),Polygon ((247 50, 77.1428571428571388 50, 105 115, 145 195, 178.33333333333334281 211.66666666666665719, 183.51851851851853326 208.70370370370369528, 247 50)),Polygon ((-3.75 380, 20.00000000000000711 380, 176.66666666666665719 223.33333333333334281, 178.33333333333334281 211.66666666666665719, 145 195, 105 235, -3.75 380)),Polygon ((105 115, 105 235, 145 195, 105 115)),Polygon ((20.00000000000000711 380, 255 380, 176.66666666666665719 223.33333333333334281, 20.00000000000000711 380)),Polygon ((255 380, 340 380, 340 240, 183.51851851851853326 208.70370370370369528, 178.33333333333334281 211.66666666666665719, 176.66666666666665719 223.33333333333334281, 255 380)),Polygon ((340 240, 340 50, 247 50, 183.51851851851853326 208.70370370370369528, 340 240)))"
@@ -5435,7 +5589,7 @@ class TestQgsGeometry(unittest.TestCase):
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((170 270), (177 275), (190 230), (230 250), (210 290), (240 280), (240 250))")
         o = input.voronoiDiagram(QgsGeometry(), 10)
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((100 360, 150 360, 200 260, 100 210, 100 360)),Polygon ((250 360, 220 270, 200 260, 150 360, 250 360)),Polygon ((100 160, 100 210, 200 260, 235 190, 247 160, 100 160)),Polygon ((220 270, 235 265, 235 190, 200 260, 220 270)),Polygon ((310 360, 310 265, 235 265, 220 270, 250 360, 310 360)),Polygon ((310 160, 247 160, 235 190, 235 265, 310 265, 310 160)))"
         else:
             exp = "GeometryCollection (Polygon ((100 210, 100 360, 150 360, 200 260, 100 210)),Polygon ((150 360, 250 360, 220 270, 200 260, 150 360)),Polygon ((247 160, 100 160, 100 210, 200 260, 235 190, 247 160)),Polygon ((220 270, 235 265, 235 190, 200 260, 220 270)),Polygon ((250 360, 310 360, 310 265, 235 265, 220 270, 250 360)),Polygon ((310 265, 310 160, 247 160, 235 190, 235 265, 310 265)))"
@@ -5446,7 +5600,7 @@ class TestQgsGeometry(unittest.TestCase):
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))")
         o = input.voronoiDiagram(QgsGeometry(), 100)
-        if self.geos39:
+        if Qgis.geosVersionInt() >= self.geos309:
             exp = "GeometryCollection (Polygon ((20 130, 20 310, 205 310, 215 299, 215 130, 20 130)),Polygon ((410 500, 410 338, 215 299, 205 310, 205 500, 410 500)),Polygon ((20 500, 205 500, 205 310, 20 310, 20 500)),Polygon ((410 130, 215 130, 215 299, 410 338, 410 130)))"
         else:
             exp = "GeometryCollection (Polygon ((215 130, 20 130, 20 310, 205 310, 215 299, 215 130)),Polygon ((205 500, 410 500, 410 338, 215 299, 205 310, 205 500)),Polygon ((20 310, 20 500, 205 500, 205 310, 20 310)),Polygon ((410 338, 410 130, 215 130, 215 299, 410 338)))"
@@ -5973,6 +6127,9 @@ class TestQgsGeometry(unittest.TestCase):
                 0.00000001],
             ["CurvePolygon (CompoundCurve (CircularString (2613627 1178798, 2613639 1178805, 2613648 1178794),(2613648 1178794, 2613627 1178798)))",
              "CurvePolygon (CompoundCurve (CircularString (2613627 1178798, 2613639 1178805, 2613648 1178794),(2613648 1178794, 2613627 1178798)))",
+             0.00000001, 0.000000001],
+            ["CurvePolygon (CompoundCurve ((2653264.45800000010058284 1213405.36899999994784594, 2653279.07700000004842877 1213383.28700000001117587, 2653278.33142686076462269 1213384.25132044195197523, 2653277.59772348683327436 1213385.22470247372984886, 2653276.87600000016391277 1213386.20699999993667006))",
+             "CurvePolygon (CompoundCurve ((2653264.45800000010058284 1213405.36899999994784594, 2653279.07700000004842877 1213383.28700000001117587),CircularString (2653279.07700000004842877 1213383.28700000001117587, 2653278.33142686076462269 1213384.25132044195197523, 2653276.87600000016391277 1213386.20699999993667006)))",
              0.00000001, 0.000000001]
         ]
         for t in tests:
@@ -6015,16 +6172,18 @@ class TestQgsGeometry(unittest.TestCase):
                                                                                        t[2], res))
 
     def testOffsetCurve(self):
+        # linestring which becomes multilinestring -- the actual offset curve calculated by GEOS is false.
+        # This is fixed in GEOS 3.11. See: https://github.com/libgeos/geos/issues/477
+        if Qgis.geosVersionInt() >= self.geos311:
+            exp5 = "LineString (259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259307.5 5928273.2)"
+        else:
+            exp5 = "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"
         tests = [
             ["LINESTRING (0 0, 0 100, 100 100)", 1, "LineString (-1 0, -1 101, 100 101)"],
             ["LINESTRING (0 0, 0 100, 100 100)", -1, "LineString (1 0, 1 99, 100 99)"],
             ["LINESTRING (100 100, 0 100, 0 0)", 1, "LineString (100 99, 1 99, 1 0)"],
             ["LINESTRING (100 100, 0 100, 0 0)", -1, "LineString (100 101, -1 101, -1 0)"],
-            # linestring which becomes multilinestring -- the actual offset curve calculated by GEOS looks bad, but we shouldn't crash here
-            [
-                "LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )",
-                100,
-                "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"],
+            ["LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )", 100, exp5],
             ["MULTILINESTRING ((0 0, 0 100, 100 100),(100 100, 0 100, 0 0))", 1,
              "MultiLineString ((-1 0, -1 101, 100 101),(100 99, 1 99, 1 0))"]
         ]
@@ -7178,6 +7337,221 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(poly.intersects(point))
         self.assertTrue(poly.boundingBox().intersects(bbox))
         self.assertTrue(poly.intersects(bbox))  # was failing here!
+
+    def testSplitGeometry(self):
+        """
+        splitGeometry takes either QVector<QgsPoint> or QVector<QgsPointXY>
+        testing the overloaded methods until the QgsPointXY variant is removed in QGIS 4.0
+        this could be potentially removed in favor of the existing cpp test which will be sufficient
+        """
+        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        line = [QgsPoint(1, -1), QgsPoint(1, 3)]
+        lineXY = [QgsPointXY(1, -1), QgsPointXY(1, 3)]
+
+        r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
+        r2 = QgsGeometry.fromWkt("Polygon ((1 0, 1 2, 2 2, 2 0, 1 0))")
+
+        (result, parts, topo) = square.splitGeometry(lineXY, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertGeometriesEqual(square, r2)
+        self.assertEqual(len(parts), 1)
+        self.assertGeometriesEqual(parts[0], r1)
+
+        square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        (result, parts, topo) = square.splitGeometry(line, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertGeometriesEqual(square, r2)
+        self.assertGeometriesEqual(parts[0], r1)
+
+        multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
+        blade = QgsCompoundCurve()
+        blade.addCurve(QgsLineString([QgsPointXY(0.8, 0.8), QgsPointXY(1.2, 1.2)]))
+        result, parts, _ = multilinestring.splitGeometry(blade, False, False, False)
+        self.assertEqual(result, Qgis.GeometryOperationResult.Success)
+        self.assertEqual(len(parts), 3)
+        self.assertTrue(compareWkt(parts[0].asWkt(), 'MultiLineString ((0 2, 1 1))'))
+        self.assertTrue(compareWkt(parts[1].asWkt(), 'MultiLineString ((1 1, 2 0))'))
+        self.assertTrue(compareWkt(parts[2].asWkt(), 'MultiLineString ((0 1, 1 0))'))
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
+    def testCoverageValidate(self):
+        """
+        Test QgsGeometry.validateCoverage
+        """
+        g1 = QgsGeometry()
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Error)
+        self.assertFalse(edges)
+
+        g1 = QgsGeometry.fromWkt('Point(1 2)')
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Error)
+        self.assertFalse(edges)
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))')
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Valid)
+        self.assertFalse(edges)
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((9 0,20 0,20 10,10 10,10.1 5,9 0)))')
+        valid, edges = g1.validateCoverage(0)
+        self.assertEqual(valid, Qgis.CoverageValidityResult.Invalid)
+        self.assertEqual(edges.asWkt(0), 'GeometryCollection (LineString (0 0, 10 0, 10 5),LineString (10 5, 9 0, 20 0))')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
+    def testCoverageDissolve(self):
+        """
+        Test QgsGeometry.unionCoverage
+        """
+        g1 = QgsGeometry()
+        res = g1.unionCoverage()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('Point(1 2)')
+        res = g1.unionCoverage()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))')
+        res = g1.unionCoverage()
+        self.assertEqual(res.asWkt(0), 'Polygon ((0 0, 0 10, 10 10, 20 10, 20 0, 10 0, 0 0))')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
+    def testCoverageSimplify(self):
+        """
+        Test QgsGeometry.simplifyCoverageVW
+        """
+        g1 = QgsGeometry()
+        res = g1.unionCoverage()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('Point(1 2)')
+        res = g1.simplifyCoverageVW(3, False)
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt('MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))')
+        res = g1.simplifyCoverageVW(3, False)
+        self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 10, 0 0, 10 0)),Polygon ((10 0, 20 0, 20 10, 10 10, 10 0)))')
+
+        res = g1.simplifyCoverageVW(10, False)
+        self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 0, 10 0)),Polygon ((10 0, 20 10, 10 10, 10 0)))')
+
+        res = g1.simplifyCoverageVW(10, True)
+        self.assertEqual(res.asWkt(0), 'GeometryCollection (Polygon ((10 0, 10 10, 0 10, 0 0, 10 0)),Polygon ((10 0, 20 0, 20 10, 10 10, 10 0)))')
+
+    def testPolygonOrientation(self):
+        """
+        Test QgsGeometry.polygonOrientation, QgsGeometry.isPolygonClockwise and QgsGeometry.isPolygonCounterClockwise
+        """
+
+        # Empty geometry
+        geometry = QgsGeometry()
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Not a polygon
+        geometry = QgsGeometry.fromWkt('Point(1 2)')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Closed curve but not a polygon
+        geometry = QgsGeometry.fromWkt('LineString(0 0, 0 1, 1 1, 1 0, 0 0)')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Polygon Empty
+        geometry = QgsGeometry.fromWkt('Polygon EMPTY')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Polygon Clockwise
+        geometry = QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.Clockwise)
+        self.assertEqual(res_isClockwise, True)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # Polygon CounterClockwise
+        geometry = QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, True)
+
+        # MultiPolygon Empty
+        geometry = QgsGeometry.fromWkt('MultiPolygon EMPTY')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.NoOrientation)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # MultiPolygon Clockwise
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 0 1, 1 1, 1 0, 0 0)) )')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.Clockwise)
+        self.assertEqual(res_isClockwise, True)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # MultiPolygon Clockwise with a CounterClockwise part
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((4 4, 5 4, 5 5, 4 5, 4 4)) )')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.Clockwise)
+        self.assertEqual(res_isClockwise, True)
+        self.assertEqual(res_isCounterClockwise, False)
+
+        # MultiPolygon CounterClockwise
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 1 0, 1 1, 0 1, 0 0)) )')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, True)
+
+        # MultiPolygon CounterClockwise with a Clockwise part
+        geometry = QgsGeometry.fromWkt('MultiPolygon( ((0 0, 1 0, 1 1, 0 1, 0 0)), ((4 4, 4 5, 5 5, 5 4, 4 4)) ) ')
+        res_orientation = geometry.polygonOrientation()
+        res_isClockwise = geometry.isPolygonClockwise()
+        res_isCounterClockwise = geometry.isPolygonCounterClockwise()
+
+        self.assertEqual(res_orientation, Qgis.AngularDirection.CounterClockwise)
+        self.assertEqual(res_isClockwise, False)
+        self.assertEqual(res_isCounterClockwise, True)
 
 
 if __name__ == '__main__':

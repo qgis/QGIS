@@ -43,7 +43,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   connect( mAtlasFeatureFilterButton, &QToolButton::clicked, this, &QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked );
   connect( mAtlasFeatureFilterCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasFeatureFilterCheckBox_stateChanged );
 
-  mAtlasCoverageLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
+  mAtlasCoverageLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
 
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );

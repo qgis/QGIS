@@ -13,14 +13,14 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '04/09/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import QModelIndex, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.core import Qgis, QgsRasterAttributeTable
 from qgis.gui import QgsRasterAttributeTableModel
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 # Convenience instances in case you may need them
@@ -28,7 +28,7 @@ from qgis.testing.mocked import get_iface
 start_app()
 
 
-class TestQgsRasterAttributeTableModel(unittest.TestCase):
+class TestQgsRasterAttributeTableModel(QgisTestCase):
 
     def setUp(self):
 

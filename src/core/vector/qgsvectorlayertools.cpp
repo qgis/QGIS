@@ -19,13 +19,14 @@
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsproject.h"
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -41,39 +42,71 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   int noGeometryCount = 0;
 
   QgsFeatureIds fidList;
-
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
+  QMap<QString, int> duplicateFeatureCount;
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
 
-    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+    if ( f.hasGeometry() )
+    {
+      QgsGeometry geom = f.geometry();
+      geom.translate( dx, dy );
+      f.setGeometry( geom );
+    }
+
+    QgsFeature newFeature;
+    if ( mProject )
+    {
+      newFeature = QgsVectorLayerUtils::duplicateFeature( layer, f, mProject, duplicateFeatureContext );
+      if ( !newFeature.isValid() )
+      {
+        couldNotWriteCount++;
+        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+      }
+      else
+      {
+        fidList.insert( newFeature.id() );
+      }
+
+      const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
+      for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
+      {
+        if ( duplicateFeatureCount.contains( chl->name() ) )
+        {
+          duplicateFeatureCount[chl->name()] += duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+        else
+        {
+          duplicateFeatureCount[chl->name()] = duplicateFeatureContext.duplicatedFeatures( chl ).size();
+        }
+      }
+    }
+    else
+    {
+      newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+      if ( !layer->addFeature( newFeature ) )
+      {
+        couldNotWriteCount++;
+        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+      }
+      else
+      {
+        fidList.insert( newFeature.id() );
+      }
+    }
 
     // translate
     if ( newFeature.hasGeometry() )
     {
       QgsGeometry geom = newFeature.geometry();
-      geom.translate( dx, dy );
-      newFeature.setGeometry( geom );
-#ifdef QGISDEBUG
-      const QgsFeatureId fid = newFeature.id();
-#endif
-      // paste feature
-      if ( !layer->addFeature( newFeature ) )
+      if ( topologicalEditing )
       {
-        couldNotWriteCount++;
-        QgsDebugMsg( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
-      }
-      else
-      {
-        fidList.insert( newFeature.id() );
-        if ( topologicalEditing )
+        if ( topologicalLayer )
         {
-          if ( topologicalLayer )
-          {
-            topologicalLayer->addTopologicalPoints( geom );
-          }
-          layer->addTopologicalPoints( geom );
+          topologicalLayer->addTopologicalPoints( geom );
         }
+        layer->addTopologicalPoints( geom );
       }
     }
     else
@@ -82,8 +115,19 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
     }
   }
 
+  QString childrenInfo;
+  for ( auto it = duplicateFeatureCount.constBegin(); it != duplicateFeatureCount.constEnd(); ++it )
+  {
+    childrenInfo += ( tr( "\n%n children on layer %1 duplicated", nullptr, it.value() ).arg( it.key() ) );
+  }
+
   request = QgsFeatureRequest();
   request.setFilterFids( fidList );
+
+  if ( childrenInfoMsg && !childrenInfo.isEmpty() )
+  {
+    childrenInfoMsg->append( childrenInfo );
+  }
 
   if ( !couldNotWriteCount && !noGeometryCount )
   {

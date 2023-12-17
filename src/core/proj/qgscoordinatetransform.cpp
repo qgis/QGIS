@@ -341,11 +341,11 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Qgis::
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( QStringLiteral( "Rect projection..." ) );
-  QgsDebugMsg( QStringLiteral( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ) );
-  QgsDebugMsg( QStringLiteral( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ) );
-  QgsDebugMsg( QStringLiteral( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ) );
-  QgsDebugMsg( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
+  QgsDebugMsgLevel( QStringLiteral( "Rect projection..." ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ), 2 );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }
@@ -374,7 +374,7 @@ void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
   if ( !d->mIsValid || d->mShortCircuit )
     return;
 #ifdef QGISDEBUG
-// QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
+// QgsDebugMsgLevel(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__), 2);
 #endif
   // transform x
   try
@@ -404,7 +404,7 @@ void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
   if ( !d->mIsValid || d->mShortCircuit )
     return;
 #ifdef QGISDEBUG
-  // QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
+  // QgsDebugMsgLevel(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__), 2);
 #endif
   // transform x
   try
@@ -611,12 +611,12 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  const double d = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
-  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / d ) ) + 1, 1000 );
+  const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / dst ) ) + 1, 1000 );
+  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
-  bb_rect.setMinimal();
+  bb_rect.setNull();
 
   // We're interfacing with C-style vectors in the
   // end, so let's do C-style vectors here too.
@@ -645,7 +645,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       y[( i * nXPoints ) + j] = pointY;
       // and the height...
       z[( i * nXPoints ) + j] = 0.0;
-      // QgsDebugMsg(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]));
+      // QgsDebugMsgLevel(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]), 2);
       pointX += dx;
     }
     pointY += dy;
@@ -664,8 +664,22 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     throw;
   }
 
-  // Calculate the bounding box and use that for the extent
+  // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
+  bool doHandle180Crossover = false;
+  if ( nXPoints > 0 )
+  {
+    const double xMin = std::fmod( x[0], 180.0 );
+    const double xMax = std::fmod( x[nXPoints - 1], 180.0 );
+    if ( handle180Crossover
+         && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+              ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+         && xMin > 0.0 && xMin <= 180.0 && xMax < 0.0 && xMax >= -180.0 )
+    {
+      doHandle180Crossover = true;
+    }
+  }
 
+  // Calculate the bounding box and use that for the extent
   for ( int i = 0; i < nXPoints * nYPoints; i++ )
   {
     if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) )
@@ -673,7 +687,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
       continue;
     }
 
-    if ( handle180Crossover )
+    if ( doHandle180Crossover )
     {
       //if crossing the date line, temporarily add 360 degrees to -ve longitudes
       bb_rect.combineExtentWith( x[i] >= 0.0 ? x[i] : x[i] + 360.0, y[i] );
@@ -690,7 +704,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
   }
 
-  if ( handle180Crossover )
+  if ( doHandle180Crossover )
   {
     //subtract temporary addition of 360 degrees from longitudes
     if ( bb_rect.xMinimum() > 180.0 )
@@ -751,7 +765,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
   double yorg = *y;
-  QgsDebugMsg( QStringLiteral( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
+  QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ), 2 );
 #endif
 
 #ifdef QGISDEBUG
@@ -882,7 +896,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     // don't flood console with thousands of duplicate transform error messages
     if ( msg != mLastError )
     {
-      QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
+      QgsDebugError( "Projection failed emitting invalid transform signal: " + msg );
       mLastError = msg;
     }
     QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
@@ -891,9 +905,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
-               .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
-               .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ) );
+  QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
+                    .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
+                    .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ), 2 );
 #endif
 }
 

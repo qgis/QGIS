@@ -76,6 +76,8 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     //! mutex for the static ignored connections cache
     static QMutex sIgnoredConnectionsCacheMutex;
 
+    QString mRealm;
+
     ConnectionsIgnoreMode mIgnoreMode = ConnectionsIgnoreMode::IgnoreTemporarily;
 
 };

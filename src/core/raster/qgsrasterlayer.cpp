@@ -724,11 +724,19 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   //mBandCount = 0;
 
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
-  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+  if ( mPreloadedProvider )
+  {
+    mDataProvider = qobject_cast< QgsRasterDataProvider * >( mPreloadedProvider.release() );
+  }
+  else
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
-  mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options, flags ) );
+    mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options, flags ) );
+  }
+
   if ( !mDataProvider )
   {
     //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
@@ -997,6 +1005,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
   setCustomProperty( QStringLiteral( "identify/format" ), QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
 
+  if ( QgsRasterDataProviderElevationProperties *properties = mDataProvider->elevationProperties() )
+  {
+    if ( properties->containsElevationData() )
+    {
+      mElevationProperties->setEnabled( true );
+    }
+  }
+
   // Store timestamp
   // TODO move to provider
   mLastModified = lastModified( mDataSource );
@@ -1046,9 +1062,9 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     const QgsReadWriteContext writeContext;
     if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {
-      QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
-                   .arg( name(),
-                         errorMsg ) );
+      QgsDebugError( QStringLiteral( "Could not store symbology for layer %1: %2" )
+                     .arg( name(),
+                           errorMsg ) );
     }
     else
     {
@@ -1091,9 +1107,9 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       QgsReadWriteContext readContext;
       if ( ! readSymbology( mOriginalStyleElement, errorMsg, readContext ) )
       {
-        QgsDebugMsg( QStringLiteral( "Could not restore symbology for layer %1: %2" )
-                     .arg( name() )
-                     .arg( errorMsg ) );
+        QgsDebugError( QStringLiteral( "Could not restore symbology for layer %1: %2" )
+                       .arg( name() )
+                       .arg( errorMsg ) );
 
       }
       else
@@ -2057,7 +2073,7 @@ void QgsRasterLayer::showStatusMessage( QString const &message )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  // QgsDebugMsg(QString("entered with '%1'.").arg(theMessage));
+  // QgsDebugMsgLevel(QString("entered with '%1'.").arg(theMessage), 2);
 
   // Pass-through
   // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
@@ -2353,16 +2369,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-    {
-      flags |= QgsDataProvider::FlagTrustDataSource;
-    }
-    if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-    {
-      flags |= QgsDataProvider::ForceReadOnly;
-    }
-    // read extent
+    QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
+
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
       const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
@@ -2373,9 +2381,6 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
         // store the extent
         setExtent( mbr );
-
-        // skip get extent
-        flags |= QgsDataProvider::SkipGetExtent;
       }
     }
     setDataProvider( mProviderKey, providerOptions, flags );
@@ -2390,7 +2395,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
-      QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+      QgsDebugError( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
     }
     return false;
   }
@@ -2399,7 +2404,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   const bool res = readSymbology( layer_node, error, context );
 
   // old wms settings we need to correct
-  if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )
+  if ( res && mProviderKey == QLatin1String( "wms" ) && !renderer() )
   {
     setRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandColorData );
   }

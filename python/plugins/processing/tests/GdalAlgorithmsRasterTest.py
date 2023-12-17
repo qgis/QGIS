@@ -35,7 +35,8 @@ from qgis.core import (QgsProcessingContext,
                        QgsPointXY,
                        QgsCoordinateReferenceSystem)
 
-from qgis.testing import (start_app,
+from qgis.testing import (QgisTestCase,
+                          start_app,
                           unittest)
 
 import AlgorithmsTestBase
@@ -76,11 +77,14 @@ from processing.algs.gdal.slope import slope
 from processing.algs.gdal.rasterize_over import rasterize_over
 from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
 from processing.algs.gdal.viewshed import viewshed
+from processing.algs.gdal.roughness import roughness
+from processing.algs.gdal.pct2rgb import pct2rgb
+from processing.algs.gdal.rgb2pct import rgb2pct
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -317,7 +321,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTENT': extent,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG ' +
+                 '-of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
@@ -327,7 +331,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 9999,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_nodata 9999.0 -of JPEG ' +
+                 '-a_nodata 9999.0 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
@@ -337,7 +341,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -of JPEG ' +
+                 '-a_nodata 0.0 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
@@ -348,7 +352,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 6,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG ' +
+                 '-a_nodata 0.0 -ot Float32 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -360,7 +364,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
+                 '-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -372,7 +376,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 ' +
+                 '-of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -383,7 +387,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OVERCRS': True,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-projwin 0.0 0.0 0.0 0.0 -a_srs EPSG:4326 -of JPEG ' +
+                 '-a_srs EPSG:4326 -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
@@ -2542,7 +2546,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                             'SKIP_NODATA': False,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
-                     '-band 1 -srcnodata -999 ' +
+                     '-band 1 -srcnodata -999.0 ' +
                      source + ' ' +
                      outsource])
 
@@ -2555,7 +2559,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                             'SKIP_NODATA': False,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal2xyz.py',
-                     '-band 1 -dstnodata -999 ' +
+                     '-band 1 -dstnodata -999.0 ' +
                      source + ' ' +
                      outsource])
 
@@ -2863,6 +2867,103 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                               '-overwrite -resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
+
+    def testPct2Rgb(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = pct2rgb()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['pct2rgb.py',
+                 source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 1'])
+
+            # set band
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 3,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['pct2rgb.py',
+                 source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 3'])
+
+            # set RGBA
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'RGBA': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['pct2rgb.py',
+                 source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 1 -rgba'])
+
+    def testRgb2Pct(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = rgb2pct()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['rgb2pct.py',
+                 '-n 2 -of GTiff ' + source + ' ' + outdir + '/check.tif'])
+
+            # set number of colors
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'NCOLORS': 8,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['rgb2pct.py',
+                 '-n 8 -of GTiff ' + source + ' ' + outdir + '/check.tif'])
+
+    def testRoughness(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = roughness()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' + '-of GTiff -b 1'])
+
+            # set band
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 3,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' + '-of GTiff -b 3'])
+
+            # compute edges
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'COMPUTE_EDGES': True,
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' + '-of GTiff -b 1 -compute_edges'])
+
+            # creation options
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                        'OUTPUT': outdir + '/check.tif'}, context, feedback),
+                ['gdaldem',
+                 'roughness ' + source + ' ' + outdir + '/check.tif ' +
+                 '-of GTiff -b 1 -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9'])
 
 
 if __name__ == '__main__':

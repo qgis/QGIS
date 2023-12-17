@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgsrectangle.h"
+#include "qgsbox3d.h"
 
 class QgsPolygon;
 
@@ -40,11 +40,11 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      */
     virtual QgsPolygon *surfaceToPolygon() const = 0 SIP_FACTORY;
 
-    QgsRectangle boundingBox() const override
+    QgsBox3D boundingBox3D() const override
     {
       if ( mBoundingBox.isNull() )
       {
-        mBoundingBox = calculateBoundingBox();
+        mBoundingBox = calculateBoundingBox3D();
       }
       return mBoundingBox;
     }
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 
     void clearCache() const override;
 
-    mutable QgsRectangle mBoundingBox;
+    mutable QgsBox3D mBoundingBox;
     mutable bool mHasCachedValidity = false;
     mutable QString mValidityFailureReason;
 };

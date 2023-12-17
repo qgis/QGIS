@@ -28,14 +28,17 @@
 #include <QAbstractListModel>
 #include <QInputDialog>
 #include <QMenu>
+#include <QScreen>
+#include <QPointer>
 
 
 ///@cond PRIVATE
 
 
-QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent )
+QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent, QScreen *screen )
   : QAbstractListModel( parent )
   , mRenderer( r )
+  , mScreen( screen )
 {
 }
 
@@ -100,7 +103,7 @@ QVariant QgsVectorTileBasicRendererListModel::data( const QModelIndex &index, in
       if ( index.column() == 0 && style.symbol() )
       {
         const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-        return QgsSymbolLayerUtils::symbolPreviewIcon( style.symbol(), QSize( iconSize, iconSize ) );
+        return QgsSymbolLayerUtils::symbolPreviewIcon( style.symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
       }
       break;
     }
@@ -395,7 +398,7 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
     mRenderer.reset( new QgsVectorTileBasicRenderer() );
   }
 
-  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
+  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles, screen() );
   mProxyModel = new QgsVectorTileBasicRendererProxyModel( mModel, viewStyles );
   viewStyles->setModel( mProxyModel );
 
@@ -439,13 +442,13 @@ void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
   switch ( geomType )
   {
     case Qgis::GeometryType::Point:
-      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Point'" ) );
+      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Point'" ) );
       break;
     case Qgis::GeometryType::Line:
-      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Line'" ) );
+      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Line'" ) );
       break;
     case Qgis::GeometryType::Polygon:
-      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Polygon'" ) );
+      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Polygon'" ) );
       break;
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:
@@ -501,12 +504,11 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol.release(), QgsStyle::defaultStyle(), vectorLayer, panel );
-    dlg->setContext( context );
-    dlg->setPanelTitle( style.styleName() );
-    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget );
-    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsVectorTileBasicRendererWidget::cleanUpSymbolSelector );
-    openPanel( dlg );
+    QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), QgsStyle::defaultStyle(), vectorLayer, panel );
+    widget->setContext( context );
+    widget->setPanelTitle( style.styleName() );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ] { updateSymbolsFromWidget( widget ); } );
+    openPanel( widget );
   }
   else
   {
@@ -523,7 +525,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
   }
 }
 
-void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget()
+void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget )
 {
   const int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
   if ( index < 0 )
@@ -531,20 +533,10 @@ void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget()
 
   QgsVectorTileBasicRendererStyle style = mRenderer->style( index );
 
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  style.setSymbol( dlg->symbol()->clone() );
+  style.setSymbol( widget->symbol()->clone() );
 
   mRenderer->setStyle( index, style );
   emit widgetChanged();
-}
-
-void QgsVectorTileBasicRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
-{
-  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !dlg )
-    return;
-
-  delete dlg->symbol();
 }
 
 void QgsVectorTileBasicRendererWidget::removeStyle()

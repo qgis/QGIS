@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QPointF, QRectF, QSize, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QTextDocument
 from qgis.core import (
@@ -34,7 +33,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFormAnnotation
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -42,19 +42,11 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotation(unittest.TestCase):
+class TestQgsAnnotation(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):
         return "annotations"
-
-    def setUp(self):
-        self.report = "<h1>Python QgsAnnotation Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def testTextAnnotation(self):
         """ test rendering a text annotation"""

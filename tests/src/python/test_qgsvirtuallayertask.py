@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
@@ -20,14 +19,15 @@ from qgis.core import (
     QgsVirtualLayerDefinition,
     QgsVirtualLayerTask,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsVirtualLayerTask(unittest.TestCase):
+class TestQgsVirtualLayerTask(QgisTestCase):
 
     def setUp(self):
         self.testDataDir = unitTestDataPath()

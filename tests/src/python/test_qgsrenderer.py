@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '07/06/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsApplication,
@@ -19,7 +18,8 @@ from qgis.core import (
     QgsRendererAbstractMetadata,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -61,7 +61,7 @@ def clearRegistry():
         QgsApplication.rendererRegistry().removeRenderer(r)
 
 
-class TestQgsRendererV2Registry(unittest.TestCase):
+class TestQgsRendererV2Registry(QgisTestCase):
 
     def testInstance(self):
         """ test retrieving global instance """

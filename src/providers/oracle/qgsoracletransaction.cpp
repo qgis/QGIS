@@ -73,7 +73,7 @@ bool QgsOracleTransaction::executeSql( const QString &sql, QString &errorMsg, bo
     createSavepoint( err );
   }
 
-  QgsDebugMsg( QStringLiteral( "Transaction sql: %1" ).arg( sql ) );
+  QgsDebugMsgLevel( QStringLiteral( "Transaction sql: %1" ).arg( sql ), 2 );
 
   QgsDatabaseQueryLogWrapper logWrapper { sql, mConnString, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
   const bool res = mConn->exec( sql, true, &errorMsg );

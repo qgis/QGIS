@@ -103,15 +103,6 @@ class TestModules(unittest.TestCase):
                 pass
         self.server = QgsServer()
 
-    def test_modules(self):
-        """ Tests that modules are loaded """
-
-        # Check that our 'SampleService is registered
-        iface = self.server.serverInterface()
-        service = iface.serviceRegistry().getService('SampleService')
-
-        self.assertIsNotNone(service)
-
 
 if __name__ == '__main__':
     unittest.main()

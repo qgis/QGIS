@@ -185,7 +185,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     static bool execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
-    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
     void setTransaction( QgsTransaction *transaction ) override;
     QgsTransaction *transaction() const override;
 
@@ -202,6 +202,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
+
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
   private:
 
@@ -242,6 +244,11 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * Load the field list
      */
     bool loadFields();
+
+    /**
+     * Search all the layers using the given table.
+     */
+    static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &owner, const QString &tableName );
 
     //! Convert a QgsField to work with Oracle
     static bool convertField( QgsField &field );
@@ -379,7 +386,9 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 
-    QgsOracleConn *connectionRW();
+    mutable QgsOracleConn *mConnection = nullptr;
+
+    QgsOracleConn *connectionRW() const;
     QgsOracleConn *connectionRO() const;
 
     friend class QgsOracleFeatureIterator;

@@ -135,6 +135,24 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
     mShapeActions.insert( metadata->id(), action );
   }
+
+  // Remove the dropdown arrows from buttons with a single action
+  QList<QToolButton *> buttons = QgisApp::instance()->mShapeDigitizeToolBar->findChildren<QToolButton *>();
+  for ( QToolButton *button : buttons )
+  {
+    QMenu *menu = button->menu();
+    if ( menu && button->menu()->actions().count() == 1 )
+    {
+      // Reparent action to button (otherwise it will be deleted with the menu)
+      QAction *action = menu->actions().at( 0 );
+      action->setParent( button );
+
+      // Delete menu and set popup mode to delayed (remove dropdown arrow)
+      button->setMenu( nullptr );
+      button->setPopupMode( QToolButton::DelayedPopup );
+      menu->deleteLater();
+    }
+  }
 }
 
 QgsMapToolsDigitizingTechniqueManager::~QgsMapToolsDigitizingTechniqueManager()

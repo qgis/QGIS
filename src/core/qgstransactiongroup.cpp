@@ -125,7 +125,7 @@ void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
     {
       if ( ! mTransaction->begin( errMsg ) )
       {
-        QgsDebugMsg( QStringLiteral( "Could not restart a transaction for %1: %2" ).arg( triggeringLayer->name() ).arg( errMsg ) );
+        QgsDebugError( QStringLiteral( "Could not restart a transaction for %1: %2" ).arg( triggeringLayer->name() ).arg( errMsg ) );
       }
     }
 

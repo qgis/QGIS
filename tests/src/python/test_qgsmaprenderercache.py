@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from time import sleep
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImage
 from qgis.core import (
@@ -21,12 +20,13 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMapRendererCache(unittest.TestCase):
+class TestQgsMapRendererCache(QgisTestCase):
 
     def testSetCacheImages(self):
         cache = QgsMapRendererCache()

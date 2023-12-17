@@ -23,6 +23,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsbox3d.h"
 
 class QgsPoint;
 
@@ -127,7 +128,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
-    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
      * Attempts to allocate memory for at least \a size geometries.
@@ -198,7 +199,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
 
-    QgsRectangle boundingBox() const override;
+    QgsBox3D boundingBox3D() const override;
 
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
@@ -348,12 +349,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 
-    QgsRectangle calculateBoundingBox() const override;
+    QgsBox3D calculateBoundingBox3D() const override;
     void clearCache() const override;
 
   private:
 
-    mutable QgsRectangle mBoundingBox;
+    mutable QgsBox3D mBoundingBox;
     mutable bool mHasCachedValidity = false;
     mutable QString mValidityFailureReason;
 };

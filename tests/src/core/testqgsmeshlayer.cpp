@@ -939,11 +939,11 @@ void TestQgsMeshLayer::test_extent()
 {
   const QgsRectangle expectedExtent( 1000.0, 2000.0, 3000.0, 3000.0 );
 
-  QCOMPARE( expectedExtent, mMemoryLayer->extent() );
-  QCOMPARE( mMemoryLayer->dataProvider()->extent(), mMemoryLayer->extent() );
+  QCOMPARE( mMemoryLayer->extent(), expectedExtent );
+  QCOMPARE( mMemoryLayer->dataProvider()->extent(), expectedExtent );
 
-  QCOMPARE( expectedExtent, mMdalLayer->extent() );
-  QCOMPARE( mMdalLayer->dataProvider()->extent(), mMdalLayer->extent() );
+  QCOMPARE( mMdalLayer->extent(), expectedExtent );
+  QCOMPARE( mMdalLayer->dataProvider()->extent(), expectedExtent );
 }
 
 void TestQgsMeshLayer::test_write_read_project()

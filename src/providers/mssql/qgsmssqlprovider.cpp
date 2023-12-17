@@ -112,7 +112,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   if ( !db.isOpen() )
   {
     setLastError( db.lastError().text() );
-    QgsDebugMsg( mLastError );
+    QgsDebugError( mLastError );
     mValid = false;
     return;
   }
@@ -241,7 +241,7 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
 {
   if ( !mValid )
   {
-    QgsDebugMsg( QStringLiteral( "Read attempt on an invalid mssql data source" ) );
+    QgsDebugError( QStringLiteral( "Read attempt on an invalid mssql data source" ) );
     return QgsFeatureIterator();
   }
 
@@ -305,7 +305,7 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Unknown field type: %1" ).arg( sqlTypeName ) );
+    QgsDebugError( QStringLiteral( "Unknown field type: %1" ).arg( sqlTypeName ) );
     // Everything else just dumped as a string.
     type = QVariant::String;
   }
@@ -322,19 +322,15 @@ void QgsMssqlProvider::loadMetadata()
   query.setForwardOnly( true );
   if ( !LoggedExec( query, QStringLiteral( "SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ) ) ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( query.isActive() && query.next() )
   {
     mGeometryColName = query.value( 0 ).toString();
     mSRId = query.value( 1 ).toInt();
-    QString detectedType = query.value( 2 ).toString();
-    const QString dim = query.value( 3 ).toString();
-    if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
-      detectedType += QLatin1Char( 'Z' );
-    else if ( dim == QLatin1String( "4" ) )
-      detectedType += QLatin1String( "ZM" );
+    const int dimensions = query.value( 3 ).toInt();
+    const QString detectedType { QgsMssqlProvider::typeFromMetadata( query.value( 2 ).toString().toUpper(), dimensions ) };
     mWkbType = getWkbType( detectedType );
   }
 }
@@ -374,7 +370,7 @@ QSqlQuery QgsMssqlProvider::createQuery() const
   QSqlDatabase d = conn->db();
   if ( !d.isOpen() )
   {
-    QgsDebugMsg( "Creating query, but the database is not open!" );
+    QgsDebugError( "Creating query, but the database is not open!" );
   }
   return QSqlQuery( d );
 }
@@ -542,7 +538,7 @@ void QgsMssqlProvider::loadFields()
     const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
     if ( !LoggedExec( query, sql4 ) )
     {
-      QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
     }
 
     if ( query.isActive() )
@@ -582,7 +578,7 @@ void QgsMssqlProvider::loadFields()
                            .arg( pk, mSchemaName, mTableName ) };
       if ( !LoggedExec( query, sql5 ) )
       {
-        QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+        QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       }
 
       if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
@@ -597,7 +593,7 @@ void QgsMssqlProvider::loadFields()
   if ( mPrimaryKeyAttrs.isEmpty() )
   {
     const QString error = QStringLiteral( "No primary key could be found on table %1" ).arg( mTableName );
-    QgsDebugMsg( error );
+    QgsDebugError( error );
     mValid = false;
     setLastError( error );
   }
@@ -676,7 +672,7 @@ QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
   if ( !LoggedExec( query, sql ) )
   {
     const QString errorMessage( tr( "Could not execute query: %1" ).arg( query.lastError().text() ) );
-    QgsDebugMsg( errorMessage );
+    QgsDebugError( errorMessage );
     pushError( errorMessage );
     return QVariant();
   }
@@ -684,7 +680,7 @@ QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
   if ( !query.next() )
   {
     const QString errorMessage( tr( "Could not fetch next query value: %1" ).arg( query.lastError().text() ) );
-    QgsDebugMsg( errorMessage );
+    QgsDebugError( errorMessage );
     pushError( errorMessage );
     return QVariant();
   }
@@ -743,7 +739,7 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
 
   if ( !LoggedExec( query, sql ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( query.isActive() && query.next() )
@@ -784,7 +780,7 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 
   if ( !LoggedExec( query, sql ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( query.isActive() && query.next() )
@@ -833,7 +829,7 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
 
   if ( !LoggedExec( query, sql ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( query.isActive() )
@@ -887,7 +883,7 @@ QStringList QgsMssqlProvider::uniqueStringsMatching( int index, const QString &s
 
   if ( !LoggedExec( query, sql ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( query.isActive() )
@@ -950,7 +946,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   // If we can't find the extents in the spatial index table just do what we normally do.
@@ -1034,7 +1030,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
   if ( !LoggedExec( query, statement ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
 
   if ( !query.isActive() )
@@ -1131,6 +1127,17 @@ QgsFields QgsMssqlProvider::fields() const
 bool QgsMssqlProvider::isValid() const
 {
   return mValid;
+}
+
+Qgis::ProviderStyleStorageCapabilities QgsMssqlProvider::styleStorageCapabilities() const
+{
+  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
+  if ( isValid() )
+  {
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
+    storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
+  }
+  return storageCapabilities;
 }
 
 bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
@@ -1280,7 +1287,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( !query.prepare( statement ) )
     {
       const QString msg = query.lastError().text();
-      QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       if ( !mSkipFailures )
       {
         pushError( msg );
@@ -1377,11 +1384,13 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
           wkt = geom.asWkt();
-          wkt.replace( QRegularExpression( QStringLiteral( "[mzMZ]+\\s*\\(" ) ), QStringLiteral( "(" ) );
+          const thread_local QRegularExpression wktRx( QStringLiteral( "[mzMZ]+\\s*\\(" ) );
+          wkt.replace( wktRx, QStringLiteral( "(" ) );
           // if we have M value only, we need to insert null-s for the Z value
           if ( QgsWkbTypes::hasM( geom.wkbType() ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
           {
-            wkt.replace( QRegularExpression( QStringLiteral( "(?=\\s[0-9+-.]+[,)])" ) ), QStringLiteral( " NULL" ) );
+            const thread_local QRegularExpression nullRx( QStringLiteral( "(?=\\s[0-9+-.]+[,)])" ) );
+            wkt.replace( QRegularExpression( nullRx ), QStringLiteral( " NULL" ) );
           }
         }
         query.addBindValue( wkt );
@@ -1391,7 +1400,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( !query.exec() )
     {
       const QString msg = query.lastError().text();
-      QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       if ( !mSkipFailures )
       {
         pushError( msg );
@@ -1404,7 +1413,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( !query.next() )
       {
         const QString msg = query.lastError().text();
-        QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+        QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
         if ( !mSkipFailures )
         {
           pushError( msg );
@@ -1471,7 +1480,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   query.setForwardOnly( true );
   if ( !LoggedExec( query, statement ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
     return false;
   }
 
@@ -1504,7 +1513,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
   if ( !LoggedExec( query, statement ) )
   {
-    QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
     return false;
   }
 
@@ -1581,7 +1590,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
     {
-      QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       return false;
     }
 
@@ -1648,7 +1657,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
     if ( !query.exec() )
     {
-      QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       return false;
     }
 
@@ -1732,7 +1741,8 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QString wkt = it->asWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
-      wkt.replace( QRegularExpression( QStringLiteral( "[mzMZ]+\\s*\\(" ) ), QStringLiteral( "(" ) );
+      const thread_local QRegularExpression zmRegExp( QStringLiteral( "[mzMZ]+\\s*\\(" ) );
+      wkt.replace( zmRegExp, QStringLiteral( "(" ) );
       query.addBindValue( wkt );
     }
 
@@ -1827,7 +1837,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
 
 void QgsMssqlProvider::updateExtents()
 {
-  mExtent.setMinimal();
+  mExtent.setNull();
 }
 
 QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
@@ -1937,6 +1947,10 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
       if ( mCrs.isValid() )
         return mCrs;
     }
+    else  // try to load as EPSG
+    {
+      mCrs = QgsCoordinateReferenceSystem::fromEpsgId( mSRId );
+    }
   }
   return mCrs;
 }
@@ -2008,7 +2022,7 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 
   setDataSourceUri( anUri.uri() );
 
-  mExtent.setMinimal();
+  mExtent.setNull();
 
   emit dataChanged();
 
@@ -2584,8 +2598,8 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
 
   if ( !db->isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
-    QgsDebugMsg( db->errorText() );
+    QgsDebugError( QStringLiteral( "Error connecting to database" ) );
+    QgsDebugError( db->errorText() );
     return false;
   }
 
@@ -2596,7 +2610,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
 
   if ( !LoggedExecMetadata( query, sql, uri ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    QgsDebugError( query.lastError().text() );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -2677,8 +2691,8 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri,
 
   if ( !LoggedExecMetadata( query, checkQuery, uri ) )
   {
-    QgsDebugMsg( query.lastError().text() );
-    QgsDebugMsg( QStringLiteral( "Check Query failed" ) );
+    QgsDebugError( query.lastError().text() );
+    QgsDebugError( QStringLiteral( "Check Query failed" ) );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toString() == styleName )
@@ -2748,8 +2762,8 @@ QString QgsMssqlProviderMetadata::loadStoredStyle( const QString &uri, QString &
 
   if ( !db->isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
-    QgsDebugMsg( db->errorText() );
+    QgsDebugError( QStringLiteral( "Error connecting to database" ) );
+    QgsDebugError( db->errorText() );
     errCause = tr( "Cannot connect to database: %1" ).arg( db->errorText() );
     return QString();
   }
@@ -2793,7 +2807,7 @@ QString QgsMssqlProviderMetadata::loadStoredStyle( const QString &uri, QString &
     QgsDebugMsgLevel( QStringLiteral( "Load of style failed" ), 2 );
     const QString msg = query.lastError().text();
     errCause = msg;
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
     return QString();
   }
   if ( query.isActive() && query.next() )
@@ -2817,8 +2831,8 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
 
   if ( !db->isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
-    QgsDebugMsg( db->errorText() );
+    QgsDebugError( QStringLiteral( "Error connecting to database" ) );
+    QgsDebugError( db->errorText() );
     return -1;
   }
 
@@ -2832,7 +2846,7 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
   {
     const QString msg = query.lastError().text();
     errCause = msg;
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
     return -1;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -2857,7 +2871,7 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
   bool queryOk = LoggedExecMetadata( query, selectRelatedQuery, uri );
   if ( !queryOk )
   {
-    QgsDebugMsg( query.lastError().text() );
+    QgsDebugError( query.lastError().text() );
     return -1;
   }
   int numberOfRelatedStyles = 0;
@@ -2882,7 +2896,7 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
   queryOk = LoggedExecMetadata( query, selectOthersQuery, uri );
   if ( !queryOk )
   {
-    QgsDebugMsg( query.lastError().text() );
+    QgsDebugError( query.lastError().text() );
     return -1;
   }
   while ( query.next() )
@@ -2912,8 +2926,8 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QStrin
 
   if ( !db->isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
-    QgsDebugMsg( db->errorText() );
+    QgsDebugError( QStringLiteral( "Error connecting to database" ) );
+    QgsDebugError( db->errorText() );
     errCause = tr( "Cannot connect to database: %1" ).arg( db->errorText() );
     return QString();
   }
@@ -2945,7 +2959,7 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QStrin
   const bool queryOk = LoggedExecMetadata( query, selectQmlQuery, uri );
   if ( !queryOk )
   {
-    QgsDebugMsg( query.lastError().text() );
+    QgsDebugError( query.lastError().text() );
     errCause = query.lastError().text();
     return QString();
   }
@@ -3096,6 +3110,29 @@ QList<Qgis::LayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
   return { Qgis::LayerType::Vector };
 }
 
+QString QgsMssqlProvider::typeFromMetadata( const QString &typeName, int numCoords )
+{
+
+  QString type { typeName };
+  const bool hasM { typeName.endsWith( 'M', Qt::CaseInsensitive ) };
+  if ( numCoords == 4 )
+  {
+    if ( hasM )
+    {
+      type.chop( 1 );
+    }
+    type.append( QStringLiteral( "ZM" ) );
+  }
+  else if ( numCoords == 3 )
+  {
+    if ( ! hasM )
+    {
+      type.append( QStringLiteral( "Z" ) );
+    }
+  }
+  return type;
+}
+
 bool QgsMssqlProviderMetadata::execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin ) const
 {
   QgsDatabaseQueryLogWrapper logWrapper{ sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ),  queryOrigin };
@@ -3203,7 +3240,7 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
+        QgsDebugError( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
         whereClause = QStringLiteral( "NULL IS NOT NULL" );
       }
     }

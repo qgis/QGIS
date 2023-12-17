@@ -53,6 +53,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 #endif
 
   public:
+
     //! Default constructor
     QgsAbstractVectorLayerLabeling() = default;
     virtual ~QgsAbstractVectorLayerLabeling() = default;
@@ -98,6 +99,17 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * \since QGIS 3.0
      */
     virtual bool requiresAdvancedEffects() const = 0;
+
+    /**
+     * Multiply opacity by \a opacityFactor.
+     *
+     * This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
+     * by \a opacity effectively changing the opacity of the whole labeling elements.
+     *
+     * \since QGIS 3.32
+     */
+    virtual void multiplyOpacity( double opacityFactor ) { Q_UNUSED( opacityFactor ); };
+
 
     // static stuff
 
@@ -186,7 +198,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
 
     bool requiresAdvancedEffects() const override;
     void toSld( QDomNode &parent, const QVariantMap &props ) const override;
-
+    void multiplyOpacity( double opacityFactor ) override;
     //! Create the instance from a DOM element with saved configuration
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
 

@@ -15,7 +15,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QVariant,
 )
@@ -38,7 +37,8 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsUnsetAttributeValue
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -58,7 +58,7 @@ def createEmptyMultiPolygonLayer():
     return createEmptyLayer("MultiPolygon")
 
 
-class TestQgsVectorLayerEditUtils(unittest.TestCase):
+class TestQgsVectorLayerEditUtils(QgisTestCase):
 
     def testAddRing(self):
         # test adding ring to a vector layer

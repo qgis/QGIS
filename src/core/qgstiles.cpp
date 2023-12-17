@@ -260,12 +260,27 @@ double QgsTileMatrixSet::scaleToZoom( double scale ) const
   if ( zoomUnder < 0 )
     return zoomOver;
   if ( zoomOver < 0 )
-    return zoomUnder;
+  {
+    // allow overzooming, so the styling is applied correctly
+    scaleOver = tileMatrix( maximumZoom() ).scale() / 2;
+    zoomOver = maximumZoom() + 1;
+    while ( true )
+    {
+      if ( scaleOver < scale && scale < scaleUnder )
+      {
+        return ( scaleUnder - scale ) / ( scaleUnder - scaleOver ) * ( zoomOver - zoomUnder ) + zoomUnder;
+      }
+      scaleUnder = scaleOver;
+      zoomUnder = zoomOver;
+      scaleOver = scaleOver / 2;
+      zoomOver += 1;
+    }
+  }
   else
     return ( scaleUnder - scale ) / ( scaleUnder - scaleOver ) * ( zoomOver - zoomUnder ) + zoomUnder;
 }
 
-int QgsTileMatrixSet::scaleToZoomLevel( double scale ) const
+int QgsTileMatrixSet::scaleToZoomLevel( double scale, bool clamp ) const
 {
   int tileZoom = 0;
   switch ( mScaleToTileZoomMethod )
@@ -278,7 +293,7 @@ int QgsTileMatrixSet::scaleToZoomLevel( double scale ) const
       break;
   }
 
-  return std::clamp( tileZoom, minimumZoom(), maximumZoom() );
+  return clamp ? std::clamp( tileZoom, minimumZoom(), maximumZoom() ) : tileZoom;
 }
 
 double QgsTileMatrixSet::scaleForRenderContext( const QgsRenderContext &context ) const

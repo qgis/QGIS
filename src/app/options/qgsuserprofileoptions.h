@@ -34,7 +34,7 @@ class APP_EXPORT QgsUserProfileOptionsWidget : public QgsOptionsPageWidget, priv
 
     //! Constructor for QgsUserProfileOptionsWidget with the specified \a parent widget.
     QgsUserProfileOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
   private slots:
@@ -45,6 +45,8 @@ class APP_EXPORT QgsUserProfileOptionsWidget : public QgsOptionsPageWidget, priv
     //! Reset the profile icon to default
     void onResetIconClicked();
 
+    // Show or hide user selector dialog icon setting
+    void onAskUserChanged();
 };
 
 

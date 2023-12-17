@@ -285,6 +285,11 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
     if ( !currentLayers.contains( layer ) )
     {
       connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapLayer::triggerRepaint, Qt::UniqueConnection );
+      if ( layer->blendMode() == QPainter::CompositionMode_SourceOver && layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).isValid() )
+      {
+        // try to restore previous group blend mode
+        layer->setBlendMode( static_cast< QPainter::CompositionMode >( layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).toInt() ) );
+      }
     }
   }
   for ( QgsMapLayer *layer : currentLayers )
@@ -294,9 +299,15 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
       // layer removed from group
       disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapLayer::triggerRepaint );
 
-      if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( layer->blendMode() ) ) )
+      const QPainter::CompositionMode groupBlendMode = layer->blendMode();
+      if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( groupBlendMode ) ) )
       {
         layer->setBlendMode( QPainter::CompositionMode_SourceOver );
+        layer->setCustomProperty( QStringLiteral( "_prevGroupBlendMode" ), static_cast< int >( groupBlendMode ) );
+      }
+      else
+      {
+        layer->removeCustomProperty( QStringLiteral( "_prevGroupBlendMode" ) );
       }
     }
   }

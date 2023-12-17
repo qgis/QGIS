@@ -31,12 +31,13 @@ from qgis.core import (
     QgsVectorLayerExporter,
 )
 from qgis.gui import QgsAttributeTableModel, QgsEditorWidgetFactory, QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsAttributeTableModel(unittest.TestCase):
+class TestQgsAttributeTableModel(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

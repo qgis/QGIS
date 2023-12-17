@@ -58,8 +58,19 @@ void QgsAnnotationPointTextItem::render( QgsRenderContext &context, QgsFeedback 
 
   context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
+  double angle = mAngle;
+  switch ( mRotationMode )
+  {
+    case Qgis::SymbolRotationMode::RespectMapRotation:
+      angle += context.mapToPixel().mapRotation();
+      break;
+
+    case Qgis::SymbolRotationMode::IgnoreMapRotation:
+      break;
+  }
+
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
-  QgsTextRenderer::drawText( pt, mAngle * M_PI / 180.0,
+  QgsTextRenderer::drawText( pt, - angle * M_PI / 180.0,
                              QgsTextRenderer::convertQtHAlignment( mAlignment ),
                              displayText.split( '\n' ), context, mTextFormat );
 }
@@ -71,6 +82,7 @@ bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &d
   element.setAttribute( QStringLiteral( "text" ), mText );
   element.setAttribute( QStringLiteral( "angle" ), qgsDoubleToString( mAngle ) );
   element.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
+  element.setAttribute( QStringLiteral( "rotationMode" ), qgsEnumValueToKey( mRotationMode ) );
 
   QDomElement textFormatElem = document.createElement( QStringLiteral( "pointTextFormat" ) );
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
@@ -93,7 +105,7 @@ bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsR
   mText = element.attribute( QStringLiteral( "text" ) );
   mAngle = element.attribute( QStringLiteral( "angle" ) ).toDouble();
   mAlignment = static_cast< Qt::Alignment >( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
-
+  mRotationMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "rotationMode" ) ), Qgis::SymbolRotationMode::IgnoreMapRotation );
   const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "pointTextFormat" ) );
   if ( !textFormatElem.isNull() )
   {
@@ -112,6 +124,7 @@ QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::clone()
   item->setFormat( mTextFormat );
   item->setAngle( mAngle );
   item->setAlignment( mAlignment );
+  item->setRotationMode( mRotationMode );
   item->copyCommonProperties( this );
   return item.release();
 }
@@ -119,6 +132,17 @@ QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::clone()
 QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
 {
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
+}
+
+QgsRectangle rotateBoundingBoxAroundPoint( double cx, double cy, const QgsRectangle &original, double angleClockwiseDegrees )
+{
+  QTransform t;
+  t.translate( cx, cy );
+  const double angleRadians = -M_PI * angleClockwiseDegrees / 180.0;
+  t.rotateRadians( angleRadians );
+  t.translate( -cx, -cy );
+  const QRectF result = t.mapRect( original.toRectF() );
+  return QgsRectangle( result );
 }
 
 QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context ) const
@@ -134,7 +158,41 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
   const double widthInMapUnits = context.convertToMapUnits( widthInPixels, Qgis::RenderUnit::Pixels );
   const double heightInMapUnits = context.convertToMapUnits( heightInPixels, Qgis::RenderUnit::Pixels );
 
-  return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+  double angle = mAngle;
+  switch ( mRotationMode )
+  {
+    case Qgis::SymbolRotationMode::RespectMapRotation:
+      angle += context.mapToPixel().mapRotation();
+      break;
+
+    case Qgis::SymbolRotationMode::IgnoreMapRotation:
+      break;
+  }
+
+  QgsRectangle unrotatedRect;
+  switch ( mAlignment & Qt::AlignHorizontal_Mask )
+  {
+    case Qt::AlignRight:
+      unrotatedRect = QgsRectangle( mPoint.x() - widthInMapUnits, mPoint.y(), mPoint.x(), mPoint.y() + heightInMapUnits );
+      break;
+
+    case Qt::AlignHCenter:
+      unrotatedRect = QgsRectangle( mPoint.x() - widthInMapUnits * 0.5, mPoint.y(), mPoint.x() + widthInMapUnits * 0.5, mPoint.y() + heightInMapUnits );
+      break;
+
+    default:
+      unrotatedRect = QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+      break;
+  }
+
+  if ( !qgsDoubleNear( angle, 0 ) )
+  {
+    return rotateBoundingBoxAroundPoint( mPoint.x(), mPoint.y(), unrotatedRect, angle );
+  }
+  else
+  {
+    return unrotatedRect;
+  }
 }
 
 QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
@@ -214,4 +272,14 @@ Qt::Alignment QgsAnnotationPointTextItem::alignment() const
 void QgsAnnotationPointTextItem::setAlignment( Qt::Alignment alignment )
 {
   mAlignment = alignment;
+}
+
+Qgis::SymbolRotationMode QgsAnnotationPointTextItem::rotationMode() const
+{
+  return mRotationMode;
+}
+
+void QgsAnnotationPointTextItem::setRotationMode( Qgis::SymbolRotationMode mode )
+{
+  mRotationMode = mode;
 }

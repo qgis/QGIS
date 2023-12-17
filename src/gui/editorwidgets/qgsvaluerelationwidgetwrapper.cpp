@@ -157,11 +157,18 @@ void QgsFilteredTableWidget::populate( QgsValueRelationFieldFormatter::ValueRela
 
 void QgsFilteredTableWidget::setIndeterminateState()
 {
-  for ( int j = 0; j < mTableWidget->rowCount(); j++ )
+  for ( int rowIndex = 0; rowIndex < mTableWidget->rowCount(); rowIndex++ )
   {
-    for ( int i = 0; i < mColumnCount; ++i )
+    for ( int columnIndex = 0; columnIndex < mColumnCount; ++columnIndex )
     {
-      whileBlocking( mTableWidget )->item( j, i )->setCheckState( Qt::PartiallyChecked );
+      if ( item( rowIndex, columnIndex ) )
+      {
+        whileBlocking( mTableWidget )->item( rowIndex, columnIndex )->setCheckState( Qt::PartiallyChecked );
+      }
+      else
+      {
+        break;
+      }
     }
   }
 }
@@ -291,7 +298,7 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
   }
   else
   {
-    QComboBox *combo = new QComboBox( parent );
+    QgsToolTipComboBox *combo = new QgsToolTipComboBox( parent );
     combo->setMinimumContentsLength( 1 );
     combo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
     return combo;
@@ -301,7 +308,7 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 {
 
-  mComboBox = qobject_cast<QComboBox *>( editor );
+  mComboBox = qobject_cast<QgsToolTipComboBox *>( editor );
   mTableWidget = qobject_cast<QgsFilteredTableWidget *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 

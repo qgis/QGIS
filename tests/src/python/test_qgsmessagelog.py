@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
@@ -17,7 +16,8 @@ from qgis.core import (
     QgsMessageLog,
     QgsMessageLogNotifyBlocker,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -25,7 +25,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMessageLog(unittest.TestCase):
+class TestQgsMessageLog(QgisTestCase):
 
     def testSignals(self):
         app_log = QgsApplication.messageLog()

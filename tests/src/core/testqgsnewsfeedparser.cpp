@@ -39,6 +39,7 @@ class TestQgsNewsFeedParser: public QObject
     void testGeoFencing();
     void testModel();
     void testProxyModel();
+    void testUpdatedEntries();
 
 };
 
@@ -408,6 +409,68 @@ void TestQgsNewsFeedParser::testProxyModel()
   QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
   QCOMPARE( model2.data( model2.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Null Island QGIS Meeting" ) );
   QCOMPARE( model2.data( model2.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
+}
+
+void TestQgsNewsFeedParser::testUpdatedEntries()
+{
+  QList< QgsNewsFeedParser::Entry > entries;
+
+  const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
+  const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
+
+  // reset to a standard known last time
+  QgsNewsFeedParser::sTreeNewsFeed->deleteItem( feedKey );
+  QgsNewsFeedParser::settingsFeedLastFetchTime->setValue( 1457360008, feedKey );
+
+  // refetch, only new items should be fetched
+  QgsNewsFeedParser parser( url );
+  QVERIFY( parser.entries().isEmpty() );
+  QEventLoop loop;
+  connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
+  {
+    entries = e;
+    loop.quit();
+  } );
+
+  parser.fetch();
+  loop.exec();
+
+  // check only new entries are present
+  QCOMPARE( entries.count(), 4 );
+
+  entries.clear();
+
+  // Now request a new date and check that:
+  // - entry 3 has a new expiry date in the past so it is removed
+  // - entry 11 has been modified
+
+  QgsNewsFeedParser::settingsFeedLastFetchTime->setValue( 1557079653, feedKey );
+
+  QgsNewsFeedParser parser2( url );
+  QVERIFY( ! parser2.entries().isEmpty() );
+  QEventLoop loop2;
+  connect( &parser2, &QgsNewsFeedParser::fetched, this, [ =, &loop2, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
+  {
+    entries = e;
+    loop2.quit();
+  } );
+
+  const QSignalSpy spyUpdated( &parser2, &QgsNewsFeedParser::entryUpdated );
+  const QSignalSpy spyDismissed( &parser2, &QgsNewsFeedParser::entryDismissed );
+
+  parser2.fetch();
+  loop2.exec();
+
+  QCOMPARE( spyDismissed.count(), 1 );
+  QCOMPARE( spyUpdated.count(), 1 );
+
+  QCOMPARE( entries.count(), 2 );
+  QCOMPARE( parser2.entries().count(), 3 );
+  QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "Next Microsoft Windows code name revealed" ) );
+  QCOMPARE( parser2.entries().at( 1 ).title, QStringLiteral( "Null Island QGIS Meeting" ) );
+  QCOMPARE( parser2.entries().at( 2 ).title, QStringLiteral( "QGIS Italian Meeting Revisited" ) );
+  QCOMPARE( parser2.entries().at( 2 ).expiry.toSecsSinceEpoch(), 7868426853 );
+
 }
 
 

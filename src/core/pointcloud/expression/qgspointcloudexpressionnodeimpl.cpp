@@ -146,9 +146,9 @@ bool QgsPointCloudExpressionNodeUnaryOperator::convert( const QgsExpressionNodeU
 QString QgsPointCloudExpressionNodeUnaryOperator::toPdal() const
 {
   if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
-    return UNARY_OPERATOR_TEXT[mOp] == QStringLiteral( "NOT" ) ? QStringLiteral( "!(%1)" ).arg( mOperand->toPdal() ) : QStringLiteral( "-(%1)" ).arg( mOperand->dump() );
+    return UNARY_OPERATOR_TEXT[mOp] == QLatin1String( "NOT" ) ? QStringLiteral( "!(%1)" ).arg( mOperand->toPdal() ) : QStringLiteral( "-(%1)" ).arg( mOperand->dump() );
   else
-    return UNARY_OPERATOR_TEXT[mOp] == QStringLiteral( "NOT" ) ? QStringLiteral( "!%1" ).arg( mOperand->toPdal() ) : QStringLiteral( "-%1" ).arg( mOperand->dump() );
+    return UNARY_OPERATOR_TEXT[mOp] == QLatin1String( "NOT" ) ? QStringLiteral( "!%1" ).arg( mOperand->toPdal() ) : QStringLiteral( "-%1" ).arg( mOperand->dump() );
 }
 
 //
@@ -543,19 +543,19 @@ QString QgsPointCloudExpressionNodeBinaryOperator::toPdal() const
   }
 
   QString opText = BINARY_OPERATOR_TEXT[mOp];
-  if ( opText == QStringLiteral( "AND" ) )
+  if ( opText == QLatin1String( "AND" ) )
   {
     opText = QStringLiteral( "&&" );
   }
-  else if ( opText == QStringLiteral( "OR" ) )
+  else if ( opText == QLatin1String( "OR" ) )
   {
     opText = QStringLiteral( "||" );
   }
-  else if ( opText == QStringLiteral( "<>" ) )
+  else if ( opText == QLatin1String( "<>" ) )
   {
     opText = QStringLiteral( "!=" );
   }
-  else if ( opText == QStringLiteral( "=" ) )
+  else if ( opText == QLatin1String( "=" ) )
   {
     opText = QStringLiteral( "==" );
   }

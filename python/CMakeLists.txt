@@ -73,8 +73,6 @@ include_directories(SYSTEM
   ${QT_QTNETWORK_INCLUDE_DIR}
   ${QT_QTSVG_INCLUDE_DIR}
   ${QT_QTXML_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -106,10 +104,6 @@ if (WITH_GUI)
   include_directories(
 
   )
-endif()
-
-if (WITH_PDAL)
-  include_directories(SYSTEM "${PDAL_INCLUDE_DIR}")
 endif()
 
 if(NOT ENABLE_TESTS)
@@ -170,13 +164,18 @@ if(NOT WITH_GUI)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_GUI)
 endif()
 
+if(NOT WITH_QTSERIALPORT)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QTSERIALPORT)
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/core/project.py @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml @ONLY)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+# TODO QGIS 4 : remove this hack when we switch completely to Qt 6 which supports only c++17
+if( ${QT_VERSION_MAJOR} EQUAL 5 AND ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" ) )
   # Bad hack to fix compilation with gcc 11 - for some reason it's ignoring
   # the c++ standard version set for the target in BUILD_SIP_PYTHON_MODULE!
   add_definitions(-std=c++14)
@@ -220,6 +219,11 @@ if (WITH_GUI)
   else()
     message(STATUS "Qsci sip file not found - disabling bindings for derived classes")
     set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
+  endif()
+
+  if(NOT WITH_QTGAMEPAD)
+    message(STATUS "QtGamepad not enabled - disabling bindings for derived classes")
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QTGAMEPAD)
   endif()
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gui/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/gui/project.py @ONLY)

@@ -16,7 +16,6 @@ import stat
 import sys
 import tempfile
 
-import qgis  # NOQA
 
 try:
     from urllib2 import HTTPError, URLError, urlopen

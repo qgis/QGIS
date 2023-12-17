@@ -18,6 +18,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingalignrasterlayerswidgetwrapper.h"
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
@@ -34,6 +35,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
   addAlgorithmConfigurationWidgetFactory( new QgsConditionalBranchAlgorithmConfigurationWidgetFactory() );
 
+  addParameterWidgetFactory( new QgsProcessingAlignRasterLayersWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingCrsWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
@@ -83,6 +85,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingAnnotationLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointCloudDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointCloudAttributeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorTileDestinationWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

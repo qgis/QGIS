@@ -15,6 +15,8 @@
 
 #include "qgsvectortiledataprovider.h"
 #include "qgsthreadingutils.h"
+#include "qgsreadwritelocker.h"
+#include "qgsvectortileloader.h"
 
 #include <QNetworkRequest>
 #include <QImage>
@@ -24,10 +26,12 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider(
   const ProviderOptions &options,
   QgsDataProvider::ReadFlags flags )
   : QgsDataProvider( uri, options, flags )
+  , mShared( new QgsVectorTileDataProviderSharedData )
 {}
 
 QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other )
   : QgsDataProvider( other.dataSourceUri( false ), ProviderOptions(), other.mReadFlags )
+  , mShared( other.mShared )
 {
   setTransformContext( other.transformContext() );
 }
@@ -101,12 +105,27 @@ QImage QgsVectorTileDataProvider::spriteImage() const
   return QImage();
 }
 
-QString QgsVectorTileDataProvider::htmlMetadata() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QString();
+
+QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData()
+{
+  mTileCache.setMaxCost( 200 );
 }
 
+bool QgsVectorTileDataProviderSharedData::getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ tile )
+{
+  QMutexLocker locker( &mMutex );
+  if ( QgsVectorTileRawData *cachedData = mTileCache.object( tile ) )
+  {
+    data = *cachedData;
+    return true;
+  }
 
+  return false;
+}
 
+void QgsVectorTileDataProviderSharedData::storeCachedTileData( const QgsVectorTileRawData &data )
+{
+  QMutexLocker locker( &mMutex );
+  mTileCache.insert( data.id, new QgsVectorTileRawData( data ) );
+}

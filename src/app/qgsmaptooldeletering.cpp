@@ -80,7 +80,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
 
   const QgsGeometry ringGeom = ringUnderPoint( p, mPressedFid, mPressedPartNum, mPressedRingNum );
 
-  if ( mPressedFid != -1 )
+  if ( mPressedRingNum != -1 )
   {
     QgsFeature f;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
@@ -88,6 +88,12 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
 
     mRubberBand->setToGeometry( ringGeom, vlayer );
     mRubberBand->show();
+  }
+  else if ( vlayer->selectedFeatureCount() > 0 )
+  {
+    emit messageEmitted(
+      tr( "If there are selected features, the delete ring tool only applies to those. Clear the selection and try again." ),
+      Qgis::MessageLevel::Warning );
   }
 }
 
@@ -129,8 +135,13 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   QgsPolygonXY tempPol;
   QgsGeometry tempGeom;
   double area = std::numeric_limits<double>::max();
+  const QgsFeatureIds selectedFeatureIds = vlayer->selectedFeatureIds();
   while ( fit.nextFeature( f ) )
   {
+    if ( !selectedFeatureIds.isEmpty() &&
+         !selectedFeatureIds.contains( f.id() ) )
+      continue;
+
     g = f.geometry();
     if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != Qgis::GeometryType::Polygon )
       continue;

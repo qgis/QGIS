@@ -66,7 +66,11 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
       case Exiv2::signedLong:
       case Exiv2::unsignedLongLong:
       case Exiv2::signedLongLong:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( it->toUint32() );
+#else
         val = QVariant::fromValue( it->toLong() );
+#endif
         break;
 
       case Exiv2::tiffDouble:
@@ -80,7 +84,11 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
       case Exiv2::signedByte:
       case Exiv2::tiffIfd:
       case Exiv2::tiffIfd8:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( static_cast< int >( it->toUint32() ) );
+#else
         val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
+#endif
         break;
 
       case Exiv2::date:
@@ -182,7 +190,11 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       case Exiv2::signedLong:
       case Exiv2::unsignedLongLong:
       case Exiv2::signedLongLong:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( it->toUint32() );
+#else
         val = QVariant::fromValue( it->toLong() );
+#endif
         break;
 
       case Exiv2::tiffDouble:
@@ -196,7 +208,11 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
       case Exiv2::signedByte:
       case Exiv2::tiffIfd:
       case Exiv2::tiffIfd8:
+#if EXIV2_TEST_VERSION (0, 28, 0)
+        val = QVariant::fromValue( static_cast< int >( it->toUint32() ) );
+#else
         val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
+#endif
         break;
 
       case Exiv2::date:
@@ -456,6 +472,7 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
       return false;
 
     QVariant actualValue;
+    bool actualValueIsUShort = false;
     if ( tag == QLatin1String( "Exif.GPSInfo.GPSLatitude" ) ||
          tag == QLatin1String( "Exif.GPSInfo.GPSLongitude" ) ||
          tag == QLatin1String( "Exif.GPSInfo.GPSDestLatitude" ) ||
@@ -466,6 +483,11 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
     else if ( tag == QLatin1String( "Exif.GPSInfo.GPSAltitude" ) )
     {
       actualValue = QStringLiteral( "%1/1000" ).arg( static_cast< int>( std::floor( std::abs( value.toDouble() ) * 1000 ) ) );
+    }
+    else if ( tag == QLatin1String( "Exif.Image.Orientation" ) )
+    {
+      actualValueIsUShort = true;
+      actualValue = value;
     }
     else if ( value.type() == QVariant::DateTime )
     {
@@ -513,8 +535,21 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
 
     const bool isXmp = tag.startsWith( QLatin1String( "Xmp." ) );
     image->readMetadata();
-    if ( actualValue.type() == QVariant::Int ||
-         actualValue.type() == QVariant::LongLong )
+    if ( actualValueIsUShort )
+    {
+      if ( isXmp )
+      {
+        Exiv2::XmpData &xmpData = image->xmpData();
+        xmpData[tag.toStdString()] = static_cast<ushort>( actualValue.toLongLong() );
+      }
+      else
+      {
+        Exiv2::ExifData &exifData = image->exifData();
+        exifData[tag.toStdString()] = static_cast<ushort>( actualValue.toLongLong() );
+      }
+    }
+    else if ( actualValue.type() == QVariant::Int ||
+              actualValue.type() == QVariant::LongLong )
     {
       if ( isXmp )
       {
@@ -527,8 +562,8 @@ bool QgsExifTools::tagImage( const QString &imagePath, const QString &tag, const
         exifData[tag.toStdString()] = static_cast<uint32_t>( actualValue.toLongLong() );
       }
     }
-    if ( actualValue.type() == QVariant::UInt ||
-         actualValue.type() ==  QVariant::ULongLong )
+    else if ( actualValue.type() == QVariant::UInt ||
+              actualValue.type() ==  QVariant::ULongLong )
     {
       if ( isXmp )
       {

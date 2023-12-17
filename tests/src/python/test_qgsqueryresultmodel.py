@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '24/12/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 
@@ -27,10 +25,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsQueryResultModel,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class TestPyQgsQgsQueryResultModel(unittest.TestCase):
+class TestPyQgsQgsQueryResultModel(QgisTestCase):
 
     NUM_RECORDS = 100050
 

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import (
     QDate,
@@ -29,7 +28,8 @@ from qgis.gui import (
     QgsHistoryEntryGroup,
     QgsHistoryEntryModel
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -79,7 +79,7 @@ class TestGroup(QgsHistoryEntryGroup):
         return 'test'
 
 
-class TestQgsHistoryProviderRegistry(unittest.TestCase):
+class TestQgsHistoryProviderRegistry(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '01/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.analysis import (
     QgsGcpPoint,
@@ -25,12 +24,13 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsVectorWarper(unittest.TestCase):
+class TestQgsVectorWarper(QgisTestCase):
 
     def testWarper(self):
         # create source layer

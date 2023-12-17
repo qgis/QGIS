@@ -24,9 +24,9 @@
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsmaptool.h"
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingmodelchildparametersource.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprocessingmodelchildparametersource.h"
 
 #include <QAbstractButton>
 
@@ -71,6 +71,7 @@ class QgsProcessingLayerOutputDestinationWidget;
 class QgsCheckableComboBox;
 class QgsMapLayerComboBox;
 class QgsProcessingPointCloudExpressionLineEdit;
+class QgsProcessingRasterCalculatorExpressionLineEdit;
 
 ///@cond PRIVATE
 
@@ -700,6 +701,7 @@ class GUI_EXPORT QgsProcessingExpressionParameterDefinitionWidget : public QgsPr
     QComboBox *mParentLayerComboBox = nullptr;
     QgsExpressionLineEdit *mDefaultQgisLineEdit = nullptr;
     QgsProcessingPointCloudExpressionLineEdit *mDefaultPointCloudLineEdit = nullptr;
+    QgsProcessingRasterCalculatorExpressionLineEdit *mDefaultRasterCalculatorLineEdit = nullptr;
     QComboBox *mExpressionTypeComboBox = nullptr;
 
 };
@@ -746,6 +748,7 @@ class GUI_EXPORT QgsProcessingExpressionWidgetWrapper : public QgsAbstractProces
     QgsExpressionBuilderWidget *mExpBuilderWidget = nullptr;
     QgsExpressionLineEdit *mExpLineEdit = nullptr;
     QgsProcessingPointCloudExpressionLineEdit *mPointCloudExpLineEdit = nullptr;
+    QgsProcessingRasterCalculatorExpressionLineEdit *mRasterCalculatorExpLineEdit = nullptr;
     std::unique_ptr< QgsMapLayer > mParentLayer;
 
     friend class TestProcessingGui;
@@ -1787,7 +1790,7 @@ class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessi
 
     QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
-    QgsProcessingModelChildParameterSource::Source defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const override;
+    Qgis::ProcessingModelChildParameterSource defaultModelSource( const QgsProcessingParameterDefinition *parameter ) const override;
 
   private:
 
@@ -2453,6 +2456,24 @@ class GUI_EXPORT QgsProcessingPointCloudAttributeWidgetWrapper : public QgsAbstr
     std::unique_ptr< QgsPointCloudLayer > mParentLayer;
 
     friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingVectorTileDestinationWidgetWrapper : public QgsProcessingOutputWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingVectorTileDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+  protected:
+    QString modelerExpressionFormatString() const override;
+
 };
 
 ///@endcond PRIVATE

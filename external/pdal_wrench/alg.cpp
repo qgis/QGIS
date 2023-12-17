@@ -37,9 +37,6 @@ bool runAlg(std::vector<std::string> args, Alg &alg)
         return false;
     }
 
-    point_count_t totalPoints = 0;
-    BOX3D bounds;
-
     if (alg.hasSingleInput)
     {
         if (ends_with(alg.inputFile, ".vpc"))
@@ -47,8 +44,10 @@ bool runAlg(std::vector<std::string> args, Alg &alg)
             VirtualPointCloud vpc;
             if (!vpc.read(alg.inputFile))
                 return false;
-            totalPoints = vpc.totalPoints();
-            bounds = vpc.box3d();
+            alg.totalPoints = vpc.totalPoints();
+            alg.bounds = vpc.box3d();
+            if (!alg.needsSingleCrs)
+                alg.crs = SpatialReference(vpc.crsWkt);
 
             if (alg.needsSingleCrs && vpc.crsWkt == "_mix_")
             {
@@ -59,19 +58,20 @@ bool runAlg(std::vector<std::string> args, Alg &alg)
         else
         {
             QuickInfo qi = getQuickInfo(alg.inputFile);
-            totalPoints = qi.m_pointCount;
-            bounds = qi.m_bounds;
+            alg.totalPoints = qi.m_pointCount;
+            alg.bounds = qi.m_bounds;
+            alg.crs = qi.m_srs;
         }
     }
 
     std::vector<std::unique_ptr<PipelineManager>> pipelines;
 
-    alg.preparePipelines(pipelines, bounds, totalPoints);
+    alg.preparePipelines(pipelines);
 
     if (pipelines.empty())
         return false;
 
-    runPipelineParallel(totalPoints, alg.isStreaming, pipelines, alg.max_threads, alg.verbose);
+    runPipelineParallel(alg.totalPoints, alg.isStreaming, pipelines, alg.max_threads, alg.verbose);
 
     alg.finalize(pipelines);
 

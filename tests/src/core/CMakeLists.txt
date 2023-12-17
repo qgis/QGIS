@@ -12,10 +12,6 @@ if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
-if (WITH_PDAL)
-    include_directories(SYSTEM "${PDAL_INCLUDE_DIR}")
-endif()
-
 #############################################################
 # Tests:
 
@@ -71,6 +67,7 @@ set(TESTS
  testqgsgenericspatialindex.cpp
  testqgsgeometryimport.cpp
  testqgsgeopdfexport.cpp
+ testqgsgltfutils.cpp
  testqgsgml.cpp
  testqgsgradients.cpp
  testqgsgraduatedsymbolrenderer.cpp
@@ -123,6 +120,7 @@ set(TESTS
  testqgsmaptopixel.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmatrix4x4.cpp
  testqgsmesh3daveraging.cpp
  testqgsmesheditor.cpp
  testqgsmeshlayer.cpp
@@ -192,6 +190,8 @@ set(TESTS
  testqgstemporalnavigationobject.cpp
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
+ testqgstiledsceneconnection.cpp
+ testqgstiledscenerendererregistry.cpp
  testqgstiledownloadmanager.cpp
  testqgstracer.cpp
  testqgstranslateproject.cpp

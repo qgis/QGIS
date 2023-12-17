@@ -84,11 +84,11 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   }
   else
   {
-    const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
+    const QgsMesh3DAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
     if ( !averagingMethod )
       return block;
 
-    const QgsMesh3dDataBlock block3d = meshLayer->dataset3dValues( index, valueIndex, count );
+    const QgsMesh3DDataBlock block3d = meshLayer->dataset3dValues( index, valueIndex, count );
     if ( !block3d.isValid() )
       return block;
 
@@ -199,13 +199,14 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &
 
 QgsRectangle QgsMeshLayerUtils::boundingBoxToScreenRectangle(
   const QgsMapToPixel &mtp,
-  const QgsRectangle &bbox
+  const QgsRectangle &bbox,
+  double devicePixelRatio
 )
 {
-  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
-  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
-  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
-  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
+  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() ) * devicePixelRatio;
+  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() ) * devicePixelRatio;
+  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() ) * devicePixelRatio;
+  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() ) * devicePixelRatio;
 
   const double xMin = std::min( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
   const double xMax = std::max( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
@@ -223,9 +224,10 @@ void QgsMeshLayerUtils::boundingBoxToScreenRectangle(
   int &leftLim,
   int &rightLim,
   int &bottomLim,
-  int &topLim )
+  int &topLim,
+  double devicePixelRatio )
 {
-  const QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox );
+  const QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox, devicePixelRatio );
 
   bottomLim = std::max( int( screenBBox.yMinimum() ), 0 );
   topLim = std::min( int( screenBBox.yMaximum() ), outputSize.height() - 1 );
@@ -283,6 +285,13 @@ static bool E3T_physicalToBarycentric( const QgsPointXY &pA, const QgsPointXY &p
   }
 
   return true;
+}
+
+bool QgsMeshLayerUtils::calculateBarycentricCoordinates(
+  const QgsPointXY &pA, const QgsPointXY &pB, const QgsPointXY &pC, const QgsPointXY &pP,
+  double &lam1, double &lam2, double &lam3 )
+{
+  return E3T_physicalToBarycentric( pA, pB, pC, pP, lam1, lam2, lam3 );
 }
 
 double QgsMeshLayerUtils::interpolateFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,

@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDate,
@@ -40,7 +39,8 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 from utilities import writeShape
@@ -48,7 +48,7 @@ from utilities import writeShape
 start_app()
 
 
-class TestQgsValueMapFieldFormatter(unittest.TestCase):
+class TestQgsValueMapFieldFormatter(QgisTestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_representValue(self):
@@ -101,7 +101,7 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
 
-class TestQgsValueRelationFieldFormatter(unittest.TestCase):
+class TestQgsValueRelationFieldFormatter(QgisTestCase):
 
     def test_representValue(self):
         first_layer = QgsVectorLayer("none?field=foreign_key:integer",
@@ -216,7 +216,7 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("@current_parent_geometry"))
 
 
-class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
+class TestQgsRelationReferenceFieldFormatter(QgisTestCase):
 
     def test_representValue(self):
         first_layer = QgsVectorLayer("none?field=foreign_key:integer",
@@ -305,7 +305,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
 
-class TestQgsRangeFieldFormatter(unittest.TestCase):
+class TestQgsRangeFieldFormatter(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -407,7 +407,7 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
 
-class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
+class TestQgsCheckBoxFieldFormatter(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -421,8 +421,9 @@ class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
 
     def test_representValue(self):
         null_value = "NULL"
-        QgsSettings().setValue("qgis/nullValue", null_value)
-        layer = QgsVectorLayer("point?field=int:integer&field=str:string", "layer", "memory")
+        QgsApplication.setNullRepresentation(null_value)
+
+        layer = QgsVectorLayer("point?field=int:integer&field=str:string&field=bool:bool", "layer", "memory")
         self.assertTrue(layer.isValid())
 
         field_formatter = QgsCheckBoxFieldFormatter()
@@ -464,8 +465,14 @@ class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'nooh'), 'nooh')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'oops'), "(oops)")
 
+        # bool
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowTrueFalse
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, True), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, False), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Type.Bool)), 'NULL')
 
-class TestQgsFallbackFieldFormatter(unittest.TestCase):
+
+class TestQgsFallbackFieldFormatter(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -669,7 +676,7 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(vl, 3, {}, None, 5), "")
 
 
-class TestQgsDateTimeFieldFormatter(unittest.TestCase):
+class TestQgsDateTimeFieldFormatter(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

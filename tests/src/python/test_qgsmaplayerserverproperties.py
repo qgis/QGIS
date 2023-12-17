@@ -14,12 +14,13 @@ __date__ = '21/06/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
 from qgis.core import QgsMapLayerServerProperties, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsMapLayerServerConfig(unittest.TestCase):
+class TestQgsMapLayerServerConfig(QgisTestCase):
 
     def test_deprecated_function(self):
         """ Test deprecated function about metadata url in QgsMapLayer. """

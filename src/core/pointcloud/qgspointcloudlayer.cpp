@@ -72,7 +72,9 @@ QgsPointCloudLayer::~QgsPointCloudLayer()
 {
   if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
   {
+    mStatsCalculationTask = 0;
     task->cancel();
+    task->waitForFinished();
   }
 }
 
@@ -148,7 +150,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    QgsDataProvider::ReadFlags flags = providerReadFlags( layerNode, mReadFlags );
     // read extent
     if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
     {
@@ -160,19 +162,9 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
         // store the extent
         setExtent( mbr );
-
-        // skip get extent
-        flags |= QgsDataProvider::SkipGetExtent;
       }
     }
-    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-    {
-      flags |= QgsDataProvider::FlagTrustDataSource;
-    }
-    if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-    {
-      flags |= QgsDataProvider::ForceReadOnly;
-    }
+
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
     const QDomNode subset = layerNode.namedItem( QStringLiteral( "subset" ) );
     const QString subsetText = subset.toElement().text();
@@ -400,10 +392,21 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   mProviderKey = provider;
   mDataSource = dataSource;
 
-  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
+  if ( mPreloadedProvider )
+  {
+    mDataProvider.reset( qobject_cast< QgsPointCloudDataProvider * >( mPreloadedProvider.release() ) );
+  }
+  else
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+    mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
+  }
+
   if ( !mDataProvider )
   {
-    QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );
+    QgsDebugError( QStringLiteral( "Unable to get point cloud data provider" ) );
     setValid( false );
     return;
   }
@@ -414,7 +417,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   setValid( mDataProvider->isValid() );
   if ( !isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
+    QgsDebugError( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
     setError( mDataProvider->error() );
     return;
   }
@@ -575,6 +578,12 @@ QString QgsPointCloudLayer::htmlMetadata() const
                 + tr( "Point count" ) + QStringLiteral( "</td><td>" )
                 + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
                 + QStringLiteral( "</td></tr>\n" );
+
+  if ( const QgsPointCloudDataProvider *provider = dataProvider() )
+  {
+    myMetadata += provider->htmlMetadata();
+  }
+
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // CRS
@@ -933,8 +942,11 @@ void QgsPointCloudLayer::calculateStatistics()
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
   connect( task, &QgsTask::taskTerminated, this, [this]()
   {
-    QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
-    mStatsCalculationTask = 0;
+    if ( mStatsCalculationTask )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
+      mStatsCalculationTask = 0;
+    }
   } );
 
   mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
@@ -972,7 +984,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Transformation of extent failed!" ) );
+      QgsDebugError( QStringLiteral( "Transformation of extent failed!" ) );
     }
 
     const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();

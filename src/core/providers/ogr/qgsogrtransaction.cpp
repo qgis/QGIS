@@ -38,7 +38,7 @@ bool QgsOgrTransaction::beginTransaction( QString &error, int /* statementTimeou
     QString fkDeferError;
     if ( ! executeSql( QStringLiteral( "PRAGMA defer_foreign_keys = ON" ), fkDeferError ) )
     {
-      QgsDebugMsg( QStringLiteral( "Error setting PRAGMA defer_foreign_keys = ON: %1" ).arg( fkDeferError ) );
+      QgsDebugError( QStringLiteral( "Error setting PRAGMA defer_foreign_keys = ON: %1" ).arg( fkDeferError ) );
     }
   }
   return executeSql( QStringLiteral( "BEGIN" ), error );
@@ -67,7 +67,7 @@ bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool 
   if ( !mSharedDS->executeSQLNoReturn( sql ) )
   {
     errorMsg = CPLGetLastErrorMsg();
-    QgsDebugMsg( errorMsg );
+    QgsDebugError( errorMsg );
 
     if ( isDirty )
     {

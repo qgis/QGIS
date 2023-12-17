@@ -18,7 +18,6 @@
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscurve.h"
-#include "qgsgeos.h"
 #include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
@@ -36,6 +35,12 @@ QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileS
         mGenerators.emplace_back( std::move( generator ) );
     }
   }
+}
+
+QgsProfilePlotRenderer::QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators, const QgsProfileRequest &request )
+  : mGenerators( std::move( generators ) )
+  , mRequest( request )
+{
 }
 
 QgsProfilePlotRenderer::~QgsProfilePlotRenderer()
@@ -293,7 +298,7 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
   return QgsDoubleRange( min, max );
 }
 
-QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
+QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId, double devicePixelRatio )
 {
   QImage res( width, height, QImage::Format_ARGB32_Premultiplied );
   res.setDotsPerMeterX( 96 / 25.4 * 1000 );
@@ -305,6 +310,10 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   QgsRenderContext context = QgsRenderContext::fromQPainter( &p );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainterFlagsUsingContext( &p );
+  context.setDevicePixelRatio( devicePixelRatio );
+  const double mapUnitsPerPixel = ( distanceMax - distanceMin ) / width;
+  context.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
+
   render( context, width, height, distanceMin, distanceMax, zMin, zMax, sourceId );
   p.end();
 
@@ -414,6 +423,24 @@ QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsDo
     job->mutex.unlock();
   }
 
+  return res;
+}
+
+QVector<QgsAbstractProfileResults::Feature> QgsProfilePlotRenderer::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback )
+{
+  QVector<QgsAbstractProfileResults::Feature > res;
+  for ( const auto &job : mJobs )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    job->mutex.lock();
+    if ( job->complete && job->results )
+    {
+      res.append( job->results->asFeatures( type, feedback ) );
+    }
+    job->mutex.unlock();
+  }
   return res;
 }
 

@@ -294,7 +294,7 @@ void QgsOracleSourceSelect::cmbConnections_currentIndexChanged( const QString &t
   // populate the table list
   mConnInfo = QgsOracleConn::connUri( cmbConnections->currentText() );
 
-  QgsDebugMsg( "Connection info: " + mConnInfo.uri() );
+  QgsDebugMsgLevel( "Connection info: " + mConnInfo.uri(), 2 );
 
   loadTableFromCache();
 }
@@ -465,7 +465,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "no owner item found" ) );
+    QgsDebugError( QStringLiteral( "no owner item found" ) );
     return;
   }
 
@@ -474,7 +474,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel->layerURI( index, mConnInfo );
   if ( uri.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "no uri" ) );
+    QgsDebugMsgLevel( QStringLiteral( "no uri" ), 2 );
     return;
   }
 

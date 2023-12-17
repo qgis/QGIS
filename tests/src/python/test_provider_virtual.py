@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant
 from qgis.core import (
     Qgis,
@@ -32,7 +31,8 @@ from qgis.core import (
     QgsVirtualLayerDefinitionUtils,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
@@ -47,7 +47,7 @@ def toPercent(s):
     return bytes(QUrl.toPercentEncoding(s)).decode()
 
 
-class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
+class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):

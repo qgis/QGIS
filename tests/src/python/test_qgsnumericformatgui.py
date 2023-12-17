@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '6/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -29,7 +28,8 @@ from qgis.gui import (
     QgsNumericFormatSelectorWidget,
     QgsNumericFormatWidget,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -84,7 +84,7 @@ class TestWidgetFactory(QgsNumericFormatConfigurationWidgetFactory):
         return w
 
 
-class TestQgsNumericFormatGui(unittest.TestCase):
+class TestQgsNumericFormatGui(QgisTestCase):
 
     def testRegistry(self):
         """

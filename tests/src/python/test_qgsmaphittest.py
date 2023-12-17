@@ -35,7 +35,8 @@ from qgis.core import (
     QgsLayerTreeFilterSettings,
     QgsLayoutChecker
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -43,7 +44,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMapHitTest(unittest.TestCase):
+class TestQgsMapHitTest(QgisTestCase):
 
     def test_hit_test(self):
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')

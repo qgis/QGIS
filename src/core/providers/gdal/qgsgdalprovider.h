@@ -159,7 +159,8 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
-    QString htmlMetadata() override;
+    QString htmlMetadata() const override;
+    QString bandDescription( int bandNumber ) override;
     QStringList subLayers() const override;
 
     static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
@@ -216,6 +217,8 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
     bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
     bool setMaxOversampling( double factor ) override { mMaxOversampling = factor; return true; }
+
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
   private:
     QgsGdalProvider( const QgsGdalProvider &other );
@@ -297,7 +300,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     GDALDatasetH mGdalDataset = nullptr;
 
     //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
-    double mGeoTransform[6];
+    mutable double mGeoTransform[6];
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -401,6 +404,17 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
+
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names,
+                    QStringList &descriptions, QString &errCause ) override;
+    bool styleExists( const QString &uri, const QString &styleId, QString &errCause SIP_OUT ) override;
+    QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
+    bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
 };
 
 ///@endcond

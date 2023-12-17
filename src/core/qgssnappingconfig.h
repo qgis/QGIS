@@ -39,6 +39,8 @@ class CORE_EXPORT QgsSnappingConfig
     Q_GADGET
 
     Q_PROPERTY( QgsProject *project READ project WRITE setProject )
+    Q_PROPERTY( bool enabled READ enabled WRITE setEnabled )
+    Q_PROPERTY( Qgis::SnappingMode mode READ mode WRITE setMode )
 
   public:
 
@@ -116,7 +118,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param units
          * \deprecated since QGIS 3.12 use the method with Qgis::SnappingTypes instead.
          */
-        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units ) SIP_DEPRECATED;
+        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) SIP_DEPRECATED;
 
         /**
          * \brief IndividualLayerSettings
@@ -128,7 +130,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param maxScale 0.0 disable scale limit
          * \since QGIS 3.12
          */
-        IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, QgsTolerance::UnitType units, double minScale = 0.0, double maxScale = 0.0 );
+        IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, Qgis::MapToolUnit units, double minScale = 0.0, double maxScale = 0.0 );
 
         /**
          * Constructs an invalid setting
@@ -175,10 +177,10 @@ class CORE_EXPORT QgsSnappingConfig
         void setTolerance( double tolerance );
 
         //! Returns the type of units
-        QgsTolerance::UnitType units() const;
+        Qgis::MapToolUnit units() const;
 
         //! Sets the type of units
-        void setUnits( QgsTolerance::UnitType units );
+        void setUnits( Qgis::MapToolUnit units );
 
         /**
          * Returns minimum scale on which snapping is limited
@@ -217,7 +219,7 @@ class CORE_EXPORT QgsSnappingConfig
         bool mEnabled = false;
         Qgis::SnappingTypes mType = Qgis::SnappingType::Vertex;
         double mTolerance = 0;
-        QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
+        Qgis::MapToolUnit mUnits = Qgis::MapToolUnit::Pixels;
         double mMinimumScale = 0.0;
         double mMaximumScale = 0.0;
     };
@@ -311,10 +313,10 @@ class CORE_EXPORT QgsSnappingConfig
     ScaleDependencyMode scaleDependencyMode() const;
 
     //! Returns the type of units
-    QgsTolerance::UnitType units() const;
+    Qgis::MapToolUnit units() const;
 
     //! Sets the type of units
-    void setUnits( QgsTolerance::UnitType units );
+    void setUnits( Qgis::MapToolUnit units );
 
     //! Returns if the snapping on intersection is enabled
     bool intersectionSnapping() const;
@@ -464,7 +466,7 @@ class CORE_EXPORT QgsSnappingConfig
     ScaleDependencyMode mScaleDependencyMode = Disabled;
     double mMinimumScale = 0.0;
     double mMaximumScale = 0.0;
-    QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
+    Qgis::MapToolUnit mUnits = Qgis::MapToolUnit::Project;
     bool mIntersectionSnapping = false;
     bool mSelfSnapping = false;
 

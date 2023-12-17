@@ -268,8 +268,11 @@ tests:
               cast: str
             fid: skip
 
-  - algorithm: qgis:concavehull
-    name: Concave Hull - Points (0.3)
+  - algorithm: native:concavehull
+    name: Concave Hull - Points (0.3) (GEOS > 3.11)
+    condition:
+      geos:
+        at_least: 31100
     params:
       ALPHA: 0.3
       HOLES: true
@@ -281,14 +284,14 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_03.gml
         type: vector
-        compare:
-          geometry:
-            normalize: True
 
-  - algorithm: qgis:concavehull
-    name: Concave Hull - Points (0.7)
+  - algorithm: native:concavehull
+    name: Concave Hull - Points (0.9) (GEOS > 3.11)
+    condition:
+      geos:
+        at_least: 31100
     params:
-      ALPHA: 0.7
+      ALPHA: 0.9
       HOLES: true
       INPUT:
         name: points.gml
@@ -296,11 +299,8 @@ tests:
       NO_MULTIGEOMETRY: false
     results:
       OUTPUT:
-        name: expected/concave_hull_points_07.gml
+        name: expected/concave_hull_points_09.gml
         type: vector
-        compare:
-          geometry:
-            normalize: True
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Points (k=7)
@@ -1183,7 +1183,10 @@ tests:
         type: vector
 
   - algorithm: native:arrayoffsetlines
-    name: Array of offset (parallel) lines
+    name: Array of offset (parallel) lines  (GEOS < 3.11)
+    condition:
+      geos:
+        less_than: 31100
     params:
       COUNT: 3
       INPUT:
@@ -1196,6 +1199,25 @@ tests:
     results:
       OUTPUT:
         name: expected/create_parallel_lines.gml
+        type: vector
+
+  - algorithm: native:arrayoffsetlines
+    name: Array of offset (parallel) lines (GEOS >= 3.11)
+    condition:
+      geos:
+        at_least: 31100
+    params:
+      COUNT: 3
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: 1
+      MITER_LIMIT: 2.0
+      OFFSET: -0.2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/geos311/create_parallel_lines.gml
         type: vector
 
   - algorithm: native:setzfromraster

@@ -17,7 +17,8 @@ from qgis.PyQt.QtCore import QT_VERSION, QEventLoop, QLocale
 from qgis.PyQt.QtGui import QValidator
 from qgis.core import QgsDataCollectionItem, QgsLayerItem, QgsVectorLayer
 from qgis.gui import QgsFieldValidator
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -58,7 +59,7 @@ DO NOT ADD TESTS TO THIS FILE WITHOUT A DETAILED EXPLANATION ON WHY!!!!
 """
 
 
-class TestQgsDisabledTests(unittest.TestCase):
+class TestQgsDisabledTests(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

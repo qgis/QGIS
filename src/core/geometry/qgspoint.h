@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsrectangle.h"
 
 /***************************************************************************
@@ -342,7 +343,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distance( double x, double y ) const SIP_HOLDGIL
     {
-      return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+      return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
     }
 
     /**
@@ -354,7 +355,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distance( const QgsPoint &other ) const SIP_HOLDGIL
     {
-      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+      return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
     }
 
     /**
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distanceSquared( double x, double y ) const SIP_HOLDGIL
     {
-      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
     }
 
     /**
@@ -378,7 +379,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
     {
-      return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
     }
 
     /**
@@ -495,7 +496,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     //implementation of inherited methods
     void normalize() final SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
-    QgsRectangle boundingBox() const override SIP_HOLDGIL;
+    QgsBox3D boundingBox3D() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
     QgsPoint *clone() const override SIP_FACTORY;
@@ -544,6 +545,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint *toCurveType() const override SIP_FACTORY;
     double segmentLength( QgsVertexId startVertex ) const override;
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;

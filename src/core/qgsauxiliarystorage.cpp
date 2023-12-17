@@ -252,9 +252,9 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
 
         // is there an existing property?
         const QgsProperty existingProperty = c.property( property );
-        if ( existingProperty.propertyType() == QgsProperty::InvalidProperty
-             || ( existingProperty.propertyType() == QgsProperty::FieldBasedProperty && existingProperty.field().isEmpty() )
-             || ( existingProperty.propertyType() == QgsProperty::ExpressionBasedProperty && existingProperty.expressionString().isEmpty() )
+        if ( existingProperty.propertyType() == Qgis::PropertyType::Invalid
+             || ( existingProperty.propertyType() == Qgis::PropertyType::Field && existingProperty.field().isEmpty() )
+             || ( existingProperty.propertyType() == Qgis::PropertyType::Expression && existingProperty.expressionString().isEmpty() )
              || overwriteExisting )
         {
           const QgsProperty prop = QgsProperty::fromField( fieldName );
@@ -296,7 +296,7 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
       QgsPropertyCollection c = settings.dataDefinedProperties();
       // is there an existing property?
       const QgsProperty existingProperty = c.property( property );
-      if ( existingProperty.propertyType() == QgsProperty::InvalidProperty || overwriteExisting )
+      if ( existingProperty.propertyType() == Qgis::PropertyType::Invalid || overwriteExisting )
       {
         const QgsProperty prop = QgsProperty::fromField( fieldName );
         c.setProperty( property, prop );
@@ -341,7 +341,7 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
           QgsPropertyCollection c = settings->callout()->dataDefinedProperties();
           // is there an existing property?
           const QgsProperty existingProperty = c.property( property );
-          if ( existingProperty.propertyType() == QgsProperty::InvalidProperty || overwriteExisting )
+          if ( existingProperty.propertyType() == Qgis::PropertyType::Invalid || overwriteExisting )
           {
             const QgsProperty prop = QgsProperty::fromField( fieldName );
             c.setProperty( property, prop );
@@ -802,7 +802,7 @@ QString QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
   const QString err = QString::fromUtf8( sqlite3_errmsg( handler ) );
   const QString msg = QObject::tr( "Unable to execute" );
   const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
-  QgsDebugMsg( errMsg );
+  QgsDebugError( errMsg );
   return errMsg;
 }
 

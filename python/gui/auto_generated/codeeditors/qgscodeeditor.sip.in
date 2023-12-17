@@ -328,6 +328,45 @@ is in the QgsCodeEditor.Mode.CommandInput mode.
 .. versionadded:: 3.30
 %End
 
+    int linearPosition() const;
+%Docstring
+Convenience function to return the cursor position as a linear index
+
+.. versionadded:: 3.36
+%End
+
+    void setLinearPosition( int position );
+%Docstring
+Convenience function to set the cursor position as a linear index
+
+.. versionadded:: 3.36
+%End
+
+    int selectionStart() const;
+%Docstring
+Convenience function to return the start of the selection as a linear index
+Contrary to the getSelection method, this method returns the cursor position if
+no selection is made.
+
+.. versionadded:: 3.36
+%End
+
+    int selectionEnd() const;
+%Docstring
+Convenience function to return the end of the selection as a linear index
+Contrary to the getSelection method, this method returns the cursor position if
+no selection is made.
+
+.. versionadded:: 3.36
+%End
+
+    void setLinearSelection( int start, int end );
+%Docstring
+Convenience function to set the selection using linear indexes
+
+.. versionadded:: 3.36
+%End
+
   public slots:
 
     void runCommand( const QString &command, bool skipHistory = false );

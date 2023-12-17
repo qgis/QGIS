@@ -139,7 +139,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   const QByteArray state = settings.value( QStringLiteral( "LayoutDesigner/tableEditorState" ), QByteArray(), QgsSettings::App ).toByteArray();
   if ( !state.isEmpty() && !restoreState( state ) )
   {
-    QgsDebugMsg( QStringLiteral( "restore of table editor dialog UI state failed" ) );
+    QgsDebugError( QStringLiteral( "restore of table editor dialog UI state failed" ) );
   }
 }
 

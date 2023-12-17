@@ -175,6 +175,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 #endif
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
+    QgsPanelWidget *mRasterAttributeTableDisabledWidget = nullptr;
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
     QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;

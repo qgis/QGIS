@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import os.path
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtTest import QSignalSpy
@@ -24,14 +23,15 @@ from qgis.core import (
     QgsSettings,
     QgsTextFormat,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
 
 
-class TestQgsFontManager(unittest.TestCase):
+class TestQgsFontManager(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

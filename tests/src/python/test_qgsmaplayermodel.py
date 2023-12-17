@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QModelIndex, Qt
 from qgis.core import (
     QgsApplication,
@@ -17,7 +16,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -28,7 +28,7 @@ def create_layer(name):
     return layer
 
 
-class TestQgsMapLayerModel(unittest.TestCase):
+class TestQgsMapLayerModel(QgisTestCase):
 
     def testGettersSetters(self):
         """ test model getters/setters """

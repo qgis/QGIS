@@ -222,7 +222,7 @@ QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( const QgsFields &joinL
     }
     else
     {
-      QgsDebugMsg( "Join layer subset field not found: " + joinedFieldName );
+      QgsDebugError( "Join layer subset field not found: " + joinedFieldName );
     }
   }
 

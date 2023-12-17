@@ -226,6 +226,11 @@ QString QgsUserProfileManager::settingsFile() const
   return  mRootProfilePath + QDir::separator() + "profiles.ini";
 }
 
+QSettings *QgsUserProfileManager::settings()
+{
+  return mSettings.get();
+}
+
 QgsUserProfile *QgsUserProfileManager::userProfile()
 {
   return mUserProfile.get();
@@ -242,7 +247,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
   // http://doc.qt.io/qt-5/qcoreapplication.html#arguments
   arguments.removeFirst();
   arguments << QStringLiteral( "--profile" ) << name;
-  QgsDebugMsg( QStringLiteral( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ), 2 );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 #else
   Q_UNUSED( name )

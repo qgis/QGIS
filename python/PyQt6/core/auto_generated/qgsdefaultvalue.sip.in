@@ -1,0 +1,100 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdefaultvalue.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDefaultValue
+{
+%Docstring(signature="appended")
+
+The :py:class:`QgsDefaultValue` class provides a container for managing client
+side default values for fields.
+
+A :py:class:`QgsDefaultValue` consists of an expression string that will be evaluated
+on the client when a default field value needs to be generated.
+
+Usual values for such an expression are
+
+- :py:func:`~now` for a timestamp for a record
+- `@some_variable` to insert a project or application level variable like
+  the username of the one digitizing a feature
+- `$length` to insert a derived attribute of a geometry
+
+:py:class:`QgsDefaultValue` also has a `applyOnUpdate` flag which will indicate that a
+default value should also be applied when a feature is updated. If this is
+not set, the default value will only be used when a feature is created.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsdefaultvalue.h"
+%End
+  public:
+
+    explicit QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
+%Docstring
+Create a new default value with the given ``expression`` and ``applyOnUpdate`` flag.
+
+.. seealso:: :py:func:`QgsVectorLayer.setDefaultValueDefinition`
+%End
+
+    bool operator==( const QgsDefaultValue &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsDefaultValue: %1>" ).arg(
+                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + QStringLiteral( "..." )
+                          : sipCpp->expression() )
+                        : QStringLiteral( "<QgsDefaultValue: invalid>" );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QString expression() const;
+%Docstring
+The expression will be evaluated whenever a default value needs
+to be calculated for a field.
+%End
+
+    void setExpression( const QString &expression );
+%Docstring
+The expression will be evaluated whenever a default value needs
+to be calculated for a field.
+%End
+
+    bool applyOnUpdate() const;
+%Docstring
+The applyOnUpdate flag determines if this expression should also be
+applied when a feature is updated or only when it's created.
+%End
+
+    void setApplyOnUpdate( bool applyOnUpdate );
+%Docstring
+The applyOnUpdate flag determines if this expression should also be
+applied when a feature is updated or only when it's created.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns if this default value should be applied.
+
+:return: ``False`` if the expression is a null string.
+%End
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdefaultvalue.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

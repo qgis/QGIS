@@ -109,11 +109,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  connect( mMainViewButtonGroup, qOverload< int >( &QButtonGroup::buttonClicked ), mMainView, &QgsDualView::setCurrentIndex );
-#else
   connect( mMainViewButtonGroup, &QButtonGroup::idClicked, mMainView, &QgsDualView::setCurrentIndex );
-#endif
   connect( mActionToggleEditing, &QAction::toggled, mActionSaveEdits, &QAction::setEnabled );
   connect( mActionToggleEditing, &QAction::toggled, mActionReload, &QAction::setDisabled );
 
@@ -198,39 +194,39 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsAttributeEditorContext editorContext = QgisApp::instance()->createAttributeEditorContext();
   editorContext.setDistanceArea( da );
 
-  QgsFeatureRequest r;
+  QgsFeatureRequest request;
   bool needsGeom = false;
   if ( mLayer && mLayer->geometryType() != Qgis::GeometryType::Null &&
        initialMode == QgsAttributeTableFilterModel::ShowVisible )
   {
     QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( layer, mc->extent() ) );
-    r.setFilterRect( extent );
+    request.setFilterRect( extent );
     needsGeom = true;
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
   {
-    r.setFilterFids( layer->selectedFeatureIds() );
+    request.setFilterFids( layer->selectedFeatureIds() );
   }
   else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
   {
-    r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+    request.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
   }
   else if ( !filterExpression.isEmpty() )
   {
-    r.setFilterExpression( filterExpression );
+    request.setFilterExpression( filterExpression );
   }
   if ( !needsGeom )
-    r.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+
 
   // Initialize dual view
   if ( mLayer )
   {
-    mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, editorContext, false );
-
+    request.setSubsetOfAttributes( mMainView->requiredAttributes( mLayer ) );
+    mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), request, editorContext, false );
     QgsAttributeTableConfig config = mLayer->attributeTableConfig();
     mMainView->setAttributeTableConfig( config );
-
     mFeatureFilterWidget->init( mLayer, editorContext, mMainView, QgisApp::instance()->messageBar(), QgsMessageBar::defaultMessageTimeout() );
   }
 
@@ -550,56 +546,61 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   int rownum = 1;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  exp.prepare( &context );
-
-  QgsField fld = layer->fields().at( fieldindex );
-
-  QSet< QString >referencedColumns = exp.referencedColumns();
-  referencedColumns.insert( fld.name() ); // need existing column value to store old attribute when changing field values
-  request.setSubsetOfAttributes( referencedColumns, layer->fields() );
-
-  //go through all the features and change the new attributes
-  QgsFeatureIterator fit = layer->getFeatures( request );
-
-  std::unique_ptr< QgsScopedProxyProgressTask > task = std::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
-
-  long long count = !filteredIds.isEmpty() ? filteredIds.size() : layer->featureCount();
-  long long i = 0;
-
-  QgsFeature feature;
-  while ( fit.nextFeature( feature ) )
+  if ( !exp.prepare( &context ) )
   {
-    if ( !filteredIds.isEmpty() && !filteredIds.contains( feature.id() ) )
+    calculationSuccess = false;
+    error = exp.evalErrorString();
+  }
+  else
+  {
+    QgsField fld = layer->fields().at( fieldindex );
+
+    QSet< QString >referencedColumns = exp.referencedColumns();
+    referencedColumns.insert( fld.name() ); // need existing column value to store old attribute when changing field values
+    request.setSubsetOfAttributes( referencedColumns, layer->fields() );
+
+    //go through all the features and change the new attributes
+    QgsFeatureIterator fit = layer->getFeatures( request );
+
+    std::unique_ptr< QgsScopedProxyProgressTask > task = std::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
+
+    long long count = !filteredIds.isEmpty() ? filteredIds.size() : layer->featureCount();
+    long long i = 0;
+
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
     {
-      continue;
+      if ( !filteredIds.isEmpty() && !filteredIds.contains( feature.id() ) )
+      {
+        continue;
+      }
+
+      i++;
+      task->setProgress( i / static_cast< double >( count ) * 100 );
+
+      context.setFeature( feature );
+      context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
+
+      QVariant value = exp.evaluate( &context );
+      ( void )fld.convertCompatible( value );
+      // Bail if we have a update error
+      if ( exp.hasEvalError() )
+      {
+        calculationSuccess = false;
+        error = exp.evalErrorString();
+        break;
+      }
+      else
+      {
+        QVariant oldvalue = feature.attributes().value( fieldindex );
+        mLayer->changeAttributeValue( feature.id(), fieldindex, value, oldvalue );
+      }
+
+      rownum++;
     }
-
-    i++;
-    task->setProgress( i / static_cast< double >( count ) * 100 );
-
-    context.setFeature( feature );
-    context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
-
-    QVariant value = exp.evaluate( &context );
-    ( void )fld.convertCompatible( value );
-    // Bail if we have a update error
-    if ( exp.hasEvalError() )
-    {
-      calculationSuccess = false;
-      error = exp.evalErrorString();
-      break;
-    }
-    else
-    {
-      QVariant oldvalue = feature.attributes().value( fieldindex );
-      mLayer->changeAttributeValue( feature.id(), fieldindex, value, oldvalue );
-    }
-
-    rownum++;
   }
 
   cursorOverride.release();
-  task.reset();
 
   if ( !calculationSuccess )
   {
@@ -770,7 +771,6 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
   if ( mMainView->view() == QgsDualView::AttributeTable )
   {
     const QList<QgsFeatureId> featureIds = mMainView->tableView()->selectedFeaturesIds();
-    QgsFeatureStore featureStore;
     QgsFields fields = QgsFields( mLayer->fields() );
     QStringList fieldNames;
 
@@ -785,8 +785,9 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
       }
       fieldNames << columnConfig.name;
     }
-    featureStore.setFields( fields );
 
+    QgsFeatureStore featureStore;
+    featureStore.setFields( fields );
     QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( qgis::listToSet( featureIds ) )
                             .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
     QgsFeatureMap featureMap;
@@ -803,7 +804,7 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 
     featureStore.setCrs( mLayer->crs() );
 
-    QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
+    QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore, fields == mLayer->fields() ? mLayer : nullptr );
   }
   else
   {

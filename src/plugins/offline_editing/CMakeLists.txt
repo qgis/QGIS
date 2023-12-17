@@ -36,12 +36,6 @@ target_compile_features(plugin_offlineediting PRIVATE cxx_std_17)
 target_link_libraries(plugin_offlineediting
   qgis_core
   qgis_gui
-  ${SPATIALITE_LIBRARY}
-)
-
-include_directories(SYSTEM
-  ${SPATIALITE_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
 )
 
 include_directories(

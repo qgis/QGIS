@@ -384,8 +384,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
   // complete the create table statement
   sql += ')';
 
-  QgsDebugMsg( QStringLiteral( "Creating table in database %1" ).arg( dbPath ) );
-  QgsDebugMsg( sql );
+  QgsDebugMsgLevel( QStringLiteral( "Creating table in database %1" ).arg( dbPath ), 2 );
+  QgsDebugMsgLevel( sql, 2 );
 
   spatialite_database_unique_ptr database;
   int rc = database.open( dbPath );
@@ -419,7 +419,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
                                .arg( mCrsId.split( ':' ).value( 1, QStringLiteral( "0" ) ).toInt() )
                                .arg( QgsSqliteUtils::quotedString( selectedType() ) )
                                .arg( QgsSqliteUtils::quotedString( selectedZM() ) );
-    QgsDebugMsg( sqlAddGeom );
+    QgsDebugMsgLevel( sqlAddGeom, 2 );
 
     rc = sqlite3_exec( database.get(), sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
@@ -434,7 +434,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
     const QString sqlCreateIndex = QStringLiteral( "select CreateSpatialIndex(%1,%2)" )
                                    .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
                                          QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
-    QgsDebugMsg( sqlCreateIndex );
+    QgsDebugMsgLevel( sqlCreateIndex, 2 );
 
     rc = sqlite3_exec( database.get(), sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
@@ -468,7 +468,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   }
   else
   {
-    QgsDebugMsg( leLayerName->text() + " is an invalid layer - not loaded" );
+    QgsDebugError( leLayerName->text() + " is an invalid layer - not loaded" );
     QMessageBox::critical( this, tr( "SpatiaLite Database" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( leLayerName->text() ) );
     delete layer;
   }

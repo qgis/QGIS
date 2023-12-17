@@ -135,9 +135,61 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   updateZRangeFromPositions( outSelected.positions );
 
   // the elevation offset is applied in the vertex shader so let's account for it as well
-  const float symbolHeight = mSymbol->transform().data()[13];
-  mZMin += symbolHeight;
-  mZMax += symbolHeight;
+  const float symbolOffset = mSymbol->transform().data()[13];
+
+  // also account for the actual height of the objects themselves
+  // NOTE -- these calculations are naive, and assume no rotation or scaling of the symbol!
+  switch ( mSymbol->shape() )
+  {
+    case QgsPoint3DSymbol::Cylinder:
+    {
+      const float length = mSymbol->shapeProperties().value( QStringLiteral( "length" ), 10 ).toFloat();
+      mZMin -= length * 0.5f;
+      mZMax += length * 0.5f;
+      break;
+    }
+
+    case QgsPoint3DSymbol::Sphere:
+    {
+      const float radius = mSymbol->shapeProperties().value( QStringLiteral( "radius" ), 10 ).toFloat();
+      mZMin -= radius;
+      mZMax += radius;
+      break;
+    }
+
+    case QgsPoint3DSymbol::Cone:
+    {
+      const float length = mSymbol->shapeProperties().value( QStringLiteral( "length" ), 10 ).toFloat();
+      mZMin -= length * 0.5f;
+      mZMax += length * 0.5f;
+      break;
+    }
+
+    case QgsPoint3DSymbol::Cube:
+    {
+      const float size = mSymbol->shapeProperties().value( QStringLiteral( "size" ) ).toFloat();
+      mZMin -= size * 0.5f;
+      mZMax += size * 0.5f;
+      break;
+    }
+
+    case QgsPoint3DSymbol::Torus:
+    {
+      const float radius = mSymbol->shapeProperties().value( QStringLiteral( "radius" ), 10 ).toFloat();
+      mZMin -= radius;
+      mZMax += radius;
+      break;
+    }
+
+    case QgsPoint3DSymbol::Plane:
+    case QgsPoint3DSymbol::ExtrudedText:
+    case QgsPoint3DSymbol::Model:
+    case QgsPoint3DSymbol::Billboard:
+      break;
+  }
+
+  mZMin += symbolOffset;
+  mZMax += symbolOffset;
 }
 
 void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )

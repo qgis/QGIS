@@ -66,6 +66,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       break;
   }
   mOutputSettingsStackedWidget->adjustSize();
@@ -116,10 +117,10 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   cmbCompressionComboBox->addItem( tr( "DEFLATE" ), QStringLiteral( "DEFLATE" ) );
 
   cmbResampling->addItem( tr( "Nearest Neighbour" ), static_cast< int >( QgsImageWarper::ResamplingMethod::NearestNeighbour ) );
-  cmbResampling->addItem( tr( "Linear" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Bilinear ) );
-  cmbResampling->addItem( tr( "Cubic" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Cubic ) );
-  cmbResampling->addItem( tr( "Cubic Spline" ), static_cast< int >( QgsImageWarper::ResamplingMethod::CubicSpline ) );
-  cmbResampling->addItem( tr( "Lanczos" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Lanczos ) );
+  cmbResampling->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Bilinear ) );
+  cmbResampling->addItem( tr( "Cubic (4x4 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Cubic ) );
+  cmbResampling->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::CubicSpline ) );
+  cmbResampling->addItem( tr( "Lanczos (6x6 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Lanczos ) );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
 }
@@ -338,6 +339,7 @@ QString QgsTransformSettingsDialog::generateModifiedFileName( const QString &fil
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 

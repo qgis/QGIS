@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '73/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -22,12 +21,13 @@ from qgis.core import (
     QgsVectorLayerTemporalContext,
     QgsVectorLayerTemporalProperties,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
+class TestQgsVectorLayerTemporalProperties(QgisTestCase):
 
     def testReadWrite(self):
         props = QgsVectorLayerTemporalProperties()

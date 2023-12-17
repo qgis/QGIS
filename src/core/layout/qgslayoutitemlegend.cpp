@@ -75,12 +75,8 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   {
     // NOTE -- we do NOT connect to ::refresh here, as we don't want to trigger the call to onAtlasFeature() which sets mFilterAskedForUpdate to true,
     // causing an endless loop.
-
-    // TODO -- the call to QgsLayoutItem::refresh() is probably NOT required!
-    QgsLayoutItem::refresh();
-
-    // (this one is definitely required)
-    clearLegendCachedData();
+    invalidateCache();
+    update();
   } );
 }
 
@@ -132,6 +128,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     // no longer required, but left set for api stability
     mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
+    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagSynchronousLegendGraphics );
     Q_NOWARN_DEPRECATED_POP
   }
   if ( mMap && mLayout )
@@ -859,6 +856,15 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
+bool QgsLayoutItemLegend::requiresRasterization() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
+
+bool QgsLayoutItemLegend::containsAdvancedEffects() const
+{
+  return mEvaluatedOpacity < 1.0;
+}
 
 void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool connectSlots )
 {
@@ -1047,25 +1053,10 @@ void QgsLayoutItemLegend::mapThemeChanged( const QString &theme )
   mThemeName = theme;
 
   // map's theme has been changed, so make sure to update the legend here
-  if ( mLegendFilterByMap )
-  {
-    // legend is being filtered by map, so we need to re run the hit test too
-    // as the style overrides may also have affected the visible symbols
-    updateFilterByMap( false );
-  }
-  else
-  {
-    if ( mThemeName.isEmpty() )
-    {
-      setModelStyleOverrides( QMap<QString, QString>() );
-    }
-    else
-    {
-      // get style overrides for theme
-      const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
-      setModelStyleOverrides( overrides );
-    }
-  }
+
+  // legend is being filtered by map, so we need to re run the hit test too
+  // as the style overrides may also have affected the visible symbols
+  updateFilterByMap( false );
 
   adjustBoxSize();
 
@@ -1085,22 +1076,28 @@ void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
 
 void QgsLayoutItemLegend::doUpdateFilterByMap()
 {
-  if ( mMap )
+  // There's an incompatibility here between legend handling of linked map themes and layer style overrides vs
+  // how expression evaluation is made in legend content text. The logic below is hacked together to get
+  // all the existing unit tests passing, but these two features are incompatible with each other and fixing
+  // this is extremely non-trivial. Let's just hope no-one tries to use those features together!
+  // Ideally, all the branches below would be consistently using either "setModelStyleOverrides" (which forces
+  // a rebuild of each layer's legend, and breaks legend text expression evaluation) OR
+  // "mLegendModel->setLayerStyleOverrides" which just handles the expression updates but which doesn't correctly
+  // generate the legend content from the associated theme settings.
+  if ( mMap && !mThemeName.isEmpty() )
   {
-    if ( !mThemeName.isEmpty() )
-    {
-      // get style overrides for theme
-      const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
-      mLegendModel->setLayerStyleOverrides( overrides );
-    }
-    else
-    {
-      mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
-    }
+    // get style overrides for theme
+    const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
+    setModelStyleOverrides( overrides );
+  }
+  else if ( mMap )
+  {
+    mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
   }
   else
+  {
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
-
+  }
 
   const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
@@ -1120,7 +1117,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         linkedFilterMaps.insert( mMap );
     }
 
-    QgsMapSettings ms;
+    QgsMapSettings mapSettings;
     QgsGeometry filterGeometry;
     if ( mMap )
     {
@@ -1128,7 +1125,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       const QgsRectangle requestRectangle = mMap->requestedExtent();
       QSizeF size( requestRectangle.width(), requestRectangle.height() );
       size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
-      ms = mMap->mapSettings( requestRectangle, size, dpi, true );
+      mapSettings = mMap->mapSettings( requestRectangle, size, dpi, true );
 
       filterGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     }
@@ -1138,26 +1135,43 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
       const QgsRectangle requestRectangle = ( *linkedFilterMaps.constBegin() )->requestedExtent();
       QSizeF size( requestRectangle.width(), requestRectangle.height() );
       size *= mLayout->convertFromLayoutUnits( ( *linkedFilterMaps.constBegin() )->mapUnitsToLayoutUnits(), Qgis::LayoutUnit::Millimeters ).length() * dpi / 25.4;
-      ms = ( *linkedFilterMaps.constBegin() )->mapSettings( requestRectangle, size, dpi, true );
+      mapSettings = ( *linkedFilterMaps.constBegin() )->mapSettings( requestRectangle, size, dpi, true );
 
       filterGeometry = QgsGeometry::fromQPolygonF( ( *linkedFilterMaps.constBegin() )->visibleExtentPolygon() );
     }
 
-    const QgsGeometry atlasGeometry = mInAtlas ? mLayout->reportContext().currentGeometry( ms.destinationCrs() ) : QgsGeometry();
+    mapSettings.setExpressionContext( createExpressionContext() );
 
-    QgsLayerTreeFilterSettings filterSettings( ms );
+    const QgsGeometry atlasGeometry { mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() ) };
+
+    QgsLayerTreeFilterSettings filterSettings( mapSettings );
+
+    QList<QgsMapLayer *> layersToClip;
+    if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
+    {
+      layersToClip = mMap->atlasClippingSettings()->layersToClip();
+      for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+      {
+        QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
+        mapLayers.removeAll( layer );
+        filterSettings.mapSettings().setLayers( mapLayers );
+        filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+      }
+    }
+
 
     if ( !linkedFilterMaps.empty() )
     {
       for ( QgsLayoutItemMap *map : std::as_const( linkedFilterMaps ) )
       {
+
         if ( map == mMap )
           continue;
 
         QgsGeometry mapExtent = QgsGeometry::fromQPolygonF( map->visibleExtentPolygon() );
 
         //transform back to destination CRS
-        const QgsCoordinateTransform mapTransform( map->crs(), ms.destinationCrs(), mLayout->project() );
+        const QgsCoordinateTransform mapTransform( map->crs(), mapSettings.destinationCrs(), mLayout->project() );
         try
         {
           mapExtent.transform( mapTransform );
@@ -1170,12 +1184,12 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
         const QList< QgsMapLayer * > layersForMap = map->layersToRender();
         for ( QgsMapLayer *layer : layersForMap )
         {
-          if ( !atlasGeometry.isNull() )
+          if ( mInAtlas && !atlasGeometry.isNull() )
           {
             mapExtent = mapExtent.intersection( atlasGeometry );
           }
 
-          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( mapExtent, ms.destinationCrs() ) );
+          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( mapExtent, mapSettings.destinationCrs() ) );
         }
       }
     }
@@ -1183,9 +1197,9 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     if ( mInAtlas )
     {
       if ( !filterGeometry.isEmpty() )
-        filterGeometry = mLayout->reportContext().currentGeometry( ms.destinationCrs() );
+        filterGeometry = mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() );
       else
-        filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( ms.destinationCrs() ) );
+        filterGeometry = filterGeometry.intersection( mLayout->reportContext().currentGeometry( mapSettings.destinationCrs() ) );
     }
 
     filterSettings.setLayerFilterExpressionsFromLayerTree( mLegendModel->rootGroup() );
@@ -1197,6 +1211,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     {
       filterSettings.setFlags( Qgis::LayerTreeFilterFlag::SkipVisibilityCheck );
     }
+
     mLegendModel->setFilterSettings( &filterSettings );
   }
   else
@@ -1384,16 +1399,19 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
         expressionContext = mLayoutLegend->createExpressionContext();
 
       const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
-      if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
+      if ( ! legendnodes.isEmpty() )
       {
-        for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
+        if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
         {
-          if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
-            symnode->evaluateLabel( expressionContext );
+          for ( QgsLayerTreeModelLegendNode *treenode : legendnodes )
+          {
+            if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( treenode ) )
+              symnode->evaluateLabel( expressionContext );
+          }
         }
+        else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
+          symnode->evaluateLabel( expressionContext );
       }
-      else if ( QgsSymbolLegendNode *symnode = qobject_cast<QgsSymbolLegendNode *>( legendnodes.first() ) )
-        name = symnode->evaluateLabel( expressionContext );
     }
     node->setCustomProperty( QStringLiteral( "cached_name" ), name );
     return name;

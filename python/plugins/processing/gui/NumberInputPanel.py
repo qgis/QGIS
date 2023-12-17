@@ -28,18 +28,21 @@ from qgis.PyQt import sip
 from qgis.PyQt.QtCore import pyqtSignal, QSize
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QComboBox
 
-from qgis.core import (QgsApplication,
-                       QgsExpression,
-                       QgsProperty,
-                       QgsUnitTypes,
-                       QgsMapLayer,
-                       QgsCoordinateReferenceSystem,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingOutputNumber,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingModelChildParameterSource,
-                       QgsProcessingFeatureSourceDefinition,
-                       QgsProcessingUtils)
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsExpression,
+    QgsProperty,
+    QgsUnitTypes,
+    QgsMapLayer,
+    QgsCoordinateReferenceSystem,
+    QgsProcessingParameterNumber,
+    QgsProcessingOutputNumber,
+    QgsProcessingParameterDefinition,
+    QgsProcessingModelChildParameterSource,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingUtils
+)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
@@ -110,12 +113,12 @@ class ModelerNumberInputPanel(BASE, WIDGET):
 
     def setValue(self, value):
         if isinstance(value, QgsProcessingModelChildParameterSource):
-            if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
+            if value.source() == Qgis.ProcessingModelChildParameterSource.ModelParameter:
                 self.leText.setText('@' + value.parameterName())
-            elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
+            elif value.source() == Qgis.ProcessingModelChildParameterSource.ChildOutput:
                 name = f"{value.outputChildId()}_{value.outputName()}"
                 self.leText.setText(name)
-            elif value.source() == QgsProcessingModelChildParameterSource.Expression:
+            elif value.source() == Qgis.ProcessingModelChildParameterSource.Expression:
                 self.leText.setText(value.expression())
             else:
                 self.leText.setText(str(value.staticValue()))

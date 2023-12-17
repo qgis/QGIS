@@ -31,6 +31,7 @@
 
 #include "qgis_gui.h"
 
+class QgsSymbolSelectorWidget;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -39,7 +40,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererModel( QObject *parent = nullptr );
+    QgsGraduatedSymbolRendererModel( QObject *parent = nullptr, QScreen *screen = nullptr );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
   private:
     QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
+    QPointer< QScreen > mScreen;
 };
 
 // View style which shows drop indicator line between items
@@ -143,8 +145,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void mSizeUnitWidget_changed();
     void methodComboBox_currentIndexChanged( int );
     void updateMethodParameters();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
-    void updateSymbolsFromWidget();
+    void updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget );
     void dataDefinedSizeLegend();
     void changeGraduatedSymbol();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );

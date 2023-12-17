@@ -30,6 +30,7 @@
 #include "qgsdbquerylog.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsvectorlayer.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracledataitems.h"
@@ -156,7 +157,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
     return;
   }
 
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 
   mOracleVersion = connectionRO()->version();
   if ( mOracleVersion < 0 )
@@ -271,19 +272,29 @@ QgsAbstractFeatureSource *QgsOracleProvider::featureSource() const
 
 void QgsOracleProvider::disconnectDb()
 {
-  QgsOracleConn *conn = QgsOracleConn::connectDb( mUri, false );
-  if ( conn )
-    conn->disconnect();
+  if ( mConnection )
+  {
+    mConnection->unref();
+    mConnection = nullptr;
+  }
 }
 
-QgsOracleConn *QgsOracleProvider::connectionRW()
+QgsOracleConn *QgsOracleProvider::connectionRW() const
 {
-  return mTransaction ? mTransaction->connection() : QgsOracleConn::connectDb( mUri, false );
+  if ( mTransaction )
+  {
+    return mTransaction->connection();
+  }
+  else if ( !mConnection )
+  {
+    mConnection = QgsOracleConn::connectDb( mUri, false );
+  }
+  return mConnection;
 }
 
 QgsOracleConn *QgsOracleProvider::connectionRO() const
 {
-  return mTransaction ? mTransaction->connection() : QgsOracleConn::connectDb( mUri, false );
+  return connectionRW();
 }
 
 bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, const QVariantList &args, const QString &uri, const QString &originatorClass, const QString &queryOrigin )
@@ -306,9 +317,9 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
 
   if ( !res )
   {
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery() )
-                 .arg( qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery() )
+                   .arg( qry.lastError().text() ) );
   }
 
   logWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( qry ) );
@@ -324,6 +335,14 @@ bool QgsOracleProvider::execLoggedStatic( QSqlQuery &qry, const QString &sql, co
     logWrapper.setFetchedRows( qry.numRowsAffected() );
   }
   return res;
+}
+
+Qgis::ProviderStyleStorageCapabilities QgsOracleProvider::styleStorageCapabilities() const
+{
+  Qgis::ProviderStyleStorageCapabilities storageCapabilities;
+  storageCapabilities |= Qgis::ProviderStyleStorageCapability::SaveToDatabase;
+  storageCapabilities |= Qgis::ProviderStyleStorageCapability::LoadFromDatabase;
+  return storageCapabilities;
 }
 
 void QgsOracleProvider::setTransaction( QgsTransaction *transaction )
@@ -423,7 +442,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
     break;
 
     case PktUnknown:
-      QgsDebugMsg( QStringLiteral( "Unknown key type" ) );
+      QgsDebugError( QStringLiteral( "Unknown key type" ) );
       break;
   }
 }
@@ -470,7 +489,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureId featureId, const QgsFields &fi
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
+        QgsDebugError( QStringLiteral( "FAILURE: Key values for feature %1 not found." ).arg( featureId ) );
         whereClause = "NULL IS NOT NULL";
       }
     }
@@ -1506,7 +1525,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
   }
   catch ( OracleException &e )
   {
-    QgsDebugMsg( QStringLiteral( "Oracle error: %1" ).arg( e.errorMessage() ) );
+    QgsDebugError( QStringLiteral( "Oracle error: %1" ).arg( e.errorMessage() ) );
     pushError( tr( "Oracle error while adding features: %1" ).arg( e.errorMessage() ) );
     if ( !conn->rollback( db ) )
     {
@@ -1996,7 +2015,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::Point25D:
       case Qgis::WkbType::PointZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::Point:
         g.srid  = mSrid;
@@ -2011,7 +2030,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::LineStringZ:
       case Qgis::WkbType::MultiLineStringZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::LineString:
       case Qgis::WkbType::MultiLineString:
@@ -2050,7 +2069,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::PolygonZ:
       case Qgis::WkbType::MultiPolygonZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::Polygon:
       case Qgis::WkbType::MultiPolygon:
@@ -2120,7 +2139,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::MultiPoint25D:
       case Qgis::WkbType::MultiPointZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::MultiPoint:
       {
@@ -2146,7 +2165,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::CompoundCurveZ:
       case Qgis::WkbType::MultiCurveZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::CircularString:
       case Qgis::WkbType::CompoundCurve:
@@ -2223,7 +2242,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::CurvePolygonZ:
       case Qgis::WkbType::MultiSurfaceZ:
         dim = 3;
-        FALLTHROUGH
+        [[fallthrough]];
 
       case Qgis::WkbType::CurvePolygon:
       case Qgis::WkbType::MultiSurface:
@@ -2488,11 +2507,123 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   {
     mFeaturesCounted = -1;
   }
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 
   emit dataChanged();
 
   return true;
+}
+
+QList<QgsVectorLayer *> QgsOracleProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &owner, const QString &tableName )
+{
+  QList<QgsVectorLayer *> result;
+  for ( QgsVectorLayer *layer : layers )
+  {
+    const QgsOracleProvider *oracleProvider = qobject_cast<QgsOracleProvider *>( layer->dataProvider() );
+    if ( oracleProvider &&
+         oracleProvider->mUri.connectionInfo( false ) == connectionInfo && oracleProvider->mOwnerName == owner && oracleProvider->mTableName == tableName )
+    {
+      result.append( layer );
+    }
+  }
+  return result;
+}
+
+QList<QgsRelation> QgsOracleProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
+{
+  QList<QgsRelation> result;
+
+  // Silently skip if this is a query layer or for some obscure reason there are no table and schema name
+  if ( mIsQuery || mTableName.isEmpty() || mOwnerName.isEmpty() )
+    return result;
+
+  // Skip less silently if layer is not valid
+  if ( !mValid )
+  {
+    QgsLogger::warning( tr( "Error discovering relations of %1: invalid layer" ).arg( mQuery ) );
+    return result;
+  }
+
+  QString sql(
+    "SELECT c.constraint_name, "
+    "     l.column_name, "
+    "     r.owner, "
+    "     r.table_name, "
+    "     r.column_name, "
+    "     r.position "
+    "FROM all_constraints c, "
+    "     all_cons_columns l, "
+    "     all_cons_columns r "
+    "WHERE l.table_name = c.table_name "
+    "  AND c.table_name = ?"
+    "  AND c.owner = ?"
+    "  AND c.constraint_type = 'R'"
+    "  AND c.r_constraint_name = r.constraint_name "
+    "  AND c.constraint_name = l.constraint_name "
+    "  AND l.position = r.position "
+  );
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+  QList<QString> refTableFound;
+  if ( !LoggedExecStatic( qry, sql, QVariantList() << mTableName << mOwnerName, mUri.uri() ) )
+  {
+    const QString error { tr( "Unable to execute the query to get foreign keys of %1.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                          .arg( mTableName )
+                          .arg( qry.lastError().text() )
+                          .arg( qry.lastQuery() ) };
+    QgsLogger::warning( error );
+    return result;
+  }
+
+  while ( qry.next() )
+  {
+    const QString name = qry.value( 0 ).toString();
+    const QString fkColumn = qry.value( 1 ).toString();
+    const QString refOwner = qry.value( 2 ).toString();
+    const QString refTable = qry.value( 3 ).toString();
+    const QString refColumn = qry.value( 4 ).toString();
+    const QString position = qry.value( 5 ).toString();
+
+    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refOwner, refTable );
+    if ( ( position == QLatin1String( "1" ) ) || ( !refTableFound.contains( refTable ) ) )
+    {
+      // first reference field => try to find if we have layers for the referenced table
+      for ( const QgsVectorLayer *foundLayer : foundLayers )
+      {
+        QgsRelation relation;
+        relation.setName( name );
+        relation.setReferencingLayer( target->id() );
+        relation.setReferencedLayer( foundLayer->id() );
+        relation.addFieldPair( fkColumn, refColumn );
+        relation.generateId();
+        if ( relation.isValid() )
+        {
+          result.append( relation );
+          refTableFound.append( refTable );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + name + ", validation error: " + relation.validationError() );
+        }
+      }
+    }
+    else
+    {
+      // multi reference field => add the field pair to all the referenced layers found
+      const int resultSize = result.size();
+      for ( int i = 0; i < resultSize; ++i )
+      {
+        for ( const QgsVectorLayer *foundLayer : foundLayers )
+        {
+          if ( result[resultSize - 1 - i].referencedLayerId() == foundLayer->id() )
+          {
+            result[resultSize - 1 - i].addFieldPair( fkColumn, refColumn );
+          }
+        }
+      }
+    }
+  }
+  return result;
 }
 
 /**
@@ -2519,7 +2650,7 @@ long long QgsOracleProvider::featureCount() const
   // Else, to estimate feature count, if it is a view or there is a where clause we use the explain plan
   else if ( !mSqlWhereClause.isEmpty() || relkind() == QgsOracleProvider::View )
   {
-    sql = QString( "explain plan for select 1 from %1" ).arg( mTableName );
+    sql = QString( "explain plan for select 1 from %1.%2" ).arg( quotedIdentifier( mOwnerName ) ).arg( quotedIdentifier( mTableName ) );
     if ( !mSqlWhereClause.isEmpty() )
       sql += " WHERE " + mSqlWhereClause;
     if ( LoggedExecStatic( qry,
@@ -2665,7 +2796,7 @@ QgsRectangle QgsOracleProvider::extent() const
 
 void QgsOracleProvider::updateExtents()
 {
-  mLayerExtent.setMinimal();
+  mLayerExtent.setNull();
 }
 
 bool QgsOracleProvider::getGeometryDetails()
@@ -3790,7 +3921,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
   if ( !LoggedExecStatic( qry, sql, args, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not execute insert/update [%1]" ).arg( qry.lastError().text() );
-    QgsDebugMsg( QStringLiteral( "execute insert/update failed" ) );
+    QgsDebugError( QStringLiteral( "execute insert/update failed" ) );
     conn->disconnect();
     return false;
   }
@@ -3807,7 +3938,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
                             " AND id<>?" ), args, dsUri.uri() ) )
     {
       errCause = QObject::tr( "Could not reset default status [%1]" ).arg( qry.lastError().text() );
-      QgsDebugMsg( QStringLiteral( "execute update failed" ) );
+      QgsDebugError( QStringLiteral( "execute update failed" ) );
       conn->disconnect();
       return false;
     }

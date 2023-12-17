@@ -167,6 +167,13 @@ double QgsSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &
   return 1.0;
 }
 
+double QgsSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+{
+  Q_UNUSED( e )
+  Q_UNUSED( context )
+  return 1.0;
+}
+
 double QgsSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e )
@@ -231,6 +238,16 @@ QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
 Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
 {
   return Qgis::SymbolLayerFlags();
+}
+
+Qgis::SymbolLayerUserFlags QgsSymbolLayer::userFlags() const
+{
+  return mUserFlags;
+}
+
+void QgsSymbolLayer::setUserFlags( Qgis::SymbolLayerUserFlags flags )
+{
+  mUserFlags = flags;
 }
 
 QColor QgsSymbolLayer::color() const
@@ -901,6 +918,40 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
   return {};
 }
 
+double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
+{
+  double size = mSize;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySize ) )
+  {
+    bool ok = false;
+    size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertySize, context.renderContext().expressionContext(), mSize, &ok );
+
+    if ( ok )
+    {
+      switch ( mScaleMethod )
+      {
+        case Qgis::ScaleMethod::ScaleArea:
+          size = std::sqrt( size );
+          break;
+        case Qgis::ScaleMethod::ScaleDiameter:
+          break;
+      }
+    }
+  }
+  return size * QgsDxfExport::mapUnitScaleFactor( e.symbologyScale(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+}
+
+double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
+{
+  double angle = mAngle;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  {
+    context.setOriginalValueVariable( mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
+  }
+  return angle;
+}
+
 void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
 {
   mClipPath.clear();
@@ -911,7 +962,7 @@ void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
   {
     QPainterPath mergedPaths;
     mergedPaths.setFillRule( Qt::WindingFill );
-    for ( QPainterPath path : clipPaths )
+    for ( const QPainterPath &path : clipPaths )
     {
       mergedPaths.addPath( path );
     }
@@ -935,7 +986,8 @@ void QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive )
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
-    for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
+    const QList<QgsSymbolLayer *> layers = lSubSymbol->symbolLayers();
+    for ( QgsSymbolLayer *sl : layers )
       sl->installMasks( context, true );
   }
 }
@@ -949,11 +1001,16 @@ void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
-    for ( QgsSymbolLayer *sl : lSubSymbol->symbolLayers() )
+    const QList<QgsSymbolLayer *> layers = lSubSymbol->symbolLayers();
+    for ( QgsSymbolLayer *sl : layers )
       sl->removeMasks( context, true );
   }
 }
 
+bool QgsSymbolLayer::shouldRenderUsingSelectionColor( const QgsSymbolRenderContext &context ) const
+{
+  return context.selected() && !( mUserFlags & Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring );
+}
 
 void QgsSymbolLayer::setId( const QString &id )
 {

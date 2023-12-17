@@ -16,7 +16,9 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt
+from osgeo import gdal
+
+from qgis.PyQt.QtCore import QCoreApplication, QDateTime, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -28,7 +30,8 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 
@@ -140,6 +143,8 @@ def create_landing_page_api_collection(endpoint,
             }
         }
     }
+    if bbox is None:
+        del collection["extent"]
     if storageCrs:
         collection["storageCrs"] = storageCrs
     if crsList:
@@ -153,7 +158,7 @@ def create_landing_page_api_collection(endpoint,
         f.write("HEAD, GET".encode("UTF-8"))
 
 
-class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -523,7 +528,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         assert spatialExtent.extentCrs.isValid()
         assert spatialExtent.extentCrs.isGeographic()
         assert not spatialExtent.extentCrs.hasAxisInverted()
-        assert spatialExtent.bounds == QgsBox3d(-71.123, 66.33, 0, -65.32, 78.3, 0)
+        assert spatialExtent.bounds == QgsBox3d(-71.123, 66.33, float("nan"), -65.32, 78.3, float("nan"))
         spatialExtent = extent.spatialExtents()[1]
         assert spatialExtent.bounds == QgsBox3d(2, 49, -100, 3, 50, 100)
 
@@ -1265,32 +1270,27 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(source.sourceCrs().authid(), 'OGC:CRS84')
 
-    def testFeatureCountFallback(self):
+    def testFeatureCountFallbackAndNoBboxInCollection(self):
 
         # On Windows we must make sure that any backslash in the path is
         # replaced by a forward slash so that QUrl can process it
         basetestpath = tempfile.mkdtemp().replace('\\', '/')
         endpoint = basetestpath + '/fake_qgis_http_endpoint_feature_count_fallback'
 
-        create_landing_page_api_collection(endpoint, storageCrs="http://www.opengis.net/def/crs/EPSG/0/2056")
+        create_landing_page_api_collection(endpoint, storageCrs="http://www.opengis.net/def/crs/EPSG/0/2056", bbox=None)
 
         items = {
             "type": "FeatureCollection",
-            "features": [
-                {"type": "Feature", "id": "feat.1",
-                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
-                 "geometry": {"type": "Point", "coordinates": [2510100, 1155050]}},
-                {"type": "Feature", "id": "feat.2",
-                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2", "dt": "2020-05-04 12:14:14", "date": "2020-05-04", "time": "12:14:14"},
-                 "geometry": {"type": "Point", "coordinates": [2511250, 1154600]}},
-                {"type": "Feature", "id": "feat.3",
-                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4", "dt": "2021-05-04 13:13:14", "date": "2021-05-04", "time": "13:13:14"},
-                 "geometry": {"type": "Point", "coordinates": [2511260, 1154610]}},
-                {"type": "Feature", "id": "feat.4",
-                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5", "dt": "2020-05-04 12:13:14", "date": "2020-05-02", "time": "12:13:01"},
-                 "geometry": {"type": "Point", "coordinates": [2511270, 1154620]}}
+            "features": [],
+            "links": [
+                # should not be hit
+                {"href": "http://" + endpoint + "/next_page", "rel": "next"}
             ]
         }
+        for i in range(10):
+            items["features"].append({"type": "Feature", "id": f"feat.{i}",
+                                      "properties": {},
+                                      "geometry": {"type": "Point", "coordinates": [23, 63]}})
 
         # first items
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=1&' + ACCEPT_ITEMS), 'wb') as f:
@@ -1301,15 +1301,44 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             f.write(json.dumps(items).encode('UTF-8'))
 
         # real page
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [],
+            "links": [
+                # should not be hit
+                {"href": "http://" + endpoint + "/next_page", "rel": "next"}
+            ]
+        }
+        for i in range(1001):
+            items["features"].append({"type": "Feature", "id": f"feat.{i}",
+                                      "properties": {},
+                                      "geometry": None})
+
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&crs=http://www.opengis.net/def/crs/EPSG/0/2056&' + ACCEPT_ITEMS), 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
         # Create test layer
+
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
         assert vl.isValid()
         source = vl.dataProvider()
 
-        self.assertEqual(source.featureCount(), 4)
+        # Extent got from first fetched features
+        reference = QgsGeometry.fromRect(
+            QgsRectangle(3415684, 3094884,
+                         3415684, 3094884))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   10), f'Expected {reference.asWkt()}, got {vl_extent.asWkt()}'
+
+        app_log = QgsApplication.messageLog()
+        # signals should be emitted by application log
+        app_spy = QSignalSpy(app_log.messageReceived)
+
+        self.assertEqual(source.featureCount(), 1000)
+
+        self.assertEqual(len(app_spy), 0, list(app_spy))
 
     def testFeatureInsertionDeletion(self):
 
@@ -1642,6 +1671,50 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         values = [f['cnt'] for f in vl.getFeatures()]
         self.assertEqual(values, [200])
+
+    # GDAL 3.5.0 is required since it is the first version that tags "complex"
+    # fields as OFSTJSON
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5.0 required")
+    def testFeatureComplexAttribute(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testFeatureComplexAttribute'
+        create_landing_page_api_collection(endpoint)
+
+        # first items
+        first_items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"center": {
+                    "type": "Point",
+                    "coordinates": [
+                        6.50,
+                        51.80
+                    ]
+                }},
+                    "geometry": {"type": "Point", "coordinates": [66.33, -70.332]}}
+            ]
+        }
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        # real page
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
+            f.write(json.dumps(first_items).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.fields().field("center").type(), QVariant.Map)
+
+        # First time we getFeatures(): comes directly from the GeoJSON layer
+        values = [f["center"] for f in vl.getFeatures()]
+        self.assertEqual(values, [{'coordinates': [6.5, 51.8], 'type': 'Point'}])
+
+        # Now, that comes from the Spatialite cache, through
+        # serialization and deserialization
+        values = [f["center"] for f in vl.getFeatures()]
+        self.assertEqual(values, [{'coordinates': [6.5, 51.8], 'type': 'Point'}])
 
 
 if __name__ == '__main__':

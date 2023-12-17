@@ -17,8 +17,26 @@
 
 #include "qgis.h"
 #include "qgsaabb.h"
+#include "qgslogger.h"
 
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QGeometryRenderer>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QGeometry>
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+#endif
 
 ///@cond PRIVATE
 
@@ -248,7 +266,7 @@ namespace QgsRayCastingUtils
     const QVector3D n = QVector3D::crossProduct( ab, ac );
     const float d = QVector3D::dotProduct( qp, n );
 
-    if ( d <= 0.0f )
+    if ( d <= 0.0f || std::isnan( d ) )
       return false;
 
     const QVector3D ap = ray.origin() - a;
@@ -277,6 +295,175 @@ namespace QgsRayCastingUtils
     return true;
   }
 
+  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer,
+                            const QgsRayCastingUtils::Ray3D &r,
+                            const QMatrix4x4 &worldTransform,
+                            QVector3D &intPt,
+                            int &triangleIndex )
+  {
+    if ( geometryRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles )
+    {
+      QgsDebugError( QString( "Unsupported primitive type for intersection: " ).arg( geometryRenderer->primitiveType() ) );
+      return false;
+    }
+    if ( geometryRenderer->instanceCount() != 1 || geometryRenderer->indexOffset() != 0 || geometryRenderer->indexBufferByteOffset() != 0 || geometryRenderer->firstVertex() != 0 || geometryRenderer->firstInstance() != 0 )
+    {
+      QgsDebugError( QString( "Unsupported geometry renderer for intersection." ) );
+      return false;
+    }
+
+    Qt3DQGeometry *geometry = geometryRenderer->geometry();
+
+    Qt3DQAttribute *positionAttr = nullptr;
+    Qt3DQAttribute *indexAttr = nullptr;
+    for ( Qt3DQAttribute *attr : geometry->attributes() )
+    {
+      if ( attr->name() == Qt3DQAttribute::defaultPositionAttributeName() )
+      {
+        positionAttr = attr;
+      }
+      else if ( attr->attributeType() == Qt3DQAttribute::IndexAttribute )
+      {
+        indexAttr = attr;
+      }
+    }
+
+    if ( !positionAttr )
+    {
+      QgsDebugError( "Could not find position attribute!" );
+      return false;
+    }
+
+    if ( positionAttr->vertexBaseType() != Qt3DQAttribute::Float || positionAttr->vertexSize() != 3 )
+    {
+      QgsDebugError( QString( "Unsupported position attribute: base type %1, vertex size %2" ). arg( positionAttr->vertexBaseType() ).arg( positionAttr->vertexSize() ) );
+      return false;
+    }
+
+    const QByteArray vertexBuf = positionAttr->buffer()->data();
+    const char *vertexPtr = vertexBuf.constData();
+    vertexPtr += positionAttr->byteOffset();
+    int vertexByteStride = positionAttr->byteStride() == 0 ? 3 * sizeof( float ) : positionAttr->byteStride();
+
+    const uchar *indexPtrUChar = nullptr;
+    const ushort *indexPtrUShort = nullptr;
+    const uint *indexPtrUInt = nullptr;
+    if ( indexAttr )
+    {
+      if ( indexAttr->byteStride() != 0 || indexAttr->vertexSize() != 1 )
+      {
+        QgsDebugError( QString( "Unsupported index attribute: stride %1, vertex size %2" ).arg( indexAttr->byteStride() ).arg( indexAttr->vertexSize() ) );
+        return false;
+      }
+
+      const QByteArray indexBuf = indexAttr->buffer()->data();
+      if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedByte )
+      {
+        indexPtrUChar = reinterpret_cast<const uchar *>( indexBuf.constData() + indexAttr->byteOffset() );
+      }
+      else if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedShort )
+      {
+        indexPtrUShort = reinterpret_cast<const ushort *>( indexBuf.constData() + indexAttr->byteOffset() );
+      }
+      else if ( indexAttr->vertexBaseType() == Qt3DQAttribute::UnsignedInt )
+      {
+        indexPtrUInt = reinterpret_cast<const uint *>( indexBuf.constData() + indexAttr->byteOffset() );
+      }
+      else
+      {
+        QgsDebugError( QString( "Unsupported index attribute: base type %1" ).arg( indexAttr->vertexBaseType() ) );
+        return false;
+      }
+    }
+
+    int vertexCount = geometryRenderer->vertexCount();
+    if ( vertexCount == 0 && indexAttr )
+    {
+      vertexCount = indexAttr->count();
+    }
+    if ( vertexCount == 0 )
+    {
+      vertexCount = positionAttr->count();
+    }
+
+    QVector3D intersectionPt, minIntersectionPt;
+    float minDistance = -1;
+
+    for ( int i = 0; i < vertexCount; i += 3 )
+    {
+      int v0index = 0, v1index = 0, v2index = 0;
+      if ( !indexAttr )
+      {
+        v0index = i;
+        v1index = i + 1;
+        v2index = i + 2;
+      }
+      else if ( indexPtrUShort )
+      {
+        v0index = indexPtrUShort[i];
+        v1index = indexPtrUShort[i + 1];
+        v2index = indexPtrUShort[i + 2];
+      }
+      else if ( indexPtrUChar )
+      {
+        v0index = indexPtrUChar[i];
+        v1index = indexPtrUChar[i + 1];
+        v2index = indexPtrUChar[i + 2];
+      }
+      else if ( indexPtrUInt )
+      {
+        v0index = indexPtrUInt[i];
+        v1index = indexPtrUInt[i + 1];
+        v2index = indexPtrUInt[i + 2];
+      }
+      else
+        Q_ASSERT( false );
+
+      const float *v0ptr = reinterpret_cast<const float *>( vertexPtr + v0index * vertexByteStride );
+      const float *v1ptr = reinterpret_cast<const float *>( vertexPtr + v1index * vertexByteStride );
+      const float *v2ptr = reinterpret_cast<const float *>( vertexPtr + v2index * vertexByteStride );
+
+      const QVector3D a( v0ptr[0], v0ptr[1], v0ptr[2] );
+      const QVector3D b( v1ptr[0], v1ptr[1], v1ptr[2] );
+      const QVector3D c( v2ptr[0], v2ptr[1], v2ptr[2] );
+
+      // Currently the worldTransform only has vertical offset, so this could be optimized by applying the transform
+      // to the ray and the resulting intersecting point instead of all triangles
+      // Need to check for potential performance gains.
+      const QVector3D tA = worldTransform * a;
+      const QVector3D tB = worldTransform * b;
+      const QVector3D tC = worldTransform * c;
+
+      QVector3D uvw;
+      float t = 0;
+
+      // We're testing both triangle orientations here and ignoring the culling mode.
+      // We should probably respect the culling mode used for the entity and perform a
+      // single test using the properly oriented triangle.
+      if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) ||
+           QgsRayCastingUtils::rayTriangleIntersection( r, tA, tC, tB, uvw, t ) )
+      {
+        intersectionPt = r.point( t * r.distance() );
+        const float distance = r.projectedDistance( intersectionPt );
+
+        // we only want the first intersection of the ray with the mesh (closest to the ray origin)
+        if ( minDistance == -1 || distance < minDistance )
+        {
+          triangleIndex = static_cast<int>( i / 3 );
+          minDistance = distance;
+          minIntersectionPt = intersectionPt;
+        }
+      }
+    }
+
+    if ( minDistance != -1 )
+    {
+      intPt = minIntersectionPt;
+      return true;
+    }
+    else
+      return false;
+  }
 }
 
 

@@ -19,13 +19,13 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QtGlobal>
-
+#include <QSet>
 #include <QConcatenateTablesProxyModel>
 
 class QgsStyle;
 class QgsStyleModel;
 class QgsSingleItemModel;
-
+class QgsScreenProperties;
 
 /**
  * \ingroup core
@@ -91,6 +91,16 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      */
     void addDesiredIconSize( QSize size );
 
+    /**
+     * Adds additional target screen \a properties to use when generating icons for Qt::DecorationRole data.
+     *
+     * This allows style icons to be generated at an icon device pixel ratio and DPI which
+     * corresponds exactly to the view's screen properties in which this model is used.
+     *
+     * \since QGIS 3.32
+     */
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
+
   private:
 
     QList< QgsStyle * > mStyles;
@@ -98,6 +108,7 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
     QHash< QgsStyle *, QgsSingleItemModel * > mTitleModels;
 
     QList< QSize > mAdditionalSizes;
+    QSet< QgsScreenProperties > mTargetScreenProperties;
 
 };
 

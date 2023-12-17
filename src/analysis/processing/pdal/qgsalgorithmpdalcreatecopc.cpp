@@ -118,6 +118,12 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
 
     feedback->pushInfo( QObject::tr( "Processing layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ? layer->name() : QString() ) );
 
+    if ( pcl->source().endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
+    {
+      feedback->pushInfo( QObject::tr( "File %1 is a COPC file. Skipping…" ).arg( pcl->source() ) );
+      continue;
+    }
+
     const QFileInfo fi( pcl->source() );
     const QDir directory = fi.absoluteDir();
     const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( outputDir.isEmpty() ? directory.absolutePath() : outputDir ).arg( fi.completeBaseName() );
@@ -125,13 +131,13 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     const QFileInfo outputFileInfo( outputFile );
     if ( outputFileInfo.exists() )
     {
-      feedback->pushInfo( QObject::tr( "File %1 is already indexed" ).arg( pcl->source() ) );
+      feedback->pushInfo( QObject::tr( "File %1 is already indexed. Skipping…" ).arg( pcl->source() ) );
       continue;
     }
     QString tmpDir = outputFile + QStringLiteral( "_tmp" );
     if ( QDir( tmpDir ).exists() )
     {
-      feedback->pushInfo( QObject::tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( tmpDir ) );
+      feedback->pushInfo( QObject::tr( "Another indexing process is running (or finished with crash) in directory %1." ).arg( tmpDir ) );
       continue;
     }
 

@@ -15,14 +15,17 @@
 #ifndef QGSPAINTING_H
 #define QGSPAINTING_H
 
-#include <QPainter>
-
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_sip.h"
+
+#include <QPainter>
+
+class QTransform;
 
 /**
  * \ingroup core
- * \brief Misc painting enums and functions.
+ * \brief Contains miscellaneous painting utility functions.
  *
  * \since QGIS 3.0
  */
@@ -30,9 +33,18 @@ class CORE_EXPORT QgsPainting
 {
   public:
 
-    //! Returns a QPainter::CompositionMode corresponding to a BlendMode
+    /**
+     * Returns a QPainter::CompositionMode corresponding to a Qgis::BlendMode.
+     *
+     * \see getBlendModeEnum
+     */
     static QPainter::CompositionMode getCompositionMode( Qgis::BlendMode blendMode );
-    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
+
+    /**
+     * Returns a Qgis::BlendMode corresponding to a QPainter::CompositionMode.
+     *
+     * \see getCompositionMode()
+     */
     static Qgis::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
     /**
@@ -41,6 +53,51 @@ class CORE_EXPORT QgsPainting
      * \since QGIS 3.30
      */
     static bool isClippingMode( Qgis::BlendMode mode );
+
+    /**
+     * Calculates the QTransform which maps the triangle defined by the points (\a inX1, \a inY1), (\a inY2, \a inY2), (\a inX3, \a inY3)
+     * to the triangle defined by (\a outX1, \a outY1), (\a outY2, \a outY2), (\a outX3, \a outY3).
+     *
+     * \param inX1 source triangle vertex 1 x-coordinate
+     * \param inY1 source triangle vertex 1 y-coordinate
+     * \param inX2 source triangle vertex 2 x-coordinate
+     * \param inY2 source triangle vertex 2 y-coordinate
+     * \param inX3 source triangle vertex 3 x-coordinate
+     * \param inY3 source triangle vertex 3 y-coordinate
+     * \param outX1 destination triangle vertex 1 x-coordinate
+     * \param outY1 destination triangle vertex 1 y-coordinate
+     * \param outX2 destination triangle vertex 2 x-coordinate
+     * \param outY2 destination triangle vertex 2 y-coordinate
+     * \param outX3 destination triangle vertex 3 x-coordinate
+     * \param outY3 destination triangle vertex 3 y-coordinate
+     * \param ok will be set to TRUE if the transform could be determined.
+     *
+     * \returns Calculated transform (if possible)
+     *
+     * \since QGIS 3.34
+     */
+    static QTransform triangleToTriangleTransform( double inX1, double inY1, double inX2, double inY2, double inX3, double inY3, double outX1, double outY1, double outX2, double outY2, double outX3, double outY3, bool &ok SIP_OUT );
+
+    /**
+     * Draws a \a triangle onto a \a painter using a mapped texture image.
+     *
+     * The triangle will be rendered using the portion of the texture image described by the triangle (\a textureX1, \a textureY1), (\a textureX2, \a textureY2), (\a textureX3, \a textureY3).
+     * Texture coordinates should be in the range 0-1 (as a fraction of the image size), where (0, 0) coorresponds to the top-left of the texture image.
+     *
+     * The caller must ensure that \a triangle is a closed QPolygonF consisting of 4 vertices (the 3 triangle vertices + the first vertex again to close the polygon).
+     *
+     * Returns TRUE if the triangle could be rendered, or FALSE if it could not (e.g. when the described points are co-linear).
+     *
+     * \since QGIS 3.34
+     */
+    static bool drawTriangleUsingTexture(
+      QPainter *painter,
+      const QPolygonF &triangle,
+      const QImage &textureImage,
+      float textureX1, float textureY1,
+      float textureX2, float textureY2,
+      float textureX3, float textureY3
+    );
 
 };
 

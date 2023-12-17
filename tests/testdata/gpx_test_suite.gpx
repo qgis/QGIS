@@ -5,12 +5,14 @@
 <cmt>3</cmt>
 <urlname>Digitized in QGIS</urlname>
 <ele>0</ele>
+<time>2023-04-25T09:52:14Z</time>
 </wpt>
 <wpt lat="70.800000000000" lon="-68.200000000000">
 <name>Apple</name>
 <cmt>2</cmt>
 <urlname>Digitized in QGIS</urlname>
 <ele>0</ele>
+<time>invalid</time>
 </wpt>
 <wpt lat="66.330000000000" lon="-70.332000000000">
 <name>Orange</name>

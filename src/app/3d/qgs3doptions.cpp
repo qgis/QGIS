@@ -55,6 +55,15 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
 
   mCameraMovementSpeed->setValue( settings.value( QStringLiteral( "map3d/defaultMovementSpeed" ), 5, QgsSettings::App ).toDouble() );
   spinCameraFieldOfView->setValue( settings.value( QStringLiteral( "map3d/defaultFieldOfView" ), 45, QgsSettings::App ).toInt() );
+
+  mGpuMemoryLimit->setClearValue( 500 );
+  mGpuMemoryLimit->setValue( settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble() );
+}
+
+QString Qgs3DOptionsWidget::helpKey() const
+{
+  // typo IS correct here!
+  return QStringLiteral( "introduction/qgis_configuration.html#d-options" );
 }
 
 void Qgs3DOptionsWidget::apply()
@@ -65,6 +74,8 @@ void Qgs3DOptionsWidget::apply()
   settings.setValue( QStringLiteral( "map3d/defaultProjection" ), static_cast< Qt3DRender::QCameraLens::ProjectionType >( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
   settings.setValue( QStringLiteral( "map3d/defaultMovementSpeed" ), mCameraMovementSpeed->value(), QgsSettings::App );
   settings.setValue( QStringLiteral( "map3d/defaultFieldOfView" ), spinCameraFieldOfView->value(), QgsSettings::App );
+
+  settings.setValue( QStringLiteral( "map3d/gpuMemoryLimit" ), mGpuMemoryLimit->value(), QgsSettings::App );
 }
 
 

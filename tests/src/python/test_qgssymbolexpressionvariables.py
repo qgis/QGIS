@@ -21,7 +21,6 @@ __copyright__ = '(C) 2016, Matthiasd Kuhn'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFillSymbol,
@@ -34,7 +33,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -43,7 +43,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsSymbolExpressionVariables(unittest.TestCase):
+class TestQgsSymbolExpressionVariables(QgisTestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')

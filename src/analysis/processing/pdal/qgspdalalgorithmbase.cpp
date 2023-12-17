@@ -19,7 +19,11 @@
 
 #include "qgsapplication.h"
 #include "qgsrunprocess.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
+#include "qgsrasterlayerelevationproperties.h"
+
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
@@ -30,6 +34,11 @@
 void QgsPdalAlgorithmBase::setOutputValue( const QString &name, const QVariant &value )
 {
   mOutputValues.insert( name, value );
+}
+
+void QgsPdalAlgorithmBase::enableElevationPropertiesPostProcessor( bool enable )
+{
+  mEnableElevationProperties = enable;
 }
 
 QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
@@ -121,6 +130,22 @@ QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, c
   return outputFileName;
 }
 
+void QgsPdalAlgorithmBase::checkOutputFormat( const QString &inputFileName, const QString &outputFileName )
+{
+  if ( outputFileName.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
+    throw QgsProcessingException(
+      QObject::tr( "This algorithm does not support output to COPC. Please use LAS or LAZ as the output format. "
+                   "LAS/LAZ files get automatically converted to COPC when loaded in QGIS, alternatively you can use "
+                   "\"Create COPC\" algorithm." ) );
+
+  bool inputIsVpc = inputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
+  bool outputIsVpc = outputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
+  if ( !inputIsVpc && outputIsVpc )
+    throw QgsProcessingException(
+      QObject::tr( "This algorithm does not support output to VPC if input is not a VPC. Please use LAS or LAZ as the output format. "
+                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." ) );
+}
+
 QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( parameters );
@@ -129,12 +154,41 @@ QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parame
   return QStringList();
 }
 
+class EnableElevationPropertiesPostProcessor : public QgsProcessingLayerPostProcessorInterface
+{
+  public:
+
+    void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
+    {
+      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      {
+        QgsRasterLayerElevationProperties *props = qgis::down_cast< QgsRasterLayerElevationProperties * >( rl->elevationProperties() );
+        props->setEnabled( true );
+        rl->trigger3DUpdate();
+      }
+    }
+};
+
 QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
   const QString wrenchPath = wrenchExecutableBinary();
 
-  feedback->pushCommandInfo( QObject::tr( "wrench command: " ) + wrenchPath + ' ' + processArgs.join( ' ' ) );
+  QStringList logArgs;
+  const thread_local QRegularExpression re( "[\\s\\\"\\'\\(\\)\\&;]" );
+  for ( const QString &arg : processArgs )
+  {
+    if ( arg.contains( re ) )
+    {
+      logArgs << QStringLiteral( "\"%1\"" ).arg( arg );
+    }
+    else
+    {
+      logArgs << arg;
+    }
+  }
+
+  feedback->pushCommandInfo( QObject::tr( "wrench command: " ) + wrenchPath + ' ' + logArgs.join( ' ' ) );
 
   double progress = 0;
   QString buffer;
@@ -223,6 +277,12 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   while ( it != mOutputValues.constEnd() )
   {
     outputs[ it.key() ] = it.value();
+
+    const QString outputLayerName = it.value().toString();
+    if ( context.willLoadLayerOnCompletion( outputLayerName ) && mEnableElevationProperties )
+    {
+      context.layerToLoadOnCompletionDetails( outputLayerName ).setPostProcessor( new EnableElevationPropertiesPostProcessor() );
+    }
     ++it;
   }
 

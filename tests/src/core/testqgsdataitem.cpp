@@ -112,7 +112,7 @@ void TestQgsDataItem::testValid()
 {
   if ( mDirItem )
   {
-    QgsDebugMsg( QStringLiteral( "dirItem has %1 children" ).arg( mDirItem->rowCount() ) );
+    QgsDebugMsgLevel( QStringLiteral( "dirItem has %1 children" ).arg( mDirItem->rowCount() ), 1 );
   }
   QVERIFY( isValidDirItem( mDirItem ) );
 }
@@ -155,7 +155,7 @@ void TestQgsDataItem::testDirItemChildren()
       QString lProvider = layerItem->providerKey();
       QString errStr = QStringLiteral( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lProvider, tmpSetting );
 
-      QgsDebugMsg( QStringLiteral( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name(), lProvider, lFile, tmpSetting ) );
+      QgsDebugMsgLevel( QStringLiteral( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name(), lProvider, lFile, tmpSetting ), 1 );
 
       if ( lFile == QLatin1String( "landsat.tif" ) )
       {

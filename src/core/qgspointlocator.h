@@ -281,16 +281,25 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+                QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
               }
             }
 
             if ( !( geom.isNull() || geom.isEmpty() ) )
             {
-              const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
-              point = QgsGeometryUtils::closestPoint( line, QgsPoint( snappedPoint ) );
+              // when snapping to a curve we need to use real geometry in order to have correct location
+              // of the snapped point, see https://github.com/qgis/QGIS/issues/53197.
+              // In other cases it is ok to use only a segment to speedup calculations.
+              if ( QgsWkbTypes::isCurvedType( geom.wkbType() ) )
+              {
+                point = QgsGeometryUtils::closestPoint( *geom.constGet(), QgsPoint( snappedPoint ) );
+              }
+              else
+              {
+                const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
+                point = QgsGeometryUtils::closestPoint( line, QgsPoint( snappedPoint ) );
+              }
             }
-
 
             if ( transform.isValid() )
             {
@@ -300,7 +309,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugMsg( QStringLiteral( "transformation to destination coordinate failed" ) );
+                QgsDebugError( QStringLiteral( "transformation to destination coordinate failed" ) );
               }
             }
           }
@@ -435,11 +444,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
     // TODO: function to return just the first match?
 
     /**
-     * find out if the \a point is in any polygons
-     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * Find out if the \a point is in any polygons
+     * \param point The point to check polygons against, in map coordinates
+     * \param relaxed TRUE if index build has to be non blocking
+     * \param filter since QGIS 3.36, Optional filter may discard unwanted matches.
+     * \note Parameters \a filter and \a relaxed are in reversed order compared to the rest of MatchList returning methods.
      */
-    //!
-    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false, QgsPointLocator::MatchFilter *filter = nullptr );
 
     /**
      * Returns how many geometries are cached in the index

@@ -203,7 +203,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   if ( !conn )
   {
     items.append( new QgsErrorItem( this, tr( "Connection failed" ), mPath + "/error" ) );
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo( false ) );
+    QgsDebugError( "Connection failed - " + uri.connectionInfo( false ) );
     return items;
   }
 
@@ -366,7 +366,7 @@ QString QgsPGLayerItem::createUri()
 
   if ( !connItem )
   {
-    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
+    QgsDebugError( QStringLiteral( "connection item not found." ) );
     return QString();
   }
 
@@ -418,7 +418,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   if ( !conn )
   {
     items.append( new QgsErrorItem( this, tr( "Connection failed" ), mPath + "/error" ) );
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo( false ) );
+    QgsDebugError( "Connection failed - " + uri.connectionInfo( false ) );
     return items;
   }
 
@@ -535,7 +535,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
-  //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
+  //QgsDebugMsgLevel( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName, 2 );
   QString tip;
   if ( layerProperty.relKind == Qgis::PostgresRelKind::View )
   {

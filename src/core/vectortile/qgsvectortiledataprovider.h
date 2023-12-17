@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsdataprovider.h"
+#include "qgstiles.h"
+
+#include <QCache>
+#include <QReadWriteLock>
 
 class QgsTileMatrixSet;
 class QgsTileXYZ;
@@ -26,6 +30,38 @@ class QgsVectorTileRawData;
 class QgsVectorTileMatrixSet;
 
 #define SIP_NO_FILE
+
+/**
+ * Shared data class for vector tile layer data providers.
+ *
+ * \note Not available in Python bindings
+ *
+ * \ingroup core
+ * \since QGIS 3.32
+ */
+class QgsVectorTileDataProviderSharedData
+{
+  public:
+    QgsVectorTileDataProviderSharedData();
+
+    /**
+     * Retrieves previously cached raw tile data for a tile with matching \a id.
+     *
+     * Returns TRUE if tile data was already cached and could be retrieved.
+     */
+    bool getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ id );
+
+    /**
+     * Stores raw tile data in the shared cache.
+     */
+    void storeCachedTileData( const QgsVectorTileRawData &data );
+
+    QCache< QgsTileXYZ, QgsVectorTileRawData > mTileCache;
+
+    // cannot use a read/write lock here -- see https://bugreports.qt.io/browse/QTBUG-19794
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+
+};
 
 /**
  * Base class for vector tile layer data providers.
@@ -98,12 +134,12 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     /**
      * Returns raw tile data for a single tile.
      */
-    virtual QByteArray readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QgsVectorTileRawData readTile( const QgsTileMatrixSet &tileMatrixSet, const QgsTileXYZ &id, QgsFeedback *feedback = nullptr ) const = 0;
 
     /**
      * Returns raw tile data for a range of tiles.
      */
-    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &tileMatrixSet, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &tileMatrixSet, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr, Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown ) const = 0;
 
     /**
      * Returns a network request for a tile.
@@ -143,11 +179,10 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      */
     virtual QImage spriteImage() const;
 
-    /**
-     * Returns metadata in a format suitable for feeding directly
-     * into a subset of the GUI properties "Metadata" tab.
-     */
-    virtual QString htmlMetadata() const;
+  protected:
+
+    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
+
 };
 
 

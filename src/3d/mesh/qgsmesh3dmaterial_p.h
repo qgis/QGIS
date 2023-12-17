@@ -47,7 +47,7 @@ class QgsMeshLayer;
  * \brief Implementation of material used to render the mesh layer
  * \since QGIS 3.12
  */
-class QgsMesh3dMaterial : public Qt3DRender::QMaterial
+class QgsMesh3DMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
 
@@ -70,7 +70,7 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     };
 
     //! Constructor
-    QgsMesh3dMaterial( QgsMeshLayer *layer,
+    QgsMesh3DMaterial( QgsMeshLayer *layer,
                        const QgsDateTimeRange &timeRange,
                        const QgsVector3D &origin,
                        const QgsMesh3DSymbol *symbol,

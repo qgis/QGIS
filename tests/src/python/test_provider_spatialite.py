@@ -16,7 +16,6 @@ import sys
 import tempfile
 from datetime import datetime
 
-import qgis  # NOQA
 from osgeo import ogr
 from qgis.PyQt.QtCore import QByteArray, QVariant
 from qgis.core import (
@@ -40,11 +39,12 @@ from qgis.core import (
     QgsVectorLayerUtils,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
 
 from providertestbase import ProviderTestCase
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 # Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
 start_app(True)
@@ -66,7 +66,7 @@ def count_opened_filedescriptors(filename_to_test):
     return count
 
 
-class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
+class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -1095,7 +1095,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         # First test with invalid URI
         vl = QgsVectorLayer('/idont/exist.sqlite', 'test', 'spatialite')
 
-        self.assertFalse(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, 0)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, 0)
 
         res, err = QgsProviderRegistry.instance().styleExists('spatialite', '/idont/exist.sqlite', '')
         self.assertFalse(res)
@@ -1149,7 +1150,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(testPath, 'test', 'spatialite')
         self.assertTrue(vl.isValid())
 
-        self.assertTrue(vl.dataProvider().isSaveAndLoadStyleToDatabaseSupported())
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.LoadFromDatabase, Qgis.ProviderStyleStorageCapability.LoadFromDatabase)
+        self.assertEqual(int(vl.dataProvider().styleStorageCapabilities()) & Qgis.ProviderStyleStorageCapability.SaveToDatabase, Qgis.ProviderStyleStorageCapability.SaveToDatabase)
 
         # style tables don't exist yet
         res, err = QgsProviderRegistry.instance().styleExists('spatialite', vl.source(), '')
@@ -1883,6 +1885,45 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(meta.absoluteToRelativeUri(absolute_uri, context), relative_uri)
         self.assertEqual(meta.relativeToAbsoluteUri(relative_uri, context), absolute_uri)
+
+    def testRegression54622Multisurface(self):
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = sql = """CREATE TABLE table54622 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT)"""
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('table54622', 'geometry', 25832, 'MULTIPOLYGON', 'XY', 0)"
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        def _check_feature():
+            layer = QgsVectorLayer(
+                'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+            feature = next(layer.getFeatures())
+            self.assertFalse(feature.geometry().isNull())
+            self.assertTrue(compareWkt(feature.geometry().asWkt(), 'MultiPolygon (((-0.886 0.135, -0.886 -0.038, -0.448 -0.070, -0.426 0.143, -0.886 0.135)))', 0.01))
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table54622" (geometry) sql='.format(self.dbname), 'test', 'spatialite')
+
+        self.assertTrue(layer.isValid())
+        feature = QgsFeature(layer.fields())
+        geom = QgsGeometry.fromWkt('MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((-0.886 0.135,-0.886 -0.038,-0.448 -0.070,-0.427 0.144,-0.886 0.135))))')
+        feature.setGeometry(geom)
+        self.assertTrue(layer.dataProvider().addFeatures([feature]))
+
+        _check_feature()
+
+        self.assertTrue(layer.dataProvider().changeFeatures({}, {feature.id(): geom}))
+
+        _check_feature()
+
+        self.assertTrue(layer.dataProvider().changeGeometryValues({feature.id(): geom}))
+
+        _check_feature()
 
 
 if __name__ == '__main__':

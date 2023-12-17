@@ -79,7 +79,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
        * compulsory.
        * \see extentCrs
        */
-      QgsBox3d bounds;
+      QgsBox3D bounds;
 
       // TODO c++20 - replace with = default
       bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;

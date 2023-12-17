@@ -9,7 +9,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QGridLayout,
@@ -24,12 +23,13 @@ from qgis.gui import (
     QgsRelationEditorConfigWidget,
     QgsRelationEditorWidget,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsRelationEditorWidgetRegistry(unittest.TestCase):
+class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

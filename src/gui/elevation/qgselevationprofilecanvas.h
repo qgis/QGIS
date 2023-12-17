@@ -224,6 +224,48 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
+    /**
+     * Returns TRUE if the distance and elevation scales are locked to each other.
+     *
+     * \see setLockAxisScales()
+     * \since QGIS 3.32
+     */
+    bool lockAxisScales() const;
+
+    /**
+     * Sets whether the distance and elevation scales are locked to each other.
+     *
+     * \see lockAxisScales()
+     * \since QGIS 3.32
+     */
+    void setLockAxisScales( bool lock );
+
+    /**
+     * Returns the distance unit used by the canvas.
+     *
+     * \see setDistanceUnit()
+     * \since QGIS 3.32
+     */
+    Qgis::DistanceUnit distanceUnit() const;
+
+    /**
+     * Sets the distance \a unit used by the canvas.
+     *
+     * \see distanceUnit()
+     * \since QGIS 3.32
+     */
+    void setDistanceUnit( Qgis::DistanceUnit unit );
+
+    /**
+     * Sets the background \a color to use for the profile canvas.
+     *
+     * The chart text, border and axis color will be automatically updated to ensure
+     * readability with the new background color.
+     *
+     * \since QGIS 3.34
+     */
+    void setBackgroundColor( const QColor &color );
+
   signals:
 
     /**
@@ -269,15 +311,21 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
   private:
 
+    void updateChartFromPalette();
     QgsProfileSnapContext snapContext() const;
     QgsProfileIdentifyContext identifyContext() const;
 
     void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 
+    void adjustRangeForAxisScaleLock( double &xMinimum, double &xMaximum, double &yMinimum, double &yMaximum ) const;
+
     QgsScreenHelper *mScreenHelper = nullptr;
+
+    bool mLockAxisScales = false;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
+    Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
 

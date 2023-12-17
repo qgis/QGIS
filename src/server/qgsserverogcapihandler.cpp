@@ -333,7 +333,8 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       auto fName { fi.filePath()};
       fName.chop( suffix.length() + 1 );
       // Chomp last segment
-      fName = fName.replace( QRegularExpression( R"raw(\/[^/]+$)raw" ), QString() );
+      const thread_local QRegularExpression segmentRx( R"raw(\/[^/]+$)raw" );
+      fName = fName.replace( segmentRx, QString() );
       if ( !suffix.isEmpty() )
       {
         fName += '.' + suffix;
@@ -521,7 +522,7 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
   {
     path.chop( 1 );
   }
-  QRegularExpression re( R"raw(\/[^/]+$)raw" );
+  const thread_local QRegularExpression re( R"raw(\/[^/]+$)raw" );
   for ( int i = 0; i < levels ; i++ )
   {
     path = path.replace( re, QString() );

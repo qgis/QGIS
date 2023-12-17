@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Graphical Modeler</string>
+   <string>Model Designer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="mainLayout">
@@ -485,7 +485,7 @@
     <string>Zoom to &amp;100%</string>
    </property>
    <property name="toolTip">
-    <string>Zoom to &amp;100%</string>
+    <string>Zoom to 100%</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+1</string>

@@ -193,6 +193,21 @@ class CORE_EXPORT QgsAbstractProfileResults
 {
   public:
 
+    /**
+     * Encapsulates information about a feature exported from the profile results.
+     *
+     * \since QGIS 3.32
+     */
+    struct Feature
+    {
+      //! Identifier for grouping output features
+      QString layerIdentifier;
+      //! Exported geometry
+      QgsGeometry geometry;
+      //! Exported attributes
+      QVariantMap attributes;
+    };
+
     virtual ~QgsAbstractProfileResults();
 
     /**
@@ -215,6 +230,15 @@ class CORE_EXPORT QgsAbstractProfileResults
      * Returns a list of geometries representing the calculated elevation results.
      */
     virtual QVector< QgsGeometry > asGeometries() const = 0;
+
+    /**
+     * Returns a list of features representing the calculated elevation results.
+     *
+     * The default implementation returns an empty list.
+     *
+     * \since QGIS 3.32
+     */
+    virtual QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Renders the results to the specified \a context.

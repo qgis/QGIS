@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Updated (c) 2021 Runette Software Ltd to make multiplatform, to complete the typemaps and add to voxel types.
+Updated (c) 2021 - 23 Runette Software Ltd to make multiplatform, to complete the typemaps and add to voxel types.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -76,13 +76,21 @@ namespace libply
     public:
       virtual ~IProperty() = default;
 
+      virtual IProperty &operator=( unsigned char value ) = 0;
+      virtual IProperty &operator=( char value ) = 0;
+      virtual IProperty &operator=( unsigned short value ) = 0;
+      virtual IProperty &operator=( short value ) = 0;
       virtual IProperty &operator=( unsigned int value ) = 0;
       virtual IProperty &operator=( int value ) = 0;
       virtual IProperty &operator=( float value ) = 0;
       virtual IProperty &operator=( double value ) = 0;
 
-      virtual operator unsigned int() = 0;
+      virtual operator char() = 0;
+      virtual operator unsigned char() = 0;
+      virtual operator short() = 0;
+      virtual operator unsigned short() = 0;
       virtual operator int() = 0;
+      virtual operator unsigned int() = 0;
       virtual operator float() = 0;
       virtual operator double() = 0;
 
@@ -96,6 +104,27 @@ namespace libply
     public :
 
       virtual ~ScalarProperty() = default;
+
+      virtual ScalarProperty &operator= ( unsigned char value ) override
+      {
+        m_value = static_cast<InternalType>( value );
+        return *this;
+      };
+      virtual ScalarProperty &operator= ( char value ) override
+      {
+        m_value = static_cast<InternalType>( value );
+        return *this;
+      };
+      virtual ScalarProperty &operator= ( unsigned short value ) override
+      {
+        m_value = static_cast<InternalType>( value );
+        return *this;
+      };
+      virtual ScalarProperty &operator= ( short value ) override
+      {
+        m_value = static_cast<InternalType>( value );
+        return *this;
+      };
 
       virtual ScalarProperty &operator=( unsigned int value ) override
       {
@@ -118,18 +147,41 @@ namespace libply
         return *this;
       };
 
-      virtual operator unsigned int() override
+      virtual operator char() override
       {
-        return static_cast<unsigned int>( m_value );
+        return static_cast<char>( m_value );
       };
+
+      virtual operator unsigned char() override
+      {
+        return static_cast<unsigned char>( m_value );
+      };
+
+      virtual operator short() override
+      {
+        return static_cast<short>( m_value );
+      };
+
+      virtual operator unsigned short() override
+      {
+        return static_cast<unsigned short>( m_value );
+      };
+
       virtual operator int() override
       {
         return static_cast<int>( m_value );
       };
+
+      virtual operator unsigned int() override
+      {
+        return static_cast<unsigned int>( m_value );
+      };
+
       virtual operator float() override
       {
         return static_cast<float>( m_value );
       };
+
       virtual operator double() override
       {
         return static_cast<double>( m_value );
@@ -148,13 +200,21 @@ namespace libply
   {
     public:
 
+      IProperty &operator=( unsigned char ) override { return *this; };
+      IProperty &operator=( char ) override { return *this; };
+      IProperty &operator=( unsigned short ) override { return *this; };
+      IProperty &operator=( short ) override { return *this; };
       IProperty &operator=( unsigned int ) override { return *this; };
       IProperty &operator=( int ) override  { return *this; };
       IProperty &operator=( float ) override  { return *this; };
       IProperty &operator=( double ) override  { return *this; };
 
-      operator unsigned int() override { return 0; };
+      operator char()override { return 0; };
+      operator unsigned char()override { return 0; };
+      operator short() override { return 0; };
+      operator unsigned short() override { return 0; };
       operator int() override { return 0; };
+      operator unsigned int() override { return 0; };
       operator float() override { return 0; };
       operator double() override { return 0; };
 
@@ -229,6 +289,7 @@ namespace libply
 
       ElementsDefinition definitions() const;
       Metadata metadata() const;
+
       void setElementReadCallback( std::string elementName, ElementReadCallback &readCallback );
       void read();
 
@@ -239,6 +300,8 @@ namespace libply
         BINARY_LITTLE_ENDIAN,
         BINARY_BIG_ENDIAN
       };
+
+      std::string format() const;
 
     private:
       std::string m_filename;
@@ -257,11 +320,6 @@ namespace libply
       void setElementWriteCallback( const std::string &elementName, ElementWriteCallback &writeCallback );
       void write();
       Metadata metadata;
-
-    private:
-      void createFile();
-      void writeHeader();
-      void writeData();
 
     private:
       std::string m_filename;

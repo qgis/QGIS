@@ -141,6 +141,15 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     return;
   }
 
+  QList< QGraphicsItem * > itemsToDraw;
+  expandItemList( selectedItems, itemsToDraw );
+
+  if ( itemsToDraw.size() <= 1 )
+  {
+    // Single item selected. The items bounds are drawn by the MouseHandles itself.
+    return;
+  }
+
   //use difference mode so that they are visible regardless of item colors
   QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
@@ -151,9 +160,6 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
   selectedItemPen.setWidth( 0 );
   painter->setPen( selectedItemPen );
   painter->setBrush( Qt::NoBrush );
-
-  QList< QGraphicsItem * > itemsToDraw;
-  expandItemList( selectedItems, itemsToDraw );
 
   for ( QGraphicsItem *item : std::as_const( itemsToDraw ) )
   {
@@ -173,24 +179,16 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     else if ( isResizing() && !itemIsLocked( item ) )
     {
       //if currently resizing, calculate relative resize of this item
-      if ( selectedItems.size() > 1 )
-      {
-        //get item bounds in mouse handle item's coordinate system
-        QRectF thisItemRect = mapRectFromItem( item, itemRect( item ) );
-        //now, resize it relative to the current resized dimensions of the mouse handles
-        relativeResizeRect( thisItemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
-        itemBounds = QPolygonF( thisItemRect );
-      }
-      else
-      {
-        //single item selected
-        itemBounds = rect();
-      }
+      //get item bounds in mouse handle item's coordinate system
+      QRectF thisItemRect = mapRectFromItem( item, itemRect( item ) );
+      //now, resize it relative to the current resized dimensions of the mouse handles
+      relativeResizeRect( thisItemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+      itemBounds = QPolygonF( thisItemRect );
     }
     else
     {
-      //not resizing or moving, so just map from scene bounds
-      itemBounds = mapRectFromItem( item, itemRect( item ) );
+      // not resizing or moving, so just map the item's bounds to the mouse handle item's coordinate system
+      itemBounds = item->mapToItem( this, itemRect( item ) );
     }
 
     // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
@@ -228,6 +226,11 @@ double QgsGraphicsViewMouseHandles::rectHandlerBorderTolerance()
 Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoordPos )
 {
   QgsGraphicsViewMouseHandles::MouseAction mouseAction = mouseActionForPosition( itemCoordPos );
+  double normalizedRotation = std::fmod( rotation(), 360 );
+  if ( normalizedRotation < 0 )
+  {
+    normalizedRotation += 360;
+  }
   switch ( mouseAction )
   {
     case NoAction:
@@ -237,15 +240,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeUp:
     case ResizeDown:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeVerCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeBDiagCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeHorCursor;
       }
@@ -256,15 +259,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeLeft:
     case ResizeRight:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeHorCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeFDiagCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeVerCursor;
       }
@@ -276,15 +279,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeLeftUp:
     case ResizeRightDown:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeFDiagCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeVerCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeBDiagCursor;
       }
@@ -295,15 +298,15 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case ResizeRightUp:
     case ResizeLeftDown:
       //account for rotation
-      if ( ( rotation() <= 22.5 || rotation() >= 337.5 ) || ( rotation() >= 157.5 && rotation() <= 202.5 ) )
+      if ( ( normalizedRotation <= 22.5 || normalizedRotation >= 337.5 ) || ( normalizedRotation >= 157.5 && normalizedRotation <= 202.5 ) )
       {
         return Qt::SizeBDiagCursor;
       }
-      else if ( ( rotation() >= 22.5 && rotation() <= 67.5 ) || ( rotation() >= 202.5 && rotation() <= 247.5 ) )
+      else if ( ( normalizedRotation >= 22.5 && normalizedRotation <= 67.5 ) || ( normalizedRotation >= 202.5 && normalizedRotation <= 247.5 ) )
       {
         return Qt::SizeHorCursor;
       }
-      else if ( ( rotation() >= 67.5 && rotation() <= 112.5 ) || ( rotation() >= 247.5 && rotation() <= 292.5 ) )
+      else if ( ( normalizedRotation >= 67.5 && normalizedRotation <= 112.5 ) || ( normalizedRotation >= 247.5 && normalizedRotation <= 292.5 ) )
       {
         return Qt::SizeFDiagCursor;
       }
@@ -421,6 +424,27 @@ bool QgsGraphicsViewMouseHandles::shouldBlockEvent( QInputEvent * ) const
   return mIsDragging || mIsResizing;
 }
 
+void QgsGraphicsViewMouseHandles::startMove( QPointF sceneCoordPos )
+{
+  //save current cursor position
+  mMouseMoveStartPos = sceneCoordPos;
+  //save current item geometry
+  mBeginMouseEventPos = sceneCoordPos;
+  mBeginHandlePos = scenePos();
+  mBeginHandleWidth = rect().width();
+  mBeginHandleHeight = rect().height();
+  mCurrentMouseMoveAction = MoveItem;
+  mIsDragging = true;
+  hideAlignItems();
+
+  // Explicitly call grabMouse to ensure the mouse handles receive the subsequent mouse move events.
+  if ( mView->scene()->mouseGrabberItem() != this )
+  {
+    grabMouse();
+  }
+
+}
+
 void QgsGraphicsViewMouseHandles::selectedItemSizeChanged()
 {
   if ( !isDragging() && !isResizing() )
@@ -460,7 +484,6 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
 
   //save current cursor position
   mMouseMoveStartPos = event->lastScenePos();
-  mLastMouseEventPos = event->lastScenePos();
   //save current item geometry
   mBeginMouseEventPos = event->lastScenePos();
   mBeginHandlePos = scenePos();
@@ -521,8 +544,6 @@ void QgsGraphicsViewMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent *even
     //resize from center if alt depressed
     resizeMouseMove( event->lastScenePos(), event->modifiers() & Qt::ShiftModifier, event->modifiers() & Qt::AltModifier );
   }
-
-  mLastMouseEventPos = event->lastScenePos();
 }
 
 void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
@@ -532,6 +553,10 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     event->ignore();
     return;
   }
+
+  // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
+  // otherwise, hover events will not be received
+  ungrabMouse();
 
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
@@ -624,7 +649,6 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   //reset default action
   mCurrentMouseMoveAction = MoveItem;
-  setViewportCursor( Qt::ArrowCursor );
   //redraw handles
   resetTransform();
   updateHandles();

@@ -39,7 +39,6 @@ set(QGIS_GUI_SRCS
   vector/qgssourcefieldsproperties.cpp
   vector/qgsvectorlayerlegendwidget.cpp
   vector/qgsvectorlayerproperties.cpp
-  vector/qgsvectorlayersavestyledialog.cpp
   vector/qgswmsdimensiondialog.cpp
 
   symbology/qgs25drendererwidget.cpp
@@ -245,6 +244,13 @@ set(QGIS_GUI_SRCS
   history/qgshistorywidget.cpp
   history/qgshistorywidgetcontext.cpp
 
+  inputcontroller/qgs2dmapcontroller.cpp
+  inputcontroller/qgs2dgamepadcontroller.cpp
+  inputcontroller/qgs3dmapcontroller.cpp
+  inputcontroller/qgs3dgamepadcontroller.cpp
+  inputcontroller/qgsabstractinputcontroller.cpp
+  inputcontroller/qgsinputcontrollermanager.cpp
+
   labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
   labeling/qgslabelingwidget.cpp
@@ -365,6 +371,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingaggregatewidgetwrapper.cpp
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
@@ -385,6 +392,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingpointcloudexpressionlineedit.cpp
+  processing/qgsprocessingrastercalculatorexpressionlineedit.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
@@ -453,6 +461,15 @@ set(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  tiledscene/qgstiledsceneconnectiondialog.cpp
+  tiledscene/qgstiledscenedataitemguiprovider.cpp
+  tiledscene/qgstiledsceneproviderguimetadata.cpp
+  tiledscene/qgstiledscenerendererpropertieswidget.cpp
+  tiledscene/qgstiledscenerendererwidget.cpp
+  tiledscene/qgstiledscenesourceselect.cpp
+  tiledscene/qgstiledscenetexturerendererwidget.cpp
+  tiledscene/qgstiledscenewireframerendererwidget.cpp
+
   vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
@@ -503,6 +520,7 @@ set(QGIS_GUI_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscoordinateboundspreviewmapwidget.cpp
   qgscoordinateoperationwidget.cpp
+  qgscoordinatereferencesystemmodel.cpp
   qgscrsdefinitionwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
@@ -529,6 +547,7 @@ set(QGIS_GUI_SRCS
   qgserrordialog.cpp
   qgsexpressionbuilderdialog.cpp
   qgsexpressionbuilderwidget.cpp
+  qgsexpressionfinder.cpp
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
   qgsexpressionpreviewwidget.cpp
@@ -582,6 +601,7 @@ set(QGIS_GUI_SRCS
   qgslayermetadataresultsmodel.cpp
   qgslayermetadatasourceselectprovider.cpp
   qgslayermetadataresultsproxymodel.cpp
+  qgslayerpropertiesdialog.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendpatchshapebutton.cpp
@@ -601,6 +621,8 @@ set(QGIS_GUI_SRCS
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
   qgsmaplayerloadstyledialog.cpp
+  qgsmaplayerrefreshsettingswidget.cpp
+  qgsmaplayersavestyledialog.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -651,6 +673,7 @@ set(QGIS_GUI_SRCS
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
+  qgsplaybackcontrollerwidget.cpp
   qgspluginmanagerinterface.cpp
   qgspointcloudattributecombobox.cpp
   qgspointcloudquerybuilder.cpp
@@ -712,6 +735,7 @@ set(QGIS_GUI_SRCS
   qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
+  qgstooltipcombobox.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
   qgsuserinputwidget.cpp
@@ -772,6 +796,7 @@ set(QGIS_GUI_HDRS
   qgsconfigureshortcutsdialog.h
   qgscoordinateboundspreviewmapwidget.h
   qgscoordinateoperationwidget.h
+  qgscoordinatereferencesystemmodel.h
   qgscredentialdialog.h
   qgscrsdefinitionwidget.h
   qgscurveeditorwidget.h
@@ -801,6 +826,7 @@ set(QGIS_GUI_HDRS
   qgsexpressionbuilderdialog.h
   qgsexpressionstoredialog.h
   qgsexpressionbuilderwidget.h
+  qgsexpressionfinder.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
   qgsexpressionpreviewwidget.h
@@ -854,6 +880,7 @@ set(QGIS_GUI_HDRS
   qgslayermetadataresultsmodel.h
   qgslayermetadataresultsproxymodel.h
   qgslayermetadatasourceselectprovider.h
+  qgslayerpropertiesdialog.h
   qgslegendfilterbutton.h
   qgslegendpatchshapebutton.h
   qgslegendpatchshapewidget.h
@@ -873,7 +900,9 @@ set(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayersavestyledialog.h
   qgsmaplayerloadstyledialog.h
+  qgsmaplayerrefreshsettingswidget.h
   qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
@@ -924,6 +953,7 @@ set(QGIS_GUI_HDRS
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
   qgspixmaplabel.h
+  qgsplaybackcontrollerwidget.h
   qgspluginmanagerinterface.h
   qgspointcloudattributecombobox.h
   qgspointcloudquerybuilder.h
@@ -989,6 +1019,7 @@ set(QGIS_GUI_HDRS
   qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
+  qgstooltipcombobox.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputwidget.h
@@ -1167,6 +1198,13 @@ set(QGIS_GUI_HDRS
   history/qgshistorywidget.h
   history/qgshistorywidgetcontext.h
 
+  inputcontroller/qgs2dmapcontroller.h
+  inputcontroller/qgs2dgamepadcontroller.h
+  inputcontroller/qgs3dmapcontroller.h
+  inputcontroller/qgs3dgamepadcontroller.h
+  inputcontroller/qgsabstractinputcontroller.h
+  inputcontroller/qgsinputcontrollermanager.h
+
   labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
   labeling/qgslabelingwidget.h
@@ -1309,6 +1347,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingpointcloudexpressionlineedit.h
+  processing/qgsprocessingrastercalculatorexpressionlineedit.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
@@ -1397,7 +1436,6 @@ set(QGIS_GUI_HDRS
   vector/qgssourcefieldsproperties.h
   vector/qgsvectorlayerlegendwidget.h
   vector/qgsvectorlayerproperties.h
-  vector/qgsvectorlayersavestyledialog.h
   vector/qgswmsdimensiondialog.h
 
   symbology/characterwidget.h
@@ -1445,6 +1483,7 @@ set(QGIS_GUI_HDRS
 
   settings/qgssettingseditorwidgetwrapper.h
   settings/qgssettingseditorwidgetwrapperimpl.h
+  settings/qgssettingsenumflageditorwidgetwrapper.h
   settings/qgssettingseditorwidgetregistry.h
   settings/qgssettingsregistrygui.h
   settings/qgssettingstreemodel.h
@@ -1453,6 +1492,15 @@ set(QGIS_GUI_HDRS
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
+
+  tiledscene/qgstiledsceneconnectiondialog.h
+  tiledscene/qgstiledscenedataitemguiprovider.h
+  tiledscene/qgstiledsceneproviderguimetadata.h
+  tiledscene/qgstiledscenerendererpropertieswidget.h
+  tiledscene/qgstiledscenerendererwidget.h
+  tiledscene/qgstiledscenesourceselect.h
+  tiledscene/qgstiledscenetexturerendererwidget.h
+  tiledscene/qgstiledscenewireframerendererwidget.h
 
   vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
@@ -1515,7 +1563,6 @@ if (WITH_COPC)
   )
 endif()
 
-
 # disable deprecation warnings for classes re-exporting deprecated methods
 if(MSVC)
   set_source_files_properties(
@@ -1556,13 +1603,6 @@ if (BUILD_WITH_QT6)
   )
 endif()
 
-if (WITH_PDAL)
-  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
-  if(MSVC)
-    add_definitions(-DWIN32_LEAN_AND_MEAN)
-  endif()
-endif()
-
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/actions
@@ -1579,6 +1619,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/effects
   ${CMAKE_SOURCE_DIR}/src/gui/elevation
   ${CMAKE_SOURCE_DIR}/src/gui/history
+  ${CMAKE_SOURCE_DIR}/src/gui/inputcontroller
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
@@ -1600,6 +1641,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+  ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
 
@@ -1687,6 +1729,12 @@ if (BUILD_WITH_QT6)
   target_link_libraries(qgis_gui
     Qt6::SvgWidgets
   )
+endif()
+
+if (WITH_QTGAMEPAD)
+    target_link_libraries(qgis_gui
+      ${QT_VERSION_BASE}::Gamepad
+    )
 endif()
 
 if (FORCE_STATIC_LIBS)

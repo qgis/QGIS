@@ -29,7 +29,7 @@
 #include <QSqlField>
 #include <QSqlDriver>
 
-QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
+QMap<QPair<QString, QThread *>, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
 QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
@@ -37,13 +37,15 @@ QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
   const QString conninfo = toPoolName( uri );
+  const QPair<QString, QThread *> connInfoThread( conninfo, QThread::currentThread() );
+
   if ( !transaction )
   {
-    if ( sConnections.contains( conninfo ) )
+    if ( sConnections.contains( connInfoThread ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Using cached connection for %1" ).arg( conninfo ), 2 );
-      sConnections[conninfo]->mRef++;
-      return sConnections[conninfo];
+      sConnections[connInfoThread]->mRef++;
+      return sConnections[connInfoThread];
     }
   }
 
@@ -57,7 +59,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool trans
 
   if ( !transaction )
   {
-    sConnections.insert( conninfo, conn );
+    sConnections.insert( connInfoThread, conn );
   }
 
   return conn;
@@ -71,8 +73,11 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
 {
   QgsDebugMsgLevel( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ), 2 );
 
-  mConnInfo = uri.connectionInfo( true );
-  uri = QgsDataSourceUri( mConnInfo );
+  // will be used for logging and access connection from connection pool by name,
+  // so we don't want login/password here
+  mConnInfo = uri.connectionInfo( false );
+
+  uri = QgsDataSourceUri( uri.connectionInfo( true ) );
 
   QString database = databaseName( uri.database(), uri.host(), uri.port() );
   QgsDebugMsgLevel( QStringLiteral( "New Oracle database " ) + database, 2 );
@@ -98,7 +103,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   {
     QDateTime now( QDateTime::currentDateTime() );
     QDateTime since( sBrokenConnections[ realm ] );
-    QgsDebugMsg( QStringLiteral( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
+    QgsDebugError( QStringLiteral( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
 
     if ( since.secsTo( now ) < 30 )
     {
@@ -119,7 +124,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
       if ( !ok )
       {
         QDateTime now( QDateTime::currentDateTime() );
-        QgsDebugMsg( QStringLiteral( "get failed: %1 <= %2" ).arg( realm, now.toString( Qt::ISODate ) ) );
+        QgsDebugError( QStringLiteral( "get failed: %1 <= %2" ).arg( realm, now.toString( Qt::ISODate ) ) );
         sBrokenConnections.insert( realm, now );
         break;
       }
@@ -154,10 +159,19 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
     return;
   }
 
+  QSqlQuery qry( mDatabase );
+  if ( !LoggedExecPrivate( QStringLiteral( "QgsOracleConn" ), qry, QStringLiteral( "alter session set nls_date_format = 'yyyy-mm-dd\"T\"HH24:MI:ss'" ),
+                           QVariantList() ) )
+  {
+    mDatabase.close();
+    const QString error { tr( "Error: Failed to switch the default format date to ISO" ) };
+    QgsMessageLog::logMessage( error, tr( "Oracle" ) );
+    mRef = 0;
+    return;
+  }
+
   if ( !workspace.isNull() )
   {
-    QSqlQuery qry( mDatabase );
-
     if ( !qry.prepare( QStringLiteral( "BEGIN\nDBMS_WM.GotoWorkspace(?);\nEND;" ) ) || !( qry.addBindValue( workspace ), qry.exec() ) )
     {
       mDatabase.close();
@@ -185,7 +199,7 @@ QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 
 QString QgsOracleConn::connInfo()
 {
-  return sConnections.key( this, QString() );
+  return mConnInfo;
 }
 
 void QgsOracleConn::disconnect()
@@ -210,15 +224,10 @@ void QgsOracleConn::unref()
 
   if ( !mTransaction )
   {
-    QString key = sConnections.key( this, QString() );
-
-    if ( !key.isNull() )
+    QPair<QString, QThread *> key = sConnections.key( this, QPair<QString, QThread *>() );
+    if ( !key.first.isNull() )
     {
       sConnections.remove( key );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "Connection not found" ) );
     }
   }
 
@@ -272,9 +281,9 @@ bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList
 
   if ( !res )
   {
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery(),
-                       qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery(),
+                         qry.lastError().text() ) );
   }
 
   return res;
@@ -304,9 +313,9 @@ bool QgsOracleConn::execLogged( QSqlQuery &qry, const QString &sql, const QVaria
   if ( !res )
   {
     logWrapper.setError( qry.lastError().text() );
-    QgsDebugMsg( QStringLiteral( "SQL: %1\nERROR: %2" )
-                 .arg( qry.lastQuery(),
-                       qry.lastError().text() ) );
+    QgsDebugError( QStringLiteral( "SQL: %1\nERROR: %2" )
+                   .arg( qry.lastQuery(),
+                         qry.lastError().text() ) );
   }
   else
   {
@@ -509,7 +518,7 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
     {
       const QString errorMsg { QStringLiteral( "Connection error: %1 returned %2" )
                                .arg( query, error ) };
-      QgsDebugMsg( errorMsg );
+      QgsDebugError( errorMsg );
     }
     if ( errorMessage )
       *errorMessage = error;
@@ -547,7 +556,7 @@ bool QgsOracleConn::execLogged( const QString &query, bool logError, QString *er
     {
       const QString errorMsg { QStringLiteral( "Connection error: %1 returned %2" )
                                .arg( query, error ) };
-      QgsDebugMsg( errorMsg );
+      QgsDebugError( errorMsg );
     }
     if ( errorMessage )
       *errorMessage = error;
@@ -833,7 +842,7 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 3:
         return Qgis::WkbType::Polygon;
       case 4:
-        QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
       case 5:
         return Qgis::WkbType::MultiPoint;
@@ -842,7 +851,7 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 7:
         return Qgis::WkbType::MultiPolygon;
       default:
-        QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
     }
   }
@@ -857,7 +866,7 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 3:
         return Qgis::WkbType::PolygonZ;
       case 4:
-        QgsDebugMsg( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "geometry collection type %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
       case 5:
         return Qgis::WkbType::MultiPointZ;
@@ -866,13 +875,13 @@ Qgis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
       case 7:
         return Qgis::WkbType::MultiPolygonZ;
       default:
-        QgsDebugMsg( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
+        QgsDebugError( QStringLiteral( "gtype %1 unsupported" ).arg( gtype ) );
         return Qgis::WkbType::Unknown;
     }
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "dimension of gtype %1 unsupported" ).arg( gtype ) );
+    QgsDebugError( QStringLiteral( "dimension of gtype %1 unsupported" ).arg( gtype ) );
     return Qgis::WkbType::Unknown;
   }
 }

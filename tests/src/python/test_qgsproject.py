@@ -18,7 +18,6 @@ from shutil import copyfile
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
-import qgis  # NOQA
 from osgeo import ogr
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
@@ -43,7 +42,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -55,11 +55,11 @@ def createLayer(name):
     return QgsVectorLayer("Point?field=x:string", name, "memory")
 
 
-class TestQgsProject(unittest.TestCase):
+class TestQgsProject(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
         self.messageCaught = False
 
     def test_makeKeyTokens_(self):
@@ -493,7 +493,7 @@ class TestQgsProject(unittest.TestCase):
 
     # fails on qt5 due to removeMapLayers list type conversion - needs a PyName alias
     # added to removeMapLayers for QGIS 3.0
-    @unittest.expectedFailure(QT_VERSION_STR[0] == '5')
+    @QgisTestCase.expectedFailure(QT_VERSION_STR[0] == '5')
     def test_removeMapLayersByLayer(self):
         """ test removing map layers by layer"""
         QgsProject.instance().removeAllMapLayers()
@@ -1076,6 +1076,20 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(p.homePath(), '/tmp/not/existing/here')
         self.assertEqual(len(path_changed_spy), 1)
 
+        # Tests whether the home paths of a GPKG stored project returns the GPKG folder.
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, 'relative_paths_gh30387.gpkg')
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relative_paths_gh30387.gpkg'), path)
+            project = QgsProject()
+            # Project URI
+            uri = f'geopackage://{path}?projectName=relative_project'
+            project.setFileName(uri)
+            self.assertTrue(project.write())
+            # Verify
+            project = QgsProject()
+            self.assertTrue(project.read(uri))
+            self.assertEqual(project.homePath(), d)
+
     def testDirtyBlocker(self):
         # first test manual QgsProjectDirtyBlocker construction
         p = QgsProject()
@@ -1570,13 +1584,17 @@ class TestQgsProject(unittest.TestCase):
         project = QgsProject()
 
         layer = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+        layer2 = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
 
         project.addMapLayers([layer])
 
-        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), None)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), False)
         project.setFlags(project.flags() | Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertTrue(project.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+
+        project.addMapLayers([layer2])
+        self.assertEqual(layer2.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
 
         tmp_dir = QTemporaryDir()
         tmp_project_file = f"{tmp_dir.path()}/project.qgs"
@@ -1586,10 +1604,11 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(project2.read(tmp_project_file))
 
         layers = list(project2.mapLayers().values())
-        self.assertEqual(len(layers), 1)
+        self.assertEqual(len(layers), 2)
 
         self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
 
 
 if __name__ == '__main__':

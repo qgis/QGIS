@@ -20,7 +20,6 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgswkbtypes.h"
 
 class QgsMapLayer;
 class QIcon;
@@ -42,7 +41,7 @@ class CORE_EXPORT QgsIconUtils
 
     /**
      * Returns the icon for a vector layer whose geometry \a typeGroup is provided.
-     * 1since QGIS 3.28
+     * \since QGIS 3.28
      */
     static QIcon iconForGeometryType( Qgis::GeometryType typeGroup );
 
@@ -97,6 +96,13 @@ class CORE_EXPORT QgsIconUtils
      * Returns an icon representing point cloud layers.
      */
     static QIcon iconPointCloud();
+
+    /**
+     * Returns an icon representing tiled scene layers.
+     *
+     * \since QGIS 3.34
+     */
+    static QIcon iconTiledScene();
 
     /**
      * Returns the icon corresponding to a specified map \a layer.

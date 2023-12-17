@@ -228,7 +228,6 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( lst3[2].vertexIndex(), 3 );
     }
 
-
     void testLayerUpdates()
     {
 
@@ -474,11 +473,9 @@ class TestQgsPointLocator : public QObject
       delete loc;
     }
 
-
     void testEmptyLayer()
     {
       // Issue https://github.com/qgis/QGIS/issues/33449
-
 
       // Create an empty layer, add one feature and check that we can snap on this feature
       QgsVectorLayer layer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
@@ -517,6 +514,55 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m.vertexIndex(), 2 );
     }
 
+    void testInterpolatedPoint()
+    {
+      std::unique_ptr<QgsVectorLayer> curveLayer( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" ) ;
+      f1.setGeometry( f1g );
+      QgsFeatureList f1list;
+      f1list << f1;
+      curveLayer->dataProvider()->addFeatures( f1list );
+      QVERIFY( curveLayer->dataProvider()->featureCount() == 1 );
+
+      QgsPointLocator loc1( curveLayer.get(), QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      const QgsPointLocator::Match m1 = loc1.nearestEdge( QgsPointXY( 3, 8 ), std::numeric_limits<double>::max() );
+      QVERIFY( m1.isValid() );
+      QVERIFY( m1.hasEdge() );
+      QCOMPARE( m1.layer(), curveLayer.get() );
+      QCOMPARE( m1.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m1.point(), QgsPointXY( 3.53553390593273775, 8.53553390593273775 ) );
+      QCOMPARE( m1.distance(), 0.757359312881 );
+      QCOMPARE( m1.vertexIndex(), 1 );
+      QgsPointXY pt1, pt2;
+      m1.edgePoints( pt1, pt2 );
+      QCOMPARE( pt1, QgsPointXY( 5, 5 ) );
+      QCOMPARE( pt2, QgsPointXY( 0, 10 ) );
+      QCOMPARE( m1.interpolatedPoint( QgsCoordinateReferenceSystem() ), QgsPoint( 3.53553390593273775, 8.53553390593273775, 7.70598050073098584 ) );
+
+      std::unique_ptr<QgsVectorLayer> lineLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f2;
+      const QgsGeometry f2g = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 5 5 5, 0 10 10)" ) ;
+      f2.setGeometry( f2g );
+      QgsFeatureList f2list;
+      f2list << f2;
+      lineLayer->dataProvider()->addFeatures( f2list );
+      QVERIFY( lineLayer->dataProvider()->featureCount() == 1 );
+
+      QgsPointLocator loc2( lineLayer.get(), QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      const QgsPointLocator::Match m2 = loc2.nearestEdge( QgsPointXY( 3, 8 ), std::numeric_limits<double>::max() );
+      QVERIFY( m2.isValid() );
+      QVERIFY( m2.hasEdge() );
+      QCOMPARE( m2.layer(), lineLayer.get() );
+      QCOMPARE( m2.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m2.point(), QgsPointXY( 2.5, 7.5 ) );
+      QCOMPARE( m2.distance(), 0.707106781187 );
+      QCOMPARE( m2.vertexIndex(), 1 );
+      m2.edgePoints( pt1, pt2 );
+      QCOMPARE( pt1, QgsPointXY( 5, 5 ) );
+      QCOMPARE( pt2, QgsPointXY( 0, 10 ) );
+      QCOMPARE( m2.interpolatedPoint( QgsCoordinateReferenceSystem() ), QgsPoint( 2.5, 7.5, 7.5 ) );
+    }
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )

@@ -28,6 +28,8 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QLocale>
+#include <QTextCodec>
 #include <QUrl>
 
 ///@cond NOT_STABLE
@@ -51,7 +53,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   mSelectButton->setPopupMode( QToolButton::InstantPopup );
 
   QgsSettings settings;
-  mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
+  mEncoding = QgsProcessingUtils::resolveDefaultEncoding( settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString() );
+  settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
 
   if ( !mParameter->defaultValueForGui().isValid() )
   {
@@ -388,6 +391,11 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     lastExtPath = QStringLiteral( "/Processing/LastPointCloudOutputExt" );
     lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
   }
+  else if ( mParameter->type() == QgsProcessingParameterVectorTileDestination::typeName() )
+  {
+    lastExtPath = QStringLiteral( "/Processing/LastVectorTileOutputExt" );
+    lastExt = settings.value( lastExtPath, QStringLiteral( ".%1" ).arg( mParameter->defaultFileExtension() ) ).toString();
+  }
 
   // get default filter
   const QStringList filters = fileFilter.split( QStringLiteral( ";;" ) );
@@ -424,6 +432,9 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     emit skipOutputChanged( false );
     emit destinationChanged();
   }
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
@@ -434,6 +445,9 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
     lastPath = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QString() ).toString();
 
   QString filename =  QFileDialog::getSaveFileName( this, tr( "Save to GeoPackage" ), lastPath, tr( "GeoPackage files (*.gpkg);;All files (*.*)" ), nullptr, QFileDialog::DontConfirmOverwrite );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
 
   if ( filename.isEmpty() )
     return;
@@ -597,9 +611,11 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
   QgsEncodingSelectionDialog dialog( this, tr( "File encoding" ), mEncoding );
   if ( dialog.exec() )
   {
-    mEncoding = dialog.encoding();
+    mEncoding = QgsProcessingUtils::resolveDefaultEncoding( dialog.encoding() );
+
     QgsSettings settings;
     settings.setValue( QStringLiteral( "/Processing/encoding" ), mEncoding );
+
     emit destinationChanged();
   }
 }

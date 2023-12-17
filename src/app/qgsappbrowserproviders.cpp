@@ -458,18 +458,14 @@ QString QgsStyleXmlDropHandler::customUriProviderKey() const
 
 void QgsStyleXmlDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
 {
-  QgsStyleExportImportDialog dlg( QgsStyle::defaultStyle(), QgisApp::instance(), QgsStyleExportImportDialog::Import );
-  dlg.setImportFilePath( uri.uri );
-  dlg.exec();
+  QgsStyleXmlDataItem::browseStyle( uri.uri );
 }
 
 bool QgsStyleXmlDropHandler::handleFileDrop( const QString &file )
 {
   if ( QgsStyle::isXmlStyleFile( file ) )
   {
-    QgsStyleExportImportDialog dlg( QgsStyle::defaultStyle(), QgisApp::instance(), QgsStyleExportImportDialog::Import );
-    dlg.setImportFilePath( file );
-    dlg.exec();
+    QgsStyleXmlDataItem::browseStyle( file );
     return true;
   }
   return false;

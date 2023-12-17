@@ -171,8 +171,8 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
                                          ) - centerYDouble );
     // need width/height of paint device
     QPaintDevice *device = context.painter()->device();
-    const int deviceHeight = device->height() / device->devicePixelRatioF();
-    const int deviceWidth = device->width() / device->devicePixelRatioF();
+    const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
+    const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
 
     // Set  margin according to selected units
     int xOffset = 0;
@@ -228,7 +228,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
                                       deviceHeight - yOffset - size.height() );
         break;
       default:
-        QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+        QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
     }
 
     //rotate the canvas by the north arrow rotation amount

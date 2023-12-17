@@ -136,11 +136,11 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     {
       if ( modifiedUrlString.indexOf( '?' ) > 0 )
       {
-        modifiedUrlString += QStringLiteral( "&" );
+        modifiedUrlString += QLatin1Char( '&' );
       }
       else
       {
-        modifiedUrlString += QStringLiteral( "?" );
+        modifiedUrlString += QLatin1Char( '?' );
       }
       modifiedUrlString += QString::fromUtf8( headerPair.first ) + QStringLiteral( "=" ) + QString::fromUtf8( headerPair.second ) ;
     }

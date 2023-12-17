@@ -338,10 +338,10 @@ QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
   }
   if ( !f.exactMatch() )
   {
-    QgsDebugMsg( QStringLiteral( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ) );
-    QgsDebugMsg( QStringLiteral( "Requested: %1" ).arg( f.toString() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Requested: %1" ).arg( f.toString() ), 2 );
     QFontInfo fi( f );
-    QgsDebugMsg( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ), 2 );
   }
 #endif
   // in case above statement fails to set style
@@ -483,11 +483,7 @@ static QMap<QString, QString> createTranslatedStyleMap()
 
 QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
-#else
   QStringList words = namedStyle.split( ' ', Qt::SkipEmptyParts );
-#endif
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
@@ -498,11 +494,7 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
 QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
 {
   static const QMap<QString, QString> translatedStyleMap = createTranslatedStyleMap();
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
-#else
   QStringList words = namedStyle.split( ' ', Qt::SkipEmptyParts );
-#endif
 
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
@@ -604,4 +596,29 @@ QStringList QgsFontUtils::recentFontFamilies()
 {
   const QgsSettings settings;
   return settings.value( QStringLiteral( "fonts/recent" ) ).toStringList();
+}
+
+void QgsFontUtils::setFontFamily( QFont &font, const QString &family )
+{
+  font.setFamily( family );
+  if ( !font.exactMatch() )
+  {
+    // some Qt versions struggle with fonts with certain unusual characters
+    // in their names, eg "ESRI Oil, Gas, & Water". Calling "setFamilies"
+    // can workaround these issues... (in some cases!)
+    font.setFamilies( { family } );
+  }
+}
+
+QFont QgsFontUtils::createFont( const QString &family, int pointSize, int weight, bool italic )
+{
+  QFont font( family, pointSize, weight, italic );
+  if ( !font.exactMatch() )
+  {
+    // some Qt versions struggle with fonts with certain unusual characters
+    // in their names, eg "ESRI Oil, Gas, & Water". Calling "setFamilies"
+    // can workaround these issues... (in some cases!)
+    font.setFamilies( { family } );
+  }
+  return font;
 }

@@ -130,6 +130,16 @@ void QgsProjectStyleSettings::reset()
   emit styleDatabasesChanged();
 }
 
+void QgsProjectStyleSettings::removeProjectStyle()
+{
+  if ( mProjectStyle )
+  {
+    mCombinedStyleModel->removeStyle( mProjectStyle );
+    delete mProjectStyle;
+    mProjectStyle = nullptr;
+  }
+}
+
 void QgsProjectStyleSettings::setProjectStyle( QgsStyle *style )
 {
   if ( mProjectStyle )

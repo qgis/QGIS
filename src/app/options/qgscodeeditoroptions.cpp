@@ -358,7 +358,7 @@ QgsCodeEditorOptionsWidget::~QgsCodeEditorOptionsWidget()
 
 QString QgsCodeEditorOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#code-editor-settings" );
+  return QStringLiteral( "introduction/qgis_configuration.html#code-editor-options" );
 }
 
 void QgsCodeEditorOptionsWidget::apply()

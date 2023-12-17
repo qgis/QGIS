@@ -9,7 +9,6 @@ __author__ = 'Denis Rouzaud'
 __date__ = '24/04/2020'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy, QTest
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.core import (
@@ -20,7 +19,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFeaturePickerWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -50,7 +50,7 @@ def createLayer(manyFeatures: bool = False):
     return layer
 
 
-class TestQgsRelationEditWidget(unittest.TestCase):
+class TestQgsRelationEditWidget(QgisTestCase):
 
     def testSetFeature(self):
         layer = createLayer()

@@ -75,7 +75,7 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
     mData = qgsMalloc( tSize * width * height );
     if ( !mData )
     {
-      QgsDebugMsg( QStringLiteral( "Couldn't allocate data memory of %1 bytes" ).arg( tSize * width * height ) );
+      QgsDebugError( QStringLiteral( "Couldn't allocate data memory of %1 bytes" ).arg( tSize * width * height ) );
       return false;
     }
   }
@@ -87,7 +87,7 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Wrong data type" ) );
+    QgsDebugError( QStringLiteral( "Wrong data type" ) );
     return false;
   }
 
@@ -221,7 +221,7 @@ Qgis::DataType QgsRasterBlock::typeWithNoDataValue( Qgis::DataType dataType, dou
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugMsg( QStringLiteral( "Unknown data type %1" ).arg( static_cast< int >( dataType ) ) );
+      QgsDebugError( QStringLiteral( "Unknown data type %1" ).arg( static_cast< int >( dataType ) ) );
       return Qgis::DataType::UnknownDataType;
   }
   QgsDebugMsgLevel( QStringLiteral( "newDataType = %1 noDataValue = %2" ).arg( qgsEnumValueToKey< Qgis::DataType >( newDataType ) ).arg( *noDataValue ), 4 );
@@ -250,7 +250,7 @@ bool QgsRasterBlock::setIsNoData()
     {
       if ( !mData )
       {
-        QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
+        QgsDebugError( QStringLiteral( "Data block not allocated" ) );
         return false;
       }
 
@@ -293,7 +293,7 @@ bool QgsRasterBlock::setIsNoData()
     // image
     if ( !mImage )
     {
-      QgsDebugMsg( QStringLiteral( "Image not allocated" ) );
+      QgsDebugError( QStringLiteral( "Image not allocated" ) );
       return false;
     }
     QgsDebugMsgLevel( QStringLiteral( "Fill image" ), 4 );
@@ -321,7 +321,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     {
       if ( !mData )
       {
-        QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
+        QgsDebugError( QStringLiteral( "Data block not allocated" ) );
         return false;
       }
 
@@ -414,13 +414,13 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     // image
     if ( !mImage )
     {
-      QgsDebugMsg( QStringLiteral( "Image not allocated" ) );
+      QgsDebugError( QStringLiteral( "Image not allocated" ) );
       return false;
     }
 
     if ( mImage->width() != mWidth ||  mImage->height() != mHeight )
     {
-      QgsDebugMsg( QStringLiteral( "Image and block size differ" ) );
+      QgsDebugError( QStringLiteral( "Image and block size differ" ) );
       return false;
     }
 
@@ -429,7 +429,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     // TODO: support different depths
     if ( mImage->depth() != 32 )
     {
-      QgsDebugMsg( QStringLiteral( "Unsupported image depth" ) );
+      QgsDebugError( QStringLiteral( "Unsupported image depth" ) );
       return false;
     }
 
@@ -544,7 +544,7 @@ bool QgsRasterBlock::convert( Qgis::DataType destDataType )
 
     if ( !data )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot convert raster block" ) );
+      QgsDebugError( QStringLiteral( "Cannot convert raster block" ) );
       return false;
     }
     qgsFree( mData );
@@ -659,7 +659,7 @@ QString QgsRasterBlock::printValue( double value )
     }
   }
   // Should not happen
-  QgsDebugMsg( QStringLiteral( "Cannot correctly parse printed value" ) );
+  QgsDebugError( QStringLiteral( "Cannot correctly parse printed value" ) );
   return s;
 }
 
@@ -680,7 +680,7 @@ QString QgsRasterBlock::printValue( float value )
     }
   }
   // Should not happen
-  QgsDebugMsg( QStringLiteral( "Cannot correctly parse printed value" ) );
+  QgsDebugError( QStringLiteral( "Cannot correctly parse printed value" ) );
   return s;
 }
 
@@ -693,7 +693,7 @@ void *QgsRasterBlock::convert( void *srcData, Qgis::DataType srcDataType, Qgis::
     const double value = readValue( srcData, srcDataType, i );
     writeValue( destData, destDataType, i, value );
     //double newValue = readValue( destData, destDataType, i );
-    //QgsDebugMsg( QStringLiteral("convert %1 type %2 to %3: %4 -> %5").arg(i).arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
+    //QgsDebugMsgLevel( QStringLiteral("convert %1 type %2 to %3: %4 -> %5").arg(i).arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ), 2 );
   }
   return destData;
 }
@@ -754,7 +754,7 @@ QByteArray QgsRasterBlock::valueBytes( Qgis::DataType dataType, double value )
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugMsg( QStringLiteral( "Data type is not supported" ) );
+      QgsDebugError( QStringLiteral( "Data type is not supported" ) );
   }
   return ba;
 }
@@ -767,7 +767,7 @@ bool QgsRasterBlock::createNoDataBitmap()
   mNoDataBitmap = reinterpret_cast< char * >( qgsMalloc( mNoDataBitmapSize ) );
   if ( !mNoDataBitmap )
   {
-    QgsDebugMsg( QStringLiteral( "Couldn't allocate no data memory of %1 bytes" ).arg( mNoDataBitmapSize ) );
+    QgsDebugError( QStringLiteral( "Couldn't allocate no data memory of %1 bytes" ).arg( mNoDataBitmapSize ) );
     return false;
   }
   memset( mNoDataBitmap, 0, mNoDataBitmapSize );

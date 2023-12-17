@@ -9,19 +9,19 @@ __author__ = '(C) 2022 by Nyall Dawson'
 __date__ = '06/04/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateReferenceSystemUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCoordinateReferenceSystemUtils(unittest.TestCase):
+class TestQgsCoordinateReferenceSystemUtils(QgisTestCase):
 
     def test_axis_order(self):
         """

@@ -106,7 +106,9 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
        ( mFilters.testFlag( Date ) && type == QVariant::Date ) ||
        ( mFilters.testFlag( Date ) && type == QVariant::DateTime ) ||
        ( mFilters.testFlag( DateTime ) && type == QVariant::DateTime ) ||
-       ( mFilters.testFlag( Time ) && type == QVariant::Time ) )
+       ( mFilters.testFlag( Time ) && type == QVariant::Time ) ||
+       ( mFilters.testFlag( Binary ) && type == QVariant::ByteArray ) ||
+       ( mFilters.testFlag( Boolean ) && type == QVariant::Bool ) )
     return true;
 
   return false;

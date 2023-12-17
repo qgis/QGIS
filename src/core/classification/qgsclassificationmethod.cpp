@@ -75,7 +75,7 @@ QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &ele
   }
 
   // label format
-  QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelformat" ) );
+  QDomElement labelFormatElem = element.firstChildElement( QStringLiteral( "labelFormat" ) );
   if ( !labelFormatElem.isNull() )
   {
     QString format = labelFormatElem.attribute( QStringLiteral( "format" ), "%1" + QStringLiteral( " - " ) + "%2" );
@@ -266,7 +266,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( double minimum, 
 {
   if ( valuesRequired() )
   {
-    QgsDebugMsg( QStringLiteral( "The classification method %1 tries to calculate classes without values while they are required." ).arg( name() ) );
+    QgsDebugError( QStringLiteral( "The classification method %1 tries to calculate classes without values while they are required." ).arg( name() ) );
   }
 
   // get the breaks

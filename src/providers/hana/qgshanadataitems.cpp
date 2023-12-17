@@ -264,7 +264,7 @@ QString QgsHanaLayerItem::createUri() const
 
   if ( !connItem )
   {
-    QgsDebugMsg( "Connection item not found." );
+    QgsDebugError( "Connection item not found." );
     return QString();
   }
 

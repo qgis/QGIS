@@ -40,7 +40,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
   const int cols = tileInfo.value( QStringLiteral( "cols" ), QStringLiteral( "512" ) ).toInt();
   if ( rows != cols )
   {
-    QgsDebugMsg( QStringLiteral( "row/col size mismatch: %1 vs %2 - tile misalignment may occur" ).arg( rows ).arg( cols ) );
+    QgsDebugError( QStringLiteral( "row/col size mismatch: %1 vs %2 - tile misalignment may occur" ).arg( rows ).arg( cols ) );
   }
 
   const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( tileInfo.value( QStringLiteral( "spatialReference" ) ).toMap() );
@@ -168,7 +168,7 @@ bool QgsVectorTileMatrixSet::fromEsriJson( const QVariantMap &json, const QVaria
 
           if ( !ok )
           {
-            QgsDebugMsg( QStringLiteral( "Found tile index node with unsupported value: %1" ).arg( childNode.toString() ) );
+            QgsDebugError( QStringLiteral( "Found tile index node with unsupported value: %1" ).arg( childNode.toString() ) );
           }
           else if ( nodeInt == 0 )
           {

@@ -216,7 +216,7 @@ void QgsDataSourceSelectWidget::refreshModel( const QModelIndex &index )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "invalid item" ) );
+    QgsDebugMsgLevel( QStringLiteral( "invalid item" ), 2 );
   }
 
   if ( item && ( item->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )

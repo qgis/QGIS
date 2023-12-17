@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '04/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
@@ -20,14 +19,15 @@ from qgis.core import (
     QgsTileXYZ,
     QgsReadWriteContext
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 start_app()
 
 
-class TestQgsVtpk(unittest.TestCase):
+class TestQgsVtpk(QgisTestCase):
 
     def testOpenInvalid(self):
         """

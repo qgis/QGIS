@@ -105,22 +105,22 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
     {
       switch ( source.source() )
       {
-        case QgsProcessingModelChildParameterSource::StaticValue:
+        case Qgis::ProcessingModelChildParameterSource::StaticValue:
           paramParts << source.staticValue();
           break;
 
-        case QgsProcessingModelChildParameterSource::ModelParameter:
+        case Qgis::ProcessingModelChildParameterSource::ModelParameter:
           paramParts << modelParameters.value( source.parameterName() );
           break;
 
-        case QgsProcessingModelChildParameterSource::ChildOutput:
+        case Qgis::ProcessingModelChildParameterSource::ChildOutput:
         {
           QVariantMap linkedChildResults = results.value( source.outputChildId() ).toMap();
           paramParts << linkedChildResults.value( source.outputName() );
           break;
         }
 
-        case QgsProcessingModelChildParameterSource::Expression:
+        case Qgis::ProcessingModelChildParameterSource::Expression:
         {
           QgsExpression exp( source.expression() );
           paramParts << exp.evaluate( &expressionContext );
@@ -130,13 +130,13 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
           }
           break;
         }
-        case QgsProcessingModelChildParameterSource::ExpressionText:
+        case Qgis::ProcessingModelChildParameterSource::ExpressionText:
         {
           expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
           break;
         }
 
-        case QgsProcessingModelChildParameterSource::ModelOutput:
+        case Qgis::ProcessingModelChildParameterSource::ModelOutput:
           break;
       }
     }
@@ -282,7 +282,7 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
       const auto constValue = childParamIt.value();
       for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
-        if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
+        if ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput
              && source.outputChildId() == childId
              && source.outputName() == outputName )
         {
@@ -322,8 +322,6 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap childResults;
   QVariantMap childInputs;
 
-  const bool verboseLog = context.logLevel() == QgsProcessingContext::Verbose;
-
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
@@ -357,7 +355,25 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
 
-      const bool skipGenericLogging = !verboseLog || childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+      bool skipGenericLogging = true;
+      switch ( context.logLevel() )
+      {
+        case QgsProcessingContext::DefaultLevel:
+          // at default log level we skip all the generic logs about prepare steps, step inputs and outputs
+          skipGenericLogging = true;
+          break;
+        case QgsProcessingContext::Verbose:
+          // at verbose log level we include all the generic logs about prepare steps, step inputs and outputs
+          // UNLESS the algorithm specifically tells to skip these (eg raise warning steps and other special cases)
+          skipGenericLogging = childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+          break;
+        case QgsProcessingContext::ModelDebug:
+          // at model debug log level we'll show all the generic logs for step preparation, inputs and outputs
+          // for every child algorithm
+          skipGenericLogging = false;
+          break;
+      }
+
       if ( feedback && !skipGenericLogging )
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
@@ -422,7 +438,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QVariantMap results;
       try
       {
-        if ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading )
+        if ( ( childAlg->flags() & QgsProcessingAlgorithm::FlagNoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
           auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
@@ -444,9 +460,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           results = childAlg->runPrepared( childParams, context, &modelFeedback );
         }
       }
-      catch ( QgsProcessingException & )
+      catch ( QgsProcessingException &e )
       {
-        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        const QString error = ( childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
         throw QgsProcessingException( error );
       }
 
@@ -473,6 +489,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       if ( !ppRes.isEmpty() )
         results = ppRes;
+
+      if ( feedback && !skipGenericLogging )
+      {
+        const QVariantMap displayOutputs = QgsProcessingUtils::removePointerValuesFromMap( results );
+        QStringList formattedOutputs;
+        for ( auto displayOutputIt = displayOutputs.constBegin(); displayOutputIt != displayOutputs.constEnd(); ++displayOutputIt )
+        {
+          formattedOutputs << QStringLiteral( "%1: %2" ).arg( displayOutputIt.key(),
+                           QgsProcessingUtils::variantToPythonLiteral( displayOutputIt.value() ) );;
+        }
+        feedback->pushInfo( QObject::tr( "Results:" ) );
+        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( formattedOutputs.join( QLatin1String( ", " ) ) ) );
+      }
 
       childResults.insert( childId, results );
 
@@ -549,7 +578,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
           {
             for ( const QgsProcessingModelChildParameterSource &source : paramIt.value() )
             {
-              if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput && source.outputChildId() == childId )
+              if ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId() == childId )
               {
                 // ok, this one is dependent on the current alg. Did we get a value for it?
                 if ( !results.contains( source.outputName() ) )
@@ -705,7 +734,13 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
           else
           {
             if ( !mParameterComponents.value( defClone->name() ).comment()->description().isEmpty() )
-              lines << indent + indent + QStringLiteral( "# %1" ).arg( mParameterComponents.value( defClone->name() ).comment()->description() );
+            {
+              const QStringList parts = mParameterComponents.value( defClone->name() ).comment()->description().split( QStringLiteral( "\n" ) );
+              for ( const QString &part : parts )
+              {
+                lines << indent + indent + QStringLiteral( "# %1" ).arg( part );
+              }
+            }
           }
 
           if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
@@ -841,7 +876,6 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             // not optional, or required elsewhere in model
             if ( required )
             {
-
               childParams.insert( destParam->name(), QStringLiteral( "QgsProcessing.TEMPORARY_OUTPUT" ) );
             }
           }
@@ -959,14 +993,15 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   return lines;
 }
 
-QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingModelAlgorithm::variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results ) const
+QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingModelAlgorithm::variablesForChildAlgorithm( const QString &childId, QgsProcessingContext *context, const QVariantMap &modelParameters, const QVariantMap &results ) const
 {
   QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables;
 
   auto safeName = []( const QString & name )->QString
   {
     QString s = name;
-    return s.replace( QRegularExpression( QStringLiteral( "[\\s'\"\\(\\):\\.]" ) ), QStringLiteral( "_" ) );
+    const thread_local QRegularExpression safeNameRe( QStringLiteral( "[\\s'\"\\(\\):\\.]" ) );
+    return s.replace( safeNameRe, QStringLiteral( "_" ) );
   };
 
   // "static"/single value sources
@@ -998,7 +1033,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterDatabaseTable::typeName(),
       QStringList() << QgsProcessingOutputNumber::typeName()
       << QgsProcessingOutputString::typeName()
-      << QgsProcessingOutputBoolean::typeName() );
+      << QgsProcessingOutputBoolean::typeName()
+      << QgsProcessingOutputVariant::typeName() );
 
   for ( const QgsProcessingModelChildParameterSource &source : std::as_const( sources ) )
   {
@@ -1007,14 +1043,14 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     QString description;
     switch ( source.source() )
     {
-      case QgsProcessingModelChildParameterSource::ModelParameter:
+      case Qgis::ProcessingModelChildParameterSource::ModelParameter:
       {
         name = source.parameterName();
         value = modelParameters.value( source.parameterName() );
         description = parameterDefinition( source.parameterName() )->description();
         break;
       }
-      case QgsProcessingModelChildParameterSource::ChildOutput:
+      case Qgis::ProcessingModelChildParameterSource::ChildOutput:
       {
         const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms.value( source.outputChildId() );
         name = QStringLiteral( "%1_%2" ).arg( child.description().isEmpty() ?
@@ -1028,10 +1064,10 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
         break;
       }
 
-      case QgsProcessingModelChildParameterSource::Expression:
-      case QgsProcessingModelChildParameterSource::ExpressionText:
-      case QgsProcessingModelChildParameterSource::StaticValue:
-      case QgsProcessingModelChildParameterSource::ModelOutput:
+      case Qgis::ProcessingModelChildParameterSource::Expression:
+      case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+      case Qgis::ProcessingModelChildParameterSource::StaticValue:
+      case Qgis::ProcessingModelChildParameterSource::ModelOutput:
         continue;
     }
     variables.insert( safeName( name ), VariableDefinition( value, source, description ) );
@@ -1053,14 +1089,14 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
     switch ( source.source() )
     {
-      case QgsProcessingModelChildParameterSource::ModelParameter:
+      case Qgis::ProcessingModelChildParameterSource::ModelParameter:
       {
         name = source.parameterName();
         value = modelParameters.value( source.parameterName() );
         description = parameterDefinition( source.parameterName() )->description();
         break;
       }
-      case QgsProcessingModelChildParameterSource::ChildOutput:
+      case Qgis::ProcessingModelChildParameterSource::ChildOutput:
       {
         const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms.value( source.outputChildId() );
         name = QStringLiteral( "%1_%2" ).arg( child.description().isEmpty() ?
@@ -1074,10 +1110,10 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
         break;
       }
 
-      case QgsProcessingModelChildParameterSource::Expression:
-      case QgsProcessingModelChildParameterSource::ExpressionText:
-      case QgsProcessingModelChildParameterSource::StaticValue:
-      case QgsProcessingModelChildParameterSource::ModelOutput:
+      case Qgis::ProcessingModelChildParameterSource::Expression:
+      case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+      case Qgis::ProcessingModelChildParameterSource::StaticValue:
+      case Qgis::ProcessingModelChildParameterSource::ModelOutput:
         continue;
 
     }
@@ -1086,16 +1122,20 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
-      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+      if ( value.userType() == QMetaType::type( "QgsProperty" ) && context )
       {
-        value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
+        value = value.value< QgsProperty >().valueAsString( context->expressionContext() );
       }
     }
-    QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) );
-    if ( !layer )
-      layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
+    QgsMapLayer *layer = nullptr;
+    if ( context )
+    {
+      layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) );
+      if ( !layer )
+        layer = QgsProcessingUtils::mapLayerFromString( value.toString(), *context );
+    }
 
-    variables.insert( safeName( name ), VariableDefinition( QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ), source, description ) );
+    variables.insert( safeName( name ), VariableDefinition( layer ? QVariant::fromValue( QgsWeakMapLayerPointer( layer ) ) : QVariant(), source, description ) );
     variables.insert( safeName( QStringLiteral( "%1_minx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMinimum() : QVariant(), source, QObject::tr( "Minimum X of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_miny" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
@@ -1112,14 +1152,14 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
     switch ( source.source() )
     {
-      case QgsProcessingModelChildParameterSource::ModelParameter:
+      case Qgis::ProcessingModelChildParameterSource::ModelParameter:
       {
         name = source.parameterName();
         value = modelParameters.value( source.parameterName() );
         description = parameterDefinition( source.parameterName() )->description();
         break;
       }
-      case QgsProcessingModelChildParameterSource::ChildOutput:
+      case Qgis::ProcessingModelChildParameterSource::ChildOutput:
       {
         const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms.value( source.outputChildId() );
         name = QStringLiteral( "%1_%2" ).arg( child.description().isEmpty() ?
@@ -1133,10 +1173,10 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
         break;
       }
 
-      case QgsProcessingModelChildParameterSource::Expression:
-      case QgsProcessingModelChildParameterSource::ExpressionText:
-      case QgsProcessingModelChildParameterSource::StaticValue:
-      case QgsProcessingModelChildParameterSource::ModelOutput:
+      case Qgis::ProcessingModelChildParameterSource::Expression:
+      case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+      case Qgis::ProcessingModelChildParameterSource::StaticValue:
+      case Qgis::ProcessingModelChildParameterSource::ModelOutput:
         continue;
 
     }
@@ -1151,18 +1191,18 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
-      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
+      if ( context && value.userType() == QMetaType::type( "QgsProperty" ) )
       {
-        value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
+        value = value.value< QgsProperty >().valueAsString( context->expressionContext() );
       }
     }
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
     {
       featureSource = layer;
     }
-    if ( !featureSource )
+    if ( context && !featureSource )
     {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), *context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
         featureSource = vl;
     }
 
@@ -1179,7 +1219,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results ) const
 {
   std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QStringLiteral( "algorithm_inputs" ) ) );
-  QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = variablesForChildAlgorithm( childId, context, modelParameters, results );
+  QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = variablesForChildAlgorithm( childId, &context, modelParameters, results );
   QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition>::const_iterator varIt = variables.constBegin();
   for ( ; varIt != variables.constEnd(); ++varIt )
   {
@@ -1871,7 +1911,7 @@ void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, c
       {
         switch ( valueIt->source() )
         {
-          case QgsProcessingModelChildParameterSource::ModelParameter:
+          case Qgis::ProcessingModelChildParameterSource::ModelParameter:
           {
             if ( valueIt->parameterName() == oldName )
             {
@@ -1881,7 +1921,7 @@ void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, c
             break;
           }
 
-          case QgsProcessingModelChildParameterSource::Expression:
+          case Qgis::ProcessingModelChildParameterSource::Expression:
           {
             bool updatedExpression = false;
             QString newExpression;
@@ -1894,12 +1934,12 @@ void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, c
             break;
           }
 
-          case QgsProcessingModelChildParameterSource::StaticValue:
+          case Qgis::ProcessingModelChildParameterSource::StaticValue:
           {
             if ( valueIt->staticValue().userType() == QMetaType::type( "QgsProperty" ) )
             {
               QgsProperty property = valueIt->staticValue().value< QgsProperty >();
-              if ( property.propertyType() == QgsProperty::ExpressionBasedProperty )
+              if ( property.propertyType() == Qgis::PropertyType::Expression )
               {
                 bool updatedExpression = false;
                 QString newExpression;
@@ -1915,9 +1955,9 @@ void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, c
             break;
           }
 
-          case QgsProcessingModelChildParameterSource::ChildOutput:
-          case QgsProcessingModelChildParameterSource::ExpressionText:
-          case QgsProcessingModelChildParameterSource::ModelOutput:
+          case Qgis::ProcessingModelChildParameterSource::ChildOutput:
+          case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+          case Qgis::ProcessingModelChildParameterSource::ModelOutput:
             break;
         }
       }
@@ -1940,7 +1980,7 @@ bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QStrin
       const auto constValue = paramIt.value();
       for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
-        if ( source.source() == QgsProcessingModelChildParameterSource::ModelParameter
+        if ( source.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter
              && source.parameterName() == name )
         {
           return true;
@@ -2005,7 +2045,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
       const auto constValue = paramIt.value();
       for ( const QgsProcessingModelChildParameterSource &source : constValue )
       {
-        if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
+        if ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput
              && source.outputChildId() == childId )
         {
           depends.insert( childIt->childId() );
@@ -2057,10 +2097,46 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
     const auto constValue = paramIt.value();
     for ( const QgsProcessingModelChildParameterSource &source : constValue )
     {
-      if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput && !depends.contains( source.outputChildId() ) )
+      switch ( source.source() )
       {
-        depends.insert( source.outputChildId() );
-        dependsOnChildAlgorithmsRecursive( source.outputChildId(), depends );
+        case Qgis::ProcessingModelChildParameterSource::ChildOutput:
+          if ( !depends.contains( source.outputChildId() ) )
+          {
+            depends.insert( source.outputChildId() );
+            dependsOnChildAlgorithmsRecursive( source.outputChildId(), depends );
+          }
+          break;
+
+        case Qgis::ProcessingModelChildParameterSource::Expression:
+        {
+          const QgsExpression exp( source.expression() );
+          const QSet<QString> vars = exp.referencedVariables();
+          if ( vars.empty() )
+            break;
+
+          // find the source of referenced variables and check if it's another child algorithm
+          const QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> availableVariables = variablesForChildAlgorithm( childId );
+          for ( auto childVarIt = availableVariables.constBegin(); childVarIt != availableVariables.constEnd(); ++childVarIt )
+          {
+            // we're only looking here for variables coming from other child algorithm outputs
+            if ( childVarIt->source.source() != Qgis::ProcessingModelChildParameterSource::ChildOutput )
+              continue;
+
+            if ( !vars.contains( childVarIt.key() ) || depends.contains( childVarIt->source.outputChildId() ) )
+              continue;
+
+            // this variable is required for the child's expression, so the corresponding algorithm must be run first
+            depends.insert( childVarIt->source.outputChildId() );
+            dependsOnChildAlgorithmsRecursive( childVarIt->source.outputChildId(), depends );
+          }
+          break;
+        }
+
+        case Qgis::ProcessingModelChildParameterSource::ModelParameter:
+        case Qgis::ProcessingModelChildParameterSource::StaticValue:
+        case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+        case Qgis::ProcessingModelChildParameterSource::ModelOutput:
+          break;
       }
     }
   }
@@ -2150,7 +2226,7 @@ bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId
         {
           switch ( source.source() )
           {
-            case QgsProcessingModelChildParameterSource::StaticValue:
+            case Qgis::ProcessingModelChildParameterSource::StaticValue:
               if ( !def->checkValueIsAcceptable( source.staticValue() ) )
               {
                 res = false;
@@ -2158,7 +2234,7 @@ bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId
               }
               break;
 
-            case QgsProcessingModelChildParameterSource::ModelParameter:
+            case Qgis::ProcessingModelChildParameterSource::ModelParameter:
               if ( !parameterComponents().contains( source.parameterName() ) )
               {
                 res = false;
@@ -2166,7 +2242,7 @@ bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId
               }
               break;
 
-            case QgsProcessingModelChildParameterSource::ChildOutput:
+            case Qgis::ProcessingModelChildParameterSource::ChildOutput:
               if ( !childAlgorithms().contains( source.outputChildId() ) )
               {
                 res = false;
@@ -2174,9 +2250,9 @@ bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId
               }
               break;
 
-            case QgsProcessingModelChildParameterSource::Expression:
-            case QgsProcessingModelChildParameterSource::ExpressionText:
-            case QgsProcessingModelChildParameterSource::ModelOutput:
+            case Qgis::ProcessingModelChildParameterSource::Expression:
+            case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+            case Qgis::ProcessingModelChildParameterSource::ModelOutput:
               break;
           }
         }
@@ -2189,7 +2265,7 @@ bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId
         if ( def->isDestination() )
           continue;
 
-        if ( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+        if ( !def->checkValueIsAcceptable( QVariant() ) )
         {
           res = false;
           issues <<  QObject::tr( "Parameter <i>%1</i> is mandatory" ).arg( def->name() );

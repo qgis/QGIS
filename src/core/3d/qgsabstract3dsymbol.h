@@ -27,7 +27,7 @@ class QString;
 class QgsReadWriteContext;
 class Qgs3DSceneExporter;
 
-namespace Qt3DCore { class QEntity; } SIP_SKIP
+namespace Qt3DCore SIP_SKIP { class QEntity; }
 
 
 /**
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsAbstract3DSymbol
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     //! Returns a reference to the symbol layer's property collection, used for data defined overrides.
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     //! Sets the symbol layer's property collection, used for data defined overrides.
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }

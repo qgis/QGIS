@@ -118,6 +118,7 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource( const QgsPr
 
   QgsFeatureIterator fIt = targetSource->getFeatures( request );
   const double step = targetSource->featureCount() > 0 ? 100.0 / targetSource->featureCount() : 1;
+  const QgsCoordinateReferenceSystem targetSourceCrs = targetSource->sourceCrs();
   int current = 0;
   QgsFeature f;
   while ( fIt.nextFeature( f ) )
@@ -135,7 +136,7 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource( const QgsPr
       currentDistance = distanceProperty.valueAsDouble( expressionContext, currentDistance );
     }
 
-    request = QgsFeatureRequest().setDistanceWithin( f.geometry(), currentDistance ).setNoAttributes().setDestinationCrs( targetSource->sourceCrs(), context.transformContext() );
+    request = QgsFeatureRequest().setDistanceWithin( f.geometry(), currentDistance ).setNoAttributes().setDestinationCrs( targetSourceCrs, context.transformContext() );
     // we only care IF there's ANY features within the target distance here, so fetch at most 1 feature
     request.setLimit( 1 );
 

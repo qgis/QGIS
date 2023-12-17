@@ -17,7 +17,6 @@ import os
 import shutil
 
 import numpy as np
-import qgis  # NOQA
 from osgeo import gdal, osr
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
@@ -30,7 +29,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsSingleBandPseudoColorRenderer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -122,7 +122,7 @@ def createTestRasters(cls, path):
     image_size = (2, 2)
 
     #  Create Each Channel
-    r_pixels = np.zeros((image_size), dtype=np.float)
+    r_pixels = np.zeros((image_size), dtype=np.float64)
 
     r_pixels[0, 0] = -1E23
     r_pixels[0, 1] = 2.345
@@ -143,7 +143,7 @@ def createTestRasters(cls, path):
     dst_ds = None
 
 
-class TestQgsRasterAttributeTable(unittest.TestCase):
+class TestQgsRasterAttributeTable(QgisTestCase):
 
     def setUp(self):
 

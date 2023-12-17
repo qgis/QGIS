@@ -216,7 +216,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
       catch ( QgsException &e )
       {
         Q_UNUSED( e )
-        QgsDebugMsg( "Error validating: " + e.what() );
+        QgsDebugError( "Error validating: " + e.what() );
         continue;
       }
       if ( d < 0 || d > vl )
@@ -229,7 +229,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
       catch ( QgsException &e )
       {
         Q_UNUSED( e )
-        QgsDebugMsg( "Error validating: " + e.what() );
+        QgsDebugError( "Error validating: " + e.what() );
         continue;
       }
 
@@ -252,7 +252,7 @@ void QgsGeometryValidator::validatePolygon( int partIndex, const QgsCurvePolygon
     if ( !ringInRing( polygon->interiorRing( i ), polygon->exteriorRing() ) )
     {
       const QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i + 1 ).arg( partIndex );
-      QgsDebugMsg( msg );
+      QgsDebugMsgLevel( msg, 2 );
       emit errorFound( QgsGeometry::Error( msg ) );
       mErrorCount++;
     }

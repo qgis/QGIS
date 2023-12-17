@@ -82,6 +82,8 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
      */
     void setLabelExtents( bool labelExtents );
 
+    bool hasFixedMapPosition() const override { return true; }
+
   public slots:
     void projectRead() override;
     void saveToProject() override;

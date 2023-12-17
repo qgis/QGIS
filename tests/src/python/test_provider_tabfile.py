@@ -21,7 +21,8 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -32,7 +33,7 @@ TEST_DATA_DIR = unitTestDataPath()
 # Note - doesn't implement ProviderTestCase as OGR provider is tested by the shapefile provider test
 
 
-class TestPyQgsTabfileProvider(unittest.TestCase):
+class TestPyQgsTabfileProvider(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

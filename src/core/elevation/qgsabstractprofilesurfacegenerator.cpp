@@ -18,6 +18,8 @@
 #include "qgsprofilesnapping.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgslinestring.h"
+#include "qgsprofilerequest.h"
 
 #include <QPainterPath>
 #include <optional>
@@ -49,6 +51,120 @@ QVector<QgsGeometry> QgsAbstractProfileSurfaceResults::asGeometries() const
   res.reserve( mRawPoints.size() );
   for ( const QgsPoint &point : mRawPoints )
     res.append( QgsGeometry( point.clone() ) );
+
+  return res;
+}
+
+QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
+{
+  QVector< QgsAbstractProfileResults::Feature > res;
+  res.reserve( 1 );
+
+  QVector< double > currentLineX;
+  QVector< double > currentLineY;
+  QVector< double > currentLineZ;
+
+  switch ( type )
+  {
+    case Qgis::ProfileExportType::Features3D:
+    {
+      for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+
+        if ( std::isnan( pointIt.value() ) )
+        {
+          if ( currentLineX.length() > 1 )
+          {
+            QgsAbstractProfileResults::Feature f;
+            f.layerIdentifier = mId;
+            f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY, currentLineZ ) );
+            res << f;
+          }
+          currentLineX.clear();
+          currentLineY.clear();
+          currentLineZ.clear();
+          continue;
+        }
+
+        std::unique_ptr< QgsPoint > curvePoint( mProfileCurve->interpolatePoint( pointIt.key() ) );
+        currentLineX << curvePoint->x();
+        currentLineY << curvePoint->y();
+        currentLineZ << pointIt.value();
+      }
+
+      if ( currentLineX.length() > 1 )
+      {
+        QgsAbstractProfileResults::Feature f;
+        f.layerIdentifier = mId;
+        f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY, currentLineZ ) );
+        res << f;
+      }
+      break;
+    }
+
+    case Qgis::ProfileExportType::Profile2D:
+    {
+      for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        if ( std::isnan( pointIt.value() ) )
+        {
+          if ( currentLineX.length() > 1 )
+          {
+            QgsAbstractProfileResults::Feature f;
+            f.layerIdentifier = mId;
+            f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY ) );
+            res << f;
+          }
+          currentLineX.clear();
+          currentLineY.clear();
+          continue;
+        }
+
+        currentLineX << pointIt.key();
+        currentLineY << pointIt.value();
+      }
+      if ( currentLineX.length() > 1 )
+      {
+        QgsAbstractProfileResults::Feature f;
+        f.layerIdentifier = mId;
+        f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY ) );
+        res << f;
+      }
+      break;
+    }
+
+    case Qgis::ProfileExportType::DistanceVsElevationTable:
+    {
+      res.reserve( mDistanceToHeightMap.size() );
+      for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        QgsAbstractProfileResults::Feature f;
+        f.layerIdentifier = mId;
+        f.attributes =
+        {
+          { QStringLiteral( "distance" ),  pointIt.key() },
+          { QStringLiteral( "elevation" ),  pointIt.value() }
+        };
+        std::unique_ptr< QgsPoint>  point( mProfileCurve->interpolatePoint( pointIt.key() ) );
+        if ( point->is3D() )
+          point->setZ( pointIt.value() );
+        else
+          point->addZValue( pointIt.value() );
+        f.geometry = QgsGeometry( std::move( point ) );
+        res << f;
+      }
+      break;
+    }
+  }
 
   return res;
 }
@@ -134,8 +250,8 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
 
   const double minDistance = context.distanceRange().lower();
   const double maxDistance = context.distanceRange().upper();
-  const double minZ = context.elevationRange().lower();
-  const double maxZ = context.elevationRange().upper();
+  double minZ = context.elevationRange().lower();
+  double maxZ = context.elevationRange().upper();
 
   const QRectF visibleRegion( minDistance, minZ, maxDistance - minDistance, maxZ - minZ );
   QPainterPath clipPath;
@@ -149,6 +265,35 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
       mFillSymbol->startRender( context.renderContext() );
+      if ( !std::isnan( mElevationLimit ) )
+      {
+        double dataLimit = std::numeric_limits< double >::max();
+        for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+        {
+          if ( !std::isnan( pointIt.value() ) )
+          {
+            dataLimit = std::min( pointIt.value(), dataLimit );
+          }
+        }
+        if ( dataLimit > mElevationLimit )
+          minZ = std::max( minZ, mElevationLimit );
+      }
+      break;
+    case Qgis::ProfileSurfaceSymbology::FillAbove:
+      mFillSymbol->startRender( context.renderContext() );
+      if ( !std::isnan( mElevationLimit ) )
+      {
+        double dataLimit = std::numeric_limits< double >::lowest();
+        for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
+        {
+          if ( !std::isnan( pointIt.value() ) )
+          {
+            dataLimit = std::max( pointIt.value(), dataLimit );
+          }
+        }
+        if ( dataLimit < mElevationLimit )
+          maxZ = std::min( maxZ, mElevationLimit );
+      }
       break;
   }
 
@@ -157,10 +302,6 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
   double currentPartStartDistance = 0;
   for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
   {
-    if ( std::isnan( prevDistance ) )
-    {
-      currentPartStartDistance = pointIt.key();
-    }
     if ( std::isnan( pointIt.value() ) )
     {
       if ( currentLine.length() > 1 )
@@ -176,13 +317,22 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
             currentLine.append( currentLine.at( 0 ) );
             mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
             break;
+          case Qgis::ProfileSurfaceSymbology::FillAbove:
+            currentLine.append( context.worldTransform().map( QPointF( prevDistance, maxZ ) ) );
+            currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, maxZ ) ) );
+            currentLine.append( currentLine.at( 0 ) );
+            mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
+            break;
         }
       }
       prevDistance = pointIt.key();
       currentLine.clear();
       continue;
     }
-
+    if ( currentLine.length() < 1 )
+    {
+      currentPartStartDistance = pointIt.key();
+    }
     currentLine.append( context.worldTransform().map( QPointF( pointIt.key(), pointIt.value() ) ) );
     prevDistance = pointIt.key();
   }
@@ -199,6 +349,12 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
         currentLine.append( currentLine.at( 0 ) );
         mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
         break;
+      case Qgis::ProfileSurfaceSymbology::FillAbove:
+        currentLine.append( context.worldTransform().map( QPointF( prevDistance, maxZ ) ) );
+        currentLine.append( context.worldTransform().map( QPointF( currentPartStartDistance, maxZ ) ) );
+        currentLine.append( currentLine.at( 0 ) );
+        mFillSymbol->renderPolygon( currentLine, nullptr, nullptr, context.renderContext() );
+        break;
     }
   }
 
@@ -208,6 +364,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       mLineSymbol->stopRender( context.renderContext() );
       break;
     case Qgis::ProfileSurfaceSymbology::FillBelow:
+    case Qgis::ProfileSurfaceSymbology::FillAbove:
       mFillSymbol->stopRender( context.renderContext() );
       break;
   }
@@ -221,11 +378,20 @@ void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbs
   mLineSymbol.reset( surfaceGenerator->lineSymbol()->clone() );
   mFillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );
   symbology = surfaceGenerator->symbology();
+  mElevationLimit = surfaceGenerator->elevationLimit();
+
+  mProfileCurve.reset( surfaceGenerator->mProfileCurve->clone() );
 }
 
 //
 // QgsAbstractProfileSurfaceGenerator
 //
+
+QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request )
+  : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+{
+
+}
 
 QgsAbstractProfileSurfaceGenerator::~QgsAbstractProfileSurfaceGenerator() = default;
 
@@ -242,4 +408,14 @@ QgsLineSymbol *QgsAbstractProfileSurfaceGenerator::lineSymbol() const
 QgsFillSymbol *QgsAbstractProfileSurfaceGenerator::fillSymbol() const
 {
   return mFillSymbol.get();
+}
+
+double QgsAbstractProfileSurfaceGenerator::elevationLimit() const
+{
+  return mElevationLimit;
+}
+
+void QgsAbstractProfileSurfaceGenerator::setElevationLimit( double limit )
+{
+  mElevationLimit = limit;
 }

@@ -14,7 +14,8 @@ from qgis.core import (
     QgsDatumTransform,
     QgsProjUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -22,7 +23,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsDatumTransform(unittest.TestCase):
+class TestPyQgsDatumTransform(QgisTestCase):
 
     def testOperations(self):
         ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem(),

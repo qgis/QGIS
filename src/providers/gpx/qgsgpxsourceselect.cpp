@@ -18,6 +18,7 @@
 #include "qgsgpxsourceselect.h"
 #include "qgsproviderregistry.h"
 #include "ogr/qgsogrhelperfunctions.h"
+#include "qgshelp.h"
 
 #include <QMessageBox>
 
@@ -39,6 +40,8 @@ QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mFileWidget, &QgsFileWidget::fileChanged,
            this, &QgsGpxSourceSelect::enableRelevantControls );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGpxSourceSelect::showHelp );
 }
 
 void QgsGpxSourceSelect::addButtonClicked()
@@ -61,14 +64,32 @@ void QgsGpxSourceSelect::addButtonClicked()
   }
 
   if ( cbGPXTracks->isChecked() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=track",
                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track",
+                   fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+  }
   if ( cbGPXRoutes->isChecked() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=route",
                          fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=route",
+                   fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+  }
   if ( cbGPXWaypoints->isChecked() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mGpxPath + "?type=waypoint",
                          fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=waypoint",
+                   fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+  }
 }
 
 void QgsGpxSourceSelect::enableRelevantControls()
@@ -80,4 +101,9 @@ void QgsGpxSourceSelect::enableRelevantControls()
   cbGPXWaypoints->setChecked( enabled );
   cbGPXRoutes->setChecked( enabled );
   cbGPXTracks->setChecked( enabled );
+}
+
+void QgsGpxSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#gps" ) );
 }

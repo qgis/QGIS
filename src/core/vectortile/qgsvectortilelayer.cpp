@@ -20,6 +20,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
+#include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsdatasourceuri.h"
@@ -99,7 +100,7 @@ bool QgsVectorTileLayer::loadDataSource()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
+    QgsDebugError( QStringLiteral( "Unknown source type: " ) + mSourceType );
     return false;
   }
 
@@ -246,6 +247,11 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
         errorMessage = tr( "Unknown labeling type: " ) + rendererType;
       }
 
+      if ( elemLabeling.hasAttribute( QStringLiteral( "labelsEnabled" ) ) )
+        mLabelsEnabled = elemLabeling.attribute( QStringLiteral( "labelsEnabled" ) ).toInt();
+      else
+        mLabelsEnabled = true;
+
       if ( labeling )
       {
         labeling->readXml( elemLabeling, context );
@@ -303,6 +309,7 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   {
     QDomElement elemLabeling = doc.createElement( QStringLiteral( "labeling" ) );
     elemLabeling.setAttribute( QStringLiteral( "type" ), mLabeling->type() );
+    elemLabeling.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
     mLabeling->writeXml( elemLabeling, context );
     elem.appendChild( elemLabeling );
   }
@@ -577,13 +584,13 @@ QString QgsVectorTileLayer::sourcePath() const
   return QString();
 }
 
-QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
+QgsVectorTileRawData QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsVectorTileDataProvider *vtProvider = qobject_cast< QgsVectorTileDataProvider * >( mDataProvider.get() );
   if ( !vtProvider )
-    return QByteArray();
+    return QgsVectorTileRawData();
 
   return vtProvider->readTile( mMatrixSet, tileID );
 }
@@ -616,6 +623,21 @@ QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mLabeling.get();
+}
+
+bool QgsVectorTileLayer::labelsEnabled() const
+{
+  // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsVectorTileLayer::setLabelsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mLabelsEnabled = enabled;
 }
 
 QList<QgsFeature> QgsVectorTileLayer::selectedFeatures() const
@@ -726,12 +748,12 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
       for ( const QgsTileXYZ &tileID : tiles )
       {
-        QByteArray data = getRawTile( tileID );
-        if ( data.isEmpty() )
+        const QgsVectorTileRawData data = getRawTile( tileID );
+        if ( data.data.isEmpty() )
           continue;  // failed to get data
 
         QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
-        if ( !decoder.decode( tileID, data ) )
+        if ( !decoder.decode( data ) )
           continue;  // failed to decode
 
         QMap<QString, QgsFields> perLayerFields;

@@ -391,12 +391,12 @@ QgsMeshRendererSettings::QgsMeshRendererSettings()
 
 QgsMeshRendererSettings::~QgsMeshRendererSettings() = default;
 
-QgsMesh3dAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
+QgsMesh3DAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
 {
   return mAveragingMethod.get();
 }
 
-void QgsMeshRendererSettings::setAveragingMethod( QgsMesh3dAveragingMethod *method )
+void QgsMeshRendererSettings::setAveragingMethod( QgsMesh3DAveragingMethod *method )
 {
   if ( method )
     mAveragingMethod.reset( method->clone() );
@@ -500,7 +500,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem, const QgsReadWri
   const QDomElement elemAveraging = elem.firstChildElement( QStringLiteral( "averaging-3d" ) );
   if ( !elemAveraging.isNull() )
   {
-    mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elemAveraging ) );
+    mAveragingMethod.reset( QgsMesh3DAveragingMethod::createFromXml( elemAveraging ) );
   }
 }
 

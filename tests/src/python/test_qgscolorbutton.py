@@ -9,17 +9,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '25/05/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsApplication, QgsProjectColorScheme
 from qgis.gui import QgsColorButton
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsColorButton(unittest.TestCase):
+class TestQgsColorButton(QgisTestCase):
 
     def testClearingColors(self):
         """

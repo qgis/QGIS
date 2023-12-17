@@ -88,11 +88,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if ( !line.isEmpty() && line.at( 0 ) == '#' )
         continue;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QStringList myTokens = line.split( '\t', QString::SkipEmptyParts );
-#else
       QStringList myTokens = line.split( '\t', Qt::SkipEmptyParts );
-#endif
       lines << myTokens[0];
     }
     file.close();
@@ -175,7 +171,7 @@ void QgsAbout::init()
     txtDonors->clear();
     txtDonors->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
     txtDonors->setHtml( donorsHTML );
-    QgsDebugMsg( QStringLiteral( "donorsHTML:%1" ).arg( donorsHTML.toLatin1().constData() ) );
+    QgsDebugMsgLevel( QStringLiteral( "donorsHTML:%1" ).arg( donorsHTML.toLatin1().constData() ), 2 );
   }
 
   // read the TRANSLATORS file and populate the text widget
@@ -195,7 +191,7 @@ void QgsAbout::init()
       translatorHTML += translatorStream.readLine();
     }
     txtTranslators->setHtml( translatorHTML );
-    QgsDebugMsg( QStringLiteral( "translatorHTML:%1" ).arg( translatorHTML.toLatin1().constData() ) );
+    QgsDebugMsgLevel( QStringLiteral( "translatorHTML:%1" ).arg( translatorHTML.toLatin1().constData() ), 2 );
   }
   setWhatsNew();
   setLicence();
@@ -205,10 +201,7 @@ void QgsAbout::setLicence()
 {
   // read the DONORS file and populate the text widget
   QFile licenceFile( QgsApplication::licenceFilePath() );
-#ifdef QGISDEBUG
-  printf( "Reading licence file %s.............................................\n",
-          licenceFile.fileName().toLocal8Bit().constData() );
-#endif
+  QgsDebugMsgLevel( QStringLiteral( "Reading licence file %1" ).arg( licenceFile.fileName() ), 2 );
   if ( licenceFile.open( QIODevice::ReadOnly ) )
   {
     txtLicense->setText( licenceFile.readAll() );

@@ -1408,7 +1408,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon &&
                                         ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
   mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );
-  mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line );
+  mLineAnchorGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );
@@ -1493,7 +1493,7 @@ void QgsTextFormatWidget::populateFontStyleComboBox()
   QString targetStyle = mFontDB.styleString( mRefFont );
   if ( !styles.contains( targetStyle ) )
   {
-    const QFont f = QFont( mRefFont.family() );
+    const QFont f = QgsFontUtils::createFont( mRefFont.family() );
     targetStyle = QFontInfo( f ).styleName();
     mRefFont.setStyleName( targetStyle );
   }
@@ -1515,7 +1515,7 @@ void QgsTextFormatWidget::mFontSizeSpinBox_valueChanged( double d )
 
 void QgsTextFormatWidget::mFontFamilyCmbBx_currentFontChanged( const QFont &f )
 {
-  mRefFont.setFamily( f.family() );
+  QgsFontUtils::setFontFamily( mRefFont, f.family() );
   updateFont( mRefFont );
 }
 

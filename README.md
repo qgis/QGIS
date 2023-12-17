@@ -1,32 +1,32 @@
 <img src="images/README-md/main_logo.png" width="300">
 
-[![Tests](https://github.com/qgis/QGIS/workflows/QGIS%20tests/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
+[![🧪 QGIS tests](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/run-tests.yml?query=branch%3Amaster+event%3Apush)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://hub.docker.com/r/qgis/qgis/tags)
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
-[![Windows cross build](https://github.com/qgis/QGIS/workflows/MingW64%20Windows%2064bit%20Build/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
+[![🪟 MingW64 Windows 64bit Build](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml/badge.svg)](https://github.com/qgis/QGIS/actions/workflows/mingw64.yml?query=branch%3Amaster+event%3Apush)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5869837.svg)](https://doi.org/10.5281/zenodo.5869837)
 
 QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical information system (GIS) that runs on Unix platforms, Windows, and MacOS.
 
 <!-- TOC generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
-  * [Features](#features)
-       * [1. Flexible and powerful spatial data management](#1-flexible-and-powerful-spatial-data-management)
-       * [2. Beautiful cartography](#2-beautiful-cartography)
-       * [3. Advanced and robust geospatial analysis](#3-advanced-and-robust-geospatial-analysis)
-       * [4. Powerful customization and extensibility](#4-powerful-customization-and-extensibility)
-       * [5. QGIS Server](#5-qgis-server)
-   * [Under the hood](#under-the-hood)
-       * [Versions and release cycle](#versions-and-release-cycle)
-       * [Free and Open Source](#free-and-open-source)
-   * [Installing and using QGIS](#installing-and-using-qgis)
-       * [Documentation](#documentation)
-       * [Help and support channels](#help-and-support-channels)
-   * [Get involved with the community](#get-involved-with-the-community)
-       * [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
-       * [New features and enhancements](#new-features-and-enhancements)
-       * [Translations](#translations)
-       * [Other ways to contribute](#other-ways-to-contribute)
+- [Features](#features)
+  - [1. Flexible and powerful spatial data management](#1-flexible-and-powerful-spatial-data-management)
+  - [2. Beautiful cartography](#2-beautiful-cartography)
+  - [3. Advanced and robust geospatial analysis](#3-advanced-and-robust-geospatial-analysis)
+  - [4. Powerful customization and extensibility](#4-powerful-customization-and-extensibility)
+  - [5. QGIS Server](#5-qgis-server)
+- [Under the hood](#under-the-hood)
+  - [Versions and release cycle](#versions-and-release-cycle)
+  - [Free and Open Source](#free-and-open-source)
+- [Installing and using QGIS](#installing-and-using-qgis)
+  - [Documentation](#documentation)
+  - [Help and support channels](#help-and-support-channels)
+- [Get involved with the community](#get-involved-with-the-community)
+  - [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
+  - [New features and enhancements](#new-features-and-enhancements)
+  - [Translations](#translations)
+  - [Other ways to contribute](#other-ways-to-contribute)
 
 ## Features 
 
@@ -78,15 +78,15 @@ For more maps created with QGIS, visit the [QGIS Map Showcase Flickr Group](http
 - Access to 1000+ processing algorithms via providers such as GDAL, SAGA, GRASS, OrfeoToolbox, as well as custom models and processing scripts
 - Geospatial database engine (filters, joins, relations, forms, etc.), as close to datasource- and format-independent as possible 
 - Immediate visualization of geospatial query and geoprocessing results
-- Graphical modeler and batch processing
+- Model designer and batch processing
 
 *Example: Travel isochrones*
 
 ![Example: Travel isochrones](images/README-md/network_analysis_2.png "Travel isochrones")
 
-*Example: Graphical model*
+*Example: Model designer*
 
-![Example: graphical model](https://docs.qgis.org/latest/en/_images/models_model.png "Graphical model")
+![Example: model designer](https://docs.qgis.org/latest/en/_images/models_model.png "Model designer")
 
 ### 4. Powerful customization and extensibility
 
@@ -137,7 +137,7 @@ community of GIS professionals and enthusiasts as well as geospatial data publis
 
 ### Versions and release cycle
 
-QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, **Latest Release (LR)** branch, and the **Development (Nightly)** branch. 
+QGIS development and releases follow a [time based schedule/roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html). There are three main branches of QGIS that users can install. These are the **Long Term Release (LTR)** branch, the **Latest Release (LR)** branch, and the **Development (Nightly)** branch. 
 
 Every month, there is a **Point Release** that provides bug-fixes to the LTR and LR.
 
@@ -216,4 +216,4 @@ The [translation](https://qgis.org/en/site/getinvolved/translate.html) process i
 
 ### Other ways to contribute
 
-If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).
+If you are not a developer, there are many other possibilities that do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).

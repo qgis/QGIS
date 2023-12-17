@@ -499,6 +499,13 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       }
       else if ( mLayerGroups.contains( lname ) )
       {
+        if ( QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) )
+        {
+          QgsWmsParameter param( QgsWmsParameter::LAYER );
+          param.mValue = lname;
+          throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
+                                        param );
+        }
         for ( QgsMapLayer *layer : mLayerGroups[lname] )
         {
           const QString name = layerNickname( *layer );
@@ -547,6 +554,13 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
     }
     else if ( mLayerGroups.contains( nickname ) )
     {
+      if ( QgsServerProjectUtils::wmsSkipNameForGroup( *mProject ) )
+      {
+        QgsWmsParameter param( QgsWmsParameter::LAYER );
+        param.mValue = nickname;
+        throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined,
+                                      param );
+      }
       // Reverse order of layers from a group
       QList<QString> layersFromGroup;
       for ( QgsMapLayer *layer : mLayerGroups[nickname] )
@@ -853,3 +867,13 @@ QgsAccessControl *QgsWmsRenderContext::accessControl() const
   return mInterface->accessControls();
 }
 #endif
+
+void QgsWmsRenderContext::setSocketFeedback( QgsFeedback *feedback )
+{
+  mSocketFeedback = feedback;
+}
+
+QgsFeedback *QgsWmsRenderContext::socketFeedback() const
+{
+  return mSocketFeedback;
+}

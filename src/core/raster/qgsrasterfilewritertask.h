@@ -114,7 +114,7 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
 
     std::unique_ptr< QgsRasterBlockFeedback > mFeedback;
 
-    QgsRasterFileWriter::WriterError mError = QgsRasterFileWriter::NoError;
+    Qgis::RasterFileWriterResult mError = Qgis::RasterFileWriterResult::Success;
 
     QgsCoordinateTransformContext mTransformContext;
 };

@@ -10,12 +10,12 @@ __date__ = '31/03/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtTest import QTest
 from qgis.core import QgsSettings
 from qgis.gui import QgsCodeEditorPython
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
 COMPLETIONS_PAIRS = {
@@ -28,7 +28,7 @@ COMPLETIONS_PAIRS = {
 COMPLETIONS_SINGLE_CHARACTERS = ["`", "*"]
 
 
-class TestQgsCodeEditorPython(unittest.TestCase):
+class TestQgsCodeEditorPython(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

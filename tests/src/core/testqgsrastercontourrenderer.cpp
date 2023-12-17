@@ -93,7 +93,7 @@ void TestQgsRasterContourRenderer::test_render()
 
   mLayer->setRenderer( renderer );
 
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "raster_contours" ), QStringLiteral( "raster_contours" ), *mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_contours" ), QStringLiteral( "raster_contours" ), *mMapSettings );
 }
 
 void TestQgsRasterContourRenderer::testRenderOpacity()
@@ -114,7 +114,7 @@ void TestQgsRasterContourRenderer::testRenderOpacity()
   mLayer->setRenderer( renderer );
   mLayer->setOpacity( 0.5 );
 
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "raster_contours_opacity" ), QStringLiteral( "raster_contours_opacity" ), *mMapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_contours_opacity" ), QStringLiteral( "raster_contours_opacity" ), *mMapSettings );
 }
 
 

@@ -38,6 +38,8 @@ class QgsProcessingAlgorithm;
 class QgsVectorTileLayer;
 class QgsPointCloudLayer;
 class QgsAnnotationLayer;
+class QgsVectorTileLayer;
+class QgsTiledSceneLayer;
 
 #include <QString>
 #include <QVariant>
@@ -63,6 +65,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -83,6 +87,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -101,6 +107,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.6
@@ -119,6 +127,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePointCloudLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -137,6 +147,8 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
      * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
@@ -155,11 +167,53 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleMeshLayers()
      * \see compatiblePluginLayers()
      * \see compatiblePointCloudLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.22
      */
     static QList<QgsAnnotationLayer *> compatibleAnnotationLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of vector tile layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
+     * \see compatibleTiledSceneLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.32
+     */
+    static QList<QgsVectorTileLayer *> compatibleVectorTileLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of tiled scene layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \see compatiblePointCloudLayers()
+     * \see compatibleAnnotationLayers()
+     * \see compatibleVectorTileLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.34
+     */
+    static QList<QgsTiledSceneLayer *> compatibleTiledSceneLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
@@ -205,6 +259,8 @@ class CORE_EXPORT QgsProcessingUtils
       Mesh, //!< Mesh layer type, since QGIS 3.6
       PointCloud, //!< Point cloud layer type, since QGIS 3.22
       Annotation, //!< Annotation layer type, since QGIS 3.22
+      VectorTile, //!< Vector tile layer type, since QGIS 3.32
+      TiledScene, //!< Tiled scene layer type, since QGIS 3.34
     };
 
     /**
@@ -248,7 +304,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.
      */
-    static QString normalizeLayerSource( const QString &source );
+    static QString normalizeLayerSource( const QString &source ) SIP_HOLDGIL;
 
     /**
      * Converts a variant to a Python literal.
@@ -263,7 +319,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see variantToPythonLiteral()
      */
-    static QString stringToPythonLiteral( const QString &string );
+    static QString stringToPythonLiteral( const QString &string ) SIP_HOLDGIL;
 
     /**
      * Creates a feature sink ready for adding features. The \a destination specifies a destination
@@ -447,20 +503,20 @@ class CORE_EXPORT QgsProcessingUtils
      * length of field names, so be aware that the results of calling this method may
      * be truncated when saving to these formats.
      */
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() ) SIP_HOLDGIL;
 
     /**
      * Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
      * If the list of field names is empty, it is assumed that all fields are required.
      * \since QGIS 3.2
      */
-    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields ) SIP_HOLDGIL;
 
     /**
      * Returns a subset of fields based on the indices of desired fields.
      * \since QGIS 3.2
      */
-    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields ) SIP_HOLDGIL;
 
     /**
      * Returns the default vector extension to use, in the absence of all other constraints (e.g.
@@ -471,6 +527,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultRasterExtension()
      * \see defaultPointCloudExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.10
      */
     static QString defaultVectorExtension();
@@ -484,6 +541,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultVectorExtension()
      * \see defaultPointCloudExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.10
      */
     static QString defaultRasterExtension();
@@ -496,9 +554,23 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see defaultVectorExtension()
      * \see defaultRasterExtension()
+     * \see defaultVectorTileExtension()
      * \since QGIS 3.24
      */
     static QString defaultPointCloudExtension();
+
+    /**
+     * Returns the default vector tile extension to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns a fallback value of "mbtiles".
+     *
+     * \see defaultVectorExtension()
+     * \see defaultRasterExtension()
+     * \see defaultPointCloudExtension()
+     * \since QGIS 3.32
+     */
+    static QString defaultVectorTileExtension();
 
     /**
      * Removes any raw pointer values from an input \a map, replacing them with
@@ -517,6 +589,16 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
 
+    /**
+     * Returns the default encoding.
+     *
+     * The default encoding could be the one from "/Processing/encoding" or when it's not an allowed encoding name
+     * like "System", the default encoding system (mostly UTF-8 on Unix-like, windows-1252 on Windows).
+     *
+     * \since QGIS 3.32
+     */
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
@@ -524,6 +606,7 @@ class CORE_EXPORT QgsProcessingUtils
     static bool canUseLayer( const QgsVectorTileLayer *layer );
     static bool canUseLayer( const QgsPointCloudLayer *layer );
     static bool canUseLayer( const QgsAnnotationLayer *layer );
+    static bool canUseLayer( const QgsTiledSceneLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 
@@ -647,14 +730,30 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     /**
      * Overrides the default geometry check method for the source.
      *
+     * \see invalidGeometryCheck()
      * \since QGIS 3.14
      */
     void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+
+    /**
+     * Returns the geometry check method for the source.
+     *
+     * \see setInvalidGeometryCheck()
+     * \since QGIS 3.36
+     */
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 
   private:
 
     QgsFeatureSource *mSource = nullptr;
     bool mOwnsSource = false;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsFields mSourceFields;
+    Qgis::WkbType mSourceWkbType = Qgis::WkbType::Unknown;
+    QString mSourceName;
+    QgsRectangle mSourceExtent;
+    QgsFeatureSource::SpatialIndexPresence mSourceSpatialIndexPresence = QgsFeatureSource::SpatialIndexPresence::SpatialIndexUnknown;
+
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;

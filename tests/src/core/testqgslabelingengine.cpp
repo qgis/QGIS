@@ -928,7 +928,7 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl2->fields(), 1 );
 
-  const QString wkt1 = QStringLiteral( "POLYGON((0 0,8 0,8 -90,0 0))" );
+  const QString wkt1 = QStringLiteral( "POLYGON((0 0,8 0,8 -91,0 0))" );
   f.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
 
   // make a fake render context
@@ -938,9 +938,8 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   QgsCoordinateReferenceSystem tgtCrs;
   tgtCrs.createFromString( QStringLiteral( "EPSG:3857" ) );
   mapSettings.setDestinationCrs( tgtCrs );
-
   mapSettings.setOutputSize( size );
-  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setExtent( tgtCrs.bounds() );
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
@@ -3801,6 +3800,7 @@ void TestQgsLabelingEngine::labelingResults()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.priority = 10;
+  settings.angleOffset = 3;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -3865,11 +3865,11 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
   QGSCOMPARENEAR( labels.at( 0 ).width, 167961, 500 ); // tolerance will probably need tweaking, to account for cross-platform font diffs
   QGSCOMPARENEAR( labels.at( 0 ).height, 295119, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -779822, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -611861, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6897647, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7192767, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 0.0 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -787429, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -604253, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6893454, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 7196960, 500 );
+  QCOMPARE( labels.at( 0 ).rotation, -357 );
 
   labels = results->labelsAtPosition( QgsPointXY( -769822, 6927647 ) );
   QCOMPARE( labels.count(), 1 );
@@ -3884,22 +3884,22 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "8888" ) );
   QGSCOMPARENEAR( labels.at( 0 ).width, 671844, 500 ); // tolerance will probably need tweaking, to account for cross-platform font diffs
   QGSCOMPARENEAR( labels.at( 0 ).height, 295119, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -2779386, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -2107542, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 9240403, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 9535523, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 0.0 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -2786649, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), -2100279, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 9223025, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 9552902, 500 );
+  QCOMPARE( labels.at( 0 ).rotation, -357 );
   labels = results->labelsAtPosition( QgsPointXY( -1383, 6708478 ) );
   QCOMPARE( labels.count(), 1 );
   QCOMPARE( labels.at( 0 ).featureId, 3 );
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "33333" ) );
   QGSCOMPARENEAR( labels.at( 0 ).width, 839805, 500 ); // tolerance will probably need tweaking, to account for cross-platform font diffs
   QGSCOMPARENEAR( labels.at( 0 ).height, 295119, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -433112, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), 406692, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6563006, 500 );
-  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 6858125, 500 );
-  QCOMPARE( labels.at( 0 ).rotation, 0.0 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMinimum(), -440260, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.xMaximum(), 413840, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMinimum(), 6541232, 500 );
+  QGSCOMPARENEAR( labels.at( 0 ).labelRect.yMaximum(), 6879899, 500 );
+  QCOMPARE( labels.at( 0 ).rotation, -357 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
 
@@ -3938,7 +3938,10 @@ void TestQgsLabelingEngine::labelingResults()
 
   mapSettings.setLayers( {vl2.get() } );
 
-  // with rotation
+  // with map rotation
+  settings.angleOffset = 0;
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
   mapSettings.setRotation( 60 );
   QgsMapRendererSequentialJob job2( mapSettings );
   job2.start();

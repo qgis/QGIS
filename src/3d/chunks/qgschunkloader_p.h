@@ -79,6 +79,35 @@ class QgsChunkLoaderFactory  : public QObject
     virtual QgsChunkNode *createRootNode() const = 0;
     //! Creates child nodes for the given node. Ownership of the returned objects is passed to the caller.
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const = 0;
+
+    /**
+     * Returns true if createChildren() is ready to return node's children (i.e. it has
+     * enough hierarchy information available). If not, createChildren() should not be called,
+     * but prepareChildren() should be called first, and only after childrenPrepared() gets
+     * emitted, it is safe to call createChildren().
+     *
+     * The default implementation returns true. This only needs to be implemented when the factory
+     * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.
+     * \sa prepareChildren()
+     * \sa createChildren()
+     */
+    virtual bool canCreateChildren( QgsChunkNode *node ) { Q_UNUSED( node ); return true; }
+
+    /**
+     * Requests that node has enough hierarchy information to create children in createChildren().
+     * This function must not block, only start any requests in background. When the hierarchy
+     * information is ready, the signal childrenPrepared() must be emitted.
+     *
+     * The default implementation does nothing. This only needs to be implemented when the factory
+     * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.
+     * \sa canCreateChildren()
+     * \sa createChildren()
+     */
+    virtual void prepareChildren( QgsChunkNode *node ) { Q_UNUSED( node ); }
+
+  signals:
+    //! Signal that gets emitted when a background job triggered from prepareChildren() has finished
+    void childrenPrepared( QgsChunkNode *node );
 };
 
 

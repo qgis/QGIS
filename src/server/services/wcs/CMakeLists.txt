@@ -19,7 +19,6 @@ add_library (wcs MODULE ${wcs_SRCS})
 target_compile_features(wcs PRIVATE cxx_std_17)
 
 include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 

@@ -340,11 +340,13 @@ class CORE_EXPORT QgsTileMatrixSet
     double scaleToZoom( double scale ) const;
 
     /**
-     * Finds the best fitting (integer) zoom level given a map \a scale denominator.
+     * Finds the best fitting (integer) zoom level given a map \a scale denominator. An
+     * optional \a clamp parameter can be set to FALSE to disable clamping zoom level
+     * to the tile matrix set's minimum and maximum zoom level.
      *
      * Values are constrained to the zoom levels between minimumZoom() and maximumZoom().
      */
-    int scaleToZoomLevel( double scale ) const;
+    int scaleToZoomLevel( double scale, bool clamp = true ) const;
 
     /**
      * Calculates the correct scale to use for the tiles when rendered using the specified render \a context.

@@ -187,7 +187,7 @@ void TestQgisAppClipboard::copyToText()
 
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
-  const QRegularExpression regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
+  const thread_local QRegularExpression regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
   const QRegularExpressionMatch  match = regex.match( result );
   const QStringList list = match.capturedTexts();
   QCOMPARE( list.count(), 3 );

@@ -37,7 +37,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from test_hana_utils import QgsHanaProviderUtils
@@ -47,7 +48,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
     # HANA connection object
     conn = None
     # Name of the schema

@@ -21,7 +21,6 @@ __copyright__ = '(C) 2015, Matthias Kuhn'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QPointF, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
@@ -50,7 +49,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -61,7 +61,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
+class TestQgsGeometryGeneratorSymbolLayerV2(QgisTestCase):
 
     def setUp(self):
         self.iface = get_iface()

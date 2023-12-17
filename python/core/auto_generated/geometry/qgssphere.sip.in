@@ -1,0 +1,195 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgssphere.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSphere
+{
+%Docstring(signature="appended")
+A spherical geometry object.
+
+Represents a simple 3-dimensional sphere.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgssphere.h"
+%End
+  public:
+
+    QgsSphere() /HoldGIL/;
+%Docstring
+Constructor for an invalid QgsSphere.
+%End
+
+    QgsSphere( double x, double y, double z, double radius ) /HoldGIL/;
+%Docstring
+Constructor for QgsSphere with the specified center (``x``, ``y``, ``z``) and ``radius``.
+%End
+
+    bool operator==( const QgsSphere &other ) const;
+    bool operator!=( const QgsSphere &other ) const;
+
+    bool isNull() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the sphere is a null (default constructed) sphere.
+%End
+
+    bool isEmpty() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the sphere is considered empty, i.e. it has a radius of 0.
+%End
+
+    QgsPoint center() const /HoldGIL/;
+%Docstring
+Returns the center point of the sphere.
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerY`
+
+.. seealso:: :py:func:`centerZ`
+
+.. seealso:: :py:func:`setCenter`
+%End
+
+    QgsVector3D centerVector() const /HoldGIL/;
+%Docstring
+Returns the vector to the center of the sphere.
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerY`
+
+.. seealso:: :py:func:`centerZ`
+
+.. seealso:: :py:func:`setCenter`
+%End
+
+    double centerX() const;
+%Docstring
+Returns the x-coordinate of the center of the sphere.
+
+.. seealso:: :py:func:`center`
+
+.. seealso:: :py:func:`centerY`
+
+.. seealso:: :py:func:`centerZ`
+
+.. seealso:: :py:func:`setCenter`
+%End
+
+    double centerY() const;
+%Docstring
+Returns the y-coordinate of the center of the sphere.
+
+.. seealso:: :py:func:`center`
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerZ`
+
+.. seealso:: :py:func:`setCenter`
+%End
+
+    double centerZ() const;
+%Docstring
+Returns the z-coordinate of the center of the sphere.
+
+.. seealso:: :py:func:`center`
+
+.. seealso:: :py:func:`centerX`
+
+.. seealso:: :py:func:`centerY`
+
+.. seealso:: :py:func:`setCenter`
+%End
+
+    void setCenter( const QgsPoint &center ) /HoldGIL/;
+%Docstring
+Sets the center point of the sphere.
+
+.. seealso:: :py:func:`center`
+%End
+
+    void setCenter( double x, double y, double z ) /HoldGIL/;
+%Docstring
+Sets the center point of the sphere to (``x``, ``y``, ``z``).
+
+.. seealso:: :py:func:`center`
+%End
+
+    double radius() const /HoldGIL/;
+%Docstring
+Returns the radius of the sphere.
+
+.. seealso:: :py:func:`setRadius`
+
+.. seealso:: :py:func:`diameter`
+%End
+
+    void setRadius( double radius ) /HoldGIL/;
+%Docstring
+Sets the ``radius`` of the sphere.
+
+.. seealso:: :py:func:`radius`
+%End
+
+    double diameter() const /HoldGIL/;
+%Docstring
+Returns the diameter of the sphere.
+
+.. seealso:: :py:func:`radius`
+%End
+
+    double volume() const /HoldGIL/;
+%Docstring
+Returns the volume of the sphere.
+%End
+
+    double surfaceArea() const /HoldGIL/;
+%Docstring
+Returns the surface area of the sphere.
+%End
+
+    QgsCircle toCircle() const /HoldGIL/;
+%Docstring
+Converts the sphere to a 2-dimensional circle.
+%End
+
+    QgsBox3D boundingBox() const /HoldGIL/;
+%Docstring
+Returns the 3-dimensional bounding box containing the sphere.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( sipCpp->isNull() )
+    {
+      str = QStringLiteral( "<QgsSphere: null>" ).arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
+    }
+    else
+    {
+      str = QStringLiteral( "<QgsSphere: (%1, %2, %3) radius %4>" ).arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
+    }
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgssphere.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -17,14 +17,15 @@ import uuid
 
 from pyplugin_installer.plugindependencies import find_dependencies
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 TESTDATA_PATH = unitTestDataPath()
 
 
-class PluginDependenciesTest(unittest.TestCase):
+class PluginDependenciesTest(QgisTestCase):
     """Test plugin dependencies"""
 
     @classmethod

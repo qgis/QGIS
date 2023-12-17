@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
@@ -19,12 +18,13 @@ from qgis.core import (
     QgsRenderContext,
     QgsTextCharacterFormat,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsTextCharacterFormat(unittest.TestCase):
+class TestQgsTextCharacterFormat(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsTextRenderer Tests</h1>\n"

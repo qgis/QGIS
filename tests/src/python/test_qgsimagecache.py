@@ -15,7 +15,6 @@ import socketserver
 import threading
 import time
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QDir, QSize
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.core import (
@@ -23,7 +22,8 @@ from qgis.core import (
     QgsMultiRenderChecker,
     QgsRenderChecker,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -38,7 +38,7 @@ class SlowHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
 
-class TestQgsImageCache(unittest.TestCase):
+class TestQgsImageCache(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

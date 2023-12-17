@@ -43,6 +43,10 @@ value.
 
 .. seealso:: :py:func:`compatibleAnnotationLayers`
 
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -71,6 +75,10 @@ value.
 
 .. seealso:: :py:func:`compatibleAnnotationLayers`
 
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -91,6 +99,10 @@ value.
 .. seealso:: :py:func:`compatiblePointCloudLayers`
 
 .. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 
@@ -115,6 +127,10 @@ value.
 
 .. seealso:: :py:func:`compatibleAnnotationLayers`
 
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.22
@@ -137,6 +153,10 @@ value.
 .. seealso:: :py:func:`compatiblePluginLayers`
 
 .. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 
@@ -161,9 +181,67 @@ value.
 
 .. seealso:: :py:func:`compatiblePointCloudLayers`
 
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.22
+%End
+
+    static QList<QgsVectorTileLayer *> compatibleVectorTileLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of vector tile layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleTiledSceneLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.32
+%End
+
+    static QList<QgsTiledSceneLayer *> compatibleTiledSceneLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of tiled scene layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleAnnotationLayers`
+
+.. seealso:: :py:func:`compatibleVectorTileLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.34
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -209,6 +287,8 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       Mesh,
       PointCloud,
       Annotation,
+      VectorTile,
+      TiledScene,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
@@ -248,7 +328,7 @@ if ``value`` cannot be successfully converted to a CRS.
 .. versionadded:: 3.12
 %End
 
-    static QString normalizeLayerSource( const QString &source );
+    static QString normalizeLayerSource( const QString &source ) /HoldGIL/;
 %Docstring
 Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
@@ -263,7 +343,7 @@ Converts a variant to a Python literal.
 .. versionadded:: 3.6
 %End
 
-    static QString stringToPythonLiteral( const QString &string );
+    static QString stringToPythonLiteral( const QString &string ) /HoldGIL/;
 %Docstring
 Converts a string to a Python string literal. E.g. by replacing ' with \'.
 
@@ -425,7 +505,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 .. versionadded:: 3.10
 %End
 
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() ) /HoldGIL/;
 %Docstring
 Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
 
@@ -439,7 +519,7 @@ non-duplicate name.
    be truncated when saving to these formats.
 %End
 
-    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields ) /HoldGIL/;
 %Docstring
 Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
 If the list of field names is empty, it is assumed that all fields are required.
@@ -447,7 +527,7 @@ If the list of field names is empty, it is assumed that all fields are required.
 .. versionadded:: 3.2
 %End
 
-    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields ) /HoldGIL/;
 %Docstring
 Returns a subset of fields based on the indices of desired fields.
 
@@ -466,6 +546,8 @@ a fallback value of "gpkg".
 
 .. seealso:: :py:func:`defaultPointCloudExtension`
 
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
 .. versionadded:: 3.10
 %End
 
@@ -481,6 +563,8 @@ a fallback value of "tif".
 
 .. seealso:: :py:func:`defaultPointCloudExtension`
 
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
 .. versionadded:: 3.10
 %End
 
@@ -495,7 +579,25 @@ This method returns a fallback value of "las".
 
 .. seealso:: :py:func:`defaultRasterExtension`
 
+.. seealso:: :py:func:`defaultVectorTileExtension`
+
 .. versionadded:: 3.24
+%End
+
+    static QString defaultVectorTileExtension();
+%Docstring
+Returns the default vector tile extension to use, in the absence of all other constraints (e.g.
+provider based support for extensions).
+
+This method returns a fallback value of "mbtiles".
+
+.. seealso:: :py:func:`defaultVectorExtension`
+
+.. seealso:: :py:func:`defaultRasterExtension`
+
+.. seealso:: :py:func:`defaultPointCloudExtension`
+
+.. versionadded:: 3.32
 %End
 
     static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
@@ -513,6 +615,16 @@ Pre-processes a set of ``parameter`` values for the qgis_process command.
 In particular, this function upgrades encoded data defined values to :py:class:`QgsProperty` objects.
 
 .. versionadded:: 3.30
+%End
+
+    static QString resolveDefaultEncoding( const QString &defaultEncoding = "System" );
+%Docstring
+Returns the default encoding.
+
+The default encoding could be the one from "/Processing/encoding" or when it's not an allowed encoding name
+like "System", the default encoding system (mostly UTF-8 on Unix-like, windows-1252 on Windows).
+
+.. versionadded:: 3.32
 %End
 
 };
@@ -599,7 +711,18 @@ Returns an expression context scope suitable for this source.
 %Docstring
 Overrides the default geometry check method for the source.
 
+.. seealso:: :py:func:`invalidGeometryCheck`
+
 .. versionadded:: 3.14
+%End
+
+    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+%Docstring
+Returns the geometry check method for the source.
+
+.. seealso:: :py:func:`setInvalidGeometryCheck`
+
+.. versionadded:: 3.36
 %End
 
 };

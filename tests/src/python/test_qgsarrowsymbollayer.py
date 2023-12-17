@@ -21,7 +21,6 @@ __copyright__ = '(C) 2016, Hugo Mercier'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
@@ -42,7 +41,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.testing.mocked import get_iface
 
 from utilities import unitTestDataPath
@@ -53,7 +53,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsArrowSymbolLayer(unittest.TestCase):
+class TestQgsArrowSymbolLayer(QgisTestCase):
 
     def setUp(self):
         self.report = "<h1>Python QgsArrowSymbolLayer Tests</h1>\n"

@@ -9,17 +9,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '2020-11-25'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QSlider
 from qgis.gui import QgsRangeSlider
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsRangeSlider(unittest.TestCase):
+class TestQgsRangeSlider(QgisTestCase):
 
     def testSettersGetters(self):
         w = QgsRangeSlider()

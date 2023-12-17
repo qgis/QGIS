@@ -78,6 +78,7 @@ class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
 class QgsStyleEntityVisitorInterface;
+class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
@@ -665,6 +666,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
+    QgsMapLayerSelectionProperties *selectionProperties() override;
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
@@ -1020,70 +1022,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.0
      */
     void resolveReferences( QgsProject *project ) FINAL;
-
-    /**
-     * Saves named and sld style of the layer to the style table in the db.
-     * \param name Style name
-     * \param description A description of the style
-     * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
-     * \param uiFileContent
-     * \param msgError will be set to a descriptive error message if any occurs
-     * \param categories the style categories to be saved.
-     *
-     *
-     * \note Prior to QGIS 3.24, this method would show a message box warning when a
-     * style with the same \a styleName already existed to confirm replacing the style with the user.
-     * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
-     * Use QgsProviderRegistry::styleExists() to test in advance if a style already exists and handle this appropriately
-     * in your client code.
-     */
-    virtual void saveStyleToDatabase( const QString &name, const QString &description,
-                                      bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError SIP_OUT,
-                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
-
-    /**
-     * Lists all the style in db split into related to the layer and not related to
-     * \param ids the list in which will be stored the style db ids
-     * \param names the list in which will be stored the style names
-     * \param descriptions the list in which will be stored the style descriptions
-     * \param msgError will be set to a descriptive error message if any occurs
-     * \returns the number of styles related to current layer (-1 on not implemented)
-     * \note Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
-     */
-    virtual int listStylesInDatabase( QStringList &ids SIP_OUT, QStringList &names SIP_OUT,
-                                      QStringList &descriptions SIP_OUT, QString &msgError SIP_OUT );
-
-    /**
-     * Returns the named style corresponding to style id provided
-     */
-    virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
-
-    /**
-     * Deletes a style from the database
-     * \param styleId the provider's layer_styles table id of the style to delete
-     * \param msgError will be set to a descriptive error message if any occurs
-     * \returns TRUE in case of success
-     * \since QGIS 3.0
-     */
-    virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
-
-    /**
-     * Loads a named style from file/local db/datasource db
-     * \param theURI the URI of the style or the URI of the layer
-     * \param resultFlag will be set to TRUE if a named style is correctly loaded
-     * \param loadFromLocalDb if TRUE forces to load from local db instead of datasource one
-     * \param categories the style categories to be loaded.
-     */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
-                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
-
-    /**
-     * Calls loadNamedStyle( theURI, resultFlag, FALSE );
-     * Retained for backward compatibility
-     */
-    QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT,
-                            QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) FINAL;
 
     /**
      * Loads the auxiliary layer for this vector layer. If there's no
@@ -1739,6 +1677,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsRectangle extent() const FINAL;
     QgsRectangle sourceExtent() const FINAL;
 
+    QgsBox3D extent3D() const FINAL;
+    QgsBox3D sourceExtent3D() const FINAL;
+
     /**
      * Returns the list of fields of this layer.
      * This also includes fields which have not yet been saved to the provider.
@@ -2240,23 +2181,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Sets the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlag
+     * \see QgsField::configurationFlags()
      * \since QGIS 3.16
      */
-    void setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags ) SIP_SKIP;
+    void setFieldConfigurationFlags( int index, Qgis::FieldConfigurationFlags flags );
 
     /**
      * Sets the given configuration \a flag for the field at given \a index to be \a active or not.
      * \since QGIS 3.16
      */
-    void setFieldConfigurationFlag( int index, QgsField::ConfigurationFlag flag, bool active ) SIP_SKIP;
+    void setFieldConfigurationFlag( int index, Qgis::FieldConfigurationFlag flag, bool active );
 
     /**
      * Returns the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlag
+     * \see QgsField::setConfigurationFlags()
      * \since QGIS 3.16
      */
-    QgsField::ConfigurationFlags fieldConfigurationFlags( int index ) const SIP_SKIP;
+    Qgis::FieldConfigurationFlags fieldConfigurationFlags( int index ) const;
 
     /**
      * \copydoc editorWidgetSetup
@@ -2864,6 +2805,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
   protected:
     //! Sets the extent
     void setExtent( const QgsRectangle &rect ) FINAL;
+    //! Sets the extent
+    void setExtent3D( const QgsBox3D &rect ) FINAL;
 
   private slots:
     void invalidateSymbolCountedFlag();
@@ -2933,13 +2876,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void clearEditBuffer();
 
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
-
-    //! Pointer to data provider derived from the abastract base class QgsDataProvider
     QgsVectorDataProvider *mDataProvider = nullptr;
-
-    //! Pointer to temporal properties
+    QgsVectorLayerSelectionProperties *mSelectionProperties = nullptr;
     QgsVectorLayerTemporalProperties *mTemporalProperties = nullptr;
-
     QgsVectorLayerElevationProperties *mElevationProperties = nullptr;
 
     //! The preview expression used to generate a human readable preview string for features
@@ -2995,7 +2934,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Map which stores expression constraints for fields. Value is a pair of expression/description.
     QMap< QString, QPair< QString, QString > > mFieldConstraintExpressions;
 
-    QMap< QString, QgsField::ConfigurationFlags > mFieldConfigurationFlags;
+    QMap< QString, Qgis::FieldConfigurationFlags > mFieldConfigurationFlags;
     QMap< QString, QgsEditorWidgetSetup > mFieldWidgetSetups;
 
     //! Holds the configuration for the edit form

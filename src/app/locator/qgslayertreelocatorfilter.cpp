@@ -43,7 +43,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
 
     QgsLocatorResult result;
     result.displayString = layer->layer()->name();
-    result.userData = layer->layerId();
+    result.setUserData( layer->layerId() );
     result.icon = QgsIconUtils::iconForLayer( layer->layer() );
 
     // return all the layers in case the string query is empty using an equal default score
@@ -62,7 +62,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
 
 void QgsLayerTreeLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  const QString layerId = result.userData.toString();
+  const QString layerId = result.getUserData().toString();
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
   QgisApp::instance()->setActiveLayer( layer );
 }

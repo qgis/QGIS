@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '05/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QModelIndex, Qt
 from qgis.core import (
     Qgis,
@@ -19,14 +18,15 @@ from qgis.core import (
     QgsProviderSublayerProxyModel,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 # Convenience instances in case you may need them
 # to find the srs.db
 start_app()
 
 
-class TestQgsProviderSublayerModel(unittest.TestCase):
+class TestQgsProviderSublayerModel(QgisTestCase):
 
     def test_model(self):
         model = QgsProviderSublayerModel()

@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '2016-09'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.core import (
@@ -26,14 +25,15 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsTextFormatDialog, QgsTextFormatWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import getTestFont
 
 start_app()
 
 
-class PyQgsTextFormatWidget(unittest.TestCase):
+class PyQgsTextFormatWidget(QgisTestCase):
 
     def createBufferSettings(self):
         s = QgsTextBufferSettings()

@@ -159,7 +159,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QVERIFY( lineFeature1.isValid() );
   QCOMPARE( lineFeature1.attribute( 0 ).toString(), QStringLiteral( "Highway" ) );
   QCOMPARE( lineFeature1.attribute( 1 ).toDouble(), 1.0 );
-  QgsDebugMsg( lineGeometry1.asWkt( 0 ) );
+  QgsDebugMsgLevel( lineGeometry1.asWkt( 0 ), 1 );
   QCOMPARE( lineGeometry1.asWkt( 0 ), QStringLiteral( "MultiLineString ((281 538, 283 532, 284 530, 285 529, 289 526, 299 520, 310 516, 313 513, 318 508, 319 507, 320 501, 320 498, 322 493, 323 491, 323 486, 324 484, 326 481, 327 478, 331 474, 331 473, 332 470, 332 465, 332 463, 333 459, 334 457, 338 454, 342 452, 345 450, 349 448, 349 445, 349 443, 347 439, 346 438, 345 435, 343 433, 342 432, 341 430, 341 428, 340 426, 340 424, 342 420, 343 418, 343 418, 348 407, 345 402, 343 399, 340 393, 340 389, 335 385, 333 382, 331 378, 331 376, 331 374, 331 372, 331 369, 332 367, 333 364, 334 362, 336 360, 338 357, 341 353, 346 344, 347 343, 350 339, 352 338, 356 333, 358 331, 363 328, 366 325, 370 321, 372 320, 376 317, 380 314, 384 312, 390 307, 392 305, 393 302, 393 299, 393 295, 393 294, 391 291, 388 287, 386 285, 385 283, 385 280, 386 278, 387 274, 388 272, 391 268, 392 267, 394 263, 398 259, 406 255))" ) );
 
   QgsFeatureList  pointFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( pointsLayer->id() );
@@ -201,7 +201,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   QVERIFY( polyFeature3b.isValid() );
   QCOMPARE( polyFeature3b.attribute( 0 ).toString(), QStringLiteral( "Dam" ) );
   QCOMPARE( polyFeature3b.attribute( 1 ).toInt(), 8 );
-  QgsDebugMsg( polyGeometry3b.asWkt( 0 ) );
+  QgsDebugMsgLevel( polyGeometry3b.asWkt( 0 ), 1 );
   QCOMPARE( polyGeometry3b.asWkt( 0 ), QStringLiteral( "MultiPolygon (((469 306, 469 305, 468 305, 468 305, 467 305, 466 304, 466 304, 466 303, 467 303, 467 302, 468 302, 469 302, 470 302, 470 303, 471 303, 472 303, 473 303, 474 303, 474 303, 475 303, 476 303, 476 303, 478 300, 478 299, 478 299, 478 298, 478 296, 477 296, 476 295, 476 295, 475 294, 474 294, 474 294, 473 295, 472 295, 472 296, 471 296, 470 297, 469 297, 468 297, 466 296, 464 296, 463 296, 462 297, 462 298, 462 298, 461 299, 460 299, 459 300, 458 300, 458 301, 458 301, 458 302, 459 303, 459 303, 458 304, 458 304, 458 305, 458 306, 458 307, 458 308, 458 308, 459 309, 460 309, 460 310, 461 311, 462 311, 462 312, 463 312, 464 312, 465 312, 465 311, 467 310, 467 309, 468 308, 469 307, 469 306)))" ) );
 
   // finalize and test collation

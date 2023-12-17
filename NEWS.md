@@ -1,5 +1,118 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.34 'Prizren'?
+
+This release has following new features:
+
+- Map Tools: Optional enforcement of "dot" as decimal separator for measure tool
+- Map Tools: Show a highlight on identified raster pixels when using identify tool
+- Map Tools: Show raster row/column of clicked point in identify results
+- Symbology: Settings for overriding selection color and selection symbol for vector layers
+- Labelling: Toggle labels for Vector Tile Layers
+- Rendering: "Sticky" Map Decorations
+- Rendering: Add map render profiler
+- Rendering: Add choice of two different modes for "Refresh Layer at Interval"
+- 3D Features: Allow GPU memory limit configuration
+- 3D Features: Add support for boundingbox3d
+- Print Layouts: Select multiple layout items
+- Print Layouts: Layout Page number reflected in page properties
+- Print Layouts: Automatically open exported layouts
+- Expressions: Add bearing expression function
+- Expressions: Add "layer_crs_ellipsoid"
+- Digitising: Improve "avoid overlap" type awareness
+- Data Management: Improve save vector features handling for pre-existing files
+- Data Management: Maintain relations for copied features
+- Analysis Tools: Support raster band description
+- Processing: Antialias setting for raster tile processing plugin
+- Processing: Create Grid row_index and col_index fields
+- Processing: New 'Calculate expression' algorithm for use in models
+- Processing: Add algorithm to convert content from a GLTF/GLB file to standard vector layer features
+- Processing: Port SAGA "DTM Filter (slope-based)" tool to a native QGIS algorithm
+- Application and Project Options: Clear recently opened project list
+- Application and Project Options: OAUTH2 PKCE Authorization Code
+- Application and Project Options: Set processing defaults from QGIS configuration file
+- Profile Plots: Add setting to control background color for elevation profile charts
+- Data Providers: Discover relations for Oracle provider
+- Plugins: Drop interactive shell from GRASS C++ Plugin
+- Programmability: Function to export runtime profiler model content as text
+-
+
+
+# What's new in Version 3.32 'Lima'?
+
+This release has following new features:
+
+- Map Tools: Map tip preview
+- Map Tools: Measure tool copy coordinates
+- Map Tools: Disable map tips for a specific layer
+- User Interface: Show value relation description when hovering the combobox
+- User Interface: 2d map canvas view docking actions
+- User Interface: Add clear recently used crs button
+- User Interface: Reverse wheel zoom
+- User Interface: Spatial bookmarks rotation
+- Annotations: Annotation tool improvements
+- Annotations: Annotation live preview
+- 3D Features: Enable rendering virtual point clouds in 3d views
+- 3D Features: Improved 3d measure tool
+- Point Clouds: Native point cloud Processing provider
+- Point Clouds: Point cloud expression builder
+- Point Clouds: Add filtering by rectangle and expression to PDAL algorithms
+- Point Clouds: New parameter type for point cloud attribute
+- Print Layouts: Hyperlink support for HTML-enabled label exports
+- Print Layouts: Support filtering layout legends by multiple linked map items
+- Expressions: Add ltrim/rtrim functions
+- Digitising: Field value list in merge feature dialog
+- Digitising: Common angle option extensions for advanced digitizing
+- Digitising: Floater settings and bearing information for advanced digitizing
+- Data Management: Allow a range of cells to be copied from SQL results window
+- Data Management: Modified New field dialog behavior and alias support
+- Data Management: Add DistanceUnit value for inches
+- Data Management: Record split policy selection in form dialog
+- Forms and Widgets: Add control over horizontal / vertical stretch for attribute form widgets
+- Forms and Widgets: Add new attribute form container type "Row"
+- Processing: Download vector tiles algorithm
+- Processing: Allow configuration of the order of outputs created by a model
+- Processing: Algorithm to create COPC files for input point clouds
+- Processing: Add invert selection tool on refactor fields processing tool
+- Processing: Support field comments and aliases in processing algorithms
+- Processing: New options for Build VPC algorithm
+- Processing: Thread management in algorithm settings
+- Processing: Allow temporary folder to be temporarily changed through the algorithm settings panel
+- Processing: Allow processing dialog to override default processing context settings
+- Processing: Additional parameters for gdal2xyz algorithm
+- Processing: Add "Keep disjoint results separate" option to buffer algorithm
+- Processing: Allow filter expressions to be set for vector sources
+- Processing: Support `*.HEIC` HEIF format images in Processing `ImportPhotosAlgorithm`
+- Application and Project Options: Settings editor updates
+- Application and Project Options: User profile selector
+- Profile Plots: Distance unit selection for elevation profiles
+- Profile Plots: Export elevation profiles
+- Profile Plots: Add layers to elevation profiles
+- Profile Plots: Add "Fill Above" mode for elevation profile drawing
+- Profile Plots: Add option to lock the horizontal/ vertical scale to matching scales
+- Sensors: Core sensors framework
+- Sensors: Sensors GUI registry and configuration widgets
+- Sensors: Sensor options panel within the project properties dialog
+- Browser: Set field comments in browser
+- Browser: Set field aliases in browser
+- Data Providers: Load layers in parallel threads when opening project
+- Data Providers: Implements server-side filtering using Part 1 or Part 3
+- Data Providers: Virtual point cloud data provider
+- Data Providers: Expose option to load vector tile sources from files in Data Source Manager
+- Data Providers: Additional user controlled vector tile properties
+- Data Providers: Fix broken layer support for vtpk/mbtile vector tile layers, show vtpk files in browser
+- QGIS Server: PDF format options for WMS GetPrint
+- QGIS Server: Configurable capabilities cache size
+- QGIS Server: Add display name in GetFeatureInfo response
+- QGIS Server: OGC API - Features: Add full pagination for collection items HTML page
+- Programmability: Python console help improvements
+- Programmability: Run shell commands from the Python Console
+- Programmability: Reformat code action for code editors
+- Programmability: Toggle Python console to full main window
+- Programmability: Reformat HTML Code in Code Editors
+-
+
+
 # What's new in Version 3.30 ''s-Hertogenbosch'?
 
 This release has following new features:

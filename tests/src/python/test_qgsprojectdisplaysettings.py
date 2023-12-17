@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/01/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -23,7 +22,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsSettings,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -31,7 +31,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProjectDisplaySettings(unittest.TestCase):
+class TestQgsProjectDisplaySettings(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -737,6 +737,19 @@ void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &ov
   mLayerStyleOverrides = overrides;
 }
 
+void QgsLayerTreeModel::addTargetScreenProperties( const QgsScreenProperties &properties )
+{
+  if ( mTargetScreenProperties.contains( properties ) )
+    return;
+
+  mTargetScreenProperties.insert( properties );
+}
+
+QSet<QgsScreenProperties> QgsLayerTreeModel::targetScreenProperties() const
+{
+  return mTargetScreenProperties;
+}
+
 int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
   return QgsApplication::scaleIconSize( standardSize, true );
@@ -1509,6 +1522,12 @@ QgsRenderContext *QgsLayerTreeModel::createTemporaryRenderContext() const
   // setup temporary render context
   std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
+
+  if ( !mTargetScreenProperties.isEmpty() )
+  {
+    mTargetScreenProperties.begin()->updateRenderContextForScreen( *context );
+  }
+
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
   context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );

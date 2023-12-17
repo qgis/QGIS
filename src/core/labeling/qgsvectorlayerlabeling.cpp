@@ -216,7 +216,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
         layer.reset( static_cast< QgsMarkerSymbolLayer * >( settings.markerSymbol()->symbolLayer( 0 )->clone() ) );
         break;
       }
-      FALLTHROUGH // not set, just go with the default
+      [[fallthrough]]; // not set, just go with the default
     }
     case QgsTextBackgroundSettings::ShapeCircle:
     case QgsTextBackgroundSettings::ShapeEllipse:
@@ -632,7 +632,13 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &p
     writeTextSymbolizer( ruleElement, *mSettings, props );
   }
 
+}
 
+void QgsVectorLayerSimpleLabeling::multiplyOpacity( double opacityFactor )
+{
+  QgsTextFormat format { mSettings->format() };
+  format.multiplyOpacity( opacityFactor );
+  mSettings->setFormat( format );
 }
 
 void QgsVectorLayerSimpleLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )

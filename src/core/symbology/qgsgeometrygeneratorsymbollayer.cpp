@@ -445,7 +445,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
     }
 
     f.setGeometry( coerceToExpectedType( result ) );
@@ -488,7 +488,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         }
         catch ( QgsCsException & )
         {
-          QgsDebugMsg( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+          QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
         }
         f.setGeometry( coerceToExpectedType( result ) );
         break;
@@ -503,7 +503,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
   const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
-  mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+  const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
+  mSymbol->renderFeature( f, context.renderContext(), -1, useSelectedColor );
 
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol, prevIsSubsymbol );
 

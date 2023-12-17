@@ -23,11 +23,12 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
-#include "qgsgeometryutils.h"
 #include "qgsprofilepoint.h"
 #include "qgsfillsymbol.h"
+#include "qgsthreadingutils.h"
 
 #include <QPolygonF>
+#include <QThread>
 
 //
 // QgsRasterLayerProfileResults
@@ -59,7 +60,8 @@ QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const
 //
 
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
-  : mId( layer->id() )
+  : QgsAbstractProfileSurfaceGenerator( request )
+  , mId( layer->id() )
   , mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
@@ -74,8 +76,10 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   , mStepDistance( request.stepDistance() )
 {
   mRasterProvider.reset( layer->dataProvider()->clone() );
+  mRasterProvider->moveToThread( nullptr );
 
   mSymbology = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
   mLineSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
   mFillSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
@@ -96,6 +100,8 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 {
   if ( !mProfileCurve || mFeedback->isCanceled() )
     return false;
+
+  QgsScopedAssignObjectToCurrentThread assignProviderToCurrentThread( mRasterProvider.get() );
 
   const double startDistanceOffset = std::max( !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0, 0.0 );
   const double endDistance = context.distanceRange().upper();
@@ -121,7 +127,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming profile line to raster CRS" ) );
+    QgsDebugError( QStringLiteral( "Error transforming profile line to raster CRS" ) );
     return false;
   }
 
@@ -137,6 +143,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
   mResults->mLayer = mLayer;
+  mResults->mId = mId;
   mResults->copyPropertiesFromGenerator( this );
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );

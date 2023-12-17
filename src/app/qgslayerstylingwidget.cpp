@@ -106,13 +106,14 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
 
-  mLayerCombo->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry
-                           | QgsMapLayerProxyModel::Filter::RasterLayer
-                           | QgsMapLayerProxyModel::Filter::PluginLayer
-                           | QgsMapLayerProxyModel::Filter::MeshLayer
-                           | QgsMapLayerProxyModel::Filter::VectorTileLayer
-                           | QgsMapLayerProxyModel::Filter::PointCloudLayer
-                           | QgsMapLayerProxyModel::Filter::AnnotationLayer );
+  mLayerCombo->setFilters( Qgis::LayerFilter::HasGeometry
+                           | Qgis::LayerFilter::RasterLayer
+                           | Qgis::LayerFilter::PluginLayer
+                           | Qgis::LayerFilter::MeshLayer
+                           | Qgis::LayerFilter::VectorTileLayer
+                           | Qgis::LayerFilter::PointCloudLayer
+                           | Qgis::LayerFilter::TiledSceneLayer
+                           | Qgis::LayerFilter::AnnotationLayer );
   mLayerCombo->setAdditionalLayers( { QgsProject::instance()->mainAnnotationLayer() } );
 
   mStackedWidget->setCurrentIndex( 0 );
@@ -274,6 +275,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 
@@ -340,14 +342,17 @@ void QgsLayerStylingWidget::apply()
   }
   if ( QgsPanelWidgetWrapper *wrapper = qobject_cast<QgsPanelWidgetWrapper *>( current ) )
   {
-    if ( QgsRendererPropertiesDialog *widget = qobject_cast<QgsRendererPropertiesDialog *>( wrapper->widget() ) )
+    if ( mCurrentLayer )
     {
-      widget->apply();
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
-      QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( layer->renderer()->type() );
-      undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
-      styleWasChanged = true;
-      triggerRepaint = true;
+      if ( QgsRendererPropertiesDialog *widget = qobject_cast<QgsRendererPropertiesDialog *>( wrapper->widget() ) )
+      {
+        widget->apply();
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+        QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( layer->renderer()->type() );
+        undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
+        styleWasChanged = true;
+        triggerRepaint = true;
+      }
     }
   }
   else if ( QgsRasterTransparencyWidget *widget = qobject_cast<QgsRasterTransparencyWidget *>( current ) )
@@ -626,13 +631,39 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           }
           case 3: // Attribute Tables
           {
-            if ( !mRasterAttributeTableWidget )
-            {
-              mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( mWidgetStack, rlayer );
-              mRasterAttributeTableWidget->setDockMode( true );
-            }
 
-            mWidgetStack->setMainPanel( mRasterAttributeTableWidget );
+            if ( rlayer->attributeTableCount() > 0 )
+            {
+              if ( !mRasterAttributeTableWidget )
+              {
+                mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( mWidgetStack, rlayer );
+                mRasterAttributeTableWidget->setDockMode( true );
+              }
+              else
+              {
+                mRasterAttributeTableWidget->setRasterLayer( rlayer );
+              }
+
+              mWidgetStack->setMainPanel( mRasterAttributeTableWidget );
+            }
+            else
+            {
+              if ( ! mRasterAttributeTableDisabledWidget )
+              {
+                mRasterAttributeTableDisabledWidget = new QgsPanelWidget{ mWidgetStack };
+                QVBoxLayout *layout = new QVBoxLayout{ mRasterAttributeTableDisabledWidget };
+                mRasterAttributeTableDisabledWidget->setLayout( layout );
+                QLabel *label { new QLabel( tr( "There are no raster attribute tables associated with this data source.<br>"
+                                                  "If the current symbology can be converted to an attribute table you "
+                                                  "can create a new attribute table using the context menu available in the "
+                                                  "layer tree or in the layer properties dialog." ) )};
+                label->setWordWrap( true );
+                mRasterAttributeTableDisabledWidget->layout()->addWidget( label );
+                layout->addStretch();
+                mRasterAttributeTableDisabledWidget->setDockMode( true );
+              }
+              mWidgetStack->setMainPanel( mRasterAttributeTableDisabledWidget );
+            }
 
             break;
           }
@@ -710,6 +741,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledScene:
       {
         break;
       }
@@ -908,6 +940,7 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       return false;
   }
   return false; // no warnings

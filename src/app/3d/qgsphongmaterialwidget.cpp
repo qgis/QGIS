@@ -18,10 +18,13 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgis.h"
 
-QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
+QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity )
   : QgsMaterialSettingsWidget( parent )
+  , mHasOpacity( hasOpacity )
 {
   setupUi( this );
+  mOpacityWidget->setVisible( mHasOpacity );
+  mLblOpacity->setVisible( mHasOpacity );
 
   QgsPhongMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
@@ -33,7 +36,10 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+  if ( mHasOpacity )
+  {
+    connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+  }
 }
 
 QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
@@ -117,7 +123,8 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
-  m->setOpacity( mOpacityWidget->opacity() );
+  float opacity = mHasOpacity ? static_cast<float>( mOpacityWidget->opacity() ) : 1.0f;
+  m->setOpacity( opacity );
 
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Ambient, mAmbientDataDefinedButton->toProperty() );
@@ -125,4 +132,24 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();
+}
+
+void QgsPhongMaterialWidget::setHasOpacity( const bool opacity )
+{
+  if ( mHasOpacity == opacity )
+  {
+    return;
+  }
+
+  mHasOpacity = opacity;
+  mOpacityWidget->setVisible( mHasOpacity );
+  mLblOpacity->setVisible( mHasOpacity );
+  if ( mHasOpacity )
+  {
+    connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+  }
+  else
+  {
+    disconnect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+  }
 }

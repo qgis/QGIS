@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
@@ -25,7 +24,8 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -56,7 +56,7 @@ def createEmptyLinestringLayer():
     return layer
 
 
-class TestQgsVectorLayerEditBuffer(unittest.TestCase):
+class TestQgsVectorLayerEditBuffer(QgisTestCase):
 
     def testAddFeatures(self):
         # test adding features to an edit buffer

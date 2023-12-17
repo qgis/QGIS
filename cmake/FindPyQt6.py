@@ -48,7 +48,6 @@ for p in (os.path.join(sip_dir, "PyQt6"),
 print("pyqt_version_str:%s" % PyQt6.QtCore.PYQT_VERSION_STR)
 print("pyqt_mod_dir:%s" % os.path.join(cfg.default_mod_dir, "PyQt6"))
 print("pyqt_sip_dir:%s" % sip_dir)
-print("pyqt_sip_flags:%s" % PyQt6.QtCore.PYQT_CONFIGURATION['sip_flags'])
 print("pyqt_bin_dir:%s" % cfg.default_bin_dir)
 
 try:

@@ -363,10 +363,10 @@ QString QgsCoordinateOperationWidget::formatScope( const QString &s )
 {
   QString scope = s;
 
-  QRegularExpression reGNSS( QStringLiteral( "\\bGNSS\\b" ) );
+  const thread_local QRegularExpression reGNSS( QStringLiteral( "\\bGNSS\\b" ) );
   scope.replace( reGNSS, QObject::tr( "GNSS (Global Navigation Satellite System)" ) );
 
-  QRegularExpression reCORS( QStringLiteral( "\\bCORS\\b" ) );
+  const thread_local QRegularExpression reCORS( QStringLiteral( "\\bCORS\\b" ) );
   scope.replace( reCORS, QObject::tr( "CORS (Continually Operating Reference Station)" ) );
 
   return scope;

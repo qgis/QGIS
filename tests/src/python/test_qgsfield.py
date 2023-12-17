@@ -9,19 +9,19 @@ __author__ = 'Nyall Dawson'
 __date__ = '16/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     Qgis,
     QgsField,
     QgsCoordinateReferenceSystem
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsField(unittest.TestCase):
+class TestQgsField(QgisTestCase):
 
     def test_metadata(self):
         field = QgsField()

@@ -13,14 +13,14 @@ import gc
 import os
 import tempfile
 
-import qgis  # NOQA
 from qgis.core import (
     QgsApplication,
     QgsPathResolver,
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -29,7 +29,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsPathResolver(unittest.TestCase):
+class TestQgsPathResolver(QgisTestCase):
 
     def testCustomPreprocessor(self):
         self.assertEqual(QgsPathResolver().readPath('aaaaa'), 'aaaaa')

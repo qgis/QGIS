@@ -55,6 +55,11 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
 {
   delete mLeft;
   delete mRight;
+  for ( int i = 0; i < mFunctionArgs.size(); ++i )
+  {
+    if ( mFunctionArgs.at( i ) )
+      delete mFunctionArgs.at( i );
+  }
 }
 
 bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row ) const
@@ -67,7 +72,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     const QMap<QString, QgsRasterBlock *>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
-      QgsDebugMsg( QStringLiteral( "Error: could not find raster data for \"%1\"" ).arg( mRasterName ) );
+      QgsDebugError( QStringLiteral( "Error: could not find raster data for \"%1\"" ).arg( mRasterName ) );
       return false;
     }
 
@@ -217,15 +222,15 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   }
   else if ( mType == tFunction )
   {
-    QVector <QgsRasterMatrix *> matrixContainer;
+    std::vector< std::unique_ptr< QgsRasterMatrix > > matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      std::unique_ptr< QgsRasterMatrix > singleMatrix( new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) );
+      std::unique_ptr< QgsRasterMatrix > singleMatrix = std::make_unique< QgsRasterMatrix >( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
       if ( !mFunctionArgs.at( i ) || !mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix, row ) )
       {
         return false;
       }
-      matrixContainer.append( singleMatrix.release() );
+      matrixContainer.emplace_back( std::move( singleMatrix ) );
     }
     evaluateFunction( matrixContainer, result );
     return true;
@@ -456,7 +461,7 @@ QStringList QgsRasterCalcNode::cleanRasterReferences()
   return rasterReferences;
 }
 
-QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const
+QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const std::vector< std::unique_ptr< QgsRasterMatrix > > &matrixVector, QgsRasterMatrix &result ) const
 {
 
   if ( mFunctionName == "if" )
@@ -470,7 +475,7 @@ QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const QVector<QgsRasterMatr
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
-    std::unique_ptr< double > dataResult( new double[nEntries] );
+    std::unique_ptr< double[] > dataResult = std::make_unique< double[] >( nEntries );
     double *dataResultRawPtr =  dataResult.get();
 
     double *condition = matrixVector.at( 0 )->data();

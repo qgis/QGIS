@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication, QEvent, QPointF, QRectF, Qt
 from qgis.PyQt.QtTest import QSignalSpy
@@ -31,12 +30,13 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsLayoutPageCollection(unittest.TestCase):
+class TestQgsLayoutPageCollection(QgisTestCase):
 
     def testLayout(self):
         # test that layouts have a collection

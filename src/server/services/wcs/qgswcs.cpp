@@ -110,7 +110,7 @@ class QgsWcsModule: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( QStringLiteral( "WCSModule::registerSelf called" ) );
+      QgsDebugMsgLevel( QStringLiteral( "WCSModule::registerSelf called" ), 2 );
       registry.registerService( new  QgsWcs::Service( serverIface ) );
     }
 };

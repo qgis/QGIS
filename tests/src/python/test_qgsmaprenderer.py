@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 
 from random import uniform
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
@@ -30,12 +29,13 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsMapRenderer(unittest.TestCase):
+class TestQgsMapRenderer(QgisTestCase):
 
     def setUp(self):
         pass

@@ -27,6 +27,7 @@ class QgsVectorTileLabeling;
 class QgsFeature;
 class QgsGeometry;
 class QgsSelectionContext;
+class QgsVectorTileRawData;
 
 /**
  * \ingroup core
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      * \note This call may issue a network request (depending on the source type) and will block
      * the caller until the request is finished.
      */
-    QByteArray getRawTile( QgsTileXYZ tileID ) SIP_SKIP;
+    QgsVectorTileRawData getRawTile( QgsTileXYZ tileID ) SIP_SKIP;
 
     /**
      * Sets renderer for the map layer.
@@ -214,6 +215,27 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     void setLabeling( QgsVectorTileLabeling *labeling SIP_TRANSFER );
     //! Returns currently assigned labeling
     QgsVectorTileLabeling *labeling() const;
+
+    /**
+     * Returns whether the layer contains labels which are enabled and should be drawn.
+     * \returns TRUE if layer contains enabled labels
+     *
+     * \see setLabelsEnabled()
+     * \since QGIS 3.34
+     */
+    bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is TRUE and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.34
+     */
+    void setLabelsEnabled( bool enabled );
 
     //! Sets whether to render also borders of tiles (useful for debugging)
     void setTileBorderRenderingEnabled( bool enabled ) { mTileBorderRendering = enabled; }
@@ -292,6 +314,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
     //! Labeling assigned to the layer to produce labels
     std::unique_ptr<QgsVectorTileLabeling> mLabeling;
+    //! True if labels are enabled
+    bool mLabelsEnabled = true;
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
 

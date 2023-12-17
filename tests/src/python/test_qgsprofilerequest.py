@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -21,12 +20,13 @@ from qgis.core import (
     QgsMeshTerrainProvider,
     QgsProfileRequest,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsProfileRequest(unittest.TestCase):
+class TestQgsProfileRequest(QgisTestCase):
 
     def testBasic(self):
         req = QgsProfileRequest(QgsLineString([[1, 2], [3, 4]]))

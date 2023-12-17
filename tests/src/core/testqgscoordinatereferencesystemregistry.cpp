@@ -35,6 +35,8 @@ class TestQgsCoordinateReferenceSystemRegistry: public QObject
     void changeUserCrs();
     void removeUserCrs();
     void projOperations();
+    void authorities();
+    void crsDbRecords();
 
   private:
 
@@ -64,7 +66,7 @@ void TestQgsCoordinateReferenceSystemRegistry::initTestCase()
 
   QSettings().clear();
 
-  QgsDebugMsg( QStringLiteral( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ), 1 );
 }
 
 void TestQgsCoordinateReferenceSystemRegistry::cleanupTestCase()
@@ -314,6 +316,38 @@ void TestQgsCoordinateReferenceSystemRegistry::projOperations()
   QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).id(), QStringLiteral( "lcc" ) );
   QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).description(), QStringLiteral( "Lambert Conformal Conic" ) );
   QVERIFY( operations.value( QStringLiteral( "lcc" ) ).details().contains( QStringLiteral( "Conic" ) ) );
+}
+
+void TestQgsCoordinateReferenceSystemRegistry::authorities()
+{
+  const QSet< QString > authorities = QgsApplication::coordinateReferenceSystemRegistry()->authorities();
+
+  QVERIFY( authorities.contains( QStringLiteral( "epsg" ) ) );
+  QVERIFY( authorities.contains( QStringLiteral( "proj" ) ) );
+  QVERIFY( authorities.contains( QStringLiteral( "esri" ) ) );
+}
+
+void TestQgsCoordinateReferenceSystemRegistry::crsDbRecords()
+{
+  const QList< QgsCrsDbRecord > records = QgsApplication::coordinateReferenceSystemRegistry()->crsDbRecords();
+  QVERIFY( !records.isEmpty() );
+
+  auto it = std::find_if( records.begin(), records.end(),
+  []( const QgsCrsDbRecord & record ) { return record.authName == QLatin1String( "EPSG" ) && record.authId == QLatin1String( "3111" );} );
+  QVERIFY( it != records.end() );
+  QCOMPARE( it->description, QStringLiteral( "GDA94 / Vicgrid" ) );
+  QCOMPARE( it->type, Qgis::CrsType::Projected );
+
+  // check that database includes vertical CRS
+  it = std::find_if( records.begin(), records.end(),
+  []( const QgsCrsDbRecord & record ) { return record.type == Qgis::CrsType::Vertical;} );
+  QVERIFY( it != records.end() );
+
+  // check that database includes compound CRS
+  it = std::find_if( records.begin(), records.end(),
+  []( const QgsCrsDbRecord & record ) { return record.type == Qgis::CrsType::Compound;} );
+  QVERIFY( it != records.end() );
+
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystemRegistry )

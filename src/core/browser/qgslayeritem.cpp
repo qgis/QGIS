@@ -117,6 +117,9 @@ Qgis::LayerType QgsLayerItem::mapLayerType() const
     case Qgis::BrowserLayerType::PointCloud:
       return Qgis::LayerType::PointCloud;
 
+    case Qgis::BrowserLayerType::TiledScene:
+      return Qgis::LayerType::TiledScene;
+
     case Qgis::BrowserLayerType::NoType:
     case Qgis::BrowserLayerType::Vector:
     case Qgis::BrowserLayerType::Point:
@@ -168,6 +171,8 @@ Qgis::BrowserLayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Qgis::BrowserLayerType::PointCloud;
     case Qgis::LayerType::VectorTile:
       return Qgis::BrowserLayerType::VectorTile;
+    case Qgis::LayerType::TiledScene:
+      return Qgis::BrowserLayerType::TiledScene;
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
       return Qgis::BrowserLayerType::Vector; // will never happen!
@@ -203,11 +208,13 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
       return QStringLiteral( "/mIconPointCloudLayer.svg" );
     case Qgis::BrowserLayerType::VectorTile:
       return QStringLiteral( "/mIconVectorTileLayer.svg" );
+    case Qgis::BrowserLayerType::TiledScene:
+      return QStringLiteral( "/mIconTiledSceneLayer.svg" );
 
     case Qgis::BrowserLayerType::NoType:
     case Qgis::BrowserLayerType::Database:
     case Qgis::BrowserLayerType::Plugin:
-      return QStringLiteral( "/mIconLayer.png" );;
+      return QStringLiteral( "/mIconLayer.png" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -264,6 +271,7 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
         case Qgis::BrowserLayerType::Mesh:
         case Qgis::BrowserLayerType::PointCloud:
         case Qgis::BrowserLayerType::VectorTile:
+        case Qgis::BrowserLayerType::TiledScene:
           break;
       }
       break;
@@ -278,6 +286,9 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
       break;
     case Qgis::LayerType::PointCloud:
       u.layerType = QStringLiteral( "pointcloud" );
+      break;
+    case Qgis::LayerType::TiledScene:
+      u.layerType = QStringLiteral( "tiled-scene" );
       break;
     case Qgis::LayerType::Plugin:
       u.layerType = QStringLiteral( "plugin" );

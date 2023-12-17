@@ -239,7 +239,6 @@ void QgsLayoutItemAttributeTable::setMap( QgsLayoutItemMap *map )
     //listen out for extent changes in linked map
     connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
     connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutTable::refreshAttributes );
-    connect( mMap, &QObject::destroyed, this, &QgsLayoutItemAttributeTable::disconnectCurrentMap );
   }
   refreshAttributes();
   emit changed();
@@ -678,7 +677,7 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
     {
       QFont newFont = format.font();
       // we want to keep all the other font settings, like word/letter spacing
-      newFont.setFamily( styleFont.family() );
+      QgsFontUtils::setFontFamily( newFont, styleFont.family() );
 
       // warning -- there's a potential trap here! We can't just read QFont::styleName(), as that may be blank even when
       // the font has the bold or italic attributes set! Reading the style name via QFontInfo avoids this and always returns

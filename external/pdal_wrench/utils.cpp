@@ -109,7 +109,7 @@ void runPipelineParallel(point_count_t totalPoints, bool isStreaming, std::vecto
 
     sProgressBar.init(isStreaming ? num_chunks : pipelines.size());
 
-    int nThreads = std::min( (int)pipelines.size(), max_threads );
+    int nThreads = (std::min)( (int)pipelines.size(), max_threads );
     ThreadPool p(nThreads);
     for (size_t i = 0; i < pipelines.size(); ++i)
     {

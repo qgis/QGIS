@@ -154,7 +154,7 @@ std::unique_ptr<PipelineManager> Density::pipeline(ParallelJobInfo *tile) const
 }
 
 
-void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines, const BOX3D &bounds, point_count_t &totalPoints)
+void Density::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     if (ends_with(inputFile, ".vpc"))
     {

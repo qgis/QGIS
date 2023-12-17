@@ -34,7 +34,7 @@
 class QgsMeshTimeSettings;
 class QgsTriangularMesh;
 class QgsMeshDataBlock;
-class QgsMesh3dAveragingMethod;
+class QgsMesh3DAveragingMethod;
 class QgsMeshDatasetValue;
 class QgsMeshLayer;
 
@@ -127,7 +127,8 @@ class CORE_EXPORT QgsMeshLayerUtils
       int &leftLim,
       int &rightLim,
       int &bottomLim,
-      int &topLim );
+      int &topLim,
+      double devicePixelRatio = 1.0 );
 
     /**
      * Transformes the bounding box to rectangle in screen coordinates (in pixels)
@@ -136,7 +137,26 @@ class CORE_EXPORT QgsMeshLayerUtils
      */
     static QgsRectangle boundingBoxToScreenRectangle(
       const QgsMapToPixel &mtp,
-      const QgsRectangle &bbox
+      const QgsRectangle &bbox,
+      double devicePixelRatio = 1.0
+    );
+
+    /**
+     * Calculates barycentric coordinates of point \a pP in a triangle given by
+     * its vertices \a pA, \a pB and \a pC. The results are written to \a lam1,
+     * \a lam2, \a lam3. The function returns true or false, depending on whether
+     * the point \a pP is inside the triangle.
+     *
+     * \since QGIS 3.36
+     */
+    static bool calculateBarycentricCoordinates(
+      const QgsPointXY &pA,
+      const QgsPointXY &pB,
+      const QgsPointXY &pC,
+      const QgsPointXY &pP,
+      double &lam1,
+      double &lam2,
+      double &lam3
     );
 
     /**

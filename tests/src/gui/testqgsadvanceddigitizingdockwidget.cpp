@@ -119,15 +119,15 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
   QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::NauticalMiles );
 
   result = widget.parseUserInput( QStringLiteral( "120.123" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result, 222467.796 );
+  QCOMPARE( result,  120.123 );
   QVERIFY( ok );
 
   result = widget.parseUserInput( QStringLiteral( "120.123 NM" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result, 222467.796 );
+  QCOMPARE( result,  120.123 );
   QVERIFY( ok );
 
   result = widget.parseUserInput( QStringLiteral( "120.123NM" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result, 222467.796 );
+  QCOMPARE( result,  120.123 );
   QVERIFY( ok );
 
 }

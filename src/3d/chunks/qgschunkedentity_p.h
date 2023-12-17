@@ -93,30 +93,6 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     //! Returns the root node of the whole quadtree hierarchy of nodes
     QgsChunkNode *rootNode() const { return mRootNode; }
 
-    //! Sets whether additive strategy is enabled - see usingAditiveStrategy()
-    void setUsingAdditiveStrategy( bool additive ) { mAdditiveStrategy = additive; }
-
-    /**
-     * Returns whether additive strategy is enabled.
-     * With additive strategy enabled, also all parent nodes are added to active nodes.
-     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
-     */
-    bool usingAditiveStrategy() const { return mAdditiveStrategy; }
-
-    /**
-     * Sets the limit of the GPU memory used to render the entity
-     * \since QGIS 3.26
-     */
-    void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }
-
-    /**
-     * Returns the limit of the GPU memory used to render the entity in megabytes
-     * \since QGIS 3.26
-     */
-    double gpuMemoryLimit() const { return mGpuMemoryLimit; }
-
-    static double calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity );
-
     /**
      * Checks if \a ray intersects the entity by using the specified parameters in \a context and returns information about the hits.
      * This method is typically used by map tools that need to identify the exact location on a 3d entity that the mouse cursor points at,
@@ -146,6 +122,8 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
 
     void startJobs();
     QgsChunkQueueJob *startJob( QgsChunkNode *node );
+
+    int unloadNodes();
 
   private slots:
     void onActiveJobFinished();
@@ -187,16 +165,9 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     //! jobs that are currently being processed (asynchronously in worker threads)
     QList<QgsChunkQueueJob *> mActiveJobs;
 
-    /**
-     * With additive strategy enabled, also all parent nodes are added to active nodes.
-     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
-     */
-    bool mAdditiveStrategy = false;
-
     bool mIsValid = true;
 
     int mPrimitivesBudget = std::numeric_limits<int>::max();
-    double mGpuMemoryLimit = 500.0; // in megabytes
 };
 
 /// @endcond

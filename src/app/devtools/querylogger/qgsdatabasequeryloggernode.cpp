@@ -208,8 +208,6 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
   if ( query.error.isEmpty() )
   {
     mStatus = query.canceled ? Status::Canceled : Status::Complete;
-    mElapsed = static_cast<qint64>( query.finishedTime - query.startedTime );
-    addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( mElapsed ) );
     if ( query.fetchedRows != -1 )
     {
       addKeyValueNode( QObject::tr( "Row count" ), QLocale().toString( query.fetchedRows ) );
@@ -220,6 +218,8 @@ void QgsDatabaseQueryLoggerQueryGroup::setFinished( const QgsDatabaseQueryLogEnt
     mStatus = Status::Error;
     addKeyValueNode( QObject::tr( "Error" ), query.error );
   }
+  mElapsed = static_cast<qint64>( query.finishedTime - query.startedTime );
+  addKeyValueNode( QObject::tr( "Total time (ms)" ), QLocale().toString( mElapsed ) );
 }
 
 void QgsDatabaseQueryLoggerQueryGroup::setStatus( QgsDatabaseQueryLoggerQueryGroup::Status status )

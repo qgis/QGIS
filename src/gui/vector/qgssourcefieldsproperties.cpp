@@ -224,7 +224,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
-    expressionWidget->setStyleSheet( "background-color: rgb( 200, 200, 255 )" );
+    expressionWidget->setStyleSheet( "*[class~=\"QWidget\"] { background-color: rgba( 103, 0, 243, 0.12 ); } QToolButton { background-color: rgba( 203, 100, 243, 0.6 ); }" );
     mFieldsList->setCellWidget( row, AttrCommentCol, expressionWidget );
   }
   else
@@ -258,10 +258,10 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   // Flags
   QgsCheckableComboBox *cb = new QgsCheckableComboBox( mFieldsList );
-  const QList<QgsField::ConfigurationFlag> flagList = qgsEnumList<QgsField::ConfigurationFlag>();
-  for ( const QgsField::ConfigurationFlag flag : flagList )
+  const QList<Qgis::FieldConfigurationFlag> flagList = qgsEnumList<Qgis::FieldConfigurationFlag>();
+  for ( const Qgis::FieldConfigurationFlag flag : flagList )
   {
-    if ( flag == QgsField::ConfigurationFlag::None )
+    if ( flag == Qgis::FieldConfigurationFlag::NoFlag )
       continue;
 
     cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ),
@@ -273,7 +273,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 {
-  QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );
+  QgsDebugMsgLevel( "inserting attribute " + field.name() + " of type " + field.typeName(), 2 );
   mLayer->beginEditCommand( tr( "Added attribute" ) );
   if ( mLayer->addAttribute( field ) )
   {
@@ -293,7 +293,7 @@ void QgsSourceFieldsProperties::apply()
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     const int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
-    QgsField::ConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
+    Qgis::FieldConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
 
     QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
     if ( cb )
@@ -302,7 +302,7 @@ void QgsSourceFieldsProperties::apply()
       for ( int r = 0; r < model->rowCount(); ++r )
       {
         const QModelIndex index = model->index( r, 0 );
-        const QgsField::ConfigurationFlag flag = model->data( index, Qt::UserRole ).value<QgsField::ConfigurationFlag>();
+        const Qgis::FieldConfigurationFlag flag = model->data( index, Qt::UserRole ).value<Qgis::FieldConfigurationFlag>();
         const bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
         flags.setFlag( flag, active );
       }

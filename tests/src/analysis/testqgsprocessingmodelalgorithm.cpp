@@ -82,9 +82,15 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 };
 
 
-class TestQgsProcessingModelAlgorithm: public QObject
+class TestQgsProcessingModelAlgorithm: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsProcessingModelAlgorithm()
+      : QgsTest( QStringLiteral( "Processing Model Test" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -107,6 +113,7 @@ class TestQgsProcessingModelAlgorithm: public QObject
     void modelNameMatchesFileName();
     void renameModelParameter();
     void internalVersion();
+    void modelChildOrderWithVariables();
 
   private:
 
@@ -180,7 +187,7 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
 {
   //static value source
   QgsProcessingModelChildParameterSource svSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
-  QCOMPARE( svSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( svSource.source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( svSource.staticValue().toInt(), 5 );
   svSource.setStaticValue( 7 );
   QCOMPARE( svSource.staticValue().toInt(), 7 );
@@ -188,16 +195,16 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( svSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "7" ) );
   svSource = QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "a" ) );
   // check that calling setStaticValue flips source to StaticValue
-  QCOMPARE( svSource.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( svSource.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( svSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "parameters['a']" ) );
   svSource.setStaticValue( 7 );
   QCOMPARE( svSource.staticValue().toInt(), 7 );
-  QCOMPARE( svSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( svSource.source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( svSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "7" ) );
 
   // model parameter source
   QgsProcessingModelChildParameterSource mpSource = QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "a" ) );
-  QCOMPARE( mpSource.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( mpSource.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( mpSource.parameterName(), QStringLiteral( "a" ) );
   QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "parameters['a']" ) );
   mpSource.setParameterName( QStringLiteral( "b" ) );
@@ -205,16 +212,16 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "parameters['b']" ) );
   mpSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setParameterName flips source to ModelParameter
-  QCOMPARE( mpSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( mpSource.source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "5" ) );
   mpSource.setParameterName( QStringLiteral( "c" ) );
   QCOMPARE( mpSource.parameterName(), QStringLiteral( "c" ) );
-  QCOMPARE( mpSource.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( mpSource.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( mpSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "parameters['c']" ) );
 
   // child alg output source
   QgsProcessingModelChildParameterSource oSource = QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "a" ), QStringLiteral( "b" ) );
-  QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( oSource.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( oSource.outputChildId(), QStringLiteral( "a" ) );
   QCOMPARE( oSource.outputName(), QStringLiteral( "b" ) );
   QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "outputs['a']['b']" ) );
@@ -229,22 +236,22 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "outputs['c']['d']" ) );
   oSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setOutputChildId flips source to ChildOutput
-  QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( oSource.source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "5" ) );
   oSource.setOutputChildId( QStringLiteral( "c" ) );
   QCOMPARE( oSource.outputChildId(), QStringLiteral( "c" ) );
-  QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( oSource.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   oSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setOutputName flips source to ChildOutput
-  QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( oSource.source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( oSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "5" ) );
   oSource.setOutputName( QStringLiteral( "d" ) );
   QCOMPARE( oSource.outputName(), QStringLiteral( "d" ) );
-  QCOMPARE( oSource.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( oSource.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
 
   // expression source
   QgsProcessingModelChildParameterSource expSource = QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "1+2" ) );
-  QCOMPARE( expSource.source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( expSource.source(), Qgis::ProcessingModelChildParameterSource::Expression );
   QCOMPARE( expSource.expression(), QStringLiteral( "1+2" ) );
   QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "QgsExpression('1+2').evaluate()" ) );
   expSource.setExpression( QStringLiteral( "1+3" ) );
@@ -255,11 +262,11 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "QgsExpression(\"'a' || 'b\\\\'c'\").evaluate()" ) );
   expSource = QgsProcessingModelChildParameterSource::fromStaticValue( 5 );
   // check that calling setExpression flips source to Expression
-  QCOMPARE( expSource.source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( expSource.source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "5" ) );
   expSource.setExpression( QStringLiteral( "1+4" ) );
   QCOMPARE( expSource.expression(), QStringLiteral( "1+4" ) );
-  QCOMPARE( expSource.source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( expSource.source(), Qgis::ProcessingModelChildParameterSource::Expression );
   QCOMPARE( expSource.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, nullptr, friendlyNames ), QStringLiteral( "QgsExpression('1+4').evaluate()" ) );
 
   // source equality operator
@@ -419,6 +426,8 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 1 ).staticValue().toInt(), 9 );
 
   QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
+  child.comment()->setDescription( QStringLiteral( "do\nsomething\n\nuseful" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    # do\n    # something\n    # \n    # useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
   child.comment()->setDescription( QStringLiteral( "do something useful" ) );
   QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
 
@@ -971,26 +980,26 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( alg6c1.size().width(), 11.0 );
   QCOMPARE( alg6c1.size().height(), 21.0 );
   QCOMPARE( alg6c1.parameterSources().count(), 5 );
-  QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "x" ) ).at( 0 ).source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "x" ) ).at( 0 ).source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "x" ) ).at( 0 ).parameterName(), QStringLiteral( "p1" ) );
-  QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "y" ) ).at( 0 ).source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "y" ) ).at( 0 ).source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "y" ) ).at( 0 ).outputChildId(), QStringLiteral( "cx2" ) );
   QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "y" ) ).at( 0 ).outputName(), QStringLiteral( "out3" ) );
-  QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "z" ) ).at( 0 ).source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "z" ) ).at( 0 ).source(), Qgis::Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( alg6c1.parameterSources().value( QStringLiteral( "z" ) ).at( 0 ).staticValue().toInt(), 5 );
-  QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).source(), Qgis::ProcessingModelChildParameterSource::Expression );
   QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).expression(), QStringLiteral( "2*2" ) );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).count(), 5 );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).staticValue().toInt(), 6 );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).parameterName(), QStringLiteral( "p2" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputChildId(), QStringLiteral( "cx2" ) );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputName(), QStringLiteral( "out4" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).source(), Qgis::ProcessingModelChildParameterSource::Expression );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).expression(), QStringLiteral( "1+2" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().userType(), QMetaType::type( "QgsProperty" ) );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "1+8" ) );
 
@@ -1182,18 +1191,18 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
 
   // Check variables for child algorithm
   // without values
-  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), context );
+  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), &context );
   QCOMPARE( variables.count(), 7 );
-  QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "CRS" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "DIST" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "CRS" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
 
   // with values
-  variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), context, modelInputs, childResults );
+  variables = model2.variablesForChildAlgorithm( QStringLiteral( "cx1" ), &context, modelInputs, childResults );
   QCOMPARE( variables.count(), 7 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
@@ -1229,27 +1238,27 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:Centroids" ) );
   QCOMPARE( params.count(), 2 );
 
-  variables = model2.variablesForChildAlgorithm( "cx2", context );
+  variables = model2.variablesForChildAlgorithm( "cx2", &context );
   QCOMPARE( variables.count(), 12 );
-  QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "cx1_OUTPUT" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "DIST" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "cx1_OUTPUT" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_minx" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_minx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_minx" ).source.outputChildId(),  QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_miny" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_miny" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_miny" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_maxx" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_maxx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_maxx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.outputChildId(), QStringLiteral( "cx1" ) );
 
   // with values
-  variables = model2.variablesForChildAlgorithm( "cx2", context, modelInputs, childResults );
+  variables = model2.variablesForChildAlgorithm( "cx2", &context, modelInputs, childResults );
   QCOMPARE( variables.count(), 12 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
@@ -1334,36 +1343,36 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "AB" ) );
   model2.removeChildAlgorithm( "cx4" );
 
-  variables = model2.variablesForChildAlgorithm( "cx3", context );
+  variables = model2.variablesForChildAlgorithm( "cx3", &context );
   QCOMPARE( variables.count(), 17 );
-  QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( variables.value( "cx1_OUTPUT" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "DIST" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "cx1_OUTPUT" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_minx" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_minx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_minx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_miny" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_miny" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_miny" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_maxx" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_maxx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_maxx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx1_OUTPUT_maxy" ).source.outputChildId(), QStringLiteral( "cx1" ) );
-  QCOMPARE( variables.value( "cx2_OUTPUT" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx2_OUTPUT" ).source.outputChildId(), QStringLiteral( "cx2" ) );
-  QCOMPARE( variables.value( "cx2_OUTPUT_minx" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_minx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx2_OUTPUT_minx" ).source.outputChildId(), QStringLiteral( "cx2" ) );
-  QCOMPARE( variables.value( "cx2_OUTPUT_miny" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_miny" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx2_OUTPUT_miny" ).source.outputChildId(), QStringLiteral( "cx2" ) );
-  QCOMPARE( variables.value( "cx2_OUTPUT_maxx" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_maxx" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx2_OUTPUT_maxx" ).source.outputChildId(), QStringLiteral( "cx2" ) );
-  QCOMPARE( variables.value( "cx2_OUTPUT_maxy" ).source.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_maxy" ).source.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( variables.value( "cx2_OUTPUT_maxy" ).source.outputChildId(), QStringLiteral( "cx2" ) );
   // with values
-  variables = model2.variablesForChildAlgorithm( "cx3", context, modelInputs, childResults );
+  variables = model2.variablesForChildAlgorithm( "cx3", &context, modelInputs, childResults );
   QCOMPARE( variables.count(), 17 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
@@ -1383,7 +1392,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QgsProcessingModelChildAlgorithm &cx1 = model2.childAlgorithm( QStringLiteral( "cx1" ) );
   const QString oldDescription = cx1.description();
   cx1.setDescription( "cx '():.1" );
-  variables = model2.variablesForChildAlgorithm( "cx3", context );
+  variables = model2.variablesForChildAlgorithm( "cx3", &context );
   QVERIFY( !variables.contains( "cx1_OUTPUT" ) );
   QVERIFY( !variables.contains( "cx '():.1_OUTPUT" ) );
   QVERIFY( variables.contains( "cx______1_OUTPUT" ) );
@@ -1395,7 +1404,7 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   model2.updateDestinationParameters();
   model2.childAlgorithm( QStringLiteral( "cx1" ) ).setDescription( "first step in my model" );
   const QStringList actualParts = model2.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 2 );
-  QgsDebugMsg( actualParts.join( '\n' ) );
+  QgsDebugMsgLevel( actualParts.join( '\n' ), 1 );
   const QStringList expectedParts = QStringLiteral( "\"\"\"\n"
                                     "Model exported as python.\n"
                                     "Name : 2my model\n"
@@ -2007,34 +2016,56 @@ void TestQgsProcessingModelAlgorithm::modelValidate()
   m.addChildAlgorithm( alg2c1 );
 
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
-  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT</i> is mandatory" ) );
-  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QVERIFY( !m.validate( errors ) );
-  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "<b>centroids</b>: Parameter <i>INPUT</i> is mandatory" ) );
-  QCOMPARE( errors.at( 1 ), QStringLiteral( "<b>centroids</b>: Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QgsProcessingModelChildParameterSource badSource;
-  badSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
+  badSource.setSource( Qgis::ProcessingModelChildParameterSource::StaticValue );
   badSource.setStaticValue( 56 );
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
 
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
-  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT</i> is not acceptable for this parameter" ) );
-  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QgsProcessingModelChildParameterSource goodSource;
-  goodSource.setSource( QgsProcessingModelChildParameterSource::Expression );
+  goodSource.setSource( Qgis::ProcessingModelChildParameterSource::Expression );
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "ALL_PARTS" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
 
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
   QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT</i> is not acceptable for this parameter" ) );
 
-  badSource.setSource( QgsProcessingModelChildParameterSource::ChildOutput );
+  QgsProcessingModelChildAlgorithm alg3c1;
+  alg3c1.setChildId( QStringLiteral( "cx3" ) );
+  alg3c1.setAlgorithmId( "native:stringconcatenation" );
+  alg3c1.setDescription( QStringLiteral( "string concat" ) );
+  m.addChildAlgorithm( alg3c1 );
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx3" ), errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT_1</i> is mandatory" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>INPUT_2</i> is mandatory" ) );
+  goodSource.setSource( Qgis::ProcessingModelChildParameterSource::StaticValue );
+  goodSource.setStaticValue( 56 );
+  m.childAlgorithm( QStringLiteral( "cx3" ) ).addParameterSources( QStringLiteral( "INPUT_1" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx3" ), errors ) );
+  QCOMPARE( errors.size(), 1 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT_2</i> is mandatory" ) );
+  badSource.setSource( Qgis::ProcessingModelChildParameterSource::StaticValue );
+  badSource.setStaticValue( "" );
+  m.childAlgorithm( QStringLiteral( "cx3" ) ).addParameterSources( QStringLiteral( "INPUT_1" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx3" ), errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT_1</i> is not acceptable for this parameter" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>INPUT_2</i> is mandatory" ) );
+
+  m.removeChildAlgorithm( QStringLiteral( "cx3" ) );
+
+  badSource.setSource( Qgis::ProcessingModelChildParameterSource::ChildOutput );
   badSource.setOutputChildId( QStringLiteral( "cc" ) );
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
 
@@ -2042,7 +2073,7 @@ void TestQgsProcessingModelAlgorithm::modelValidate()
   QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Child algorithm <i>cc</i> used for parameter <i>INPUT</i> does not exist" ) );
 
-  badSource.setSource( QgsProcessingModelChildParameterSource::ModelParameter );
+  badSource.setSource( Qgis::ProcessingModelChildParameterSource::ModelParameter );
   badSource.setParameterName( QStringLiteral( "cc" ) );
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
 
@@ -2050,7 +2081,7 @@ void TestQgsProcessingModelAlgorithm::modelValidate()
   QCOMPARE( errors.size(), 1 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Model input <i>cc</i> used for parameter <i>INPUT</i> does not exist" ) );
 
-  goodSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
+  goodSource.setSource( Qgis::ProcessingModelChildParameterSource::StaticValue );
   goodSource.setStaticValue( QString( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" ) );
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
 
@@ -2281,7 +2312,7 @@ void TestQgsProcessingModelAlgorithm::modelSource()
   source.setStaticValue( QString( "value" ) );
   source.setOutputChildId( QStringLiteral( "output child id" ) );
   source.setParameterName( QStringLiteral( "parameter name" ) );
-  source.setSource( QgsProcessingModelChildParameterSource::ChildOutput );
+  source.setSource( Qgis::ProcessingModelChildParameterSource::ChildOutput );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
@@ -2298,7 +2329,7 @@ void TestQgsProcessingModelAlgorithm::modelSource()
   QCOMPARE( res.staticValue().toString(), QStringLiteral( "value" ) );
   QCOMPARE( res.outputChildId(), QStringLiteral( "output child id" ) );
   QCOMPARE( res.parameterName(), QStringLiteral( "parameter name" ) );
-  QCOMPARE( res.source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( res.source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
 }
 
 void TestQgsProcessingModelAlgorithm::modelNameMatchesFileName()
@@ -2390,6 +2421,80 @@ void TestQgsProcessingModelAlgorithm::internalVersion()
   QgsProcessingModelAlgorithm model3;
   QVERIFY( model3.loadVariant( model2.toVariant() ) );
   QCOMPARE( model3.mInternalVersion, QgsProcessingModelAlgorithm::InternalVersion::Version2 );
+}
+
+void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
+{
+  // dependencies
+  QgsProcessingModelAlgorithm model( "test", "testGroup" );
+
+  const QgsProcessingModelParameter stringParam( "a_parameter" );
+  model.addModelParameter( new QgsProcessingParameterString( "a_parameter" ), stringParam );
+
+  QgsProcessingModelChildAlgorithm c1;
+  c1.setChildId( QStringLiteral( "c1" ) );
+  c1.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+  // a parameter source from an expression which isn't coming from another child algorithm
+  c1.setParameterSources(
+  {
+    {QStringLiteral( "INPUT_2" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@a_parameter || 'x'" ) )} }
+  }
+  );
+  model.addChildAlgorithm( c1 );
+
+  QgsProcessingModelChildAlgorithm c2;
+  c2.setChildId( QStringLiteral( "c2" ) );
+  c2.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+  c2.setParameterSources(
+  {
+    {QStringLiteral( "INPUT_1" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c1_CONCATENATION || 'x'" ) )} }
+  }
+  );
+  model.addChildAlgorithm( c2 );
+
+  QgsProcessingContext context;
+  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model.variablesForChildAlgorithm( QStringLiteral( "c2" ), &context );
+  QCOMPARE( variables.size(), 2 );
+  QCOMPARE( variables.firstKey(), QStringLiteral( "a_parameter" ) );
+  QCOMPARE( variables.lastKey(), QStringLiteral( "c1_CONCATENATION" ) );
+
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).isEmpty() );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 1 );
+  QCOMPARE( *model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).constBegin(), QStringLiteral( "c1" ) );
+
+  QgsProcessingModelChildAlgorithm c3;
+  c3.setChildId( QStringLiteral( "c3" ) );
+  c3.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+
+  // make c1 dependent on c3's output via a variable
+  model.childAlgorithm( QStringLiteral( "c1" ) ).addParameterSources(
+    QStringLiteral( "INPUT_1" ), QList< QgsProcessingModelChildParameterSource > {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c3_CONCATENATION || 'x'" ) )}
+  );
+  model.addChildAlgorithm( c3 );
+
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).size(), 0 );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).size(), 1 );
+  QCOMPARE( *model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).constBegin(), QStringLiteral( "c3" ) );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c1" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c3" ) ) );
+
+  // circular dependency -- this is ok, we just don't want to hang
+  model.childAlgorithm( QStringLiteral( "c3" ) ).setParameterSources(
+  {
+    {QStringLiteral( "INPUT_1" ), {QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "@c2_CONCATENATION || 'x'" ) )} }
+  }
+  );
+
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).contains( QStringLiteral( "c1" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c3" ) ).contains( QStringLiteral( "c2" ) ) );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).contains( QStringLiteral( "c2" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c1" ) ).contains( QStringLiteral( "c3" ) ) );
+  QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 2 );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c1" ) ) );
+  QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c3" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelAlgorithm )

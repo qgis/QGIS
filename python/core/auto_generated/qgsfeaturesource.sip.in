@@ -129,6 +129,15 @@ The base class implementation uses a non-optimised approach of looping through
 all features in the source.
 %End
 
+    virtual QgsBox3D sourceExtent3D() const;
+%Docstring
+Returns the 3D extent of all geometries from the source.
+The base class implementation uses a non-optimised approach of looping through
+all features in the source.
+
+.. versionadded:: 3.36
+%End
+
     virtual QgsFeatureIds allFeatureIds() const;
 %Docstring
 Returns a list of all feature IDs for features present in the source.

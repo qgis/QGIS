@@ -98,11 +98,11 @@ QList<int> QgsGrassVectorLayer::types() const
 QgsFields QgsGrassVectorLayer::fields()
 {
   QString dblnPath = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name() + "/dbln";
-  QgsDebugMsg( "dblnPath = " + dblnPath );
+  QgsDebugMsgLevel( "dblnPath = " + dblnPath, 2 );
   QFileInfo dblnFileInfo( dblnPath );
   if ( !dblnFileInfo.exists() )
   {
-    QgsDebugMsg( "dbln does not exist" );
+    QgsDebugError( "dbln does not exist" );
     mFields.clear();
     mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
@@ -110,12 +110,12 @@ QgsFields QgsGrassVectorLayer::fields()
   if ( dblnFileInfo.lastModified() >  mFieldsTimeStamp && !mDriver.isEmpty()
        && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
   {
-    QgsDebugMsg( "reload fields" );
+    QgsDebugMsgLevel( "reload fields", 2 );
     mError.clear();
     mFields.clear();
     mFieldsTimeStamp = dblnFileInfo.lastModified();
 
-    QgsDebugMsg( "open database " + mDatabase + " by driver " + mDriver );
+    QgsDebugMsgLevel( "open database " + mDatabase + " by driver " + mDriver, 2 );
     QgsGrass::lock();
     QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(),  mGrassObject.mapset() );
     dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().constData(), mDatabase.toUtf8().constData() );
@@ -123,11 +123,11 @@ QgsFields QgsGrassVectorLayer::fields()
     if ( !driver )
     {
       mError = QObject::tr( "Cannot open database %1 by driver %2" ).arg( mDatabase, mDatabase );
-      QgsDebugMsg( mError );
+      QgsDebugError( mError );
     }
     else
     {
-      QgsDebugMsg( "Database opened -> describe table " + mTable );
+      QgsDebugMsgLevel( "Database opened -> describe table " + mTable, 2 );
 
       dbString tableName;
       db_init_string( &tableName );
@@ -137,7 +137,7 @@ QgsFields QgsGrassVectorLayer::fields()
       if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
       {
         mError = QObject::tr( "Cannot describe table %1" ).arg( mTable );
-        QgsDebugMsg( mError );
+        QgsDebugError( mError );
       }
       else
       {
@@ -176,7 +176,7 @@ QgsFields QgsGrassVectorLayer::fields()
     }
     QgsGrass::unlock();
   }
-  QgsDebugMsg( QString( "mFields.size() = %1" ).arg( mFields.size() ) );
+  QgsDebugMsgLevel( QString( "mFields.size() = %1" ).arg( mFields.size() ), 2 );
   return mFields;
 }
 
@@ -207,7 +207,7 @@ bool QgsGrassVector::openHead()
   mLayers.clear();
 
   QgsGrass::lock();
-  QgsDebugMsg( "mGrassObject = " + mGrassObject.toString() );
+  QgsDebugMsgLevel( "mGrassObject = " + mGrassObject.toString(), 2 );
   QStringList list;
 
   // Set location
@@ -234,7 +234,7 @@ bool QgsGrassVector::openHead()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    QgsDebugMsg( QString( "Cannot open GRASS vectvectorTypesor: %1" ).arg( e.what() ) );
+    QgsDebugError( QString( "Cannot open GRASS vectvectorTypesor: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );
     mError = e.what();
     QgsGrass::unlock();
@@ -245,7 +245,7 @@ bool QgsGrassVector::openHead()
   // items which are populated in threads and creating dialog QPixmap is causing crash or even X server freeze.
   if ( level == 1 )
   {
-    QgsDebugMsg( "Cannot open vector on level 2" );
+    QgsDebugError( "Cannot open vector on level 2" );
     // Do not open QMessageBox here!
     //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
     // Vect_close here is correct, it should work, but it seems to cause
@@ -261,7 +261,7 @@ bool QgsGrassVector::openHead()
   }
   else if ( level < 1 )
   {
-    QgsDebugMsg( "Cannot open vector" );
+    QgsDebugError( "Cannot open vector" );
     // Do not open QMessageBox here!
     //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
     QgsGrass::vectDestroyMapStruct( map );
@@ -270,7 +270,7 @@ bool QgsGrassVector::openHead()
     return false;
   }
 
-  QgsDebugMsg( "GRASS vector successfully opened" );
+  QgsDebugMsgLevel( "GRASS vector successfully opened", 2 );
 
   G_TRY
   {
@@ -280,7 +280,7 @@ bool QgsGrassVector::openHead()
     for ( int i = 0; i < ncidx; i++ )
     {
       int field = Vect_cidx_get_field_number( map, i );
-      QgsDebugMsg( QString( "i = %1 layer = %2" ).arg( i ).arg( field ) );
+      QgsDebugMsgLevel( QString( "i = %1 layer = %2" ).arg( i ).arg( field ), 2 );
 
       struct field_info *fieldInfo = Vect_get_field( map, field ); // should work also with field = 0
 
@@ -291,13 +291,13 @@ bool QgsGrassVector::openHead()
         int count = Vect_cidx_get_type_count( map, field, it.key() );
         if ( count > 0 )
         {
-          QgsDebugMsg( QString( "type = %1 count = %2" ).arg( it.key() ).arg( count ) );
+          QgsDebugMsgLevel( QString( "type = %1 count = %2" ).arg( it.key() ).arg( count ), 2 );
           layer->setTypeCount( it.key(), count );
         }
       }
       mLayers.append( layer );
     }
-    QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
+    QgsDebugMsgLevel( "standard layers listed: " + list.join( "," ), 2 );
 
     // Get primitives
     const auto typeMap = QgsGrass::vectorTypeMap();
@@ -310,12 +310,12 @@ bool QgsGrassVector::openHead()
       int count = Vect_get_num_primitives( map, it.key() );
       if ( count > 0 )
       {
-        QgsDebugMsg( QString( "primitive type = %1 count = %2" ).arg( it.key() ).arg( count ) );
+        QgsDebugMsgLevel( QString( "primitive type = %1 count = %2" ).arg( it.key() ).arg( count ), 2 );
         mTypeCounts[it.key()] = count;
       }
     }
     mNodeCount = Vect_get_num_nodes( map );
-    QgsDebugMsg( QString( "mNodeCount = %2" ).arg( mNodeCount ) );
+    QgsDebugMsgLevel( QString( "mNodeCount = %2" ).arg( mNodeCount ), 2 );
 
     Vect_close( map );
     QgsGrass::vectDestroyMapStruct( map );
@@ -323,7 +323,7 @@ bool QgsGrassVector::openHead()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    QgsDebugMsg( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
+    QgsDebugError( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );
     mError = e.what();
     QgsGrass::unlock();

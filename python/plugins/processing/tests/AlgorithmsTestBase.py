@@ -19,7 +19,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-import qgis  # NOQA switch sip api
 
 import os
 import yaml
@@ -49,8 +48,8 @@ from qgis.core import (Qgis,
                        QgsProcessingFeedback)
 from qgis.analysis import (QgsNativeAlgorithms)
 from qgis.testing import (_UnexpectedSuccess,
-                          start_app,
-                          unittest)
+                          QgisTestCase,
+                          start_app)
 from utilities import unitTestDataPath
 
 import processing
@@ -436,7 +435,7 @@ class AlgorithmsTest:
                     self.assertRegex(data, rule)
 
 
-class GenericAlgorithmsTest(unittest.TestCase):
+class GenericAlgorithmsTest(QgisTestCase):
     """
     General (non-provider specific) algorithm tests
     """

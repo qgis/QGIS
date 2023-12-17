@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/10/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsSettings
@@ -18,12 +17,13 @@ from qgis.gui import (
     QgsCodeEditorColorSchemeRegistry,
     QgsGui,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsCodeEditorColorScheme(unittest.TestCase):
+class TestQgsCodeEditorColorScheme(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

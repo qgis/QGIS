@@ -119,7 +119,7 @@ void QgsLayerTreeFilterSettings::addVisibleExtentForLayer( QgsMapLayer *layer, c
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming polygon to layer CRS for legend filtering" ) );
+    QgsDebugError( QStringLiteral( "Error transforming polygon to layer CRS for legend filtering" ) );
   }
   if ( !mLayers.contains( layer ) )
     mLayers << layer;
@@ -146,7 +146,7 @@ QgsGeometry QgsLayerTreeFilterSettings::combinedVisibleExtentForLayer( const Qgs
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Error transforming map extent to layer CRS for legend filtering" ) );
+      QgsDebugError( QStringLiteral( "Error transforming map extent to layer CRS for legend filtering" ) );
     }
   }
 

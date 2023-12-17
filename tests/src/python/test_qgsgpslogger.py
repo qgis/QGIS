@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/11/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QBuffer, QCoreApplication, QDateTime
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
@@ -22,7 +21,8 @@ from qgis.core import (
     QgsVectorLayerGpsLogger,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -52,7 +52,7 @@ class GpsReplay(QgsNmeaConnection):
         spy.wait()
 
 
-class TestQgsGpsLogger(unittest.TestCase):
+class TestQgsGpsLogger(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

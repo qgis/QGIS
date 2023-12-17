@@ -125,7 +125,10 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                     canvas.mapTool().reset()
                 except:
                     pass
-                canvas.setMapTool(prevMapTool)
+                try:
+                    canvas.setMapTool(prevMapTool)
+                except RuntimeError:
+                    pass
 
 
 class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):

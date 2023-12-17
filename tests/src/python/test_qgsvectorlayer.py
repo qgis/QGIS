@@ -17,7 +17,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDate,
     QDateTime,
@@ -82,7 +81,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeTableModel, QgsGui
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -207,7 +207,7 @@ def dumpEditBuffer(layer):
         print("%d | %s" % (f.id(), f.geometry().asWkt()))
 
 
-class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -373,6 +373,19 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # should have reset renderer!
         self.assertNotEqual(layer.renderer(), r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Fill)
+
+        # reset layer to a non-spatial layer
+        lines_path = os.path.join(unitTestDataPath(), 'nonspatial.dbf')
+        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertFalse(layer.crs().isValid())
+        self.assertIn('nonspatial.dbf', layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 3)
+        # should have REMOVED renderer
+        self.assertIsNone(layer.renderer())
 
     def testSetDataSourceInvalidToValid(self):
         """
@@ -3293,6 +3306,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.setLegendUrlFormat('MyLegendUrlFormat')
         layer.setDependencies([dep])
         layer.setCrs(srs)
+        layer.setSubsetString('fldint = 457')
 
         layer.setCustomProperty('MyKey0', 'MyValue0')
         layer.setCustomProperty('MyKey1', 'MyValue1')
@@ -3402,6 +3416,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # compare xml documents
         self.assertEqual(layer_doc.toString(), clone_doc.toString())
+
+        self.assertEqual(clone.subsetString(), layer.subsetString())
 
     def testQgsVectorLayerSelectedFeatureSource(self):
         """
@@ -3552,7 +3568,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.displayField(), 'BETTER_NAME')
 
 
-class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceAddedFeaturesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3617,7 +3633,7 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
         pass
 
 
-class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedGeometriesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3682,7 +3698,7 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, Featu
         pass
 
 
-class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedAttributesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3799,7 +3815,7 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
         pass
 
 
-class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -3920,7 +3936,7 @@ class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.Te
         pass
 
 
-class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(QgisTestCase, FeatureSourceTestCase):
 
     @classmethod
     def getSource(cls):
@@ -4021,7 +4037,7 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
         pass
 
 
-class TestQgsVectorLayerTransformContext(unittest.TestCase):
+class TestQgsVectorLayerTransformContext(QgisTestCase):
 
     def setUp(self):
         """Prepare tc"""
@@ -4382,6 +4398,8 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         layer.createMapRenderer(QgsRenderContext())
         layer.extent()
         layer.sourceExtent()
+        layer.extent3D()
+        layer.sourceExtent3D()
         layer.fields()
         layer.attributeList()
         layer.primaryKeyAttributes()
@@ -4529,6 +4547,60 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
             self.assertEqual(vl2.fields()[3].splitPolicy(),
                              Qgis.FieldDomainSplitPolicy.GeometryRatio)
 
+    def test_selection_properties(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        self.assertFalse(vl.selectionProperties().selectionColor().isValid())
+        self.assertFalse(vl.selectionProperties().selectionSymbol())
+        vl.selectionProperties().setSelectionColor(
+            QColor(255, 0, 0)
+        )
+        self.assertEqual(vl.selectionProperties().selectionColor(),
+                         QColor(255, 0, 0))
+        vl.selectionProperties().setSelectionRenderingMode(
+            Qgis.SelectionRenderingMode.CustomColor)
+
+        p = QgsProject()
+        p.addMapLayer(vl)
+
+        # test saving and restoring
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + '/test.qgs'))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + '/test.qgs'))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertEqual(vl2.selectionProperties().selectionRenderingMode(),
+                             Qgis.SelectionRenderingMode.CustomColor)
+
+            self.assertEqual(vl2.selectionProperties().selectionColor(),
+                             QColor(255, 0, 0))
+
+        selected_symbol = QgsMarkerSymbol()
+        selected_symbol.setColor(QColor(25, 26, 27))
+        vl.selectionProperties().setSelectionSymbol(
+            selected_symbol
+        )
+
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + '/test.qgs'))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + '/test.qgs'))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertEqual(vl2.selectionProperties().selectionSymbol().color(),
+                             QColor(25, 26, 27))
+            self.assertEqual(vl2.selectionProperties().selectionColor(),
+                             QColor(255, 0, 0))
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

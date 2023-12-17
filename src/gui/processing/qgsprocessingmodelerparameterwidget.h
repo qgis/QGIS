@@ -198,7 +198,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      *
      * \since QGIS 3.24
      */
-    void setSourceType( QgsProcessingModelChildParameterSource::Source type );
+    void setSourceType( Qgis::ProcessingModelChildParameterSource type );
 
   private slots:
 
@@ -242,6 +242,8 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QComboBox *mModelInputCombo = nullptr;
     QComboBox *mChildOutputCombo = nullptr;
     QgsFilterLineEdit *mModelOutputName = nullptr;
+
+    QList< Qgis::ProcessingModelChildParameterSource > mLimitedSources;
 
     friend class TestProcessingGui;
 };

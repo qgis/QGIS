@@ -225,6 +225,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void setMapCanvas( QgsMapCanvas *mapCanvas );
 
+        /**
+         * Removes unit suffix from the constraint text.
+         * \since QGIS 3.34
+         */
+        static QString removeSuffix( const QString &text, Qgis::CadConstraintType constraintType );
+
+
       private:
         QLineEdit *mLineEdit = nullptr;
         QToolButton *mLockerButton = nullptr;
@@ -1051,6 +1058,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Qgis::BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
+    //! Flag that controls whether snapping to features has priority over common angle
+    bool mSnappingPrioritizeFeatures = false;
+
     // point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
@@ -1061,7 +1071,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
+    QMap< double, QAction *> mCommonAngleActions; // map the common angle actions with their angle values
     QAction *mLineExtensionAction;
     QAction *mXyVertexAction;
 
@@ -1084,6 +1094,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QMenu *mCommonAngleActionsMenu = nullptr;
     QMenu *mFloaterActionsMenu = nullptr;
+
+    static const QgsSettingsEntryBool *settingsCadSnappingPriorityPrioritizeFeature;
 
     friend class TestQgsAdvancedDigitizing;
     friend class TestQgsAdvancedDigitizingDockWidget;

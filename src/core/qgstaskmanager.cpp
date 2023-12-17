@@ -389,6 +389,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
+  , mThreadPool( new QThreadPool( this ) )
   , mTaskMutex( new QRecursiveMutex() )
 {
 
@@ -411,6 +412,12 @@ QgsTaskManager::~QgsTaskManager()
   }
 
   delete mTaskMutex;
+  mThreadPool->waitForDone();
+}
+
+QThreadPool *QgsTaskManager::threadPool()
+{
+  return mThreadPool;
 }
 
 long QgsTaskManager::addTask( QgsTask *task, int priority )
@@ -717,7 +724,7 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
-  if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+  if ( runnable && mThreadPool->tryTake( runnable ) )
   {
     delete runnable;
     mTasks[ id ].runnable = nullptr;
@@ -824,7 +831,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
   else
   {
-    if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+    if ( runnable && mThreadPool->tryTake( runnable ) )
     {
       delete runnable;
       mTasks[ id ].runnable = nullptr;
@@ -861,7 +868,7 @@ void QgsTaskManager::processQueue()
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
       it.value().createRunnable();
-      QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
+      mThreadPool->start( it.value().runnable, it.value().priority );
     }
 
     if ( task && ( task->mStatus != QgsTask::Complete && task->mStatus != QgsTask::Terminated ) )

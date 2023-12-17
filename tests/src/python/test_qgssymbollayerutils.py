@@ -11,8 +11,8 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import math
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
     Qgis,
@@ -25,7 +25,7 @@ from qgis.core import (
     QgsMarkerLineSymbolLayer,
     QgsMarkerSymbol,
     QgsProperty,
-    QgsRenderChecker,
+    QgsReadWriteContext,
     QgsShapeburstFillSymbolLayer,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
@@ -35,24 +35,17 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class PyQgsSymbolLayerUtils(unittest.TestCase):
+class PyQgsSymbolLayerUtils(QgisTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.report = "<h1>Python QgsPointCloudRgbRenderer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
-        super().tearDownClass()
+    def control_path_prefix(cls):
+        return "symbol_layer_utils"
 
     def testEncodeDecodeSize(self):
         s = QSizeF()
@@ -507,35 +500,35 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(200, 100))
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_horizontal', 'color_ramp_horizontal', img))
+        self.assertTrue(self.image_check('color_ramp_horizontal', 'color_ramp_horizontal', img))
 
     def testPreviewColorRampHorizontalNoCheckboard(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(200, 100), drawTransparentBackground=False)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_no_check', 'color_ramp_no_check', img))
+        self.assertTrue(self.image_check('color_ramp_no_check', 'color_ramp_no_check', img))
 
     def testPreviewColorRampHorizontalFlipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(200, 100), flipDirection=True)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_horizontal_flipped', 'color_ramp_horizontal_flipped', img))
+        self.assertTrue(self.image_check('color_ramp_horizontal_flipped', 'color_ramp_horizontal_flipped', img))
 
     def testPreviewColorRampVertical(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_vertical', 'color_ramp_vertical', img))
+        self.assertTrue(self.image_check('color_ramp_vertical', 'color_ramp_vertical', img))
 
     def testPreviewColorRampVerticalFlipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical, flipDirection=True)
         img = QImage(pix)
-        self.assertTrue(self.imageCheck('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
+        self.assertTrue(self.image_check('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
 
     def testCondenseFillAndOutline(self):
         """
@@ -640,20 +633,6 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         s.animationSettings().setFrameRate(30)
         renderer = QgsSingleSymbolRenderer(s.clone())
         self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_layer_utils")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        PyQgsSymbolLayerUtils.report += checker.report()
-        return result
 
     def testTileSize(self):
 
@@ -774,6 +753,73 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
 
         QgsSymbolLayerUtils.clearSymbolLayerIds(fill_symbol)
         self.assertFalse(child_sl.id())
+
+    def test_font_marker_load(self):
+        """
+        Test the loading of font marker from XML
+        """
+
+        font_marker_xml_string = """<symbol clip_to_extent="1" type="marker" is_animated="0" alpha="1" name="symbol" frame_rate="10" force_rhr="0">
+ <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
+  <Option type="Map">
+   <Option value="0" type="QString" name="angle"/>
+   <Option value="~!_#!#_!~14~!_#!#_!~" type="QString" name="chr"/>
+   <Option value="0,0,255,255" type="QString" name="color"/>
+   <Option value="Arial" type="QString" name="font"/>
+   <Option value="Italic" type="QString" name="font_style"/>
+   <Option value="1" type="QString" name="horizontal_anchor_point"/>
+   <Option value="miter" type="QString" name="joinstyle"/>
+   <Option value="0,0" type="QString" name="offset"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+   <Option value="Point" type="QString" name="offset_unit"/>
+   <Option value="255,255,255,255" type="QString" name="outline_color"/>
+   <Option value="0" type="QString" name="outline_width"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="outline_width_map_unit_scale"/>
+   <Option value="MM" type="QString" name="outline_width_unit"/>
+   <Option value="42.4" type="QString" name="size"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="size_map_unit_scale"/>
+   <Option value="Point" type="QString" name="size_unit"/>
+   <Option value="1" type="QString" name="vertical_anchor_point"/>
+  </Option>
+ </layer>
+</symbol>"""
+
+        doc = QDomDocument()
+        elem = QDomElement()
+        doc.setContent(font_marker_xml_string)
+        elem = doc.documentElement()
+        font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
+        self.assertEqual(font_marker.symbolLayers()[0].character(), chr(14))
+
+        font_marker_xml_string = """<symbol clip_to_extent="1" type="marker" is_animated="0" alpha="1" name="symbol" frame_rate="10" force_rhr="0">
+ <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
+  <Option type="Map">
+   <Option value="0" type="QString" name="angle"/>
+   <Option value="~!_#!#_!~40~!_#!#_!~~!_#!#_!~41~!_#!#_!~" type="QString" name="chr"/>
+   <Option value="0,0,255,255" type="QString" name="color"/>
+   <Option value="Arial" type="QString" name="font"/>
+   <Option value="Italic" type="QString" name="font_style"/>
+   <Option value="1" type="QString" name="horizontal_anchor_point"/>
+   <Option value="miter" type="QString" name="joinstyle"/>
+   <Option value="0,0" type="QString" name="offset"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+   <Option value="Point" type="QString" name="offset_unit"/>
+   <Option value="255,255,255,255" type="QString" name="outline_color"/>
+   <Option value="0" type="QString" name="outline_width"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="outline_width_map_unit_scale"/>
+   <Option value="MM" type="QString" name="outline_width_unit"/>
+   <Option value="42.4" type="QString" name="size"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="size_map_unit_scale"/>
+   <Option value="Point" type="QString" name="size_unit"/>
+   <Option value="1" type="QString" name="vertical_anchor_point"/>
+  </Option>
+ </layer>
+</symbol>"""
+
+        doc.setContent(font_marker_xml_string)
+        elem = doc.documentElement()
+        font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
+        self.assertEqual(font_marker.symbolLayers()[0].character(), "()")
 
 
 if __name__ == '__main__':

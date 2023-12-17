@@ -149,7 +149,7 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
   catch ( const QgsCsException & )
   {
     // bad luck, can't reproject for some reason
-    QgsDebugMsg( QStringLiteral( "Transformation of extent failed." ) );
+    QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
   }
 }
 
@@ -176,7 +176,9 @@ QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
 {
   const QgsAABB bbox = nodeBoundsToAABB( mPointCloudIndex->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), mPointCloudIndex->offset(), mPointCloudIndex->scale(), mMap, mCoordinateTransform, mZValueOffset );
   const float error = mPointCloudIndex->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) );
-  return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0, 0 ), bbox, error );
+  QgsChunkNode *node = new QgsChunkNode( QgsChunkNodeId( 0, 0, 0, 0 ), bbox, error );
+  node->setRefinementProcess( mSymbol->renderAsTriangles() ? Qgis::TileRefinementProcess::Replacement : Qgis::TileRefinementProcess::Additive );
+  return node;
 }
 
 QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
@@ -208,7 +210,9 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
     const float chZMax = !dy ? bbox.zMax : zc;
     const float chYMin = dz ? yc : bbox.yMin;
     const float chYMax = dz ? bbox.yMax : yc;
-    children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
+    QgsChunkNode *child = new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
+    child->setRefinementProcess( mSymbol->renderAsTriangles() ? Qgis::TileRefinementProcess::Replacement : Qgis::TileRefinementProcess::Additive );
+    children << child;
   }
   return children;
 }
@@ -229,7 +233,7 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( QStringLiteral( "Error transforming node bounds coordinate" ) );
+    QgsDebugError( QStringLiteral( "Error transforming node bounds coordinate" ) );
   }
   const QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
   const QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
@@ -247,7 +251,6 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudI
   : QgsChunkedEntity( maximumScreenSpaceError,
                       new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
-  setUsingAdditiveStrategy( !symbol->renderAsTriangles() );
   setShowBoundingBoxes( showBoundingBoxes );
 }
 

@@ -243,7 +243,7 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QVERIFY( !renderer.symbolForValue( 1 ) );
   QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
-  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
 
   ms.setColor( QColor( 255, 255, 0 ) );
   const QgsRendererRange r2( 3.2, 3.3, ms.clone(), QStringLiteral( "r2" ) );
@@ -261,8 +261,8 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QCOMPARE( renderer.symbolForValue( 2.1 )->color().name(), QStringLiteral( "#ff0000" ) );
   QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
-  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
-  QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
+  QCOMPARE( renderer.legendKeyForValue( 3.25 ), r2.uuid() );
 
   // disabled range
   ms.setColor( QColor( 255, 0, 255 ) );
@@ -282,8 +282,8 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QCOMPARE( renderer.symbolForValue( 3.25 )->color().name(), QStringLiteral( "#ffff00" ) );
   QVERIFY( !renderer.symbolForValue( 3.5 ) );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
-  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
-  QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
+  QCOMPARE( renderer.legendKeyForValue( 3.25 ), r2.uuid() );
   QVERIFY( renderer.legendKeyForValue( 3.5 ).isEmpty() );
 
   // zero width range
@@ -306,9 +306,9 @@ void TestQgsGraduatedSymbolRenderer::testMatchingRangeForValue()
   QCOMPARE( renderer.symbolForValue( 3.7 )->color().name(), QStringLiteral( "#00ffff" ) );
   QVERIFY( !renderer.symbolForValue( 3.5 ) );
   QVERIFY( renderer.legendKeyForValue( 1 ).isEmpty() );
-  QCOMPARE( renderer.legendKeyForValue( 2.1 ), QStringLiteral( "0" ) );
-  QCOMPARE( renderer.legendKeyForValue( 3.25 ), QStringLiteral( "1" ) );
-  QCOMPARE( renderer.legendKeyForValue( 3.7 ), QStringLiteral( "3" ) );
+  QCOMPARE( renderer.legendKeyForValue( 2.1 ), r1.uuid() );
+  QCOMPARE( renderer.legendKeyForValue( 3.25 ), r2.uuid() );
+  QCOMPARE( renderer.legendKeyForValue( 3.7 ), r4.uuid() );
   QVERIFY( renderer.legendKeyForValue( 3.5 ).isEmpty() );
 
   // test values which fall just outside ranges, e.g. due to double precision (refs https://github.com/qgis/QGIS/issues/27420)

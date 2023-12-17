@@ -20,7 +20,8 @@ from qgis.core import (
     QgsSettingsTreeNode,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 __author__ = 'Denis Rouzaud'
 __date__ = '19/12/2022'
@@ -30,7 +31,7 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 start_app()
 
 
-class TestQgsSettingsEntry(unittest.TestCase):
+class TestQgsSettingsEntry(QgisTestCase):
 
     def setUp(self):
         self.pluginName = "UnitTest"

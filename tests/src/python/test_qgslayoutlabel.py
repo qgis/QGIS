@@ -9,7 +9,6 @@ __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '23/10/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QFileInfo
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
@@ -20,7 +19,8 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -28,7 +28,7 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutItemLabel(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

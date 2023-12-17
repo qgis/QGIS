@@ -308,7 +308,7 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
 
       QgsLayerMetadata::SpatialExtent spatialExtent;
       spatialExtent.extentCrs = crs.isValid() ? crs : QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
-      spatialExtent.bounds = QgsBox3d( west, south, 0, east, north, 0 );
+      spatialExtent.bounds = QgsBox3D( west, south, 0, east, north, 0 );
 
       extent.setSpatialExtents( { spatialExtent } );
       break;

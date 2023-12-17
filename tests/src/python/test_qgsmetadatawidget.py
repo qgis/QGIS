@@ -11,7 +11,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '20/03/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.core import (
     Qgis,
@@ -23,12 +22,13 @@ from qgis.core import (
     QgsProjectMetadata,
 )
 from qgis.gui import QgsMetadataWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsMetadataWidget(unittest.TestCase):
+class TestQgsMetadataWidget(QgisTestCase):
 
     def testLayerMode(self):
         """

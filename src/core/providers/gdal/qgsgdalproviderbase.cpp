@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
+#include "qgsgdalutils.h"
 #include "qgssettings.h"
 
 #include <mutex>
@@ -51,14 +52,14 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   //Invalid band number, segfault prevention
   if ( 0 >= bandNumber )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid parameter" ) );
+    QgsDebugError( QStringLiteral( "Invalid parameter" ) );
     return ct;
   }
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
   if ( ! myGdalBand )
   {
-    QgsDebugMsg( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
+    QgsDebugError( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
     return ct;
   }
 
@@ -302,9 +303,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
   {
     const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
     const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
-    if ( vsiSuffix.isEmpty() && ( vsiPrefix == QLatin1String( "/vsizip/" )
-                                  || vsiPrefix == QLatin1String( "/vsigzip/" )
-                                  || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
+    if ( vsiSuffix.isEmpty() && QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     {
       // in the case that a direct path to a vsi supported archive was specified BUT
       // no file suffix was given, see if there's only one valid file we could read anyway and
@@ -393,7 +392,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   QString authcfg;
   QStringList openOptions;
 
-  const QRegularExpression authcfgRegex( " authcfg='([^']+)'" );
+  const thread_local QRegularExpression authcfgRegex( " authcfg='([^']+)'" );
   QRegularExpressionMatch match;
   if ( path.contains( authcfgRegex, &match ) )
   {
@@ -401,13 +400,13 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
     authcfg = match.captured( 1 );
   }
 
-  QString vsiPrefix = qgsVsiPrefix( path );
+  QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( path );
   QString vsiSuffix;
   if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
   {
     path = path.mid( vsiPrefix.count() );
 
-    const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
+    const thread_local QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
     const QRegularExpressionMatch match = vsiRegex.match( path );
     if ( match.hasMatch() )
     {
@@ -438,7 +437,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
 
   if ( path.contains( '|' ) )
   {
-    const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+    const thread_local QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
     while ( true )
     {
       const QRegularExpressionMatch match = openOptionRegex.match( path );

@@ -51,6 +51,9 @@ class TestQgsAttributeTable : public QObject
     void init();
     // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
+
+  public slots:
+
     void testRegression15974();
     void testFieldCalculation();
     void testFieldCalculationArea();
@@ -69,6 +72,8 @@ class TestQgsAttributeTable : public QObject
     void testMultiEditMakeUncommittedChanges();
     void testInvalidView();
     void testEnsureEditSelection();
+  private slots:
+    void testFetchAllAttributes();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -893,6 +898,24 @@ void TestQgsAttributeTable::testEnsureEditSelection()
   spy.wait( 1 );
   // ... and the currentEditSelection stays on 2 (since lastEditSelectionFid is persisted)
   QVERIFY( dlg->mMainView->mFeatureListView->currentEditSelection().contains( 2 ) );
+}
+
+void TestQgsAttributeTable::testFetchAllAttributes()
+{
+  QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( pointFileName );
+  QVERIFY( layer->isValid() );
+
+  QgsAttributeTableConfig config { layer->attributeTableConfig() };
+  config.setColumnHidden( 1, true );
+  layer->setAttributeTableConfig( config );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 0 ), Qt::DisplayRole ).toString(), "Jet" );
+  QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 1 ), Qt::DisplayRole ).toString(), "90" );
+  QCOMPARE( dlg->mMainView->masterModel()->data( dlg->mMainView->masterModel()->index( 0, 2 ), Qt::DisplayRole ).toString(), "3.000" );
+
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )

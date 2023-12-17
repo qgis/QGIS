@@ -41,6 +41,11 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   }
 }
 
+QgsLayoutFrame::~QgsLayoutFrame()
+{
+  QgsLayoutFrame::cleanup();
+}
+
 QgsLayoutFrame *QgsLayoutFrame::create( QgsLayout *layout )
 {
   return new QgsLayoutFrame( layout, nullptr );
@@ -158,6 +163,7 @@ void QgsLayoutFrame::cleanup()
 {
   if ( mMultiFrame )
     mMultiFrame->handleFrameRemoval( this );
+  mMultiFrame = nullptr;
 
   QgsLayoutItem::cleanup();
 }

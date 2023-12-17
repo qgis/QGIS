@@ -11,9 +11,9 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.core import QgsUnsetAttributeValue
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -21,7 +21,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsUnsetAttributeValue(unittest.TestCase):
+class TestQgsUnsetAttributeValue(QgisTestCase):
 
     def testClause(self):
         value = QgsUnsetAttributeValue()

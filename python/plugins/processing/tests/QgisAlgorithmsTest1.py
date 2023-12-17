@@ -30,7 +30,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingFeedback,
                        QgsProcessingException)
 from qgis.analysis import (QgsNativeAlgorithms)
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from processing.tools.dataobjects import createContext
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -58,7 +59,7 @@ class TestAlg(QgsProcessingAlgorithm):
         return {}
 
 
-class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):

@@ -17,14 +17,15 @@ from qgis.core import (
     QgsProviderUtils,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
-class TestQgsProviderUtils(unittest.TestCase):
+class TestQgsProviderUtils(QgisTestCase):
 
     def test_sublayerDetailsAreIncomplete(self):
         """

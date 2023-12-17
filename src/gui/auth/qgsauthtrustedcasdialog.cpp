@@ -223,7 +223,7 @@ void QgsAuthTrustedCAsDialog::showCertInfo( QTreeWidgetItem *item )
 
   if ( !cacertscache.contains( digest ) )
   {
-    QgsDebugMsg( QStringLiteral( "Certificate Authority not in CA certs cache" ) );
+    QgsDebugError( QStringLiteral( "Certificate Authority not in CA certs cache" ) );
     return;
   }
 

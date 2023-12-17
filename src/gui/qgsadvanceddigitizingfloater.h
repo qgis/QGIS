@@ -44,16 +44,16 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
   public:
 
     //! Available floater items
-    enum FloaterItem
+    enum class FloaterItem : int
     {
-      XCoordinate,
-      YCoordinate,
-      MCoordinate,
-      ZCoordinate,
-      Angle,
-      CommonAngleSnapping,
-      Distance,
-      Bearing,
+      XCoordinate = 1 << 1,
+      YCoordinate = 1 << 2,
+      MCoordinate = 1 << 3,
+      ZCoordinate = 1 << 4,
+      Angle = 1 << 5,
+      CommonAngleSnapping = 1 << 6,
+      Distance = 1 << 7,
+      Bearing = 1 << 8,
     };
     Q_DECLARE_FLAGS( FloaterItems, FloaterItem )
     Q_FLAG( FloaterItem )

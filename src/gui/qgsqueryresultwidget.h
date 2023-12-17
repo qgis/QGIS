@@ -57,9 +57,10 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
   public:
 
-    //! Constructs a result fetcher from \a connection.
-    QgsConnectionsApiFetcher( const QgsAbstractDatabaseProviderConnection *connection )
-      : mConnection( connection )
+    //! Constructs a result fetcher from connection with the specified \a uri and \a providerKey.
+    QgsConnectionsApiFetcher( const QString &uri, const QString &providerKey )
+      : mUri( uri )
+      , mProviderKey( providerKey )
     {}
 
     //! Start fetching
@@ -78,8 +79,10 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
   private:
 
-    const QgsAbstractDatabaseProviderConnection *mConnection = nullptr;
+    QString mUri;
+    QString mProviderKey;
     QAtomicInt mStopFetching = 0;
+    std::unique_ptr< QgsFeedback > mFeedback;
 
 };
 
@@ -216,8 +219,9 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;
     std::unique_ptr<QgsQueryResultModel> mModel;
     std::unique_ptr<QgsFeedback> mFeedback;
-    std::unique_ptr<QgsConnectionsApiFetcher> mApiFetcher;
-    QThread mApiFetcherWorkerThread;
+
+    QPointer< QgsConnectionsApiFetcher > mApiFetcher;
+
     bool mWasCanceled = false;
     mutable QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
     bool mFirstRowFetched = false;

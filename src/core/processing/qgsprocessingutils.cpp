@@ -36,7 +36,9 @@
 #include "qgsvectortilelayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
+#include "qgstiledscenelayer.h"
 #include <QRegularExpression>
+#include <QTextCodec>
 #include <QUuid>
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
@@ -100,6 +102,16 @@ QList<QgsAnnotationLayer *> QgsProcessingUtils::compatibleAnnotationLayers( QgsP
   return res;
 }
 
+QList<QgsVectorTileLayer *> QgsProcessingUtils::compatibleVectorTileLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsVectorTileLayer >( project, sort );
+}
+
+QList<QgsTiledSceneLayer *> QgsProcessingUtils::compatibleTiledSceneLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsTiledSceneLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -151,6 +163,14 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
     layers << al;
   layers << project->mainAnnotationLayer();
 
+  const auto vectorTileLayers = compatibleMapLayers< QgsVectorTileLayer >( project, false );
+  for ( QgsVectorTileLayer *vtl : vectorTileLayers )
+    layers << vtl;
+
+  const auto tiledSceneLayers = compatibleMapLayers< QgsTiledSceneLayer >( project, false );
+  for ( QgsTiledSceneLayer *tml : tiledSceneLayers )
+    layers << tml;
+
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
     layers << pl;
@@ -172,7 +192,7 @@ QString QgsProcessingUtils::encodeProviderKeyAndUri( const QString &providerKey,
 
 bool QgsProcessingUtils::decodeProviderKeyAndUri( const QString &string, QString &providerKey, QString &uri )
 {
-  QRegularExpression re( QStringLiteral( "^(\\w+?):\\/\\/(.+)$" ) );
+  const thread_local QRegularExpression re( QStringLiteral( "^(\\w+?):\\/\\/(.+)$" ) );
   const QRegularExpressionMatch match = re.match( string );
   if ( !match.hasMatch() )
     return false;
@@ -206,6 +226,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
       case Qgis::LayerType::VectorTile:
         return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
+      case Qgis::LayerType::TiledScene:
+        return !canUseLayer( qobject_cast< QgsTiledSceneLayer * >( layer ) );
       case Qgis::LayerType::PointCloud:
         return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
       case Qgis::LayerType::Annotation:
@@ -235,6 +257,12 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::Annotation:
         return l->type() == Qgis::LayerType::Annotation;
+
+      case LayerHint::VectorTile:
+        return l->type() == Qgis::LayerType::VectorTile;
+
+      case LayerHint::TiledScene:
+        return l->type() == Qgis::LayerType::TiledScene;
     }
     return true;
   };
@@ -378,6 +406,43 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return pointCloudLayer.release();
     }
   }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::VectorTile )
+  {
+    QgsDataSourceUri dsUri;
+    dsUri.setParam( "type", "mbtiles" );
+    dsUri.setParam( "url", uri );
+
+    std::unique_ptr< QgsVectorTileLayer > tileLayer;
+    tileLayer = std::make_unique< QgsVectorTileLayer >( dsUri.encodedUri(), name );
+
+    if ( tileLayer->isValid() )
+    {
+      return tileLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::TiledScene )
+  {
+    QgsTiledSceneLayer::LayerOptions tiledSceneOptions;
+    tiledSceneOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsTiledSceneLayer > tiledSceneLayer;
+    if ( useProvider )
+    {
+      tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, provider, tiledSceneOptions );
+    }
+    else
+    {
+      const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( uri );
+      if ( !preferredProviders.empty() )
+      {
+        tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, preferredProviders.at( 0 ).metadata()->key(), tiledSceneOptions );
+      }
+    }
+    if ( tiledSceneLayer && tiledSceneLayer->isValid() )
+    {
+      return tiledSceneLayer.release();
+    }
+  }
   return nullptr;
 }
 
@@ -518,7 +583,7 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
     val = fromVar.sink;
   }
 
-  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == Qgis::PropertyType::Static )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -583,6 +648,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsAnnotationLayer *layer )
+{
+  return layer && layer->isValid();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsTiledSceneLayer *layer )
 {
   return layer && layer->isValid();
 }
@@ -735,7 +805,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
 
   if ( !matched )
   {
-    QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
+    const thread_local QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
     if ( match.hasMatch() )
     {
@@ -780,7 +850,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
     useWriter = true;
     providerKey = QStringLiteral( "ogr" );
 
-    QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
+    const thread_local QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
     if ( match.hasMatch() )
     {
@@ -1386,6 +1456,11 @@ QString QgsProcessingUtils::defaultPointCloudExtension()
   return QStringLiteral( "las" );
 }
 
+QString QgsProcessingUtils::defaultVectorTileExtension()
+{
+  return QStringLiteral( "mbtiles" );
+}
+
 QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &map )
 {
   auto layerPointerToString = []( QgsMapLayer * layer ) -> QString
@@ -1499,6 +1574,21 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
   return output;
 }
 
+QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncoding )
+{
+  if ( ! QTextCodec::availableCodecs().contains( defaultEncoding.toLatin1() ) )
+  {
+    const QString systemCodec = QTextCodec::codecForLocale()->name();
+    if ( ! systemCodec.isEmpty() )
+    {
+      return systemCodec;
+    }
+    return QString( "UTF-8" );
+  }
+
+  return defaultEncoding;
+}
+
 //
 // QgsProcessingFeatureSource
 //
@@ -1506,6 +1596,12 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
 QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource, long long featureLimit, const QString &filterExpression )
   : mSource( originalSource )
   , mOwnsSource( ownsOriginalSource )
+  , mSourceCrs( mSource->sourceCrs() )
+  , mSourceFields( mSource->fields() )
+  , mSourceWkbType( mSource->wkbType() )
+  , mSourceName( mSource->sourceName() )
+  , mSourceExtent( mSource->sourceExtent() )
+  , mSourceSpatialIndexPresence( mSource->hasSpatialIndex() )
   , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == Qgis::GeometryType::Point
                            ? QgsFeatureRequest::GeometryNoCheck // never run geometry validity checks for point layers!
                            : context.invalidGeometryCheck() )
@@ -1579,17 +1675,17 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
 
 QgsCoordinateReferenceSystem QgsProcessingFeatureSource::sourceCrs() const
 {
-  return mSource->sourceCrs();
+  return mSourceCrs;
 }
 
 QgsFields QgsProcessingFeatureSource::fields() const
 {
-  return mSource->fields();
+  return mSourceFields;
 }
 
 Qgis::WkbType QgsProcessingFeatureSource::wkbType() const
 {
-  return mSource->wkbType();
+  return mSourceWkbType;
 }
 
 long long QgsProcessingFeatureSource::featureCount() const
@@ -1605,7 +1701,7 @@ long long QgsProcessingFeatureSource::featureCount() const
 
 QString QgsProcessingFeatureSource::sourceName() const
 {
-  return mSource->sourceName();
+  return mSourceName;
 }
 
 QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int limit ) const
@@ -1693,7 +1789,7 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
 
 QgsRectangle QgsProcessingFeatureSource::sourceExtent() const
 {
-  return mSource->sourceExtent();
+  return mSourceExtent;
 }
 
 QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
@@ -1719,7 +1815,7 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
 
 QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
 {
-  return mSource->hasSpatialIndex();
+  return mSourceSpatialIndexPresence;
 }
 
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
@@ -1751,6 +1847,11 @@ void QgsProcessingFeatureSource::setInvalidGeometryCheck( QgsFeatureRequest::Inv
       break;
 
   }
+}
+
+QgsFeatureRequest::InvalidGeometryCheck QgsProcessingFeatureSource::invalidGeometryCheck() const
+{
+  return mInvalidGeometryCheck;
 }
 
 

@@ -15,7 +15,6 @@ import tempfile
 import json
 
 import osgeo.gdal  # NOQA
-import qgis  # NOQA
 from osgeo import gdal, ogr
 from qgis.PyQt.QtCore import (
     QByteArray,
@@ -50,8 +49,10 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
     QgsWkbTypes,
+    QgsFieldConstraints
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath, writeShape
 
@@ -88,7 +89,7 @@ class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
         return 'unexpected_idx'
 
 
-class TestQgsVectorFileWriter(unittest.TestCase):
+class TestQgsVectorFileWriter(QgisTestCase):
     mMemoryLayer = None
 
     def testWrite(self):
@@ -834,6 +835,17 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SkipNonSpatialFormats)
         self.assertFalse('ODS' in [f.driverName for f in formats])
 
+        # multilayer formats
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SupportsMultipleLayers)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertTrue('XLSX' in [f.driverName for f in formats])
+
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SupportsMultipleLayers | QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertFalse('XLSX' in [f.driverName for f in formats])
+
     def testOgrDriverList(self):
         # test with drivers in recommended order
         drivers = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SortRecommended)
@@ -859,6 +871,17 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         # skip non-spatial
         formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SkipNonSpatialFormats)
         self.assertFalse('ODS' in [f.driverName for f in formats])
+
+        # multilayer formats
+        formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SupportsMultipleLayers)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertTrue('XLSX' in [f.driverName for f in formats])
+
+        formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SupportsMultipleLayers | QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertTrue('DXF' in [f.driverName for f in formats])
+        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
+        self.assertFalse('XLSX' in [f.driverName for f in formats])
 
     def testSupportedFormatExtensions(self):
         formats = QgsVectorFileWriter.supportedFormatExtensions()
@@ -1691,6 +1714,95 @@ class TestQgsVectorFileWriter(unittest.TestCase):
                 writer.capabilities() & Qgis.VectorFileWriterCapability.FieldAliases)
             self.assertFalse(
                 writer.capabilities() & Qgis.VectorFileWriterCapability.FieldComments)
+
+    def testWriteFieldConstraints(self):
+        """
+        Test explicitly including field constraints.
+        """
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double'),
+            'test',
+            'memory')
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.setFieldConstraint(2, QgsFieldConstraints.ConstraintUnique)
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.includeConstraints = True
+
+        dest = os.path.join(str(QDir.tempPath()), 'constraints.gpkg')
+        result, err = QgsVectorFileWriter.writeAsVectorFormatV2(
+            layer,
+            dest,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(result, QgsVectorFileWriter.NoError)
+
+        res = QgsVectorLayer(dest, 'result')
+        self.assertTrue(res.isValid())
+        self.assertEqual([f.name() for f in res.fields()], ['fid', 'name', 'age', 'size'])
+
+        self.assertEqual(res.fields()['name'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(res.fields()['age'].constraints().constraints(),
+                         QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(res.fields()['size'].constraints().constraints(),
+                         QgsFieldConstraints.ConstraintUnique)
+
+    def testWriteSkipFieldConstraints(self):
+        """
+        Test that default is to skip field constraints.
+        """
+        layer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=name:string(20)&'
+             'field=age:integer&field=size:double'),
+            'test',
+            'memory')
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.setFieldConstraint(2, QgsFieldConstraints.ConstraintUnique)
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        ft.setAttributes(['Johny', 20, 0.3])
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+
+        dest = os.path.join(str(QDir.tempPath()), 'constraints.gpkg')
+        result, err = QgsVectorFileWriter.writeAsVectorFormatV2(
+            layer,
+            dest,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(result, QgsVectorFileWriter.NoError)
+
+        res = QgsVectorLayer(dest, 'result')
+        self.assertTrue(res.isValid())
+        self.assertEqual([f.name() for f in res.fields()], ['fid', 'name', 'age', 'size'])
+
+        self.assertEqual(res.fields()['name'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(res.fields()['age'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(res.fields()['size'].constraints().constraints(),
+                         QgsFieldConstraints.Constraints())
 
 
 if __name__ == '__main__':

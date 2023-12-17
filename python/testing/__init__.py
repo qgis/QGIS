@@ -17,31 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthias Kuhn'
+__author__ = "Matthias Kuhn"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Matthias Kuhn"
 
+import difflib
+import filecmp
+import functools
+import inspect
 import os
 import sys
-import difflib
-import functools
-import filecmp
 import tempfile
+import unittest
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
+from warnings import warn
 
-from qgis.PyQt.QtCore import (
-    QVariant,
-    QDateTime,
-    QDate,
-    QDir,
-    QUrl,
-    QSize
-)
-from qgis.PyQt.QtGui import (
-    QImage,
-    QDesktopServices
-)
+from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QDir, QUrl, QSize
+from qgis.PyQt.QtGui import QImage, QDesktopServices
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
@@ -55,14 +48,10 @@ from qgis.core import (
     QgsLayoutChecker,
 )
 
-import unittest
-
-# Get a backup, we will patch this one later
-_TestCase = unittest.TestCase
 unittest.util._MAX_LENGTH = 2000
 
 
-class TestCase(_TestCase):
+class QgisTestCase(unittest.TestCase):
 
     @staticmethod
     def is_ci_run() -> bool:
@@ -74,11 +63,14 @@ class TestCase(_TestCase):
     @classmethod
     def setUpClass(cls):
         cls.report = ''
+        cls.markdown_report = ''
 
     @classmethod
     def tearDownClass(cls):
         if cls.report:
             cls.write_local_html_report(cls.report)
+        if cls.markdown_report:
+            cls.write_local_markdown_report(cls.markdown_report)
 
     @classmethod
     def control_path_prefix(cls) -> Optional[str]:
@@ -96,52 +88,137 @@ class TestCase(_TestCase):
         report_file = report_dir.filePath('index.html')
 
         # only append to existing reports if running under CI
+        file_is_empty = True
         if cls.is_ci_run() or \
                 os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == 'true':
             file_mode = 'ta'
+            try:
+                with open(report_file, 'rt', encoding="utf-8") as f:
+                    file_is_empty = not bool(f.read())
+            except IOError:
+                pass
         else:
             file_mode = 'wt'
 
         with open(report_file, file_mode, encoding='utf-8') as f:
+            if file_is_empty:
+                from .test_data_dir import TEST_DATA_DIR
+
+                # append standard header
+                with open(TEST_DATA_DIR + "/../test_report_header.html", 'rt', encoding='utf-8') as header_file:
+                    f.write(header_file.read())
+
+                # append embedded scripts
+                f.write('<script>\n')
+                with open(TEST_DATA_DIR + "/../renderchecker.js", 'rt', encoding='utf-8') as script_file:
+                    f.write(script_file.read())
+                f.write("</script>\n")
+
             f.write(f"<h1>Python {cls.__name__} Tests</h1>\n")
             f.write(report)
 
-        if not TestCase.is_ci_run():
+        if not QgisTestCase.is_ci_run():
             QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
 
     @classmethod
-    def image_check(cls,
-                    name: str,
-                    reference_image: str,
-                    image: QImage,
-                    control_name=None,
-                    color_tolerance: int = 2,
-                    allowed_mismatch: int = 20) -> bool:
-        temp_dir = QDir.tempPath() + '/'
+    def write_local_markdown_report(cls, report: str):
+        report_dir = QgsRenderChecker.testReportDir()
+        if not report_dir.exists():
+            QDir().mkpath(report_dir.path())
+
+        report_file = report_dir.filePath("summary.md")
+
+        # only append to existing reports if running under CI
+        if cls.is_ci_run() or os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == "true":
+            file_mode = "ta"
+        else:
+            file_mode = "wt"
+
+        with open(report_file, file_mode, encoding="utf-8") as f:
+            f.write(report)
+
+    @classmethod
+    def get_test_caller_details(
+        cls,
+    ) -> Tuple[Optional[str], Optional[str], Optional[int]]:
+        """
+        Retrieves the details of the caller at the earliest position
+        in the stack, excluding unittest internals.
+
+        Returns the file, function name and line number of the caller
+        """
+        test_caller = None
+        for caller_frame_record in inspect.stack():
+            frame = caller_frame_record[0]
+            info = inspect.getframeinfo(frame)
+            # we want the highest level caller which isn't from unittest
+            if "unittest" in info.filename or info.function == "_callTestMethod":
+                break
+            else:
+                test_caller = info
+
+        if test_caller:
+            return (test_caller.filename, test_caller.function, test_caller.lineno)
+        return None, None, None
+
+    @classmethod
+    def image_check(
+        cls,
+        name: str,
+        reference_image: str,
+        image: QImage,
+        control_name=None,
+        color_tolerance: int = 2,
+        allowed_mismatch: int = 20,
+        size_tolerance: Optional[int] = None,
+        expect_fail: bool = False,
+    ) -> bool:
+        temp_dir = QDir.tempPath() + "/"
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
         checker = QgsMultiRenderChecker()
+
+        caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
+        if caller_file:
+            checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
+
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
+
         checker.setControlName(control_name or "expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(color_tolerance)
+        checker.setExpectFail(expect_fail)
+        if size_tolerance is not None:
+            checker.setSizeTolerance(size_tolerance, size_tolerance)
+
         result = checker.runTest(name, allowed_mismatch)
-        if not result:
+        if (not expect_fail and not result) or (expect_fail and result):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
+
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
 
         return result
 
     @classmethod
-    def render_map_settings_check(cls,
-                                  name: str,
-                                  reference_image: str,
-                                  map_settings: QgsMapSettings,
-                                  color_tolerance: Optional[int] = None,
-                                  allowed_mismatch: Optional[int] = None) -> bool:
+    def render_map_settings_check(
+        cls,
+        name: str,
+        reference_image: str,
+        map_settings: QgsMapSettings,
+        color_tolerance: Optional[int] = None,
+        allowed_mismatch: Optional[int] = None,
+    ) -> bool:
         checker = QgsMultiRenderChecker()
         checker.setMapSettings(map_settings)
+
+        caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
+        if caller_file:
+            checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
 
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
@@ -153,18 +230,44 @@ class TestCase(_TestCase):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     @classmethod
-    def render_layout_check(cls, name: str, layout: QgsLayout, size: QSize):
+    def render_layout_check(
+        cls, name: str,
+        layout: QgsLayout,
+        size: Optional[QSize] = None,
+        color_tolerance: Optional[int] = None,
+        allowed_mismatch: Optional[int] = None,
+    ) -> bool:
         checker = QgsLayoutChecker(name, layout)
-        checker.setSize(size)
+
+        caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
+        if caller_file:
+            checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
+
+        if size is not None:
+            checker.setSize(size)
+        if color_tolerance is not None:
+            checker.setColorTolerance(color_tolerance)
+
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
-        result, message = checker.testLayout()
+        result, message = checker.testLayout(pixelDiff=allowed_mismatch or 0)
         if not result:
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
+
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
@@ -218,13 +321,13 @@ class TestCase(_TestCase):
             result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
 
             if use_asserts:
-                _TestCase.assertEqual(self, layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
+                self.assertEqual(layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())
             elif layer_expected.dataProvider().crs() != layer_result.dataProvider().crs():
                 return False
 
         # Compare features
         if use_asserts:
-            _TestCase.assertEqual(self, layer_expected.featureCount(), layer_result.featureCount())
+            self.assertEqual(layer_expected.featureCount(), layer_result.featureCount())
         elif layer_expected.featureCount() != layer_result.featureCount():
             return False
 
@@ -287,8 +390,8 @@ class TestCase(_TestCase):
                     features_expected.remove(feat_expected_equal)
                 else:
                     if use_asserts:
-                        _TestCase.assertTrue(
-                            self, False,
+                        self.assertTrue(
+                            False,
                             'Unexpected result feature: fid {}, geometry: {}, attributes: {}'.format(
                                 feat.id(),
                                 feat.geometry().constGet().asWkt(precision) if feat.geometry() else 'NULL',
@@ -306,7 +409,7 @@ class TestCase(_TestCase):
                             feat.geometry().constGet().asWkt(precision) if feat.geometry() else 'NULL',
                             feat.attributes())
                         )
-                    _TestCase.assertTrue(self, False, 'Some expected features not found in results:\n' + '\n'.join(lst_missing))
+                    self.assertTrue(False, 'Some expected features not found in results:\n' + '\n'.join(lst_missing))
                 else:
                     return False
 
@@ -454,8 +557,7 @@ class TestCase(_TestCase):
             equal = False
 
         if use_asserts:
-            _TestCase.assertTrue(
-                self,
+            self.assertTrue(
                 equal, ''
                 ' Features (Expected fid: {}, Result fid: {}) differ in geometry with method {}: \n\n'
                 '  At given precision ({}):\n'
@@ -496,8 +598,7 @@ class TestCase(_TestCase):
                 continue
 
             if use_asserts:
-                _TestCase.assertIn(
-                    self,
+                self.assertIn(
                     field_expected.name().lower(),
                     [name.lower() for name in feat1.fields().names()])
 
@@ -537,8 +638,7 @@ class TestCase(_TestCase):
                     attr_result = round(attr_result, cmp['precision'])
 
             if use_asserts:
-                _TestCase.assertEqual(
-                    self,
+                self.assertEqual(
                     attr_expected,
                     attr_result,
                     'Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}'.format(
@@ -622,9 +722,85 @@ def expectedFailure(*args):
         return realExpectedFailure
 
 
-# Patch unittest
-unittest.TestCase = TestCase
-unittest.expectedFailure = expectedFailure
+QgisTestCase.expectedFailure = expectedFailure
+
+
+def _deprecatedAssertLayersEqual(*args, **kwargs):
+    warn('unittest.TestCase.assertLayersEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.assertLayersEqual(*args, **kwargs)
+
+
+def _deprecatedCheckLayersEqual(*args, **kwargs):
+    warn('unittest.TestCase.checkLayersEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.checkLayersEqual(*args, **kwargs)
+
+
+def _deprecatedAssertFilesEqual(*args, **kwargs):
+    warn('unittest.TestCase.assertFilesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.assertFilesEqual(*args, **kwargs)
+
+
+def _deprecatedCheckFilesEqual(*args, **kwargs):
+    warn('unittest.TestCase.checkFilesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.checkFilesEqual(*args, **kwargs)
+
+
+def _deprecatedAssertDirectoryEqual(*args, **kwargs):
+    warn('unittest.TestCase.assertDirectoryEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.assertDirectoryEqual(*args, **kwargs)
+
+
+def _deprecatedAssertDirectoriesEqual(*args, **kwargs):
+    warn('unittest.TestCase.assertDirectoriesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.assertDirectoriesEqual(*args, **kwargs)
+
+
+def _deprecatedAssertGeometriesEqual(*args, **kwargs):
+    warn('unittest.TestCase.assertGeometriesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.assertGeometriesEqual(*args, **kwargs)
+
+
+def _deprecatedCheckGeometriesEqual(*args, **kwargs):
+    warn('unittest.TestCase.checkGeometriesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.checkGeometriesEqual(*args, **kwargs)
+
+
+def _deprecatedCheckAttributesEqual(*args, **kwargs):
+    warn('unittest.TestCase.checkAttributesEqual is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    return QgisTestCase.checkAttributesEqual(*args, **kwargs)
+
+
+def _deprecated_image_check(*args, **kwargs):
+    warn('unittest.TestCase.image_check is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    # Remove the first args element `self`  which we don't need for a @classmethod
+    return QgisTestCase.image_check(*args[1:], **kwargs)
+
+
+def _deprecated_render_map_settings_check(*args, **kwargs):
+    warn('unittest.TestCase.render_map_settings_check is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    # Remove the first args element `self`  which we don't need for a @classmethod
+    return QgisTestCase.render_map_settings_check(*args[1:], **kwargs)
+
+
+def _deprecated_render_layout_check(*args, **kwargs):
+    warn('unittest.TestCase.render_layout_check is deprecated and will be removed in the future. Port your tests to `qgis.testing.TestCase`', DeprecationWarning)
+    # Remove the first args element `self`  which we don't need for a @classmethod
+    return QgisTestCase.render_layout_check(*args[1:], **kwargs)
+
+
+TestCase = unittest.TestCase
+TestCase.assertLayersEqual = _deprecatedAssertLayersEqual
+TestCase.checkLayersEqual = _deprecatedCheckLayersEqual
+TestCase.assertFilesEqual = _deprecatedAssertFilesEqual
+TestCase.checkFilesEqual = _deprecatedCheckFilesEqual
+TestCase.assertDirectoryEqual = _deprecatedAssertDirectoryEqual
+TestCase.assertDirectoriesEqual = _deprecatedAssertDirectoriesEqual
+TestCase.assertGeometriesEqual = _deprecatedAssertGeometriesEqual
+TestCase.checkGeometriesEqual = _deprecatedCheckGeometriesEqual
+TestCase.checkAttributesEqual = _deprecatedCheckAttributesEqual
+TestCase.image_check = _deprecated_image_check
+TestCase.render_map_settings_check = _deprecated_render_map_settings_check
+TestCase.render_layout_check = _deprecated_render_layout_check
 
 
 def start_app(cleanup=True):

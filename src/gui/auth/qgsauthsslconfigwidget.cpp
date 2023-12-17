@@ -120,18 +120,8 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mProtocolCmbBx = new QComboBox( treeSslConfig );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SecureProtocols ),
                            static_cast<int>( QSsl::SecureProtocols ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1SslV3 ),
-                           static_cast<int>( QSsl::TlsV1SslV3 ) );
-#endif
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1_0 ),
                            static_cast<int>( QSsl::TlsV1_0 ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV3 ),
-                           static_cast<int>( QSsl::SslV3 ) );
-  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV2 ),
-                           static_cast<int>( QSsl::SslV2 ) );
-#endif
   mProtocolCmbBx->setMaximumWidth( 300 );
   mProtocolCmbBx->setCurrentIndex( 0 );
   QTreeWidgetItem *protocolitem = new QTreeWidgetItem(
@@ -282,14 +272,14 @@ void QgsAuthSslConfigWidget::loadSslCustomConfig( const QgsAuthConfigSslServer &
   resetSslCertConfig();
   if ( config.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "Passed-in SSL custom config is null" ) );
+    QgsDebugError( QStringLiteral( "Passed-in SSL custom config is null" ) );
     return;
   }
 
   const QSslCertificate cert( config.sslCertificate() );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "SSL custom config's cert is null" ) );
+    QgsDebugError( QStringLiteral( "SSL custom config's cert is null" ) );
     return;
   }
 
@@ -313,7 +303,7 @@ void QgsAuthSslConfigWidget::saveSslCertConfig()
   }
   if ( !QgsApplication::authManager()->storeSslCertCustomConfig( sslCustomConfig() ) )
   {
-    QgsDebugMsg( QStringLiteral( "SSL custom config FAILED to store in authentication database" ) );
+    QgsDebugError( QStringLiteral( "SSL custom config FAILED to store in authentication database" ) );
   }
 }
 

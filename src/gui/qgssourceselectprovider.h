@@ -34,6 +34,8 @@ class QWidget;
  */
 class GUI_EXPORT QgsSourceSelectProvider
 {
+    Q_GADGET
+
   public:
 
     //! Provider ordering groups
@@ -45,6 +47,20 @@ class GUI_EXPORT QgsSourceSelectProvider
       OrderSearchProvider = 4000, //!< Starting point for search providers (e.g. Layer Metadata)
       OrderOtherProvider = 5000, //!< Starting point for other providers (e.g. plugin based providers)
     };
+
+    /**
+     * The Capability enum describes the capabilities of the source select implementation.
+     * \since QGIS 3.38
+     */
+    enum class Capability : int
+    {
+      NoCapabilities  = 0, //!< No capabilities
+      ConfigureFromUri = 1  //!< The source select widget can be configured from a URI
+    };
+    Q_ENUM( Capability )
+    //!
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+    Q_FLAG( Capabilities )
 
     virtual ~QgsSourceSelectProvider() = default;
 
@@ -84,7 +100,19 @@ class GUI_EXPORT QgsSourceSelectProvider
      * Caller takes responsibility of deleting created.
      */
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 SIP_FACTORY;
+
+    /**
+     * Returns the source select provider capabilities.
+     * The default implementation returns no capabilities.
+     * \since QGIS 3.38
+     */
+    virtual Capabilities capabilities()
+    {
+      return Capability::NoCapabilities;
+    }
+
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSourceSelectProvider::Capabilities )
 
 #endif // QGSSOURCESELECTPROVIDER_H

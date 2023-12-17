@@ -30,11 +30,11 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
 
   mDemOffsetSpinBox->setClearValue( 0.0 );
   mDemScaleSpinBox->setClearValue( 1.0 );
-  mComboDemLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
+  mComboDemLayer->setFilters( Qgis::LayerFilter::RasterLayer );
 
   mMeshOffsetSpinBox->setClearValue( 0.0 );
   mMeshScaleSpinBox->setClearValue( 1.0 );
-  mComboMeshLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
+  mComboMeshLayer->setFilters( Qgis::LayerFilter::MeshLayer );
 
   mComboTerrainType->addItem( tr( "Flat Terrain" ), QStringLiteral( "flat" ) );
   mComboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QStringLiteral( "raster" ) );

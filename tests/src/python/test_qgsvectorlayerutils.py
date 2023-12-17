@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,
@@ -29,7 +28,8 @@ from qgis.core import (
     QgsVectorLayerJoinInfo,
     QgsVectorLayerUtils,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -47,7 +47,7 @@ def createLayerWithOnePoint():
     return layer
 
 
-class TestQgsVectorLayerUtils(unittest.TestCase):
+class TestQgsVectorLayerUtils(QgisTestCase):
 
     def test_field_is_read_only(self):
         """

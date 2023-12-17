@@ -20,7 +20,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgis_gui.h"
 
-
+class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMessageBar;
 

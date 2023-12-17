@@ -11,12 +11,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsGeometry, QgsGeometryValidator, QgsPointXY
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 app = start_app()
 
 
-class TestQgsGeometryValidator(unittest.TestCase):
+class TestQgsGeometryValidator(QgisTestCase):
 
     def testIssue15660(self):
         """ Test crash when validating geometry (#15660) """

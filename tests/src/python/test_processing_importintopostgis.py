@@ -20,7 +20,8 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -35,7 +36,7 @@ class ConsoleFeedBack(QgsProcessingFeedback):
         self._errors.append(error)
 
 
-class TestExportToPostGis(unittest.TestCase):
+class TestExportToPostGis(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

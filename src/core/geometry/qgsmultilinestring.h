@@ -127,6 +127,14 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     % End
 #endif
 
+    /**
+     * Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+     * the measure between the supplied \a start and \a end values.
+     *
+     * \since QGIS 3.36
+     */
+    QgsMultiLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+
   protected:
 
     bool wktOmitChildType() const override;

@@ -10,7 +10,8 @@ __date__ = '25/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 from qgis.core import QgsProviderRegistry
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -18,7 +19,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMsSqlQueryBuilder(unittest.TestCase):
+class TestQgsMsSqlQueryBuilder(QgisTestCase):
 
     def test_quoted_identifier(self):
         # we don't need a valid database to test this

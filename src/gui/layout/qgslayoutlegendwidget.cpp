@@ -41,6 +41,7 @@
 #include "qgscolorramplegendnodewidget.h"
 #include "qgssymbol.h"
 #include "qgslayoutundostack.h"
+#include "qgsexpressionfinder.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -203,6 +204,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mGroupFontButton->registerExpressionContextGenerator( this );
   mLayerFontButton->registerExpressionContextGenerator( this );
   mItemFontButton->registerExpressionContextGenerator( this );
+  mExpressionFilterButton->registerExpressionContextGenerator( this );
 
   mTitleFontButton->setLayer( coverageLayer() );
   mGroupFontButton->setLayer( coverageLayer() );
@@ -1189,7 +1191,13 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   legendContext.setHighlightedVariables( highlighted );
 
-  QgsExpressionBuilderDialog expressiondialog( vl, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
+  // Passing the vector layer to expression dialog exposes the fields, but we still want generic
+  // layer variables
+  QgsExpressionContextScope *limitedLayerScope { QgsExpressionContextUtils::layerScope( vl ) };
+  limitedLayerScope->setFields( QgsFields() );
+  legendContext.appendScope( limitedLayerScope );
+
+  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
   if ( expressiondialog.exec() )
     layerNode->setLabelExpression( expressiondialog.expressionText() );
 
@@ -1740,14 +1748,7 @@ void QgsLayoutLegendNodeWidget::insertExpression()
   if ( !mLegend )
     return;
 
-  QString selText = mLabelEdit->textCursor().selectedText();
-
-  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
-  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
-    selText = selText.mid( 2, selText.size() - 4 );
+  QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mLabelEdit );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer *layer = mLegend->layout() ? mLegend->layout()->reportContext().layer() : nullptr;
@@ -1766,16 +1767,16 @@ void QgsLayoutLegendNodeWidget::insertExpression()
                                    << QStringLiteral( "legend_filter_by_map" )
                                    << QStringLiteral( "legend_filter_out_atlas" ) );
 
-  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mLegend->beginCommand( tr( "Insert expression" ) );
-      mLabelEdit->insertPlainText( "[%" + expression + "%]" );
+      mLabelEdit->insertPlainText( "[%" + expression.trimmed() + "%]" );
       mLegend->endCommand();
     }
   }

@@ -101,11 +101,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
       it.value()->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  const QStringList constSplit = tmpStr.split( ' ', QString::SkipEmptyParts );
-#else
   const QStringList constSplit = tmpStr.split( ' ', Qt::SkipEmptyParts );
-#endif
   for ( const QString &lev : constSplit )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
@@ -196,18 +192,14 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QStringList constSplit = lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts );
-#else
     const QStringList constSplit = lePyramidsLevels->text().trimmed().split( ' ', Qt::SkipEmptyParts );
-#endif
     for ( const QString &lev : constSplit )
     {
-      QgsDebugMsg( "lev= " + lev );
+      QgsDebugMsgLevel( "lev= " + lev, 3 );
       const int tmpInt = lev.toInt();
       if ( tmpInt > 0 )
       {
-        QgsDebugMsg( "tmpInt= " + QString::number( tmpInt ) );
+        QgsDebugMsgLevel( "tmpInt= " + QString::number( tmpInt ), 3 );
         // if number is valid, add to overview list
         mOverviewList << tmpInt;
       }

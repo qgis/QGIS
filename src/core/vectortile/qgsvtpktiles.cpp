@@ -55,7 +55,7 @@ bool QgsVtpkTiles::open()
   mZip = zip_open( fileNamePtr.constData(), ZIP_CHECKCONS, &rc );
   if ( rc == ZIP_ER_OK && mZip )
   {
-    const int count = zip_get_num_files( mZip );
+    const int count = zip_get_num_entries( mZip, ZIP_FL_UNCHANGED );
     if ( count != -1 )
     {
       return true;
@@ -317,7 +317,7 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
       QgsCoordinateReferenceSystem crs = matrixSet().crs();
 
       QgsLayerMetadata::SpatialExtent spatialExtent;
-      spatialExtent.bounds = QgsBox3d( QgsRectangle( xMin, yMin, xMax, yMax ) );
+      spatialExtent.bounds = QgsBox3D( QgsRectangle( xMin, yMin, xMax, yMax ) );
       spatialExtent.extentCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
       QgsLayerMetadata::Extent extent;
       extent.setSpatialExtents( { spatialExtent } );
@@ -360,7 +360,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
   zip_file *file = zip_fopen( mZip, tileMapPath.toLocal8Bit().constData(), 0 );
   if ( !file )
   {
-    QgsDebugMsg( QStringLiteral( "Tilemap %1 was not found in vtpk archive" ).arg( tileMapPath ) );
+    QgsDebugError( QStringLiteral( "Tilemap %1 was not found in vtpk archive" ).arg( tileMapPath ) );
     mTileMapPath.clear();
     return mRootTileMap;
   }
@@ -378,7 +378,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
     if ( file )
       zip_fclose( file );
     file = nullptr;
-    QgsDebugMsg( QStringLiteral( "Tilemap %1 could not be read from vtpk archive" ).arg( tileMapPath ) );
+    QgsDebugError( QStringLiteral( "Tilemap %1 could not be read from vtpk archive" ).arg( tileMapPath ) );
     mTileMapPath.clear();
   }
   mHasReadTileMap = true;
@@ -421,7 +421,7 @@ QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context 
     }
     catch ( QgsCsException & )
     {
-      QgsDebugMsg( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
+      QgsDebugError( QStringLiteral( "Could not transform layer fullExtent to layer CRS" ) );
     }
   }
 
@@ -432,7 +432,7 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
 {
   if ( !mZip )
   {
-    QgsDebugMsg( QStringLiteral( "VTPK tile package not open: " ) + mFilename );
+    QgsDebugError( QStringLiteral( "VTPK tile package not open: " ) + mFilename );
     return QByteArray();
   }
   if ( mPacketSize < 0 )
@@ -457,7 +457,8 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
   const size_t len = stat.size;
   if ( len <= tileIndexOffset )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot read gzip contents at offset %1: %2" ).arg( tileIndexOffset ).arg( fileName ) );
+    // seems this should be treated as "no content" here, rather then a broken VTPK
+    res = QByteArray( "" );
   }
   else
   {
@@ -473,7 +474,12 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
       const std::size_t tileOffset = indexValue % ( 2ULL << 39 );
       const std::size_t tileSize = static_cast< std::size_t>( std::floor( indexValue / ( 2ULL << 39 ) ) );
       // bundle is a gzip file;
-      if ( tileSize > 0 && !QgsZipUtils::decodeGzip( buf.get() + tileOffset, tileSize, res ) )
+      if ( tileSize == 0 )
+      {
+        // construct a non-null bytearray
+        res = QByteArray( "" );
+      }
+      else if ( !QgsZipUtils::decodeGzip( buf.get() + tileOffset, tileSize, res ) )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error extracting bundle contents as gzip: %1" ).arg( fileName ) );
       }

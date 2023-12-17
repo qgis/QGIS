@@ -9,10 +9,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '20/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsScaleBarRenderer, QgsScaleBarRendererRegistry
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
@@ -32,7 +32,7 @@ class TestRenderer(QgsScaleBarRenderer):
         return TestRenderer()
 
 
-class TestQgsScaleBarRendererRegistry(unittest.TestCase):
+class TestQgsScaleBarRendererRegistry(QgisTestCase):
 
     def testRegistry(self):
         registry = QgsScaleBarRendererRegistry()

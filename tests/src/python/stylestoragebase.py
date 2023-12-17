@@ -23,10 +23,11 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 
-class StyleStorageTestCaseBase(unittest.TestCase):
+class StyleStorageTestCaseBase(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

@@ -51,7 +51,7 @@ body:
         Each month, there is a new release of QGIS. According to the release schedule, you should at least be running a supported QGIS version.
         You can check the release schedule https://www.qgis.org/en/site/getinvolved/development/roadmap.html#release-schedule
       options:
-        - label: I'm running a supported QGIS version according to the roadmap.
+        - label: I'm running a supported QGIS version according to [the roadmap](https://www.qgis.org/en/site/getinvolved/development/roadmap.html#release-schedule).
 
   - type: checkboxes
     id: new-profile
@@ -63,7 +63,7 @@ body:
         Read this link how to create a new profile
         https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles
       options:
-        - label: I tried with a new QGIS profile
+        - label: I tried with a new [QGIS profile](https://docs.qgis.org/latest/en/docs/user_manual/introduction/qgis_configuration.html#working-with-user-profiles)
 
   - type: textarea
     id: additional-context

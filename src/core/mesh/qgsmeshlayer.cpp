@@ -45,6 +45,8 @@
 #include "qgsmeshlayerprofilegenerator.h"
 #include "qgsmeshlayerelevationproperties.h"
 #include "qgsthreadingutils.h"
+#include "qgsapplication.h"
+#include "qgsruntimeprofiler.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -151,7 +153,7 @@ QgsRectangle QgsMeshLayer::extent() const
   else
   {
     QgsRectangle rec;
-    rec.setMinimal();
+    rec.setNull();
     return rec;
   }
 }
@@ -488,7 +490,7 @@ QgsMeshDataBlock QgsMeshLayer::datasetValues( const QgsMeshDatasetIndex &index, 
   return mDatasetGroupStore->datasetValues( index, valueIndex, count );
 }
 
-QgsMesh3dDataBlock QgsMeshLayer::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
+QgsMesh3DDataBlock QgsMeshLayer::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -558,10 +560,10 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
 
           case QgsMeshDatasetGroupMetadata::DataOnVolumes:
           {
-            const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
+            const QgsMesh3DAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
             if ( avgMethod )
             {
-              const QgsMesh3dDataBlock block3d = dataset3dValues( index, nativeFaceIndex, 1 );
+              const QgsMesh3DDataBlock block3d = dataset3dValues( index, nativeFaceIndex, 1 );
               const QgsMeshDataBlock block2d = avgMethod->calculate( block3d );
               if ( block2d.isValid() )
               {
@@ -581,11 +583,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   return value;
 }
 
-QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
+QgsMesh3DDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsMesh3dDataBlock block3d;
+  QgsMesh3DDataBlock block3d;
 
   const QgsTriangularMesh *baseTriangularMesh = triangularMesh();
 
@@ -1388,7 +1390,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
   QString activeVectorName;
   QgsMeshRendererSettings consistentSettings = settings;
   int activeScalar = consistentSettings.activeScalarDatasetGroup();
-  int activeVector = consistentSettings.activeScalarDatasetGroup();
+  int activeVector = consistentSettings.activeVectorDatasetGroup();
 
   for ( auto it = nameToIndex.constBegin(); it != nameToIndex.constEnd(); ++it )
   {
@@ -1434,7 +1436,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
 
   if ( !activeScalarName.isEmpty() )
     consistentSettings.setActiveScalarDatasetGroup( mDatasetGroupStore->indexFromGroupName( activeScalarName ) );
-  if ( activeVectorName.isEmpty() )
+  if ( !activeVectorName.isEmpty() )
     consistentSettings.setActiveVectorDatasetGroup( mDatasetGroupStore->indexFromGroupName( activeVectorName ) );
 
   return consistentSettings;
@@ -1836,15 +1838,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   }
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
-  {
-    flags |= QgsDataProvider::ForceReadOnly;
-  }
+  QgsDataProvider::ReadFlags flags = providerReadFlags( layer_node, mReadFlags );
 
   const QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
   if ( !elemExtraDatasets.isNull() )
@@ -2000,7 +1994,7 @@ QString QgsMeshLayer::htmlMetadata() const
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
 
-  if ( dataProvider() )
+  if ( const QgsMeshDataProvider *provider = dataProvider() )
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Vertex count" ) + QStringLiteral( "</td><td>" )
@@ -2018,6 +2012,7 @@ QString QgsMeshLayer::htmlMetadata() const
                   + tr( "Dataset groups count" ) + QStringLiteral( "</td><td>" )
                   + ( locale.toString( static_cast<qlonglong>( datasetGroupCount() ) ) )
                   + QStringLiteral( "</td></tr>\n" );
+    myMetadata += provider->htmlMetadata();
   }
 
   // End Provider section
@@ -2077,7 +2072,18 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   mProviderKey = provider;
   const QString dataSource = mDataSource;
 
-  mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
+  if ( mPreloadedProvider )
+  {
+    mDataProvider = qobject_cast< QgsMeshDataProvider * >( mPreloadedProvider.release() );
+  }
+  else
+  {
+    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+
+    mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
+  }
 
   if ( !mDataProvider )
   {

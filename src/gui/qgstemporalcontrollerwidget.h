@@ -80,11 +80,6 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     bool mHasTemporalLayersLoaded = false;
 
-    void togglePlayForward();
-    void togglePlayBackward();
-    void togglePause();
-    bool mPlayingForward = true;
-
     std::unique_ptr< QMenu > mRangeMenu;
     QAction *mRangeSetToProjectAction = nullptr;
     QAction *mRangeSetToAllLayersAction = nullptr;
@@ -147,6 +142,8 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      */
     void updateSlider( const QgsDateTimeRange &range );
 
+    void totalMovieFramesChanged( long long frames );
+
     /**
      * Updates the current range label
      */
@@ -167,7 +164,8 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void mNavigationOff_clicked();
     void mNavigationFixedRange_clicked();
     void mNavigationAnimated_clicked();
-    void setWidgetStateFromNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode );
+    void mNavigationMovie_clicked();
+    void setWidgetStateFromNavigationMode( Qgis::TemporalNavigationMode mode );
 
     void onLayersAdded( const QList<QgsMapLayer *> &layers );
     void onProjectCleared();

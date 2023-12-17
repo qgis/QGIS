@@ -68,7 +68,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       QByteArray materialDataDefined;
     };
 
-    void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
+    void processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float offset, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     Qt3DRender::QMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
@@ -110,39 +110,40 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   return true;
 }
 
-void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
+void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatureId fid, float offset, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
+  std::unique_ptr< QgsPolygon > polyClone( poly->clone() );
+
   const uint oldVerticesCount = out.tessellator->dataVerticesCount();
   if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
-    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ), height );
+    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ), offset );
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
-      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), height );
+      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), offset );
 
     if ( extrusionHeight )
     {
       // add roof and wall edges
       const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
-      outEdges.addLineString( *exterior, extrusionHeight + height );
-      outEdges.addVerticalLines( *exterior, extrusionHeight, height );
+      outEdges.addLineString( *exterior, extrusionHeight + offset );
+      outEdges.addVerticalLines( *exterior, extrusionHeight, offset );
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
         const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
-        outEdges.addLineString( *interior, extrusionHeight + height );
-        outEdges.addVerticalLines( *interior, extrusionHeight, height );
+        outEdges.addLineString( *interior, extrusionHeight + offset );
+        outEdges.addVerticalLines( *interior, extrusionHeight, offset );
       }
     }
   }
 
-  Qgs3DUtils::clampAltitudes( polyClone, mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context.map() );
+  Qgs3DUtils::clampAltitudes( polyClone.get(), mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), offset, context.map() );
 
   Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
   const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
-  delete polyClone;
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
     processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
@@ -175,24 +176,23 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   const bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
   const bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
 
-  float height = mSymbol->height();
+  float offset = mSymbol->offset();
   float extrusionHeight = mSymbol->extrusionHeight();
   if ( hasDDHeight )
-    height = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyHeight, context.expressionContext(), height );
+    offset = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyHeight, context.expressionContext(), offset ) );
   if ( hasDDExtrusion )
     extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyExtrusionHeight, context.expressionContext(), extrusionHeight );
 
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {
-    QgsPolygon *polyClone = poly->clone();
-    processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
+    processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
   }
   else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
   {
     for ( int i = 0; i < mpoly->numGeometries(); ++i )
     {
-      QgsPolygon *polyClone = static_cast< const QgsPolygon *>( mpoly->polygonN( i ) )->clone();
-      processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
+      const QgsPolygon *poly = mpoly->polygonN( i );
+      processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
     }
   }
   else if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( g ) )
@@ -202,8 +202,8 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
       const QgsAbstractGeometry *g2 = gc->geometryN( i );
       if ( QgsWkbTypes::flatType( g2->wkbType() ) == Qgis::WkbType::Polygon )
       {
-        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
-        processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
+        const QgsPolygon *poly = static_cast< const QgsPolygon *>( g2 );
+        processPolygon( poly, f.id(), offset, extrusionHeight, context, out );
       }
     }
   }
@@ -230,6 +230,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     mat->setLineWidth( mSymbol->edgeWidth() );
 
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    entity->setObjectName( parent->objectName() +  "_EDGES" );
 
     // geometry renderer
     Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
@@ -247,51 +248,42 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
 }
 
 
-void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected )
+void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &polyData, bool selected )
 {
-  if ( out.tessellator->dataVerticesCount() == 0 )
+  if ( polyData.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
   Qt3DRender::QMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
-  const int nVerts = data.count() / out.tessellator->stride();
+  const QByteArray data( reinterpret_cast<const char *>( polyData.tessellator->data().constData() ), static_cast<int>( polyData.tessellator->data().count() * sizeof( float ) ) );
+  const int nVerts = data.count() / polyData.tessellator->stride();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(),
       texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
-  geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
+
+  geometry->setData( data, nVerts, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
+
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, out.materialDataDefined );
+    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, polyData.materialDataDefined );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+  entity->setObjectName( parent->objectName() + "_CHUNK_MESH" );
   entity->addComponent( renderer );
   entity->addComponent( mat );
   entity->setParent( parent );
 
   if ( !selected )
-    entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( QStringLiteral( "main" ) ); // temporary measure to distinguish between "selected" and "main"
+    renderer->setProperty( Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG,  Qgs3DTypes::Main3DRenderer ); // temporary measure to distinguish between "selected" and "main"
+
 // cppcheck wrongly believes entity will leak
 // cppcheck-suppress memleak
-}
-
-
-static Qt3DRender::QCullFace::CullingMode _qt3DcullingMode( Qgs3DTypes::CullingMode mode )
-{
-  switch ( mode )
-  {
-    case Qgs3DTypes::NoCulling:    return Qt3DRender::QCullFace::NoCulling;
-    case Qgs3DTypes::Front:        return Qt3DRender::QCullFace::Front;
-    case Qgs3DTypes::Back:         return Qt3DRender::QCullFace::Back;
-    case Qgs3DTypes::FrontAndBack: return Qt3DRender::QCullFace::FrontAndBack;
-  }
-  return Qt3DRender::QCullFace::NoCulling;
 }
 
 // front/back side culling
@@ -304,7 +296,7 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::Q
     for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
     {
       Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-      cullFace->setMode( _qt3DcullingMode( cullingMode ) );
+      cullFace->setMode( Qgs3DUtils::qt3DcullingMode( cullingMode ) );
       ( *rpit )->addRenderState( cullFace );
     }
   }

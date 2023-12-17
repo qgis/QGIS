@@ -257,7 +257,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:voronoipolygons
+  - algorithm: native:voronoipolygons
     name: Standard voronoi
     params:
       BUFFER: 0.0
@@ -270,7 +270,7 @@ tests:
         type: vector
         pk: id
 
-  - algorithm: qgis:voronoipolygons
+  - algorithm: native:voronoipolygons
     name: Vornoi with buffer region
     params:
       BUFFER: 10.0
@@ -283,7 +283,22 @@ tests:
         type: vector
         pk: id
 
-  - algorithm: qgis:voronoipolygons
+  - algorithm: native:voronoipolygons
+    name: Voronoi without source atributes
+    params:
+      BUFFER: 0.0
+      COPY_ATTRIBUTES: false
+      INPUT:
+        name: points.gml
+        type: vector
+      TOLERANCE: 0.0
+    results:
+      OUTPUT:
+        name: expected/voronoi_no_attributes.gml
+        type: vector
+        pk: id
+
+  - algorithm: native:voronoipolygons
     name: Vornoi with vertical and horizontal Voronoi edges
     params:
       BUFFER: 0.0
@@ -296,7 +311,7 @@ tests:
         type: vector
         pk: id
 
-  - algorithm: qgis:voronoipolygons
+  - algorithm: native:voronoipolygons
     name: Vornoi with configuration that may cause numerical issues
     params:
       BUFFER: 0.0
@@ -307,10 +322,12 @@ tests:
       OUTPUT:
         name: expected/airportsvoronoidiagram.gml
         type: vector
+        pk: ID
         compare:
+          fields:
+            gml_id: skip
           geometry:
             precision: 2
-        pk: id
 
   - algorithm: native:explodelines
     name: Explode lines

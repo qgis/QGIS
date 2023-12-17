@@ -120,7 +120,7 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
 
   if ( !QgsPythonRunner::run( definePrettify ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( definePrettify ) );
+    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( definePrettify ) );
     return string;
   }
 
@@ -139,7 +139,7 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Error running script: %1" ).arg( script ) );
+    QgsDebugError( QStringLiteral( "Error running script: %1" ).arg( script ) );
     return newText;
   }
 

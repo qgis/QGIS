@@ -18,7 +18,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QBuffer, QByteArray, QIODevice, QSize
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument

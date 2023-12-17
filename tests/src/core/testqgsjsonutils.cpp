@@ -38,6 +38,7 @@ class TestQgsJsonUtils : public QObject
   private slots:
     void testStringList();
     void testJsonArray();
+    void testJsonToVariant();
     void testParseJson();
     void testIntList();
     void testDoubleList();
@@ -46,6 +47,8 @@ class TestQgsJsonUtils : public QObject
     void testExportFeatureJson();
     void testExportFeatureJsonCrs();
     void testExportGeomToJson();
+    void testParseNumbers();
+    void testParseNumbers_data();
 };
 
 
@@ -110,6 +113,19 @@ void TestQgsJsonUtils::testJsonArray()
   }
 }
 
+void TestQgsJsonUtils::testJsonToVariant()
+{
+  const json value = json::parse( "{\"_bool\":true,\"_double\":1234.45,\"_int\":123,\"_list\":[1,2,3.4,null],\"_null\":null,\"_object\":{\"int\":123}}" );
+  const QVariant variant = QgsJsonUtils::jsonToVariant( value );
+  QCOMPARE( variant.type(), QVariant::Map );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_bool" ) ), true );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_double" ) ), 1234.45 );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_int" ) ), 123 );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_list" ) ), QVariantList( {1, 2, 3.4, QVariant()} ) );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_null" ) ), QVariant() );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_object" ) ), QVariantMap( {{ QStringLiteral( "int" ), 123 }} ) );
+}
+
 void TestQgsJsonUtils::testParseJson()
 {
   const QStringList tests {{
@@ -118,6 +134,9 @@ void TestQgsJsonUtils::testParseJson()
       "true",
       "123",
       "123.45",
+      "4294967295",
+      "-9223372036854775807",
+      "9223372036854775807",
       R"j("a string")j",
       "[1,2,3.4,null]",
       R"j({"_bool":true,"_double":1234.45,"_int":123,"_list":[1,2,3.4,null],"_null":null,"_object":{"int":123}})j",
@@ -319,6 +338,31 @@ void TestQgsJsonUtils::testExportGeomToJson()
     }
   }
 }
+
+void TestQgsJsonUtils::testParseNumbers()
+{
+  QFETCH( QString, number );
+  QFETCH( int, type );
+
+  qDebug() << number << QgsJsonUtils::parseJson( number ) << QgsJsonUtils::parseJson( number ).type() << type;
+  QCOMPARE( QgsJsonUtils::parseJson( number ).type(), type );
+}
+
+void TestQgsJsonUtils::testParseNumbers_data()
+{
+  QTest::addColumn<QString>( "number" );
+  QTest::addColumn<int>( "type" );
+
+  QTest::newRow( "zero" ) << "0" << static_cast<int>( QVariant::Type::Int );
+  QTest::newRow( "int max" ) << QString::number( std::numeric_limits<int>::max() ) << static_cast<int>( QVariant::Type::Int );
+  QTest::newRow( "int min" ) << QString::number( std::numeric_limits<int>::lowest() ) << static_cast<int>( QVariant::Type::Int );
+  QTest::newRow( "uint max" ) << QString::number( std::numeric_limits<uint>::max() ) << static_cast<int>( QVariant::Type::LongLong );
+  QTest::newRow( "ulong max" ) << QString::number( std::numeric_limits<qulonglong>::max() ) << static_cast<int>( QVariant::Type::ULongLong );
+  QTest::newRow( "longlong max" ) << QString::number( std::numeric_limits<qlonglong>::max() ) << static_cast<int>( QVariant::Type::LongLong );
+  QTest::newRow( "longlong min" ) << QString::number( std::numeric_limits<qlonglong>::lowest() ) << static_cast<int>( QVariant::Type::LongLong );
+}
+
+
 
 QGSTEST_MAIN( TestQgsJsonUtils )
 #include "testqgsjsonutils.moc"

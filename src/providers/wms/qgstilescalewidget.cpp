@@ -134,7 +134,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsDebugMsgLevel( QStringLiteral( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : QString() ), 4 );
   if ( !canvas )
   {
-    QgsDebugMsg( QStringLiteral( "map canvas mapCanvas not found" ) );
+    QgsDebugError( QStringLiteral( "map canvas mapCanvas not found" ) );
     return;
   }
 
@@ -149,7 +149,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "legend not found" ) );
+    QgsDebugError( QStringLiteral( "legend not found" ) );
   }
 
   //create the dock widget
@@ -169,7 +169,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "panel menu not found" ) );
+    QgsDebugError( QStringLiteral( "panel menu not found" ) );
   }
 
   dock->setWidget( tws );

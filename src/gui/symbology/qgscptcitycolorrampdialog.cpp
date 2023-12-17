@@ -224,7 +224,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
 {
   if ( ! item )
   {
-    QgsDebugMsg( QStringLiteral( "invalid item" ) );
+    QgsDebugError( QStringLiteral( "invalid item" ) );
     return;
   }
   if ( item->type() == QgsCptCityDataItem::Directory )
@@ -257,7 +257,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "item %1 has invalid type %2" ).arg( item->path() ).arg( static_cast<int>( item->type() ) ) );
+    QgsDebugError( QStringLiteral( "item %1 has invalid type %2" ).arg( item->path() ).arg( static_cast<int>( item->type() ) ) );
   }
 }
 
@@ -274,7 +274,7 @@ void QgsCptCityColorRampDialog::mListWidget_itemClicked( QListWidgetItem *item )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "invalid item" ) );
+    QgsDebugError( QStringLiteral( "invalid item" ) );
   }
 }
 
@@ -300,7 +300,7 @@ void QgsCptCityColorRampDialog::tabBar_currentChanged( int index )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "invalid index %1" ).arg( index ) );
+    QgsDebugError( QStringLiteral( "invalid index %1" ).arg( index ) );
     setTreeModel( mAuthorsModel );
     mArchiveViewType = QgsCptCityBrowserModel::Authors;
   }
@@ -526,7 +526,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
       QgsCptCityColorRampItem *rampItem = qobject_cast<QgsCptCityColorRampItem *>( childrenRamps[i] );
       if ( ! rampItem )
       {
-        QgsDebugMsg( "invalid item " + childrenRamps[i]->path() );
+        QgsDebugError( "invalid item " + childrenRamps[i]->path() );
         continue;
       }
       QListWidgetItem *listItem = new QListWidgetItem();
@@ -540,7 +540,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "invalid item" ) );
+    QgsDebugError( QStringLiteral( "invalid item" ) );
   }
   mListWidget->blockSignals( false );
 }
@@ -683,7 +683,7 @@ void QgsCptCityColorRampDialog::refreshModel( const QModelIndex &index )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "invalid item" ) );
+      QgsDebugError( QStringLiteral( "invalid item" ) );
     }
   }
 

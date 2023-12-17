@@ -256,7 +256,7 @@ static void dumpBacktrace( unsigned int depth )
       // stdin from pipe
       if ( dup( fd[0] ) != STDIN_FILENO )
       {
-        QgsDebugMsg( QStringLiteral( "dup to stdin failed" ) );
+        QgsDebugError( QStringLiteral( "dup to stdin failed" ) );
       }
 
       close( fd[1] );        // close writing end
@@ -276,7 +276,7 @@ static void dumpBacktrace( unsigned int depth )
     {
       if ( stderr_new >= 0 )
         close( stderr_new );
-      QgsDebugMsg( QStringLiteral( "dup to stderr failed" ) );
+      QgsDebugError( QStringLiteral( "dup to stderr failed" ) );
     }
 
     close( fd[1] );  // close duped pipe
@@ -294,7 +294,7 @@ static void dumpBacktrace( unsigned int depth )
     if ( dup_stderr != STDERR_FILENO )
     {
       close( dup_stderr );
-      QgsDebugMsg( QStringLiteral( "dup to stderr failed" ) );
+      QgsDebugError( QStringLiteral( "dup to stderr failed" ) );
     }
     close( stderr_fd );
     wait( &status );
@@ -475,6 +475,7 @@ int main( int argc, char *argv[] )
 {
   //log messages written before creating QgsApplication
   QStringList preApplicationLogMessages;
+  QStringList preApplicationWarningMessages;
 
 #ifdef Q_OS_UNIX
   // Increase file resource limits (i.e., number of allowed open files)
@@ -501,17 +502,17 @@ int main( int argc, char *argv[] )
 
       if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
       {
-        QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
-                     .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
+        QgsDebugMsgLevel( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
+                          .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ), 2 );
       }
     }
     Q_UNUSED( oldSoft ) //avoid warnings
-    QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
-                 .arg( oldSoft ).arg( rescLimit.rlim_max ) );
+    QgsDebugMsgLevel( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+                      .arg( oldSoft ).arg( rescLimit.rlim_max ), 2 );
   }
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Starting qgis main" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Starting qgis main" ), 1 );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -569,7 +570,7 @@ int main( int argc, char *argv[] )
   bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined(ANDROID)
-  QgsDebugMsg( QStringLiteral( "Android: Splash hidden" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Android: Splash hidden" ), 2 );
   myHideSplash = true;
 #endif
 
@@ -617,10 +618,10 @@ int main( int argc, char *argv[] )
 
 // TODO Fix android
 #if defined(ANDROID)
-  QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+  QgsDebugMsgLevel( QStringLiteral( "Android: All params stripped" ), 2 );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
   QString configpath = QgsApplication::qgisSettingsDirPath();
-  QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
+  QgsDebugMsgLevel( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ), 2 );
 #endif
 
   QStringList args;
@@ -667,7 +668,7 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
         {
-          QgsDebugMsg( QStringLiteral( "Skipping bad layers" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Skipping bad layers" ), 2 );
           mySkipBadLayers = true;
         }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
@@ -1000,7 +1001,7 @@ int main( int argc, char *argv[] )
   {
     if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
+      preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
     else
     {
@@ -1018,7 +1019,7 @@ int main( int argc, char *argv[] )
     else if ( globalSettings.contains( QStringLiteral( "core/profilesPath" ) ) )
     {
       configLocalStorageLocation = globalSettings.value( QStringLiteral( "core/profilesPath" ), "" ).toString();
-      QgsDebugMsg( QStringLiteral( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
+      QgsDebugMsgLevel( QStringLiteral( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ), 1 );
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -1048,6 +1049,8 @@ int main( int argc, char *argv[] )
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
 
+  QString missingLastProfile;
+
   // If profile name was not explicitly set, use the policy to determine which profile to use
   if ( profileName.isEmpty() )
   {
@@ -1067,7 +1070,11 @@ int main( int argc, char *argv[] )
           // If last used profile no longer exists, use the default profile
           if ( !manager.profileExists( profileName ) )
           {
-            profileName  = manager.defaultProfileName();
+            if ( profileName != manager.defaultProfileName() )
+            {
+              missingLastProfile = profileName;
+            }
+            profileName = manager.defaultProfileName();
           }
           break;
 
@@ -1176,8 +1183,11 @@ int main( int argc, char *argv[] )
   QgsApplication::init( profileFolder );
 
   //write the log messages written before creating QgsApplication
+  for ( const QString &preApplicationLogMessage : std::as_const( preApplicationWarningMessages ) )
+    QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Warning );
+
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
-    QgsMessageLog::logMessage( preApplicationLogMessage );
+    QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == QLatin1String( "default" ) )
@@ -1205,7 +1215,7 @@ int main( int argc, char *argv[] )
 
         if ( runMigration )
         {
-          QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
+          QgsDebugMsgLevel( QStringLiteral( "RUNNING MIGRATION" ), 2 );
           migration->runMigration();
         }
       }
@@ -1514,7 +1524,7 @@ int main( int argc, char *argv[] )
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
   if ( myRestoreDefaultWindowState || settings.value( QStringLiteral( "qgis/restoreDefaultWindowState" ), false ).toBool() )
   {
-    QgsDebugMsg( QStringLiteral( "Resetting /UI/state settings!" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Resetting /UI/state settings!" ), 2 );
     settings.remove( QStringLiteral( "/UI/state" ) );
     settings.remove( QStringLiteral( "/qgis/restoreDefaultWindowState" ) );
   }
@@ -1555,7 +1565,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   for ( const QString &layerName : std::as_const( sFileList ) )
   {
-    QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
+    QgsDebugMsgLevel( QStringLiteral( "Trying to load file : %1" ).arg( layerName ), 2 );
     // don't load anything with a .qgs extension - these are project files
     if ( layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
          layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) ||
@@ -1597,11 +1607,7 @@ int main( int argc, char *argv[] )
         break;
       }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
-#else
       coords[i] = QStringView {myInitialExtent}.mid( posOld, pos - posOld ).toDouble( &ok );
-#endif
       if ( !ok )
         break;
 
@@ -1611,16 +1617,12 @@ int main( int argc, char *argv[] )
     // parse last coordinate
     if ( ok )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
-#else
       coords[3] = QStringView {myInitialExtent}.mid( posOld ).toDouble( &ok );
-#endif
     }
 
     if ( !ok )
     {
-      QgsDebugMsg( QStringLiteral( "Error while parsing initial extent!" ) );
+      QgsDebugError( QStringLiteral( "Error while parsing initial extent!" ) );
     }
     else
     {
@@ -1795,6 +1797,13 @@ int main( int argc, char *argv[] )
   delete mypSplash;
 
   qgis->completeInitialization();
+
+  // Warn if the user selection policy was set to "Use last used profile" but the last used profile was not found
+  if ( !missingLastProfile.isEmpty() )
+  {
+    qgis->messageBar()->pushWarning( QObject::tr( "Profile not found" ),
+                                     QObject::tr( "The last used profile '%1' was not found. The default profile was used instead." ).arg( missingLastProfile ) );
+  }
 
 #if defined(ANDROID)
   // fix for Qt Ministro hiding app's menubar in favor of native Android menus

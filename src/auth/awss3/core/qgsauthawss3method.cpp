@@ -65,7 +65,7 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
     return false;
   }
 
@@ -118,7 +118,7 @@ bool QgsAuthAwsS3Method::updateNetworkRequest( QNetworkRequest &request, const Q
   const QByteArray signingKey = QMessageAuthenticationCode::hash( "aws4_request",
                                 QMessageAuthenticationCode::hash( "s3",
                                     QMessageAuthenticationCode::hash( region,
-                                        QMessageAuthenticationCode::hash( date, "AWS4" + password,
+                                        QMessageAuthenticationCode::hash( date, QByteArray( "AWS4" + password ),
                                             QCryptographicHash::Sha256 ),
                                         QCryptographicHash::Sha256 ),
                                     QCryptographicHash::Sha256 ),

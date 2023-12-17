@@ -68,6 +68,71 @@ except ModuleNotFoundError:
     "from qgis.PyQt.QtWidgets import *",
     "from qgis.PyQt.QtNetwork import *",
     "from qgis.PyQt.QtXml import *",
+
+    r"""
+def __parse_object(object=None):
+    if not object:
+        return None
+    import inspect
+    if inspect.isclass(object):
+        str_class = str(object)
+    else:
+        str_class = str(object.__class__)
+
+    qgis_api_pattern = r".*qgis\._(\w+)\.(\w+).*"
+    match = re.match(qgis_api_pattern, str_class)
+    if match:
+        module = match[1]
+        obj = match[2]
+        return 'qgis', module, obj
+
+    pyqt_pattern = r".*PyQt5\.(\w+)\.(\w+).*"
+    match = re.match(pyqt_pattern, str_class)
+    if match:
+        module = match[1]
+        obj = match[2]
+        return 'qt', module, obj
+""",
+    r"""
+def _api(object=None):
+    '''
+    Link to the QGIS API documentation for the given object.
+    If no object is given, the main API page is opened.
+    If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
+    '''
+    import webbrowser
+    api = __parse_object(object)
+
+    version = '' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+
+    if not api:
+        webbrowser.open(f"https://qgis.org/api/{version}")
+    elif api[0] == 'qgis':
+        webbrowser.open(f"https://api.qgis.org/api/{version}/class{api[2]}.html")
+    elif api[0] == 'qt':
+        qtversion = '.'.join(qVersion().split(".")[:2])
+        webbrowser.open(f"https://doc.qt.io/qt-{qtversion}/{api[2].lower()}.html")
+""",
+    r"""
+def _pyqgis(object=None):
+    '''
+    Link to the PyQGIS API documentation for the given object.
+    If no object is given, the main PyQGIS API page is opened.
+    If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
+    '''
+    import webbrowser
+    api = __parse_object(object)
+
+    version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+
+    if not api:
+        webbrowser.open(f"https://qgis.org/pyqgis/{version}")
+    elif api[0] == 'qgis':
+        webbrowser.open(f"https://qgis.org/pyqgis/{version}/{api[1]}/{api[2]}.html")
+    elif api[0] == 'qt':
+        qtversion = '.'.join(qVersion().split(".")[:2])
+        webbrowser.open(f"https://doc.qt.io/qt-{qtversion}/{api[2].lower()}.html")
+"""
 ]
 
 
@@ -141,19 +206,22 @@ class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
                 self.sub_process.finished.connect(self.processFinished)
                 return 0
 
+        res = 0
+
         import webbrowser
         version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
             re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-        if cmd in ('_pyqgis', '_api', '_cookbook'):
-            if cmd == '_pyqgis':
-                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
-            elif cmd == '_api':
-                webbrowser.open(
-                    "https://qgis.org/api/{}".format('' if version == 'master' else version))
-            elif cmd == '_cookbook':
-                webbrowser.open(
-                    "https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
-                        'testing' if version == 'master' else version))
+
+        if cmd == "?":
+            self.shell.parent.shellOut.insertHelp()
+        elif cmd == '_pyqgis':
+            webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
+        elif cmd == '_api':
+            webbrowser.open("https://qgis.org/api/{}".format('' if version == 'master' else version))
+        elif cmd == '_cookbook':
+            webbrowser.open(
+                "https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
+                    'testing' if version == 'master' else version))
         else:
             self.buffer.append(cmd)
             src = "\n".join(self.buffer)

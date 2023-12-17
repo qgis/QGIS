@@ -202,6 +202,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     {
       FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
       SaveLayerMetadata = 1 << 1, //!< Indicates that the provider supports saving native layer metadata (since QGIS 3.20)
+      ParallelCreateProvider = 1 << 2, //!< Indicates that the provider supports parallel creation, that is, can be created on another thread than the main thread (since QGIS 3.32)
     };
     Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 

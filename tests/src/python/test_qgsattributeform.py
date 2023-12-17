@@ -29,12 +29,13 @@ from qgis.gui import (
     QgsGui,
     QgsMapCanvas,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 QGISAPP = start_app()
 
 
-class TestQgsAttributeForm(unittest.TestCase):
+class TestQgsAttributeForm(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

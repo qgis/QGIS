@@ -39,9 +39,8 @@ bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
     // it supports Create() but only for vector side
     return false;
   }
-  char **driverMetadata = GDALGetMetadata( driver, nullptr );
-  return  CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) &&
-          CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false );
+  return GDALGetMetadataItem( driver, GDAL_DCAP_CREATE, nullptr ) &&
+         GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr );
 }
 
 gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
@@ -272,10 +271,11 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
   psWarpOptions->papszWarpOptions = CSLSetNameValue( psWarpOptions-> papszWarpOptions, "INIT_DEST", "NO_DATA" );
 
   // Initialize and execute the warp operation.
+  bool retVal = false;
   GDALWarpOperation oOperation;
-  oOperation.Initialize( psWarpOptions.get() );
-
-  const bool retVal { oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None };
+  CPLErr initResult = oOperation.Initialize( psWarpOptions.get() );
+  if ( initResult != CE_Failure )
+    retVal =  oOperation.ChunkAndWarpImage( 0, 0, GDALGetRasterXSize( hDstDS ), GDALGetRasterYSize( hDstDS ) ) == CE_None;
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
   return retVal;
 }
@@ -327,7 +327,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                                outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read red band" ) );
+    QgsDebugError( QStringLiteral( "failed to read red band" ) );
     return QImage();
   }
 
@@ -335,7 +335,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read green band" ) );
+    QgsDebugError( QStringLiteral( "failed to read green band" ) );
     return QImage();
   }
 
@@ -343,7 +343,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read blue band" ) );
+    QgsDebugError( QStringLiteral( "failed to read blue band" ) );
     return QImage();
   }
 
@@ -351,7 +351,7 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
                         outputSize.height(), GDT_Byte, sizeof( QRgb ), res.bytesPerLine(), &extra );
   if ( err != CE_None )
   {
-    QgsDebugMsg( QStringLiteral( "failed to read alpha band" ) );
+    QgsDebugError( QStringLiteral( "failed to read alpha band" ) );
     return QImage();
   }
 
@@ -701,9 +701,95 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
     QStringLiteral( "pbf" ),
     QStringLiteral( "vrt" ),
     QStringLiteral( "nc" ),
+    QStringLiteral( "dxf" ),
     QStringLiteral( "shp.zip" ) };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 #endif
+}
+
+QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
+{
+  const QStringList vsiPrefixes = QgsGdalUtils::vsiArchivePrefixes();
+
+  for ( const QString &vsiPrefix : vsiPrefixes )
+  {
+    if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
+      return vsiPrefix;
+  }
+
+  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  {
+    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
+    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
+      return QString();
+    return QStringLiteral( "/vsizip/" );
+  }
+  else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsizip/" );
+  else if ( path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsitar/" );
+  else if ( path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsigzip/" );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  else if ( vsiPrefixes.contains( QStringLiteral( "/vsi7z/" ) ) &&
+            ( path.endsWith( QLatin1String( ".7z" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".lpk" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".lpkx" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".mpk" ), Qt::CaseInsensitive ) ||
+              path.endsWith( QLatin1String( ".mpkx" ), Qt::CaseInsensitive ) ) )
+    return QStringLiteral( "/vsi7z/" );
+  else if ( vsiPrefixes.contains( QStringLiteral( "/vsirar/" ) ) &&
+            path.endsWith( QLatin1String( ".rar" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsirar/" );
+#endif
+
+  return QString();
+}
+
+QStringList QgsGdalUtils::vsiArchivePrefixes()
+{
+  QStringList res { QStringLiteral( "/vsizip/" ),
+                    QStringLiteral( "/vsitar/" ),
+                    QStringLiteral( "/vsigzip/" ),
+                  };
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  res.append( QStringLiteral( "/vsi7z/" ) );
+  res.append( QStringLiteral( "/vsirar/" ) );
+#endif
+  return res;
+}
+
+bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
+{
+  return vsiArchivePrefixes().contains( prefix );
+}
+
+QStringList QgsGdalUtils::vsiArchiveFileExtensions()
+{
+  QStringList res { QStringLiteral( ".zip" ),
+                    QStringLiteral( ".tar" ),
+                    QStringLiteral( ".tar.gz" ),
+                    QStringLiteral( ".tgz" ),
+                    QStringLiteral( ".gz" ),
+                  };
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+  res.append( { QStringLiteral( ".7z" ),
+                QStringLiteral( ".lpk" ),
+                QStringLiteral( ".lpkx" ),
+                QStringLiteral( ".mpk" ),
+                QStringLiteral( ".mpkx" ),
+                QStringLiteral( ".rar" )
+              } );
+#endif
+  return res;
+}
+
+bool QgsGdalUtils::isVsiArchiveFileExtension( const QString &extension )
+{
+  const QString extWithDot = extension.startsWith( '.' ) ? extension : ( '.' + extension );
+  return vsiArchiveFileExtensions().contains( extWithDot.toLower() );
 }
 
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType type )
@@ -728,6 +814,7 @@ bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, Qgis::LayerType 
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       break;
   }
 

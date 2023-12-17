@@ -182,18 +182,18 @@ void QgsVirtualPointCloudProvider::parseFile()
          !f.contains( "properties" ) || !f["properties"].is_object() ||
          !f.contains( "geometry" ) || !f["geometry"].is_object() )
     {
-      QgsDebugMsg( QStringLiteral( "Malformed STAC item: %1" ).arg( QString::fromStdString( f ) ) );
+      QgsDebugError( QStringLiteral( "Malformed STAC item: %1" ).arg( QString::fromStdString( f ) ) );
       continue;
     }
 
     if ( f["stac_version"] != "1.0.0" )
     {
-      QgsDebugMsg( QStringLiteral( "Unsupported STAC version: %1" ).arg( QString::fromStdString( f["stac_version"] ) ) );
+      QgsDebugError( QStringLiteral( "Unsupported STAC version: %1" ).arg( QString::fromStdString( f["stac_version"] ) ) );
       continue;
     }
 
     QString uri;
-    qint64 count;
+    qint64 count = 0;
     QgsRectangle extent;
     QgsGeometry geometry;
     QgsDoubleRange zRange;
@@ -211,7 +211,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !uri.endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) &&
          !uri.endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      QgsDebugMsg( QStringLiteral( "Unsupported point cloud uri: %1" ).arg( uri ) );
+      QgsDebugError( QStringLiteral( "Unsupported point cloud uri: %1" ).arg( uri ) );
     }
 
     if ( f["properties"].contains( "pc:count" ) )
@@ -242,7 +242,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Malformed bounding box, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Malformed bounding box, skipping item." ) );
         continue;
       }
     }
@@ -265,7 +265,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Malformed bounding box, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Malformed bounding box, skipping item." ) );
         continue;
       }
 
@@ -275,13 +275,13 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot transform bbox to layer crs, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Cannot transform bbox to layer crs, skipping item." ) );
         continue;
       }
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Missing extent information, skipping item." ) );
+      QgsDebugError( QStringLiteral( "Missing extent information, skipping item." ) );
       continue;
     }
 
@@ -322,14 +322,14 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Unexpected geometry type: %1, skipping item." ).arg( QString::fromStdString( geom.at( "type" ) ) ) );
+        QgsDebugError( QStringLiteral( "Unexpected geometry type: %1, skipping item." ).arg( QString::fromStdString( geom.at( "type" ) ) ) );
         continue;
       }
       geometry = QgsGeometry::fromMultiPolygonXY( multiPolygon );
     }
     catch ( std::exception &e )
     {
-      QgsDebugMsg( QStringLiteral( "Malformed geometry item: %1, skipping item." ).arg( QString::fromStdString( e.what() ) ) );
+      QgsDebugError( QStringLiteral( "Malformed geometry item: %1, skipping item." ).arg( QString::fromStdString( e.what() ) ) );
       continue;
     }
 
@@ -355,7 +355,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
       catch ( QgsCsException & )
       {
-        QgsDebugMsg( QStringLiteral( "Cannot transform geometry to layer crs, skipping item." ) );
+        QgsDebugError( QStringLiteral( "Cannot transform geometry to layer crs, skipping item." ) );
         continue;
       }
     }
@@ -407,7 +407,7 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   sl.index()->load( sl.uri() );
 
   // if expression is broken or index is missing a required field, set to "false" so it returns no points
-  if ( !sl.index()->setSubsetString( mSubsetString ) )
+  if ( !mSubsetString.isEmpty() && !sl.index()->setSubsetString( mSubsetString ) )
     sl.index()->setSubsetString( QStringLiteral( "false" ) );
 
   emit subIndexLoaded( i );
@@ -439,8 +439,18 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "PointSourceId" ), QgsPointCloudAttribute::UShort ) );
   if ( names.contains( QLatin1String( "ScannerChannel" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScannerChannel" ), QgsPointCloudAttribute::Char ) );
-  if ( names.contains( QLatin1String( "ClassificationFlags" ) ) )
-    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ClassificationFlags" ), QgsPointCloudAttribute::Char ) );
+  if ( names.contains( QLatin1String( "Synthetic" ) ) ||
+       names.contains( QLatin1String( "ClassFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
+  if ( names.contains( QLatin1String( "KeyPoint" ) ) ||
+       names.contains( QLatin1String( "ClassFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
+  if ( names.contains( QLatin1String( "Withheld" ) ) ||
+       names.contains( QLatin1String( "ClassFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
+  if ( names.contains( QLatin1String( "Overlap" ) ) ||
+       names.contains( QLatin1String( "ClassFlags" ) ) )
+    mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
   if ( names.contains( QLatin1String( "GpsTime" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "GpsTime" ), QgsPointCloudAttribute::Double ) );
   if ( names.contains( QLatin1String( "Red" ) ) )
@@ -464,7 +474,11 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
                     QLatin1String( "UserData" ),
                     QLatin1String( "PointSourceId" ),
                     QLatin1String( "ScannerChannel" ),
-                    QLatin1String( "ClassificationFlags" ),
+                    QLatin1String( "ClassFlags" ),
+                    QLatin1String( "Synthetic" ),
+                    QLatin1String( "KeyPoint" ),
+                    QLatin1String( "Withheld" ),
+                    QLatin1String( "Overlap" ),
                     QLatin1String( "GpsTime" ),
                     QLatin1String( "Red" ),
                     QLatin1String( "Green" ),
@@ -499,7 +513,7 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
 {
   Q_UNUSED( configuration )
 
-  if ( mAttributes.indexOf( QStringLiteral( "Classification" ) ) >= 0 )
+  if ( mAttributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     return new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), QgsPointCloudClassifiedRenderer::defaultCategories() );
   }
@@ -576,6 +590,7 @@ QString QgsVirtualPointCloudProviderMetadata::filters( Qgis::FileFilterType type
     case Qgis::FileFilterType::Mesh:
     case Qgis::FileFilterType::MeshDataset:
     case Qgis::FileFilterType::VectorTile:
+    case Qgis::FileFilterType::TiledScene:
       return QString();
 
     case Qgis::FileFilterType::PointCloud:

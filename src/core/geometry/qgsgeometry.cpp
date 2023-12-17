@@ -171,6 +171,11 @@ QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
   return QgsGeometry();
 }
 
+QgsGeometry QgsGeometry::fromPoint( const QgsPoint &point )
+{
+  return QgsGeometry( point.clone() );
+}
+
 QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolylineXY( polyline );
@@ -228,6 +233,9 @@ QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly 
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
+  if ( rect.isNull() )
+    return QgsGeometry();
+
   std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
       QVector< double >() << rect.xMinimum()
       << rect.xMaximum()
@@ -242,6 +250,132 @@ QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
   std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
   polygon->setExteriorRing( ext.release() );
   return QgsGeometry( std::move( polygon ) );
+}
+
+QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
+{
+  if ( box.is2d() )
+  {
+    return fromRect( box.toRectangle() );
+  }
+
+  std::unique_ptr< QgsMultiPolygon > multiPolygon = std::make_unique< QgsMultiPolygon >();
+
+  std::unique_ptr< QgsLineString > ext1 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMinimum()
+      << box.xMinimum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum(),
+      QVector< double >() << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum(),
+      QVector< double >() << box.zMinimum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMinimum() );
+  std::unique_ptr< QgsPolygon > polygon1 = std::make_unique< QgsPolygon >( ext1.release() );
+  multiPolygon->addGeometry( polygon1.release() );
+
+  std::unique_ptr< QgsLineString > ext2 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMinimum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMinimum(),
+      QVector< double >() << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum(),
+      QVector< double >() << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMinimum() );
+  std::unique_ptr< QgsPolygon > polygon2 = std::make_unique< QgsPolygon >( ext2.release() );
+  multiPolygon->addGeometry( polygon2.release() );
+
+  std::unique_ptr< QgsLineString > ext3 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMinimum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum()
+      << box.xMinimum(),
+      QVector< double >() << box.yMinimum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMinimum(),
+      QVector< double >() << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMinimum() );
+  std::unique_ptr< QgsPolygon > polygon3 = std::make_unique< QgsPolygon >( ext3.release() );
+  multiPolygon->addGeometry( polygon3.release() );
+
+  std::unique_ptr< QgsLineString > ext4 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMaximum(),
+      QVector< double >() << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum(),
+      QVector< double >() << box.zMaximum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMaximum()
+      << box.zMaximum() );
+  std::unique_ptr< QgsPolygon > polygon4 = std::make_unique< QgsPolygon >( ext4.release() );
+  multiPolygon->addGeometry( polygon4.release() );
+
+  std::unique_ptr< QgsLineString > ext5 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMaximum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMaximum()
+      << box.xMaximum(),
+      QVector< double >() << box.yMaximum()
+      << box.yMinimum()
+      << box.yMinimum()
+      << box.yMaximum()
+      << box.yMaximum(),
+      QVector< double >() << box.zMaximum()
+      << box.zMaximum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum() );
+  std::unique_ptr< QgsPolygon > polygon5 = std::make_unique< QgsPolygon >( ext5.release() );
+  multiPolygon->addGeometry( polygon5.release() );
+
+  std::unique_ptr< QgsLineString > ext6 = std::make_unique< QgsLineString >(
+      QVector< double >() << box.xMaximum()
+      << box.xMaximum()
+      << box.xMinimum()
+      << box.xMinimum()
+      << box.xMaximum(),
+      QVector< double >() << box.yMaximum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMaximum()
+      << box.yMaximum(),
+      QVector< double >() << box.zMaximum()
+      << box.zMinimum()
+      << box.zMinimum()
+      << box.zMaximum()
+      << box.zMaximum() );
+  std::unique_ptr< QgsPolygon > polygon6 = std::make_unique< QgsPolygon >( ext6.release() );
+  multiPolygon->addGeometry( polygon6.release() );
+
+  return QgsGeometry( std::move( multiPolygon ) );
 }
 
 QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
@@ -1072,6 +1206,16 @@ QgsRectangle QgsGeometry::boundingBox() const
   }
   return QgsRectangle();
 }
+
+QgsBox3D QgsGeometry::boundingBox3D() const
+{
+  if ( d->geometry )
+  {
+    return d->geometry->boundingBox3D();
+  }
+  return QgsBox3D();
+}
+
 
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
@@ -2497,6 +2641,58 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   return result;
 }
 
+QgsGeometry QgsGeometry::unionCoverage() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection &&
+       QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result = QgsGeometry( geos.unionCoverage( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+Qgis::CoverageValidityResult QgsGeometry::validateCoverage( double gapWidth, QgsGeometry *invalidEdges ) const
+{
+  if ( !d->geometry )
+  {
+    return Qgis::CoverageValidityResult::Error;
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  std::unique_ptr< QgsAbstractGeometry > invalidEdgesGeom;
+
+  const Qgis::CoverageValidityResult result = geos.validateCoverage( gapWidth, invalidEdges ? &invalidEdgesGeom : nullptr, &mLastError );
+
+  if ( invalidEdges && invalidEdgesGeom )
+    *invalidEdges = QgsGeometry( std::move( invalidEdgesGeom ) );
+
+  return result;
+}
+
+QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoundary ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.simplifyCoverageVW( tolerance, preserveBoundary, &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::node() const
 {
   if ( !d->geometry )
@@ -2654,28 +2850,28 @@ double QgsGeometry::interpolateAngle( double distance ) const
       QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
       QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
       QgsPoint p3 = segmentized.constGet()->vertexAt( v3 );
-      double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-      double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
-      return QgsGeometryUtils::averageAngle( angle1, angle2 );
+      double angle1 = QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      double angle2 = QgsGeometryUtilsBase::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
+      return QgsGeometryUtilsBase::averageAngle( angle1, angle2 );
     }
     else if ( v3.isValid() )
     {
       QgsPoint p1 = segmentized.constGet()->vertexAt( v2 );
       QgsPoint p2 = segmentized.constGet()->vertexAt( v3 );
-      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      return QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
     else
     {
       QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
       QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
-      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      return QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
   }
   else
   {
     QgsPoint p1 = segmentized.constGet()->vertexAt( previous );
     QgsPoint p2 = segmentized.constGet()->vertexAt( next );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+    return QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
   }
 }
 
@@ -2898,11 +3094,11 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+Qgis::GeometryOperationResult QgsGeometry::avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
 
   Qgis::WkbType geomTypeBeforeModification = wkbType();
@@ -2918,15 +3114,46 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
   }
 
   if ( geomTypeBeforeModification != wkbType() )
-    return 2;
+    return Qgis::GeometryOperationResult::GeometryTypeHasChanged;
   if ( haveInvalidGeometry )
-    return 3;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   if ( !geomModified )
-    return 4;
+    return Qgis::GeometryOperationResult::NothingHappened;
 
-  return 0;
+  return Qgis::GeometryOperationResult::Success;
 }
 
+int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+{
+  const Qgis::GeometryOperationResult result = avoidIntersectionsV2( avoidIntersectionsLayers, ignoreFeatures );
+  switch ( result )
+  {
+    case Qgis::GeometryOperationResult::Success:
+      return 0;
+    case Qgis::GeometryOperationResult::InvalidInputGeometryType:
+      return 1;
+    case Qgis::GeometryOperationResult::GeometryTypeHasChanged:
+      return 2;
+    case Qgis::GeometryOperationResult::InvalidBaseGeometry:
+      return 3;
+    case Qgis::GeometryOperationResult::NothingHappened:
+
+    // these should never happen
+    case Qgis::GeometryOperationResult::SelectionIsEmpty:
+    case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
+    case Qgis::GeometryOperationResult::GeometryEngineError:
+    case Qgis::GeometryOperationResult::LayerNotEditable:
+    case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
+    case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
+    case Qgis::GeometryOperationResult::AddRingNotClosed:
+    case Qgis::GeometryOperationResult::AddRingNotValid:
+    case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
+    case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
+    case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+      return 4;
+  }
+  return 4;
+}
 
 QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed ) const
 {
@@ -2945,6 +3172,34 @@ QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepColla
 QgsGeometry QgsGeometry::forceRHR() const
 {
   return forcePolygonClockwise();
+}
+
+Qgis::AngularDirection QgsGeometry::polygonOrientation() const
+{
+  if ( !d->geometry )
+  {
+    return Qgis::AngularDirection::NoOrientation;
+  }
+
+  if ( isMultipart() )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
+    const QgsAbstractGeometry *g = collection->geometryN( 0 );
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+    {
+      return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
+    }
+  }
+  else
+  {
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    {
+      return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
+    }
+  }
+
+  return Qgis::AngularDirection::NoOrientation;
+
 }
 
 QgsGeometry QgsGeometry::forcePolygonClockwise() const
@@ -3625,7 +3880,7 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
       QgsPoint p1 = result->pointN( result->numPoints() - 2 );
       QgsPoint p2 = result->pointN( 0 );
       QgsPoint p3 = result->pointN( 1 );
-      double angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+      double angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                      p3.x(), p3.y() );
       angle = std::fabs( M_PI - angle );
       skipFirst = angle > maxAngleRads;
@@ -3639,19 +3894,19 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
       if ( i == 0 && isRing )
       {
         QgsPoint p3 = result->pointN( result->numPoints() - 2 );
-        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+        angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                 p3.x(), p3.y() );
       }
       else if ( i < result->numPoints() - 2 )
       {
         QgsPoint p3 = result->pointN( i + 2 );
-        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+        angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                 p3.x(), p3.y() );
       }
       else if ( i == result->numPoints() - 2 && isRing )
       {
         QgsPoint p3 = result->pointN( 1 );
-        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+        angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                 p3.x(), p3.y() );
       }
 
@@ -4076,4 +4331,3 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
-

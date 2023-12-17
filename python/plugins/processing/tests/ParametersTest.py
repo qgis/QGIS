@@ -26,7 +26,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFile,
                        QgsProcessing)
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from processing.core.parameters import getParameterFromString
 
@@ -35,7 +36,7 @@ testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 start_app()
 
 
-class ParametersTest(unittest.TestCase):
+class ParametersTest(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

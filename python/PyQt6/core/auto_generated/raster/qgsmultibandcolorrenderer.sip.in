@@ -1,0 +1,143 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsmultibandcolorrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMultiBandColorRenderer: QgsRasterRenderer
+{
+%Docstring(signature="appended")
+Renderer for multiband images with the color components
+%End
+
+%TypeHeaderCode
+#include "qgsmultibandcolorrenderer.h"
+%End
+  public:
+    QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
+                               QgsContrastEnhancement *redEnhancement = 0, QgsContrastEnhancement *greenEnhancement = 0,
+                               QgsContrastEnhancement *blueEnhancement = 0 );
+    ~QgsMultiBandColorRenderer();
+
+
+    virtual QgsMultiBandColorRenderer *clone() const /Factory/;
+
+%Docstring
+QgsMultiBandColorRenderer cannot be copied. Use :py:func:`~QgsMultiBandColorRenderer.clone` instead.
+%End
+    virtual Qgis::RasterRendererFlags flags() const;
+
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    int redBand() const;
+    void setRedBand( int band );
+    int greenBand() const;
+    void setGreenBand( int band );
+    int blueBand() const;
+    void setBlueBand( int band );
+
+    const QgsContrastEnhancement *redContrastEnhancement() const;
+%Docstring
+Returns the contrast enhancement to use for the red channel.
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setRedContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Sets the contrast enhancement to use for the red channel.
+
+Ownership of the enhancement is transferred.
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    const QgsContrastEnhancement *greenContrastEnhancement() const;
+%Docstring
+Returns the contrast enhancement to use for the green channel.
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+%End
+
+    void setGreenContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Sets the contrast enhancement to use for the green channel.
+
+Ownership of the enhancement is transferred.
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+%End
+
+    const QgsContrastEnhancement *blueContrastEnhancement() const;
+%Docstring
+Returns the contrast enhancement to use for the blue channel.
+
+.. seealso:: :py:func:`setBlueContrastEnhancement`
+
+.. seealso:: :py:func:`redContrastEnhancement`
+
+.. seealso:: :py:func:`greenContrastEnhancement`
+%End
+
+    void setBlueContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Sets the contrast enhancement to use for the blue channel.
+
+Ownership of the enhancement is transferred.
+
+.. seealso:: :py:func:`blueContrastEnhancement`
+
+.. seealso:: :py:func:`setRedContrastEnhancement`
+
+.. seealso:: :py:func:`setGreenContrastEnhancement`
+%End
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual QList<int> usesBands() const;
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+
+
+  private:
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );
+    const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsmultibandcolorrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

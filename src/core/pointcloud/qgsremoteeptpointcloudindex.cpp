@@ -94,7 +94,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
   const QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugMsg( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
     mIsValid = false;
     return;
   }
@@ -103,7 +103,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &url )
   mIsValid = loadSchema( reply.content() );
 }
 
-QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
   if ( !blockRequest )
@@ -113,12 +113,13 @@ QgsPointCloudBlock *QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointClo
   connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
   loop.exec();
 
-  if ( !blockRequest->block() )
+  std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+  if ( !block )
   {
-    QgsDebugMsg( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
+    QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
-  return blockRequest->block();
+  return block;
 }
 
 QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
@@ -205,7 +206,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + mUrl.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + mUrl.toString() );
       return false;
     }
 

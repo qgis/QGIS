@@ -456,6 +456,7 @@ namespace QgsWms
     appendFormat( elem, QStringLiteral( "image/png; mode=8bit" ) );
     appendFormat( elem, QStringLiteral( "image/png; mode=1bit" ) );
     appendFormat( elem, QStringLiteral( "application/dxf" ) );
+    appendFormat( elem, QStringLiteral( "application/pdf" ) );
     elem.appendChild( dcpTypeElem.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
     requestElem.appendChild( elem );
 
@@ -945,6 +946,7 @@ namespace QgsWms
 
       bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+      const bool skipNameForGroup = QgsServerProjectUtils::wmsSkipNameForGroup( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -977,14 +979,17 @@ namespace QgsWms
           QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
           QString title = treeGroupChild->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
 
-          QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
-          QDomText nameText;
-          if ( !shortName.isEmpty() )
-            nameText = doc.createTextNode( shortName );
-          else
-            nameText = doc.createTextNode( name );
-          nameElem.appendChild( nameText );
-          layerElem.appendChild( nameElem );
+          if ( !skipNameForGroup )
+          {
+            QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
+            QDomText nameText;
+            if ( !shortName.isEmpty() )
+              nameText = doc.createTextNode( shortName );
+            else
+              nameText = doc.createTextNode( name );
+            nameElem.appendChild( nameText );
+            layerElem.appendChild( nameElem );
+          }
 
           QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
           QDomText titleText;
@@ -1692,7 +1697,7 @@ namespace QgsWms
           for ( int idx = 0; idx < layerFields.count(); ++idx )
           {
             QgsField field = layerFields.at( idx );
-            if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
+            if ( field.configurationFlags().testFlag( Qgis::FieldConfigurationFlag::HideFromWms ) )
             {
               continue;
             }
@@ -1800,6 +1805,7 @@ namespace QgsWms
         case Qgis::LayerType::Annotation:
         case Qgis::LayerType::PointCloud:
         case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledScene:
           break;
       }
     }

@@ -24,6 +24,7 @@
 #include "qgstextshadowsettings.h"
 #include "qgstextmasksettings.h"
 #include "qgsstringutils.h"
+#include "qgsscreenproperties.h"
 
 #include <QSharedDataPointer>
 
@@ -361,6 +362,16 @@ class CORE_EXPORT QgsTextFormat
     double opacity() const;
 
     /**
+     * Multiply opacity by \a opacityFactor.
+     *
+     * This method multiplies the opacity of all the labeling elements (text, shadow, buffer etc.)
+     * by \a opacityFactor effectively changing the opacity of the whole labeling.
+     *
+     * \since QGIS 3.32
+     */
+    void multiplyOpacity( double opacityFactor );
+
+    /**
      * Sets the text's opacity.
      * \param opacity opacity as a double value between 0 (fully transparent) and 1 (totally
      * opaque)
@@ -641,9 +652,21 @@ class CORE_EXPORT QgsTextFormat
     * \param size target pixmap size
     * \param previewText text to render in preview, or empty for default text
     * \param padding space between icon edge and color ramp
+    * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
     * \since QGIS 3.10
     */
-    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0 );
+    static QPixmap textFormatPreviewPixmap( const QgsTextFormat &format, QSize size, const QString &previewText = QString(), int padding = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
+
+    /**
+     * Returns a CSS string representing the specified text format as closely as possible.
+     * \param pointToPixelMultiplier scaling factor to apply to convert point sizes to pixel font sizes.
+     * The CSS returned by this function will always use pixels for font sizes, so this parameter
+     * should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
+     * destination DPI)
+     * \returns partial CSS string, e.g., "line-height: 120%;"
+     * \since QGIS 3.34
+     */
+    QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
 
   private:
 

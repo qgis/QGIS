@@ -170,11 +170,14 @@ void QgsLazInfo::parseLazAttributes()
   mAttributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", QgsPointCloudAttribute::Short ) );
   mAttributes.push_back( QgsPointCloudAttribute( "UserData", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
+  mAttributes.push_back( QgsPointCloudAttribute( "Synthetic", QgsPointCloudAttribute::UChar ) );
+  mAttributes.push_back( QgsPointCloudAttribute( "KeyPoint", QgsPointCloudAttribute::UChar ) );
+  mAttributes.push_back( QgsPointCloudAttribute( "Withheld", QgsPointCloudAttribute::UChar ) );
+  mAttributes.push_back( QgsPointCloudAttribute( "Overlap", QgsPointCloudAttribute::UChar ) );
 
   if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
   {
     mAttributes.push_back( QgsPointCloudAttribute( "ScannerChannel", QgsPointCloudAttribute::Char ) );
-    mAttributes.push_back( QgsPointCloudAttribute( "ClassificationFlags", QgsPointCloudAttribute::Char ) );
   }
   if ( mPointFormat != 0 && mPointFormat != 2 )
   {
@@ -311,7 +314,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
       lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
@@ -335,7 +338,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
 
       lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
                        .arg( url.toString() ).arg( req.errorMessage() );

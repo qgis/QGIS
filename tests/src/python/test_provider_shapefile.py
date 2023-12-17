@@ -36,7 +36,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from providertestbase import ProviderTestCase
 from utilities import unitTestDataPath
@@ -58,7 +59,7 @@ class ErrorReceiver():
         self.msg = msg
 
 
-class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
+class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -1112,6 +1113,63 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         reference = QgsGeometry.fromRect(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         assert QgsGeometry.compare(vl3_extent.asPolygon()[0], reference.asPolygon()[0],
                                    0.00001), f'Expected {reference.asWkt()}, got {vl3_extent.asWkt()}'
+
+    def testWritingMultiPolygon(self):
+        """Test that a MultiPolygon written to a Shape Polygon layer doesn't get converted to Polygon"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testWritingMultiPolygon.shp')
+        ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+        ds.CreateLayer('testWritingMultiPolygon', geom_type=osgeo.ogr.wkbPolygon)
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test')
+        f = QgsFeature()
+        f.setAttributes([200])
+        wkt = "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((10 0, 10 1, 11 1, 10 0)))"
+        f.setGeometry(QgsGeometry.fromWkt(wkt))
+        vl.dataProvider().addFeatures([f])
+
+        f = next(vl.getFeatures())
+        self.assertEqual(f.geometry().constGet().asWkt(), wkt)
+
+    def testFilterWithComment(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = f'{file_path}|layerid=0|subset="name" = \'Apple\' -- comment'
+        vl = QgsVectorLayer(uri, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.subsetString(), '"name" = \'Apple\' -- comment')
+        self.assertEqual(vl.featureCount(), 1)
+        f = next(vl.getFeatures())
+        self.assertEqual(f['name'], 'Apple')
+
+    def testRecomputeExtent(self):
+        """Test that extents are recomputed correctly after update"""
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
+        extent = vl.extent()
+        vl.startEditing()
+        for fet in vl.getFeatures():
+            vl.translateFeature(fet.id(), 1, -1)
+        vl.commitChanges()
+        updated_extent = vl.extent()
+        self.assertEqual(updated_extent.xMaximum(), extent.xMaximum() + 1)
+        self.assertEqual(updated_extent.xMinimum(), extent.xMinimum() + 1)
+        self.assertEqual(updated_extent.yMaximum(), extent.yMaximum() - 1)
+        self.assertEqual(updated_extent.yMinimum(), extent.yMinimum() - 1)
+
+        # close file and reopen, then recheck to confirm that changes were saved to file
+        del vl
+        vl = None
+        vl = QgsVectorLayer(f'{datasource}|layerid=0', 'test', 'ogr')
+        reopened_extent = vl.extent()
+        self.assertEqual(reopened_extent, updated_extent)
 
 
 if __name__ == '__main__':

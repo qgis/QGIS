@@ -19,7 +19,6 @@ import os
 import shutil
 import sys
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import qDebug
 from qgis.core import QgsApplication, QgsProject, QgsSettings
 

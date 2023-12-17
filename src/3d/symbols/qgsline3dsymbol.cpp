@@ -36,7 +36,7 @@ QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mWidth = mWidth;
-  result->mHeight = mHeight;
+  result->mOffset = mOffset;
   result->mExtrusionHeight = mExtrusionHeight;
   result->mRenderAsSimpleLines = mRenderAsSimpleLines;
   result->mMaterialSettings.reset( mMaterialSettings->clone() );
@@ -53,7 +53,7 @@ void QgsLine3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   QDomElement elemDataProperties = doc.createElement( QStringLiteral( "data" ) );
   elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
   elemDataProperties.setAttribute( QStringLiteral( "alt-binding" ), Qgs3DUtils::altBindingToString( mAltBinding ) );
-  elemDataProperties.setAttribute( QStringLiteral( "height" ), mHeight );
+  elemDataProperties.setAttribute( QStringLiteral( "offset" ), mOffset );
   elemDataProperties.setAttribute( QStringLiteral( "extrusion-height" ), mExtrusionHeight );
   elemDataProperties.setAttribute( QStringLiteral( "simple-lines" ), mRenderAsSimpleLines ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemDataProperties.setAttribute( QStringLiteral( "width" ), mWidth );
@@ -72,7 +72,7 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
   mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( QStringLiteral( "alt-binding" ) ) );
-  mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
+  mOffset = elemDataProperties.attribute( QStringLiteral( "offset" ) ).toFloat();
   mExtrusionHeight = elemDataProperties.attribute( QStringLiteral( "extrusion-height" ) ).toFloat();
   mWidth = elemDataProperties.attribute( QStringLiteral( "width" ) ).toFloat();
   mRenderAsSimpleLines = elemDataProperties.attribute( QStringLiteral( "simple-lines" ), QStringLiteral( "0" ) ).toInt();
@@ -110,7 +110,7 @@ void QgsLine3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
   mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
-  mHeight = static_cast< float >( props->zOffset() );
+  mOffset = static_cast< float >( props->zOffset() );
 }
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::create()

@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -19,7 +18,8 @@ from qgis.core import (
     QgsDatumTransform,
 )
 from qgis.gui import QgsCoordinateOperationWidget
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -27,7 +27,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsCoordinateOperationWidget(unittest.TestCase):
+class TestQgsCoordinateOperationWidget(QgisTestCase):
 
     def testGettersSetters(self):
         """ test widget getters/setters """

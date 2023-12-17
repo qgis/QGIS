@@ -140,6 +140,21 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
+  pixStyleMarker->setFixedSize( 24, 24 );
+  pixStyleMarker->load( QgsApplication::iconPath( QStringLiteral( "mIconPointLayer.svg" ) ) );
+
+  pixStyleFill->setFixedSize( 24, 24 );
+  pixStyleFill->load( QgsApplication::iconPath( QStringLiteral( "mIconPolygonLayer.svg" ) ) );
+
+  pixStyleLine->setFixedSize( 24, 24 );
+  pixStyleLine->load( QgsApplication::iconPath( QStringLiteral( "mIconLineLayer.svg" ) ) );
+
+  pixStyleColorRamp->setFixedSize( 24, 24 );
+  pixStyleColorRamp->load( QgsApplication::iconPath( QStringLiteral( "styleicons/color.svg" ) ) );
+
+  pixStyleTextFormat->setFixedSize( 24, 24 );
+  pixStyleTextFormat->load( QgsApplication::iconPath( QStringLiteral( "text.svg" ) ) );
+
   mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::CoordinateDisplayType::MapCrs ) );
   mCoordinateDisplayComboBox->addItem( tr( "Map Geographic (degrees)" ), static_cast<int>( Qgis::CoordinateDisplayType::MapGeographic ) );
   mCoordinateDisplayComboBox->addItem( tr( "Custom Projection Units" ), static_cast<int>( Qgis::CoordinateDisplayType::CustomCrs ) );
@@ -290,7 +305,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mEndDateTimeEdit->setDateTime( range.end() );
 
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QDir::toNativeSeparators( !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath() ) );
+
+  QString name = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
+  if ( QgsProject::instance()->projectStorage() )
+  {
+    name = QgsDataSourceUri::removePassword( name, true );
+  }
+
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( name ) );
+
   mProjectHomeLineEdit->setShowClearButton( true );
   mProjectHomeLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->presetHomePath() ) );
   connect( mButtonSetProjectHome, &QToolButton::clicked, this, [ = ]
@@ -724,6 +747,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   bool addLayerGroupsLegendGraphic = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSAddLayerGroupsLegendGraphic" ), QStringLiteral( "/" ) );
   mAddLayerGroupsLegendGraphicCheckBox->setChecked( addLayerGroupsLegendGraphic );
+  bool skipNameForGroup = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSSkipNameForGroup" ), QStringLiteral( "/" ) );
+  mSkipNameForGroupCheckBox->setChecked( skipNameForGroup );
 
   bool useLayerIDs = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ) );
   mWmsUseLayerIDs->setChecked( useLayerIDs );
@@ -896,24 +921,35 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
       twWFSLayers->setCellWidget( j, 2, psb );
 
-      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+      QCheckBox *cbu = new QCheckBox();
+      cbu->setEnabled( false );
+      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
       {
-        QCheckBox *cbu = new QCheckBox();
-        cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 3, cbu );
+        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+        {
+          cbu->setEnabled( true );
+          cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
+        }
       }
+      twWFSLayers->setCellWidget( j, 3, cbu );
+
+      QCheckBox *cbi = new QCheckBox();
+      cbi->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
-        QCheckBox *cbi = new QCheckBox();
+        cbi->setEnabled( true );
         cbi->setChecked( wfstInsertLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 4, cbi );
       }
+      twWFSLayers->setCellWidget( j, 4, cbi );
+
+      QCheckBox *cbd = new QCheckBox();
+      cbd->setEnabled( false );
       if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
       {
-        QCheckBox *cbd = new QCheckBox();
+        cbd->setEnabled( true );
         cbd->setChecked( wfstDeleteLayerIdList.contains( currentLayer->id() ) );
-        twWFSLayers->setCellWidget( j, 5, cbd );
       }
+      twWFSLayers->setCellWidget( j, 5, cbd );
 
       j++;
     }
@@ -1520,6 +1556,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), mAddWktGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), mSegmentizeFeatureInfoGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddLayerGroupsLegendGraphic" ), QStringLiteral( "/" ), mAddLayerGroupsLegendGraphicCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSSkipNameForGroup" ), QStringLiteral( "/" ), mSkipNameForGroupCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), mWmsUseLayerIDs->isChecked() );
 
   QString maxWidthText = mMaxWidthLineEdit->text();
@@ -2246,7 +2283,7 @@ void QgsProjectProperties::pbnImportScales_clicked()
   QStringList myScales;
   if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
   {
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
   }
 
   const auto constMyScales = myScales;
@@ -2270,6 +2307,9 @@ void QgsProjectProperties::pbnExportScales_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( fileName.isEmpty() )
   {
     return;
@@ -2291,7 +2331,7 @@ void QgsProjectProperties::pbnExportScales_clicked()
   QString msg;
   if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
   {
-    QgsDebugMsg( msg );
+    QgsDebugError( msg );
   }
 }
 
@@ -2603,6 +2643,9 @@ void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
                            tr( "Add Style Database" ),
                            initialFolder,
                            tr( "Style databases" ) + " (*.db *.xml)" );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( ! databasePath.isEmpty() )
   {
     QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );

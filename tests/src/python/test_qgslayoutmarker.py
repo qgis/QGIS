@@ -9,7 +9,6 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QRectF, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -27,7 +26,8 @@ from qgis.core import (
     QgsUnitTypes,
     QgsLayoutChecker
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
@@ -36,7 +36,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutMarker(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -45,7 +45,7 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         # style
         props = {}

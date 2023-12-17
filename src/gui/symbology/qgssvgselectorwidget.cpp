@@ -83,7 +83,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
   if ( mCanceled )
     return;
 
-  // QgsDebugMsg( QStringLiteral( "loading path: %1" ).arg( path ) );
+  QgsDebugMsgLevel( QStringLiteral( "loading path: %1" ).arg( path ), 2 );
 
   if ( path.isEmpty() )
   {
@@ -121,7 +121,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 
       QString newPath = dir.path() + '/' + item;
       loadPath( newPath );
-      // QgsDebugMsg( QStringLiteral( "added path: %1" ).arg( newPath ) );
+      QgsDebugMsgLevel( QStringLiteral( "added path: %1" ).arg( newPath ), 2 );
     }
   }
 }
@@ -137,7 +137,7 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
     // TODO test if it is correct SVG
     QString svgPath = dir.path() + '/' + item;
-    // QgsDebugMsg( QStringLiteral( "adding svg: %1" ).arg( svgPath ) );
+    // QgsDebugMsgLevel( QStringLiteral( "adding svg: %1" ).arg( svgPath ), 2 );
 
     // add it to the list of queued SVGs
     mQueuedSvgs << svgPath;

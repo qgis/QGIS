@@ -49,10 +49,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
-include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
-)
-
 target_link_libraries(plugin_geometrychecker
   qgis_core
   qgis_gui

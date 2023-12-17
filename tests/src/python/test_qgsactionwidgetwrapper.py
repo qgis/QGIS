@@ -11,19 +11,19 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '16/08/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QUuid
 from qgis.PyQt.QtWidgets import QPushButton, QWidget
 from qgis.core import QgsAction, QgsVectorLayer
 from qgis.gui import QgsActionWidgetWrapper
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 from qgis.testing import QGISAPP
 
 
-class TestQgsActionWidgetWrapper(unittest.TestCase):
+class TestQgsActionWidgetWrapper(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

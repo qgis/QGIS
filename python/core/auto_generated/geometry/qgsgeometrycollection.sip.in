@@ -104,7 +104,7 @@ Returns a geometry from within the collection.
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
-    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
 
     void reserve( int size ) /HoldGIL/;
@@ -181,7 +181,7 @@ Removes a geometry from the collection by index.
     virtual QString asKml( int precision = 17 ) const;
 
 
-    virtual QgsRectangle boundingBox() const;
+    virtual QgsBox3D boundingBox3D() const;
 
 
     virtual QgsCoordinateSequence coordinateSequence() const;
@@ -342,7 +342,7 @@ Returns whether child type names are omitted from Wkt representations of the col
 Reads a collection from a WKT string.
 %End
 
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsBox3D calculateBoundingBox3D() const;
 
     virtual void clearCache() const;
 

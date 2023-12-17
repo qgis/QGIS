@@ -144,7 +144,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void setDefaultFromActive();
 
     /**
-     * Returns the name of the most recently closed profile. Empty if its the first time QGIS has been run.
+     * Returns the name of the most recently closed profile. Empty if it is the first time QGIS is run.
      * \since QGIS 3.32
      */
     QString lastProfileName() const;
@@ -210,6 +210,12 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The profile to start QGIS with.
      */
     void loadUserProfile( const QString &name );
+
+    /**
+     * Returns the settings for the profile manager.
+     * \since QGIS 3.32
+    */
+    QSettings *settings();
 
   signals:
 

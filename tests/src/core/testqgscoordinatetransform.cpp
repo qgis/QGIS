@@ -733,7 +733,7 @@ void TestQgsCoordinateTransform::testDeprecated4240to4326()
   const QgsCoordinateTransform defaultTransformRev( dest, src, context );
   QVERIFY( defaultTransformRev.isValid() );
   QCOMPARE( defaultTransformRev.coordinateOperation(), QString() );
-  QgsDebugMsg( defaultTransformRev.instantiatedCoordinateOperationDetails().proj );
+  QgsDebugMsgLevel( defaultTransformRev.instantiatedCoordinateOperationDetails().proj, 1 );
   QCOMPARE( defaultTransformRev.instantiatedCoordinateOperationDetails().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv +proj=helmert +x=293 +y=836 +z=318 +rx=0.5 +ry=1.6 +rz=-2.8 +s=2.1 +convention=position_vector +step +inv +proj=cart +ellps=evrst30 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
 
   p2 = defaultTransformRev.transform( QgsPointXY( 102.494938, 7.502624 ) );
@@ -784,7 +784,7 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
   const QgsCoordinateReferenceSystem dd( QStringLiteral( "EPSG:4326" ) );
   const QgsCoordinateTransform ct( ss, dd, QgsCoordinateTransformContext() );
   QVERIFY( ct.isValid() );
-  QgsDebugMsg( ct.instantiatedCoordinateOperationDetails().proj );
+  QgsDebugMsgLevel( ct.instantiatedCoordinateOperationDetails().proj, 1 );
   QCOMPARE( ct.instantiatedCoordinateOperationDetails().proj,
             QStringLiteral( "+proj=pipeline "
                             "+step +proj=unitconvert +xy_in=deg +xy_out=rad "

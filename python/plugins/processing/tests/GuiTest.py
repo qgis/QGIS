@@ -20,7 +20,8 @@ __date__ = 'August 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
 import os
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterMatrix,
@@ -92,7 +93,7 @@ QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class AlgorithmDialogTest(unittest.TestCase):
+class AlgorithmDialogTest(QgisTestCase):
 
     def testCreation(self):
         alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
@@ -100,7 +101,7 @@ class AlgorithmDialogTest(unittest.TestCase):
         self.assertEqual(a.mainWidget().algorithm(), alg)
 
 
-class WrappersTest(unittest.TestCase):
+class WrappersTest(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

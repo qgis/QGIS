@@ -223,7 +223,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
         continue; // point is not anchor
 
       // Check the distance
-      const double dist2 = QgsGeometryUtils::sqrDistToLine( pnts[spoint].x, pnts[spoint].y, x1, y1, x2, y2, minDistX, minDistY, 0 );
+      const double dist2 = QgsGeometryUtilsBase::sqrDistToLine( pnts[spoint].x, pnts[spoint].y, x1, y1, x2, y2, minDistX, minDistY, 0 );
       // skip points that are behind segment's endpoints or extremely close to them
       double dx1 = minDistX - x1, dx2 = minDistX - x2;
       double dy1 = minDistY - y1, dy2 = minDistY - y2;

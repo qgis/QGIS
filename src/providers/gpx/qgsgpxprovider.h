@@ -92,7 +92,8 @@ class QgsGPXProvider final: public QgsVectorDataProvider
     };
 
     enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
-                     CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
+                     CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr,
+                     TimeAttr
                    };
 
   private:

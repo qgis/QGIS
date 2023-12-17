@@ -76,7 +76,7 @@ namespace pal
        * \param provider Associated provider
        * \param name Name of the layer (for stats, debugging - does not need to be unique)
        * \param arrangement Arrangement mode : how to place candidates
-       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param defaultPriority layer's priority (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled whether toLablel is TRUE
        * \param pal pointer to the pal object

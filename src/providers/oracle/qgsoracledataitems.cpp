@@ -31,7 +31,7 @@
 
 bool deleteLayer( const QString &uri, QString &errCause )
 {
-  QgsDebugMsg( "deleting layer " + uri );
+  QgsDebugMsgLevel( "deleting layer " + uri, 2 );
 
   QgsDataSourceUri dsUri( uri );
   QString ownerName = dsUri.schema();
@@ -454,7 +454,7 @@ QString QgsOracleLayerItem::createUri()
 
   if ( !connItem )
   {
-    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
+    QgsDebugError( QStringLiteral( "connection item not found." ) );
     return QString();
   }
 

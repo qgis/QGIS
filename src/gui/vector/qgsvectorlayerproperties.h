@@ -21,13 +21,12 @@
 
 #include <QStandardItemModel>
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgsguiutils.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgslayertreefilterproxymodel.h"
-#include "qgsmaplayerstyle.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsMapLayer;
 
@@ -55,75 +54,29 @@ class QgsWebView;
  * \ingroup gui
  * \class QgsVectorLayerProperties
  */
-class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-#ifndef SIP_RUN
-    enum StyleType
-    {
-      QML,
-      SLD,
-      DB,
-      Local,
-    };
-    Q_ENUM( StyleType )
-#endif
 
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    //! Adds a properties page factory to the vector layer properties dialog.
-    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
-
     bool eventFilter( QObject *obj, QEvent *ev ) override;
-
-    /**
-     * Loads the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadDefaultStyle();
-
-    /**
-     * Saves the default style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveDefaultStyle();
-
-    /**
-     * Loads a saved style when appropriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void loadStyle();
-
-    /**
-     * Saves a style when appriate button is pressed
-     *
-     * \since QGIS 3.30
-     */
-    void saveStyleAs();
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
+    void syncToLayer() FINAL;
+    void apply() FINAL;
+    void rollback() FINAL;
 
   private slots:
 
-    void insertFieldOrExpression();
-
-    //! Reset to original (vector layer) values
-    void syncToLayer();
+    void insertField();
+    void insertOrEditExpression();
 
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
-
-    //! Called when apply button is pressed or dialog is accepted
-    void apply();
-
-    //! Called when cancel button is pressed
-    void onCancel();
 
     //
     //methods reimplemented from qt designer base class
@@ -132,10 +85,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void pbnQueryBuilder_clicked();
     void pbnIndex_clicked();
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void loadMetadata();
-    void saveMetadataAs();
-    void saveDefaultMetadata();
-    void loadDefaultMetadata();
     void pbnUpdateExtents_clicked();
 
     void mButtonAddJoin_clicked();
@@ -183,8 +132,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void onAuxiliaryLayerAddField();
 
-    void urlClicked( const QUrl &url );
-
     // Update the preview of the map tip
     void updateMapTipPreview();
     // Resize the map tip preview
@@ -202,7 +149,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void setPbnQueryBuilderEnabled();
 
-    QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsVectorLayer *mLayer = nullptr;
 
@@ -210,8 +156,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QString mOriginalSubsetSQL;
 
-    QPushButton *mBtnStyle = nullptr;
-    QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
@@ -236,15 +180,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
     QList< QgsVectorLayerJoinInfo > mOldJoins;
-
-    //! A list of additional pages provided by plugins
-    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
-
-    /**
-     * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled.
-    */
-    QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();
 
@@ -282,6 +217,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsProviderSourceWidget *mSourceWidget = nullptr;
 
     QgsCoordinateReferenceSystem mBackupCrs;
+
+    std::unique_ptr<QgsProjectDirtyBlocker> mProjectDirtyBlocker;
 
     void initMapTipPreview();
 

@@ -15,6 +15,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometrycollection.h"
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
 #include "qgscircularstring.h"
@@ -200,7 +201,7 @@ int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
   return -1; // should not happen
 }
 
-bool QgsGeometryCollection::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+bool QgsGeometryCollection::boundingBoxIntersects( const QgsBox3D &box3d ) const
 {
   if ( mGeometries.empty() )
     return false;
@@ -208,7 +209,7 @@ bool QgsGeometryCollection::boundingBoxIntersects( const QgsRectangle &rectangle
   // if we already have the bounding box calculated, then this check is trivial!
   if ( !mBoundingBox.isNull() )
   {
-    return mBoundingBox.intersects( rectangle );
+    return mBoundingBox.intersects( box3d );
   }
 
   // otherwise loop through each member geometry and test the bounding box intersection.
@@ -218,7 +219,7 @@ bool QgsGeometryCollection::boundingBoxIntersects( const QgsRectangle &rectangle
   // bounding boxes are cached, so would be reused without additional expense)
   for ( const QgsAbstractGeometry *geometry : mGeometries )
   {
-    if ( geometry->boundingBoxIntersects( rectangle ) )
+    if ( geometry->boundingBoxIntersects( box3d ) )
       return true;
   }
 
@@ -226,7 +227,7 @@ bool QgsGeometryCollection::boundingBoxIntersects( const QgsRectangle &rectangle
   // bounding box of the overall collection.
   // so here we fall back to the non-optimised base class check which has to first calculate
   // the overall bounding box of the collection..
-  return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
+  return QgsAbstractGeometry::boundingBoxIntersects( box3d );
 }
 
 void QgsGeometryCollection::reserve( int size )
@@ -530,54 +531,37 @@ QString QgsGeometryCollection::asKml( int precision ) const
   return kml;
 }
 
-QgsRectangle QgsGeometryCollection::boundingBox() const
+QgsBox3D QgsGeometryCollection::boundingBox3D() const
 {
   if ( mBoundingBox.isNull() )
   {
-    mBoundingBox = calculateBoundingBox();
+    mBoundingBox = calculateBoundingBox3D();
   }
   return mBoundingBox;
 }
 
-QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
+QgsBox3D QgsGeometryCollection::calculateBoundingBox3D() const
 {
   if ( mGeometries.empty() )
   {
-    return QgsRectangle();
+    return QgsBox3D();
   }
 
-  QgsRectangle bbox = mGeometries.at( 0 )->boundingBox();
+  QgsBox3D bbox = mGeometries.at( 0 )->boundingBox3D();
   for ( int i = 1; i < mGeometries.size(); ++i )
   {
     if ( mGeometries.at( i )->isEmpty() )
       continue;
 
-    QgsRectangle geomBox = mGeometries.at( i )->boundingBox();
-    if ( bbox.isNull() )
-    {
-      // workaround treatment of a QgsRectangle(0,0,0,0) as a "null"/invalid rectangle
-      // if bbox is null, then the first geometry must have returned a bounding box of (0,0,0,0)
-      // so just manually include that as a point... ew.
-      geomBox.combineExtentWith( QPointF( 0, 0 ) );
-      bbox = geomBox;
-    }
-    else if ( geomBox.isNull() )
-    {
-      // ...as above... this part must have a bounding box of (0,0,0,0).
-      // if we try to combine the extent with this "null" box it will just be ignored.
-      bbox.combineExtentWith( QPointF( 0, 0 ) );
-    }
-    else
-    {
-      bbox.combineExtentWith( geomBox );
-    }
+    QgsBox3D geomBox = mGeometries.at( i )->boundingBox3D();
+    bbox.combineWith( geomBox );
   }
   return bbox;
 }
 
 void QgsGeometryCollection::clearCache() const
 {
-  mBoundingBox = QgsRectangle();
+  mBoundingBox = QgsBox3D();
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
@@ -758,7 +742,10 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
   if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
+  {
+    qDeleteAll( subtypes );
     return true;
+  }
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 

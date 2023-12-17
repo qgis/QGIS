@@ -661,6 +661,9 @@ void QgsModelDesignerDialog::exportToImage()
   QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as Image" ),
                      lastExportDir,
                      tr( "PNG files (*.png *.PNG)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( filename.isEmpty() )
     return;
 
@@ -698,6 +701,9 @@ void QgsModelDesignerDialog::exportToPdf()
   QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as PDF" ),
                      lastExportDir,
                      tr( "PDF files (*.pdf *.PDF)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( filename.isEmpty() )
     return;
 
@@ -743,6 +749,9 @@ void QgsModelDesignerDialog::exportToSvg()
   QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as SVG" ),
                      lastExportDir,
                      tr( "SVG files (*.svg *.SVG)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( filename.isEmpty() )
     return;
 
@@ -779,6 +788,9 @@ void QgsModelDesignerDialog::exportAsPython()
   QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as Python Script" ),
                      lastExportDir,
                      tr( "Processing scripts (*.py *.PY)" ) );
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
   if ( filename.isEmpty() )
     return;
 

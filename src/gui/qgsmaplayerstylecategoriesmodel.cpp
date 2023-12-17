@@ -30,17 +30,24 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
       break;
 
     case Qgis::LayerType::Raster:
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::AllStyleCategories;
+      break;
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Mesh:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
       // not yet handled by the model
       break;
   }
 
   // move All categories to top
-  mCategoryList.move( mCategoryList.indexOf( QgsMapLayer::AllStyleCategories ), 0 );
+  int idxAllStyleCategories = mCategoryList.indexOf( QgsMapLayer::AllStyleCategories );
+  if ( idxAllStyleCategories > 0 )
+  {
+    mCategoryList.move( idxAllStyleCategories, 0 );
+  }
 }
 
 void QgsMapLayerStyleCategoriesModel::setCategories( QgsMapLayer::StyleCategories categories )
@@ -68,7 +75,7 @@ void QgsMapLayerStyleCategoriesModel::setShowAllCategories( bool showAll )
 int QgsMapLayerStyleCategoriesModel::rowCount( const QModelIndex & ) const
 {
   int count = mCategoryList.count();
-  if ( !mShowAllCategories )
+  if ( count > 0 && !mShowAllCategories )
     count--;
   return count;
 }
@@ -283,7 +290,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return tr( "Elevation properties" );
         case Qt::DecorationRole:
-          return QIcon(); // TODO
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/elevationscale.svg" ) );
       }
       break;
 

@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 

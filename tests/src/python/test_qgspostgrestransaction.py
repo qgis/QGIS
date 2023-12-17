@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.core import (
     Qgis,
     QgsDataSourceUri,
@@ -19,12 +18,13 @@ from qgis.core import (
     QgsTransaction,
     QgsVectorLayer,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPostgresTransaction(unittest.TestCase):
+class TestQgsPostgresTransaction(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

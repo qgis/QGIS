@@ -186,9 +186,11 @@ void QgsVectorTileSourceSelect::addButtonClicked()
 {
   if ( mRadioSourceService->isChecked() )
   {
-
     const QString uri = QgsVectorTileProviderConnection::encodedUri( QgsVectorTileProviderConnection::connection( cmbConnections->currentText() ) );
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorTileLayer( uri, cmbConnections->currentText() );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::VectorTile, uri, cmbConnections->currentText(), QString() );
   }
   else if ( mRadioSourceFile->isChecked() )
   {
@@ -207,7 +209,10 @@ void QgsVectorTileSourceSelect::addButtonClicked()
     parts.insert( QStringLiteral( "path" ), filePath );
     const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
 
+    Q_NOWARN_DEPRECATED_PUSH
     emit addVectorTileLayer( uri, QgsProviderUtils::suggestLayerNameFromFilePath( filePath ) );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::VectorTile, uri, cmbConnections->currentText(), QString() );
   }
 }
 

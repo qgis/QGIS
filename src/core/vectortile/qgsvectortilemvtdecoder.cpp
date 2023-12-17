@@ -15,9 +15,9 @@
 
 #include <string>
 
+#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 
-#include "qgsvectortilelayerrenderer.h"
 #include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
 
@@ -37,12 +37,12 @@ QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &
 
 QgsVectorTileMVTDecoder::~QgsVectorTileMVTDecoder() = default;
 
-bool QgsVectorTileMVTDecoder::decode( QgsTileXYZ tileID, const QByteArray &rawTileData )
+bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
 {
-  if ( !tile.ParseFromArray( rawTileData.constData(), rawTileData.count() ) )
+  if ( !tile.ParseFromArray( rawTileData.data.constData(), rawTileData.data.count() ) )
     return false;
 
-  mTileID = tileID;
+  mTileID = rawTileData.tileGeometryId;
 
   mLayerNameToIndex.clear();
   for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
@@ -110,7 +110,20 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       continue;
 
     QVector<QgsFeature> layerFeatures;
-    const QgsFields layerFields = perLayerFields[layerName];
+    QgsFields layerFields = perLayerFields[layerName];
+
+    const auto allLayerFields = perLayerFields.find( QString() );
+    if ( allLayerFields != perLayerFields.end() )
+    {
+      // need to add the fields from any "all layer" rules to every layer
+      for ( const QgsField &field : allLayerFields.value() )
+      {
+        if ( layerFields.lookupField( field.name() ) == -1 )
+        {
+          layerFields.append( field );
+        }
+      }
+    }
 
     // figure out how field indexes in MVT encoding map to field indexes in QgsFields (we may not use all available fields)
     QHash<int, int> tagKeyIndexToFieldIndex;
@@ -160,7 +173,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         const int valueIndex = static_cast<int>( feature.tags( tagNum + 1 ) );
         if ( valueIndex >= layer.values_size() )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid value index for attribute" ) );
+          QgsDebugError( QStringLiteral( "Invalid value index for attribute" ) );
           continue;
         }
         const ::vector_tile::Tile_Value &value = layer.values( valueIndex );
@@ -181,7 +194,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           f.setAttribute( fieldIndex, static_cast<bool>( value.bool_value() ) );
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unexpected attribute value" ) );
+          QgsDebugError( QStringLiteral( "Unexpected attribute value" ) );
         }
       }
 
@@ -206,7 +219,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         {
           if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
           {
-            QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+            QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
 
@@ -250,7 +263,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         {
           if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
           {
-            QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+            QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
           tmpPoints.reserve( tmpPoints.size() + cmdCount );
@@ -294,7 +307,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
               }
               else
               {
-                QgsDebugMsg( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
+                QgsDebugError( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
               }
             }
           }
@@ -302,7 +315,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
+          QgsDebugError( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
         }
       }
 

@@ -61,6 +61,12 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     //! Sets the a \a layout.
     void setLayout( QgsLayout *layout );
 
+    /**
+     * Compute the search tolerance in layout units from the view current scale
+     * \since QGIS 3.34
+     */
+    double searchToleranceInLayoutUnits();
+
   private:
 
     bool mIsSelecting = false;
@@ -75,6 +81,9 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     QPointF mRubberBandStartPos;
 
     QPointer< QgsLayoutMouseHandles > mMouseHandles; //owned by scene
+
+    //! Search tolerance in millimeters for selecting items
+    static const double sSearchToleranceInMillimeters;
 };
 
 #endif // QGSLAYOUTVIEWTOOLSELECT_H

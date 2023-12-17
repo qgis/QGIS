@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '13/3/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from qgis.core import (
     QgsDateTimeRange,
@@ -20,7 +19,8 @@ from qgis.core import (
     QgsTemporalUtils,
     QgsUnitTypes,
 )
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
@@ -28,7 +28,7 @@ app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsTemporalUtils(unittest.TestCase):
+class TestQgsTemporalUtils(QgisTestCase):
 
     def testTemporalRangeForProject(self):
         p = QgsProject()

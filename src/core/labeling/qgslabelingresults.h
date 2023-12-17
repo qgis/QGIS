@@ -20,8 +20,10 @@
 #include "qgis_sip.h"
 #include "qgslabelposition.h"
 #include "qgscalloutposition.h"
+
 #include <memory>
 
+class QgsMapSettings;
 class QgsLabelSearchTree;
 
 /**

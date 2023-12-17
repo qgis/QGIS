@@ -32,6 +32,7 @@
 #include "qgscurve.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsgui.h"
 #include <QMenu>
 
 std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
@@ -437,6 +438,62 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
+  for ( Qgis::DistanceUnit unit :
+        {
+          Qgis::DistanceUnit::Kilometers,
+          Qgis::DistanceUnit::Meters,
+          Qgis::DistanceUnit::Centimeters,
+          Qgis::DistanceUnit::Millimeters,
+          Qgis::DistanceUnit::Miles,
+          Qgis::DistanceUnit::NauticalMiles,
+          Qgis::DistanceUnit::Yards,
+          Qgis::DistanceUnit::Feet,
+          Qgis::DistanceUnit::Inches,
+          Qgis::DistanceUnit::Degrees,
+        } )
+  {
+    QString title;
+    if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) )
+    {
+      title = QgsStringUtils::capitalize( QgsUnitTypes::toString( unit ), Qgis::Capitalization::TitleCase );
+    }
+    else
+    {
+      title = QgsUnitTypes::toString( unit );
+    }
+    mDistanceUnitCombo->addItem( title, QVariant::fromValue( unit ) );
+  }
+
+  connect( mDistanceUnitCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Units" ) );
+    mProfile->setDistanceUnit( mDistanceUnitCombo->currentData().value< Qgis::DistanceUnit >() );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  mDistanceLabelsCombo->addItem( tr( "None" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::NoLabels ) );
+  mDistanceLabelsCombo->addItem( tr( "Every Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::EveryLabel ) );
+  mDistanceLabelsCombo->addItem( tr( "First Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstLabel ) );
+  mDistanceLabelsCombo->addItem( tr( "Last Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::LastLabel ) );
+  mDistanceLabelsCombo->addItem( tr( "First and Last Values" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels ) );
+  connect( mDistanceLabelsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Chart Label Placement" ) );
+    mProfile->plot()->xAxis().setLabelSuffixPlacement( mDistanceLabelsCombo->currentData().value< Qgis::PlotAxisSuffixPlacement >() );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+
   registerDataDefinedButton( mDDBtnTolerance, QgsLayoutObject::ElevationProfileTolerance );
   registerDataDefinedButton( mDDBtnMinDistance, QgsLayoutObject::ElevationProfileMinimumDistance );
   registerDataDefinedButton( mDDBtnMaxDistance, QgsLayoutObject::ElevationProfileMaximumDistance );
@@ -541,6 +598,12 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
 
   mSpinTolerance->setValue( canvas->tolerance() );
   mProfile->setTolerance( canvas->tolerance() );
+
+  mProfile->setDistanceUnit( canvas->distanceUnit() );
+  mDistanceUnitCombo->setCurrentIndex( mDistanceUnitCombo->findData( QVariant::fromValue( canvas->distanceUnit() ) ) );
+
+  mProfile->plot()->xAxis().setLabelSuffixPlacement( canvas->plot().xAxis().labelSuffixPlacement() );
+  mDistanceLabelsCombo->setCurrentIndex( mDistanceLabelsCombo->findData( QVariant::fromValue( canvas->plot().xAxis().labelSuffixPlacement() ) ) );
 
   if ( const QgsCurve *curve = canvas->profileCurve() )
     mProfile->setProfileCurve( curve->clone() );
@@ -655,6 +718,9 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
 
   mDistanceAxisLabelFontButton->setTextFormat( mProfile->plot()->xAxis().textFormat() );
   mElevationAxisLabelFontButton->setTextFormat( mProfile->plot()->yAxis().textFormat() );
+
+  mDistanceUnitCombo->setCurrentIndex( mDistanceUnitCombo->findData( QVariant::fromValue( mProfile->distanceUnit() ) ) );
+  mDistanceLabelsCombo->setCurrentIndex( mDistanceLabelsCombo->findData( QVariant::fromValue( mProfile->plot()->xAxis().labelSuffixPlacement() ) ) );
 
   mDistanceAxisMajorIntervalSpin->setValue( mProfile->plot()->xAxis().gridIntervalMajor() );
   mDistanceAxisMinorIntervalSpin->setValue( mProfile->plot()->xAxis().gridIntervalMinor() );

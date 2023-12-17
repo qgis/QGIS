@@ -11,14 +11,14 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.testing import start_app, unittest
+import unittest
+from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
-class TestQgsPostgresDomain(unittest.TestCase):
+class TestQgsPostgresDomain(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):
