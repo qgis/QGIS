@@ -16,9 +16,11 @@
 #ifndef QGS3DWINDOW_H
 #define QGS3DWINDOW_H
 
+#include "qgis_3d.h"
+
 #include <QtGui/QWindow>
 
-
+#ifndef SIP_RUN
 namespace Qt3DCore
 {
   class QAspectEngine;
@@ -49,6 +51,8 @@ namespace Qt3DLogic
 {
   class QLogicAspect;
 }
+#endif
+
 
 /**
  * \ingroup 3d
@@ -58,9 +62,9 @@ namespace Qt3DLogic
  * \note The default surface must be set before the construction of the QApplication when using shared OpenGL context.
  * \note This is required in order to use QT3d and QtWebEngine at the same time.
  *
- * \since QGIS 3.32
+ * \since QGIS 3.36
  */
-class Qgs3DWindow : public QWindow
+class _3D_EXPORT Qgs3DWindow : public QWindow
 {
     Q_OBJECT
   public:
@@ -74,6 +78,8 @@ class Qgs3DWindow : public QWindow
      * Destructor for Qgs3DWindow.
      */
     ~Qgs3DWindow();
+
+#ifndef SIP_RUN
 
     /**
      * Sets the specified root entity of the scene.
@@ -104,7 +110,7 @@ class Qgs3DWindow : public QWindow
      * Returns the render settings of the 3D Window.
      */
     Qt3DRender::QRenderSettings *renderSettings() const;
-
+#endif
 
   protected:
 
