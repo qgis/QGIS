@@ -164,8 +164,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   if (mSkipEmptyTiles)
   {          
-    size_blank = QSize(mTileWidth, mTileHeight)
-    mBackgroundImage = QImage(size_blank, QImage.Format_ARGB32_Premultiplied)
+    mBackgroundImage = QImage(QSize(mTileWidth, mTileHeight), QImage.Format_ARGB32_Premultiplied)
     tmpImage.fill(mBackgroundColor)
     tmpImage.setDotsPerMeterX(mDpi / 25.4 * 1000)
     tmpImage.setDotsPerMeterY(mDpi / 25.4 * 1000)
