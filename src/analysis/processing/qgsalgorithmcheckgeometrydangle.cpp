@@ -139,7 +139,7 @@ auto QgsGeometryCheckDangleAlgorithm::processAlgorithm( const QVariantMap &param
 
   QgsFields fields = outputFields();
 
-  std::unique_ptr< QgsFeatureSink > sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, mInputLayer->wkbType(), mInputLayer->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, mIsInPlace ? mInputLayer->fields() : fields, mInputLayer->wkbType(), mInputLayer->sourceCrs() ) );
   if ( !sink_output )
   {
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -226,11 +226,11 @@ auto QgsGeometryCheckDangleAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
 
-  multiStepFeedback.setCurrentStep( 4 );
-  feedback->setProgressText( QObject::tr( "Exporting (fixed) layer…" ) );
-
   if ( mIsInPlace )
   {
+    multiStepFeedback.setCurrentStep( 4 );
+    feedback->setProgressText( QObject::tr( "Exporting (fixed) layer…" ) );
+
     const QgsFeaturePool *featurePool = featurePools[ mInputLayer->id() ];
     QgsFeatureIds featureIds{featurePool->allFeatureIds()};
     QgsFeatureIterator featIt{mInputLayer->getFeatures( featureIds )};
@@ -238,23 +238,6 @@ auto QgsGeometryCheckDangleAlgorithm::processAlgorithm( const QVariantMap &param
     step = featureIds.size() > 0 ? 100.0 / featureIds.size() : 0;
     feedback->setProgress( 100.0 * step );
 
-    QgsFeature feat;
-    while ( featIt.nextFeature( feat ) )
-    {
-      if ( feedback->isCanceled() )
-      {
-        break;
-      }
-
-      if ( !sink_output->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      {
-        throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-      }
-    }
-  }
-  else
-  {
-    QgsFeatureIterator featIt{mInputLayer->getFeatures( )};
     QgsFeature feat;
     while ( featIt.nextFeature( feat ) )
     {

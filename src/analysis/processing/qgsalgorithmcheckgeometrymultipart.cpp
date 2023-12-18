@@ -77,9 +77,9 @@ void QgsGeometryCheckMultipartAlgorithm::initAlgorithm( const QVariantMap &confi
 
   mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), QgsProcessing::TypeVectorAnyGeometry ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > tolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ),
       QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Integer, 8, false, 1, 13 );
@@ -106,7 +106,6 @@ auto QgsGeometryCheckMultipartAlgorithm::prepareAlgorithm( const QVariantMap &pa
 
 auto QgsGeometryCheckMultipartAlgorithm::createFeaturePool( QgsVectorLayer *layer, bool selectedOnly ) const -> QgsFeaturePool *
 {
-
   return new QgsVectorDataProviderFeaturePool( layer, selectedOnly );
 }
 
@@ -141,7 +140,7 @@ auto QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariantMap &pa
 
   QgsFields fields = outputFields();
 
-  std::unique_ptr< QgsFeatureSink > sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, mInputLayer->wkbType(), mInputLayer->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, mIsInPlace ? mInputLayer->fields() : fields, mInputLayer->wkbType(), mInputLayer->sourceCrs() ) );
   if ( !sink_output )
   {
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -227,12 +226,11 @@ auto QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariantMap &pa
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
   }
 
-
-  multiStepFeedback.setCurrentStep( 4 );
-  feedback->setProgressText( QObject::tr( "Exporting (fixed) layer…" ) );
-
   if ( mIsInPlace )
   {
+    multiStepFeedback.setCurrentStep( 4 );
+    feedback->setProgressText( QObject::tr( "Exporting (fixed) layer…" ) );
+
     const QgsFeaturePool *featurePool = featurePools[ mInputLayer->id() ];
     QgsFeatureIds featureIds{featurePool->allFeatureIds()};
     QgsFeatureIterator featIt{mInputLayer->getFeatures( featureIds )};
@@ -240,23 +238,6 @@ auto QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariantMap &pa
     step = featureIds.size() > 0 ? 100.0 / featureIds.size() : 0;
     feedback->setProgress( 100.0 * step );
 
-    QgsFeature feat;
-    while ( featIt.nextFeature( feat ) )
-    {
-      if ( feedback->isCanceled() )
-      {
-        break;
-      }
-
-      if ( !sink_output->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      {
-        throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-      }
-    }
-  }
-  else
-  {
-    QgsFeatureIterator featIt{mInputLayer->getFeatures( )};
     QgsFeature feat;
     while ( featIt.nextFeature( feat ) )
     {
@@ -283,7 +264,7 @@ bool QgsGeometryCheckMultipartAlgorithm::supportInPlaceEdit( const QgsMapLayer *
 {
   if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
-    return vl->geometryType() == Qgis::GeometryType::Line;
+    return ( vl->geometryType() == Qgis::GeometryType::Line ) || ( vl->geometryType() == Qgis::GeometryType::Polygon );
   }
   return false;
 }
