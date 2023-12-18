@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import os.path
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtTest import QSignalSpy

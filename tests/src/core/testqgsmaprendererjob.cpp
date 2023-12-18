@@ -1190,6 +1190,20 @@ void TestQgsMapRendererJob::testMapShading()
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "render_shading_5" ), img ) );
+
+  // test elevation map when rendering point cloud with triangulation
+  QgsElevationShadingRenderer shadingRenderer2;
+  shadingRenderer2.setActive( true );
+  shadingRenderer2.setActiveHillshading( true );
+  shadingRenderer2.setActiveEyeDomeLighting( false );
+  pointCloudLayer->renderer()->setRenderAsTriangles( true );
+  mapSettings.setLayers( QList< QgsMapLayer * >() << pointCloudLayer.get() );
+  mapSettings.setElevationShadingRenderer( shadingRenderer2 );
+  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob->start();
+  renderJob->waitForFinished();
+  img = renderJob->renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "render_shading_point_cloud_triangles" ), img ) );
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )

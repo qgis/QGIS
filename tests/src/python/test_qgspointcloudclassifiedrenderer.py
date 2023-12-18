@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
@@ -187,6 +186,33 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         )
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderClassificationOverridePointSizes(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(layer)
+        categories[0].setPointSize(1)
+        categories[2].setPointSize(.3)
+        categories[3].setPointSize(.5)
+
+        renderer = QgsPointCloudClassifiedRenderer('Classification', categories)
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(.15)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_override_pointsize', 'classified_override_pointsize', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRenderZRange(self):
         layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
         self.assertTrue(layer.isValid())
@@ -286,6 +312,30 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check('classified_render_unfiltered', 'classified_render_unfiltered', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTriangles(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        categories = QgsPointCloudRendererRegistry.classificationAttributeCategories(layer)
+        renderer = QgsPointCloudClassifiedRenderer('Classification', categories)
+        renderer.setRenderAsTriangles(True)
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('classified_triangles', 'classified_triangles', mapsettings)
         )
 
 

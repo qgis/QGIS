@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '05/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QByteArray, QMimeData, QRectF
 from qgis.PyQt.QtGui import QTransform

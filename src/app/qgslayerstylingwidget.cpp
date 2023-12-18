@@ -631,13 +631,39 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           }
           case 3: // Attribute Tables
           {
-            if ( !mRasterAttributeTableWidget )
-            {
-              mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( mWidgetStack, rlayer );
-              mRasterAttributeTableWidget->setDockMode( true );
-            }
 
-            mWidgetStack->setMainPanel( mRasterAttributeTableWidget );
+            if ( rlayer->attributeTableCount() > 0 )
+            {
+              if ( !mRasterAttributeTableWidget )
+              {
+                mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( mWidgetStack, rlayer );
+                mRasterAttributeTableWidget->setDockMode( true );
+              }
+              else
+              {
+                mRasterAttributeTableWidget->setRasterLayer( rlayer );
+              }
+
+              mWidgetStack->setMainPanel( mRasterAttributeTableWidget );
+            }
+            else
+            {
+              if ( ! mRasterAttributeTableDisabledWidget )
+              {
+                mRasterAttributeTableDisabledWidget = new QgsPanelWidget{ mWidgetStack };
+                QVBoxLayout *layout = new QVBoxLayout{ mRasterAttributeTableDisabledWidget };
+                mRasterAttributeTableDisabledWidget->setLayout( layout );
+                QLabel *label { new QLabel( tr( "There are no raster attribute tables associated with this data source.<br>"
+                                                  "If the current symbology can be converted to an attribute table you "
+                                                  "can create a new attribute table using the context menu available in the "
+                                                  "layer tree or in the layer properties dialog." ) )};
+                label->setWordWrap( true );
+                mRasterAttributeTableDisabledWidget->layout()->addWidget( label );
+                layout->addStretch();
+                mRasterAttributeTableDisabledWidget->setDockMode( true );
+              }
+              mWidgetStack->setMainPanel( mRasterAttributeTableDisabledWidget );
+            }
 
             break;
           }

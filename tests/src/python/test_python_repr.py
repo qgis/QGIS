@@ -11,7 +11,6 @@ __author__ = 'Denis Rouzaud'
 __date__ = '05.06.2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 
 from PyQt5.QtCore import QVariant
 from qgis.core import (

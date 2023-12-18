@@ -1,0 +1,240 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgscircularstring.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCircularString: QgsCurve
+{
+%Docstring(signature="appended")
+Circular string geometry type
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgscircularstring.h"
+%End
+  public:
+
+    QgsCircularString() /HoldGIL/;
+%Docstring
+Constructs an empty circular string.
+%End
+
+    QgsCircularString( const QgsPoint &p1,
+                       const QgsPoint &p2,
+                       const QgsPoint &p3 ) /HoldGIL/;
+%Docstring
+Constructs a circular string with a single
+arc passing through ``p1``, ``p2`` and ``p3``.
+
+.. versionadded:: 3.2
+%End
+
+    QgsCircularString( const QVector<double> &x, const QVector<double> &y,
+                       const QVector<double> &z = QVector<double>(),
+                       const QVector<double> &m = QVector<double>() ) /HoldGIL/;
+%Docstring
+Construct a circular string from arrays of coordinates. If the z or m
+arrays are non-empty then the resultant circular string will have
+z and m types accordingly.
+
+This constructor is more efficient then calling :py:func:`~QgsCircularString.setPoints`.
+
+If the sizes of ``x`` and ``y`` are non-equal then the resultant circular string
+will be created using the minimum size of these arrays.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the supplied arrays
+   are of odd sizes.
+
+.. versionadded:: 3.20
+%End
+
+
+    static QgsCircularString fromTwoPointsAndCenter( const QgsPoint &p1,
+        const QgsPoint &p2,
+        const QgsPoint &center,
+        bool useShortestArc = true );
+%Docstring
+Creates a circular string with a single arc representing
+the curve from ``p1`` to ``p2`` with the specified ``center``.
+
+If ``useShortestArc`` is ``True``, then the arc returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is ``False``, the longer arc from ``p1``
+to ``p2`` will be used (i.e. winding the other way around the circle).
+
+.. versionadded:: 3.2
+%End
+
+    virtual bool equals( const QgsCurve &other ) const;
+
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    virtual int dimension() const /HoldGIL/;
+
+    virtual QgsCircularString *clone() const /Factory/;
+
+    virtual void clear();
+
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
+
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual bool isEmpty() const /HoldGIL/;
+
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
+
+    virtual int numPoints() const /HoldGIL/;
+
+    int indexOf( const QgsPoint &point ) const final;
+
+    QgsPoint pointN( int i ) const /HoldGIL/;
+%Docstring
+Returns the point at index i within the circular string.
+%End
+
+    virtual void points( QgsPointSequence &pts /Out/ ) const;
+
+
+    void setPoints( const QgsPointSequence &points );
+%Docstring
+Sets the circular string's points
+%End
+
+    void append( const QgsCircularString *string );
+%Docstring
+Appends the contents of another circular ``string`` to the end of this circular string.
+
+:param string: circular string to append. Ownership is not transferred.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the first point in the appended
+   ``string`` matches the last point in the existing curve, or the result will be undefined.
+
+
+.. versionadded:: 3.20
+%End
+
+    virtual double length() const;
+
+    virtual QgsPoint startPoint() const /HoldGIL/;
+
+    virtual QgsPoint endPoint() const /HoldGIL/;
+
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
+    virtual QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+
+    virtual void draw( QPainter &p ) const;
+
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
+
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
+
+    virtual void addToPainterPath( QPainterPath &path ) const;
+
+    virtual void drawAsPolygon( QPainter &p ) const;
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
+    virtual bool deleteVertex( QgsVertexId position );
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
+    virtual bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const;
+
+    virtual void sumUpArea( double &sum /Out/ ) const;
+
+    virtual bool hasCurvedSegments() const;
+
+    virtual double vertexAngle( QgsVertexId vertex ) const;
+
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
+    virtual QgsCircularString *reversed() const  /Factory/;
+
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
+    virtual QgsCircularString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
+
+    virtual bool addZValue( double zValue = 0 );
+
+    virtual bool addMValue( double mValue = 0 );
+
+    virtual bool dropZValue();
+
+    virtual bool dropMValue();
+
+    virtual void swapXy();
+
+    virtual double xAt( int index ) const /HoldGIL/;
+
+    virtual double yAt( int index ) const /HoldGIL/;
+
+    virtual double zAt( int index ) const /HoldGIL/;
+
+    virtual double mAt( int index ) const /HoldGIL/;
+
+
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+    void scroll( int firstVertexIndex ) final;
+
+
+    virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  protected:
+
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgscircularstring.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

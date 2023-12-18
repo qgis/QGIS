@@ -23,9 +23,10 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgspointclouddataprovider.h"
 
-QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &color, const QString &label, bool render )
+QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &color, const QString &label, bool render, double pointSize )
   : mValue( value )
   , mColor( color )
+  , mPointSize( pointSize )
   , mLabel( label )
   , mRender( render )
 {
@@ -35,6 +36,7 @@ bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) con
 {
   return mValue == other.value() &&
          mColor == other.color() &&
+         mPointSize == other.pointSize() &&
          mLabel == other.label() &&
          mRender == other.renderState();
 }
@@ -67,7 +69,13 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 
 void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context )
 {
-  const QgsRectangle visibleExtent = context.renderContext().extent();
+  QgsRectangle visibleExtent = context.renderContext().extent();
+  if ( renderAsTriangles() )
+  {
+    // we need to include also points slightly outside of the visible extent,
+    // otherwise the triangulation may be missing triangles near the edges and corners
+    visibleExtent.grow( std::max( visibleExtent.width(), visibleExtent.height() ) * 0.05 );
+  }
 
   const char *ptr = block->data();
   int count = block->pointCount();
@@ -92,12 +100,16 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   const bool reproject = ct.isValid();
 
   QHash< int, QColor > colors;
+  QHash< int, int > pointSizes;
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( !category.renderState() )
       continue;
 
     colors.insert( category.value(), category.color() );
+
+    const double size = category.pointSize() > 0 ? category.pointSize() : pointSize();
+    pointSizes.insert( category.value(), context.renderContext().convertToPainterUnits( size, pointSizeUnit(), pointSizeMapUnitScale() ) );
   }
 
   for ( int i = 0; i < count; ++i )
@@ -136,9 +148,17 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
         }
       }
 
-      drawPoint( x, y, color, context );
-      if ( renderElevation )
-        drawPointToElevationMap( x, y, z, context );
+      if ( renderAsTriangles() )
+      {
+        addPointToTriangulation( x, y, z, color, context );
+      }
+      else
+      {
+        const double size = pointSizes.value( attributeValue );
+        drawPoint( x, y, color, size, context );
+        if ( renderElevation )
+          drawPointToElevationMap( x, y, z, size, context );
+      }
       rendered++;
     }
   }
@@ -177,10 +197,11 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
       if ( catElem.tagName() == QLatin1String( "category" ) )
       {
         const int value = catElem.attribute( QStringLiteral( "value" ) ).toInt();
+        const double size = catElem.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "0" ) ).toDouble();
         const QString label = catElem.attribute( QStringLiteral( "label" ) );
         const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
         const QColor color = QgsSymbolLayerUtils::decodeColor( catElem.attribute( QStringLiteral( "color" ) ) );
-        categories.append( QgsPointCloudCategory( value, color, label, render ) );
+        categories.append( QgsPointCloudCategory( value, color, label, render, size ) );
       }
       catElem = catElem.nextSiblingElement();
     }
@@ -228,6 +249,7 @@ QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsR
   {
     QDomElement catElem = doc.createElement( QStringLiteral( "category" ) );
     catElem.setAttribute( QStringLiteral( "value" ), QString::number( category.value() ) );
+    catElem.setAttribute( QStringLiteral( "pointSize" ), QString::number( category.pointSize() ) );
     catElem.setAttribute( QStringLiteral( "label" ), category.label() );
     catElem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( category.color() ) );
     catElem.setAttribute( QStringLiteral( "render" ), category.renderState() ? "true" : "false" );

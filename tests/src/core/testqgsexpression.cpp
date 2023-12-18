@@ -1873,11 +1873,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
 
       // Color functions
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "254,190,116,255" );
-#else
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
-#endif
       QTest::newRow( "create ramp color, wrong parameter" ) << "create_ramp(1)" << true << QVariant();
       QTest::newRow( "create ramp color, no color" ) << "create_ramp(map())" << true << QVariant();
       QTest::newRow( "create ramp color, one color" ) << "ramp_color(create_ramp(map(0,'0,0,0')),0.5)" << false << QVariant( "0,0,0,255" );
@@ -1923,22 +1919,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "set color part saturation" ) << "to_int(color_part(set_color_part(color_hsv(40,100,80),'saturation',40),'saturation'))" << false << QVariant( 40 );
       QTest::newRow( "set color part value" ) << "to_int(color_part(set_color_part(color_hsv(40,100,80),'value',50),'value'))" << false << QVariant( 50 );
       QTest::newRow( "set color part hsl_hue" ) << "to_int(color_part(set_color_part(color_hsl(100,50,70),'hsl_hue',270),'hsl_hue'))" << false << QVariant( 270 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QTest::newRow( "set color part hsl_saturation" ) << "to_int(color_part(set_color_part(color_hsl(100,50,70),'hsl_saturation',30),'hsl_saturation'))" << false << QVariant( 30 );
-#else
       QTest::newRow( "set color part hsl_saturation" ) << "to_int(color_part(set_color_part(color_hsl(100,50,70),'hsl_saturation',30),'hsl_saturation'))" << false << QVariant( 29 );
-#endif
       QTest::newRow( "set color part lightness" ) << "to_int(color_part(set_color_part(color_hsl(100,50,70),'lightness',20),'lightness'))" << false << QVariant( 20 );
       QTest::newRow( "set color part cyan" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'cyan',12),'cyan'))" << false << QVariant( 12 );
       QTest::newRow( "set color part magenta" ) << "to_int(color_part(set_color_part(color_cmyk(0,10,90,76),'magenta',31),'magenta'))" << false << QVariant( 31 );
       QTest::newRow( "set color part yellow" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'yellow',96),'yellow'))" << false << QVariant( 96 );
       QTest::newRow( "set color part black" ) << "to_int(color_part(set_color_part(color_cmyk(21,0,92,70),'black',100),'black'))" << false << QVariant( 100 );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QTest::newRow( "color darker" ) << "darker('200,100,30',150)" << false << QVariant( "133,66,20,255" );
-#else
       QTest::newRow( "color darker" ) << "darker('200,100,30',150)" << false << QVariant( "133,67,20,255" );
-#endif
       QTest::newRow( "color darker bad color" ) << "darker('notacolor',150)" << true << QVariant();
       QTest::newRow( "color lighter" ) << "lighter('200,100,30',150)" << false << QVariant( "255,154,83,255" );
       QTest::newRow( "color lighter bad color" ) << "lighter('notacolor',150)" << true << QVariant();
@@ -4555,7 +4543,8 @@ class TestQgsExpression: public QObject
     {
       std::unique_ptr layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       layer->dataProvider()->addAttributes( { QgsField( QStringLiteral( "field1" ), QVariant::String ),
-                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String ) } );
+                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String )
+                                            } );
       layer->updateFields();
 
       QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "", layer.get() ), -1 );
@@ -4581,7 +4570,8 @@ class TestQgsExpression: public QObject
     {
       std::unique_ptr layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
       layer->dataProvider()->addAttributes( { QgsField( QStringLiteral( "field1" ), QVariant::String ),
-                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String ) } );
+                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String )
+                                            } );
       layer->updateFields();
 
       QCOMPARE( QgsExpression::quoteFieldExpression( QString(), layer.get() ), QString() );
@@ -5325,6 +5315,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << "some my text] text";
       QTest::newRow( "newline 1" ) << "some \n [% 1 + 2 %] \n text" << "some \n 3 \n text";
       QTest::newRow( "newline 2" ) << "some [% \n 1 \n + \n 2 %] \n text" << "some 3 \n text";
+      QTest::newRow( "field values" ) << "[% \"string_field\" %] - [% \"non_null_int\" %] - [% \"null_int\" %]" << "string value - 5 - ";
     }
 
     void testReplaceExpressionText()
@@ -5333,6 +5324,18 @@ class TestQgsExpression: public QObject
       QFETCH( QString, expected );
 
       QgsExpressionContext context;
+
+      QgsFields fields;
+      fields.append( QgsField( "string_field", QVariant::String ) );
+      fields.append( QgsField( "non_null_int", QVariant::Int ) );
+      fields.append( QgsField( "null_int", QVariant::Int ) );
+
+      QgsFeature feature( fields );
+      feature.setAttributes( QgsAttributes( { QVariant( QStringLiteral( "string value" ) ), QVariant( 5 ), QVariant( QVariant::Int ) } ) );
+
+      context.setFeature( feature );
+      context.setFields( fields );
+
       QCOMPARE( QgsExpression::replaceExpressionText( input, &context ), expected );
     }
 

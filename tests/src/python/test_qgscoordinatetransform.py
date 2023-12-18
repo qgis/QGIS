@@ -9,7 +9,6 @@ __author__ = '(C) 2012 by Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,

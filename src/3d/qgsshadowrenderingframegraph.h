@@ -34,9 +34,7 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderCapture>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <Qt3DRender/QDebugOverlay>
-#endif
 
 #include "qgspointlightsettings.h"
 
@@ -240,9 +238,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
     Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
     // QDebugOverlay added in the forward pass
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
-#endif
 
     // Shadow rendering pass branch nodes:
     Qt3DRender::QCameraSelector *mLightCameraSelectorShadowPass = nullptr;

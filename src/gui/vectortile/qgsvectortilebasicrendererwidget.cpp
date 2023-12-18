@@ -442,13 +442,13 @@ void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
   switch ( geomType )
   {
     case Qgis::GeometryType::Point:
-      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Point'" ) );
+      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Point'" ) );
       break;
     case Qgis::GeometryType::Line:
-      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Line'" ) );
+      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Line'" ) );
       break;
     case Qgis::GeometryType::Polygon:
-      style.setFilterExpression( QStringLiteral( "geometry_type($geometry)='Polygon'" ) );
+      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Polygon'" ) );
       break;
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:

@@ -61,6 +61,9 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         QgsApplication.processingRegistry().providerAdded.connect(self.onProviderAdded)
 
     def onProviderAdded(self, provider_id):
+        if provider_id == self.id():
+            return
+
         self.refreshAlgorithms()
 
     def load(self):

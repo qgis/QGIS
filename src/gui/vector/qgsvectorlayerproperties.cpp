@@ -589,6 +589,11 @@ void QgsVectorLayerProperties::syncToLayer()
   txtSubsetSQL->setCaretWidth( 0 );
   txtSubsetSQL->setCaretLineVisible( false );
   setPbnQueryBuilderEnabled();
+  if ( mLayer->dataProvider() && !mLayer->dataProvider()->supportsSubsetString() )
+  {
+    // hide subset box entirely if not supported by data provider
+    mSubsetGroupBox->hide();
+  }
 
   mDisplayExpressionWidget->setField( mLayer->displayExpression() );
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );

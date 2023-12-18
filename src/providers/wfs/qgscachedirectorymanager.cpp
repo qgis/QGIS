@@ -26,7 +26,7 @@
 #include <QTimer>
 #include <QDateTime>
 
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
 #include <QSharedMemory>
 #endif
 
@@ -82,7 +82,7 @@ QString QgsCacheDirectoryManager::getCacheDirectory( bool createIfNotExisting )
       QgsDebugMsgLevel( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ), 2 );
       QDir( baseDirectory ).mkpath( processPath );
     }
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
     if ( mCounter == 0 && mKeepAliveWorks )
     {
       mThread = new QgsCacheDirectoryManagerKeepAlive( createAndAttachSHM() );
@@ -159,7 +159,7 @@ bool QgsCacheDirectoryManager::removeDir( const QString &dirName )
   return dir.rmdir( dirName );
 }
 
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
 std::unique_ptr<QSharedMemory> QgsCacheDirectoryManager::createAndAttachSHM()
 {
   std::unique_ptr<QSharedMemory> sharedMemory;
@@ -189,7 +189,7 @@ std::unique_ptr<QSharedMemory> QgsCacheDirectoryManager::createAndAttachSHM()
 
 void QgsCacheDirectoryManager::init()
 {
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
   auto sharedMemory = createAndAttachSHM();
   mKeepAliveWorks = sharedMemory.get() != nullptr;
   sharedMemory.reset();
@@ -225,7 +225,7 @@ void QgsCacheDirectoryManager::init()
         {
           canDelete = true;
         }
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
         else if ( mKeepAliveWorks )
         {
           canDelete = true;
@@ -290,7 +290,7 @@ void QgsCacheDirectoryManager::init()
 
 // -------------------------
 
-#if !defined(Q_OS_ANDROID)
+#if not defined( Q_OS_ANDROID )
 // We use a keep alive mechanism where every KEEP_ALIVE_DELAY ms we update
 // a shared memory segment with the current timestamp. This way, other QGIS
 // processes can check if the temporary directories of other process correspond

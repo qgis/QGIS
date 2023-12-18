@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,

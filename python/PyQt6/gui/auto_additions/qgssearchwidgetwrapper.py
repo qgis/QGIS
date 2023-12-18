@@ -1,0 +1,17 @@
+# The following has been generated automatically from src/gui/editorwidgets/core/qgssearchwidgetwrapper.h
+QgsSearchWidgetWrapper.EqualTo = QgsSearchWidgetWrapper.FilterFlag.EqualTo
+QgsSearchWidgetWrapper.NotEqualTo = QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+QgsSearchWidgetWrapper.GreaterThan = QgsSearchWidgetWrapper.FilterFlag.GreaterThan
+QgsSearchWidgetWrapper.LessThan = QgsSearchWidgetWrapper.FilterFlag.LessThan
+QgsSearchWidgetWrapper.GreaterThanOrEqualTo = QgsSearchWidgetWrapper.FilterFlag.GreaterThanOrEqualTo
+QgsSearchWidgetWrapper.LessThanOrEqualTo = QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo
+QgsSearchWidgetWrapper.Between = QgsSearchWidgetWrapper.FilterFlag.Between
+QgsSearchWidgetWrapper.CaseInsensitive = QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+QgsSearchWidgetWrapper.Contains = QgsSearchWidgetWrapper.FilterFlag.Contains
+QgsSearchWidgetWrapper.DoesNotContain = QgsSearchWidgetWrapper.FilterFlag.DoesNotContain
+QgsSearchWidgetWrapper.IsNull = QgsSearchWidgetWrapper.FilterFlag.IsNull
+QgsSearchWidgetWrapper.IsNotBetween = QgsSearchWidgetWrapper.FilterFlag.IsNotBetween
+QgsSearchWidgetWrapper.IsNotNull = QgsSearchWidgetWrapper.FilterFlag.IsNotNull
+QgsSearchWidgetWrapper.StartsWith = QgsSearchWidgetWrapper.FilterFlag.StartsWith
+QgsSearchWidgetWrapper.EndsWith = QgsSearchWidgetWrapper.FilterFlag.EndsWith
+QgsSearchWidgetWrapper.FilterFlags = lambda flags=0: QgsSearchWidgetWrapper.FilterFlag(flags)

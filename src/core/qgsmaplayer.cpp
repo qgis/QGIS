@@ -138,7 +138,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 
   layer->setName( name() );
   layer->setShortName( shortName() );
-  layer->setExtent( extent() );
+  layer->setExtent3D( extent3D() );
   layer->setMaximumScale( maximumScale() );
   layer->setMinimumScale( minimumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
@@ -360,6 +360,13 @@ QString QgsMapLayer::source() const
 }
 
 QgsRectangle QgsMapLayer::extent() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mExtent.toRectangle();
+}
+
+QgsBox3D QgsMapLayer::extent3D() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -608,10 +615,18 @@ bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &cont
   // read Extent
   if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
   {
-    const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
-    if ( !extentNode.isNull() )
+    const QDomNode extent3DNode = layer_node.namedItem( QStringLiteral( "extent3D" ) );
+    if ( extent3DNode.isNull() )
     {
-      mExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+      const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+      if ( !extentNode.isNull() )
+      {
+        mExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+      }
+    }
+    else
+    {
+      mExtent = QgsXmlUtils::readBox3D( extent3DNode.toElement() );
     }
   }
 
@@ -625,7 +640,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   if ( !extent().isNull() )
   {
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
+    layerElement.appendChild( QgsXmlUtils::writeBox3D( mExtent, document ) );
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent.toRectangle(), document ) );
     layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
   }
 
@@ -968,8 +984,16 @@ QgsDataProvider::ReadFlags QgsMapLayer::providerReadFlags( const QDomNode &layer
 
   if ( layerReadFlags & QgsMapLayer::FlagReadExtentFromXml )
   {
-    const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
-    if ( !extentNode.isNull() )
+    const QDomNode extent3DNode = layerNode.namedItem( QStringLiteral( "extent3D" ) );
+    if ( extent3DNode.isNull() )
+    {
+      const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
+      if ( !extentNode.isNull() )
+      {
+        flags |= QgsDataProvider::SkipGetExtent;
+      }
+    }
+    else
     {
       flags |= QgsDataProvider::SkipGetExtent;
     }
@@ -2605,6 +2629,11 @@ void QgsMapLayer::emitStyleChanged()
 
 void QgsMapLayer::setExtent( const QgsRectangle &extent )
 {
+  updateExtent( QgsBox3D( extent ) );
+}
+
+void QgsMapLayer::setExtent3D( const QgsBox3D &extent )
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   updateExtent( extent );
@@ -2753,7 +2782,7 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
     transformer.setBallparkTransformsAreAppropriate( true );
     try
     {
-      wgs84Extent = transformer.transformBoundingBox( mExtent );
+      wgs84Extent = transformer.transformBoundingBox( mExtent.toRectangle() );
     }
     catch ( const QgsCsException &cse )
     {
@@ -2765,6 +2794,12 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
 }
 
 void QgsMapLayer::updateExtent( const QgsRectangle &extent ) const
+{
+  QgsBox3D box = extent;
+  updateExtent( box );
+}
+
+void QgsMapLayer::updateExtent( const QgsBox3D &extent ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2859,6 +2894,25 @@ QString QgsMapLayer::generalHtmlMetadata() const
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
 
   metadata += QLatin1String( "</table>\n<br><br>" );
+
+  // custom properties
+  if ( const auto keys = customPropertyKeys(); !keys.isEmpty() )
+  {
+    metadata += QStringLiteral( "<h1>" ) + tr( "Custom Properties" ) + QStringLiteral( "</h1>\n<hr>\n" );
+    metadata += QStringLiteral( "<table class=\"list-view\">\n<tbody>" );
+    for ( const QString &key : keys )
+    {
+      // keys prefaced with _ are considered private/internal details
+      if ( key.startsWith( '_' ) )
+        continue;
+
+      const QVariant propValue = customProperty( key );
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
+    }
+    metadata += QStringLiteral( "</tbody></table>\n" );
+    metadata += QLatin1String( "<br><br>\n" );
+  }
+
   return metadata;
 }
 

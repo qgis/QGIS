@@ -31,7 +31,7 @@ void QgsEllipse::normalizeAxis()
   {
     std::swap( mSemiMajorAxis, mSemiMinorAxis );
     mAzimuth = 180.0 / M_PI *
-               QgsGeometryUtils::normalizedAngle( M_PI / 180.0 * ( mAzimuth + 90 ) );
+               QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * ( mAzimuth + 90 ) );
   }
 }
 
@@ -51,7 +51,7 @@ QgsEllipse QgsEllipse::fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const
   const double dist_p2p3 = pt2.distance( pt3 );
 
   const double dist = dist_p1p3 + dist_p2p3;
-  const double azimuth = 180.0 / M_PI * QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
+  const double azimuth = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
   QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
 
   const double axis_a = dist / 2.0;
@@ -88,7 +88,7 @@ QgsEllipse QgsEllipse::fromCenterPoint( const QgsPoint &center, const QgsPoint &
 
 QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint &pt1, const QgsPoint &pt2 )
 {
-  const double azimuth = 180.0 / M_PI * QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() );
+  const double azimuth = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() );
   const double axis_a = center.distance( pt1 );
 
   const double length = pt2.distance( QgsGeometryUtils::projectPointOnSegment( pt2, center, pt1 ) );
@@ -135,7 +135,7 @@ void QgsEllipse::setSemiMinorAxis( const double axis_b )
 void QgsEllipse::setAzimuth( const double azimuth )
 {
   mAzimuth = 180.0 / M_PI *
-             QgsGeometryUtils::normalizedAngle( M_PI / 180.0 * azimuth );
+             QgsGeometryUtilsBase::normalizedAngle( M_PI / 180.0 * azimuth );
 }
 
 double QgsEllipse::focusDistance() const

@@ -36,11 +36,13 @@ QgsLineMaterial::QgsLineMaterial()
   : mParameterThickness( new Qt3DRender::QParameter( "THICKNESS", 10, this ) )
   , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) )  // 0.75
   , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QColor( 0, 255, 0 ), this ) )
+  , mParameterUseVertexColors( new Qt3DRender::QParameter( "useVertexColors", false, this ) )
   , mParameterWindowScale( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF(), this ) )
 {
   addParameter( mParameterThickness );
   addParameter( mParameterMiterLimit );
   addParameter( mParameterLineColor );
+  addParameter( mParameterUseVertexColors );
   addParameter( mParameterWindowScale );
 
   //Parameter { name: "tex0"; value: txt },
@@ -90,6 +92,16 @@ void QgsLineMaterial::setLineColor( const QColor &color )
 QColor QgsLineMaterial::lineColor() const
 {
   return mParameterLineColor->value().value<QColor>();
+}
+
+void QgsLineMaterial::setUseVertexColors( bool enabled )
+{
+  mParameterUseVertexColors->setValue( enabled );
+}
+
+bool QgsLineMaterial::useVertexColors() const
+{
+  return mParameterUseVertexColors->value().toBool();
 }
 
 void QgsLineMaterial::setLineWidth( float width )

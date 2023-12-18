@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '07/06/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA switch sip api
 
 from qgis.core import QgsRasterRange
 from qgis.testing import unittest

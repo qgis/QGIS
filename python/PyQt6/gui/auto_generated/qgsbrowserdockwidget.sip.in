@@ -1,0 +1,259 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowserdockwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsBrowserDockWidget : QgsDockWidget
+{
+%Docstring(signature="appended")
+A dock widget containing a :py:class:`QgsBrowserWidget` for navigating and managing data sources.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsbrowserdockwidget.h"
+%End
+  public:
+
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBrowserDockWidget
+
+:param name: name of the widget
+:param browserModel: instance of the (shared) browser model
+:param parent: parent widget
+%End
+    ~QgsBrowserDockWidget();
+
+    QgsBrowserWidget *browserWidget();
+%Docstring
+Returns a pointer to the :py:class:`QgsBrowserWidget` used by the dock widget.
+
+.. versionadded:: 3.22
+%End
+
+ void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) /Deprecated/;
+%Docstring
+Add directory to favorites.
+
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets a message ``bar`` to use alongside the dock widget. Setting this allows items
+to utilize the message bar to provide non-blocking feedback to users, e.g.
+success or failure of actions.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 3.6
+%End
+
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the message bar associated with the dock.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 3.6
+%End
+
+    void setDisabledDataItemsKeys( const QStringList &filter );
+%Docstring
+Sets the customization for data items based on item's data provider key
+
+By default browser model shows all items from all available data items provider and few special
+items (e.g. Favorites). To customize the behavior, set the filter to not load certain data items.
+The items that are not based on data item providers (e.g. Favorites, Home) have
+prefix "special:"
+
+Used in the proxy browser model to hide items
+
+.. versionadded:: 3.12
+%End
+
+  public slots:
+
+ bool addLayerAtIndex( const QModelIndex &index ) /Deprecated/;
+%Docstring
+Adds the layer corresponding to the specified model ``index``.
+
+Returns ``True`` if the index was successfully intrepreted as a map layer and loaded, or
+``False`` if the index is not a map layer or could not be loaded.
+
+.. deprecated::
+   will be removed in QGIS 4.0 - retrieve the :py:class:`QgsLayerItem` itself and manually add to project.
+%End
+
+ void showContextMenu( QPoint ) /Deprecated/;
+%Docstring
+Show context menu.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void addFavorite() /Deprecated/;
+%Docstring
+Add current item to favorite.
+
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+%End
+
+ void addFavoriteDirectory() /Deprecated/;
+%Docstring
+Add directory from file dialog to favorite.
+
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+%End
+
+ void removeFavorite() /Deprecated/;
+%Docstring
+Remove from favorite.
+
+.. deprecated::
+   will be removed in QGIS 4.0 - use the methods in :py:class:`QgsBrowserModel` instead
+%End
+
+    void refresh();
+%Docstring
+Refresh the browser model and view.
+%End
+
+ void showFilterWidget( bool visible ) /Deprecated/;
+%Docstring
+Show/hide filter widget.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void enablePropertiesWidget( bool enable ) /Deprecated/;
+%Docstring
+Enable/disable properties widget.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setFilterSyntax( QAction * ) /Deprecated/;
+%Docstring
+Sets filter syntax.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setCaseSensitive( bool caseSensitive ) /Deprecated/;
+%Docstring
+Sets filter case sensitivity.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setFilter() /Deprecated/;
+%Docstring
+Apply filter to the model.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setActiveIndex( const QModelIndex &index ) /Deprecated/;
+%Docstring
+Sets the selection to ``index`` and expand it.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void updateProjectHome() /Deprecated/;
+%Docstring
+Update project home directory.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void addSelectedLayers() /Deprecated/;
+%Docstring
+Add selected layers to the project
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void showProperties() /Deprecated/;
+%Docstring
+Show the layer properties.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void hideItem() /Deprecated/;
+%Docstring
+Hide current item.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void toggleFastScan() /Deprecated/;
+%Docstring
+Toggle fast scan
+
+.. deprecated::
+   will be removed in QGIS 4.0
+%End
+
+ void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) /Deprecated/;
+%Docstring
+Selection has changed.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void splitterMoved() /Deprecated/;
+%Docstring
+Splitter has been moved.
+
+.. deprecated::
+   no longer used.
+%End
+
+  signals:
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
+%Docstring
+Emitted when a file needs to be opened
+%End
+    void handleDropUriList( const QgsMimeDataUtils::UriList & );
+%Docstring
+Emitted when drop uri list needs to be handled
+%End
+    void connectionsChanged();
+%Docstring
+Connections changed in the browser
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowserdockwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

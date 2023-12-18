@@ -1269,7 +1269,7 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
     QgsCurve *curve2 = mCurves[curveIds.at( 1 ).first];
     double angle1 = curve1->vertexAngle( curveIds.at( 0 ).second );
     double angle2 = curve2->vertexAngle( curveIds.at( 1 ).second );
-    return QgsGeometryUtils::averageAngle( angle1, angle2 );
+    return QgsGeometryUtilsBase::averageAngle( angle1, angle2 );
   }
   else
   {

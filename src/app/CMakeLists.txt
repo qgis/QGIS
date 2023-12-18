@@ -229,6 +229,7 @@ set(QGIS_APP_SRCS
   locator/qgslocatoroptionswidget.cpp
 
   maptools/qgsappmaptools.cpp
+  maptools/qgsavoidintersectionsoperation.cpp
   maptools/qgsmaptoolsdigitizingtechniquemanager.cpp
 
   maptools/qgsmaptoolshapecircleabstract.cpp
@@ -384,11 +385,17 @@ endif()
 find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
 set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar is available or whether functionality requiring QwtPolar should be disabled.")
-
-if (WITH_QWTPOLAR)
+# Once we bump the minimum QWT VERSION to 6.2 or newer, we should get rid of WITH_QWTPOLAR
+if(Qwt_VERSION_STRING VERSION_GREATER_EQUAL 6.2 OR WITH_QWTPOLAR)
   add_definitions(-DWITH_QWTPOLAR)
-  # Try to find QwtPolar on the system
-  find_package(QwtPolar)
+
+  if(Qwt_VERSION_STRING VERSION_LESS 6.2)
+    find_package(QwtPolar REQUIRED)
+  else()
+    set(FOUND_QwtPolar TRUE)
+    set(QWTPOLAR_LIBRARY ${QWT_LIBRARY})
+    set(QWTPOLAR_INCLUDE_DIR ${QWT_INCLUDE_DIR})
+  endif()
   # If not found on the system, offer the possibility to build QwtPolar
   # internally
   if(NOT FOUND_QwtPolar)

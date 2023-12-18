@@ -30,10 +30,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QCryptographicHash>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
-#endif
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
@@ -71,7 +68,7 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  const QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
+  const QString localpolicy = QStringLiteral( "http://%1:% 1/%2" ).arg( mOAuth2Config->redirectHost(), mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
   QgsDebugMsgLevel( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
@@ -273,12 +270,7 @@ void QgsO2::link()
 
 void QgsO2::setState( const QString & )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  qsrand( QTime::currentTime().msec() );
-  state_ = QString::number( qrand() );
-#else
   state_ = QString::number( QRandomGenerator::system()->generate() );
-#endif
   Q_EMIT stateChanged();
 }
 
@@ -347,11 +339,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    connect( tokenReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
-#else
     connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
-#endif
   }
   else if ( grantFlow_ == GrantFlowImplicit )
   {

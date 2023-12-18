@@ -14,7 +14,6 @@ test_qgsoptional.py
  ***************************************************************************/
 '''
 
-import qgis  # NOQA
 
 from qgis.core import QgsExpression, QgsOptionalExpression
 from qgis.testing import unittest

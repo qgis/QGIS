@@ -15,7 +15,6 @@ import os
 import platform
 import time
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
 from qgis.core import (
     QgsAction,

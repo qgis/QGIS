@@ -289,6 +289,13 @@ class CORE_EXPORT QgsRenderChecker
      */
     QVector<QgsDartMeasurement> dartMeasurements() const { return mDashMessages; }
 
+    /**
+     * Returns the path to the QGIS source code.
+     *
+     * \since QGIS 3.36
+     */
+    static QString sourcePath();
+
   protected:
     //! HTML format report
     QString mReport;

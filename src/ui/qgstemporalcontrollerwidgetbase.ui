@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>118</height>
+    <width>752</width>
+    <height>116</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,6 +92,26 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mNavigationMovie">
+       <property name="toolTip">
+        <string>Animated movie</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mTemporalNavigationMovie.svg</normaloff>:/images/themes/default/mTemporalNavigationMovie.svg</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="mCurrentRangeLabel">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -123,7 +143,7 @@
    <item>
     <widget class="QStackedWidget" name="mNavigationModeStackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="p1">
       <layout class="QVBoxLayout" name="verticalLayoutP1">
@@ -308,96 +328,20 @@
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="mRewindButton">
-           <property name="text">
-            <string/>
+          <widget class="QgsPlaybackControllerWidget" name="mAnimationController" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>33</width>
+             <height>0</height>
+            </size>
            </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/rewindToStart.svg</normaloff>:/images/themes/default/temporal_navigation/rewindToStart.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="mPreviousButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/previous.svg</normaloff>:/images/themes/default/temporal_navigation/previous.svg</iconset>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mBackButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/back.svg</normaloff>:/images/themes/default/temporal_navigation/back.svg</iconset>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="mStopButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/pause.svg</normaloff>:/images/themes/default/temporal_navigation/pause.svg</iconset>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="mForwardButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/forward.svg</normaloff>:/images/themes/default/temporal_navigation/forward.svg</iconset>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="mNextButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/next.svg</normaloff>:/images/themes/default/temporal_navigation/next.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="mFastForwardButton">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/temporal_navigation/skipToEnd.svg</normaloff>:/images/themes/default/temporal_navigation/skipToEnd.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="mSlider">
+          <widget class="QSlider" name="mAnimationSlider">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -410,7 +354,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="mLoopingCheckBox">
+          <widget class="QCheckBox" name="mAnimationLoopingCheckBox">
            <property name="toolTip">
             <string>Automatically reset and repeat the animation endlessly</string>
            </property>
@@ -598,7 +542,120 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="page">
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="2">
+          <widget class="QSlider" name="mMovieSlider">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="invertedAppearance">
+            <bool>false</bool>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::NoTicks</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="4">
+          <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1,0,3">
+           <item>
+            <widget class="QLabel" name="mMovieRangeLabel">
+             <property name="text">
+              <string>Total frames</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QgsSpinBox" name="mTotalFramesSpinBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximum">
+              <number>999999999</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="mExportMovieButton">
+             <property name="toolTip">
+              <string>Export Animation</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+             </property>
+             <property name="autoRaise">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="3">
+          <widget class="QCheckBox" name="mMovieLoopingCheckBox">
+           <property name="toolTip">
+            <string>Automatically reset and repeat the animation endlessly</string>
+           </property>
+           <property name="text">
+            <string>Loop</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QgsPlaybackControllerWidget" name="mMovieController" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>33</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true"/>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -627,7 +684,42 @@
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPlaybackControllerWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsplaybackcontrollerwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mNavigationOff</tabstop>
+  <tabstop>mNavigationFixedRange</tabstop>
+  <tabstop>mNavigationAnimated</tabstop>
+  <tabstop>mNavigationMovie</tabstop>
+  <tabstop>mSettings</tabstop>
+  <tabstop>mFixedRangeStartDateTime</tabstop>
+  <tabstop>mFixedRangeEndDateTime</tabstop>
+  <tabstop>mFixedRangeSetRangeButton</tabstop>
+  <tabstop>mAnimationController</tabstop>
+  <tabstop>mAnimationSlider</tabstop>
+  <tabstop>mAnimationLoopingCheckBox</tabstop>
+  <tabstop>mStartDateTime</tabstop>
+  <tabstop>mEndDateTime</tabstop>
+  <tabstop>mSetRangeButton</tabstop>
+  <tabstop>mStepSpinBox</tabstop>
+  <tabstop>mTimeStepsComboBox</tabstop>
+  <tabstop>mExportAnimationButton</tabstop>
+  <tabstop>mMovieController</tabstop>
+  <tabstop>mMovieSlider</tabstop>
+  <tabstop>mMovieLoopingCheckBox</tabstop>
+  <tabstop>mTotalFramesSpinBox</tabstop>
+  <tabstop>mExportMovieButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

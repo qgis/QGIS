@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -430,6 +429,37 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check('ramp_bottom_to_top', 'ramp_bottom_to_top', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTriangles(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute('Intensity')
+        renderer.setMinimum(200)
+        renderer.setMaximum(1000)
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(200, 1000, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+        renderer.setRenderAsTriangles(True)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('ramp_triangles', 'ramp_triangles', mapsettings)
         )
 
 

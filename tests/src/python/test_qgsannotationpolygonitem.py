@@ -11,7 +11,6 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
@@ -53,7 +52,6 @@ class TestQgsAnnotationPolygonItem(QgisTestCase):
     @classmethod
     def control_path_prefix(cls):
         return "annotation_layer"
-        super().tearDownClass()
 
     def testBasic(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))

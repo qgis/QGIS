@@ -309,7 +309,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QVERIFY( QFile::exists( outputPng ) );
-  QVERIFY( imageCheck( "export_layout_custom_layers", "export_layout_custom_layers", outputPng, QString(), 500, QSize( 3, 3 ) ) );
+  QGSVERIFYIMAGECHECK( "export_layout_custom_layers", "export_layout_custom_layers", outputPng, QString(), 500, QSize( 3, 3 ) );
 }
 
 void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdf()
@@ -450,7 +450,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_1.png" ) );
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_10.png" ) );
-  QVERIFY( imageCheck( "export_atlas", "export_atlas", QDir::tempPath() + "/my_atlas/export_1.png", QString(), 500, QSize( 3, 3 ) ) );
+  QGSVERIFYIMAGECHECK( "export_atlas", "export_atlas", QDir::tempPath() + "/my_atlas/export_1.png", QString(), 500, QSize( 3, 3 ) );
 
   parameters[QStringLiteral( "FILENAME_EXPRESSION" )] = QStringLiteral( "'custom_'||@atlas_featurenumber" );
   parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( mPointsLayer ) );
@@ -462,7 +462,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_1.png" ) );
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
-  QVERIFY( imageCheck( "export_atlas_custom_layers", "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png", QString(), 500, QSize( 3, 3 ) ) );
+  QGSVERIFYIMAGECHECK( "export_atlas_custom_layers", "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png", QString(), 500, QSize( 3, 3 ) );
 }
 #endif
 

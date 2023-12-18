@@ -15,6 +15,7 @@
 #include "qgsmessagelog.h"
 #include "qgsvertextool.h"
 
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
@@ -2262,13 +2263,6 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     if ( mapPointMatch->layer() )
       targetLayers << mapPointMatch->layer();
 
-    // add topological points on layer part of the avoid intersection
-    if ( QgsProject::instance()->avoidIntersectionsMode() == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers )
-    {
-      const QList<QgsVectorLayer *> layers = QgsProject::instance()->avoidIntersectionsLayers();
-      targetLayers.unite( QSet<QgsVectorLayer *>( layers.constBegin(), layers.constEnd() ) );
-    }
-
     for ( auto itLayerEdits = edits.begin(); itLayerEdits != edits.end(); ++itLayerEdits )
     {
       for ( QgsVectorLayer *targetLayer : targetLayers )
@@ -2405,97 +2399,17 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
   for ( auto itLayerEdits = edits.begin() ; itLayerEdits != edits.end(); ++itLayerEdits )
   {
     QgsVectorLayer *layer = itLayerEdits.key();
-    QList<QgsVectorLayer *>  avoidIntersectionsLayers;
-    switch ( QgsProject::instance()->avoidIntersectionsMode() )
-    {
-      case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
-        avoidIntersectionsLayers.append( layer );
-        break;
-      case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
-        avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
-        break;
-      case Qgis::AvoidIntersectionsMode::AllowIntersections:
-        break;
-    }
 
     layer->beginEditCommand( tr( "Moved vertex" ) );
-
+    QgsAvoidIntersectionsOperation avoidIntersections;
+    connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
     for ( auto itFeatEdit = itLayerEdits->begin() ; itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
     {
-      QgsGeometry featGeom = itFeatEdit.value().geom;
-      if ( avoidIntersectionsLayers.size() > 0 )
+      const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( layer, itFeatEdit.key(), itFeatEdit->geom, ignoreFeatures );
+      if ( res.geometryHasChanged )
       {
-        Qgis::GeometryOperationResult avoidIntersectionsReturn = featGeom.avoidIntersectionsV2( avoidIntersectionsLayers, ignoreFeatures );
-
-        switch ( avoidIntersectionsReturn )
-        {
-          case Qgis::GeometryOperationResult::GeometryTypeHasChanged: // Geometry type was changed, let's try our best to make it compatible with the target layer
-          {
-            const QVector<QgsGeometry> newGeoms = featGeom.coerceToType( layer->wkbType() );
-            if ( newGeoms.count() == 1 )
-            {
-              featGeom = newGeoms.at( 0 );
-            }
-            else // handle multi geometries
-            {
-              QgsFeatureList removedFeatures;
-              double largest = 0;
-              QgsFeature originalFeature = layer->getFeature( itFeatEdit.key() );
-              int largestPartIndex = -1;
-              for ( int i = 0; i < newGeoms.size(); ++i )
-              {
-                QgsGeometry currentPart = newGeoms.at( i );
-                const double currentPartSize = layer->geometryType() == Qgis::GeometryType::Polygon ? currentPart.area() : currentPart.length();
-
-                QgsFeature partFeature( layer->fields() );
-                partFeature.setAttributes( originalFeature.attributes() );
-                partFeature.setGeometry( currentPart );
-                removedFeatures.append( partFeature );
-                if ( currentPartSize > largest )
-                {
-                  featGeom = currentPart;
-                  largestPartIndex = i;
-                  largest = currentPartSize;
-                }
-              }
-              removedFeatures.removeAt( largestPartIndex );
-              QgsMessageBarItem *messageBarItem = QgisApp::instance()->messageBar()->createMessage( tr( "Avoid overlaps" ), tr( "Only the largest of multiple created geometries was preserved." ) );
-              QPushButton *restoreButton = new QPushButton( tr( "Restore others" ) );
-              QPointer<QgsVectorLayer> layerPtr( layer );
-              connect( restoreButton, &QPushButton::clicked, restoreButton, [ = ]
-              {
-                if ( !layerPtr )
-                  return;
-                layerPtr->beginEditCommand( tr( "Restored geometry parts removed by avoid overlaps" ) );
-                QgsFeatureList unconstFeatures = removedFeatures;
-                QgisApp::instance()->pasteFeatures( layerPtr.data(), 0, removedFeatures.size(), unconstFeatures );
-              } );
-              messageBarItem->layout()->addWidget( restoreButton );
-              QgisApp::instance()->messageBar()->pushWidget( messageBarItem, Qgis::MessageLevel::Info, 15 );
-            }
-            break;
-          }
-
-          case Qgis::GeometryOperationResult::InvalidBaseGeometry:
-            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
-            break;
-
-          default:
-            break;
-        }
-
-        // if the geometry has been changed
-        if ( avoidIntersectionsReturn != Qgis::GeometryOperationResult::InvalidInputGeometryType && avoidIntersectionsReturn != Qgis::GeometryOperationResult::NothingHappened )
-        {
-          // then add the new points generated by avoidIntersections
-          QgsGeometry oldGeom = layer->getGeometry( itFeatEdit.key() ).convertToType( Qgis::GeometryType::Point, true );
-          QgsGeometry difference = featGeom.convertToType( Qgis::GeometryType::Point, true ).difference( oldGeom );
-          itFeatEdit->newPoints.clear();
-          for ( auto it = difference.vertices_begin(); it != difference.vertices_end(); ++it )
-            itFeatEdit->newPoints << *it;
-
-          itFeatEdit->geom = featGeom;
-        }
+        // no need to add initial new points, the avoid intersection operation already added topological points
+        itFeatEdit->newPoints.clear();
       }
 
       layer->changeGeometry( itFeatEdit.key(), itFeatEdit->geom );

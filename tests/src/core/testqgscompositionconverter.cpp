@@ -713,7 +713,7 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
   const QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
 
   QVERIFY(
-    layoutCheck(
+    QGSLAYOUTCHECK(
       testName + '_' + QString::number( pageNumber ),
       layout,
       pageNumber, 0, size, 0 )

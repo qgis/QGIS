@@ -145,8 +145,8 @@ void TestQgsVectorTileLayer::test_render()
 {
   mMapSettings->setExtent( mLayer->extent() );
   mMapSettings->setDestinationCrs( mLayer->crs() );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_basic" ),
-                                   QStringLiteral( "render_test_basic" ), *mMapSettings, 0, 15 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_basic" ),
+                                   QStringLiteral( "render_test_basic" ), *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_render_withClip()
@@ -160,7 +160,7 @@ void TestQgsVectorTileLayer::test_render_withClip()
 
   mMapSettings->setExtent( mLayer->extent() );
   mMapSettings->setDestinationCrs( mLayer->crs() );
-  const bool res = renderMapSettingsCheck( QStringLiteral( "render_painterclip" ),
+  const bool res = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "render_painterclip" ),
                    QStringLiteral( "render_painterclip" ), *mMapSettings, 0, 15 );
   mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
   QVERIFY( res );
@@ -206,12 +206,12 @@ void TestQgsVectorTileLayer::test_labeling()
 
   mMapSettings->setExtent( mLayer->extent() );
   mMapSettings->setDestinationCrs( mLayer->crs() );
-  const bool res1 = renderMapSettingsCheck( QStringLiteral( "render_test_labeling" ),
+  const bool res1 = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_labeling" ),
                     QStringLiteral( "render_test_labeling" ), *mMapSettings, 0, 15 );
 
   // disable label rendering
   mLayer->setLabelsEnabled( false );
-  const bool res2 = renderMapSettingsCheck( QStringLiteral( "render_test_labeling_disabled" ),
+  const bool res2 = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_labeling_disabled" ),
                     QStringLiteral( "render_test_labeling_disabled" ), *mMapSettings, 0, 15 );
 
   mLayer->setRenderer( oldRenderer );
@@ -553,8 +553,8 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
 
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_polygon_with_line_style" ),
-                                   QStringLiteral( "render_test_polygon_with_line_style" ), *mMapSettings, 0, 15 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_polygon_with_line_style" ),
+                                   QStringLiteral( "render_test_polygon_with_line_style" ), *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_polygonWithMarker()
@@ -592,8 +592,8 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
 
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_polygon_with_marker" ),
-                                   QStringLiteral( "render_test_polygon_with_marker" ), *mMapSettings, 0, 15 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_polygon_with_marker" ),
+                                   QStringLiteral( "render_test_polygon_with_marker" ), *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
@@ -634,8 +634,8 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
 
   mMapSettings->setExtent( QgsRectangle( -1180017, 4261973, 155871, 5474783 ) );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_style_min_zoom" ),
-                                   QStringLiteral( "render_test_style_min_zoom" ), *mMapSettings, 0, 15 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_style_min_zoom" ),
+                                   QStringLiteral( "render_test_style_min_zoom" ), *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_filterRuleAllLayers()
@@ -675,8 +675,8 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
 
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "render_test_filter_all_layers" ),
-                                   QStringLiteral( "render_test_filter_all_layers" ), *mMapSettings, 0, 15 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_filter_all_layers" ),
+                                   QStringLiteral( "render_test_filter_all_layers" ), *mMapSettings, 0, 15 );
 }
 
 

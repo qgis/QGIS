@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 from typing import Optional
 
-import qgis  # NOQA
 from PyQt5.QtSvg import QSvgGenerator
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,

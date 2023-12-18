@@ -273,11 +273,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( metadataFound )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
-#else
       QStringList allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
-#endif
       bool found = false;
       const auto constAllExts = allExts;
       for ( const QString &ext : constAllExts )
@@ -582,6 +578,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     case CreateOrOverwriteLayer:
     case AppendToLayerAddFields:
     {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+      QSet< QString > usedAlternativeNames;
+#endif
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
         QgsField attrField = fields.at( fldIdx );
@@ -857,7 +856,18 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           OGR_Fld_SetSubType( fld.get(), ogrSubType );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
-        OGR_Fld_SetAlternativeName( fld.get(), mCodec->fromUnicode( attrField.alias() ).constData() );
+        if ( !attrField.alias().isEmpty() )
+        {
+          QString alternativeName = attrField.alias();
+          int counter = 1;
+          while ( usedAlternativeNames.contains( alternativeName ) )
+          {
+            // field alternative names MUST be unique (at least for Geopackage, but let's apply the constraint universally)
+            alternativeName = attrField.alias() + QStringLiteral( " (%1)" ).arg( ++counter );
+          }
+          OGR_Fld_SetAlternativeName( fld.get(), mCodec->fromUnicode( alternativeName ).constData() );
+          usedAlternativeNames.insert( alternativeName );
+        }
 #endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
         OGR_Fld_SetComment( fld.get(), mCodec->fromUnicode( attrField.comment() ).constData() );

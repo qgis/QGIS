@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryutils_base.h"
 #include "qgstextrendererutils.h"
 #include "qgsvectorlayer.h"
 
@@ -461,7 +462,7 @@ void QgsTextRendererUtils::findLineCircleIntersection( double cx, double cy, dou
 
   const double A = dx * dx + dy * dy;
   const double B = 2 * ( dx * ( x1 - cx ) + dy * ( y1 - cy ) );
-  const double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
+  const double C = QgsGeometryUtilsBase::sqrDistance2D( x1, y1, cx, cy ) - radius * radius;
 
   const double det = B * B - 4 * A * C;
   if ( A <= 0.000000000001 || det < 0 )

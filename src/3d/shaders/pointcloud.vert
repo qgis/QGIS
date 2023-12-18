@@ -15,6 +15,7 @@ in vec3 vertexPosition;
 in float vertexParameter;
 in vec3 vertexColor;
 in vec3 vertexNormal; //used when points are triangulated
+in float vertexSize; //contains overridden pointSize for classification rendering
 
 out float parameter;
 flat out int classParameter;
@@ -26,8 +27,6 @@ void main(void)
 {
     gl_Position = modelViewProjection * vec4(vertexPosition, 1);
 
-    gl_PointSize = u_pointSize;
-
     worldPosition = vec3 (modelMatrix * vec4 (vertexPosition,1));
     vertNorm = vertexNormal;
 
@@ -35,14 +34,18 @@ void main(void)
     {
     case 0: //  no rendering
     case 1: // single color
+      gl_PointSize = u_pointSize;
       break;
     case 2: // color ramp
+      gl_PointSize = u_pointSize;
       parameter = vertexParameter;
       break;
     case 3: // RGB
+      gl_PointSize = u_pointSize;
       pointColor = vertexColor;
       break;
     case 4: // classification
+      gl_PointSize = vertexSize;
       classParameter = int(vertexParameter);
       break;
     }

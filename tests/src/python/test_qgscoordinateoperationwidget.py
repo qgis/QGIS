@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,

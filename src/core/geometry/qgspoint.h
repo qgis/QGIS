@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsrectangle.h"
 
 /***************************************************************************
@@ -342,7 +343,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distance( double x, double y ) const SIP_HOLDGIL
     {
-      return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+      return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
     }
 
     /**
@@ -354,7 +355,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distance( const QgsPoint &other ) const SIP_HOLDGIL
     {
-      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+      return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
     }
 
     /**
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distanceSquared( double x, double y ) const SIP_HOLDGIL
     {
-      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
     }
 
     /**
@@ -378,7 +379,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     */
     double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
     {
-      return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
     }
 
     /**

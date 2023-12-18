@@ -31,6 +31,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
+#include "qgsmaprenderertask.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -1061,7 +1062,13 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image ) );
+    QPainter *renderedPainter = layersRendering( mapSettings, *image );
+    if ( !renderedPainter ) // job has been canceled
+    {
+      return nullptr;
+    }
+
+    painter.reset( renderedPainter );
 
     // rendering step for annotations
     annotationsRendering( painter.get(), mapSettings );
@@ -1171,6 +1178,37 @@ namespace QgsWms
     dxf->setFlags( flags );
 
     return dxf;
+  }
+
+  std::unique_ptr<QgsMapRendererTask>  QgsRenderer::getPdf( const QString &tmpFileName )
+  {
+    QgsMapSettings ms;
+    ms.setExtent( mWmsParameters.bboxAsRectangle() );
+    ms.setLayers( mContext.layersToRender() );
+    ms.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWmsParameters.crs() ) );
+    ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
+    ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
+
+    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails;
+    if ( mWmsParameters.pdfExportMetadata() )
+    {
+      pdfExportDetails.author = QgsProject::instance()->metadata().author();
+      pdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      pdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+      pdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+      pdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+      pdfExportDetails.title = QgsProject::instance()->metadata().title();
+      pdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+    }
+    pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
+    pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
+    const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
+    if ( mWmsParameters.pdfAppendGeoreference() )
+    {
+      pdf->setSaveWorldFile( true );
+    }
+    return pdf;
   }
 
   static void infoPointToMapCoordinates( int i, int j, QgsPointXY *infoPoint, const QgsMapSettings &mapSettings )
@@ -1414,6 +1452,12 @@ namespace QgsWms
     mapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
 
     mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, mContext.renderMapTiles() );
+
+    // enable profiling
+    if ( mContext.settings().logProfile() )
+    {
+      mapSettings.setFlag( Qgis::MapSettingsFlag::RecordProfile );
+    }
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
@@ -2275,11 +2319,7 @@ namespace QgsWms
       return false;
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList tokens = filter.split( ' ', QString::SkipEmptyParts );
-#else
     QStringList tokens = filter.split( ' ', Qt::SkipEmptyParts );
-#endif
     groupStringList( tokens, QStringLiteral( "'" ) );
     groupStringList( tokens, QStringLiteral( "\"" ) );
 
@@ -3208,7 +3248,8 @@ namespace QgsWms
     filters.addProvider( mContext.accessControl() );
 #endif
     QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
-    renderJob.render( mapSettings, &image );
+
+    renderJob.render( mapSettings, &image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
     if ( !renderJob.errors().isEmpty() )
@@ -3601,8 +3642,12 @@ namespace QgsWms
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
     renderContext.setFlag( Qgis::RenderContextFlag::RenderBlocking );
+    renderContext.setFeedback( mContext.socketFeedback() );
+
     for ( QgsAnnotation *annotation : annotations )
     {
+      if ( mContext.socketFeedback() && mContext.socketFeedback()->isCanceled() )
+        break;
       if ( !annotation || !annotation->isVisible() )
         continue;
 

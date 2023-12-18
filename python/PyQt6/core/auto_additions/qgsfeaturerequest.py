@@ -1,0 +1,15 @@
+# The following has been generated automatically from src/core/qgsfeaturerequest.h
+QgsFeatureRequest.NoFlags = QgsFeatureRequest.Flag.NoFlags
+QgsFeatureRequest.NoGeometry = QgsFeatureRequest.Flag.NoGeometry
+QgsFeatureRequest.SubsetOfAttributes = QgsFeatureRequest.Flag.SubsetOfAttributes
+QgsFeatureRequest.ExactIntersect = QgsFeatureRequest.Flag.ExactIntersect
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation = QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation
+QgsFeatureRequest.EmbeddedSymbols = QgsFeatureRequest.Flag.EmbeddedSymbols
+QgsFeatureRequest.Flags = lambda flags=0: QgsFeatureRequest.Flag(flags)
+QgsFeatureRequest.FilterNone = QgsFeatureRequest.FilterType.FilterNone
+QgsFeatureRequest.FilterFid = QgsFeatureRequest.FilterType.FilterFid
+QgsFeatureRequest.FilterExpression = QgsFeatureRequest.FilterType.FilterExpression
+QgsFeatureRequest.FilterFids = QgsFeatureRequest.FilterType.FilterFids
+QgsFeatureRequest.GeometryNoCheck = QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck
+QgsFeatureRequest.GeometrySkipInvalid = QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid
+QgsFeatureRequest.GeometryAbortOnInvalid = QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid

@@ -54,17 +54,22 @@ namespace QgsWms
                                  QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[ QStringLiteral( "SLD_VERSION" )] ), 400 );
     }
 
-    if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) )
+    if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) && !parameters.contains( QStringLiteral( "LAYER" ) ) )
     {
       throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
-                                 QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ), 400 );
+                                 QStringLiteral( "LAYERS or LAYER is mandatory for DescribeLayer operation" ), 400 );
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', QString::SkipEmptyParts );
-#else
-    const QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
-#endif
+    QStringList layersList;
+
+    if ( parameters.contains( QStringLiteral( "LAYERS" ) ) )
+    {
+      layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
+    }
+    else
+    {
+      layersList = parameters[ QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
+    }
     if ( layersList.isEmpty() )
     {
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );

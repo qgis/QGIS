@@ -144,7 +144,7 @@ void TestQgsBlendModes::vectorBlending()
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mMapSettings->setExtent( mExtent );
-  const bool res = renderMapSettingsCheck( QStringLiteral( "vector_blendmodes" ), QStringLiteral( "vector_blendmodes" ), *mMapSettings, 20, 5 );
+  const bool res = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "vector_blendmodes" ), QStringLiteral( "vector_blendmodes" ), *mMapSettings, 20, 5 );
 
   //Reset layers
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_SourceOver );
@@ -164,7 +164,7 @@ void TestQgsBlendModes::featureBlending()
   //Set feature blending modes for point layer
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
   mMapSettings->setExtent( mExtent );
-  const bool res = renderMapSettingsCheck( QStringLiteral( "vector_featureblendmodes" ), QStringLiteral( "vector_featureblendmodes" ), *mMapSettings, 20, 5 );
+  const bool res = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "vector_featureblendmodes" ), QStringLiteral( "vector_featureblendmodes" ), *mMapSettings, 20, 5 );
 
   //Reset layers
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_SourceOver );
@@ -183,7 +183,7 @@ void TestQgsBlendModes::vectorLayerTransparency()
   //Set feature blending modes for point layer
   mpLinesLayer->setOpacity( 0.50 );
   mMapSettings->setExtent( mExtent );
-  const bool res = renderMapSettingsCheck( QStringLiteral( "vector_layertransparency" ), QStringLiteral( "vector_layertransparency" ), *mMapSettings, 20, 5 );
+  const bool res = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "vector_layertransparency" ), QStringLiteral( "vector_layertransparency" ), *mMapSettings, 20, 5 );
 
   //Reset layers
   mpLinesLayer->setOpacity( 1.0 );
@@ -202,7 +202,7 @@ void TestQgsBlendModes::rasterBlending()
 
   // set blending mode for top layer
   mRasterLayer1->setBlendMode( QPainter::CompositionMode_Difference );
-  QVERIFY( renderMapSettingsCheck( QStringLiteral( "raster_blendmodes" ), QStringLiteral( "raster_blendmodes" ), *mMapSettings, 20, 5 ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_blendmodes" ), QStringLiteral( "raster_blendmodes" ), *mMapSettings, 20, 5 );
 }
 
 QGSTEST_MAIN( TestQgsBlendModes )

@@ -225,6 +225,28 @@ class CORE_EXPORT QgsPointCloudRenderContext
     }
 #endif
 
+#ifndef SIP_RUN    // this is only meant for low-level rendering in C++ code
+
+    /**
+     * Helper data structure used when rendering points as triangulated surface.
+     * We populate the structure as we traverse the nodes and then run Delaunay
+     * triangulation at the end + draw the triangles.
+     * \since QGIS 3.36
+     */
+    struct TriangulationData
+    {
+      std::vector<double> points;     //!< X,Y for each point - kept in this structure so that we can use it without further conversions in Delaunator-cpp
+      std::vector<QRgb> colors;       //!< RGB color for each point
+      std::vector<float> elevations;  //!< Z value for each point (only used when global map shading is enabled)
+    };
+
+    /**
+     * Returns reference to the triangulation data structure (only used when rendering as triangles is enabled)
+     * \since QGIS 3.36
+     */
+    TriangulationData &triangulationData() { return mTriangulationData; }
+#endif
+
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -243,6 +265,8 @@ class CORE_EXPORT QgsPointCloudRenderContext
     double mZValueFixedOffset = 0;
 
     QgsFeedback *mFeedback = nullptr;
+
+    TriangulationData mTriangulationData;
 };
 
 #ifndef SIP_RUN
@@ -562,6 +586,92 @@ class CORE_EXPORT QgsPointCloudRenderer
     void setMaximumScreenErrorUnit( Qgis::RenderUnit unit );
 
     /**
+     * Returns whether points are triangulated to render solid surface
+     *
+     * \since QGIS 3.36
+     */
+    bool renderAsTriangles() const { return mRenderAsTriangles; }
+
+    /**
+     * Sets whether points are triangulated to render solid surface
+     *
+     * \since QGIS 3.36
+     */
+    void setRenderAsTriangles( bool asTriangles ) { mRenderAsTriangles = asTriangles; }
+
+    /**
+     * Returns whether large triangles will get rendered. This only applies when renderAsTriangles()
+     * is enabled. When the triangle filtering is enabled, triangles where at least one side is
+     * horizontally longer than the threshold in horizontalTriangleFilterThreshold() do not get rendered.
+     *
+     * \see horizontalTriangleFilterThreshold()
+     * \see horizontalTriangleFilterUnit()
+     * \see setHorizontalTriangleFilter()
+     * \since QGIS 3.36
+     */
+    bool horizontalTriangleFilter() const { return mHorizontalTriangleFilter; }
+
+    /**
+     * Sets whether large triangles will get rendered. This only applies when renderAsTriangles()
+     * is enabled. When the triangle filtering is enabled, triangles where at least one side is
+     * horizontally longer than the threshold in horizontalTriangleFilterThreshold() do not get rendered.
+     *
+     * \see setHorizontalTriangleFilterThreshold()
+     * \see setHorizontalTriangleFilterUnit()
+     * \see horizontalTriangleFilter()
+     * \since QGIS 3.36
+     */
+    void setHorizontalTriangleFilter( bool enabled ) { mHorizontalTriangleFilter = enabled; }
+
+    /**
+     * Returns threshold for filtering of triangles. This only applies when renderAsTriangles() and
+     * horizontalTriangleFilter() are both enabled. If any edge of a triangle is horizontally longer
+     * than the threshold, such triangle will not get rendered. Units of the threshold value are
+     * given by horizontalTriangleFilterUnits().
+     *
+     * \see horizontalTriangleFilter()
+     * \see horizontalTriangleFilterUnit()
+     * \see setHorizontalTriangleFilterThreshold()
+     * \since QGIS 3.36
+     */
+    double horizontalTriangleFilterThreshold() const { return mHorizontalTriangleFilterThreshold; }
+
+    /**
+     * Sets threshold for filtering of triangles. This only applies when renderAsTriangles() and
+     * horizontalTriangleFilter() are both enabled. If any edge of a triangle is horizontally longer
+     * than the threshold, such triangle will not get rendered. Units of the threshold value are
+     * given by horizontalTriangleFilterUnits().
+     *
+     * \see horizontalTriangleFilter()
+     * \see horizontalTriangleFilterUnit()
+     * \see horizontalTriangleFilterThreshold()
+     * \since QGIS 3.36
+     */
+    void setHorizontalTriangleFilterThreshold( double threshold ) { mHorizontalTriangleFilterThreshold = threshold; }
+
+    /**
+     * Returns units of the threshold for filtering of triangles. This only applies when renderAsTriangles() and
+     * horizontalTriangleFilter() are both enabled.
+     *
+     * \see horizontalTriangleFilter()
+     * \see horizontalTriangleFilterThreshold()
+     * \see setHorizontalTriangleFilterUnit()
+     * \since QGIS 3.36
+     */
+    Qgis::RenderUnit horizontalTriangleFilterUnit() const { return mHorizontalTriangleFilterUnit; }
+
+    /**
+     * Sets units of the threshold for filtering of triangles. This only applies when renderAsTriangles() and
+     * horizontalTriangleFilter() are both enabled.
+     *
+     * \see horizontalTriangleFilter()
+     * \see horizontalTriangleFilterThreshold()
+     * \see horizontalTriangleFilterUnit()
+     * \since QGIS 3.36
+     */
+    void setHorizontalTriangleFilterUnit( Qgis::RenderUnit unit ) { mHorizontalTriangleFilterUnit = unit; }
+
+    /**
      * Creates a set of legend nodes representing the renderer.
      */
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY;
@@ -602,23 +712,33 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
     {
+      drawPoint( x, y, color, mDefaultPainterPenWidth, context );
+    }
+
+    /**
+     * Draws a point using a \a color and painter \a width at the specified \a x and \a y (in map coordinates).
+     *
+     * \since QGIS 3.36
+     */
+    void drawPoint( double x, double y, const QColor &color, int width, QgsPointCloudRenderContext &context ) const
+    {
       const QPointF originalXY( x, y );
       context.renderContext().mapToPixel().transformInPlace( x, y );
       QPainter *painter = context.renderContext().painter();
       switch ( mPointSymbol )
       {
         case Qgis::PointCloudSymbol::Square:
-          painter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-                                     y - mPainterPenWidth * 0.5,
-                                     mPainterPenWidth, mPainterPenWidth ), color );
+          painter->fillRect( QRectF( x - width * 0.5,
+                                     y - width * 0.5,
+                                     width, width ), color );
           break;
 
         case Qgis::PointCloudSymbol::Circle:
           painter->setBrush( QBrush( color ) );
           painter->setPen( Qt::NoPen );
-          painter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
-                                        y - mPainterPenWidth * 0.5,
-                                        mPainterPenWidth, mPainterPenWidth ) );
+          painter->drawEllipse( QRectF( x - width * 0.5,
+                                        y - width * 0.5,
+                                        width, width ) );
           break;
       };
     }
@@ -630,7 +750,28 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \since QGIS 3.28
      */
     void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
+
+    /**
+     * Draws a point at the elevation \a z using at the specified \a x and \a y (in map coordinates) and painter \a width on the elevation map.
+     * \since QGIS 3.36
+     */
+    void drawPointToElevationMap( double x, double y, double z, int width, QgsPointCloudRenderContext &context ) const;
 #endif
+
+    /**
+     * Adds a point to the list of points to be triangulated (only used when renderAsTriangles() is enabled)
+     * \since QGIS 3.36
+     */
+    void addPointToTriangulation( double x, double y, double z, const QColor &color, QgsPointCloudRenderContext &context )
+    {
+      QgsPointXY p = context.renderContext().mapToPixel().transform( x, y ) * context.renderContext().devicePixelRatio();
+      QgsPointCloudRenderContext::TriangulationData &triangulation = context.triangulationData();
+      triangulation.points.push_back( p.x() );
+      triangulation.points.push_back( p.y() );
+      triangulation.colors.push_back( color.rgb() );
+      if ( context.renderContext().elevationMap() )
+        triangulation.elevations.push_back( static_cast<float>( z ) );
+    }
 
     /**
      * Copies common point cloud properties (such as point size and screen error) to the \a destination renderer.
@@ -671,8 +812,13 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsMapUnitScale mPointSizeMapUnitScale;
 
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
-    int mPainterPenWidth = 1;
+    int mDefaultPainterPenWidth = 1;
     Qgis::PointCloudDrawOrder mDrawOrder2d = Qgis::PointCloudDrawOrder::Default;
+
+    bool mRenderAsTriangles = false;
+    bool mHorizontalTriangleFilter = false;
+    double mHorizontalTriangleFilterThreshold = 5.0;
+    Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

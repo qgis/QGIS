@@ -1870,6 +1870,54 @@ class CORE_EXPORT Qgis
     Q_ENUM( AnnotationItemEditOperationResult )
 
     /**
+     * Temporal navigation modes.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsTemporalNavigationObject::NavigationMode
+     *
+     * \since QGIS 3.36
+     */
+    enum class TemporalNavigationMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemporalNavigationObject, NavigationMode ) : int
+      {
+      Disabled SIP_MONKEYPATCH_COMPAT_NAME( NavigationOff ), //!< Temporal navigation is disabled
+      Animated, //!< Temporal navigation relies on frames within a datetime range
+      FixedRange, //!< Temporal navigation relies on a fixed datetime range
+      Movie, //!< Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range (since QGIS 3.36)
+    };
+    Q_ENUM( TemporalNavigationMode )
+
+    /**
+     * Animation states.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsTemporalNavigationObject::AnimationState
+     *
+     * \since QGIS 3.36
+     */
+    enum class AnimationState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemporalNavigationObject, AnimationState ) : int
+      {
+      Forward, //!< Animation is playing forward.
+      Reverse, //!< Animation is playing in reverse.
+      Idle, //!< Animation is paused.
+    };
+    Q_ENUM( AnimationState )
+
+    /**
+     * Media playback operations.
+     *
+     * \since QGIS 3.36
+     */
+    enum class PlaybackOperation : int
+    {
+      SkipToStart, //!< Jump to start of playback
+      PreviousFrame, //!< Step to previous frame
+      PlayReverse, //!< Play in reverse
+      Pause, //!< Pause playback
+      PlayForward, //!< Play forward
+      NextFrame, //!< Step to next frame
+      SkipToEnd, //!< Jump to end of playback
+    };
+    Q_ENUM( PlaybackOperation )
+
+    /**
      * Vector layer temporal feature modes
      *
      * \since QGIS 3.22
@@ -2565,6 +2613,7 @@ class CORE_EXPORT Qgis
       {
       Clockwise, //!< Clockwise direction
       CounterClockwise, //!< Counter-clockwise direction
+      NoOrientation, //!< Unknown orientation or sentinel value
     };
     Q_ENUM( AngularDirection )
 
@@ -3121,7 +3170,7 @@ class CORE_EXPORT Qgis
     enum class SettingsOrigin : int
     {
       Any, //!< From any origin
-      Global, //!< Global settings are stored in `global_settings.ini`
+      Global, //!< Global settings are stored in `qgis_global_settings.ini`
       Local, //!< Local settings are stored in the user profile
     };
     Q_ENUM( SettingsOrigin )

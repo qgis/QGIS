@@ -62,7 +62,7 @@ void QgsSvgAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteC
 void QgsSvgAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
   QPainter *painter = context.painter();
-  if ( !painter )
+  if ( !painter || ( context.feedback() && context.feedback()->isCanceled() ) )
   {
     return;
   }

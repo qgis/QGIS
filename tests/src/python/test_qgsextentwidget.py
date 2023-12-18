@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -21,7 +20,10 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-from qgis.gui import QgsExtentWidget
+from qgis.gui import (
+    QgsExtentWidget,
+    QgsExtentGroupBox
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -113,7 +115,7 @@ class TestQgsExtentWidget(QgisTestCase):
         self.assertEqual(w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20))
 
         # repeat, this time using original extents
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
 
         w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
         w.setOriginalExtent(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:4326'))
@@ -149,7 +151,7 @@ class TestQgsExtentWidget(QgisTestCase):
         self.assertEqual(w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20))
 
         # custom extent
-        w = qgis.gui.QgsExtentGroupBox()
+        w = QgsExtentGroupBox()
 
         w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
         w.setOutputExtentFromUser(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:4326'))

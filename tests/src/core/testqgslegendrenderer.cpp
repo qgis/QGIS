@@ -217,7 +217,7 @@ class TestQgsLegendRenderer : public QgsTest
 
     bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
     {
-      return imageCheck( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
+      return QGSIMAGECHECK( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
     }
 };
 

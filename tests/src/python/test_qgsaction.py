@@ -14,7 +14,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 import os
 from functools import partial
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     QgsAction,

@@ -40,27 +40,6 @@ class CORE_EXPORT QgsRasterDataProviderElevationProperties : public QgsDataProvi
      */
     QgsRasterDataProviderElevationProperties();
 
-    /**
-     * Returns TRUE if the raster data provider definitely contains elevation related data.
-     *
-     * \note Even if this method returns FALSE, the raster data may still relate to elevation values. TRUE will only
-     * be returned in situations where elevation data is definitively present.
-     *
-     * \see setContainsElevationData()
-     */
-    bool containsElevationData() const;
-
-    /**
-     * Sets whether the raster data provider definitely contains elevation related data.
-     *
-     * \see containsElevationData()
-     */
-    void setContainsElevationData( bool contains );
-
-  private:
-
-    bool mContainsElevationData = false;
-
 };
 
 #endif // QGSRASTERDATAPROVIDERELEVATIONPROPERTIES_H

@@ -55,6 +55,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   cbxSSLmode->addItem( tr( "require" ), QgsDataSourceUri::SslRequire );
   cbxSSLmode->addItem( tr( "verify-ca" ), QgsDataSourceUri::SslVerifyCa );
   cbxSSLmode->addItem( tr( "verify-full" ), QgsDataSourceUri::SslVerifyFull );
+  cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( QgsDataSourceUri::SslPrefer ) );
 
   mAuthSettings->setDataprovider( QStringLiteral( "postgres" ) );
   mAuthSettings->showStoreCheckboxes( true );

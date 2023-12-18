@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/layout/qgslayoutguidecollection.h
+QgsLayoutGuideCollection.OrientationRole = QgsLayoutGuideCollection.Roles.OrientationRole
+QgsLayoutGuideCollection.PositionRole = QgsLayoutGuideCollection.Roles.PositionRole
+QgsLayoutGuideCollection.UnitsRole = QgsLayoutGuideCollection.Roles.UnitsRole
+QgsLayoutGuideCollection.PageRole = QgsLayoutGuideCollection.Roles.PageRole
+QgsLayoutGuideCollection.LayoutPositionRole = QgsLayoutGuideCollection.Roles.LayoutPositionRole

@@ -1,0 +1,18 @@
+# The following has been generated automatically from src/core/providers/qgsprovidermetadata.h
+QgsMeshDriverMetadata.CanWriteFaceDatasets = QgsMeshDriverMetadata.MeshDriverCapability.CanWriteFaceDatasets
+QgsMeshDriverMetadata.CanWriteVertexDatasets = QgsMeshDriverMetadata.MeshDriverCapability.CanWriteVertexDatasets
+QgsMeshDriverMetadata.CanWriteEdgeDatasets = QgsMeshDriverMetadata.MeshDriverCapability.CanWriteEdgeDatasets
+QgsMeshDriverMetadata.CanWriteMeshData = QgsMeshDriverMetadata.MeshDriverCapability.CanWriteMeshData
+QgsMeshDriverMetadata.MeshDriverCapability.baseClass = QgsMeshDriverMetadata
+QgsMeshDriverMetadata.MeshDriverCapabilities = lambda flags=0: QgsMeshDriverMetadata.MeshDriverCapability(flags)
+QgsMeshDriverMetadata.MeshDriverCapabilities.baseClass = QgsMeshDriverMetadata
+MeshDriverCapabilities = QgsMeshDriverMetadata  # dirty hack since SIP seems to introduce the flags in module
+QgsProviderMetadata.PriorityForUri = QgsProviderMetadata.ProviderMetadataCapability.PriorityForUri
+QgsProviderMetadata.LayerTypesForUri = QgsProviderMetadata.ProviderMetadataCapability.LayerTypesForUri
+QgsProviderMetadata.QuerySublayers = QgsProviderMetadata.ProviderMetadataCapability.QuerySublayers
+QgsProviderMetadata.CreateDatabase = QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase
+QgsProviderMetadata.ProviderMetadataCapabilities = lambda flags=0: QgsProviderMetadata.ProviderMetadataCapability(flags)
+QgsProviderMetadata.FileBasedUris = QgsProviderMetadata.ProviderCapability.FileBasedUris
+QgsProviderMetadata.SaveLayerMetadata = QgsProviderMetadata.ProviderCapability.SaveLayerMetadata
+QgsProviderMetadata.ParallelCreateProvider = QgsProviderMetadata.ProviderCapability.ParallelCreateProvider
+QgsProviderMetadata.ProviderCapabilities = lambda flags=0: QgsProviderMetadata.ProviderCapability(flags)

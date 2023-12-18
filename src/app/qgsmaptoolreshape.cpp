@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
@@ -157,6 +158,8 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
   Qgis::GeometryOperationResult reshapeReturn = Qgis::GeometryOperationResult::Success;
   bool reshapeDone = false;
   const bool isBinding = isBindingLine( vlayer, bbox );
+  QgsAvoidIntersectionsOperation avoidIntersections;
+  connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
   vlayer->beginEditCommand( tr( "Reshape" ) );
   while ( fit.nextFeature( f ) )
@@ -182,29 +185,13 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
           ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
-          QList<QgsVectorLayer *>  avoidIntersectionsLayers;
-          switch ( QgsProject::instance()->avoidIntersectionsMode() )
+          const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, f.id(), geom, ignoreFeatures );
+          if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
           {
-            case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
-              avoidIntersectionsLayers.append( vlayer );
-              break;
-            case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
-              avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
-              break;
-            case Qgis::AvoidIntersectionsMode::AllowIntersections:
-              break;
-          }
-          Qgis::GeometryOperationResult res = Qgis::GeometryOperationResult::NothingHappened;
-          if ( avoidIntersectionsLayers.size() > 0 )
-          {
-            res = geom.avoidIntersectionsV2( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures );
-            if ( res == Qgis::GeometryOperationResult::InvalidInputGeometryType )
-            {
-              emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Critical );
-              vlayer->destroyEditCommand();
-              stopCapturing();
-              return;
-            }
+            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
+            vlayer->destroyEditCommand();
+            stopCapturing();
+            return;
           }
 
           if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
@@ -212,10 +199,6 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
             emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::MessageLevel::Critical );
             vlayer->destroyEditCommand();
             return;
-          }
-          if ( res == Qgis::GeometryOperationResult::InvalidBaseGeometry )
-          {
-            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
           }
         }
 
@@ -227,7 +210,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
   if ( reshapeDone )
   {
-    // Add topological points
+    // Add topological points due to snapping
     if ( QgsProject::instance()->topologicalEditing() )
     {
       const QList<QgsPointLocator::Match> sm = snappingMatches();
@@ -240,6 +223,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
         }
       }
     }
+
     vlayer->endEditCommand();
   }
   else

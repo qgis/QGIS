@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QUrl, QVariant
 from qgis.core import (
     QgsField,

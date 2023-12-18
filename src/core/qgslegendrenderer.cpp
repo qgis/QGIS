@@ -124,11 +124,14 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
             if ( vLayer->renderer() )
             {
               const QString ruleKey { legendNodes.at( 0 )->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
-              bool ok;
-              const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
-              if ( ok )
+              if ( ! ruleKey.isEmpty() )
               {
-                group[ QStringLiteral( "rule" ) ] = ruleExp;
+                bool ok;
+                const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+                if ( ok )
+                {
+                  group[ QStringLiteral( "rule" ) ] = ruleExp;
+                }
               }
             }
           }
@@ -146,6 +149,25 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
         {
           QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
           QJsonObject symbol = legendNode->exportToJson( mSettings, context );
+          if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
+          {
+            if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
+            {
+              if ( vLayer->renderer() )
+              {
+                const QString ruleKey { legendNode->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+                if ( ! ruleKey.isEmpty() )
+                {
+                  bool ok;
+                  const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
+                  if ( ok )
+                  {
+                    symbol[ QStringLiteral( "rule" ) ] = ruleExp;
+                  }
+                }
+              }
+            }
+          }
           symbols.append( symbol );
         }
         group[ QStringLiteral( "symbols" ) ] = symbols;

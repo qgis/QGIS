@@ -21,7 +21,6 @@ __copyright__ = '(C) 2016, Matthiasd Kuhn'
 
 import os
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFillSymbol,

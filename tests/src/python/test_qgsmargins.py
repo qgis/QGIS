@@ -10,8 +10,6 @@ __date__ = '2017-01'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 
-import qgis  # NOQA
-
 from qgis.core import QgsMargins
 from qgis.testing import unittest
 

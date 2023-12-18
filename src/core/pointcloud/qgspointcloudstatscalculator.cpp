@@ -118,7 +118,11 @@ struct StatsProcessor
              attribute.name() == QLatin1String( "ScanDirectionFlag" ) ||
              attribute.name() == QLatin1String( "Classification" ) ||
              attribute.name() == QLatin1String( "EdgeOfFlightLine" ) ||
-             attribute.name() == QLatin1String( "PointSourceId" ) )
+             attribute.name() == QLatin1String( "PointSourceId" ) ||
+             attribute.name() == QLatin1String( "Synthetic" ) ||
+             attribute.name() == QLatin1String( "KeyPoint" ) ||
+             attribute.name() == QLatin1String( "Withheld" ) ||
+             attribute.name() == QLatin1String( "Overlap" ) )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }

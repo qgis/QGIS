@@ -3126,7 +3126,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
       break;
 
     const QPointF segmentEndPoint = inputPoints.at( i );
-    const double segmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtils::lineAngle( segmentStartPoint.x(), segmentStartPoint.y(),
+    const double segmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( segmentStartPoint.x(), segmentStartPoint.y(),
                                        segmentEndPoint.x(), segmentEndPoint.y() ) - 90;
 
     // left/right end points of the current segment polygon
@@ -3149,7 +3149,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
         // angle of LAST line segment in the whole line (i.e. the one which will eventually connect back to the first point in the line). Used to determine
         // what angle the current segment polygon should START on.
-        const double lastSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtils::lineAngle( points.at( points.size() - 2 ).x(), points.at( points.size() - 2 ).y(),
+        const double lastSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( points.at( points.size() - 2 ).x(), points.at( points.size() - 2 ).y(),
                                                segmentStartPoint.x(), segmentStartPoint.y() ) - 90;
 
         // project out the LAST segment in the line by half the image thickness to either side of the line
@@ -3197,7 +3197,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
       // angle of NEXT line segment (i.e. not the one we are drawing right now). Used to determine
       // what angle the current segment polygon should end on
-      const double nextSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtils::lineAngle( segmentEndPoint.x(), segmentEndPoint.y(),
+      const double nextSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( segmentEndPoint.x(), segmentEndPoint.y(),
                                              inputPoints.at( i + 1 ).x(), inputPoints.at( i + 1 ).y() ) - 90;
 
       // project out the next segment by half the image thickness to either side of the line
@@ -3636,11 +3636,7 @@ QVariantMap QgsLineburstSymbolLayer::properties() const
   map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mGradientColorType ) );
   if ( mGradientRamp )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    map.unite( mGradientRamp->properties() );
-#else
     map.insert( mGradientRamp->properties() );
-#endif
   }
 
   return map;

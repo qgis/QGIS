@@ -475,11 +475,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasParserError() )
     {
       QgsDebugError( "Expression parser error: " + exp.parserErrorString() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      expr_action += action.midRef( start, index - start );
-#else
       expr_action += QStringView {action} .mid( start, index - start );
-#endif
       continue;
     }
 
@@ -494,24 +490,20 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasEvalError() )
     {
       QgsDebugError( "Expression parser eval error: " + exp.evalErrorString() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      expr_action += action.midRef( start, index - start );
-#else
       expr_action += QStringView {action} .mid( start, index - start );
-#endif
       continue;
     }
 
-    QgsDebugMsgLevel( "Expression result is: " + result.toString(), 3 );
-    expr_action += action.mid( start, pos - start ) + result.toString();
+    QString resultString;
+    if ( !QgsVariantUtils::isNull( result ) )
+      resultString = result.toString();
+
+    QgsDebugMsgLevel( "Expression result is: " + resultString, 3 );
+
+    expr_action += action.mid( start, pos - start ) + resultString;
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-  expr_action += action.midRef( index );
-#else
   expr_action += QStringView {action} .mid( index ).toString();
-#endif
-
   return expr_action;
 }
 

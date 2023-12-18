@@ -38,7 +38,7 @@ QgsCircle::QgsCircle( const QgsPoint &center, double radius, double azimuth ) :
 QgsCircle QgsCircle::from2Points( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
-  const double azimuth = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() ) * 180.0 / M_PI;
+  const double azimuth = QgsGeometryUtilsBase::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() ) * 180.0 / M_PI;
   const double radius = pt1.distance( pt2 ) / 2.0;
 
   QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, center );
@@ -181,7 +181,7 @@ QgsCircle QgsCircle::fromCenterDiameter( const QgsPoint &center, double diameter
 
 QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )
 {
-  const double azimuth = QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
+  const double azimuth = QgsGeometryUtilsBase::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
 
   QgsPoint centerPt( center );
   QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << center << pt1, centerPt );
@@ -200,11 +200,11 @@ static QVector<QgsCircle> from2ParallelsLine( const QgsPoint &pt1_par1, const Qg
   QgsPoint ptInter_par1line1, ptInter_par2line1;
   double angle1, angle2;
   double x, y;
-  QgsGeometryUtils::angleBisector( pt1_par1.x(), pt1_par1.y(), pt2_par1.x(), pt2_par1.y(), pt1_line1.x(), pt1_line1.y(), pt2_line1.x(), pt2_line1.y(), x, y, angle1 );
+  QgsGeometryUtilsBase::angleBisector( pt1_par1.x(), pt1_par1.y(), pt2_par1.x(), pt2_par1.y(), pt1_line1.x(), pt1_line1.y(), pt2_line1.x(), pt2_line1.y(), x, y, angle1 );
   ptInter_par1line1.setX( x );
   ptInter_par1line1.setY( y );
 
-  QgsGeometryUtils::angleBisector( pt1_par2.x(), pt1_par2.y(), pt2_par2.x(), pt2_par2.y(), pt1_line1.x(), pt1_line1.y(), pt2_line1.x(), pt2_line1.y(), x, y, angle2 );
+  QgsGeometryUtilsBase::angleBisector( pt1_par2.x(), pt1_par2.y(), pt2_par2.x(), pt2_par2.y(), pt1_line1.x(), pt1_line1.y(), pt2_line1.x(), pt2_line1.y(), x, y, angle2 );
   ptInter_par2line1.setX( x );
   ptInter_par2line1.setY( y );
 

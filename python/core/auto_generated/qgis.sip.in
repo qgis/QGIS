@@ -1119,6 +1119,32 @@ The development version
       ItemCleared,
     };
 
+    enum class TemporalNavigationMode
+      {
+      Disabled,
+      Animated,
+      FixedRange,
+      Movie,
+    };
+
+    enum class AnimationState
+      {
+      Forward,
+      Reverse,
+      Idle,
+    };
+
+    enum class PlaybackOperation
+    {
+      SkipToStart,
+      PreviousFrame,
+      PlayReverse,
+      Pause,
+      PlayForward,
+      NextFrame,
+      SkipToEnd,
+    };
+
     enum class VectorTemporalMode
       {
       FixedTemporalRange,
@@ -1508,6 +1534,7 @@ The development version
       {
       Clockwise,
       CounterClockwise,
+      NoOrientation,
     };
 
     enum class RendererUsage

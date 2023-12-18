@@ -1,0 +1,254 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/sensor/qgsiodevicesensor.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsIODeviceSensor : QgsAbstractSensor
+{
+%Docstring(signature="appended")
+An abstract class QIODevice-based sensor classes
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsiodevicesensor.h"
+%End
+  public:
+
+    explicit QgsIODeviceSensor( QObject *parent = 0 );
+%Docstring
+Constructor for a abstract QIODevice-based sensor, bound to the specified ``parent``.
+%End
+    ~QgsIODeviceSensor();
+
+    QIODevice *iODevice() const;
+%Docstring
+Returns the I/O device.
+%End
+
+  protected:
+
+    void initIODevice( QIODevice *device /Transfer/ );
+%Docstring
+Initiates the I/O ``device``.
+
+.. note::
+
+   Takes ownership of the device.
+%End
+
+  protected slots:
+
+    virtual void parseData();
+%Docstring
+Parses the data read from the device when available.
+%End
+
+};
+
+class QgsTcpSocketSensor : QgsIODeviceSensor
+{
+%Docstring(signature="appended")
+A TCP socket sensor class
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsiodevicesensor.h"
+%End
+  public:
+
+    explicit QgsTcpSocketSensor( QObject *parent = 0 );
+%Docstring
+Constructor for a TCP socket sensor, bound to the specified ``parent``.
+%End
+    ~QgsTcpSocketSensor();
+
+    static QgsTcpSocketSensor *create( QObject *parent ) /Factory/;
+%Docstring
+Returns a new TCP socket sensor.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+    virtual QString type() const;
+
+
+    QString hostName() const;
+%Docstring
+Returns the host name the socket connects to.
+%End
+
+    void setHostName( const QString &hostName );
+%Docstring
+Sets the host name the socket connects to.
+
+:param hostName: the host name string (a domain name or an IP address)
+%End
+
+    int port() const;
+%Docstring
+Returns the port the socket connects to.
+%End
+
+    void setPort( int port );
+%Docstring
+Sets the ``port`` the socket connects to.
+%End
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document );
+
+
+  protected:
+
+    virtual void handleConnect();
+
+    virtual void handleDisconnect();
+
+
+};
+
+class QgsUdpSocketSensor : QgsIODeviceSensor
+{
+%Docstring(signature="appended")
+A UDP socket sensor class
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsiodevicesensor.h"
+%End
+  public:
+
+    explicit QgsUdpSocketSensor( QObject *parent = 0 );
+%Docstring
+Constructor for a UDP socket sensor, bound to the specified ``parent``.
+%End
+    ~QgsUdpSocketSensor();
+
+    static QgsUdpSocketSensor *create( QObject *parent ) /Factory/;
+%Docstring
+Returns a new UDP socket sensor.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+    virtual QString type() const;
+
+
+    QString hostName() const;
+%Docstring
+Returns the host name the socket connects to.
+%End
+
+    void setHostName( const QString &hostName );
+%Docstring
+Sets the host name the socket connects to.
+
+:param hostName: the host name string (a domain name or an IP address)
+%End
+
+    int port() const;
+%Docstring
+Returns the port the socket connects to.
+%End
+
+    void setPort( int port );
+%Docstring
+Sets the ``port`` the socket connects to.
+%End
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document );
+
+
+  protected:
+
+    virtual void handleConnect();
+
+    virtual void handleDisconnect();
+
+
+};
+
+%If (HAVE_QTSERIALPORT)
+
+class QgsSerialPortSensor : QgsIODeviceSensor
+{
+%Docstring(signature="appended")
+A serial port sensor class
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsiodevicesensor.h"
+%End
+  public:
+
+    explicit QgsSerialPortSensor( QObject *parent = 0 );
+%Docstring
+Constructor for a serial port sensor, bound to the specified ``parent``.
+%End
+    ~QgsSerialPortSensor();
+
+    static QgsSerialPortSensor *create( QObject *parent ) /Factory/;
+%Docstring
+Returns a new serial port sensor.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+    virtual QString type() const;
+
+
+    QString portName() const;
+%Docstring
+Returns the serial port the sensor connects to.
+%End
+
+    void setPortName( const QString &portName );
+%Docstring
+Sets the serial port the sensor connects to.
+
+:param portName: the port name (e.g. COM4)
+%End
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document );
+
+
+  protected:
+
+    virtual void handleConnect();
+
+    virtual void handleDisconnect();
+
+
+};
+%End
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/sensor/qgsiodevicesensor.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

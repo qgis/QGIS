@@ -17,32 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthias Kuhn'
+__author__ = "Matthias Kuhn"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Matthias Kuhn"
 
+import difflib
+import filecmp
+import functools
+import inspect
 import os
 import sys
-import difflib
-import functools
-import filecmp
 import tempfile
+import unittest
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 from warnings import warn
 
-from qgis.PyQt.QtCore import (
-    QVariant,
-    QDateTime,
-    QDate,
-    QDir,
-    QUrl,
-    QSize
-)
-from qgis.PyQt.QtGui import (
-    QImage,
-    QDesktopServices
-)
+from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QDir, QUrl, QSize
+from qgis.PyQt.QtGui import QImage, QDesktopServices
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
@@ -55,8 +47,6 @@ from qgis.core import (
     QgsLayout,
     QgsLayoutChecker,
 )
-
-import unittest
 
 unittest.util._MAX_LENGTH = 2000
 
@@ -73,11 +63,14 @@ class QgisTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.report = ''
+        cls.markdown_report = ''
 
     @classmethod
     def tearDownClass(cls):
         if cls.report:
             cls.write_local_html_report(cls.report)
+        if cls.markdown_report:
+            cls.write_local_markdown_report(cls.markdown_report)
 
     @classmethod
     def control_path_prefix(cls) -> Optional[str]:
@@ -128,21 +121,70 @@ class QgisTestCase(unittest.TestCase):
             QDesktopServices.openUrl(QUrl.fromLocalFile(report_file))
 
     @classmethod
-    def image_check(cls,
-                    name: str,
-                    reference_image: str,
-                    image: QImage,
-                    control_name=None,
-                    color_tolerance: int = 2,
-                    allowed_mismatch: int = 20,
-                    size_tolerance: Optional[int] = None,
-                    expect_fail: bool = False) -> bool:
-        temp_dir = QDir.tempPath() + '/'
+    def write_local_markdown_report(cls, report: str):
+        report_dir = QgsRenderChecker.testReportDir()
+        if not report_dir.exists():
+            QDir().mkpath(report_dir.path())
+
+        report_file = report_dir.filePath("summary.md")
+
+        # only append to existing reports if running under CI
+        if cls.is_ci_run() or os.environ.get("QGIS_APPEND_TO_TEST_REPORT") == "true":
+            file_mode = "ta"
+        else:
+            file_mode = "wt"
+
+        with open(report_file, file_mode, encoding="utf-8") as f:
+            f.write(report)
+
+    @classmethod
+    def get_test_caller_details(
+        cls,
+    ) -> Tuple[Optional[str], Optional[str], Optional[int]]:
+        """
+        Retrieves the details of the caller at the earliest position
+        in the stack, excluding unittest internals.
+
+        Returns the file, function name and line number of the caller
+        """
+        test_caller = None
+        for caller_frame_record in inspect.stack():
+            frame = caller_frame_record[0]
+            info = inspect.getframeinfo(frame)
+            # we want the highest level caller which isn't from unittest
+            if "unittest" in info.filename or info.function == "_callTestMethod":
+                break
+            else:
+                test_caller = info
+
+        if test_caller:
+            return (test_caller.filename, test_caller.function, test_caller.lineno)
+        return None, None, None
+
+    @classmethod
+    def image_check(
+        cls,
+        name: str,
+        reference_image: str,
+        image: QImage,
+        control_name=None,
+        color_tolerance: int = 2,
+        allowed_mismatch: int = 20,
+        size_tolerance: Optional[int] = None,
+        expect_fail: bool = False,
+    ) -> bool:
+        temp_dir = QDir.tempPath() + "/"
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
         checker = QgsMultiRenderChecker()
+
+        caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
+        if caller_file:
+            checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
+
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
+
         checker.setControlName(control_name or "expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(color_tolerance)
@@ -151,22 +193,32 @@ class QgisTestCase(unittest.TestCase):
             checker.setSizeTolerance(size_tolerance, size_tolerance)
 
         result = checker.runTest(name, allowed_mismatch)
-        if (not expect_fail and not result) or \
-                (expect_fail and result):
+        if (not expect_fail and not result) or (expect_fail and result):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
+
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
 
         return result
 
     @classmethod
-    def render_map_settings_check(cls,
-                                  name: str,
-                                  reference_image: str,
-                                  map_settings: QgsMapSettings,
-                                  color_tolerance: Optional[int] = None,
-                                  allowed_mismatch: Optional[int] = None) -> bool:
+    def render_map_settings_check(
+        cls,
+        name: str,
+        reference_image: str,
+        map_settings: QgsMapSettings,
+        color_tolerance: Optional[int] = None,
+        allowed_mismatch: Optional[int] = None,
+    ) -> bool:
         checker = QgsMultiRenderChecker()
         checker.setMapSettings(map_settings)
+
+        caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
+        if caller_file:
+            checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
 
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
@@ -178,21 +230,44 @@ class QgisTestCase(unittest.TestCase):
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
 
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     @classmethod
-    def render_layout_check(cls, name: str,
-                            layout: QgsLayout,
-                            size: Optional[QSize] = None):
+    def render_layout_check(
+        cls, name: str,
+        layout: QgsLayout,
+        size: Optional[QSize] = None,
+        color_tolerance: Optional[int] = None,
+        allowed_mismatch: Optional[int] = None,
+    ) -> bool:
         checker = QgsLayoutChecker(name, layout)
+
+        caller_file, caller_function, caller_line_no = cls.get_test_caller_details()
+        if caller_file:
+            checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
+
         if size is not None:
             checker.setSize(size)
+        if color_tolerance is not None:
+            checker.setColorTolerance(color_tolerance)
+
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
-        result, message = checker.testLayout()
+        result, message = checker.testLayout(pixelDiff=allowed_mismatch or 0)
         if not result:
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
+
+            markdown = checker.markdownReport()
+            if markdown:
+                cls.markdown_report += "## {}\n\n".format(name)
+                cls.markdown_report += markdown
+
         return result
 
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):

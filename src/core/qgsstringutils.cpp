@@ -75,11 +75,7 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
       }
 
       const bool allSameCase = string.toLower() == string || string.toUpper() == string;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, QString::SkipEmptyParts );
-#else
       const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, Qt::SkipEmptyParts );
-#endif
       QString result;
       bool firstWord = true;
       int i = 0;
@@ -659,21 +655,13 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       }
       if ( strHit > -1 )
       {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-        newstr.append( line.midRef( strCurrent, strHit - strCurrent ) );
-#else
         newstr.append( QStringView {line} .mid( strCurrent, strHit - strCurrent ) );
-#endif
         newstr.append( '\n' );
         strCurrent = strHit + delimiterLength;
       }
       else
       {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-        newstr.append( line.midRef( strCurrent ) );
-#else
         newstr.append( QStringView {line} .mid( strCurrent ) );
-#endif
         strCurrent = strLength;
       }
     }

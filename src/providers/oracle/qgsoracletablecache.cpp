@@ -219,26 +219,14 @@ bool QgsOracleTableCache::loadFromCache( const QString &connName, CacheFlags fla
     layer.sql = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 4 ) );
 
     QString pkCols = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 5 ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    layer.pkCols = pkCols.split( ",", QString::SkipEmptyParts );
-#else
     layer.pkCols = pkCols.split( ",", Qt::SkipEmptyParts );
-#endif
 
     QString geomTypes = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 6 ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    for ( QString geomType : geomTypes.split( ",", QString::SkipEmptyParts ) )
-#else
     for ( QString geomType : geomTypes.split( ",", Qt::SkipEmptyParts ) )
-#endif
       layer.types.append( static_cast<Qgis::WkbType>( geomType.toInt() ) );
 
     QString geomSrids = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 7 ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    for ( QString geomSrid : geomSrids.split( ",", QString::SkipEmptyParts ) )
-#else
     for ( QString geomSrid : geomSrids.split( ",", Qt::SkipEmptyParts ) )
-#endif
       layer.srids.append( geomSrid.toInt() );
 
     layers.append( layer );

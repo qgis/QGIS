@@ -724,11 +724,25 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     }
     else
     {
+
       const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
       for ( const QString &varName : refVars )
       {
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         if ( scope && !scope->isStatic( varName ) )
+        {
+          isStatic = false;
+          break;
+        }
+      }
+    }
+
+    if ( isStatic && ! parameters.orderBy.isEmpty() )
+    {
+      for ( const auto &orderByClause : std::as_const( parameters.orderBy ) )
+      {
+        const QgsExpression &orderByExpression { orderByClause.expression() };
+        if ( orderByExpression.referencedVariables().contains( QStringLiteral( "parent" ) ) ||              orderByExpression.referencedVariables().contains( QString() ) )
         {
           isStatic = false;
           break;

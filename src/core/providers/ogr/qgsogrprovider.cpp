@@ -1092,7 +1092,7 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
   QRecursiveMutex *mutex = nullptr;
   OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
-  QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid, mSubsetString );
+  QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid, QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
 }
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest &request ) const
@@ -1128,7 +1128,10 @@ QgsRectangle QgsOgrProvider::extent() const
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting get extent" ), 3 );
 
-    if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mOgrOrigLayer )
+    if ( mForceRecomputeExtent && mValid && mWriteAccess &&
+         ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+           mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ) &&
+         mOgrOrigLayer )
     {
       // works with unquoted layerName
       QByteArray sql = QByteArray( "RECOMPUTE EXTENT ON " ) + mOgrOrigLayer->name();
@@ -1801,7 +1804,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       incrementalFeatureId = static_cast< QgsFeatureId >( OGR_L_GetFeatureCount( layer, false ) ) + 1;
 
       if ( !mSubsetString.isEmpty() )
-        OGR_L_SetAttributeFilter( layer, textEncoding()->fromUnicode( mSubsetString ).constData() );
+        OGR_L_SetAttributeFilter( layer, textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) ).constData() );
     }
   }
 
@@ -2184,13 +2187,12 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( !mOgrOrigLayer )
     return false;
 
-  const QString cleanSql = QgsOgrProviderUtils::cleanSubsetString( theSQL );
-
-  if ( cleanSql == mSubsetString && mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) )
+  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) )
     return true;
 
-  const bool subsetStringHasChanged { cleanSql != mSubsetString };
+  const bool subsetStringHasChanged { theSQL != mSubsetString };
 
+  const QString cleanSql = QgsOgrProviderUtils::cleanSubsetString( theSQL );
   if ( !cleanSql.isEmpty() )
   {
     QRecursiveMutex *mutex = nullptr;
@@ -2229,7 +2231,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
       OGR_L_SetAttributeFilter( layer, nullptr );
     }
   }
-  mSubsetString = cleanSql;
+  mSubsetString = theSQL;
 
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), mFilePath );
@@ -3269,7 +3271,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
+    sql += " WHERE " + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
   }
 
   sql += " ORDER BY " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " ASC";
@@ -3347,7 +3349,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " AND (" + textEncoding()->fromUnicode( mSubsetString ) + ')';
+    sql += " AND (" + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) ) + ')';
   }
 
   sql += " ORDER BY " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " ASC";
@@ -3610,7 +3612,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
+    sql += " WHERE " + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
   }
 
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
@@ -3670,7 +3672,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
+    sql += " WHERE " + textEncoding()->fromUnicode( QgsOgrProviderUtils::cleanSubsetString( mSubsetString ) );
   }
 
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );

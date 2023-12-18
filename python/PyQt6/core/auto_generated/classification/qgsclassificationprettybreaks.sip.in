@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationprettybreaks.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsClassificationPrettyBreaks : QgsClassificationMethod
+{
+%Docstring(signature="appended")
+:py:class:`QgsClassificationPrettyBreaks` is an implementation of :py:class:`QgsClassificationMethod`
+for pretty breaks
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationprettybreaks.h"
+%End
+  public:
+    QgsClassificationPrettyBreaks();
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QgsClassificationMethod *clone() const;
+
+    virtual QIcon icon() const;
+
+
+    virtual bool valuesRequired() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationprettybreaks.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

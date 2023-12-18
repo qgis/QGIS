@@ -30,6 +30,7 @@
 #include "qgscameracontroller.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolextent.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -193,6 +194,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setViewFrustumVisualizationEnabled( enabled );
   } );
   mOptionsMenu->addAction( mShowFrustumPolyogon );
+
+  mActionSetSceneExtent = mOptionsMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
+                          tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+  mActionSetSceneExtent->setCheckable( true );
 
   mOptionsMenu->addSeparator();
 
@@ -390,6 +395,10 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 void Qgs3DMapCanvasWidget::setMainCanvas( QgsMapCanvas *canvas )
 {
   mMainCanvas = canvas;
+
+  mMapToolExtent = std::make_unique< QgsMapToolExtent >( canvas );
+  mMapToolExtent->setAction( mActionSetSceneExtent );
+  connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &Qgs3DMapCanvasWidget::setSceneExtent );
 
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasWidget::onMainCanvasColorChanged );
@@ -666,4 +675,29 @@ void Qgs3DMapCanvasWidget::onGpuMemoryLimitReached()
                                 "You may want to lower the amount of detail in the scene, or increase the limit in the options." )
                             .arg( memLimit ), Qgis::MessageLevel::Warning );
   mGpuMemoryLimitReachedReported = true;
+}
+
+void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()
+{
+  if ( !qobject_cast<QgsMapToolExtent *>( mMainCanvas->mapTool() ) )
+    mMapToolPrevious = mMainCanvas->mapTool();
+
+  mMainCanvas->setMapTool( mMapToolExtent.get() );
+  QgisApp::instance()->activateWindow();
+  QgisApp::instance()->raise();
+  mMessageBar->pushInfo( QString(), tr( "Drag a rectangle on the main 2D map view to define this 3D scene's extent" ) );
+}
+
+void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
+{
+  this->activateWindow();
+  this->raise();
+  mMessageBar->clearWidgets();
+  if ( !extent.isEmpty() )
+    mCanvas->map()->setExtent( extent );
+
+  if ( mMapToolPrevious )
+    mMainCanvas->setMapTool( mMapToolPrevious );
+  else
+    mMainCanvas->unsetMapTool( mMapToolExtent.get() );
 }

@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import sys
 
-import qgis  # NOQA
 from qgis.gui import QgsGui
 import unittest
 from qgis.testing import start_app, QgisTestCase

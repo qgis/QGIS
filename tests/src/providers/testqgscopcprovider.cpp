@@ -81,6 +81,7 @@ class TestQgsCopcProvider : public QgsTest
     void testIdentify();
     void testExtraBytesAttributesExtraction();
     void testExtraBytesAttributesValues();
+    void testClassFlagsValues();
     void testPointCloudIndex();
     void testStatsCalculator();
     void testSaveLoadStats();
@@ -296,7 +297,7 @@ void TestQgsCopcProvider::attributes()
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
-  QCOMPARE( attributes.count(), 18 );
+  QCOMPARE( attributes.count(), 21 );
   QCOMPARE( attributes.at( 0 ).name(), QStringLiteral( "X" ) );
   QCOMPARE( attributes.at( 0 ).type(), QgsPointCloudAttribute::Int32 );
   QCOMPARE( attributes.at( 1 ).name(), QStringLiteral( "Y" ) );
@@ -321,18 +322,24 @@ void TestQgsCopcProvider::attributes()
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
   QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "ScannerChannel" ) );
-  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "ClassificationFlags" ) );
-  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::Char );
-  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "GpsTime" ) );
-  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::Double );
-  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Red" ) );
-  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "Green" ) );
-  QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::UShort );
-  QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "Blue" ) );
-  QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "Synthetic" ) );
+  QCOMPARE( attributes.at( 12 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 13 ).name(), QStringLiteral( "KeyPoint" ) );
+  QCOMPARE( attributes.at( 13 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 14 ).name(), QStringLiteral( "Withheld" ) );
+  QCOMPARE( attributes.at( 14 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 15 ).name(), QStringLiteral( "Overlap" ) );
+  QCOMPARE( attributes.at( 15 ).type(), QgsPointCloudAttribute::UChar );
+  QCOMPARE( attributes.at( 16 ).name(), QStringLiteral( "ScannerChannel" ) );
+  QCOMPARE( attributes.at( 16 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 17 ).name(), QStringLiteral( "GpsTime" ) );
+  QCOMPARE( attributes.at( 17 ).type(), QgsPointCloudAttribute::Double );
+  QCOMPARE( attributes.at( 18 ).name(), QStringLiteral( "Red" ) );
+  QCOMPARE( attributes.at( 18 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 19 ).name(), QStringLiteral( "Green" ) );
+  QCOMPARE( attributes.at( 19 ).type(), QgsPointCloudAttribute::UShort );
+  QCOMPARE( attributes.at( 20 ).name(), QStringLiteral( "Blue" ) );
+  QCOMPARE( attributes.at( 20 ).type(), QgsPointCloudAttribute::UShort );
 }
 
 void TestQgsCopcProvider::calculateZRange()
@@ -530,8 +537,8 @@ void TestQgsCopcProvider::testExtraBytesAttributesExtraction()
     QVector<QgsLazInfo::ExtraBytesAttributeDetails> attributes = lazInfo.extrabytes();
     QCOMPARE( attributes.size(), 3 );
 
-    QCOMPARE( attributes[0].attribute, QStringLiteral( "Reflectance" ) );
-    QCOMPARE( attributes[1].attribute, QStringLiteral( "Amplitude" ) );
+    QCOMPARE( attributes[0].attribute, QStringLiteral( "Amplitude" ) );
+    QCOMPARE( attributes[1].attribute, QStringLiteral( "Reflectance" ) );
     QCOMPARE( attributes[2].attribute, QStringLiteral( "Deviation" ) );
 
     QCOMPARE( attributes[0].type, QgsPointCloudAttribute::Float );
@@ -641,6 +648,179 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
   }
 }
 
+void TestQgsCopcProvider::testClassFlagsValues()
+{
+  const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/extrabytes-dataset.copc.laz" ) );
+
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( dataPath, QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+  QVERIFY( layer->isValid() );
+  {
+    const float maxErrorInMapCoords = 0.0015207174f;
+    QPolygonF polygon;
+    polygon.push_back( QPointF( 527919.6,   6210983.6 ) );
+    polygon.push_back( QPointF( 527919.0,   6210983.6 ) );
+    polygon.push_back( QPointF( 527919.0,   6210983.4 ) );
+    polygon.push_back( QPointF( 527919.6,   6210983.4 ) );
+    polygon.push_back( QPointF( 527919.6,   6210983.6 ) );
+
+    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+
+    QVector<QMap<QString, QVariant>> expectedPoints;
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "14.170000076293945"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "2"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235839"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "1417"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-8.050000190734863"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "3"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "0"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "0"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "0"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.11"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.55"  ;
+      point[ QStringLiteral( "Z" ) ] =   "147.111"  ;
+      expectedPoints.push_back( point );
+    }
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "4.409999847412109"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "5"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "441"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-17.829999923706055"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "2"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "1"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "0"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "0"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.1799999999"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.47"  ;
+      point[ QStringLiteral( "Z" ) ] =   "149.341"  ;
+      expectedPoints.push_back( point );
+    }
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "7.539999961853027"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "5"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "8"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235837"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "754"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-14.720000267028809"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "2"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "1"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "1"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "1"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.31"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.42"  ;
+      point[ QStringLiteral( "Z" ) ] =   "150.99099999999999"  ;
+      expectedPoints.push_back( point );
+    }
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "15.390000343322754"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "2"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "6"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "1539"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-6.829999923706055"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "3"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "1"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "1"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "0"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.39"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.56"  ;
+      point[ QStringLiteral( "Z" ) ] =   "147.101"  ;
+      expectedPoints.push_back( point );
+    }
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Amplitude" ) ] =   "11.710000038146973"  ;
+      point[ QStringLiteral( "Blue" ) ] =   "0"  ;
+      point[ QStringLiteral( "Classification" ) ] =   "5"  ;
+      point[ QStringLiteral( "Deviation" ) ] =   "43"  ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
+      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.23583597"  ;
+      point[ QStringLiteral( "Green" ) ] =   "0"  ;
+      point[ QStringLiteral( "Intensity" ) ] =   "1171"  ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
+      point[ QStringLiteral( "PointSourceId" ) ] =   "15017"  ;
+      point[ QStringLiteral( "Red" ) ] =   "0"  ;
+      point[ QStringLiteral( "Reflectance" ) ] =   "-10.550000190734863"  ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =   "1"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
+      point[ QStringLiteral( "UserData" ) ] =   "0"  ;
+      point[ QStringLiteral( "Synthetic" ) ] =   "0"  ;
+      point[ QStringLiteral( "KeyPoint" ) ] =   "0"  ;
+      point[ QStringLiteral( "Withheld" ) ] =   "0"  ;
+      point[ QStringLiteral( "Overlap" ) ] =   "0"  ;
+      point[ QStringLiteral( "X" ) ] =   "527919.58"  ;
+      point[ QStringLiteral( "Y" ) ] =   "6210983.42"  ;
+      point[ QStringLiteral( "Z" ) ] =   "151.131"  ;
+      expectedPoints.push_back( point );
+    }
+
+    auto cmp = []( const QMap<QString, QVariant> &p1, const QMap<QString, QVariant> &p2 )
+    {
+      return qgsVariantLessThan( p1.value( QStringLiteral( "X" ), 0 ), p2.value( QStringLiteral( "X" ), 0 ) );
+    };
+    std::sort( expectedPoints.begin(), expectedPoints.end(), cmp );
+    std::sort( identifiedPoints.begin(), identifiedPoints.end(), cmp );
+
+    QVERIFY( identifiedPoints.size() == expectedPoints.size() );
+    const QStringList keys = expectedPoints[0].keys();
+    for ( int i = 0; i < identifiedPoints.size(); ++i )
+    {
+      for ( const QString &k : keys )
+      {
+        QCOMPARE( identifiedPoints[i][k].toDouble(), expectedPoints[i][k].toDouble() );
+      }
+    }
+  }
+}
+
 void TestQgsCopcProvider::testPointCloudIndex()
 {
   const QString dataPath = copyTestData( QStringLiteral( "/point_clouds/copc/lone-star.copc.laz" ) );
@@ -708,7 +888,10 @@ void TestQgsCopcProvider::testStatsCalculator()
 
   QVector<QgsPointCloudAttribute> attributes;
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Deviation" ), QgsPointCloudAttribute::Float ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "ClassFlags" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Red" ), QgsPointCloudAttribute::UShort ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "EdgeOfFlightLine" ), QgsPointCloudAttribute::Char ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Blue" ), QgsPointCloudAttribute::UShort ) );
@@ -744,9 +927,35 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ClassFlags" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Synthetic" ) );
     QCOMPARE( ( float )s.minimum, 0 );
-    QCOMPARE( ( float )s.maximum, 0 );
+    QCOMPARE( ( float )s.maximum, 1 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 2 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "KeyPoint" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 1 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 2 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Withheld" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 1 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 2 );
+  }
+
+  {
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Overlap" ) );
+    QCOMPARE( ( float )s.minimum, 0 );
+    QCOMPARE( ( float )s.maximum, 1 );
+    QMap<int, int> classCount = s.classCount;
+    QCOMPARE( classCount.size(), 2 );
   }
 
   {

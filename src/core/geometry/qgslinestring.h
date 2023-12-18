@@ -1067,6 +1067,15 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsBox3D calculateBoundingBox3D() const override;
 
+
+    /**
+     * Re-write the measure ordinate (or add one, if it isn't already there) interpolating
+     * the measure between the supplied \a start and \a end values.
+     *
+     * \since QGIS 3.36
+     */
+    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+
   protected:
 
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;

@@ -9,11 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsContrastEnhancement,
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
@@ -419,6 +419,49 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check('rgb_bottom_to_top', 'rgb_bottom_to_top', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTriangles(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(6)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setRenderAsTriangles(True)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('rgb_triangles', 'rgb_triangles', mapsettings)
+        )
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderTrianglesHorizontalFilter(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(6)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setRenderAsTriangles(True)
+        layer.renderer().setHorizontalTriangleFilter(True)
+        layer.renderer().setHorizontalTriangleFilterThreshold(10.0)
+        layer.renderer().setHorizontalTriangleFilterUnit(Qgis.RenderUnit.Millimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(497753.5, 7050887.5, 497754.6, 7050888.6))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check('rgb_triangles_filter', 'rgb_triangles_filter', mapsettings)
         )
 
 

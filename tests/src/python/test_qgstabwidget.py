@@ -14,7 +14,6 @@ test_qgstabwidget.py
  ***************************************************************************/
 '''
 
-import qgis  # NOQA
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.gui import QgsTabWidget
 import unittest

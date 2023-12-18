@@ -14,8 +14,8 @@ __date__ = '28/06/2019'
 
 import os
 import subprocess
+import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
@@ -198,56 +198,57 @@ class TestSelectiveMasking(QgisTestCase):
         Generate a PDF layout export and control the output matches expected_filename
         """
 
-        # generate vector file
-        layout = QgsLayout(QgsProject.instance())
-        page = QgsLayoutItemPage(layout)
-        page.setPageSize(QgsLayoutSize(50, 33))
-        layout.pageCollection().addPage(page)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # generate vector file
+            layout = QgsLayout(QgsProject.instance())
+            page = QgsLayoutItemPage(layout)
+            page.setPageSize(QgsLayoutSize(50, 33))
+            layout.pageCollection().addPage(page)
 
-        map = QgsLayoutItemMap(layout)
-        map.attemptSetSceneRect(QRectF(1, 1, 48, 32))
-        map.setFrameEnabled(True)
-        layout.addLayoutItem(map)
-        map.setExtent(extent if extent is not None else self.lines_layer.extent())
-        map.setLayers(layers if layers is not None else [self.points_layer, self.lines_layer, self.polys_layer])
+            map = QgsLayoutItemMap(layout)
+            map.attemptSetSceneRect(QRectF(1, 1, 48, 32))
+            map.setFrameEnabled(True)
+            layout.addLayoutItem(map)
+            map.setExtent(extent if extent is not None else self.lines_layer.extent())
+            map.setLayers(layers if layers is not None else [self.points_layer, self.lines_layer, self.polys_layer])
 
-        settings = QgsLayoutExporter.PdfExportSettings()
+            settings = QgsLayoutExporter.PdfExportSettings()
 
-        if dpiTarget is not None:
-            settings.dpi = dpiTarget
+            if dpiTarget is not None:
+                settings.dpi = dpiTarget
 
-        exporter = QgsLayoutExporter(layout)
-        result_filename = getTempfilePath('pdf')
-        exporter.exportToPdf(result_filename, settings)
-        self.assertTrue(os.path.exists(result_filename))
+            exporter = QgsLayoutExporter(layout)
+            result_filename = os.path.join(temp_dir, "export.pdf")
+            exporter.exportToPdf(result_filename, settings)
+            self.assertTrue(os.path.exists(result_filename))
 
-        # Generate a readable PDF file so we count raster in it
-        result_txt = getTempfilePath("txt")
-        subprocess.run(["qpdf", "--qdf", "--object-streams=disable", result_filename, result_txt])
-        self.assertTrue(os.path.exists(result_txt))
+            # Generate a readable PDF file so we count raster in it
+            result_txt = os.path.join(temp_dir, "export.txt")
+            subprocess.run(["qpdf", "--qdf", "--object-streams=disable", result_filename, result_txt])
+            self.assertTrue(os.path.exists(result_txt))
 
-        result = open(result_txt, 'rb')
-        result_lines = [l.decode('iso-8859-1') for l in result.readlines()]
-        result.close()
-        nb_raster = len([l for l in result_lines if "/Subtype /Image" in l])
-        self.assertEqual(nb_raster, expected_nb_raster)
+            result = open(result_txt, 'rb')
+            result_lines = [l.decode('iso-8859-1') for l in result.readlines()]
+            result.close()
+            nb_raster = len([l for l in result_lines if "/Subtype /Image" in l])
+            self.assertEqual(nb_raster, expected_nb_raster)
 
-        # Generate an image from pdf to compare with expected control image
-        # keep PDF DPI resolution (300)
-        image_result_filename = getTempfilePath("png")
-        subprocess.run(["pdftoppm", result_filename,
-                        os.path.splitext(image_result_filename)[0],
-                        "-png", "-r", "300", "-singlefile"])
+            # Generate an image from pdf to compare with expected control image
+            # keep PDF DPI resolution (300)
+            image_result_filename = os.path.join(temp_dir, "export.png")
+            subprocess.run(["pdftoppm", result_filename,
+                            os.path.splitext(image_result_filename)[0],
+                            "-png", "-r", "300", "-singlefile"])
 
-        rendered_image = QImage(image_result_filename)
-        res = self.image_check(control_name,
-                               control_name,
-                               rendered_image,
-                               control_name,
-                               allowed_mismatch=0,
-                               color_tolerance=0)
+            rendered_image = QImage(image_result_filename)
+            res = self.image_check(control_name,
+                                   control_name,
+                                   rendered_image,
+                                   control_name,
+                                   allowed_mismatch=0,
+                                   color_tolerance=0)
 
-        self.assertTrue(res)
+            self.assertTrue(res)
 
     def test_save_restore_references(self):
         """
@@ -728,21 +729,22 @@ class TestSelectiveMasking(QgisTestCase):
                                                             QgsUnitTypes.RenderPixels,
                                                             QSize(64, 64)).pixmap(QSize(64, 64)).save(tmp))
         ]:
-            tmp = getTempfilePath('png')
-            render_function()
+            with tempfile.TemporaryDirectory() as temp_dir:
+                tmp = os.path.join(temp_dir, "render.png")
+                render_function()
 
-            rendered_image = QImage(tmp)
+                rendered_image = QImage(tmp)
 
-            res = self.image_check(
-                control_name,
-                control_name,
-                rendered_image,
-                control_name,
-                allowed_mismatch=90,
-                color_tolerance=0
-            )
+                res = self.image_check(
+                    control_name,
+                    control_name,
+                    rendered_image,
+                    control_name,
+                    allowed_mismatch=90,
+                    color_tolerance=0
+                )
 
-            self.assertTrue(res)
+                self.assertTrue(res)
 
     def test_mask_with_effect(self):
         p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "7"})

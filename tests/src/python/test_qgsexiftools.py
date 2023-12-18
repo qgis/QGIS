@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import os
 import shutil
 
-import qgis  # NOQA switch sip api
 from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryFile
 from qgis.core import QgsExifTools, QgsPointXY
 import unittest

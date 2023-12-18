@@ -279,6 +279,13 @@ Only will return something if you call enableDashBuffering( ``True`` ); before.
 :return: buffered dash messages
 %End
 
+    static QString sourcePath();
+%Docstring
+Returns the path to the QGIS source code.
+
+.. versionadded:: 3.36
+%End
+
   protected:
 
 };

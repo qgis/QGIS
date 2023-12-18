@@ -9,7 +9,6 @@ __author__ = 'Matthias Kuhn'
 __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QGridLayout,

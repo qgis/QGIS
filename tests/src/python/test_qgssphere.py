@@ -12,7 +12,6 @@ __date__ = '14/07/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import math
-import qgis  # NOQA
 from qgis.core import (
     QgsSphere,
     QgsPoint,

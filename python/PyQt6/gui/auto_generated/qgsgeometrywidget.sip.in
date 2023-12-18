@@ -1,0 +1,132 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgeometrywidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeometryWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for storing and interacting with a :py:class:`QgsGeometry` object.
+
+This widget can be used in places where an dialog needs to expose a geometry
+value to users, and allow them to safely interact with it (such as changing
+the stored geometry value).
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrywidget.h"
+%End
+  public:
+
+    explicit QgsGeometryWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsGeometryWidget, with the specified ``parent`` widget.
+%End
+
+    void setGeometryValue( const QgsReferencedGeometry &geometry );
+%Docstring
+Sets the current ``geometry`` value for the widget.
+
+.. warning::
+
+   This should not be confused with QWidget.setGeometry(), which
+   modifies the placement and size of the widget itself.
+
+.. seealso:: :py:func:`geometryValue`
+
+.. seealso:: :py:func:`geometryValueChanged`
+%End
+
+    QgsReferencedGeometry geometryValue() const;
+%Docstring
+Returns the current geometry value for the widget.
+
+.. warning::
+
+   This should not be confused with QWidget.geometry(), which
+   returns the placement and size of the widget itself.
+
+.. seealso:: :py:func:`setGeometryValue`
+
+.. seealso:: :py:func:`geometryValueChanged`
+%End
+
+    void setAcceptedWkbTypes( const QList<Qgis::WkbType> &types );
+%Docstring
+Sets the list of WKB geometry ``types`` which are permitted for the widget.
+
+.. seealso:: :py:func:`acceptedWkbTypes`
+%End
+
+    QList< Qgis::WkbType > acceptedWkbTypes() const;
+%Docstring
+Returns the list of WKB geometry types which are permitted for the widget.
+
+.. seealso:: :py:func:`setAcceptedWkbTypes`
+%End
+
+    bool isReadOnly() const;
+%Docstring
+Returns whether the widget is in a read-only state.
+
+.. seealso:: :py:func:`setReadOnly`
+%End
+
+  public slots:
+
+    void setReadOnly( bool readOnly );
+%Docstring
+Sets whether the widget should be in a read-only state.
+
+.. seealso:: :py:func:`isReadOnly`
+%End
+
+    void clearGeometry();
+%Docstring
+Clears the current geometry value stored in the widget.
+%End
+
+    void copyAsWkt();
+%Docstring
+Copies the current geometry value to the clipboard, as a WKT string.
+
+.. seealso:: :py:func:`copyAsGeoJson`
+%End
+
+    void copyAsGeoJson();
+%Docstring
+Copies the current geometry value to the clipboard, as a GeoJSON string.
+
+.. seealso:: :py:func:`copyAsWkt`
+%End
+
+  signals:
+
+    void geometryValueChanged( const QgsReferencedGeometry &value );
+%Docstring
+Emitted whenever the geometry value of the widget is changed.
+
+.. seealso:: :py:func:`geometryValue`
+
+.. seealso:: :py:func:`setGeometryValue`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgeometrywidget.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

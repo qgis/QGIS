@@ -419,7 +419,6 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#jammy kinetic lunar bullseye bookworm sid# otb-qgis,
  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -463,7 +462,6 @@ Description: collection of data providers to QGIS - architecture-independent fil
 Package: qgis-server
 Architecture: any
 Depends:
- qgis-server-dummy (= ${binary:Version}),
  qgis-server-wms (= ${binary:Version}),
  qgis-server-wmts (= ${binary:Version}),
  qgis-server-wcs (= ${binary:Version}),
@@ -551,18 +549,6 @@ Description: QGIS server providing various OGC services
  display databases of geographic information.
  .
  This package contains the wcs service.
-
-Package: qgis-server-dummy
-Architecture: any
-Depends:
- qgis-server-common (= ${binary:Version}),
- ${shlibs:Depends},
- ${misc:Depends}
-Description: QGIS server providing various OGC services
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the sample service.
 
 Package: qgis-server-landingpage
 Architecture: any

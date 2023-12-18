@@ -432,7 +432,7 @@
             </item>
             <item row="4" column="1" colspan="3">
              <widget class="QFrame" name="frameRedirectUrl">
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,0,0,0,0">
                <property name="spacing">
                 <number>2</number>
                </property>
@@ -449,9 +449,12 @@
                 <number>0</number>
                </property>
                <item>
+                <widget class="QComboBox" name="comboRedirectHost"/>
+               </item>
+               <item>
                 <widget class="QLabel" name="lblRedirectIP">
                  <property name="text">
-                  <string>http://127.0.0.1:</string>
+                  <string>:</string>
                  </property>
                 </widget>
                </item>
@@ -1032,6 +1035,7 @@
   <tabstop>leRequestUrl</tabstop>
   <tabstop>leTokenUrl</tabstop>
   <tabstop>leRefreshTokenUrl</tabstop>
+  <tabstop>comboRedirectHost</tabstop>
   <tabstop>spnbxRedirectPort</tabstop>
   <tabstop>leRedirectUrl</tabstop>
   <tabstop>leClientId</tabstop>

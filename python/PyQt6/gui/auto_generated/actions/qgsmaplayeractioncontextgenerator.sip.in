@@ -1,0 +1,40 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeractioncontextgenerator.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapLayerActionContextGenerator
+{
+%Docstring(signature="appended")
+An interface for objects which can create a :py:class:`QgsMapLayerActionContext`.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayeractioncontextgenerator.h"
+%End
+  public:
+
+    virtual ~QgsMapLayerActionContextGenerator();
+
+    virtual QgsMapLayerActionContext createActionContext() = 0;
+%Docstring
+Creates a :py:class:`QgsMapLayerActionContext`.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeractioncontextgenerator.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -2650,7 +2650,7 @@ long long QgsOracleProvider::featureCount() const
   // Else, to estimate feature count, if it is a view or there is a where clause we use the explain plan
   else if ( !mSqlWhereClause.isEmpty() || relkind() == QgsOracleProvider::View )
   {
-    sql = QString( "explain plan for select 1 from %1" ).arg( mTableName );
+    sql = QString( "explain plan for select 1 from %1.%2" ).arg( quotedIdentifier( mOwnerName ) ).arg( quotedIdentifier( mTableName ) );
     if ( !mSqlWhereClause.isEmpty() )
       sql += " WHERE " + mSqlWhereClause;
     if ( LoggedExecStatic( qry,

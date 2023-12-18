@@ -1311,8 +1311,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry().asWkt( 1 ), "Polygon ((0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10, 0 20))" );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry().asWkt( 1 ), "Polygon ((10 15, 10.7 14.3, 15 10, 15 20, 10.7 15.7, 10 15))" );
 
-  mLayerPolygon->undoStack()->undo(); // undo topological points
-  mLayerPolygon->undoStack()->undo(); // undo move
+  mLayerPolygon->undoStack()->undo(); // undo move and topological points
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo2
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo1
   QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );

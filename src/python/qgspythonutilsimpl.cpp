@@ -134,7 +134,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // tell the utils script where to look for the plugins
   runString( QStringLiteral( "qgis.utils.plugin_paths = [%1]" ).arg( pluginpaths.join( ',' ) ) );
   runString( QStringLiteral( "qgis.utils.sys_plugin_path = \"%1\"" ).arg( pluginsPath() ) );
-  runString( QStringLiteral( "qgis.utils.home_plugin_path = %1" ).arg( homePluginsPath() ) ); // note - homePluginsPath() returns a python expression, not a string literal
+  runString( QStringLiteral( "qgis.utils.HOME_PLUGIN_PATH = %1" ).arg( homePluginsPath() ) ); // note - homePluginsPath() returns a python expression, not a string literal
 
 #ifdef Q_OS_WIN
   runString( "if oldhome: os.environ['HOME']=oldhome\n" );
@@ -623,18 +623,10 @@ QStringList QgsPythonUtilsImpl::extraPluginsPaths() const
   const QString paths = QString::fromLocal8Bit( cpaths );
 #ifndef Q_OS_WIN
   if ( paths.contains( ':' ) )
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    return paths.split( ':', QString::SkipEmptyParts );
-#else
     return paths.split( ':', Qt::SkipEmptyParts );
 #endif
-#endif
   if ( paths.contains( ';' ) )
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    return paths.split( ';', QString::SkipEmptyParts );
-#else
     return paths.split( ';', Qt::SkipEmptyParts );
-#endif
   else
     return QStringList( paths );
 }
@@ -646,11 +638,7 @@ QStringList QgsPythonUtilsImpl::pluginList()
 
   QString output;
   evalString( QStringLiteral( "'\\n'.join(qgis.utils.available_plugins)" ), output );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  return output.split( QChar( '\n' ), QString::SkipEmptyParts );
-#else
   return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
-#endif
 }
 
 QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const QString &function )
@@ -688,6 +676,13 @@ bool QgsPythonUtilsImpl::startProcessingPlugin( const QString &packageName )
   return ( output == QLatin1String( "True" ) );
 }
 
+bool QgsPythonUtilsImpl::finalizeProcessingStartup()
+{
+  QString output;
+  evalString( QStringLiteral( "qgis.utils.finalizeProcessingStartup()" ), output );
+  return ( output == QLatin1String( "True" ) );
+}
+
 bool QgsPythonUtilsImpl::canUninstallPlugin( const QString &packageName )
 {
   QString output;
@@ -718,9 +713,5 @@ QStringList QgsPythonUtilsImpl::listActivePlugins()
 {
   QString output;
   evalString( QStringLiteral( "'\\n'.join(qgis.utils.active_plugins)" ), output );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  return output.split( QChar( '\n' ), QString::SkipEmptyParts );
-#else
   return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
-#endif
 }

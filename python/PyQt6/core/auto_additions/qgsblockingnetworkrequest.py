@@ -1,0 +1,5 @@
+# The following has been generated automatically from src/core/network/qgsblockingnetworkrequest.h
+QgsBlockingNetworkRequest.NoError = QgsBlockingNetworkRequest.ErrorCode.NoError
+QgsBlockingNetworkRequest.NetworkError = QgsBlockingNetworkRequest.ErrorCode.NetworkError
+QgsBlockingNetworkRequest.TimeoutError = QgsBlockingNetworkRequest.ErrorCode.TimeoutError
+QgsBlockingNetworkRequest.ServerExceptionError = QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError

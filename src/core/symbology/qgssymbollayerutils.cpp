@@ -4534,7 +4534,7 @@ QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, dou
       // start point falls on this segment
       const double distanceToStart = startDistance - distanceTraversed;
       double startX, startY;
-      QgsGeometryUtils::pointOnLineWithDistance( p1.x(), p1.y(), p2.x(), p2.y(), distanceToStart, startX, startY );
+      QgsGeometryUtilsBase::pointOnLineWithDistance( p1.x(), p1.y(), p2.x(), p2.y(), distanceToStart, startX, startY );
       substringPoints << QPointF( startX, startY );
       foundStart = true;
     }
@@ -4543,7 +4543,7 @@ QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, dou
       // end point falls on this segment
       const double distanceToEnd = endDistance - distanceTraversed;
       double endX, endY;
-      QgsGeometryUtils::pointOnLineWithDistance( p1.x(), p1.y(), p2.x(), p2.y(), distanceToEnd, endX, endY );
+      QgsGeometryUtilsBase::pointOnLineWithDistance( p1.x(), p1.y(), p2.x(), p2.y(), distanceToEnd, endX, endY );
       if ( substringPoints.last() != QPointF( endX, endY ) )
         substringPoints << QPointF( endX, endY );
     }
@@ -4570,7 +4570,7 @@ QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, dou
 bool QgsSymbolLayerUtils::isSharpCorner( QPointF p1, QPointF p2, QPointF p3 )
 {
   double vertexAngle = M_PI - ( std::atan2( p3.y() - p2.y(), p3.x() - p2.x() ) - std::atan2( p2.y() - p1.y(), p2.x() - p1.x() ) );
-  vertexAngle = QgsGeometryUtils::normalizedAngle( vertexAngle );
+  vertexAngle = QgsGeometryUtilsBase::normalizedAngle( vertexAngle );
 
   // extreme angles form more than 45 degree angle at a node
   return vertexAngle < M_PI * 135.0 / 180.0 || vertexAngle > M_PI * 225.0 / 180.0;

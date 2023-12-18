@@ -204,11 +204,38 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
+  std::unique_ptr< QgsMultiPoint > points = std::make_unique< QgsMultiPoint >();
+
+  long long i = 0;
+  const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
   QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    i++;
 
-  QgsGeometry allPoints;
+    if ( feedback->isCanceled() )
+      break;
 
-  const double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 1;
+    feedback->setProgress( i * step );
+
+    if ( !f.hasGeometry() )
+      continue;
+
+    const QgsAbstractGeometry *geom = f.geometry().constGet();
+    if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
+    {
+      const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+      for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
+      {
+        points->addGeometry( qgsgeometry_cast< QgsPoint * >( *pit )->clone() );
+      }
+    }
+    else
+    {
+      points->addGeometry( qgsgeometry_cast< QgsPoint * >( geom )->clone() );
+    }
+  }
 
   QgsRectangle extent = mSource->sourceExtent();
   double delta = extent.width() * mBuffer / 100.0;
@@ -219,6 +246,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   extent.setYMaximum( extent.yMaximum() + delta );
   const QgsGeometry clippingGeom = QgsGeometry::fromRect( extent );
 
+  QgsGeometry allPoints = QgsGeometry( std::move( points ) );
   const QgsGeometry voronoiDiagram = allPoints.voronoiDiagram( clippingGeom, mTolerance );
 
   if ( !voronoiDiagram.isEmpty() )

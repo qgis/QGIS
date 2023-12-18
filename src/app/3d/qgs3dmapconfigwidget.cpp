@@ -154,9 +154,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
 
   mDebugOverlayCheckBox->setChecked( mMap->isDebugOverlayEnabled() );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
   mDebugOverlayCheckBox->setVisible( true );
-#endif
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );

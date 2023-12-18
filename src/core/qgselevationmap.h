@@ -101,6 +101,15 @@ class CORE_EXPORT QgsElevationMap
     //! Returns raw elevation image with elevations encoded as color values
     QImage rawElevationImage() const { return mElevationImage; }
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns pointer to the actual elevation image data
+     * \since QGIS 3.36
+     */
+    QRgb *rawElevationImageData() { return reinterpret_cast<QRgb *>( mElevationImage.bits() ); }
+#endif
+
     //! Returns painter to the underlying QImage with elevations
     QPainter *painter() const;
 

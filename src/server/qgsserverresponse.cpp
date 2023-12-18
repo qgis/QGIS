@@ -96,3 +96,8 @@ void QgsServerResponse::write( const QgsServerException &ex )
   setHeader( "Content-Type", responseFormat );
   write( ba );
 }
+
+QgsFeedback *QgsServerResponse::feedback() const
+{
+  return nullptr;
+}

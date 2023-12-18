@@ -41,6 +41,7 @@ class TestQgsMapToolAddPart: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testAddPart();
+    void testAddPartClockWise();
 
   private:
     QPoint mapToPoint( double x, double y );
@@ -172,5 +173,53 @@ void TestQgsMapToolAddPart::testAddPart()
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
 }
 
+void TestQgsMapToolAddPart::testAddPartClockWise()
+{
+  mLayerMultiPolygon->select( 1 );
+
+  // Draw in clockwise
+  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseButtonRelease,
+        mapToPoint( 15, 15 ),
+        Qt::LeftButton
+      ) );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 15, 16 ),
+                 Qt::LeftButton
+               ) );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 16, 16 ),
+                 Qt::LeftButton
+               ) );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 16, 15 ),
+                 Qt::LeftButton
+               ) );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event.reset( new QgsMapMouseEvent(
+                 mCanvas,
+                 QEvent::MouseButtonRelease,
+                 mapToPoint( 15, 15 ),
+                 Qt::RightButton
+               ) );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
+  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
+}
 QGSTEST_MAIN( TestQgsMapToolAddPart )
 #include "testqgsmaptooladdpart.moc"

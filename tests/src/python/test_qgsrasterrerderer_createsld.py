@@ -22,7 +22,6 @@ __copyright__ = '(C) 2018, Luigi Pirelli'
 import os
 import random
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QFileInfo,
 )

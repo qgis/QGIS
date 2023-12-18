@@ -71,6 +71,7 @@ class GUI_EXPORT QgsTextWidgetWrapper : public QgsWidgetWrapper
     QLabel *mWidget = nullptr;
     QgsFeature mFeature;
     QgsFeature mFormFeature;
+    bool mRequiresFormScope = false;
     QgsExpressionContext mTextContext;
     bool mNeedsGeometry = false;
 

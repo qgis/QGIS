@@ -17,7 +17,6 @@ import os
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import (
     QDate,
     QDateTime,
@@ -374,6 +373,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         # should have reset renderer!
         self.assertNotEqual(layer.renderer(), r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Fill)
+
+        # reset layer to a non-spatial layer
+        lines_path = os.path.join(unitTestDataPath(), 'nonspatial.dbf')
+        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertFalse(layer.crs().isValid())
+        self.assertIn('nonspatial.dbf', layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 3)
+        # should have REMOVED renderer
+        self.assertIsNone(layer.renderer())
 
     def testSetDataSourceInvalidToValid(self):
         """
@@ -4386,6 +4398,8 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.createMapRenderer(QgsRenderContext())
         layer.extent()
         layer.sourceExtent()
+        layer.extent3D()
+        layer.sourceExtent3D()
         layer.fields()
         layer.attributeList()
         layer.primaryKeyAttributes()

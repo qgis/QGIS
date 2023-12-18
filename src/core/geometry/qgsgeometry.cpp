@@ -2850,28 +2850,28 @@ double QgsGeometry::interpolateAngle( double distance ) const
       QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
       QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
       QgsPoint p3 = segmentized.constGet()->vertexAt( v3 );
-      double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-      double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
-      return QgsGeometryUtils::averageAngle( angle1, angle2 );
+      double angle1 = QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      double angle2 = QgsGeometryUtilsBase::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
+      return QgsGeometryUtilsBase::averageAngle( angle1, angle2 );
     }
     else if ( v3.isValid() )
     {
       QgsPoint p1 = segmentized.constGet()->vertexAt( v2 );
       QgsPoint p2 = segmentized.constGet()->vertexAt( v3 );
-      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      return QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
     else
     {
       QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
       QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
-      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+      return QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
   }
   else
   {
     QgsPoint p1 = segmentized.constGet()->vertexAt( previous );
     QgsPoint p2 = segmentized.constGet()->vertexAt( next );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
+    return QgsGeometryUtilsBase::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
   }
 }
 
@@ -3172,6 +3172,34 @@ QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepColla
 QgsGeometry QgsGeometry::forceRHR() const
 {
   return forcePolygonClockwise();
+}
+
+Qgis::AngularDirection QgsGeometry::polygonOrientation() const
+{
+  if ( !d->geometry )
+  {
+    return Qgis::AngularDirection::NoOrientation;
+  }
+
+  if ( isMultipart() )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
+    const QgsAbstractGeometry *g = collection->geometryN( 0 );
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+    {
+      return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
+    }
+  }
+  else
+  {
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    {
+      return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
+    }
+  }
+
+  return Qgis::AngularDirection::NoOrientation;
+
 }
 
 QgsGeometry QgsGeometry::forcePolygonClockwise() const
@@ -3852,7 +3880,7 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
       QgsPoint p1 = result->pointN( result->numPoints() - 2 );
       QgsPoint p2 = result->pointN( 0 );
       QgsPoint p3 = result->pointN( 1 );
-      double angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+      double angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                      p3.x(), p3.y() );
       angle = std::fabs( M_PI - angle );
       skipFirst = angle > maxAngleRads;
@@ -3866,19 +3894,19 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
       if ( i == 0 && isRing )
       {
         QgsPoint p3 = result->pointN( result->numPoints() - 2 );
-        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+        angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                 p3.x(), p3.y() );
       }
       else if ( i < result->numPoints() - 2 )
       {
         QgsPoint p3 = result->pointN( i + 2 );
-        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+        angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                 p3.x(), p3.y() );
       }
       else if ( i == result->numPoints() - 2 && isRing )
       {
         QgsPoint p3 = result->pointN( 1 );
-        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+        angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
                 p3.x(), p3.y() );
       }
 

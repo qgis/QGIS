@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>569</width>
-    <height>529</height>
+    <height>618</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,6 +152,50 @@
           </widget>
          </item>
          <item>
+          <widget class="QgsCollapsibleGroupBox" name="mTriangulateGroupBox">
+           <property name="title">
+            <string>Render as a Surface (Triangulate)</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_8">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QCheckBox" name="mHorizontalTriangleCheckBox">
+              <property name="text">
+               <string>Skip triangles longer than</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QgsDoubleSpinBox" name="mHorizontalTriangleThresholdSpinBox">
+              <property name="toolTip">
+               <string>Maximum Triangle Side Size in Horizontal Plan</string>
+              </property>
+              <property name="decimals">
+               <number>6</number>
+              </property>
+              <property name="maximum">
+               <double>99999999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QgsUnitSelectionWidget" name="mHorizontalTriangleUnitWidget" native="true"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
           <widget class="QGroupBox" name="mLayerRenderingGroupBox">
            <property name="title">
             <string>Layer Rendering</string>
@@ -288,6 +332,12 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

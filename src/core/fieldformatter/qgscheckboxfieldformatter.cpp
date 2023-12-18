@@ -51,8 +51,11 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   const QVariant::Type fieldType = layer->fields().at( fieldIndex ).type();
   if ( fieldType == QVariant::Bool )
   {
-    boolValue = value.toBool();
-    textValue = boolValue ? QObject::tr( "true" ) : QObject::tr( "false" );
+    if ( ! isNull )
+    {
+      boolValue = value.toBool();
+      textValue = boolValue ? QObject::tr( "true" ) : QObject::tr( "false" );
+    }
   }
   else
   {

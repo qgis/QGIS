@@ -6,7 +6,6 @@ endif()
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_SERVER_MODULE_SUBDIR})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_SERVER_MODULE_SUBDIR})
 
-add_subdirectory(DummyService)
 add_subdirectory(wms)
 add_subdirectory(wfs)
 add_subdirectory(wfs3)

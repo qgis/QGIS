@@ -17,6 +17,7 @@
 #include "qgslayout.h"
 #include "qgslayoutexporter.h"
 #include <QDebug>
+#include <mutex>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {
@@ -27,6 +28,18 @@ QgsMultiRenderChecker::QgsMultiRenderChecker()
 void QgsMultiRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;
+}
+
+void QgsMultiRenderChecker::setFileFunctionLine( const QString &file, const QString &function, int line )
+{
+#ifndef _MSC_VER
+  mSourceFile = QDir( QgsRenderChecker::sourcePath() ).relativeFilePath( file );
+#else
+  mSourceFile = file;
+#endif
+
+  mSourceFunction = function;
+  mSourceLine = line;
 }
 
 void QgsMultiRenderChecker::setControlPathPrefix( const QString &prefix )
@@ -43,8 +56,8 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 {
   mResult = false;
 
-  mReport += "<h2>" + testName + "</h2>\n";
-  mMarkdownReport += QStringLiteral( "### %1\n\n" ).arg( testName );
+  mReportHeader = "<h2>" + testName + "</h2>\n";
+  mMarkdownReportHeader = QStringLiteral( "### %1\n\n" ).arg( testName );
 
   const QString baseDir = controlImagePath();
   if ( !QFile::exists( baseDir ) )
@@ -175,12 +188,56 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
 QString QgsMultiRenderChecker::report() const
 {
-  return !mResult ? mReport : QString();
+  if ( mResult )
+    return QString();
+
+  QString report = mReportHeader;
+  if ( mSourceLine >= 0 )
+  {
+    const QString githubSha = qgetenv( "GITHUB_SHA" );
+    if ( !githubSha.isEmpty() )
+    {
+      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+                                      githubSha, mSourceFile ).arg( mSourceLine );
+      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at <a href=\"%2\">%3:%4</a></b>\n" ).arg(
+                  mSourceFunction,
+                  githubBlobUrl,
+                  mSourceFile ).arg( mSourceLine );
+    }
+    else
+    {
+      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at %2:%3</b>\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine );
+    }
+  }
+
+  report += mReport;
+  return report;
 }
 
 QString QgsMultiRenderChecker::markdownReport() const
 {
-  return !mResult ? mMarkdownReport : QString();
+  if ( mResult )
+    return QString();
+
+  QString report = mMarkdownReportHeader;
+
+  if ( mSourceLine >= 0 )
+  {
+    const QString githubSha = qgetenv( "GITHUB_SHA" );
+    QString fileLink;
+    if ( !githubSha.isEmpty() )
+    {
+      fileLink = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
+                   githubSha, mSourceFile ).arg( mSourceLine );
+    }
+    else
+    {
+      fileLink = QUrl::fromLocalFile( QDir( QgsRenderChecker::sourcePath() ).filePath( mSourceFile ) ).toString();
+    }
+    report += QStringLiteral( "**Test failed at %1 at [%2:%3](%4)**\n\n" ).arg( mSourceFunction, mSourceFile ).arg( mSourceLine ).arg( fileLink );
+  }
+  report += mMarkdownReport;
+  return report;
 }
 
 QString QgsMultiRenderChecker::controlImagePath() const

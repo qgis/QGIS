@@ -52,9 +52,9 @@ class gdaladdo(GdalAlgorithm):
         self.methods = ((self.tr('Nearest Neighbour (default)'), 'nearest'),
                         (self.tr('Average'), 'average'),
                         (self.tr('Gaussian'), 'gauss'),
-                        (self.tr('Cubic Convolution'), 'cubic'),
-                        (self.tr('B-Spline Convolution'), 'cubicspline'),
-                        (self.tr('Lanczos Windowed Sinc'), 'lanczos'),
+                        (self.tr('Cubic (4x4 Kernel)'), 'cubic'),
+                        (self.tr('Cubic B-Spline (4x4 Kernel)'), 'cubicspline'),
+                        (self.tr('Lanczos (6x6 Kernel)'), 'lanczos'),
                         (self.tr('Average MP'), 'average_mp'),
                         (self.tr('Average in Mag/Phase Space'), 'average_magphase'),
                         (self.tr('Mode'), 'mode'))

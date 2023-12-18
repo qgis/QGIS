@@ -1,0 +1,138 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorpython.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCodeEditorPython : QgsCodeEditor
+{
+%Docstring(signature="appended")
+A Python editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
+.. note::
+
+   may not be available in Python bindings, depending on platform support
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditorpython.h"
+%End
+  public:
+
+
+    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
+                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
+%Docstring
+Construct a new Python editor.
+
+:param parent: The parent QWidget
+:param filenames: The list of apis files to load for the Python lexer
+:param mode: code editor mode (since QGIS 3.30)
+:param flags: code editor flags (since QGIS 3.32)
+
+.. versionadded:: 2.6
+%End
+
+    virtual Qgis::ScriptLanguage language() const;
+
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
+
+    void loadAPIs( const QList<QString> &filenames );
+%Docstring
+Load APIs from one or more files
+
+:param filenames: The list of apis files to load for the Python lexer
+%End
+
+    bool loadScript( const QString &script );
+%Docstring
+Loads a ``script`` file.
+%End
+
+    bool isCursorInsideStringLiteralOrComment() const;
+%Docstring
+Check whether the current cursor position is inside a string literal or a comment
+
+.. versionadded:: 3.30
+%End
+
+    QString characterBeforeCursor() const;
+%Docstring
+Returns the character before the cursor, or an empty string if cursor is set at start
+
+.. versionadded:: 3.30
+%End
+
+    QString characterAfterCursor() const;
+%Docstring
+Returns the character after the cursor, or an empty string if the cursot is set at end
+
+.. versionadded:: 3.30
+%End
+
+    void updateCapabilities();
+%Docstring
+Updates the editor capabilities.
+
+.. versionadded:: 3.32
+%End
+
+    virtual bool checkSyntax();
+
+
+  public slots:
+
+    void searchSelectedTextInPyQGISDocs();
+%Docstring
+Searches the selected text in the official PyQGIS online documentation.
+
+.. versionadded:: 3.16
+%End
+
+    virtual void toggleComment();
+
+%Docstring
+Toggle comment for the selected text.
+
+.. versionadded:: 3.30
+%End
+
+  protected:
+
+    virtual void initializeLexer();
+
+    virtual void keyPressEvent( QKeyEvent *event );
+    virtual QString reformatCodeString( const QString &string );
+
+    virtual void populateContextMenu( QMenu *menu );
+
+
+  protected slots:
+
+    void autoComplete();
+%Docstring
+Triggers the autocompletion popup.
+
+.. versionadded:: 3.16
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorpython.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

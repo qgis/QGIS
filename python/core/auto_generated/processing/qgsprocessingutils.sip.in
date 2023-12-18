@@ -328,7 +328,7 @@ if ``value`` cannot be successfully converted to a CRS.
 .. versionadded:: 3.12
 %End
 
-    static QString normalizeLayerSource( const QString &source );
+    static QString normalizeLayerSource( const QString &source ) /HoldGIL/;
 %Docstring
 Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
@@ -343,7 +343,7 @@ Converts a variant to a Python literal.
 .. versionadded:: 3.6
 %End
 
-    static QString stringToPythonLiteral( const QString &string );
+    static QString stringToPythonLiteral( const QString &string ) /HoldGIL/;
 %Docstring
 Converts a string to a Python string literal. E.g. by replacing ' with \'.
 
@@ -505,7 +505,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 .. versionadded:: 3.10
 %End
 
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() ) /HoldGIL/;
 %Docstring
 Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
 
@@ -519,7 +519,7 @@ non-duplicate name.
    be truncated when saving to these formats.
 %End
 
-    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields ) /HoldGIL/;
 %Docstring
 Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
 If the list of field names is empty, it is assumed that all fields are required.
@@ -527,7 +527,7 @@ If the list of field names is empty, it is assumed that all fields are required.
 .. versionadded:: 3.2
 %End
 
-    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields ) /HoldGIL/;
 %Docstring
 Returns a subset of fields based on the indices of desired fields.
 

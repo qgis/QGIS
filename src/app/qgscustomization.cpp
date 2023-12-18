@@ -568,7 +568,7 @@ bool QgsCustomizationDialog::catchOn()
 
 void QgsCustomizationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#customization" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#sec-customization" ) );
 }
 
 

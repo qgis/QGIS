@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/4/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsEllipsoidUtils, QgsProjUtils
 import unittest

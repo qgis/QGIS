@@ -1,0 +1,127 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsactionmenu.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsActionMenu : QMenu
+{
+%Docstring(signature="appended")
+This class is a menu that is populated automatically with the actions defined for a given layer.
+%End
+
+%TypeHeaderCode
+#include "qgsactionmenu.h"
+%End
+  public:
+
+    struct ActionData
+    {
+
+      ActionData();
+%Docstring
+Constructor for ActionData.
+%End
+      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+
+      Qgis::ActionType actionType;
+      QVariant actionData;
+      QgsFeatureId featureId;
+      QgsMapLayer *mapLayer;
+    };
+
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructs a new QgsActionMenu
+
+:param layer: The layer that this action will be run upon.
+:param feature: The feature that this action will be run upon. Make sure that this feature is available
+                for the lifetime of this object.
+:param parent: The usual QWidget parent.
+:param actionScope: The action scope this menu will run in
+%End
+
+    explicit QgsActionMenu( QgsVectorLayer *layer, QgsFeatureId fid, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructs a new QgsActionMenu
+
+:param layer: The layer that this action will be run upon.
+:param fid: The feature id of the feature for which this action will be run.
+:param parent: The usual QWidget parent.
+:param actionScope: The action scope this menu will run in
+%End
+
+    void setActionContextGenerator( QgsMapLayerActionContextGenerator *generator );
+%Docstring
+Sets a :py:class:`QgsMapLayerActionContextGenerator` to create action contexts for the menu.
+
+The ``generator`` object must exist for the lifetime of the menu.
+
+.. versionadded:: 3.30
+%End
+
+    void setFeature( const QgsFeature &feature );
+%Docstring
+Change the feature on which actions are performed
+
+:param feature: A feature. Will not take ownership. It's the callers responsibility to keep the feature
+                as long as the menu is displayed and the action is running.
+%End
+
+    void setMode( QgsAttributeEditorContext::Mode mode );
+%Docstring
+Change the mode of the actions
+
+:param mode: The mode of the attribute form
+%End
+
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+%Docstring
+Sets an expression context scope used to resolve underlying actions.
+
+.. versionadded:: 3.0
+%End
+
+    QgsExpressionContextScope expressionContextScope() const;
+%Docstring
+Returns an expression context scope used to resolve underlying actions.
+
+.. versionadded:: 3.0
+%End
+
+    QList<QgsAction> menuActions();
+%Docstring
+Returns menu actions
+
+.. versionadded:: 3.12
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the menu has no valid actions.
+
+.. versionadded:: 3.30
+%End
+
+  signals:
+    void reinit();
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsactionmenu.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

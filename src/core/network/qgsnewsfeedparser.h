@@ -145,7 +145,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   signals:
 
     /**
-     * Emitted when \a entries have fetched from the feed.
+     * Emitted when \a entries have been fetched from the feed.
      *
      * \see fetch()
      */
@@ -158,6 +158,16 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      * \see fetch()
      */
     void entryAdded( const QgsNewsFeedParser::Entry &entry );
+
+    /**
+     * Emitted whenever an existing \a entry is available from the feed (as a result
+     * of a call to fetch()).
+     *
+     * \see fetch()
+     *
+     * \since QGIS 3.36
+     */
+    void entryUpdated( const QgsNewsFeedParser::Entry &entry );
 
     /**
      * Emitted whenever an \a entry is dismissed (as a result of a call

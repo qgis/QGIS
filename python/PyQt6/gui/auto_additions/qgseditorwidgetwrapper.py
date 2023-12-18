@@ -1,0 +1,4 @@
+# The following has been generated automatically from src/gui/editorwidgets/core/qgseditorwidgetwrapper.h
+QgsEditorWidgetWrapper.ConstraintResultPass = QgsEditorWidgetWrapper.ConstraintResult.ConstraintResultPass
+QgsEditorWidgetWrapper.ConstraintResultFailHard = QgsEditorWidgetWrapper.ConstraintResult.ConstraintResultFailHard
+QgsEditorWidgetWrapper.ConstraintResultFailSoft = QgsEditorWidgetWrapper.ConstraintResult.ConstraintResultFailSoft

@@ -20,6 +20,7 @@
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometryutils_base.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
 #include "qgsgeometrytransformer.h"
@@ -1411,13 +1412,13 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
     double thisZ = z ? *z++ : 0.0;
     double thisM = m ? *m++ : 0.0;
 
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtilsBase::distance2D( thisX, thisY, prevX, prevY );
     while ( nextPointDistance < distanceTraversed + segmentLength || qgsDoubleNear( nextPointDistance, distanceTraversed + segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
       const double distanceToPoint = std::min( nextPointDistance - distanceTraversed, segmentLength );
       double pX, pY;
-      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY,
+      QgsGeometryUtilsBase::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY,
           z ? &prevZ : nullptr, z ? &thisZ : nullptr, z ? &pZ : nullptr,
           m ? &prevM : nullptr, m ? &thisM : nullptr, m ? &pM : nullptr );
 
@@ -1497,7 +1498,7 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
     double thisZ = z ? *z++ : 0.0;
     double thisM = m ? *m++ : 0.0;
 
-    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    const double segmentLength = QgsGeometryUtilsBase::distance2D( thisX, thisY, prevX, prevY );
 
     if ( distanceTraversed <= startDistance && startDistance < distanceTraversed + segmentLength )
     {
@@ -1506,7 +1507,7 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
       double startX, startY;
       double startZ = 0;
       double startM = 0;
-      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToStart, startX, startY,
+      QgsGeometryUtilsBase::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToStart, startX, startY,
           z ? &prevZ : nullptr, z ? &thisZ : nullptr, z ? &startZ : nullptr,
           m ? &prevM : nullptr, m ? &thisM : nullptr, m ? &startM : nullptr );
       substringPoints << QgsPoint( pointType, startX, startY, startZ, startM );
@@ -1519,7 +1520,7 @@ QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDi
       double endX, endY;
       double endZ = 0;
       double endM = 0;
-      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToEnd, endX, endY,
+      QgsGeometryUtilsBase::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToEnd, endX, endY,
           z ? &prevZ : nullptr, z ? &thisZ : nullptr, z ? &endZ : nullptr,
           m ? &prevM : nullptr, m ? &thisM : nullptr, m ? &endM : nullptr );
       substringPoints << QgsPoint( pointType, endX, endY, endZ, endM );
@@ -1912,7 +1913,7 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
     double prevY = mY.at( i - 1 );
     double currentX = mX.at( i );
     double currentY = mY.at( i );
-    testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
+    testDist = QgsGeometryUtilsBase::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
     if ( testDist < sqrDist )
     {
       sqrDist = testDist;
@@ -1924,7 +1925,7 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
     }
     if ( leftOf && qgsDoubleNear( testDist, sqrDist ) )
     {
-      int left = QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY );
+      int left = QgsGeometryUtilsBase::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY );
       // if left equals 0, the test could not be performed (e.g. point in line with segment or on segment)
       // so don't set leftOf in this case, and hope that there's another segment that's the same distance
       // where we can perform the check
@@ -1936,7 +1937,7 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
           // on whether or not the point is to the left of them.
           // so we test the segments themselves and flip the result.
           // see https://stackoverflow.com/questions/10583212/elegant-left-of-test-for-polyline
-          *leftOf = -QgsGeometryUtils::leftOfLine( currentX, currentY, prevLeftOfX, prevLeftOfY, prevX, prevY );
+          *leftOf = -QgsGeometryUtilsBase::leftOfLine( currentX, currentY, prevLeftOfX, prevLeftOfY, prevX, prevY );
         }
         else
         {
@@ -2116,17 +2117,17 @@ double QgsLineString::vertexAngle( QgsVertexId vertex ) const
       double currentY = mY.at( 0 );
       double afterX = mX.at( 1 );
       double afterY = mY.at( 1 );
-      return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
+      return QgsGeometryUtilsBase::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
     }
     else if ( vertex.vertex == 0 )
     {
-      return QgsGeometryUtils::lineAngle( mX.at( 0 ), mY.at( 0 ), mX.at( 1 ), mY.at( 1 ) );
+      return QgsGeometryUtilsBase::lineAngle( mX.at( 0 ), mY.at( 0 ), mX.at( 1 ), mY.at( 1 ) );
     }
     else
     {
       int a = numPoints() - 2;
       int b = numPoints() - 1;
-      return QgsGeometryUtils::lineAngle( mX.at( a ), mY.at( a ), mX.at( b ), mY.at( b ) );
+      return QgsGeometryUtilsBase::lineAngle( mX.at( a ), mY.at( a ), mX.at( b ), mY.at( b ) );
     }
   }
   else
@@ -2137,7 +2138,7 @@ double QgsLineString::vertexAngle( QgsVertexId vertex ) const
     double currentY = mY.at( vertex.vertex );
     double afterX = mX.at( vertex.vertex + 1 );
     double afterY = mY.at( vertex.vertex + 1 );
-    return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
+    return QgsGeometryUtilsBase::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
   }
 }
 
@@ -2376,4 +2377,41 @@ void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPo
       *srcZ++ = res.z();
   }
   clearCache();
+}
+
+
+QgsLineString *QgsLineString::measuredLine( double start, double end ) const
+{
+  const int nbpoints = numPoints();
+  std::unique_ptr< QgsLineString > cloned( clone() );
+
+  if ( !cloned->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
+  {
+    return cloned.release();
+  }
+
+  if ( isEmpty() || ( nbpoints < 2 ) )
+  {
+    return cloned.release();
+  }
+
+  const double range = end - start;
+  double lineLength = length();
+  double lengthSoFar = 0.0;
+
+
+  double *mOut = cloned->mM.data();
+  *mOut++ = start;
+  for ( int i = 1; i < nbpoints ; ++i )
+  {
+    lengthSoFar += QgsGeometryUtilsBase::distance2D( mX[ i - 1], mY[ i - 1 ], mX[ i ], mY[ i ] );
+    if ( lineLength > 0.0 )
+      *mOut++ = start + range * lengthSoFar / lineLength;
+    else if ( lineLength == 0.0 && nbpoints > 1 )
+      *mOut++ = start + range * i / ( nbpoints - 1 );
+    else
+      *mOut++ = 0.0;
+  }
+
+  return cloned.release();
 }

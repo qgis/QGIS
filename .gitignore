@@ -58,6 +58,7 @@ ms-windows/osgeo4w/untgz/
 ms-windows/packages/
 ms-windows/progs/
 ms-windows/untgz/
+python/plugins/grassprovider/description/algorithms.json
 python/plugins/grassprovider/tests/testdata/directions.tif.aux.xml
 python/plugins/processing/tests/testdata/*.aux.xml
 python/plugins/processing/tests/testdata/custom/*.aux.xml

@@ -118,7 +118,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-build-deps-${{ matrix.distro-version }}
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
@@ -363,7 +363,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--target ${{ matrix.docker-target }} --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
@@ -405,6 +405,7 @@ jobs:
         env:
           TEST_BATCH: ${{matrix.test-batch}}
           QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
@@ -414,14 +415,23 @@ jobs:
           echo "DOCKERFILE=$DOCKERFILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
-          docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+          docker-compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+
+      - name: Fix permissions on test report
+        if: ${{ failure() }}
+        run: |
+          sudo chmod -R 777 qgis_test_report
+
+      - name: Dump report contents
+        if: ${{ failure() }}
+        run: |
+          MD_REPORT_FILE="qgis_test_report/summary.md"; [ -f "$MD_REPORT_FILE" ] && cat "$MD_REPORT_FILE" || true
 
       - name: Save PR number to test report
         if: ${{ failure() }}
-        env:
-          PR_NUMBER: ${{ github.event.number }}
         run: |
-          echo $PR_NUMBER > qgis_test_report/pr_number
+          echo ${{ github.event.number }} | tee qgis_test_report/pr_number
+          echo ${{ github.event.pull_request.head.sha }} | tee qgis_test_report/git_commit
 
       - name: Archive test results report
         if: ${{ failure() }}
@@ -461,7 +471,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"

@@ -38,7 +38,7 @@ class QgsGpsDeviceOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGp
      * Constructor for QgsGpsDeviceOptionsWidget with the specified \a parent widget.
      */
     QgsGpsDeviceOptionsWidget( QWidget *parent );
-
+    QString helpKey() const override;
     void apply() override;
 
   private slots:

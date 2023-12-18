@@ -1,0 +1,7 @@
+# The following has been generated automatically from src/core/qgsfeaturesource.h
+QgsFeatureSource.NoFeaturesAvailable = QgsFeatureSource.FeatureAvailability.NoFeaturesAvailable
+QgsFeatureSource.FeaturesAvailable = QgsFeatureSource.FeatureAvailability.FeaturesAvailable
+QgsFeatureSource.FeaturesMaybeAvailable = QgsFeatureSource.FeatureAvailability.FeaturesMaybeAvailable
+QgsFeatureSource.SpatialIndexUnknown = QgsFeatureSource.SpatialIndexPresence.SpatialIndexUnknown
+QgsFeatureSource.SpatialIndexNotPresent = QgsFeatureSource.SpatialIndexPresence.SpatialIndexNotPresent
+QgsFeatureSource.SpatialIndexPresent = QgsFeatureSource.SpatialIndexPresence.SpatialIndexPresent

@@ -12,7 +12,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import shutil
 import tempfile
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,

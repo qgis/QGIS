@@ -1,0 +1,104 @@
+name: Write build artifact comments
+
+on:
+  workflow_run:
+    workflows: [🪟 MingW64 Windows 64bit Build]
+    types:
+      - completed
+    branches-ignore:
+      - 'master'
+      - 'release*'
+
+jobs:
+  on-success:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Download artifact'
+        id: download_artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "QGIS for Windows 64bit"
+            });
+            if (matchArtifacts.length>0)
+            {
+              let download = await github.rest.actions.downloadArtifact({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 artifact_id: matchArtifacts[0].id,
+                 archive_format: 'zip',
+              });
+              let fs = require('fs');
+              fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/QGIS for Windows 64bit.zip`, Buffer.from(download.data));
+              core.setOutput('artifact_id', matchArtifacts[0].id);
+            }
+            else
+            {
+              core.setOutput('artifact_id', 0);
+            }
+            let matchArtifactsDebugSymbols = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "QGIS for Windows 64bit Debug Symbols"
+            });
+            if (matchArtifactsDebugSymbols.length>0)
+            {
+              core.setOutput('debug_symbols_artifact_id', matchArtifactsDebugSymbols[0].id);
+            }
+            else
+            {
+              core.setOutput('debug_symbols_artifact_id', 0);
+            }
+
+      - name: 'Unzip artifact'
+        if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
+        run: |
+          unzip "QGIS for Windows 64bit.zip"
+          unzip -j qgis-portable-win64.zip pr_number git_commit
+
+      - name: 'Post artifact download link as comment on PR'
+        if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let fs = require('fs');
+            let issue_number = Number(fs.readFileSync('./pr_number'));
+            let git_sha = String(fs.readFileSync('./git_commit')).trim();
+            const prComments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+            });
+            const PREFIX = "## 🪟 Windows builds ready!";
+            let body = PREFIX + "\n\n" +
+                "Windows builds of this PR are available for testing [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).";
+            if ( ${{steps.download_artifact.outputs.debug_symbols_artifact_id}} > 0 )
+            {
+              body += " Debug symbols for this build are available [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
+            }
+            body += "\n\n*(Built from commit " + git_sha + ")*";
+
+            const winBuildComment = prComments.data?.find(c => c.body.startsWith(PREFIX));
+            if (!!winBuildComment) {
+              // update the existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: winBuildComment.id,
+                body: body
+              });
+            } else {
+              // submit a new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number,
+                body: body
+              });
+            }

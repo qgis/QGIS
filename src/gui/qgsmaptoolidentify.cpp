@@ -679,12 +679,7 @@ int QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qgs
     if ( renderer && !renderer->willRenderFeature( feature, context ) )
       continue;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    derivedAttributes.unite( deriveAttributesForFeature( feature ) );
-#else
     derivedAttributes.insert( deriveAttributesForFeature( feature ) );
-#endif
-
     derivedAttributes.insert( tr( "Feature ID" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), feature, derivedAttributes ) );
@@ -1056,11 +1051,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     identifyResult = dprovider->identify( point, format, viewExtent, width, height );
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  derivedAttributes.unite( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
-#else
   derivedAttributes.insert( derivedAttributesForPoint( QgsPoint( pointInCanvasCrs ) ) );
-#endif
 
   const double xres = layer->rasterUnitsPerPixelX();
   const double yres = layer->rasterUnitsPerPixelY();
@@ -1217,11 +1208,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             }
 
             QMap< QString, QString > derAttributes = derivedAttributes;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-            derAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
-#else
             derAttributes.insert( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
-#endif
 
             IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( QLatin1String( " / " ) ), featureStore.fields(), feature, derAttributes );
 

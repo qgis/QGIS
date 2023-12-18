@@ -11,7 +11,6 @@ __author__ = '(C) 2023 by Martin Dobias'
 __date__ = '18/07/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.core import (
     Qgis,
     QgsMatrix4x4,

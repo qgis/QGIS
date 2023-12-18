@@ -88,6 +88,9 @@ void QgsAuthOAuth2Edit::initGui()
   btnTokenClear->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   btnTokenClear->setEnabled( hasTokenCacheFile() );
 
+  comboRedirectHost->addItem( QStringLiteral( "127.0.0.1" ), QStringLiteral( "127.0.0.1" ) );
+  comboRedirectHost->addItem( QStringLiteral( "localhost" ), QStringLiteral( "localhost" ) );
+
   connect( btnTokenClear, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::removeTokenCacheFile );
   tabConfigs->setCornerWidget( btnTokenClear, Qt::TopRightCorner );
 }
@@ -174,6 +177,10 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( leTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setTokenUrl );
   connect( leRefreshTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRefreshTokenUrl );
   connect( leRedirectUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectUrl );
+  connect( comboRedirectHost, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    mOAuthConfigCustom->setRedirectHost( comboRedirectHost->currentData().toString() );
+  } );
   connect( spnbxRedirectPort, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
            mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectPort );
   connect( leClientId, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientId );
@@ -393,6 +400,7 @@ void QgsAuthOAuth2Edit::loadFromOAuthConfig( const QgsAuthOAuth2Config *config )
     leRequestUrl->setText( config->requestUrl() );
     leTokenUrl->setText( config->tokenUrl() );
     leRefreshTokenUrl->setText( config->refreshTokenUrl() );
+    comboRedirectHost->setCurrentIndex( comboRedirectHost->findData( config->redirectHost() ) );
     leRedirectUrl->setText( config->redirectUrl() );
     spnbxRedirectPort->setValue( config->redirectPort() );
     leClientId->setText( config->clientId() );
@@ -1153,11 +1161,7 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
     registerReply = QgsNetworkAccessManager::instance()->post( registerRequest, json );
   mDownloading = true;
   connect( registerReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::registerReplyFinished, Qt::QueuedConnection );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  connect( registerReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
-#else
   connect( registerReply, &QNetworkReply::errorOccurred, this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
-#endif
 }
 
 void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
@@ -1175,11 +1179,7 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
     QNetworkReply *configReply = QgsNetworkAccessManager::instance()->get( configRequest );
     mDownloading = true;
     connect( configReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::configReplyFinished, Qt::QueuedConnection );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    connect( configReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
-#else
     connect( configReply, &QNetworkReply::errorOccurred, this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
-#endif
   }
 }
 

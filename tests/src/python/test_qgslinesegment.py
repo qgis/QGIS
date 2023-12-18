@@ -9,7 +9,6 @@ __author__ = 'Nyall Dawson'
 __date__ = '13/04/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-import qgis  # NOQA
 
 from qgis.core import QgsLineSegment2D, QgsPointXY
 import unittest

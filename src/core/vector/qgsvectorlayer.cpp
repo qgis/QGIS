@@ -985,6 +985,14 @@ void QgsVectorLayer::setExtent( const QgsRectangle &r )
   mValidExtent = true;
 }
 
+void QgsVectorLayer::setExtent3D( const QgsBox3D &r )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsMapLayer::setExtent3D( r );
+  mValidExtent = true;
+}
+
 void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1101,11 +1109,113 @@ QgsRectangle QgsVectorLayer::extent() const
   return rect;
 }
 
+QgsBox3D QgsVectorLayer:: extent3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsBox3D extent;
+  extent.setNull();
+
+  if ( !isSpatial() )
+    return extent;
+
+  if ( !mValidExtent && mLazyExtent && mReadExtentFromXml && !mXmlExtent.isNull() )
+  {
+    updateExtent( mXmlExtent );
+    mValidExtent = true;
+    mLazyExtent = false;
+  }
+
+  if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
+  {
+    // store the extent
+    updateExtent( mDataProvider->extent3D() );
+    mValidExtent = true;
+    mLazyExtent = false;
+
+    // show the extent
+    QgsDebugMsgLevel( QStringLiteral( "Extent of layer: %1" ).arg( mExtent.toString() ), 3 );
+  }
+
+  if ( mValidExtent )
+    return QgsMapLayer::extent3D();
+
+  if ( !isValid() || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    return extent;
+  }
+
+  if ( !mEditBuffer ||
+       ( !mDataProvider->transaction() && ( mEditBuffer->deletedFeatureIds().isEmpty() && mEditBuffer->changedGeometries().isEmpty() ) ) ||
+       QgsDataSourceUri( mDataProvider->dataSourceUri() ).useEstimatedMetadata() )
+  {
+    mDataProvider->updateExtents();
+
+    // get the extent of the layer from the provider
+    // but only when there are some features already
+    if ( mDataProvider->featureCount() != 0 )
+    {
+      const QgsBox3D ext = mDataProvider->extent3D();
+      extent.combineWith( ext );
+    }
+
+    if ( mEditBuffer && !mDataProvider->transaction() )
+    {
+      const auto addedFeatures = mEditBuffer->addedFeatures();
+      for ( QgsFeatureMap::const_iterator it = addedFeatures.constBegin(); it != addedFeatures.constEnd(); ++it )
+      {
+        if ( it->hasGeometry() )
+        {
+          const QgsBox3D bbox = it->geometry().boundingBox3D();
+          extent.combineWith( bbox );
+        }
+      }
+    }
+  }
+  else
+  {
+    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                          .setNoAttributes() );
+
+    QgsFeature fet;
+    while ( fit.nextFeature( fet ) )
+    {
+      if ( fet.hasGeometry() && fet.geometry().type() != Qgis::GeometryType::Unknown )
+      {
+        const QgsBox3D bb = fet.geometry().boundingBox3D();
+        extent.combineWith( bb );
+      }
+    }
+  }
+
+  if ( extent.xMinimum() > extent.xMaximum() && extent.yMinimum() > extent.yMaximum() && extent.zMinimum() > extent.zMaximum() )
+  {
+    // special case when there are no features in provider nor any added
+    extent = QgsBox3D(); // use rectangle with zero coordinates
+  }
+
+  updateExtent( extent );
+  mValidExtent = true;
+
+  // Send this (hopefully) up the chain to the map canvas
+  emit recalculateExtents();
+
+  return extent;
+}
+
 QgsRectangle QgsVectorLayer::sourceExtent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return extent();
+}
+
+QgsBox3D QgsVectorLayer::sourceExtent3D() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return extent3D();
 }
 
 QString QgsVectorLayer::subsetString() const
@@ -1923,10 +2033,10 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag && isSpatial() )
+    if ( !defaultLoadedFlag )
     {
-      // add single symbol renderer
-      setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
+      // add single symbol renderer for spatial layers
+      setRenderer( isSpatial() ? QgsFeatureRenderer::defaultRenderer( geometryType() ) : nullptr );
     }
 
     if ( !mSetLegendFromStyle )
@@ -4069,7 +4179,10 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
   // we must allow setting a renderer if our geometry type is unknown
   // as this allows the renderer to be correctly set even for layers
   // with broken sources
-  if ( !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
+  // (note that we allow REMOVING the renderer for non-spatial layers,
+  // e.g. to permit removing the renderer when the layer changes from
+  // a spatial layer to a non-spatial one)
+  if ( r && !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
     return;
 
   if ( r != mRenderer )

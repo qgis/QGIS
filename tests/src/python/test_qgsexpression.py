@@ -9,7 +9,6 @@ __author__ = 'Nathan Woodrow'
 __date__ = '4/11/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
 
-import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     NULL,

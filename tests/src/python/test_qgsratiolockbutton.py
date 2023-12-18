@@ -9,10 +9,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-import qgis  # NOQA
+import unittest
 
 from qgis.PyQt.QtWidgets import QDoubleSpinBox
-import unittest
+
+from qgis.gui import QgsRatioLockButton
 from qgis.testing import start_app, QgisTestCase
 
 start_app()
@@ -22,7 +23,7 @@ class TestQgsRatioLockButton(QgisTestCase):
 
     def testLinkedWidgets(self):
         """ test linking spin boxes to combobox"""
-        w = qgis.gui.QgsRatioLockButton()
+        w = QgsRatioLockButton()
 
         spin_width = QDoubleSpinBox()
         spin_width.setMaximum(100000)
@@ -95,7 +96,7 @@ class TestQgsRatioLockButton(QgisTestCase):
         self.assertEqual(spin_height.value(), 1000)
 
     def testResetRatio(self):
-        w = qgis.gui.QgsRatioLockButton()
+        w = QgsRatioLockButton()
 
         spin_width = QDoubleSpinBox()
         spin_width.setMaximum(100000)

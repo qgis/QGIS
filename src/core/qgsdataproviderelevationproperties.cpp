@@ -19,3 +19,13 @@
 QgsDataProviderElevationProperties::QgsDataProviderElevationProperties() = default;
 
 QgsDataProviderElevationProperties::~QgsDataProviderElevationProperties() = default;
+
+bool QgsDataProviderElevationProperties::containsElevationData() const
+{
+  return mContainsElevationData;
+}
+
+void QgsDataProviderElevationProperties::setContainsElevationData( bool contains )
+{
+  mContainsElevationData = contains;
+}

@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/maprenderer/qgsmaprenderercustompainterjob.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapRendererAbstractCustomPainterJob : QgsMapRendererJob /Abstract/
+{
+%Docstring(signature="appended")
+Abstract base class for map renderer jobs which use custom painters.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsmaprenderercustompainterjob.h"
+%End
+  public:
+
+    QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings );
+%Docstring
+Constructor for QgsMapRendererAbstractCustomPainterJob, using the given
+map ``settings``.
+%End
+
+  protected:
+
+    void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
+%Docstring
+Prepares the given ``painter`` ready for a map render.
+
+The ``backgroundColor`` argument specifies the color to use for the map's background.
+%End
+
+};
+
+class QgsMapRendererCustomPainterJob : QgsMapRendererAbstractCustomPainterJob
+{
+%Docstring(signature="appended")
+Job implementation that renders everything sequentially using a custom painter.
+
+Also supports synchronous rendering in main thread for cases when rendering in background
+is not an option because of some technical limitations (e.g. printing to printer on some
+platforms).
+
+.. versionadded:: 2.4
+%End
+
+%TypeHeaderCode
+#include "qgsmaprenderercustompainterjob.h"
+%End
+  public:
+    QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter );
+    ~QgsMapRendererCustomPainterJob();
+
+    virtual void cancel();
+
+    virtual void cancelWithoutBlocking();
+
+    virtual void waitForFinished();
+
+    virtual bool isActive() const;
+
+    virtual bool usedCachedLabels() const;
+
+    virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
+
+
+
+    void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
+%Docstring
+Wait for the job to be finished - and keep the thread's event loop running while waiting.
+
+With a call to :py:func:`~QgsMapRendererCustomPainterJob.waitForFinished`, the waiting is done with a synchronization primitive
+and does not involve processing of messages. That may cause issues to code which requires
+some events to be handled in the main thread. Some plugins hooking into the rendering
+pipeline may require this in order to work properly - for example, OpenLayers plugin
+which uses a QWebPage in the main thread.
+
+Ideally the "wait for finished" method should not be used at all. The code triggering
+rendering should not need to actively wait for rendering to finish.
+%End
+
+    void renderSynchronously();
+%Docstring
+Render the map synchronously in this thread. The function does not return until the map
+is completely rendered.
+
+This is an alternative to ordinary API (using :py:func:`~QgsMapRendererCustomPainterJob.start` + waiting for :py:func:`~QgsMapRendererCustomPainterJob.finished` signal).
+Users are discouraged to use this method unless they have a strong reason for doing it.
+The synchronous rendering blocks the main thread, making the application unresponsive.
+Also, it is not possible to cancel rendering while it is in progress.
+%End
+
+    void prepare();
+%Docstring
+Prepares the job for rendering synchronously in a background thread.
+
+Must be called from the main thread.
+
+This is an alternative to ordinary API (using :py:func:`~QgsMapRendererCustomPainterJob.start` + waiting for :py:func:`~QgsMapRendererCustomPainterJob.finished` signal),
+and an alternative to :py:func:`~QgsMapRendererCustomPainterJob.renderSynchronously` (which should only ever be called from the main thread).
+
+.. seealso:: :py:func:`renderPrepared`
+
+.. versionadded:: 3.10
+%End
+
+    void renderPrepared();
+%Docstring
+Render a pre-prepared job. Can be safely called in a background thread.
+
+Must be preceded by a call to :py:func:`~QgsMapRendererCustomPainterJob.prepare`
+
+This is an alternative to ordinary API (using :py:func:`~QgsMapRendererCustomPainterJob.start` + waiting for :py:func:`~QgsMapRendererCustomPainterJob.finished` signal),
+and an alternative to :py:func:`~QgsMapRendererCustomPainterJob.renderSynchronously` (which should only ever be called from the main thread).
+
+.. versionadded:: 3.10
+%End
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/maprenderer/qgsmaprenderercustompainterjob.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

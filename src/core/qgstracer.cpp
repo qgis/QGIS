@@ -57,7 +57,7 @@ double distance2D( const QgsPolylineXY &coords )
   {
     x1 = coords[i].x();
     y1 = coords[i].y();
-    dist += std::sqrt( ( x1 - x0 ) * ( x1 - x0 ) + ( y1 - y0 ) * ( y1 - y0 ) );
+    dist += QgsGeometryUtilsBase::distance2D( x1, y1, x0, y0 );
     x0 = x1;
     y0 = y1;
   }
@@ -77,7 +77,7 @@ double closestSegment( const QgsPolylineXY &pl, const QgsPointXY &pt, int &verte
   {
     double currentX = pldata[i].x();
     double currentY = pldata[i].y();
-    double testDist = QgsGeometryUtils::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
+    double testDist = QgsGeometryUtilsBase::sqrDistToLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY, segmentPtX, segmentPtY, epsilon );
     if ( testDist < sqrDist )
     {
       sqrDist = testDist;

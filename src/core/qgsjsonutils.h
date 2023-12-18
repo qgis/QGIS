@@ -25,6 +25,11 @@
 #include <QPointer>
 #include <QJsonObject>
 
+#ifndef SIP_RUN
+#include "json_fwd.hpp"
+using namespace nlohmann;
+#endif
+
 class QTextCodec;
 
 /**
@@ -363,6 +368,24 @@ class CORE_EXPORT QgsJsonUtils
      */
     Q_INVOKABLE static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
 
+    /**
+     * Parses a GeoJSON "geometry" value to a QgsGeometry object.
+     *
+     * Returns a null geometry if the geometry could not be parsed.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.36
+     */
+    static QgsGeometry geometryFromGeoJson( const json &geometry ) SIP_SKIP;
+
+    /**
+     * Parses a GeoJSON "geometry" value to a QgsGeometry object.
+     *
+     * Returns a null geometry if the geometry could not be parsed.
+     *
+     * \since QGIS 3.36
+     */
+    static QgsGeometry geometryFromGeoJson( const QString &geometry );
 
     /**
      * Converts a QVariant \a v to a json object
@@ -395,6 +418,13 @@ class CORE_EXPORT QgsJsonUtils
      * \since QGIS 3.8
      */
     static QVariant parseJson( const QString &jsonString ) SIP_SKIP;
+
+    /**
+     * Converts a JSON \a value to a QVariant, in case of parsing error an invalid QVariant is returned.
+     * \note Not available in Python bindings
+     * \since QGIS 3.36
+     */
+    static QVariant jsonToVariant( const json &value ) SIP_SKIP;
 
 };
 

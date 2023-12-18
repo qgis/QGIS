@@ -78,30 +78,41 @@ class TestQgsSpatialIndex : public QObject
       }
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
-      QVERIFY( fids.count() == 1 );
-      QVERIFY( fids[0] == 1 );
+      QCOMPARE( fids.count(), 1 );
+      QCOMPARE( fids[0], 1 );
 
       const QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( -10, -10, 0, 10 ) );
-      QVERIFY( fids2.count() == 2 );
+      QCOMPARE( fids2.count(), 2 );
       QVERIFY( fids2.contains( 2 ) );
       QVERIFY( fids2.contains( 3 ) );
     }
 
-    void testQueryManualInsert()
+    void testQueryManualInsertAndDelete()
     {
       QgsSpatialIndex index;
       index.addFeature( 1, QgsRectangle( 2, 3, 2, 3 ) );
       index.addFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
       index.addFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
 
-      const QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
-      QVERIFY( fids.count() == 1 );
-      QVERIFY( fids.at( 0 ) == 1 );
+      QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      QCOMPARE( fids.count(), 1 );
+      QCOMPARE( fids.at( 0 ), 1 );
 
-      const QList<QgsFeatureId> fids2 = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
-      QVERIFY( fids2.count() == 2 );
-      QVERIFY( fids2.contains( 2 ) );
-      QVERIFY( fids2.contains( 3 ) );
+      fids = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QCOMPARE( fids.count(), 2 );
+      QVERIFY( fids.contains( 2 ) );
+      QVERIFY( fids.contains( 3 ) );
+
+      index.deleteFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
+      fids = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QCOMPARE( fids.count(), 1 );
+      QVERIFY( fids.contains( 3 ) );
+      fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
+      QCOMPARE( fids.count(), 1 );
+      QCOMPARE( fids.at( 0 ), 1 );
+      index.deleteFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
+      fids = index.intersects( QgsRectangle( 10, 12, 15, 14 ) );
+      QVERIFY( fids.empty() );
     }
 
     void testInitFromEmptyIterator()
@@ -123,32 +134,32 @@ class TestQgsSpatialIndex : public QObject
       // create copy of the index
       QgsSpatialIndex indexCopy( *index );
 
-      QVERIFY( index->refs() == 2 );
-      QVERIFY( indexCopy.refs() == 2 );
+      QCOMPARE( index->refs(), 2 );
+      QCOMPARE( indexCopy.refs(), 2 );
 
       // test that copied index works
       QList<QgsFeatureId> fids1 = indexCopy.intersects( QgsRectangle( 0, 0, 10, 10 ) );
-      QVERIFY( fids1.count() == 1 );
-      QVERIFY( fids1[0] == 1 );
+      QCOMPARE( fids1.count(), 1 );
+      QCOMPARE( fids1[0], 1 );
 
       // check that the index is still shared
-      QVERIFY( index->refs() == 2 );
-      QVERIFY( indexCopy.refs() == 2 );
+      QCOMPARE( index->refs(), 2 );
+      QCOMPARE( indexCopy.refs(), 2 );
 
       // do a modification
       const QgsFeature f2( _pointFeatures().at( 1 ) );
       indexCopy.deleteFeature( f2 );
 
       // check that the index is not shared anymore
-      QVERIFY( index->refs() == 1 );
-      QVERIFY( indexCopy.refs() == 1 );
+      QCOMPARE( index->refs(), 1 );
+      QCOMPARE( indexCopy.refs(), 1 );
 
       delete index;
 
       // test that copied index still works
       QList<QgsFeatureId> fids = indexCopy.intersects( QgsRectangle( 0, 0, 10, 10 ) );
-      QVERIFY( fids.count() == 1 );
-      QVERIFY( fids[0] == 1 );
+      QCOMPARE( fids.count(), 1 );
+      QCOMPARE( fids[0], 1 );
     }
 
     void benchmarkIntersect()

@@ -66,6 +66,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::AddExternalLayers );
     context.setFlag( QgsWmsRenderContext::AddAllLayers );
     context.setParameters( parameters );
+    context.setSocketFeedback( response.feedback() );
 
     // rendering
     QgsRenderer renderer( context );

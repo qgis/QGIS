@@ -285,7 +285,7 @@ void TestQgsLayoutLabel::render()
   label->attemptMove( QgsLayoutPoint( 70, 70 ) );
   label->adjustSizeToText();
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_render" ), &l ) );
+  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_render" ), &l ) );
 }
 
 void TestQgsLayoutLabel::renderAsHtml()
@@ -311,7 +311,7 @@ void TestQgsLayoutLabel::renderAsHtml()
   label->setMode( QgsLayoutItemLabel::ModeHtml );
   label->update();
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtml" ), &l, 0, 10 ) );
+  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_renderhtml" ), &l, 0, 10 ) );
 }
 
 void TestQgsLayoutLabel::renderAsHtmlLineHeight()
@@ -339,7 +339,7 @@ void TestQgsLayoutLabel::renderAsHtmlLineHeight()
   label->setMode( QgsLayoutItemLabel::ModeHtml );
   label->update();
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtmllineheight" ), &l, 0, 10 ) );
+  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_renderhtmllineheight" ), &l, 0, 10 ) );
 }
 
 #ifdef WITH_QTWEBKIT
@@ -354,7 +354,7 @@ void TestQgsLayoutLabel::convertToHtml()
   QgsLayoutMultiFrame *html = layout->multiFrames().at( 0 );
   QVERIFY( html );
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_converttohtml" ), layout, 0, 10 ) );
+  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_converttohtml" ), layout, 0, 10 ) );
 }
 
 void TestQgsLayoutLabel::renderAsHtmlRelative()
@@ -381,7 +381,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
   label->setMode( QgsLayoutItemLabel::ModeHtml );
   label->update();
 
-  QVERIFY( layoutCheck( QStringLiteral( "composerlabel_renderhtmlrelative" ), &l ) );
+  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "composerlabel_renderhtmlrelative" ), &l ) );
 }
 #endif
 
@@ -407,7 +407,7 @@ void TestQgsLayoutLabel::labelRotation()
   label->setItemRotation( 135 );
 
   mControlPathPrefix = QStringLiteral( "composer_items" );
-  QVERIFY( layoutCheck( QStringLiteral( "layoutrotation_label" ), &l ) );
+  QVERIFY( QGSLAYOUTCHECK( QStringLiteral( "layoutrotation_label" ), &l ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutLabel )

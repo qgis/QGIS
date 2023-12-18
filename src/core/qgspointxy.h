@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsvector.h"
+#include "qgsgeometryutils_base.h"
 
 #include "qgis.h"
 
@@ -189,7 +190,7 @@ class CORE_EXPORT QgsPointXY
     */
     double sqrDist( double x, double y ) const SIP_HOLDGIL
     {
-      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
     }
 
     /**
@@ -198,7 +199,7 @@ class CORE_EXPORT QgsPointXY
     */
     double sqrDist( const QgsPointXY &other ) const SIP_HOLDGIL
     {
-      return sqrDist( other.x(), other.y() );
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
     }
 
     /**
@@ -210,7 +211,7 @@ class CORE_EXPORT QgsPointXY
     */
     double distance( double x, double y ) const SIP_HOLDGIL
     {
-      return std::sqrt( sqrDist( x, y ) );
+      return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
     }
 
     /**
@@ -221,7 +222,7 @@ class CORE_EXPORT QgsPointXY
     */
     double distance( const QgsPointXY &other ) const SIP_HOLDGIL
     {
-      return std::sqrt( sqrDist( other ) );
+      return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
     }
 
     //! Returns the minimum distance between this point and a segment

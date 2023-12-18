@@ -304,7 +304,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.
      */
-    static QString normalizeLayerSource( const QString &source );
+    static QString normalizeLayerSource( const QString &source ) SIP_HOLDGIL;
 
     /**
      * Converts a variant to a Python literal.
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see variantToPythonLiteral()
      */
-    static QString stringToPythonLiteral( const QString &string );
+    static QString stringToPythonLiteral( const QString &string ) SIP_HOLDGIL;
 
     /**
      * Creates a feature sink ready for adding features. The \a destination specifies a destination
@@ -503,20 +503,20 @@ class CORE_EXPORT QgsProcessingUtils
      * length of field names, so be aware that the results of calling this method may
      * be truncated when saving to these formats.
      */
-    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() );
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB, const QString &fieldsBPrefix = QString() ) SIP_HOLDGIL;
 
     /**
      * Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
      * If the list of field names is empty, it is assumed that all fields are required.
      * \since QGIS 3.2
      */
-    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields ) SIP_HOLDGIL;
 
     /**
      * Returns a subset of fields based on the indices of desired fields.
      * \since QGIS 3.2
      */
-    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields ) SIP_HOLDGIL;
 
     /**
      * Returns the default vector extension to use, in the absence of all other constraints (e.g.
