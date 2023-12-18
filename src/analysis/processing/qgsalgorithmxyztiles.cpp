@@ -166,6 +166,15 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mTransformContext = context.transformContext();
   mFeedback = feedback;
 
+  if (mSkipEmptyTiles)
+  {          
+    size_blank = QSize(mTileWidth, mTileHeight)
+    mBackgroundImage = QImage(size_blank, QImage.Format_ARGB32_Premultiplied)
+    tmpImage.fill(mBackgroundColor)
+    tmpImage.setDotsPerMeterX(mDpi / 25.4 * 1000)
+    tmpImage.setDotsPerMeterY(mDpi / 25.4 * 1000)
+  }
+
   mWgs84Crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
   mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
   mSrc2Wgs = QgsCoordinateTransform( project->crs(), mWgs84Crs, context.transformContext() );
@@ -531,12 +540,12 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
     //CHANGE
     if (mSkipEmptyTiles == true)
     {
-      tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
-      tempImage.fill( mBackgroundColor );
+      // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
+      // tempImage.fill( mBackgroundColor );
 
       // Try next time
       // isBlank = ( tileImage == tempImage );
-      if ( tempImage == tileImage)
+      if ( tileImage == mBackgroundImage)
       {
         ++it;
         continue;
