@@ -70,4 +70,7 @@ QVariant.__eq__ = __eq__
 QVariant.__ne__ = __ne__
 QVariant.__hash__ = __hash__
 
-NULL = QVariant(QMetaType.Type.Int)
+if (QT_VERSION >= 0x060000):
+    NULL = None
+else:
+    NULL = QVariant(QVariant.Int)
