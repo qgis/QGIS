@@ -65,8 +65,8 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   conn.url = QgsXyzConnectionSettings::settingsUrl->value( name );
   conn.zMin = QgsXyzConnectionSettings::settingsZmin->value( name );
   conn.zMax = QgsXyzConnectionSettings::settingsZmax->value( name );
-  conn.authCfg = QgsXyzConnectionSettings::settingsUsername->value( name );
-  conn.username = QgsXyzConnectionSettings::settingsPassword->value( name );
+  conn.authCfg = QgsXyzConnectionSettings::settingsAuthcfg->value( name );
+  conn.username = QgsXyzConnectionSettings::settingsUsername->value( name );
   conn.password = QgsXyzConnectionSettings::settingsPassword->value( name );
   conn.httpHeaders = QgsXyzConnectionSettings::settingsHeaders->value( name );
   conn.tilePixelRatio = static_cast<int>( QgsXyzConnectionSettings::settingsTilePixelRatio->value( name ) );
@@ -92,8 +92,8 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   QgsXyzConnectionSettings::settingsUrl->setValue( conn.url, conn.name );
   QgsXyzConnectionSettings::settingsZmin->setValue( conn.zMin, conn.name );
   QgsXyzConnectionSettings::settingsZmax->setValue( conn.zMax, conn.name );
-  QgsXyzConnectionSettings::settingsUsername->setValue( conn.authCfg, conn.name );
-  QgsXyzConnectionSettings::settingsPassword->setValue( conn.username, conn.name );
+  QgsXyzConnectionSettings::settingsAuthcfg->setValue( conn.authCfg, conn.name );
+  QgsXyzConnectionSettings::settingsUsername->setValue( conn.username, conn.name );
   QgsXyzConnectionSettings::settingsPassword->setValue( conn.password, conn.name );
   QgsXyzConnectionSettings::settingsHeaders->setValue( conn.httpHeaders.headers(), conn.name );
   QgsXyzConnectionSettings::settingsTilePixelRatio->setValue( conn.tilePixelRatio, conn.name );

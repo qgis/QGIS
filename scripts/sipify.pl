@@ -29,11 +29,12 @@ use constant PREPEND_CODE_MAKE_PRIVATE => 42;
 # read arguments
 my $debug = 0;
 my $sip_output = '';
+my $is_qt6 = 0;
 my $python_output = '';
 #my $SUPPORT_TEMPLATE_DOCSTRING = 0;
 #die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
-die("usage: $0 [-debug] [-sip_output FILE] [-python_output FILE] headerfile\n")
-  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output) && @ARGV == 1;
+die("usage: $0 [-debug] [-qt6] [-sip_output FILE] [-python_output FILE] headerfile\n")
+    unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output, "qt6" => \$is_qt6) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -51,6 +52,7 @@ my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
 my @ACCESS = (PUBLIC);
 my @CLASSNAME = ();
+my @CLASS_AND_STRUCT = ();
 my @DECLARED_CLASSES = ();
 my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = MULTILINE_NO;
@@ -660,6 +662,11 @@ while ($LINE_IDX < $LINE_COUNT){
         $IF_FEATURE_CONDITION = $1;
     }
 
+    if ( $is_qt6 ){
+        $LINE =~ s/int\s*__len__\s*\(\s*\)/Py_ssize_t __len__\(\)/;
+        $LINE =~ s/long\s*__hash__\s*\(\s*\)/Py_hash_t __hash__\(\)/;
+    }
+
     # do not process SIP code %XXXCode
     if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
         $LINE = "%$1$2";
@@ -668,6 +675,10 @@ while ($LINE_IDX < $LINE_COUNT){
         while ( $LINE !~ m/^ *% *End/ ){
             write_output("COD", $LINE."\n");
             $LINE = read_line();
+            if ( $is_qt6 ){
+              $LINE =~ s/SIP_SSIZE_T/Py_ssize_t/g;
+              $LINE =~ s/SIPLong_AsLong/PyLong_AsLong/g;
+            }
             $LINE =~ s/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/%$1$2/;
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
@@ -680,6 +691,14 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE = "%$1$2";
         $COMMENT = '';
         write_output("COD", $LINE."\n");
+        next;
+    }
+
+    # do not process SIP code %If %End
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% (If|End)(.*)?$/ ){
+        $LINE = "%$1$2";
+        $COMMENT = '';
+        write_output("COD", $LINE);
         next;
     }
 
@@ -888,8 +907,9 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
 
-    if ( $LINE =~ m/^\s*struct(\s+\w+_EXPORT)?\s+\w+$/ ) {
+    if ( $LINE =~ m/^\s*struct(\s+\w+_EXPORT)?\s+(?<structname>\w+)$/ ) {
         dbg_info("  going to struct => public");
+        push @CLASS_AND_STRUCT, $+{structname};
         push @CLASSNAME, $CLASSNAME[$#CLASSNAME]; # fake new class since struct has considered similarly
         push @ACCESS, PUBLIC;
         push @EXPORTED, $EXPORTED[-1];
@@ -909,6 +929,7 @@ while ($LINE_IDX < $LINE_COUNT){
         my @template_inheritance_class3 = ();
         do {no warnings 'uninitialized';
             push @CLASSNAME, $+{classname};
+            push @CLASS_AND_STRUCT, $+{classname};
             if ($#CLASSNAME == 0){
                 # might be worth to add in-class classes later on
                 # in case of a tamplate based class declaration
@@ -1029,6 +1050,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     pop @EXPORTED;
                 }
                 pop(@CLASSNAME);
+                pop(@CLASS_AND_STRUCT);
                 if ($#ACCESS == 0){
                     dbg_info("reached top level");
                     # top level should stay public
@@ -1097,15 +1119,26 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
 
+    if ( $is_qt6 eq 1 and $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)/ ){
+        # In PyQt6 Flags are mapped to Python enum flag and the plural doesn't exist anymore
+        # https://www.riverbankcomputing.com/static/Docs/PyQt6/pyqt5_differences.html
+        # So we mock it to avoid API break
+        push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$+{flags_name} = lambda flags=0: $ACTUAL_CLASS.$+{flag_name}(flags)\n";
+    }
+
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
     if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\)\s*$/ ){
+
         push @OUTPUT_PYTHON, "$+{emkb}.$+{emkf} = $ACTUAL_CLASS.$+{flags_name}\n";
         $LINE =~ s/\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)//;
     }
-    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_.*)?(\s*:\s*\w+)?(?<oneliner>.*)$/ ){
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        if ( $is_qt6 eq 1 and defined $+{enum_type} and $+{enum_type} eq "int" ) {
+          $enum_decl .= " /BaseType=IntFlag/"
+        }
         write_output("ENU1", "$enum_decl");
         write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
         write_output("ENU1", "\n");
@@ -1188,6 +1221,18 @@ while ($LINE_IDX < $LINE_COUNT){
                                 push @enum_members_doc, "'* ``$compat_name``: ' + $enum_qualname.$enum_member.__doc__";
                             }
                         }
+                    }
+
+                    if ( $is_scope_based eq "0" and $is_qt6 eq 1 and $enum_member ne "" )
+                    {
+                      my $basename = join( ".", @CLASS_AND_STRUCT );
+                      if ( $basename ne "" ){
+                        $enum_member =~ s/^None$/None_/;
+
+                        # With PyQt6, you have to specify the scope to access the enum: https://www.riverbankcomputing.com/static/Docs/PyQt5/gotchas.html#enums
+                        # so we mock
+                        push @OUTPUT_PYTHON, "$basename.$enum_member = $basename.$enum_qualname.$enum_member\n";
+                      }
                     }
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");

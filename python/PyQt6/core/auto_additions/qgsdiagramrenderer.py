@@ -1,0 +1,32 @@
+# The following has been generated automatically from src/core/qgsdiagramrenderer.h
+QgsDiagramLayerSettings.AroundPoint = QgsDiagramLayerSettings.Placement.AroundPoint
+QgsDiagramLayerSettings.OverPoint = QgsDiagramLayerSettings.Placement.OverPoint
+QgsDiagramLayerSettings.Line = QgsDiagramLayerSettings.Placement.Line
+QgsDiagramLayerSettings.Curved = QgsDiagramLayerSettings.Placement.Curved
+QgsDiagramLayerSettings.Horizontal = QgsDiagramLayerSettings.Placement.Horizontal
+QgsDiagramLayerSettings.Free = QgsDiagramLayerSettings.Placement.Free
+QgsDiagramLayerSettings.OnLine = QgsDiagramLayerSettings.LinePlacementFlag.OnLine
+QgsDiagramLayerSettings.AboveLine = QgsDiagramLayerSettings.LinePlacementFlag.AboveLine
+QgsDiagramLayerSettings.BelowLine = QgsDiagramLayerSettings.LinePlacementFlag.BelowLine
+QgsDiagramLayerSettings.MapOrientation = QgsDiagramLayerSettings.LinePlacementFlag.MapOrientation
+QgsDiagramLayerSettings.LinePlacementFlags = lambda flags=0: QgsDiagramLayerSettings.LinePlacementFlag(flags)
+QgsDiagramLayerSettings.BackgroundColor = QgsDiagramLayerSettings.Property.BackgroundColor
+QgsDiagramLayerSettings.StrokeColor = QgsDiagramLayerSettings.Property.StrokeColor
+QgsDiagramLayerSettings.StrokeWidth = QgsDiagramLayerSettings.Property.StrokeWidth
+QgsDiagramLayerSettings.PositionX = QgsDiagramLayerSettings.Property.PositionX
+QgsDiagramLayerSettings.PositionY = QgsDiagramLayerSettings.Property.PositionY
+QgsDiagramLayerSettings.Distance = QgsDiagramLayerSettings.Property.Distance
+QgsDiagramLayerSettings.Priority = QgsDiagramLayerSettings.Property.Priority
+QgsDiagramLayerSettings.ZIndex = QgsDiagramLayerSettings.Property.ZIndex
+QgsDiagramLayerSettings.IsObstacle = QgsDiagramLayerSettings.Property.IsObstacle
+QgsDiagramLayerSettings.Show = QgsDiagramLayerSettings.Property.Show
+QgsDiagramLayerSettings.AlwaysShow = QgsDiagramLayerSettings.Property.AlwaysShow
+QgsDiagramLayerSettings.StartAngle = QgsDiagramLayerSettings.Property.StartAngle
+QgsDiagramSettings.Height = QgsDiagramSettings.LabelPlacementMethod.Height
+QgsDiagramSettings.XHeight = QgsDiagramSettings.LabelPlacementMethod.XHeight
+QgsDiagramSettings.Up = QgsDiagramSettings.DiagramOrientation.Up
+QgsDiagramSettings.Down = QgsDiagramSettings.DiagramOrientation.Down
+QgsDiagramSettings.Left = QgsDiagramSettings.DiagramOrientation.Left
+QgsDiagramSettings.Right = QgsDiagramSettings.DiagramOrientation.Right
+QgsDiagramSettings.Clockwise = QgsDiagramSettings.Direction.Clockwise
+QgsDiagramSettings.Counterclockwise = QgsDiagramSettings.Direction.Counterclockwise

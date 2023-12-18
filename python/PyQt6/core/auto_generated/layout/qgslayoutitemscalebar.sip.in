@@ -1,0 +1,834 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemscalebar.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLayoutItemScaleBar: QgsLayoutItem
+{
+%Docstring(signature="appended")
+A layout item subclass for scale bars.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemscalebar.h"
+%End
+  public:
+
+    QgsLayoutItemScaleBar( QgsLayout *layout );
+%Docstring
+Constructor for QgsLayoutItemScaleBar, with the specified parent ``layout``.
+%End
+
+    virtual int type() const;
+
+    virtual QIcon icon() const;
+
+
+    static QgsLayoutItemScaleBar *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new scale bar item for the specified ``layout``.
+
+The caller takes responsibility for deleting the returned object.
+%End
+    virtual QgsLayoutSize minimumSize() const;
+
+
+    int numberOfSegments() const;
+%Docstring
+Returns the number of segments included in the scalebar.
+
+.. seealso:: :py:func:`setNumberOfSegments`
+
+.. seealso:: :py:func:`numberOfSegmentsLeft`
+%End
+
+    void setNumberOfSegments( int segments );
+%Docstring
+Sets the number of ``segments`` included in the scalebar.
+
+.. seealso:: :py:func:`numberOfSegments`
+
+.. seealso:: :py:func:`setNumberOfSegmentsLeft`
+%End
+
+    int numberOfSegmentsLeft() const;
+%Docstring
+Returns the number of segments included in the left part of the scalebar.
+
+.. seealso:: :py:func:`setNumberOfSegmentsLeft`
+
+.. seealso:: :py:func:`numberOfSegments`
+%End
+
+    void setNumberOfSegmentsLeft( int segments );
+%Docstring
+Sets the number of ``segments`` included in the left part of the scalebar.
+
+.. seealso:: :py:func:`numberOfSegmentsLeft`
+
+.. seealso:: :py:func:`setNumberOfSegments`
+%End
+
+    int numberOfSubdivisions()  const;
+%Docstring
+Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. note::
+
+   The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+   if the number is 1 then NO subdivision lines will be shown.
+
+.. seealso:: :py:func:`setNumberOfSubdivisions`
+
+.. versionadded:: 3.14
+%End
+
+    void setNumberOfSubdivisions( int subdivisions );
+%Docstring
+Sets the number of ``subdivisions`` for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. note::
+
+   The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+   if the number is 1 then NO subdivision lines will be shown.
+
+.. seealso:: :py:func:`numberOfSubdivisions`
+
+.. versionadded:: 3.14
+%End
+
+    double subdivisionsHeight() const;
+%Docstring
+Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`setSubdivisionsHeight`
+
+.. versionadded:: 3.14
+%End
+
+    void setSubdivisionsHeight( double height );
+%Docstring
+Sets the scalebar subdivisions ``height`` (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`subdivisionsHeight`
+
+.. versionadded:: 3.14
+%End
+
+    double unitsPerSegment() const;
+%Docstring
+Returns the number of scalebar units per segment.
+
+.. seealso:: :py:func:`setUnitsPerSegment`
+%End
+
+    void setUnitsPerSegment( double units );
+%Docstring
+Sets the number of scalebar ``units`` per segment.
+
+.. seealso:: :py:func:`unitsPerSegment`
+%End
+
+    QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const;
+%Docstring
+Returns the size mode for the scale bar segments.
+
+.. seealso:: :py:func:`setSegmentSizeMode`
+
+.. seealso:: :py:func:`minimumBarWidth`
+
+.. seealso:: :py:func:`maximumBarWidth`
+%End
+
+    void setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode );
+%Docstring
+Sets the size ``mode`` for scale bar segments.
+
+.. seealso:: :py:func:`segmentSizeMode`
+
+.. seealso:: :py:func:`setMinimumBarWidth`
+
+.. seealso:: :py:func:`setMaximumBarWidth`
+%End
+
+    double minimumBarWidth() const;
+%Docstring
+Returns the minimum width (in millimeters) for scale bar segments. This
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
+to SegmentSizeFitWidth.
+
+.. seealso:: :py:func:`segmentSizeMode`
+
+.. seealso:: :py:func:`setMinimumBarWidth`
+
+.. seealso:: :py:func:`maximumBarWidth`
+%End
+
+    void setMinimumBarWidth( double minWidth );
+%Docstring
+Sets the minimum ``width`` (in millimeters) for scale bar segments. This
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
+to SegmentSizeFitWidth.
+
+.. seealso:: :py:func:`minimumBarWidth`
+
+.. seealso:: :py:func:`setMaximumBarWidth`
+
+.. seealso:: :py:func:`setSegmentSizeMode`
+%End
+
+    double maximumBarWidth() const;
+%Docstring
+Returns the maximum width (in millimeters) for scale bar segments. This
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
+to SegmentSizeFitWidth.
+
+.. seealso:: :py:func:`segmentSizeMode`
+
+.. seealso:: :py:func:`setMaximumBarWidth`
+
+.. seealso:: :py:func:`minimumBarWidth`
+%End
+
+    void setMaximumBarWidth( double maxWidth );
+%Docstring
+Sets the maximum ``width`` (in millimeters) for scale bar segments. This
+property is only effective if the :py:func:`~QgsLayoutItemScaleBar.segmentSizeMode` is set
+to SegmentSizeFitWidth.
+
+.. seealso:: :py:func:`minimumBarWidth`
+
+.. seealso:: :py:func:`setMinimumBarWidth`
+
+.. seealso:: :py:func:`setSegmentSizeMode`
+%End
+
+    double mapUnitsPerScaleBarUnit() const;
+%Docstring
+Returns the number of map units per scale bar unit used by the scalebar.
+
+.. seealso:: :py:func:`setMapUnitsPerScaleBarUnit`
+%End
+
+    void setMapUnitsPerScaleBarUnit( double units );
+%Docstring
+Sets the number of map ``units`` per scale bar unit used by the scalebar.
+
+.. seealso:: :py:func:`mapUnitsPerScaleBarUnit`
+%End
+
+    QString unitLabel() const;
+%Docstring
+Returns the label for units.
+
+.. seealso:: :py:func:`setUnitLabel`
+%End
+
+    void setUnitLabel( const QString &label );
+%Docstring
+Sets the ``label`` for units.
+
+.. seealso:: :py:func:`unitLabel`
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`setTextFormat`
+
+.. versionadded:: 3.2
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`textFormat`
+
+.. versionadded:: 3.2
+%End
+
+
+    QgsLineSymbol *lineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *divisionLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setDivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar divisions (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *subdivisionLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar subdivisions (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setFillSymbol`
+
+.. seealso:: :py:func:`alternateFillSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the primary fill ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`fillSymbol`
+
+.. seealso:: :py:func:`setAlternateFillSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFillSymbol *alternateFillSymbol() const;
+%Docstring
+Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setAlternateFillSymbol`
+
+.. seealso:: :py:func:`fillSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setAlternateFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the secondary fill ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`alternateFillSymbol`
+
+.. seealso:: :py:func:`setFillSymbol`
+
+.. versionadded:: 3.14
+%End
+
+ QFont font() const /Deprecated/;
+%Docstring
+Returns the font used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`setFont`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.textFormat` instead
+%End
+
+ void setFont( const QFont &font ) /Deprecated/;
+%Docstring
+Sets the ``font`` used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`font`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setTextFormat` instead
+%End
+
+ QColor fontColor() const /Deprecated/;
+%Docstring
+Returns the color used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`setFontColor`
+
+.. seealso:: :py:func:`font`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.textFormat` instead
+%End
+
+ void setFontColor( const QColor &color ) /Deprecated/;
+%Docstring
+Sets the ``color`` used for drawing text in the scalebar.
+
+.. seealso:: :py:func:`fontColor`
+
+.. seealso:: :py:func:`setFont`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setTextFormat` instead
+%End
+
+ QColor fillColor() const /Deprecated/;
+%Docstring
+Returns the color used for fills in the scalebar.
+
+.. seealso:: :py:func:`setFillColor`
+
+.. seealso:: :py:func:`fillColor2`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.fillSymbol` instead
+%End
+
+ void setFillColor( const QColor &color ) /Deprecated/;
+%Docstring
+Sets the ``color`` used for fills in the scalebar.
+
+.. seealso:: :py:func:`fillColor`
+
+.. seealso:: :py:func:`setFillColor2`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setFillSymbol` instead
+%End
+
+ QColor fillColor2() const /Deprecated/;
+%Docstring
+Returns the secondary color used for fills in the scalebar.
+
+.. seealso:: :py:func:`setFillColor2`
+
+.. seealso:: :py:func:`fillColor`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.alternateFillSymbol` instead
+%End
+
+ void setFillColor2( const QColor &color ) /Deprecated/;
+%Docstring
+Sets the secondary ``color`` used for fills in the scalebar.
+
+.. seealso:: :py:func:`fillColor2`
+
+.. seealso:: :py:func:`setFillColor2`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setAlternateFillSymbol` instead
+%End
+
+ QColor lineColor() const /Deprecated/;
+%Docstring
+Returns the color used for lines in the scalebar.
+
+.. seealso:: :py:func:`setLineColor`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.lineSymbol` instead
+%End
+
+ void setLineColor( const QColor &color ) /Deprecated/;
+%Docstring
+Sets the ``color`` used for lines in the scalebar.
+
+.. seealso:: :py:func:`lineColor`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setLineSymbol` instead
+%End
+
+ double lineWidth() const /Deprecated/;
+%Docstring
+Returns the line width in millimeters for lines in the scalebar.
+
+.. seealso:: :py:func:`setLineWidth`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.lineSymbol` instead
+%End
+
+ void setLineWidth( double width ) /Deprecated/;
+%Docstring
+Sets the line ``width`` in millimeters for lines in the scalebar.
+
+.. seealso:: :py:func:`lineWidth`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setLineSymbol` instead
+%End
+
+ QPen pen() const /Deprecated/;
+%Docstring
+Returns the pen used for drawing outlines in the scalebar.
+
+.. seealso:: :py:func:`brush`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.lineSymbol` instead
+%End
+
+ QBrush brush() const /Deprecated/;
+%Docstring
+Returns the primary brush for the scalebar.
+
+:return: QBrush used for filling the scalebar
+
+.. seealso:: :py:func:`brush2`
+
+.. seealso:: :py:func:`pen`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.fillSymbol` instead
+%End
+
+ QBrush brush2() const /Deprecated/;
+%Docstring
+Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
+as single and double box styles.
+
+:return: QBrush used for secondary color areas
+
+.. seealso:: :py:func:`brush`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.alternateFillSymbol` instead
+%End
+
+    double height() const;
+%Docstring
+Returns the scalebar height (in millimeters).
+
+.. seealso:: :py:func:`setHeight`
+%End
+
+    void setHeight( double height );
+%Docstring
+Sets the scalebar ``height`` (in millimeters).
+
+.. seealso:: :py:func:`height`
+%End
+
+    void setLinkedMap( QgsLayoutItemMap *map );
+%Docstring
+Sets the ``map`` item linked to the scalebar.
+
+.. seealso:: :py:func:`linkedMap`
+%End
+
+    QgsLayoutItemMap *linkedMap() const;
+%Docstring
+Returns the map item linked to the scalebar.
+
+.. seealso:: :py:func:`setLinkedMap`
+%End
+
+    double labelBarSpace() const;
+%Docstring
+Returns the spacing (in millimeters) between labels and the scalebar.
+
+.. seealso:: :py:func:`setLabelBarSpace`
+%End
+
+    void setLabelBarSpace( double space );
+%Docstring
+Sets the spacing (in millimeters) between labels and the scalebar.
+
+.. seealso:: :py:func:`labelBarSpace`
+%End
+
+    double boxContentSpace() const;
+%Docstring
+Returns the spacing (margin) between the scalebar box and content in millimeters.
+
+.. seealso:: :py:func:`setBoxContentSpace`
+%End
+
+    void setBoxContentSpace( double space );
+%Docstring
+Sets the ``space`` (margin) between the scalebar box and content in millimeters.
+
+.. seealso:: :py:func:`boxContentSpace`
+%End
+
+    QgsScaleBarSettings::LabelVerticalPlacement labelVerticalPlacement() const;
+%Docstring
+Returns the vertical placement of text labels.
+
+.. seealso:: :py:func:`setLabelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelVerticalPlacement( QgsScaleBarSettings::LabelVerticalPlacement placement );
+%Docstring
+Sets the vertical ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelVerticalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    QgsScaleBarSettings::LabelHorizontalPlacement labelHorizontalPlacement() const;
+%Docstring
+Returns the horizontal placement of text labels.
+
+.. seealso:: :py:func:`setLabelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    void setLabelHorizontalPlacement( QgsScaleBarSettings::LabelHorizontalPlacement placement );
+%Docstring
+Sets the horizontal ``placement`` of text labels.
+
+.. seealso:: :py:func:`labelHorizontalPlacement`
+
+.. versionadded:: 3.10
+%End
+
+    QgsScaleBarSettings::Alignment alignment() const;
+%Docstring
+Returns the scalebar alignment.
+
+.. seealso:: :py:func:`setAlignment`
+%End
+
+    void setAlignment( QgsScaleBarSettings::Alignment alignment );
+%Docstring
+Sets the scalebar ``alignment``.
+
+.. seealso:: :py:func:`alignment`
+%End
+
+    Qgis::DistanceUnit units() const;
+%Docstring
+Returns the distance units used by the scalebar.
+
+.. seealso:: :py:func:`setUnits`
+%End
+
+    void setUnits( Qgis::DistanceUnit units );
+%Docstring
+Sets the distance ``units`` used by the scalebar.
+
+.. seealso:: :py:func:`units`
+%End
+
+ Qt::PenJoinStyle lineJoinStyle() const /Deprecated/;
+%Docstring
+Returns the join style used for drawing lines in the scalebar.
+
+.. seealso:: :py:func:`setLineJoinStyle`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.lineSymbol` instead
+%End
+
+ void setLineJoinStyle( Qt::PenJoinStyle style ) /Deprecated/;
+%Docstring
+Sets the join ``style`` used when drawing the lines in the scalebar
+
+.. seealso:: :py:func:`lineJoinStyle`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setLineSymbol` instead
+%End
+
+ Qt::PenCapStyle lineCapStyle() const /Deprecated/;
+%Docstring
+Returns the cap style used for drawing lines in the scalebar.
+
+.. seealso:: :py:func:`setLineCapStyle`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.lineSymbol` instead
+%End
+
+ void setLineCapStyle( Qt::PenCapStyle style ) /Deprecated/;
+%Docstring
+Sets the cap ``style`` used when drawing the lines in the scalebar.
+
+.. seealso:: :py:func:`lineCapStyle`
+
+.. deprecated::
+   use :py:func:`~QgsLayoutItemScaleBar.setLineSymbol` instead
+%End
+
+    void applyDefaultSettings();
+%Docstring
+Applies the default scalebar settings to the scale bar.
+
+.. seealso:: :py:func:`applyDefaultSize`
+%End
+
+    bool applyDefaultRendererSettings( QgsScaleBarRenderer *renderer );
+%Docstring
+Applies any default settings relating to the specified ``renderer`` to the item.
+
+Returns ``True`` if settings were applied.
+
+.. versionadded:: 3.14
+%End
+
+    Qgis::DistanceUnit guessUnits() const;
+%Docstring
+Attempts to guess the most reasonable unit choice for the scalebar, given
+the current linked map's scale.
+
+This method also considers the linked map's CRS, in order to determine if
+metric or imperial units are more appropriate.
+%End
+
+    void applyDefaultSize( Qgis::DistanceUnit units = Qgis::DistanceUnit::Meters );
+%Docstring
+Applies the default size to the scale bar (scale bar 1/5 of map item width)
+
+.. seealso:: :py:func:`applyDefaultSettings`
+%End
+
+    void resizeToMinimumWidth();
+%Docstring
+Resizes the scale bar to its minimum width, without changing the height.
+%End
+
+    void setStyle( const QString &name );
+%Docstring
+Sets the scale bar style by ``name``.
+
+The ``name`` parameter gives the (untranslated) style name.
+Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle',
+'Line Ticks Down', 'Line Ticks Up', 'Stepped Line', 'Hollow', 'Numeric'.
+
+.. seealso:: :py:func:`style`
+%End
+
+    QString style() const;
+%Docstring
+Returns the scale bar style name.
+
+.. seealso:: :py:func:`setStyle`
+%End
+
+    const QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for numbers in the scalebar.
+
+.. seealso:: :py:func:`setNumericFormat`
+
+.. versionadded:: 3.12
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for numbers in the scalebar.
+
+Ownership of ``format`` is transferred to the scalebar.
+
+.. seealso:: :py:func:`numericFormat`
+
+.. versionadded:: 3.12
+%End
+
+    void update();
+%Docstring
+Adjusts the scale bar box size and updates the item.
+%End
+
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
+    virtual void finalizeRestoreFromXml();
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
+
+  protected:
+
+    virtual void draw( QgsLayoutItemRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemscalebar.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vectortile/qgsvectortilelayerproperties.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorTileLayerProperties : QgsLayerPropertiesDialog
+{
+%Docstring(signature="appended")
+Vectortile layer properties dialog
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilelayerproperties.h"
+%End
+  public:
+    QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+%End
+
+ void saveDefaultStyle() /Deprecated/;
+%Docstring
+Saves the default style when appropriate button is pressed
+
+.. deprecated::
+   use :py:func:`~QgsVectorTileLayerProperties.saveStyleAsDefault` instead.
+%End
+
+    void loadStyle();
+%Docstring
+Loads a saved style when appropriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
+ void saveStyleAs() /Deprecated/;
+%Docstring
+Saves a style when appriate button is pressed
+
+.. deprecated::
+   use :py:func:`~QgsVectorTileLayerProperties.saveStyleToFile` instead.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vectortile/qgsvectortilelayerproperties.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

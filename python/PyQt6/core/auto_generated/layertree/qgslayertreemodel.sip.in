@@ -1,0 +1,530 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreemodel.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerTreeModel : QAbstractItemModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsLayerTreeModel` class is model implementation for Qt item views framework.
+
+The model can be used in any QTreeView, it is however recommended to use it
+with :py:class:`QgsLayerTreeView` which brings additional functionality specific to layer tree handling.
+
+The model listens to the changes in the layer tree and signals the changes as appropriate,
+so that any view that uses the model is updated accordingly.
+
+Behavior of the model can be customized with flags. For example, whether to show legend or
+whether to allow changes to the layer tree.
+
+.. seealso:: :py:class:`QgsLayerTreeView`
+
+.. versionadded:: 2.4
+%End
+
+%TypeHeaderCode
+#include "qgslayertreemodel.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
+      sipType = sipType_QgsLayerTreeModel;
+    else
+      sipType = 0;
+%End
+  public:
+
+    explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Construct a new tree model with given layer tree (root node must not be ``None``).
+The root node is not transferred by the model.
+%End
+
+    ~QgsLayerTreeModel();
+
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::DropActions supportedDropActions() const;
+
+    virtual QStringList mimeTypes() const;
+
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
+    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+
+
+    enum Flag
+    {
+      // display flags
+      ShowLegend,
+      ShowLegendAsTree,
+      DeferredLegendInvalidation,
+      UseEmbeddedWidgets,
+      UseTextFormatting,
+
+      // behavioral flags
+      AllowNodeReorder,
+      AllowNodeRename,
+      AllowNodeChangeVisibility,
+      AllowLegendChangeState,
+      ActionHierarchical,
+      UseThreadedHitTest,
+    };
+    typedef QFlags<QgsLayerTreeModel::Flag> Flags;
+
+
+    void setFlags( QgsLayerTreeModel::Flags f );
+%Docstring
+Sets OR-ed combination of model flags
+%End
+    void setFlag( Flag f, bool on = true );
+%Docstring
+Enable or disable a model flag
+%End
+    Flags flags() const;
+%Docstring
+Returns OR-ed combination of model flags
+%End
+    bool testFlag( Flag f ) const;
+%Docstring
+Check whether a flag is enabled
+%End
+
+    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+%Docstring
+Returns layer tree node for given index. Returns root node for invalid index.
+Returns ``None`` if index does not refer to a layer tree node (e.g. it is a legend node)
+%End
+    QModelIndex node2index( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
+%End
+
+    QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
+%Docstring
+Convert a ``list`` of indexes to a list of layer tree nodes.
+Indices that do not represent layer tree nodes are skipped.
+If ``skipInternal`` is ``True``, a node is included in the output list only if no parent node is in the list.
+%End
+
+    static QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index );
+%Docstring
+Returns legend node for given index. Returns ``None`` for invalid index
+
+.. versionadded:: 2.6
+%End
+
+    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
+%Docstring
+Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+
+.. versionadded:: 2.6
+%End
+
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
+%Docstring
+Returns filtered list of active legend nodes attached to a particular layer node
+(by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is ``True``)
+
+.. note::
+
+   Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+
+.. seealso:: :py:func:`layerOriginalLegendNodes`
+
+.. versionadded:: 2.6
+%End
+
+    QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
+%Docstring
+Returns original (unfiltered) list of legend nodes attached to a particular layer node
+
+.. seealso:: :py:func:`layerLegendNodes`
+
+.. versionadded:: 2.14
+%End
+
+    QgsLayerTreeModelLegendNode *legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
+%Docstring
+Returns legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
+
+.. versionadded:: 2.18
+%End
+
+    QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;
+%Docstring
+Searches through the layer tree to find a legend node with a matching layer ID
+and rule key.
+
+:param layerId: map layer ID
+:param ruleKey: legend node rule key
+
+:return: :py:class:`QgsLayerTreeModelLegendNode` if found
+
+.. versionadded:: 2.14
+%End
+
+    QgsLayerTree *rootGroup() const;
+%Docstring
+Returns pointer to the root node of the layer tree. Always a non ``None`` value.
+%End
+
+    void setRootGroup( QgsLayerTree *newRootGroup );
+%Docstring
+Reset the model and use a new root group node
+
+.. versionadded:: 2.6
+%End
+
+    void refreshLayerLegend( QgsLayerTreeLayer *nodeLayer );
+%Docstring
+Force a refresh of legend nodes of a layer node.
+Not necessary to call when layer's renderer is changed as the model listens to these events.
+%End
+
+    QModelIndex currentIndex() const;
+%Docstring
+Gets index of the item marked as current. Item marked as current is underlined.
+%End
+    void setCurrentIndex( const QModelIndex &currentIndex );
+%Docstring
+Sets index of the current item. May be used by view. Item marked as current is underlined.
+%End
+
+    void setLayerTreeNodeFont( int nodeType, const QFont &font );
+%Docstring
+Sets font for a particular type of layer tree node. nodeType should come from :py:class:`QgsLayerTreeNode`.NodeType enumeration
+%End
+    QFont layerTreeNodeFont( int nodeType ) const;
+%Docstring
+Gets font for a particular type of layer tree node. nodeType should come from :py:class:`QgsLayerTreeNode`.NodeType enumeration
+%End
+
+    void setAutoCollapseLegendNodes( int nodeCount );
+%Docstring
+Sets at what number of legend nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
+%End
+    int autoCollapseLegendNodes() const;
+%Docstring
+Returns at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
+%End
+
+    void setLegendFilterByScale( double scale );
+%Docstring
+Force only display of legend nodes which are valid for a given ``scale``.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Setting ``scale`` <= 0 will disable the functionality.
+
+.. seealso:: :py:func:`legendFilterByScale`
+
+.. versionadded:: 2.6
+%End
+
+    double legendFilterByScale() const;
+%Docstring
+Returns the scale which restricts the legend nodes which are visible.
+The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+A scale <= 0 indicates that no scale filtering is being performed.
+
+.. seealso:: :py:func:`setLegendFilterByScale`
+
+.. versionadded:: 2.6
+%End
+
+ void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated/;
+%Docstring
+Force only display of legend nodes which are valid for given map settings.
+Setting ``None`` or invalid map settings will disable the functionality.
+Ownership of map settings pointer does not change, a copy is made.
+
+.. deprecated::
+   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
+%End
+
+ void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated/;
+%Docstring
+Filter display of legend nodes for given map settings
+
+:param settings: Map settings. Setting ``None`` or invalid settings will disable any filter. Ownership is not changed, a copy is made
+:param useExtent: Whether to use the extent of the map settings as a first spatial filter on legend nodes
+:param polygon: If not empty, this polygon will be used instead of the map extent to filter legend nodes
+:param useExpressions: Whether to use legend node filter expressions
+
+.. deprecated::
+   QGIS 3.32. Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
+%End
+
+    const QgsMapSettings *legendFilterMapSettings() const;
+%Docstring
+Returns the current map settings used for the current legend filter (or ``None`` if none is enabled)
+
+.. versionadded:: 2.14
+%End
+
+    void setFilterSettings( const QgsLayerTreeFilterSettings *settings = 0 );
+%Docstring
+Sets the filter ``settings`` to use to filter legend nodes.
+
+Set to ``None`` to disable legend filter.
+
+.. seealso:: :py:func:`filterSettings`
+
+.. versionadded:: 3.32
+%End
+
+    const QgsLayerTreeFilterSettings *filterSettings() const;
+%Docstring
+Returns the filter settings to use to filter legend nodes. May be ``None``.
+
+.. seealso:: :py:func:`setFilterSettings`
+
+.. versionadded:: 3.32
+%End
+
+    void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
+%Docstring
+Give the layer tree model hints about the currently associated map view
+so that legend nodes that use map units can be scaled correctly
+
+.. versionadded:: 2.6
+%End
+
+    void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale  /Out/ ) const;
+%Docstring
+Gets hints about map view - to be used in legend nodes. Arguments that are not ``None`` will receive values.
+If there are no valid map view data (from previous call to :py:func:`~QgsLayerTreeModel.setLegendMapViewData`), returned values are zeros.
+
+.. versionadded:: 2.6
+%End
+
+    QMap<QString, QString> layerStyleOverrides() const;
+%Docstring
+Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+
+.. versionadded:: 2.10
+%End
+
+    void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
+%Docstring
+Sets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+
+.. versionadded:: 2.10
+%End
+
+    void addTargetScreenProperties( const QgsScreenProperties &properties );
+%Docstring
+Adds additional target screen ``properties`` to use when generating icons for Qt.DecorationRole data.
+
+This allows icons to be generated at an icon device pixel ratio and DPI which
+corresponds exactly to the view's screen properties in which this model is used.
+
+.. versionadded:: 3.32
+%End
+
+    QSet< QgsScreenProperties > targetScreenProperties() const;
+%Docstring
+Returns the target screen properties to use when generating icons.
+
+This allows icons to be generated at an icon device pixel ratio and DPI which
+corresponds exactly to the view's screen properties in which this model is used.
+
+.. seealso:: :py:func:`addTargetScreenProperties`
+
+.. versionadded:: 3.32
+%End
+
+    static int scaleIconSize( int standardSize );
+%Docstring
+Scales an layer tree model icon size to compensate for display pixel density, making the icon
+size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+displays.
+
+``standardSize`` should be set to a standard icon size, e.g. 16, 24, 48, etc.
+
+.. versionadded:: 3.6
+%End
+
+    void waitForHitTestBlocking();
+%Docstring
+When a current hit test for visible legend items is in progress, calling this
+method will block until that hit test is complete.
+
+.. versionadded:: 3.32
+%End
+
+    bool hitTestInProgress() const;
+%Docstring
+Returns ``True`` if a hit test for visible legend items is currently in progress.
+
+.. seealso:: :py:func:`hitTestStarted`
+
+.. seealso:: :py:func:`hitTestCompleted`
+
+.. versionadded:: 3.32
+%End
+
+  signals:
+
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
+%Docstring
+Emits a message than can be displayed to the user in a GUI class
+
+.. versionadded:: 3.14
+%End
+
+    void hitTestStarted();
+%Docstring
+Emitted when a hit test for visible legend items starts.
+
+.. seealso:: :py:func:`hitTestInProgress`
+
+.. seealso:: :py:func:`hitTestCompleted`
+
+.. versionadded:: 3.32
+%End
+
+    void hitTestCompleted();
+%Docstring
+Emitted when a hit test for visible legend items completes.
+
+.. seealso:: :py:func:`hitTestInProgress`
+
+.. seealso:: :py:func:`hitTestStarted`
+
+.. versionadded:: 3.32
+%End
+
+  protected slots:
+    void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+    void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+    void nodeWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+    void nodeRemovedChildren();
+
+    void nodeVisibilityChanged( QgsLayerTreeNode *node );
+
+    void nodeNameChanged( QgsLayerTreeNode *node, const QString &name );
+%Docstring
+Updates model when node's name has changed
+
+.. versionadded:: 3.0
+%End
+
+    void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
+    void nodeLayerLoaded();
+    void nodeLayerWillBeUnloaded();
+    void layerLegendChanged();
+
+    void layerFlagsChanged();
+%Docstring
+Emitted when layer flags have changed.
+
+.. versionadded:: 3.18
+%End
+
+    void layerNeedsUpdate();
+
+    void legendNodeDataChanged();
+
+    void invalidateLegendMapBasedData();
+
+  protected:
+    void removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer );
+    void addLegendToLayer( QgsLayerTreeLayer *nodeL );
+
+    void connectToLayer( QgsLayerTreeLayer *nodeLayer );
+    void disconnectFromLayer( QgsLayerTreeLayer *nodeLayer );
+
+    void connectToLayers( QgsLayerTreeGroup *parentGroup );
+    void disconnectFromLayers( QgsLayerTreeGroup *parentGroup );
+    void connectToRootNode();
+    void disconnectFromRootNode();
+
+    void recursivelyEmitDataChanged( const QModelIndex &index = QModelIndex() );
+%Docstring
+emit :py:func:`~QgsLayerTreeModel.dataChanged` for layer tree node items
+%End
+
+    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex(), double previousScale = 0.0 );
+%Docstring
+Updates layer data for scale dependent layers, should be called when map scale changes.
+Emits :py:func:`~QgsLayerTreeModel.dataChanged` for all scale dependent layers.
+
+.. versionadded:: 2.16
+%End
+
+    static QIcon iconGroup();
+
+    QList<QgsLayerTreeModelLegendNode *> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode *> &nodes );
+%Docstring
+Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filtering rules
+%End
+
+    QModelIndex indexOfParentLayerTreeNode( QgsLayerTreeNode *parentNode ) const;
+
+    int legendRootRowCount( QgsLayerTreeLayer *nL ) const;
+    int legendNodeRowCount( QgsLayerTreeModelLegendNode *node ) const;
+    QModelIndex legendRootIndex( int row, int column, QgsLayerTreeLayer *nL ) const;
+    QModelIndex legendNodeIndex( int row, int column, QgsLayerTreeModelLegendNode *node ) const;
+    QModelIndex legendParent( QgsLayerTreeModelLegendNode *legendNode ) const;
+    QVariant legendNodeData( QgsLayerTreeModelLegendNode *node, int role ) const;
+    Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode *node ) const;
+    bool legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
+    QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
+    void legendCleanup();
+    void legendInvalidateMapBasedData();
+
+  protected:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+};
+
+QFlags<QgsLayerTreeModel::Flag> operator|(QgsLayerTreeModel::Flag f1, QFlags<QgsLayerTreeModel::Flag> f2);
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreemodel.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

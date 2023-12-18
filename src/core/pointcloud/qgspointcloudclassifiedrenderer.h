@@ -44,8 +44,10 @@ class CORE_EXPORT QgsPointCloudCategory
     * The \a label argument specifies the label used for this category in legends and the layer tree.
     *
     * The \a render argument indicates whether the category should initially be rendered and appear checked in the layer tree.
+    *
+    * A positive \a pointSize argument overrides the layer's point size setting for this category (added in QGIS 3.36).
     */
-    QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true );
+    QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
 
     /**
      * Equality operator.
@@ -65,6 +67,13 @@ class CORE_EXPORT QgsPointCloudCategory
      * \see setColor()
      */
     QColor color() const { return mColor; }
+
+    /**
+     * Returns the point size for this category.
+     * \see setPointSize()
+     * \since QGIS 3.36
+     */
+    double pointSize() const { return mPointSize; }
 
     /**
      * Returns the label for this category, which is used to represent the category within
@@ -88,6 +97,14 @@ class CORE_EXPORT QgsPointCloudCategory
     void setColor( const QColor &color ) { mColor = color; }
 
     /**
+     * Sets the point size for this category.
+     *
+     * \see pointSize()
+     * \since QGIS 3.36
+     */
+    void setPointSize( double size ) { mPointSize = size; }
+
+    /**
      * Sets the \a label for this category, which is used to represent the category within
      * legends and the layer tree.
      * \see label()
@@ -109,6 +126,7 @@ class CORE_EXPORT QgsPointCloudCategory
   protected:
     int mValue = 0;
     QColor mColor;
+    double mPointSize = 0; // Values <= 0 means "use default layer point size"
     QString mLabel;
     bool mRender = true;
 };

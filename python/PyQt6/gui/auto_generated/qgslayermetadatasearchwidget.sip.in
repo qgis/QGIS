@@ -1,0 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayermetadatasearchwidget.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLayerMetadataSearchWidget : QgsAbstractDataSourceWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsLayerMetadataSearchWidget` class offers layer metadata search and filtering.
+It is designed to be embedded in the data source manager dialog.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgslayermetadatasearchwidget.h"
+%End
+  public:
+
+    explicit QgsLayerMetadataSearchWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+%Docstring
+Creates a new QgsLayerMetadataSearchWidget.
+%End
+
+    virtual void setMapCanvas( QgsMapCanvas *mapCanvas );
+
+
+  public slots:
+
+    void updateExtentFilter( int index );
+%Docstring
+Updates the extent filter based on the combo box current item ``index``.
+%End
+
+    virtual void refresh();
+
+    virtual void addButtonClicked();
+
+    virtual void reset();
+
+
+  protected:
+    virtual void showEvent( QShowEvent *event );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayermetadatasearchwidget.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

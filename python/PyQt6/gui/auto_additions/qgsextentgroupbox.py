@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/gui/qgsextentgroupbox.h
+QgsExtentGroupBox.OriginalExtent = QgsExtentGroupBox.ExtentState.OriginalExtent
+QgsExtentGroupBox.CurrentExtent = QgsExtentGroupBox.ExtentState.CurrentExtent
+QgsExtentGroupBox.UserExtent = QgsExtentGroupBox.ExtentState.UserExtent
+QgsExtentGroupBox.ProjectLayerExtent = QgsExtentGroupBox.ExtentState.ProjectLayerExtent
+QgsExtentGroupBox.DrawOnCanvas = QgsExtentGroupBox.ExtentState.DrawOnCanvas

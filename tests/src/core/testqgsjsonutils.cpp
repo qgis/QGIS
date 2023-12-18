@@ -38,6 +38,7 @@ class TestQgsJsonUtils : public QObject
   private slots:
     void testStringList();
     void testJsonArray();
+    void testJsonToVariant();
     void testParseJson();
     void testIntList();
     void testDoubleList();
@@ -110,6 +111,19 @@ void TestQgsJsonUtils::testJsonArray()
     QVERIFY( value.isValid() );
     QCOMPARE( value, QVariant( QVariant::Type::Double ) );
   }
+}
+
+void TestQgsJsonUtils::testJsonToVariant()
+{
+  const json value = json::parse( "{\"_bool\":true,\"_double\":1234.45,\"_int\":123,\"_list\":[1,2,3.4,null],\"_null\":null,\"_object\":{\"int\":123}}" );
+  const QVariant variant = QgsJsonUtils::jsonToVariant( value );
+  QCOMPARE( variant.type(), QVariant::Map );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_bool" ) ), true );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_double" ) ), 1234.45 );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_int" ) ), 123 );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_list" ) ), QVariantList( {1, 2, 3.4, QVariant()} ) );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_null" ) ), QVariant() );
+  QCOMPARE( variant.toMap().value( QStringLiteral( "_object" ) ), QVariantMap( {{ QStringLiteral( "int" ), 123 }} ) );
 }
 
 void TestQgsJsonUtils::testParseJson()

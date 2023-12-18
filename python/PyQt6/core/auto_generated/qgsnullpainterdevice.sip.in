@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnullpainterdevice.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsNullPaintDevice: QPaintDevice
+{
+%Docstring(signature="appended")
+Null painter device that can be used for map renderer jobs which use custom painters.
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsnullpainterdevice.h"
+%End
+  public:
+
+    QgsNullPaintDevice();
+
+    virtual QPaintEngine *paintEngine() const;
+
+
+    virtual int metric( PaintDeviceMetric metric ) const;
+
+
+    void setOutputSize( const QSize &size );
+%Docstring
+Sets the ``size`` of the device in pixels.
+%End
+    void setOutputDpi( const int dpi );
+%Docstring
+Sets the ``dpi`` of the device.
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnullpainterdevice.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

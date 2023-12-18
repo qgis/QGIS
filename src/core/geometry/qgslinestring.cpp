@@ -20,6 +20,7 @@
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeometryutils_base.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
 #include "qgsgeometrytransformer.h"
@@ -2376,4 +2377,41 @@ void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPo
       *srcZ++ = res.z();
   }
   clearCache();
+}
+
+
+QgsLineString *QgsLineString::measuredLine( double start, double end ) const
+{
+  const int nbpoints = numPoints();
+  std::unique_ptr< QgsLineString > cloned( clone() );
+
+  if ( !cloned->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
+  {
+    return cloned.release();
+  }
+
+  if ( isEmpty() || ( nbpoints < 2 ) )
+  {
+    return cloned.release();
+  }
+
+  const double range = end - start;
+  double lineLength = length();
+  double lengthSoFar = 0.0;
+
+
+  double *mOut = cloned->mM.data();
+  *mOut++ = start;
+  for ( int i = 1; i < nbpoints ; ++i )
+  {
+    lengthSoFar += QgsGeometryUtilsBase::distance2D( mX[ i - 1], mY[ i - 1 ], mX[ i ], mY[ i ] );
+    if ( lineLength > 0.0 )
+      *mOut++ = start + range * lengthSoFar / lineLength;
+    else if ( lineLength == 0.0 && nbpoints > 1 )
+      *mOut++ = start + range * i / ( nbpoints - 1 );
+    else
+      *mOut++ = 0.0;
+  }
+
+  return cloned.release();
 }

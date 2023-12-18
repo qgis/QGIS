@@ -1,0 +1,203 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgsscalebarrenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsScaleBarRenderer
+{
+%Docstring(signature="appended")
+Abstract base class for scale bar renderers.
+
+Scalebar renderer subclasses implement custom drawing logic, with the possibility to implement
+custom labeling.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsscalebarrenderer.h"
+%End
+  public:
+
+    enum class Flag
+    {
+      FlagUsesLineSymbol,
+      FlagUsesFillSymbol,
+      FlagUsesAlternateFillSymbol,
+      FlagRespectsUnits,
+      FlagRespectsMapUnitsPerScaleBarUnit,
+      FlagUsesUnitLabel,
+      FlagUsesSegments,
+      FlagUsesLabelBarSpace,
+      FlagUsesLabelVerticalPlacement,
+      FlagUsesLabelHorizontalPlacement,
+      FlagUsesAlignment,
+      FlagUsesSubdivisions,
+      FlagUsesDivisionSymbol,
+      FlagUsesSubdivisionSymbol,
+      FlagUsesSubdivisionsHeight,
+    };
+    typedef QFlags<QgsScaleBarRenderer::Flag> Flags;
+
+
+    struct ScaleBarContext
+    {
+
+      double segmentWidth;
+
+      QSizeF size;
+
+      double scale;
+
+      Flags flags;
+
+    };
+
+    QgsScaleBarRenderer();
+%Docstring
+Constructor for QgsScaleBarRenderer.
+%End
+    virtual ~QgsScaleBarRenderer();
+
+ QString name() const /Deprecated/;
+%Docstring
+Returns the unique name for this style.
+
+.. deprecated::
+   use :py:func:`~QgsScaleBarRenderer.id` instead
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the unique ID for this renderer.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QString visibleName() const = 0;
+%Docstring
+Returns the user friendly, translated name for the renderer.
+
+.. versionadded:: 3.14
+%End
+
+    virtual Flags flags() const;
+%Docstring
+Returns the scalebar rendering flags, which dictates the renderer's behavior.
+
+.. versionadded:: 3.14
+%End
+
+    virtual int sortKey() const;
+%Docstring
+Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
+
+Generally, subclasses should return :py:func:`QgsScaleBarRenderer.sortKey()` as their sorting key.
+%End
+
+    virtual QgsScaleBarRenderer *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the renderer. The caller takes ownership of the returned value.
+%End
+
+    virtual void draw( QgsRenderContext &context,
+                       const QgsScaleBarSettings &settings,
+                       const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const = 0;
+%Docstring
+Draws the scalebar using the specified ``settings`` and ``scaleContext`` to a destination render ``context``.
+%End
+
+ virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+        const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const /Deprecated/;
+%Docstring
+Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
+
+.. deprecated::
+   Use the version with a :py:class:`QgsRenderContext` instead.
+%End
+
+    virtual QSizeF calculateBoxSize( QgsRenderContext &context,
+                                     const QgsScaleBarSettings &settings,
+                                     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+%Docstring
+Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
+%Docstring
+Applies any default settings relating to the scalebar to the passed ``settings`` object.
+
+Returns ``True`` if settings were applied.
+
+.. versionadded:: 3.14
+%End
+
+  protected:
+
+    void drawDefaultLabels( QgsRenderContext &context,
+                            const QgsScaleBarSettings &settings,
+                            const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+%Docstring
+Draws default scalebar labels using the specified ``settings`` and ``scaleContext`` to a destination render ``context``.
+%End
+
+    QString firstLabelString( const QgsScaleBarSettings &settings ) const;
+%Docstring
+Returns the text used for the first label in the scalebar.
+%End
+
+ double firstLabelXOffset( const QgsScaleBarSettings &settings ) const /Deprecated/;
+%Docstring
+Returns the x-offset (in millimeters) used for the first label in the scalebar.
+
+.. deprecated::
+   Use the version with :py:class:`QgsRenderContext` instead.
+%End
+
+    double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context, const ScaleBarContext &scaleContext ) const;
+%Docstring
+Returns the x-offset (in render context painter units) used for the first label in the scalebar.
+
+.. versionadded:: 3.2
+%End
+
+ QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const /Deprecated/;
+%Docstring
+Returns a list of positions for each segment within the scalebar.
+
+.. deprecated::
+   use the version with a :py:class:`QgsRenderContext` instead
+%End
+
+    QList<double> segmentPositions( QgsRenderContext &context, const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+%Docstring
+Returns a list of positions for each segment within the scalebar.
+
+.. versionadded:: 3.14
+%End
+
+    QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+%Docstring
+Returns a list of widths of each segment of the scalebar.
+%End
+
+};
+
+QFlags<QgsScaleBarRenderer::Flag> operator|(QgsScaleBarRenderer::Flag f1, QFlags<QgsScaleBarRenderer::Flag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgsscalebarrenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

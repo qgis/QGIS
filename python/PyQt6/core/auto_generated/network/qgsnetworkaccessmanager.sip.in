@@ -1,0 +1,641 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/network/qgsnetworkaccessmanager.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsNetworkRequestParameters
+{
+%Docstring(signature="appended")
+Encapsulates parameters and properties of a network request.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkaccessmanager.h"
+%End
+  public:
+
+    enum RequestAttributes
+    {
+      AttributeInitiatorClass,
+      AttributeInitiatorRequestId,
+    };
+
+    QgsNetworkRequestParameters();
+%Docstring
+Default constructor.
+%End
+
+    QgsNetworkRequestParameters( QNetworkAccessManager::Operation operation,
+                                 const QNetworkRequest &request,
+                                 int requestId,
+                                 const QByteArray &content = QByteArray() );
+%Docstring
+Constructor for QgsNetworkRequestParameters, with the specified network
+``operation`` and original ``request``.
+%End
+
+    QNetworkAccessManager::Operation operation() const;
+%Docstring
+Returns the request operation, e.g. GET or POST.
+%End
+
+    QNetworkRequest request() const;
+%Docstring
+Returns the network request.
+
+This is the original network request sent to :py:class:`QgsNetworkAccessManager`, but with QGIS specific
+configuration options such as proxy handling and SSL exceptions applied.
+%End
+
+    QString originatingThreadId() const;
+%Docstring
+Returns a string identifying the thread which the request originated from.
+%End
+
+    int requestId() const;
+%Docstring
+Returns a unique ID identifying the request.
+%End
+
+    QByteArray content() const;
+%Docstring
+Returns the request's content. This is only used for POST or PUT operation
+requests.
+%End
+
+    QString initiatorClassName() const;
+%Docstring
+Returns the class name of the object which initiated this request.
+
+This is only available for QNetworkRequests which have had the
+QgsNetworkRequestParameters.AttributeInitiatorClass attribute set.
+
+.. seealso:: :py:func:`initiatorRequestId`
+%End
+
+    QVariant initiatorRequestId() const;
+%Docstring
+Returns the internal ID used by the object which initiated this request to identify
+individual requests.
+
+This is only available for QNetworkRequests which have had the
+QgsNetworkRequestParameters.AttributeInitiatorRequestId attribute set.
+
+.. seealso:: :py:func:`initiatorClassName`
+%End
+
+};
+
+
+
+
+class QgsNetworkAccessManager : QNetworkAccessManager
+{
+%Docstring(signature="appended")
+network access manager for QGIS
+
+This class implements the QGIS network access manager.  It's a singleton
+that can be used across QGIS.
+
+Plugins can insert proxy factories and thereby redirect requests to
+individual proxies.
+
+If no proxy factories are there or none returns a proxy for an URL a
+fallback proxy can be set.  There's also a exclude list that defines URLs
+that the fallback proxy should not be used for, then no proxy will be used.
+
+.. versionadded:: 1.5
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkaccessmanager.h"
+%End
+  public:
+
+    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
+%Docstring
+Returns a pointer to the active QgsNetworkAccessManager
+for the current thread.
+
+With the ``connectionType`` parameter it is possible to setup the default connection
+type that is used to handle signals that might require user interaction and therefore
+need to be handled on the main thread. See in-depth discussion below.
+
+:param connectionType: In most cases the default of using a ``Qt.BlockingQueuedConnection``
+                       is ok, to make a background thread wait for the main thread to answer such a request is
+                       fine and anything else is dangerous.
+                       However, in case the request was started on the main thread, one should execute a
+                       local event loop in a helper thread and freeze the main thread for the duration of the
+                       download. In this case, if an authentication request is sent from the background thread
+                       network access manager, the background thread should be blocked, the main thread be woken
+                       up, :py:func:`~QgsNetworkAccessManager.processEvents` executed once, the main thread frozen again and the background thread
+                       continued.
+%End
+
+    QgsNetworkAccessManager( QObject *parent = 0 );
+
+
+    void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
+%Docstring
+Inserts a ``factory`` into the proxy factories list.
+
+Ownership of ``factory`` is transferred to the manager.
+
+.. seealso:: :py:func:`removeProxyFactory`
+
+.. seealso:: :py:func:`proxyFactories`
+%End
+
+    void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
+%Docstring
+Removes a ``factory`` from the proxy factories list.
+
+.. seealso:: :py:func:`insertProxyFactory`
+
+.. seealso:: :py:func:`proxyFactories`
+%End
+
+    const QList<QNetworkProxyFactory *> proxyFactories() const;
+%Docstring
+Returns a list of proxy factories used by the manager.
+
+.. seealso:: :py:func:`insertProxyFactory`
+
+.. seealso:: :py:func:`proxyFactories`
+%End
+
+    const QNetworkProxy &fallbackProxy() const;
+%Docstring
+Returns the fallback proxy used by the manager.
+
+The fallback proxy is used for URLs which no other proxy factory returned proxies for.
+
+.. seealso:: :py:func:`proxyFactories`
+
+.. seealso:: :py:func:`setFallbackProxyAndExcludes`
+%End
+
+    QStringList excludeList() const;
+%Docstring
+Returns the proxy exclude list.
+
+This list consists of the beginning of URL strings which will not use the fallback proxy.
+
+.. seealso:: :py:func:`noProxyList`
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`setFallbackProxyAndExcludes`
+%End
+
+    QStringList noProxyList() const;
+%Docstring
+Returns the no proxy list.
+
+This list consists of the beginning of URL strings which will not use any proxy at all
+
+.. seealso:: :py:func:`excludeList`
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`setFallbackProxyAndExcludes`
+%End
+
+    void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes, const QStringList &noProxyURLs );
+%Docstring
+Sets the fallback ``proxy`` and URLs which shouldn't use it.
+
+The fallback proxy is used for URLs which no other proxy factory returned proxies for.
+The ``excludes`` list specifies the beginning of URL strings which will not use this fallback proxy.
+The ``noProxyURLs`` list specifies the beginning of URL strings which will not use any proxy at all
+
+.. seealso:: :py:func:`fallbackProxy`
+
+.. seealso:: :py:func:`excludeList`
+
+.. seealso:: :py:func:`noProxyList`
+%End
+
+    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
+%Docstring
+Returns the name for QNetworkRequest.CacheLoadControl.
+
+.. seealso:: :py:func:`cacheLoadControlFromName`
+%End
+
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
+%Docstring
+Returns QNetworkRequest.CacheLoadControl from a ``name``.
+
+.. seealso:: :py:func:`cacheLoadControlName`
+%End
+
+    void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
+%Docstring
+Setup the QgsNetworkAccessManager (NAM) according to the user's settings.
+The ``connectionType`` sets up the default connection type that is used to
+handle signals that might require user interaction and therefore
+need to be handled on the main thread. See in-depth discussion in the documentation
+for the constructor of this class.
+%End
+
+
+    bool useSystemProxy() const;
+%Docstring
+Returns whether the system proxy should be used.
+%End
+
+    static int timeout();
+%Docstring
+Returns the network timeout length, in milliseconds.
+
+.. seealso:: :py:func:`setTimeout`
+
+.. versionadded:: 3.6
+%End
+
+    static void setTimeout( int time );
+%Docstring
+Sets the maximum timeout ``time`` for network requests, in milliseconds.
+If set to 0, no timeout is set.
+
+.. seealso:: :py:func:`timeout`
+
+.. versionadded:: 3.6
+%End
+
+    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Posts a GET request to obtain the contents of the target request and returns a new :py:class:`QgsNetworkReplyContent` object for reading.
+The current thread will be blocked until the request is returned.
+
+This method is safe to call in either the main thread or a worker thread.
+
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
+
+If an ``authCfg`` has been specified, then that authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The contents of the reply will be returned after the request is completed or an error occurs.
+
+.. seealso:: :py:func:`blockingPost`
+
+.. versionadded:: 3.6
+%End
+
+    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Posts a POST request to obtain the contents of the target ``request``, using the given ``data``, and returns a new
+:py:class:`QgsNetworkReplyContent` object for reading. The current thread will be blocked until the request is returned.
+
+This method is safe to call in either the main thread or a worker thread.
+
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
+
+If an ``authCfg`` has been specified, then that authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The contents of the reply will be returned after the request is completed or an error occurs.
+
+.. seealso:: :py:func:`blockingGet`
+
+.. versionadded:: 3.6
+%End
+
+    static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a request pre-processor function, which allows manipulation of a network request before it is processed.
+
+The ``processor`` function takes the QNetworkRequest as its argument, and can mutate the request if necessary.
+
+:return: An auto-generated string uniquely identifying the preprocessor, which can later be
+         used to remove the preprocessor (via a call to :py:func:`~QgsNetworkAccessManager.removeRequestPreprocessor`).
+
+.. seealso:: :py:func:`removeRequestPreprocessor`
+
+.. versionadded:: 3.22
+%End
+%MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
+    {
+      QString res;
+      SIP_BLOCK_THREADS
+      PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
+      int state;
+      int sipIsError = 0;
+      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+      if ( sipIsError == 0 )
+      {
+        res = QString( *t1 );
+      }
+      sipReleaseType( t1, sipType_QString, state );
+      SIP_UNBLOCK_THREADS
+      return res;
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+%End
+
+    static void removeRequestPreprocessor( const QString &id );
+%Docstring
+Removes the custom request pre-processor function with matching ``id``.
+
+The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsNetworkAccessManager.setRequestPreprocessor`.
+
+Returns ``True`` if processor existed and was removed.
+
+.. seealso:: :py:func:`setRequestPreprocessor`
+
+.. versionadded:: 3.22
+%End
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+%End
+
+    static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a reply pre-processor function, which allows manipulation of QNetworkReply objects after they are created (but before they are fetched).
+
+The ``processor`` function takes a QNetworkRequest request and a QNetworkReply as arguments, and can connect to QNetworkReply signals directly as desired.
+
+:return: An auto-generated string uniquely identifying the preprocessor, which can later be
+         used to remove the preprocessor (via a call to :py:func:`~QgsNetworkAccessManager.removeReplyPreprocessor`).
+
+.. seealso:: :py:func:`removeReplyPreprocessor`
+
+.. versionadded:: 3.26
+%End
+%MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+%End
+
+    static void removeReplyPreprocessor( const QString &id );
+%Docstring
+Removes the custom reply pre-processor function with matching ``id``.
+
+The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsNetworkAccessManager.setReplyPreprocessor`.
+
+Returns ``True`` if processor existed and was removed.
+
+.. seealso:: :py:func:`setReplyPreprocessor`
+
+.. versionadded:: 3.26
+%End
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+%End
+
+    void requestAuthOpenBrowser( const QUrl &url ) const;
+%Docstring
+Forwards an external browser login ``url`` opening request to the authentication handler.
+
+.. note::
+
+   If called by a background thread, the request will be forwarded to the network manager on the main thread.
+
+.. versionadded:: 3.20
+%End
+
+    void requestAuthCloseBrowser() const;
+%Docstring
+Forwards an external browser login closure request to the authentication handler.
+
+.. note::
+
+   If called by a background thread, the request will be forwarded to the network manager on the main thread.
+
+.. versionadded:: 3.20
+%End
+
+    void abortAuthBrowser();
+%Docstring
+Abort any outstanding external browser login request.
+
+.. note::
+
+   Background threads will listen to aborted browser request signals from the network manager on the main thread.
+
+.. versionadded:: 3.20
+%End
+
+
+
+    void preprocessRequest( QNetworkRequest *req ) const;
+%Docstring
+Preprocesses request
+
+:param req: the request to preprocess
+
+.. versionadded:: 3.22
+%End
+
+  signals:
+
+ void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
+%End
+
+    void requestAboutToBeCreated( QgsNetworkRequestParameters request );
+%Docstring
+Emitted when a network request is about to be created.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`finished`
+
+.. seealso:: :py:func:`requestTimedOut`
+
+.. versionadded:: 3.6
+%End
+
+    void finished( QgsNetworkReplyContent reply );
+%Docstring
+Emitted whenever a pending network reply is finished.
+
+The ``reply`` parameter will contain a :py:class:`QgsNetworkReplyContent` object, containing all the useful
+information relating to the reply, including headers and reply content.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`requestAboutToBeCreated`
+
+.. seealso:: :py:func:`requestTimedOut`
+
+.. versionadded:: 3.6
+%End
+
+    void requestTimedOut( QgsNetworkRequestParameters request );
+%Docstring
+Emitted when a network request has timed out.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. seealso:: :py:func:`requestAboutToBeCreated`
+
+.. seealso:: :py:func:`finished`
+
+.. versionadded:: 3.6
+%End
+
+    void downloadProgress( int requestId, qint64 bytesReceived, qint64 bytesTotal );
+%Docstring
+Emitted when a network reply receives a progress report.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the progress report relates to.
+
+The ``bytesReceived`` parameter indicates the number of bytes received, while ``bytesTotal`` indicates the total number
+of bytes expected to be downloaded. If the number of bytes to be downloaded is not known, ``bytesTotal`` will be -1.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about requests
+created in any thread.
+
+.. versionadded:: 3.6
+%End
+
+    void requestRequiresAuth( int requestId, const QString &realm );
+%Docstring
+Emitted when a network request prompts an authentication request.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the authentication relates to.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about authentication requests
+from any thread.
+
+This signal is for debugging and logging purposes only, and cannot be used to respond to the
+requests. See :py:class:`QgsNetworkAuthenticationHandler` for details on how to handle authentication requests.
+
+.. seealso:: :py:func:`requestAuthDetailsAdded`
+
+.. versionadded:: 3.6
+%End
+
+    void requestAuthDetailsAdded( int requestId, const QString &realm, const QString &user, const QString &password );
+%Docstring
+Emitted when network authentication details have been added to a request.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the authentication relates to.
+
+This signal is always sent from the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about authentication requests
+from any thread.
+
+This signal is for debugging and logging purposes only, and should not be used to respond to the
+requests. See :py:class:`QgsNetworkAuthenticationHandler` for details on how to handle authentication requests.
+
+.. seealso:: :py:func:`requestRequiresAuth`
+
+.. versionadded:: 3.6
+%End
+
+
+    void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
+%Docstring
+Emitted when a network request encounters SSL ``errors``.
+
+The ``requestId`` argument reflects the unique ID identifying the original request which the SSL error relates to.
+
+This signal is propagated to the main thread QgsNetworkAccessManager instance, so it is necessary
+only to connect to the main thread's signal in order to receive notifications about SSL errors
+from any thread.
+
+This signal is for debugging and logging purposes only, and cannot be used to respond to the errors.
+See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and potentially ignore them.
+
+.. versionadded:: 3.6
+%End
+
+
+
+ void requestCreated( QNetworkReply * ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Use the thread-safe requestAboutToBeCreated( :py:class:`QgsNetworkRequestParameters` ) signal instead.
+%End
+
+    void requestTimedOut( QNetworkReply * );
+
+
+    void authBrowserAborted();
+%Docstring
+Emitted when external browser logins are to be aborted.
+
+.. versionadded:: 3.20
+%End
+
+
+    void cookiesChanged( const QList<QNetworkCookie> &cookies );
+%Docstring
+Emitted when the cookies changed.
+
+.. versionadded:: 3.22
+%End
+
+  protected:
+    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/network/qgsnetworkaccessmanager.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

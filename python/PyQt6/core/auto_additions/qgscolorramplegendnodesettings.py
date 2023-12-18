@@ -1,0 +1,3 @@
+# The following has been generated automatically from src/core/layertree/qgscolorramplegendnodesettings.h
+QgsColorRampLegendNodeSettings.MinimumToMaximum = QgsColorRampLegendNodeSettings.Direction.MinimumToMaximum
+QgsColorRampLegendNodeSettings.MaximumToMinimum = QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum

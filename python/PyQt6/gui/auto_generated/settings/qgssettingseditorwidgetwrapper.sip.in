@@ -1,0 +1,107 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingseditorwidgetwrapper.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSettingsEditorWidgetWrapper : QObject
+{
+%Docstring(signature="appended")
+Base class for settings editor wrappers
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssettingseditorwidgetwrapper.h"
+%End
+  public:
+    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget ) /Factory/;
+%Docstring
+Creates a wrapper from the definition stored in a ``widget`` created by :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
+%End
+
+    QgsSettingsEditorWidgetWrapper( QObject *parent = 0 );
+%Docstring
+Constructor
+%End
+
+    virtual ~QgsSettingsEditorWidgetWrapper();
+
+    virtual QString id() const = 0;
+%Docstring
+This id of the type of settings it handles
+
+.. note::
+
+   This mostly correspond to the content of :py:class:`Qgis`.SettingsType but it's a string since custom Python implementation are possible.
+%End
+
+    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0;
+%Docstring
+Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
+%End
+
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 );
+%Docstring
+Creates the editor widget for the given ``setting``
+%End
+
+    bool configureEditor( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Configures the ``editor`` according the setting
+%End
+
+    virtual bool setWidgetFromSetting() const = 0;
+%Docstring
+Sets the widget value from the setting value
+The wrapper must be configured before calling this medthod
+%End
+
+    virtual bool setSettingFromWidget() const = 0;
+%Docstring
+Sets the setting value from the widget value
+The wrapper must be configured before calling this medthod
+%End
+
+    virtual QVariant variantValueFromWidget() const = 0;
+%Docstring
+Returns the value from the widget as a variant
+The wrapper must be configured before calling this medthod
+%End
+
+    virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
+%Docstring
+Sets the ``value`` of the widget
+The wrapper must be configured before calling this medthod
+%End
+
+
+  protected:
+    virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
+%Docstring
+Creates the widgets
+%End
+
+    virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
+%Docstring
+Configures an existing ``editor`` widget
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingseditorwidgetwrapper.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

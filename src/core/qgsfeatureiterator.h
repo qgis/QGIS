@@ -43,12 +43,19 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! destructor makes sure that the iterator is closed properly
     virtual ~QgsAbstractFeatureIterator() = default;
 
-    //! fetch next feature, return TRUE on success
+    /**
+     * Fetch next feature and stores in \a f, returns TRUE on success.
+     */
     virtual bool nextFeature( QgsFeature &f );
 
-    //! reset the iterator to the starting position
+    /**
+     * Resets the iterator to the starting position.
+     */
     virtual bool rewind() = 0;
-    //! end of iterating: free the resources / lock
+
+    /**
+     * Call to end the iteration. This frees any resources used by the iterator.
+     */
     virtual bool close() = 0;
 
     /**
@@ -323,8 +330,19 @@ class CORE_EXPORT QgsFeatureIterator
 
     QgsFeatureIterator &operator=( const QgsFeatureIterator &other );
 
+    /**
+     * Fetch next feature and stores in \a f, returns TRUE on success.
+     */
     bool nextFeature( QgsFeature &f );
+
+    /**
+     * Resets the iterator to the starting position.
+     */
     bool rewind();
+
+    /**
+     * Call to end the iteration. This frees any resources used by the iterator.
+     */
     bool close();
 
     /**

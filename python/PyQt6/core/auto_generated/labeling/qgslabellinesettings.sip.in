@@ -1,0 +1,392 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabellinesettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelLineSettings
+{
+%Docstring(signature="appended")
+
+Contains settings related to how the label engine places and formats
+labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslabellinesettings.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum class DirectionSymbolPlacement /BaseType=IntFlag/
+    {
+      SymbolLeftRight,
+      SymbolAbove,
+      SymbolBelow
+    };
+
+    enum class AnchorType /BaseType=IntFlag/
+    {
+      HintOnly,
+      Strict,
+    };
+
+    enum class AnchorClipping /BaseType=IntFlag/
+    {
+      UseVisiblePartsOfLine,
+      UseEntireLine,
+    };
+
+    enum class AnchorTextPoint /BaseType=IntFlag/
+    {
+      StartOfText,
+      CenterOfText,
+      EndOfText,
+      FollowPlacement,
+    };
+
+    Qgis::LabelLinePlacementFlags placementFlags() const;
+%Docstring
+Returns the line placement flags, which dictate how line labels can be placed
+above or below the lines.
+
+.. seealso:: :py:func:`setPlacementFlags`
+%End
+
+    void setPlacementFlags( Qgis::LabelLinePlacementFlags flags );
+%Docstring
+Returns the line placement ``flags``, which dictate how line labels can be placed
+above or below the lines.
+
+.. seealso:: :py:func:`placementFlags`
+%End
+
+    bool mergeLines() const;
+%Docstring
+Returns ``True`` if connected line features with identical label text should be merged
+prior to generating label positions.
+
+.. seealso:: :py:func:`setMergeLines`
+%End
+
+    void setMergeLines( bool merge );
+%Docstring
+Sets whether connected line features with identical label text should be merged
+prior to generating label positions.
+
+.. seealso:: :py:func:`mergeLines`
+%End
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the thinning settings to respect any data defined properties
+set within the specified ``properties`` collection.
+%End
+
+    bool addDirectionSymbol() const;
+%Docstring
+Returns ``True`` if '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+will be automatically added to the label text, pointing in the
+direction of the line or polygon ring.
+
+.. seealso:: :py:func:`setAddDirectionSymbol`
+
+.. seealso:: :py:func:`leftDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+
+.. seealso:: :py:func:`directionSymbolPlacement`
+
+.. seealso:: :py:func:`reverseDirectionSymbol`
+%End
+
+    void setAddDirectionSymbol( bool enabled );
+%Docstring
+Sets whether '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
+will be automatically added to the label text, pointing in the
+direction of the line or polygon ring.
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`setLeftDirectionSymbol`
+
+.. seealso:: :py:func:`setRightDirectionSymbol`
+
+.. seealso:: :py:func:`setDirectionSymbolPlacement`
+
+.. seealso:: :py:func:`setReverseDirectionSymbol`
+%End
+
+    QString leftDirectionSymbol() const;
+%Docstring
+Returns the string to use for left direction arrows.
+
+.. seealso:: :py:func:`setLeftDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+%End
+
+    void setLeftDirectionSymbol( const QString &symbol );
+%Docstring
+Sets the string to use for left direction arrows.
+
+.. seealso:: :py:func:`leftDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+%End
+
+    QString rightDirectionSymbol() const;
+%Docstring
+Returns the string to use for right direction arrows.
+
+.. seealso:: :py:func:`setRightDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`leftDirectionSymbol`
+%End
+
+    void setRightDirectionSymbol( const QString &symbol );
+%Docstring
+Sets the string to use for right direction arrows.
+
+.. seealso:: :py:func:`setLeftDirectionSymbol`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+
+.. seealso:: :py:func:`rightDirectionSymbol`
+%End
+
+    bool reverseDirectionSymbol() const;
+%Docstring
+Returns ``True`` if direction symbols should be reversed.
+
+.. seealso:: :py:func:`setReverseDirectionSymbol`
+%End
+
+    void setReverseDirectionSymbol( bool reversed );
+%Docstring
+Sets whether the direction symbols should be ``reversed``.
+
+.. seealso:: :py:func:`reverseDirectionSymbol`
+%End
+
+    DirectionSymbolPlacement directionSymbolPlacement() const;
+%Docstring
+Returns the placement for direction symbols.
+
+This setting controls whether to place direction symbols to the left/right, above or below label.
+
+.. seealso:: :py:func:`setDirectionSymbolPlacement`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+%End
+
+    void setDirectionSymbolPlacement( DirectionSymbolPlacement placement );
+%Docstring
+Sets the ``placement`` for direction symbols.
+
+This setting controls whether to place direction symbols to the left/right, above or below label.
+
+.. seealso:: :py:func:`directionSymbolPlacement`
+
+.. seealso:: :py:func:`addDirectionSymbol`
+%End
+
+    double overrunDistance() const;
+%Docstring
+Returns the distance which labels are allowed to overrun past the start or end of line features.
+
+.. seealso:: :py:func:`setOverrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    void setOverrunDistance( double distance );
+%Docstring
+Sets the ``distance`` which labels are allowed to overrun past the start or end of line features.
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    Qgis::RenderUnit overrunDistanceUnit() const;
+%Docstring
+Returns the units for label overrun distance.
+
+.. seealso:: :py:func:`setOverrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit );
+%Docstring
+Sets the ``unit`` for label overrun distance.
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+%End
+
+    QgsMapUnitScale overrunDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale for label overrun distance.
+
+.. seealso:: :py:func:`setOverrunDistanceMapUnitScale`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+%End
+
+    void setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for label overrun distance.
+
+.. seealso:: :py:func:`overrunDistanceMapUnitScale`
+
+.. seealso:: :py:func:`overrunDistance`
+
+.. seealso:: :py:func:`overrunDistanceUnit`
+%End
+
+    double lineAnchorPercent() const;
+%Docstring
+Returns the percent along the line at which labels should be placed.
+
+By default, this is 0.5 which indicates that labels should be placed as close to the
+center of the line as possible. A value of 0.0 indicates that the labels should be placed
+as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+the end of the line.
+
+.. seealso:: :py:func:`setLineAnchorPercent`
+
+.. seealso:: :py:func:`anchorTextPoint`
+
+.. seealso:: :py:func:`anchorType`
+
+.. seealso:: :py:func:`anchorClipping`
+%End
+
+    void setLineAnchorPercent( double percent );
+%Docstring
+Sets the ``percent`` along the line at which labels should be placed.
+
+By default, this is 0.5 which indicates that labels should be placed as close to the
+center of the line as possible. A value of 0.0 indicates that the labels should be placed
+as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+the end of the line.
+
+.. seealso:: :py:func:`lineAnchorPercent`
+
+.. seealso:: :py:func:`setAnchorTextPoint`
+
+.. seealso:: :py:func:`setAnchorType`
+
+.. seealso:: :py:func:`setAnchorClipping`
+%End
+
+    AnchorType anchorType() const;
+%Docstring
+Returns the line anchor type, which dictates how the :py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is
+handled.
+
+.. seealso:: :py:func:`setAnchorType`
+
+.. seealso:: :py:func:`lineAnchorPercent`
+
+.. seealso:: :py:func:`anchorClipping`
+%End
+
+    void setAnchorType( AnchorType type );
+%Docstring
+Sets the line anchor ``type``, which dictates how the :py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is
+handled.
+
+.. seealso:: :py:func:`anchorType`
+
+.. seealso:: :py:func:`setLineAnchorPercent`
+
+.. seealso:: :py:func:`setAnchorClipping`
+%End
+
+    AnchorClipping anchorClipping() const;
+%Docstring
+Returns the line anchor clipping mode, which dictates how line strings are clipped
+before calculating the line anchor placement.
+
+.. seealso:: :py:func:`setAnchorClipping`
+
+.. seealso:: :py:func:`anchorType`
+
+.. seealso:: :py:func:`lineAnchorPercent`
+
+.. versionadded:: 3.20
+%End
+
+    void setAnchorClipping( AnchorClipping clipping );
+%Docstring
+Sets the line anchor ``clipping`` mode, which dictates how line strings are clipped
+before calculating the line anchor placement.
+
+.. seealso:: :py:func:`anchorClipping`
+
+.. seealso:: :py:func:`setAnchorType`
+
+.. seealso:: :py:func:`setLineAnchorPercent`
+
+.. versionadded:: 3.20
+%End
+
+    AnchorTextPoint anchorTextPoint() const;
+%Docstring
+Returns the line anchor text point, which dictates which part of the label text
+should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
+
+.. seealso:: :py:func:`setAnchorTextPoint`
+
+.. versionadded:: 3.26
+%End
+
+    void setAnchorTextPoint( AnchorTextPoint point );
+%Docstring
+Sets the line anchor text ``point``, which dictates which part of the label text
+should be placed at the :py:func:`~QgsLabelLineSettings.lineAnchorPercent`.
+
+.. seealso:: :py:func:`anchorTextPoint`
+
+.. versionadded:: 3.26
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabellinesettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

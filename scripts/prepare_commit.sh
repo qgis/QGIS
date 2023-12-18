@@ -146,29 +146,37 @@ fi
 # verify SIP files
 SIPIFYDIFF=sipify.$REV.diff
 true > "$SIPIFYDIFF"
-for f in $MODIFIED; do
-  # if cpp header
-  if [[ $f =~ ^src\/(core|gui|analysis|server|3d)\/.*\.h$ ]]; then
-    # look if corresponding SIP file
-    sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)/@@; s@\.h$@.sip@' <<<"$f" )
-    pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< "$sip_file")
-    module=$(${GP}sed -r 's@src/(core|gui|analysis|server|3d)/.*$@\1@' <<<"$f" )
-    if grep -Fq "$sip_file" "${TOPLEVEL}"/python/"${module}"/"${module}"_auto.sip; then
-      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
-      m=python/$sip_file.$REV.prepare
-      if [ ! -f python/"$sip_file" ]; then
-        touch python/"$sip_file"
-      fi
-      cp python/"$sip_file" "$m"
-      "${TOPLEVEL}"/scripts/sipify.pl -s $m -p python/"${module}"/auto_additions/"${pyfile}" "$f"
-      # only replace sip files if they have changed
-      if ! diff -u python/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
-        echo "python/$sip_file is not up to date"
-        cp "$m" python/"$sip_file"
-      fi
-      rm "$m"
-    fi
+
+for root_dir in python python/PyQt6; do
+
+  if [[ $root_dir == "python/PyQt6" ]]; then
+    IS_QT6="--qt6"
   fi
+
+  for f in $MODIFIED; do
+    # if cpp header
+    if [[ $f =~ ^src\/(core|gui|analysis|server|3d)\/.*\.h$ ]]; then
+      # look if corresponding SIP file
+      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)/@@; s@\.h$@.sip@' <<<"$f" )
+      pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< "$sip_file")
+      module=$(${GP}sed -r 's@src/(core|gui|analysis|server|3d)/.*$@\1@' <<<"$f" )
+      if grep -Fq "$sip_file" "${TOPLEVEL}"/$root_dir/"${module}"/"${module}"_auto.sip; then
+        sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
+        m=$root_dir/$sip_file.$REV.prepare
+        if [ ! -f $root_dir/"$sip_file" ]; then
+          touch $root_dir/"$sip_file"
+        fi
+        cp $root_dir/"$sip_file" "$m"
+        "${TOPLEVEL}"/scripts/sipify.pl $IS_QT6 -s $m -p $root_dir/"${module}"/auto_additions/"${pyfile}" "$f"
+        # only replace sip files if they have changed
+        if ! diff -u $root_dir/"$sip_file" "$m" >>"$SIPIFYDIFF"; then
+          echo "$root_dir/$sip_file is not up to date"
+          cp "$m" $root_dir/"$sip_file"
+        fi
+        rm "$m"
+      fi
+    fi
+  done
 done
 if [[ -s "$SIPIFYDIFF" ]]; then
   if tty -s; then
