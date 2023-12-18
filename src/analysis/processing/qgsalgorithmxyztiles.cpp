@@ -512,15 +512,15 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   if ( mSkipEmptyTiles == true)
   {
     
-    feedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
+    mfeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
   }
   else if ( mSkipEmptyTiles == false)
   {
-    feedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to false" ) );
+    mfeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to false" ) );
   }
   else
   {
-    feedback->pushWarning( QObject::tr( "SkipEmptyTiles is something else" ) );
+    mfeedback->pushWarning( QObject::tr( "SkipEmptyTiles is something else" ) );
   }
   
 
