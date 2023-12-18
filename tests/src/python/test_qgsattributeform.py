@@ -159,58 +159,97 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(next(featuresIterator).attribute(0), 456)
 
     def test_on_update(self):
-        """Test live update"""
+        """Test live update, when:
+        - dependency changed
+        - expression contains a function
+        This means:
+        - changing age -> update number, birthday, pos / not update year
+        - changing year -> update birthday and pos / not update number, age
+        - update birthday -> update only pos
+        """
 
-        layer = QgsVectorLayer("Point?field=age:int", "vl", "memory")
-        # set default value for numbers to [1, {age}], it will depend on the field age and should update
+        layer = QgsVectorLayer("Point?field=age:int&field=year:int&field=birthday:int&field=pos:int", "vl", "memory")
+
+        # add another field numbers
         field = QgsField('numbers', QVariant.List, 'array')
         field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
         layer.dataProvider().addAttributes([field])
         layer.updateFields()
-        layer.setDefaultValueDefinition(1, QgsDefaultValue('array(1, age)', True))
-        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('List', {}))
-        layer.startEditing()
-        form = QgsAttributeForm(layer)
-        feature = QgsFeature(layer.fields())
-        form.setFeature(feature)
-        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
-        form.changeAttribute('numbers', [12])
-        form.changeAttribute('age', 1)
-        self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
-        form.changeAttribute('age', 7)
-        self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
 
-    def test_default_value_always_updated(self):
-        """Test that default values are not updated on every edit operation
-        when containing an 'attribute' expression"""
-
-        layer = QgsVectorLayer("Point?field=age:int&field=number:int", "vl", "memory")
+        apply_on_update = True
 
         layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
-
-        # set default value for numbers to attribute("age"), it will depend on the field age and should not update
-        layer.setDefaultValueDefinition(1, QgsDefaultValue("attribute(@feature, 'age')", False))
         layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
 
-        layer.startEditing()
+        # set default value for birthday (2), it will depend on the field age and year
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('year - age', apply_on_update))
+        layer.setEditorWidgetSetup(2, QgsEditorWidgetSetup('Range', {}))
 
+        # set default value for pos (3), it contains a function and should update always (and it contains it's own value, to evaluate if it's changing)
+        layer.setDefaultValueDefinition(3, QgsDefaultValue('pos + age + rand(0,0)', apply_on_update))
+        layer.setEditorWidgetSetup(3, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for numbers (4), it will depend on the field age
+        layer.setDefaultValueDefinition(4, QgsDefaultValue('array(1, age)', apply_on_update))
+        layer.setEditorWidgetSetup(4, QgsEditorWidgetSetup('List', {}))
+
+        layer.startEditing()
+        form = QgsAttributeForm(layer)
         feature = QgsFeature(layer.fields())
         feature.setAttribute('age', 15)
-
-        form = QgsAttributeForm(layer)
-        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+        feature.setAttribute('year', 2023)
         form.setFeature(feature)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
 
         QGISAPP.processEvents()
 
-        self.assertEqual(form.currentFormFeature()['age'], 15)
-        self.assertEqual(form.currentFormFeature()['number'], 15)
-        # return
-        form.changeAttribute('number', 12)
-        form.changeAttribute('age', 1)
-        self.assertEqual(form.currentFormFeature()['number'], 12)
-        form.changeAttribute('age', 7)
-        self.assertEqual(form.currentFormFeature()['number'], 12)
+        # some changes without impact
+        form.changeAttribute('birthday', 1900)
+        form.changeAttribute('pos', 100)
+        form.changeAttribute('numbers', [12])
+
+        # changing age
+        form.changeAttribute('age', 10)
+
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # no change
+        self.assertEqual(form.currentFormFeature()['year'], 2023)
+        # change because dependency
+        self.assertEqual(form.currentFormFeature()['birthday'], 2013)
+        # change because function and dependency: old value 100 + new value 10
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        # change because dependency
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        # changing year
+        form.changeAttribute('year', 2024)
+
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # no change
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # change because dependency
+        self.assertEqual(form.currentFormFeature()['birthday'], 2014)
+        # change because function: old value 110 + new value 10
+        self.assertEqual(form.currentFormFeature()['pos'], 120)
+        # no change
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        # changing mode
+        form.save()
+        form.setMode(QgsAttributeEditorContext.SingleEditMode)
+
+        # changing birthday
+        form.changeAttribute('birthday', 2200)
+
+        self.assertEqual(form.currentFormFeature()['birthday'], 2200)
+        # no change
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # change because dependency
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # change because function: old value 120 + new value 10
+        self.assertEqual(form.currentFormFeature()['pos'], 130)
+        # no change
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
 
 if __name__ == '__main__':
