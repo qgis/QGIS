@@ -46,10 +46,9 @@ QQueue<QgsPdalProvider *> QgsPdalProvider::sIndexingQueue;
 QgsPdalProvider::QgsPdalProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags, bool generateCopc )
+  QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( nullptr )
-  , mGenerateCopc( generateCopc )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -121,20 +120,15 @@ void QgsPdalProvider::generateIndex()
     return;
   }
 
-  QString outputPath;
+  const QString outputPath = _outCopcFile( dataSourceUri() );
 
-  if ( mGenerateCopc )
-    outputPath = _outCopcFile( dataSourceUri() );
-  else
-    outputPath = _outEptDir( dataSourceUri() );
-
-  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( dataSourceUri(), outputPath, mGenerateCopc ? QgsPdalIndexingTask::OutputFormat::Copc : QgsPdalIndexingTask::OutputFormat::Ept, QFileInfo( dataSourceUri() ).fileName() );
+  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( dataSourceUri(), outputPath, QFileInfo( dataSourceUri() ).fileName() );
 
   connect( generationTask, &QgsPdalIndexingTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
   connect( generationTask, &QgsPdalIndexingTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
 
   mRunningIndexingTask = generationTask;
-  QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
+  QgsDebugMsgLevel( "COPC Generation Task Created", 2 );
   emit indexGenerationStateChanged( PointCloudIndexGenerationState::Indexing );
   QgsApplication::taskManager()->addTask( generationTask );
 }
@@ -228,8 +222,8 @@ bool QgsPdalProvider::anyIndexingTaskExists()
   const QList< QgsTask * > tasks = QgsApplication::taskManager()->activeTasks();
   for ( const QgsTask *task : tasks )
   {
-    const QgsPdalIndexingTask *eptTask = qobject_cast<const QgsPdalIndexingTask *>( task );
-    if ( eptTask )
+    const QgsPdalIndexingTask *indexingTask = qobject_cast<const QgsPdalIndexingTask *>( task );
+    if ( indexingTask )
     {
       return true;
     }
