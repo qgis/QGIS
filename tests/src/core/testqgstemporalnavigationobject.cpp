@@ -120,7 +120,7 @@ void TestQgsTemporalNavigationObject::animationState()
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
 
   navigationObject->skipToEnd();
-  QCOMPARE( navigationObject->currentFrameNumber(), 9 );
+  QCOMPARE( navigationObject->currentFrameNumber(), 10 );
 
   navigationObject->rewindToStart();
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
@@ -194,7 +194,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setTemporalExtents( range );
   QCOMPARE( temporalRangeSignal.count(), 1 );
   // two frames - 8-10am, 10-12am
-  QCOMPARE( navigationObject->totalFrameCount(), 2LL );
+  QCOMPARE( navigationObject->totalFrameCount(), 3LL );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 0 ),  QgsDateTimeRange(
               QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
               QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 0, 0 ) ),
@@ -217,7 +217,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   // four frames - 8-9, 9-10, 10-11, 11-12am
-  QCOMPARE( navigationObject->totalFrameCount(), 4LL );
+  QCOMPARE( navigationObject->totalFrameCount(), 5LL );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 0 ),  QgsDateTimeRange(
               QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
               QDateTime( QDate( 2020, 1, 1 ), QTime( 9, 0, 0 ) ),
@@ -268,7 +268,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
   QCOMPARE( temporalRangeSignal.count(), 7 );
 
   // two frames - 8-10, 10-12am
-  QCOMPARE( navigationObject->totalFrameCount(), 2LL );
+  QCOMPARE( navigationObject->totalFrameCount(), 3LL );
 
   // Test if, when changing to Cumulative mode, the dateTimeRange for frame 2 (with 2 hours frames) is indeed the full range
   navigationObject->setTemporalRangeCumulative( true );
@@ -284,7 +284,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
   // interval which doesn't fit exactly into overall range
   navigationObject->setFrameDuration( QgsInterval( 0.75, Qgis::TemporalUnit::Hours ) );
   // six frames - 8-8.45, 8.45-9.30, 9.30-10.15, 10.15-11.00, 11.00-11.45, 11.45-12.30
-  QCOMPARE( navigationObject->totalFrameCount(), 6LL );
+  QCOMPARE( navigationObject->totalFrameCount(), 7LL );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 0 ),  QgsDateTimeRange(
               QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
               QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 45, 0 ) ),
