@@ -919,9 +919,6 @@ void QgsAttributeForm::resetValues()
     ww->setFeature( mFeature );
   }
 
-  // Prepare value dependencies
-  updateFieldDependencies();
-
   // Update dependent virtual fields (not default values / not referencing layer values)
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
@@ -2113,6 +2110,7 @@ void QgsAttributeForm::init()
     }
   }
 
+  // Prepare value dependencies
   updateFieldDependencies();
 
   if ( !mButtonBox )
