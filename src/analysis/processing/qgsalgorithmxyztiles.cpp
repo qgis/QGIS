@@ -387,6 +387,22 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
     QPair<int, int> tm = it.key();
     Tile tile = it.value();
     QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+
+    if (mSkipEmptyTiles == true)
+    {
+      // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
+      // tempImage.fill( mBackgroundColor );
+
+      // Try next time
+      // isBlank = ( tileImage == tempImage );
+      if ( tileImage == mBackgroundImage)
+      {
+        ++it;
+        continue;
+      }
+    }
+
+
     QDir tileDir( QStringLiteral( "%1/%2/%3" ).arg( mOutputDir ).arg( tile.z ).arg( tile.x ) );
     tileDir.mkpath( tileDir.absolutePath() );
     int y = tile.y;
@@ -394,6 +410,10 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
     {
       y = tile2tms( y, tile.z );
     }
+
+
+
+
     tileImage.save( QStringLiteral( "%1/%2.%3" ).arg( tileDir.absolutePath() ).arg( y ).arg( mTileFormat.toLower() ), mTileFormat.toStdString().c_str(), mJpgQuality );
     ++it;
   }
