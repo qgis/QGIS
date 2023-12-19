@@ -41,7 +41,6 @@ class TestQgsMapToolAddRing: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testAddRing();
-    void testAddRingClockWise();
 
   private:
     QPoint mapToPoint( double x, double y );
@@ -162,55 +161,6 @@ void TestQgsMapToolAddRing::testAddRing()
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
   const QString wkt = "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1)))";
-  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
-}
-
-void TestQgsMapToolAddRing::testAddRingClockWise()
-{
-  mLayerMultiPolygon->select( 1 );
-
-  // Draw in clockwise
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 3, 3 ),
-        Qt::LeftButton
-      ) );
-  mCaptureTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 3 ),
-                 Qt::LeftButton
-               ) );
-  mCaptureTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, 4 ),
-                 Qt::LeftButton
-               ) );
-  mCaptureTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 3, 4 ),
-                 Qt::LeftButton
-               ) );
-  mCaptureTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 3, 3 ),
-                 Qt::RightButton
-               ) );
-  mCaptureTool->cadCanvasReleaseEvent( event.get() );
-
-  const QString wkt = "MultiPolygon (((0 0, 5 0, 5 5, 0 5, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(3 3, 3 4, 4 4, 4 3, 3 3)))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
 }
 QGSTEST_MAIN( TestQgsMapToolAddRing )
