@@ -160,7 +160,7 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
 
   QgsFeature f = feature;
   const QgsGeometry inputGeom = f.geometry();
-  if ( inputGeom.isNull() )
+  if ( inputGeom.isEmpty() )
   {
     QgsAttributes attrs = f.attributes();
     attrs << QVariant()
@@ -174,6 +174,7 @@ QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFea
           << QVariant()
           << QVariant();
 
+    f.clearGeometry();
     f.setAttributes( attrs );
     outputFeatures << f;
   }
