@@ -539,19 +539,19 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
     buffer.open( QIODevice::WriteOnly );
 
     //CHANGE
-    // if (mSkipEmptyTiles == true)
-    // {
-    //   // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
-    //   // tempImage.fill( mBackgroundColor );
+    if (mSkipEmptyTiles == true)
+    {
+      // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
+      // tempImage.fill( mBackgroundColor );
 
-    //   // Try next time
-    //   // isBlank = ( tileImage == tempImage );
-    //   if ( tileImage == mBackgroundImage)
-    //   {
-    //     ++it;
-    //     continue;
-    //   }
-    // }
+      // Try next time
+      // isBlank = ( tileImage == tempImage );
+      if ( tileImage == mBackgroundImage)
+      {
+        ++it;
+        continue;
+      }
+    }
 
     tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
     mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
