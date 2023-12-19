@@ -154,7 +154,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mDpi = parameterAsInt( parameters, QStringLiteral( "DPI" ), context );
   mBackgroundColor = parameterAsColor( parameters, QStringLiteral( "BACKGROUND_COLOR" ), context );
   mAntialias = parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context );
-  // mSkipEmptyTiles = parameterAsBool( parameters, QStringLiteral( "Skip Empty Tiles" ), context );
+  mSkipEmptyTiles = parameterAsBool( parameters, QStringLiteral( "Skip Empty Tiles" ), context );
   mTileFormat = parameterAsEnum( parameters, QStringLiteral( "TILE_FORMAT" ), context ) ? QStringLiteral( "JPG" ) : QStringLiteral( "PNG" );
   mJpgQuality = parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context );
   mMetaTileSize = parameterAsInt( parameters, QStringLiteral( "METATILESIZE" ), context );
@@ -162,14 +162,14 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mTransformContext = context.transformContext();
   mFeedback = feedback;
 
-  // if (mSkipEmptyTiles)
-  // {     
-  //   QSize blankSize = QSize(mTileWidth, mTileHeight);     
-  //   mBackgroundImage = QImage(blankSize, QImage.Format_ARGB32_Premultiplied);
-  //   tmpImage.fill(mBackgroundColor);
-  //   tmpImage.setDotsPerMeterX(mDpi / 25.4 * 1000);
-  //   tmpImage.setDotsPerMeterY(mDpi / 25.4 * 1000);
-  // }
+  if (mSkipEmptyTiles)
+  {     
+    QSize blankSize = QSize(mTileWidth, mTileHeight);     
+    mBackgroundImage = QImage(blankSize, QImage::Format_ARGB32_Premultiplied);
+    mBackgroundImage.fill(mBackgroundColor);
+    mBackgroundImage.setDotsPerMeterX(mDpi / 25.4 * 1000);
+    mBackgroundImage.setDotsPerMeterY(mDpi / 25.4 * 1000);
+  }
 
   mWgs84Crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
   mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
