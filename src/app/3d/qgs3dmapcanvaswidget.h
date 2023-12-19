@@ -67,9 +67,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void showAnimationWidget() { mActionAnim->trigger(); }
 
-  protected:
-    void resizeEvent( QResizeEvent *event ) override;
-
   private slots:
     void resetView();
     void configure();

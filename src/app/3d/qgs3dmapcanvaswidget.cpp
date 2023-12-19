@@ -288,12 +288,6 @@ Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
   delete mDockableWidgetHelper;
 }
 
-void Qgs3DMapCanvasWidget::resizeEvent( QResizeEvent *event )
-{
-  QWidget::resizeEvent( event );
-  mCanvas->resize( event->size() );
-}
-
 void Qgs3DMapCanvasWidget::saveAsImage()
 {
   const QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the 3D map canvas to an image" ) );

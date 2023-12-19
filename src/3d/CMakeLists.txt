@@ -15,6 +15,7 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
+  qgs3dwindow.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
@@ -115,6 +116,7 @@ set(QGIS_3D_HDRS
   qgs3dsceneexporter.h
   qgs3dtypes.h
   qgs3dutils.h
+  qgs3dwindow.h
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h

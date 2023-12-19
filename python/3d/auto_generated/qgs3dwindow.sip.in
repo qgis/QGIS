@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dwindow.h                                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class Qgs3DWindow : QWindow
+{
+%Docstring(signature="appended")
+qgs3dWindow is a convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
+
+.. note::
+
+   This is a port of qtwindow3d which does not set the default surface when initialized.
+
+.. note::
+
+   The default surface must be set before the construction of the QApplication when using shared OpenGL context.
+
+.. note::
+
+   This is required in order to use QT3d and QtWebEngine at the same time.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgs3dwindow.h"
+%End
+  public:
+
+    Qgs3DWindow();
+%Docstring
+Constructor for Qgs3DWindow.
+%End
+
+    ~Qgs3DWindow();
+
+
+  protected:
+
+    virtual void showEvent( QShowEvent *e );
+
+%Docstring
+Manages the display events specified in e.
+%End
+
+    virtual void resizeEvent( QResizeEvent * );
+
+%Docstring
+Resets the aspect ratio of the 3D window.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dwindow.h                                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
