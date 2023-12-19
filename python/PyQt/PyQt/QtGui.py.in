@@ -21,8 +21,9 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'November 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-from PyQt@QT_VERSION_MAJOR@.QtGui import *
 
+from PyQt@QT_VERSION_MAJOR@.QtCore import QT_VERSION
+from PyQt@QT_VERSION_MAJOR@.QtGui import *
 
 def __qcolor_repr__(self: QColor):
     if not self.isValid():
@@ -41,3 +42,8 @@ def __qcolor_repr__(self: QColor):
 
 # PyQt doesn't provide __repr__ for QColor, but it's highly desirable!
 QColor.__repr__ = __qcolor_repr__
+
+if (QT_VERSION < 0x060000):
+  from PyQt5.QtWidgets import QAction as _QAction, QShortcut as _QShortcut
+  QAction = _QAction
+  QShortcut = _QShortcut
