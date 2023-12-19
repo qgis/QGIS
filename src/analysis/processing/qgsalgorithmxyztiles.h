@@ -109,12 +109,12 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     QgsRectangle mExtent;
     QColor mBackgroundColor;
-    QImage mBackgroundImage;
+    // QImage mBackgroundImage;
     int mMinZoom = 12;
     int mMaxZoom = 12;
     int mDpi = 96;
     bool mAntialias = true;
-    bool mSkipEmptyTiles = false;
+    // bool mSkipEmptyTiles = false;
     int mJpgQuality = 75;
     int mMetaTileSize = 4;
     int mThreadsNumber = 1;

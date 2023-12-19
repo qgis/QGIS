@@ -154,7 +154,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mDpi = parameterAsInt( parameters, QStringLiteral( "DPI" ), context );
   mBackgroundColor = parameterAsColor( parameters, QStringLiteral( "BACKGROUND_COLOR" ), context );
   mAntialias = parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context );
-  mSkipEmptyTiles = parameterAsBool( parameters, QStringLiteral( "Skip Empty Tiles" ), context );
+  // mSkipEmptyTiles = parameterAsBool( parameters, QStringLiteral( "Skip Empty Tiles" ), context );
   mTileFormat = parameterAsEnum( parameters, QStringLiteral( "TILE_FORMAT" ), context ) ? QStringLiteral( "JPG" ) : QStringLiteral( "PNG" );
   mJpgQuality = parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context );
   mMetaTileSize = parameterAsInt( parameters, QStringLiteral( "METATILESIZE" ), context );
@@ -162,14 +162,14 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mTransformContext = context.transformContext();
   mFeedback = feedback;
 
-  if (mSkipEmptyTiles)
-  {     
-    QSize blankSize = QSize(mTileWidth, mTileHeight);     
-    mBackgroundImage = QImage(blankSize, QImage.Format_ARGB32_Premultiplied);
-    tmpImage.fill(mBackgroundColor);
-    tmpImage.setDotsPerMeterX(mDpi / 25.4 * 1000);
-    tmpImage.setDotsPerMeterY(mDpi / 25.4 * 1000);
-  }
+  // if (mSkipEmptyTiles)
+  // {     
+  //   QSize blankSize = QSize(mTileWidth, mTileHeight);     
+  //   mBackgroundImage = QImage(blankSize, QImage.Format_ARGB32_Premultiplied);
+  //   tmpImage.fill(mBackgroundColor);
+  //   tmpImage.setDotsPerMeterX(mDpi / 25.4 * 1000);
+  //   tmpImage.setDotsPerMeterY(mDpi / 25.4 * 1000);
+  // }
 
   mWgs84Crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
   mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
@@ -509,19 +509,19 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   //CHANGE
 
   // print SKIP EMPTY TILES TRUE OR FALSE
-  if ( mSkipEmptyTiles == true)
-  {
+  // if ( mSkipEmptyTiles == true)
+  // {
     
-    mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
-  }
-  else if ( mSkipEmptyTiles == false)
-  {
-    mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to false" ) );
-  }
-  else
-  {
-    mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is something else" ) );
-  }
+  //   mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
+  // }
+  // else if ( mSkipEmptyTiles == false)
+  // {
+  //   mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to false" ) );
+  // }
+  // else
+  // {
+  //   mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is something else" ) );
+  // }
   
 
   QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
@@ -539,19 +539,19 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
     buffer.open( QIODevice::WriteOnly );
 
     //CHANGE
-    if (mSkipEmptyTiles == true)
-    {
-      // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
-      // tempImage.fill( mBackgroundColor );
+    // if (mSkipEmptyTiles == true)
+    // {
+    //   // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
+    //   // tempImage.fill( mBackgroundColor );
 
-      // Try next time
-      // isBlank = ( tileImage == tempImage );
-      if ( tileImage == mBackgroundImage)
-      {
-        ++it;
-        continue;
-      }
-    }
+    //   // Try next time
+    //   // isBlank = ( tileImage == tempImage );
+    //   if ( tileImage == mBackgroundImage)
+    //   {
+    //     ++it;
+    //     continue;
+    //   }
+    // }
 
     tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
     mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
