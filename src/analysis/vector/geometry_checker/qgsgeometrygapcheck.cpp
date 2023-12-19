@@ -504,7 +504,7 @@ QgsRectangle QgsGeometryGapCheckError::contextBoundingBox() const
 bool QgsGeometryGapCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
   QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-  return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
+  return err &&  err->location().distanceCompare( location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
 }
 
 bool QgsGeometryGapCheckError::closeMatch( QgsGeometryCheckError *other ) const

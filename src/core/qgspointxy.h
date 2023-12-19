@@ -28,6 +28,7 @@
 #include <QString>
 #include <QPoint>
 #include <QObject>
+#include <qglobal.h>
 
 class QgsPoint;
 
@@ -254,11 +255,29 @@ class CORE_EXPORT QgsPointXY
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
      * \returns TRUE if points are equal within specified tolerance
+     *
+     * \see distanceCompare
+     *
      * \since QGIS 2.9
      */
     bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
     {
-      return ( qgsDoubleNear( mX, other.x(), epsilon ) && qgsDoubleNear( mY, other.y(), epsilon ) );
+      return QgsGeometryUtilsBase::fuzzyEqual( epsilon, mX, mY, other.x(), other.y() );
+    }
+
+    /**
+     * Compares this point with another point with a fuzzy tolerance using distance comparison
+     * \param other point to compare with
+     * \param epsilon maximum difference for coordinates between the points
+     * \returns TRUE if points are equal within specified tolerance
+     *
+     * \see compare
+     *
+     * \since QGIS 3.36
+     */
+    bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
+    {
+      return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, mX, mY, other.x(), other.y() );
     }
 
     //! equality operator
@@ -271,11 +290,7 @@ class CORE_EXPORT QgsPointXY
       if ( ! isEmpty() && other.isEmpty() )
         return false;
 
-      bool equal = true;
-      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
-      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
-
-      return equal;
+      return QgsGeometryUtilsBase::fuzzyEqual( 1E-8, mX, mY, other.x(), other.y() );
     }
 
     //! Inequality operator
@@ -288,11 +303,7 @@ class CORE_EXPORT QgsPointXY
       if ( ! isEmpty() && other.isEmpty() )
         return true;
 
-      bool equal = true;
-      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
-      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
-
-      return !equal;
+      return !QgsGeometryUtilsBase::fuzzyEqual( 1E-8, mX, mY, other.x(), other.y() );
     }
 
     //! Multiply x and y by the given value
