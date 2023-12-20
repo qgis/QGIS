@@ -515,7 +515,12 @@ if(WITH_CORE)
 
   set (WITH_QTWEBENGINE FALSE CACHE BOOL "Enable QtWebEngine support")
   if (WITH_QTWEBENGINE)
-    find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
+    if(BUILD_WITH_QT6)
+      find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
+    else()
+      # QWebEnginePage is only available in widgets module in Qt5
+      find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
+    endif()
 
     add_definitions(-DWITH_QTWEBENGINE)
     message(STATUS "QtWebEngine support enabled")
