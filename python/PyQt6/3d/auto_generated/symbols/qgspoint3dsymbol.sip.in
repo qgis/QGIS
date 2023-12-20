@@ -114,8 +114,25 @@ Sets 3D shape for points
 
     QVariantMap shapeProperties() const;
 %Docstring
-Returns a key-value dictionary of point shape properties
+Returns a key-value dictionary of point shape properties.
+
+In most cases callers should use :py:func:`~QgsPoint3DSymbol.shapeProperty` instead, to
+correctly handle default values when a property has not been
+explicitly set.
+
+.. seealso:: :py:func:`shapeProperty`
 %End
+
+    QVariant shapeProperty( const QString &property ) const;
+%Docstring
+Returns the value for a specific shape ``property``.
+
+This method accounts for default property values for the symbol's :py:func:`~QgsPoint3DSymbol.shape`,
+used when the property has not been explicitly set.
+
+.. versionadded:: 3.36
+%End
+
     void setShapeProperties( const QVariantMap &properties );
 %Docstring
 Sets a key-value dictionary of point shape properties

@@ -100,8 +100,27 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Sets 3D shape for points
     void setShape( Shape shape ) { mShape = shape; }
 
-    //! Returns a key-value dictionary of point shape properties
+    /**
+     * Returns a key-value dictionary of point shape properties.
+     *
+     * In most cases callers should use shapeProperty() instead, to
+     * correctly handle default values when a property has not been
+     * explicitly set.
+     *
+     * \see shapeProperty()
+     */
     QVariantMap shapeProperties() const { return mShapeProperties; }
+
+    /**
+     * Returns the value for a specific shape \a property.
+     *
+     * This method accounts for default property values for the symbol's shape(),
+     * used when the property has not been explicitly set.
+     *
+     * \since QGIS 3.36
+     */
+    QVariant shapeProperty( const QString &property ) const;
+
     //! Sets a key-value dictionary of point shape properties
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 

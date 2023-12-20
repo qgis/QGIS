@@ -169,6 +169,109 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
   }
 }
 
+QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
+{
+  switch ( mShape )
+  {
+    case Cylinder:
+    {
+      if ( property == QLatin1String( "length" ) )
+      {
+        const float length = mShapeProperties.value( property ).toFloat();
+        if ( length == 0 )
+          return 10;
+        return length;
+      }
+      else if ( property == QLatin1String( "radius" ) )
+      {
+        const float radius = mShapeProperties.value( property ).toFloat();
+        if ( radius == 0 )
+          return 10;
+        return radius;
+      }
+      break;
+    }
+    case Sphere:
+    {
+      if ( property == QLatin1String( "radius" ) )
+      {
+        const float radius = mShapeProperties.value( property ).toFloat();
+        if ( radius == 0 )
+          return 10;
+        return radius;
+      }
+      break;
+    }
+    case Cone:
+    {
+      if ( property == QLatin1String( "length" ) )
+      {
+        const float length = mShapeProperties.value( property ).toFloat();
+        if ( length == 0 )
+          return 10;
+        return length;
+      }
+      break;
+    }
+    case Cube:
+    {
+      if ( property == QLatin1String( "size" ) )
+      {
+        const float size = mShapeProperties.value( property ).toFloat();
+        if ( size == 0 )
+          return 10;
+        return size;
+      }
+      break;
+    }
+    case Torus:
+    {
+      if ( property == QLatin1String( "radius" ) )
+      {
+        const float radius = mShapeProperties.value( property ).toFloat();
+        if ( radius == 0 )
+          return 10;
+        return radius;
+      }
+      else if ( property == QLatin1String( "minorRadius" ) )
+      {
+        const float minorRadius = mShapeProperties.value( property ).toFloat();
+        if ( minorRadius == 0 )
+          return 5;
+        return minorRadius;
+      }
+      break;
+    }
+    case Plane:
+    {
+      if ( property == QLatin1String( "size" ) )
+      {
+        const float size = mShapeProperties.value( property ).toFloat();
+        if ( size == 0 )
+          return 10;
+        return size;
+      }
+      break;
+    }
+    case ExtrudedText:
+    {
+      if ( property == QLatin1String( "depth" ) )
+      {
+        const float depth = mShapeProperties.value( property ).toFloat();
+        if ( depth == 0 )
+          return 1;
+        return depth;
+      }
+      break;
+    }
+
+    case Model:
+    case Billboard:
+      break;
+  }
+  return mShapeProperties.value( property );
+}
+
 QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
 {
   QMatrix4x4 billboardTransformMatrix;
