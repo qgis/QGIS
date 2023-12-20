@@ -46,7 +46,7 @@ class TestQgsProcessingCheckGeometry: public QgsTest
     void cleanup() {} // will be called after every testfunction.
     void areaAlg();
     // void multipartAlg();
-    // void dangleAlg();
+    void dangleAlg();
 
   private:
 
@@ -70,13 +70,13 @@ void TestQgsProcessingCheckGeometry::initTestCase()
 
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
 
-  //create a line layer that will be used in all tests
+  //create a line layer that will be used in tests
   mLineLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "line_layer.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLineLayer );
   QVERIFY( mLineLayer->isValid() );
 
-  //create a poly layer that will be used in all tests
+  //create a poly layer that will be used in tests
   mPolygonLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolygonLayer );
@@ -117,5 +117,32 @@ void TestQgsProcessingCheckGeometry::areaAlg()
   QCOMPARE( errorsLayer->featureCount(), 8 );
 }
 
+void TestQgsProcessingCheckGeometry::dangleAlg()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg(
+    QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkgeometrydangle" ) )
+  );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( mLineLayer ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "ERRORS" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> errorsLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "ERRORS" ) ).toString() ) ) );
+  QVERIFY( outputLayer->isValid() );
+  QVERIFY( errorsLayer->isValid() );
+  QCOMPARE( outputLayer->featureCount(), 6 );
+  QCOMPARE( errorsLayer->featureCount(), 6 );
+}
 QGSTEST_MAIN( TestQgsProcessingCheckGeometry )
 #include "testqgsprocessingcheckgeometry.moc"
