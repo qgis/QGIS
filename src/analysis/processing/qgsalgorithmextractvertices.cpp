@@ -123,7 +123,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
 
   QgsFeature f = feature;
   const QgsGeometry inputGeom = f.geometry();
-  if ( inputGeom.isNull() )
+  if ( inputGeom.isEmpty() )
   {
     QgsAttributes attrs = f.attributes();
     attrs << QVariant()
@@ -136,6 +136,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
           << QVariant()
           << QVariant();
 
+    f.clearGeometry();
     f.setAttributes( attrs );
     outputFeatures << f;
   }
