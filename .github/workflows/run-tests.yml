@@ -56,6 +56,7 @@ jobs:
             with-grass7: OFF
             with-grass8: OFF
             with-webengine: OFF
+            with-pdf4qt: OFF
             with-compile-commands: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
@@ -72,6 +73,7 @@ jobs:
             with-grass7: OFF
             with-grass8: ON
             with-webengine: ON
+            with-pdf4qt: ON
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
@@ -184,6 +186,7 @@ jobs:
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
                      --env WITH_QTWEBENGINE=${{ matrix.with-webengine }} \
+                     --env WITH_PDF4QT=${{ matrix.with-pdf4qt }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
