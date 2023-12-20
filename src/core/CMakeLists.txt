@@ -250,6 +250,8 @@ set(QGIS_CORE_SRCS
   network/qgshttpheaders.cpp
   network/qgsrangerequestcache.cpp
 
+  pdf/qgspdfrenderer.cpp
+
   processing/qgsprocessing.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
@@ -1643,6 +1645,8 @@ set(QGIS_CORE_HDRS
   pal/util.h
   ${PROJECT_SOURCE_DIR}/external/rtree/include/RTree.h
 
+  pdf/qgspdfrenderer.h
+
   plot/qgsplot.h
 
   pointcloud/qgspointcloudattribute.h
@@ -2292,6 +2296,7 @@ target_include_directories(qgis_core PUBLIC
   network
   numericformats
   pal
+  pdf
   plot
   pointcloud
   pointcloud/expression
