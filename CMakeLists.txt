@@ -522,7 +522,6 @@ if(WITH_CORE)
       find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
     endif()
 
-    add_definitions(-DWITH_QTWEBENGINE)
     message(STATUS "QtWebEngine support enabled")
     set(HAVE_WEBENGINE TRUE)  # used in qgsconfig.h
   else()
