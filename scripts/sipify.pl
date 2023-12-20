@@ -667,6 +667,14 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/long\s*__hash__\s*\(\s*\)/Py_hash_t __hash__\(\)/;
     }
 
+    # do not PYQT5 code if we are in qt6
+    if ( $is_qt6 && $LINE =~ m/^\s*#ifdef SIP_PYQT5_ONLY/){
+        dbg_info("do not process PYQT5 code");
+        while ( $LINE !~ m/^#endif/ ){
+            $LINE = read_line();
+        }
+    }
+
     # do not process SIP code %XXXCode
     if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$/ ){
         $LINE = "%$1$2";

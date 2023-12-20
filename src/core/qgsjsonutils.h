@@ -315,7 +315,9 @@ class CORE_EXPORT QgsJsonUtils
      * \see stringToFields()
      * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
+#ifdef SIP_PYQT5_ONLY
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = nullptr );
+#endif
 
     /**
      * Attempts to retrieve the fields from a GeoJSON  \a string representing a collection of features.
@@ -324,7 +326,9 @@ class CORE_EXPORT QgsJsonUtils
      * \see stringToFeatureList()
      * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
+#ifdef SIP_PYQT5_ONLY
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding = nullptr );
+#endif
 
     /**
      * Encodes a value to a JSON string representation, adding appropriate quotations and escaping

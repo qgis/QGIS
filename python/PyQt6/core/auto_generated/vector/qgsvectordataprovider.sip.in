@@ -711,12 +711,6 @@ Usually done in the constructor.
 .. versionadded:: 3.0
 %End
 
-    QTextCodec *textEncoding() const;
-%Docstring
-Gets this providers encoding
-
-.. versionadded:: 3.0
-%End
 
     static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
 %Docstring

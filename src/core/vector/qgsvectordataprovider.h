@@ -685,12 +685,15 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
 
+#ifdef SIP_PYQT5_ONLY
+
     /**
      * Gets this providers encoding
      *
      * \since QGIS 3.0
      */
     QTextCodec *textEncoding() const;
+#endif
 
     /**
      * Converts the \a geometry to the provider geometry type \a providerGeometryType if possible / necessary
