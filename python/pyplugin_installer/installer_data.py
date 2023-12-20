@@ -351,8 +351,9 @@ class Repositories(QObject):
             b.append("&amp; ")
             content = content.replace(a, b)
             reposXML.setContent(content)
-            pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
-            if pluginNodes.size():
+            plugins_tag = reposXML.elementsByTagName("plugins")
+            if plugins_tag.size():
+                pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
                 for i in range(pluginNodes.size()):
                     fileName = pluginNodes.item(i).firstChildElement("file_name").text().strip()
                     if not fileName:
