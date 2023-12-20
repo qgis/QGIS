@@ -16,13 +16,17 @@
  ***************************************************************************/
 
 #include "qgspdfrenderer.h"
-
 #ifdef HAVE_PDF4QT
 #include "pdfdocumentreader.h"
 #include "pdfrenderer.h"
 #include "pdffont.h"
 #include "pdfcms.h"
+#else
+#include "qgsexception.h"
+#include <QObject>
+#endif
 
+#ifdef HAVE_PDF4QT
 bool QgsPdfRenderer::render( const QString &path, QPainter *painter, const QRectF &rectangle, int pageIndex )
 {
   // LOTS of incorrect shortcuts here!
@@ -41,7 +45,6 @@ bool QgsPdfRenderer::render( const QString &path, QPainter *painter, const QRect
   renderer.render( painter, rectangle, pageIndex );
   return true;
 }
-
 #else
 bool QgsPdfRenderer::render( const QString &, QPainter *, const QRectF &, int )
 {
