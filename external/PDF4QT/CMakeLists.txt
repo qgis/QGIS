@@ -48,7 +48,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(GNUInstallDirs)
 
 if(PDF4QT_BUILD_ONLY_CORE_LIBRARY)
-    find_package(Qt6 REQUIRED COMPONENTS Core Gui Svg Xml)
+    find_package(${QT_VERSION_BASE} REQUIRED COMPONENTS Core Gui Svg Xml)
 
     if(PDF4QT_ENABLE_OPENGL)
         add_compile_definitions(PDF4QT_ENABLE_OPENGL)
@@ -63,7 +63,7 @@ else()
     endif()
 endif()
 
-qt_standard_project_setup()
+# qt_standard_project_setup()
 
 find_package(OpenSSL REQUIRED)
 find_package(lcms2 REQUIRED)
