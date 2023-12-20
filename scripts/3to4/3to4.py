@@ -114,12 +114,12 @@ qt_enums = {}
 
 def fix_file(filename: str, qgis3_compat: bool) -> int:
 
-    with (open(filename, encoding='UTF-8') as f):
+    with open(filename, encoding='UTF-8') as f:
         contents = f.read()
 
-    fix_qvariant_type = [] # QVariant.Int, QVariant.Double ...
-    fix_pyqt_import = [] # from PyQt5.QtXXX
-    fix_qt_enums = [] # Unscopping of enums
+    fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
+    fix_pyqt_import = []  # from PyQt5.QtXXX
+    fix_qt_enums = []  # Unscopping of enums
 
     tree = ast.parse(contents, filename=filename)
     for node in ast.walk(tree):
@@ -159,7 +159,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name}.{tokens[i+2].src}")
 
     new_contents = tokens_to_src(tokens)
-    with (open(filename, 'w') as f):
+    with open(filename, 'w') as f:
         f.write(new_contents)
 
     return new_contents != contents
