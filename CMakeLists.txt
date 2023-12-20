@@ -515,13 +515,6 @@ if(WITH_CORE)
 
   set (WITH_QTWEBENGINE FALSE CACHE BOOL "Enable QtWebEngine support")
   if (WITH_QTWEBENGINE)
-    if(WITH_3D)
-      message(FATAL_ERROR "QtWebEngine support cannot be enabled if QGIS 3D support is enabled")
-    endif()
-    if(WITH_QTWEBKIT)
-      message(FATAL_ERROR "QtWebEngine support cannot be enabled if Qt WebKit support is enabled")
-    endif()
-
     find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
 
     add_definitions(-DWITH_QTWEBENGINE)
