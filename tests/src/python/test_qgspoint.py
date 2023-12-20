@@ -100,6 +100,75 @@ class TestQgsPoint(QgisTestCase):
             point_a = QgsPoint(10, 20)
             point_b = QgsPoint(point_a)
 
+    def testFuzzyComparisons(self):
+        ######
+        # 2D #
+        ######
+        epsilon = 0.001
+        geom1 = QgsPoint(0.001, 0.001)
+        geom2 = QgsPoint(0.002, 0.002)
+
+        assert not geom1 == geom2  # epsilon = 1e-8 here
+
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        # OK for both
+        epsilon *= 10
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        #######
+        # 3DZ #
+        #######
+        epsilon = 0.001
+        geom1 = QgsPoint(0.001, 0.001, 0.001)
+        geom2 = QgsPoint(0.001, 0.001, 0.002)
+
+        assert not geom1 == geom2  # epsilon = 1e-8 here
+
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        # OK for both
+        epsilon *= 10
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        #######
+        # 3DM #
+        #######
+        epsilon = 0.001
+        geom1 = QgsPoint(0.001, 0.001, m=0.001)
+        geom2 = QgsPoint(0.001, 0.001, m=0.002)
+
+        assert not geom1 == geom2  # epsilon = 1e-8 here
+
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        # OK for both
+        epsilon *= 10
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        ######
+        # 4D #
+        ######
+        epsilon = 0.001
+        geom1 = QgsPoint(0.001, 0.001, 0.001, 0.001)
+        geom2 = QgsPoint(0.001, 0.001, 0.002, 0.002)
+
+        assert not geom1 == geom2  # epsilon = 1e-8 here
+
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+
+        # OK for both
+        epsilon *= 10
+        assert geom1.fuzzyEqual(geom2, epsilon)
+        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+
 
 if __name__ == '__main__':
     unittest.main()
