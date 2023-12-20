@@ -1,18 +1,16 @@
-A short guide for creating and editing GRASS GIS 7 algorithms:
+A short guide for creating and editing GRASS GIS processing algorithms:
 -----------------------------------------------------------------------
 
-Each GRASS command, to be executed from a processing framework element such as the toolbox
-or the model designer, needs to be described to let it know the inputs
-required by the commands, the output it generates and the parameters that are
-used to configure it. Each command is described in a separate text file, although
-some commands might be split in several algorithms, thus needing several files
-and adding more than one new entry to the algorithms list. Splitting
-a grass command is usually done because the processing provider does not support optional
-parameters, so it will call GRASS using all parameters defined in the description
-file.
+For a GRASS command to be executed within QGIS a plain text description file is needed
+to define the inputs required by the command, the output it generates and the parameters 
+that are used to configure it. Each command is described in a separate text file, but some 
+commands can be split into several algorithms by using more than one description file,
+so that more than one entry is shown in the algorithms list. Splitting a grass command
+was originally done because the processing provider did not support optional parameters,
+however it can be convenient to simplify the use of GRASS commands that have many options.
 
-Here is an explanation of the content of these descriptions files, so you can
-create you own ones or edit current ones to improve them.
+Here is an explanation of the content of these description files, so you can
+create new algorithms or improve existing algorithms.
 
 Each file starts with three lines containing:
 
@@ -24,18 +22,18 @@ and
 	r.sun.incidout - Solar irradiance and irradiation model (for the set local time).
  - The name of the group where you want the command to appear
 
-After these three lines, a variable number of lines appear, describing all inputs
-and outputs. Here is a brief explanation of the format of these lines, depending
-on the type of parameter or output to be described. All declarations are contained
-in a single line, with elements separated by the symbol "|"
+After these three lines the algorithm inputs and outputs are defined, one per line.
+Here is a brief explanation of the format of these lines for the different types
+of input and output parameter. Each definition is contained in a single line, with
+elements separated by the pipe symbol "|"
 
-- A raster layer
+- A raster input layer
 
 QgsProcessingParameterRasterLayer|[name of GRASS parameter]|[description of parameter to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
 Example: QgsProcessingParameterRasterLayer|base|Name of input raster map|None|False
 
-- A vector layer
+- A vector input layer
 
 QgsProcessingParameterFeatureSource|[name of GRASS parameter]|[description of parameter to show]|[A number indicating the type of geometry]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
@@ -48,7 +46,7 @@ To indicate the type of geometry, use the following values:
 1: lines
 2: polygons
 
-- Multiple layers
+- Multiple input layers
 
 QgsProcessingParameterMultipleLayers|[name of GRASS parameter]|[description of parameter to show]|[A number indicating the type of geometry]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
@@ -87,9 +85,9 @@ QgsProcessingParameterString|[name of GRASS parameter]|[description of parameter
 
 QgsProcessingParameterEnum|[name of GRASS parameter]|[description of parameter to show]|[list of possible values, separated by semicolons]|[True/False, indicating whether more than one value can be selected (allowMultiple)]|[zero-based index of default value]|[True/False, indicating if the parameter is optional or not]
 
-- A boolean value
+- GRASS command flags
 
-QgsProcessingParameterBoolean|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+QgsProcessingParameterBoolean|[GRASS flag]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
 
 Example: QgsProcessingParameterBoolean|-p|Output values as percentages|False|True
 
@@ -111,17 +109,15 @@ QgsProcessingParameterCrs|[name of GRASS parameter]|[description of parameter to
 
 Example: QgsProcessingParameterCrs|crs|New coordinate reference system|None|False
 
-- Outputs
+- Raster outputs:
 
-Raster outputs are added with the following syntax:
-
-QgsProcessingParameterRasterDestination|[name of GRASS output]|[description of output to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+QgsProcessingParameterRasterDestination|[name of GRASS parameter]|[description of output to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
 Example: QgsProcessingParameterRasterDestination|length_slope|Slope length and steepness (LS) factor for USLE|None|True
 
-Vector outputs are added with the following syntax:
+- Vector outputs:
 
-QgsProcessingParameterVectorDestination|[name of GRASS output]|[description of output to show]|vector type|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+QgsProcessingParameterVectorDestination|[name of GRASS parameter]|[description of output to show]|vector type|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
 The following types are available
 
@@ -132,23 +128,30 @@ QgsProcessing.TypeVectorAnyGeometry
 
 Example: QgsProcessingParameterVectorDestination|flowline|Flow line|QgsProcessing.TypeVectorLine|None|True
 
-File outputs which are not layers or tables of a format supported by QGIS are added with the following syntax:
+- File outputs which are not layers or tables of a format supported by QGIS:
 
-QgsProcessingParameterFileDestination|[name of GRASS output]|[description of output to show]|[file type]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+QgsProcessingParameterFileDestination|[name of GRASS parameter]|[description of output to show]|[file type]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
 
 Example: QgsProcessingParameterFileDestination|reportfile|Final Report File|Txt files (*.txt)|None|True
 
-A folder:
+- An output folder:
 
 QgsProcessingParameterFolderDestination|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
 
 Example: QgsProcessingParameterFolderDestination|output_dir|Output Directory|None|False
 
+- Hardcoded parameters: to specify something that is always added to the GRASS command.
+
+Hardcoded|[parameter and argument to be passed to GRASS]
+
+Example: Hardcoded|operation=report
+Example: Hardcoded|-o
+
 - Advanced parameters
 
-to tag a parameter as "advanced", just add "*" before its declaration. For instance:
+to tag an input parameter as "advanced", just add "*" before its declaration.
 
-*ParameterBoolean|-c|-c|True
+Example: *QgsProcessingParameterBoolean|-i|Output raster map as integer|False
 
 RELOADING ALGORITHM DESCRIPTIONS
 ---------------------------------------
@@ -170,7 +173,7 @@ There are 4 different levels where you can add logic:
 - Processing the command itself: if you need to chain more than one GRASS command for your algorithm. 
 - Processing the outputs: if you need to do special things before exporting layers or if you need special export methods. 
 
-Whenever you want to add some logic on one (or more) level(s), you have to create a .py file named according to the algorithm name in python/plugins/grassprovider/ext, replacing '.' with '_'.
+To add some logic on one (or more) level(s), you have to create a .py file named according to the algorithm name in python/plugins/grassprovider/ext, replacing '.' with '_'.
 Then you need to create methods using the respective names:
 - Input parameters: checkParameterValuesBeforeExecuting
 - Inputs import: processInputs
