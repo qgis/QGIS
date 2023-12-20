@@ -62,8 +62,8 @@ class BatchInputSelectionPanel(QWidget):
         self.text.setMinimumWidth(300)
         self.setValue('')
         self.text.editingFinished.connect(self.textEditingFinished)
-        self.text.setSizePolicy(QSizePolicy.Expanding,
-                                QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                QSizePolicy.Policy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
         self.pushButton.setText('…')

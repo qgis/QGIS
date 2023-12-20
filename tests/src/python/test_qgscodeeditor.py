@@ -69,7 +69,7 @@ class TestQgsCodeEditor(QgisTestCase):
 
     def testFontFamily(self):
         f = QgsCodeEditor().getMonospaceFont()
-        self.assertTrue(f.styleHint() & QFont.Monospace)
+        self.assertTrue(f.styleHint() & QFont.StyleHint.Monospace)
 
         QgsSettings().setValue('codeEditor/fontfamily', getTestFont().family(), QgsSettings.Gui)
         f = QgsCodeEditor().getMonospaceFont()

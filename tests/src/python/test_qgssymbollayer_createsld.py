@@ -296,7 +296,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def testSimpleFillDefault(self):
         symbol = QgsSimpleFillSymbolLayer(
-            QColor('red'), Qt.SolidPattern, QColor('green'), Qt.SolidLine, 5)
+            QColor('red'), Qt.BrushStyle.SolidPattern, QColor('green'), Qt.PenStyle.SolidLine, 5)
         symbol.setOffset(QPointF(5, 10))
 
         dom, root = self.symbolToSld(symbol)
@@ -308,7 +308,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def testSimpleFillPixels(self):
         symbol = QgsSimpleFillSymbolLayer(
-            QColor('red'), Qt.SolidPattern, QColor('green'), Qt.SolidLine, 5)
+            QColor('red'), Qt.BrushStyle.SolidPattern, QColor('green'), Qt.PenStyle.SolidLine, 5)
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
 
@@ -660,16 +660,16 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertEqual('true', self.assertVendorOption(ts, 'strikethroughText').text())
 
     def testTextMixedCase(self):
-        self.assertCapitalizationFunction(QFont.MixedCase, None)
+        self.assertCapitalizationFunction(QFont.Capitalization.MixedCase, None)
 
     def testTextUppercase(self):
-        self.assertCapitalizationFunction(QFont.AllUppercase, "strToUpperCase")
+        self.assertCapitalizationFunction(QFont.Capitalization.AllUppercase, "strToUpperCase")
 
     def testTextLowercase(self):
-        self.assertCapitalizationFunction(QFont.AllLowercase, "strToLowerCase")
+        self.assertCapitalizationFunction(QFont.Capitalization.AllLowercase, "strToLowerCase")
 
     def testTextCapitalcase(self):
-        self.assertCapitalizationFunction(QFont.Capitalize, "strCapitalize")
+        self.assertCapitalizationFunction(QFont.Capitalization.Capitalize, "strCapitalize")
 
     def assertCapitalizationFunction(self, capitalization, expectedFunction):
         layer = QgsVectorLayer("Point", "addfeat", "memory")

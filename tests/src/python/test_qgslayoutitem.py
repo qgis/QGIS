@@ -65,7 +65,7 @@ class LayoutItemTestCase:
         l = QgsLayout(QgsProject.instance())
         item = self.make_item(l)
         self.assertFalse(item.requiresRasterization())
-        item.setBlendMode(QPainter.CompositionMode_SourceIn)
+        item.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceIn)
         self.assertTrue(item.requiresRasterization())
 
 
@@ -237,7 +237,7 @@ class TestQgsLayoutItem(QgisTestCase):
         self.assertFalse(item.requiresRasterization())
 
         # item blend mode is NOT an advanced effect -- rather it requires that the WHOLE layout be rasterized to achieve
-        item.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        item.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertFalse(item.containsAdvancedEffects())
         self.assertTrue(item.requiresRasterization())
 
@@ -257,7 +257,7 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(255, 150, 0))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
 
         l.addLayoutItem(item1)
@@ -269,10 +269,10 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 150))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item2.setSymbol(fill_symbol)
 
-        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+        item2.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
 
         page_item = l.pageCollection().page(0)
         paper_rect = QRectF(page_item.pos().x(),
@@ -280,12 +280,12 @@ class TestQgsLayoutItem(QgisTestCase):
                             page_item.rect().width(),
                             page_item.rect().height())
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
@@ -309,7 +309,7 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(255, 150, 0))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
 
         l.addLayoutItem(item1)
@@ -321,10 +321,10 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 150))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item2.setSymbol(fill_symbol)
 
-        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+        item2.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
 
         self.assertTrue(
             self.render_layout_check(
@@ -352,7 +352,7 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(255, 150, 0))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
 
         l.addLayoutItem(item1)
@@ -364,10 +364,10 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 150))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item2.setSymbol(fill_symbol)
 
-        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+        item2.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
 
         self.assertTrue(
             self.render_layout_check(
@@ -395,7 +395,7 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(255, 150, 0))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
 
         l.addLayoutItem(item1)
@@ -407,10 +407,10 @@ class TestQgsLayoutItem(QgisTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 150))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item2.setSymbol(fill_symbol)
 
-        item2.setBlendMode(QPainter.CompositionMode_Multiply)
+        item2.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
 
         self.assertTrue(
             self.render_layout_check(

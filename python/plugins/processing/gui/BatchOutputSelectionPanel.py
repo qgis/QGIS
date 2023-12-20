@@ -55,8 +55,8 @@ class BatchOutputSelectionPanel(QWidget):
         self.text = QLineEdit()
         self.text.setText('')
         self.text.setMinimumWidth(300)
-        self.text.setSizePolicy(QSizePolicy.Expanding,
-                                QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                QSizePolicy.Policy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
         self.pushButton.setText('…')
@@ -142,7 +142,7 @@ class BatchOutputSelectionPanel(QWidget):
             lastDir = ''
 
         dirName = QFileDialog.getExistingDirectory(self,
-                                                   self.tr('Output Directory'), lastDir, QFileDialog.ShowDirsOnly)
+                                                   self.tr('Output Directory'), lastDir, QFileDialog.Option.ShowDirsOnly)
 
         if dirName:
             self.table.cellWidget(self.row, self.col).setValue(dirName)

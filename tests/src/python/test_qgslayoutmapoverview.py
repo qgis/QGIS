@@ -116,7 +116,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setExtent(myRectangle2)
         overviewMap.overview().setLinkedMap(self.map)
-        overviewMap.overview().setBlendMode(QPainter.CompositionMode_Multiply)
+        overviewMap.overview().setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
 
         result = self.render_layout_check("composermap_overview_blending",
                                           self.layout)
@@ -200,10 +200,10 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertEqual(layer.renderer().symbol().symbolLayer(0).properties()['outline_color'], '255,0,0,255')
 
         # test layer blend mode
-        self.assertEqual(layer.blendMode(), QPainter.CompositionMode_SourceOver)
-        overviewMap.overview().setBlendMode(QPainter.CompositionMode_Clear)
+        self.assertEqual(layer.blendMode(), QPainter.CompositionMode.CompositionMode_SourceOver)
+        overviewMap.overview().setBlendMode(QPainter.CompositionMode.CompositionMode_Clear)
         layer = overviewMap.overview().asMapLayer()
-        self.assertEqual(layer.blendMode(), QPainter.CompositionMode_Clear)
+        self.assertEqual(layer.blendMode(), QPainter.CompositionMode.CompositionMode_Clear)
 
         # should have no effect
         overviewMap.setMapRotation(45)

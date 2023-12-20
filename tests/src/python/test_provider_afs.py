@@ -1027,7 +1027,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
-        self.assertEqual([f['dt'] for f in features], [QDateTime(2017, 5, 3, 0, 0, 0, 0, Qt.UTC).toLocalTime(), NULL])
+        self.assertEqual([f['dt'] for f in features], [QDateTime(2017, 5, 3, 0, 0, 0, 0, Qt.TimeSpec.UTC).toLocalTime(), NULL])
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """
@@ -1438,8 +1438,8 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().temporalCapabilities().startField(), 'date_start')
         self.assertFalse(vl.dataProvider().temporalCapabilities().endField())
         self.assertEqual(vl.dataProvider().temporalCapabilities().mode(), QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeInstantInField)
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.UTC))
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.TimeSpec.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.TimeSpec.UTC))
 
     def testTemporal2(self):
         """
@@ -1492,8 +1492,8 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().temporalCapabilities().startField(), 'date_start')
         self.assertEqual(vl.dataProvider().temporalCapabilities().endField(), 'date_end')
         self.assertEqual(vl.dataProvider().temporalCapabilities().mode(), QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields)
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.UTC))
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.TimeSpec.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.TimeSpec.UTC))
 
     def testImageServer(self):
         """

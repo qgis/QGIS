@@ -409,7 +409,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
             dumpRangeBreaks(renderer.ranges()),
             '(0.0000-0.0000,10.0000-25.0000,20.0000-25.5000,25.5000-30.5000,)',
             'sortByValue not correct')
-        renderer.sortByValue(Qt.DescendingOrder)
+        renderer.sortByValue(Qt.SortOrder.DescendingOrder)
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
             '(25.5000-30.5000,20.0000-25.5000,10.0000-25.0000,0.0000-0.0000,)',

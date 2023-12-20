@@ -72,7 +72,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
             self.runAsBatchButton.clicked.connect(self.runAsBatch)
             self.buttonBox().addButton(self.runAsBatchButton,
-                                       QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
+                                       QDialogButtonBox.ButtonRole.ResetRole)  # reset role to ensure left alignment
         else:
             in_place_input_parameter_name = 'INPUT'
             if hasattr(alg, 'inputParameterName'):
@@ -82,7 +82,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             self.runAsBatchButton = None
             has_selection = self.active_layer and (self.active_layer.selectedFeatureCount() > 0)
-            self.buttonBox().button(QDialogButtonBox.Ok).setText(
+            self.buttonBox().button(QDialogButtonBox.StandardButton.Ok).setText(
                 QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
                 if has_selection else QCoreApplication.translate("AlgorithmDialog", "Modify All Features"))
             self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
@@ -118,7 +118,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().accepted.connect(lambda w=widget:
                                               w.setPalette(QPalette()))
             palette = widget.palette()
-            palette.setColor(QPalette.Base, QColor(255, 255, 0))
+            palette.setColor(QPalette.ColorRole.Base, QColor(255, 255, 0))
             widget.setPalette(palette)
         except:
             pass
@@ -135,7 +135,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().accepted.connect(lambda w=widget:
                                               w.setPalette(QPalette()))
             palette = widget.palette()
-            palette.setColor(QPalette.Base, QColor(255, 255, 0))
+            palette.setColor(QPalette.ColorRole.Base, QColor(255, 255, 0))
             widget.setPalette(palette)
         except:
             pass
@@ -180,9 +180,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                                              self.tr('Parameters do not all use the same CRS. This can '
                                                      'cause unexpected results.\nDo you want to '
                                                      'continue?'),
-                                             QMessageBox.Yes | QMessageBox.No,
-                                             QMessageBox.No)
-                if reply == QMessageBox.No:
+                                             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                             QMessageBox.StandardButton.No)
+                if reply == QMessageBox.StandardButton.No:
                     return
             ok, msg = self.algorithm().checkParameterValues(parameters, self.context)
             if not ok:

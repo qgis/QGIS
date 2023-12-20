@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import os
 from typing import Optional
 
-from PyQt5.QtSvg import QSvgGenerator
+from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
     QDir,
@@ -151,7 +151,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
-        t.setBlendMode(QPainter.CompositionMode_Darken)
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
@@ -199,18 +199,18 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertTrue(t.isValid())
 
     def testAlignmentConversion(self):
-        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignLeft), QgsTextRenderer.AlignLeft)
-        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignRight), QgsTextRenderer.AlignRight)
-        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignHCenter), QgsTextRenderer.AlignCenter)
-        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignJustify), QgsTextRenderer.AlignJustify)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignmentFlag.AlignLeft), QgsTextRenderer.AlignLeft)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignmentFlag.AlignRight), QgsTextRenderer.AlignRight)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignmentFlag.AlignHCenter), QgsTextRenderer.AlignCenter)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignmentFlag.AlignJustify), QgsTextRenderer.AlignJustify)
         # not supported, should fallback to left
-        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignAbsolute), QgsTextRenderer.AlignLeft)
+        self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignmentFlag.AlignAbsolute), QgsTextRenderer.AlignLeft)
 
-        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignTop), QgsTextRenderer.AlignTop)
-        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignBottom), QgsTextRenderer.AlignBottom)
-        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignVCenter), QgsTextRenderer.AlignVCenter)
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignmentFlag.AlignTop), QgsTextRenderer.AlignTop)
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignmentFlag.AlignBottom), QgsTextRenderer.AlignBottom)
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignmentFlag.AlignVCenter), QgsTextRenderer.AlignVCenter)
         # note supported, should fallback to bottom
-        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignBaseline), QgsTextRenderer.AlignBottom)
+        self.assertEqual(QgsTextRenderer.convertQtVAlignment(Qt.AlignmentFlag.AlignBaseline), QgsTextRenderer.AlignBottom)
 
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
@@ -221,8 +221,8 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setColor(QColor(255, 0, 0))
         s.setFillBufferInterior(True)
         s.setOpacity(0.5)
-        s.setJoinStyle(Qt.RoundJoin)
-        s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        s.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         return s
 
     def testBufferEquality(self):
@@ -258,11 +258,11 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertNotEqual(s, s2)
         s = self.createBufferSettings()
 
-        s.setJoinStyle(Qt.MiterJoin)
+        s.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         self.assertNotEqual(s, s2)
         s = self.createBufferSettings()
 
-        s.setBlendMode(QPainter.CompositionMode_Darken)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         self.assertNotEqual(s, s2)
 
     def checkBufferSettings(self, s):
@@ -274,8 +274,8 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.color(), QColor(255, 0, 0))
         self.assertTrue(s.fillBufferInterior())
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
+        self.assertEqual(s.joinStyle(), Qt.PenJoinStyle.RoundJoin)
+        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_DestinationAtop)
 
     def testBufferGettersSetters(self):
         s = self.createBufferSettings()
@@ -317,7 +317,7 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setSizeUnit(QgsUnitTypes.RenderPoints)
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
         s.setOpacity(0.5)
-        s.setJoinStyle(Qt.RoundJoin)
+        s.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
         s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", "symbol1"),
                                  QgsSymbolLayerReference("layerid2", "symbol2")])
         return s
@@ -347,7 +347,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertNotEqual(s, s2)
         s = self.createMaskSettings()
 
-        s.setJoinStyle(Qt.MiterJoin)
+        s.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         self.assertNotEqual(s, s2)
         s = self.createMaskSettings()
 
@@ -363,7 +363,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderPoints)
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
+        self.assertEqual(s.joinStyle(), Qt.PenJoinStyle.RoundJoin)
         self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", "symbol1"),
                                                   QgsSymbolLayerReference("layerid2", "symbol2")])
 
@@ -413,8 +413,8 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setFillColor(QColor(255, 0, 0))
         s.setStrokeColor(QColor(0, 255, 0))
         s.setOpacity(0.5)
-        s.setJoinStyle(Qt.RoundJoin)
-        s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        s.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         s.setStrokeWidth(7)
         s.setStrokeWidthUnit(QgsUnitTypes.RenderPoints)
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
@@ -502,11 +502,11 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertNotEqual(s, s2)
         s = self.createBackgroundSettings()
 
-        s.setJoinStyle(Qt.MiterJoin)
+        s.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         self.assertNotEqual(s, s2)
         s = self.createBackgroundSettings()
 
-        s.setBlendMode(QPainter.CompositionMode_Darken)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         self.assertNotEqual(s, s2)
         s = self.createBackgroundSettings()
 
@@ -541,8 +541,8 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.fillColor(), QColor(255, 0, 0))
         self.assertEqual(s.strokeColor(), QColor(0, 255, 0))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
+        self.assertEqual(s.joinStyle(), Qt.PenJoinStyle.RoundJoin)
+        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertEqual(s.strokeWidth(), 7)
         self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderPoints)
         self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
@@ -592,7 +592,7 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setColor(QColor(255, 0, 0))
         s.setOpacity(0.5)
         s.setScale(123)
-        s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         return s
 
     def testShadowEquality(self):
@@ -656,7 +656,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertNotEqual(s, s2)
         s = self.createShadowSettings()
 
-        s.setBlendMode(QPainter.CompositionMode_Darken)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         self.assertNotEqual(s, s2)
 
     def checkShadowSettings(self, s):
@@ -675,7 +675,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.color(), QColor(255, 0, 0))
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.scale(), 123)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
+        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_DestinationAtop)
 
     def testShadowGettersSetters(self):
         s = self.createShadowSettings()
@@ -734,7 +734,7 @@ class PyQgsTextRenderer(QgisTestCase):
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
         s.setColor(QColor(255, 0, 0))
         s.setOpacity(0.5)
-        s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
         s.setLineHeightUnit(QgsUnitTypes.RenderInches)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
@@ -815,7 +815,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
-        s.setBlendMode(QPainter.CompositionMode_Darken)
+        s.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
@@ -881,7 +881,7 @@ class PyQgsTextRenderer(QgisTestCase):
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(s.color(), QColor(255, 0, 0))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
+        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
         self.assertEqual(s.lineHeightUnit(), QgsUnitTypes.RenderInches)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
@@ -991,31 +991,31 @@ class PyQgsTextRenderer(QgisTestCase):
     def containsAdvancedEffects(self):
         t = QgsTextFormat()
         self.assertFalse(t.containsAdvancedEffects())
-        t.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertTrue(t.containsAdvancedEffects())
 
         t = QgsTextFormat()
-        t.buffer().setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        t.buffer().setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertFalse(t.containsAdvancedEffects())
         t.buffer().setEnabled(True)
         self.assertTrue(t.containsAdvancedEffects())
-        t.buffer().setBlendMode(QPainter.CompositionMode_SourceOver)
+        t.buffer().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         self.assertFalse(t.containsAdvancedEffects())
 
         t = QgsTextFormat()
-        t.background().setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        t.background().setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertFalse(t.containsAdvancedEffects())
         t.background().setEnabled(True)
         self.assertTrue(t.containsAdvancedEffects())
-        t.background().setBlendMode(QPainter.CompositionMode_SourceOver)
+        t.background().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         self.assertFalse(t.containsAdvancedEffects())
 
         t = QgsTextFormat()
-        t.shadow().setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        t.shadow().setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
         self.assertFalse(t.containsAdvancedEffects())
         t.shadow().setEnabled(True)
         self.assertTrue(t.containsAdvancedEffects())
-        t.shadow().setBlendMode(QPainter.CompositionMode_SourceOver)
+        t.shadow().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         self.assertFalse(t.containsAdvancedEffects())
 
     def testDataDefinedBufferSettings(self):
@@ -1047,13 +1047,13 @@ class PyQgsTextRenderer(QgisTestCase):
         # blend mode
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferBlendMode, QgsProperty.fromExpression("'burn'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.buffer().blendMode(), QPainter.CompositionMode_ColorBurn)
+        self.assertEqual(f.buffer().blendMode(), QPainter.CompositionMode.CompositionMode_ColorBurn)
 
         # join style
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferJoinStyle,
                                               QgsProperty.fromExpression("'miter'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.buffer().joinStyle(), Qt.MiterJoin)
+        self.assertEqual(f.buffer().joinStyle(), Qt.PenJoinStyle.MiterJoin)
 
         # color
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferColor, QgsProperty.fromExpression("'#ff0088'"))
@@ -1089,7 +1089,7 @@ class PyQgsTextRenderer(QgisTestCase):
         # join style
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskJoinStyle, QgsProperty.fromExpression("'miter'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.mask().joinStyle(), Qt.MiterJoin)
+        self.assertEqual(f.mask().joinStyle(), Qt.PenJoinStyle.MiterJoin)
 
     def testDataDefinedBackgroundSettings(self):
         f = QgsTextFormat()
@@ -1214,12 +1214,12 @@ class PyQgsTextRenderer(QgisTestCase):
         # blend mode
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeBlendMode, QgsProperty.fromExpression("'burn'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.background().blendMode(), QPainter.CompositionMode_ColorBurn)
+        self.assertEqual(f.background().blendMode(), QPainter.CompositionMode.CompositionMode_ColorBurn)
 
         # join style
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeJoinStyle, QgsProperty.fromExpression("'miter'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.background().joinStyle(), Qt.MiterJoin)
+        self.assertEqual(f.background().joinStyle(), Qt.PenJoinStyle.MiterJoin)
 
     def testDataDefinedShadowSettings(self):
         f = QgsTextFormat()
@@ -1286,7 +1286,7 @@ class PyQgsTextRenderer(QgisTestCase):
         # blend mode
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowBlendMode, QgsProperty.fromExpression("'burn'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.shadow().blendMode(), QPainter.CompositionMode_ColorBurn)
+        self.assertEqual(f.shadow().blendMode(), QPainter.CompositionMode.CompositionMode_ColorBurn)
 
     def testDataDefinedFormatSettings(self):
         f = QgsTextFormat()
@@ -1294,7 +1294,7 @@ class PyQgsTextRenderer(QgisTestCase):
         font.setUnderline(True)
         font.setStrikeOut(True)
         font.setWordSpacing(5.7)
-        font.setLetterSpacing(QFont.AbsoluteSpacing, 3.3)
+        font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 3.3)
         f.setFont(font)
         context = QgsRenderContext()
 
@@ -1372,7 +1372,7 @@ class PyQgsTextRenderer(QgisTestCase):
         # blend mode
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.FontBlendMode, QgsProperty.fromExpression("'burn'"))
         f.updateDataDefinedProperties(context)
-        self.assertEqual(f.blendMode(), QPainter.CompositionMode_ColorBurn)
+        self.assertEqual(f.blendMode(), QPainter.CompositionMode.CompositionMode_ColorBurn)
 
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
@@ -1412,7 +1412,7 @@ class PyQgsTextRenderer(QgisTestCase):
     def testFromQFont(self):
         qfont = getTestFont()
         qfont.setPointSizeF(16.5)
-        qfont.setLetterSpacing(QFont.AbsoluteSpacing, 3)
+        qfont.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 3)
 
         format = QgsTextFormat.fromQFont(qfont)
         self.assertEqual(format.font().family(), qfont.family())
@@ -1428,7 +1428,7 @@ class PyQgsTextRenderer(QgisTestCase):
     def testToQFont(self):
         s = QgsTextFormat()
         f = getTestFont()
-        f.setLetterSpacing(QFont.AbsoluteSpacing, 3)
+        f.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 3)
         s.setFont(f)
         s.setNamedStyle('Italic')
         s.setSize(5.5)
@@ -1481,7 +1481,7 @@ class PyQgsTextRenderer(QgisTestCase):
 
         string = 'xxxxxxxxxxxxxxxxxxxxxx'
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
         painter = QPainter(image)
         context = QgsRenderContext.fromQPainter(painter)
         context.setScaleFactor(1)
@@ -1503,7 +1503,7 @@ class PyQgsTextRenderer(QgisTestCase):
                     reference_scale: Optional[float] = None,
                     renderer_scale: Optional[float] = None):
 
-        image = QImage(image_size, image_size, QImage.Format_RGB32)
+        image = QImage(image_size, image_size, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1519,11 +1519,11 @@ class PyQgsTextRenderer(QgisTestCase):
             context.setSymbologyReferenceScale(reference_scale)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         # to highlight rect on image
         # painter.drawRect(rect)
 
@@ -1564,7 +1564,7 @@ class PyQgsTextRenderer(QgisTestCase):
                          text=['test'],
                          point=QPointF(100, 200),
                          image_size=400):
-        image = QImage(image_size, image_size, QImage.Format_RGB32)
+        image = QImage(image_size, image_size, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1575,11 +1575,11 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setScaleFactor(96 / 25.4)  # 96 DPI
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         # to highlight point on image
         # painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
 
@@ -1638,7 +1638,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setAllowHtmlFormatting(True)
         format.setSize(30)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1650,11 +1650,11 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
@@ -1699,7 +1699,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setAllowHtmlFormatting(True)
         format.setSize(30)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1711,11 +1711,11 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
@@ -1760,7 +1760,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setAllowHtmlFormatting(True)
         format.setSize(30)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1772,11 +1772,11 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
@@ -1810,7 +1810,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.shadow().setOffsetDistance(5)
         format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1822,11 +1822,11 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         doc = QgsTextDocument.fromHtml(['first <span style="font-size:50pt">line</span>', 'second <span style="font-size:50pt">line</span>', 'third line'])
 
@@ -2531,7 +2531,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(100, 100, 100))
-        format.setBlendMode(QPainter.CompositionMode_Difference)
+        format.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
         assert self.checkRender(format, 'text_blend_mode', QgsTextRenderer.Text, text=['test'])
 
     def testDrawTextAngle(self):
@@ -3673,7 +3673,7 @@ class PyQgsTextRenderer(QgisTestCase):
         painter.begin(svg)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         QgsTextRenderer.drawText(QPointF(0, 30),
                                  0,
@@ -3707,7 +3707,7 @@ class PyQgsTextRenderer(QgisTestCase):
         painter.begin(svg)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         QgsTextRenderer.drawText(QPointF(0, 30),
                                  0,
@@ -3768,7 +3768,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setSize(16)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -3780,17 +3780,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
         painter.drawPolygon(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 0)
 
@@ -3803,7 +3803,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setSize(16)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -3815,17 +3815,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF([QPointF(50, 200), QPointF(350, 200)])
         painter.drawPolygon(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 100)
 
@@ -3841,7 +3841,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.buffer().setSize(2)
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -3853,17 +3853,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
         painter.drawPolyline(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         format.setAllowHtmlFormatting(True)
         QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
@@ -3880,7 +3880,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.buffer().setSize(2)
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -3892,17 +3892,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF(reversed([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)]))
         painter.drawPolyline(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         format.setAllowHtmlFormatting(True)
         QgsTextRenderer.drawTextOnLine(line, 'm<sup>y</sup> <span style="font-size: 29pt; color: red;">curv<sup style="font-size: 10pt">ed</sup></span> te<sub>xt</sub>', context, format, 20, 0)
@@ -3923,7 +3923,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
         format.background().setFillColor(QColor(255, 255, 255))
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -3935,17 +3935,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
         painter.drawPolyline(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, 0)
 
@@ -3958,7 +3958,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setSize(16)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -3970,17 +3970,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
         painter.drawPolyline(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         format.setAllowHtmlFormatting(True)
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, -20)
@@ -3994,7 +3994,7 @@ class PyQgsTextRenderer(QgisTestCase):
         format.setSize(16)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -4006,17 +4006,17 @@ class PyQgsTextRenderer(QgisTestCase):
         context.setFlag(QgsRenderContext.ApplyScalingWorkaroundForTextRendering, True)
 
         painter.begin(image)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         image.fill(QColor(152, 219, 249))
 
-        painter.setBrush(Qt.NoBrush)
+        painter.setBrush(Qt.BrushStyle.NoBrush)
         painter.setPen(QPen(QColor(0, 0, 0)))
 
         line = QPolygonF([QPointF(50, 200), QPointF(100, 230), QPointF(150, 235), QPointF(350, 200)])
         painter.drawPolyline(line)
 
         painter.setBrush(QBrush(QColor(182, 239, 255)))
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         format.setAllowHtmlFormatting(True)
         QgsTextRenderer.drawTextOnLine(line, 'my curved text', context, format, 20, 20)

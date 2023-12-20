@@ -46,20 +46,20 @@ class MultipleFileInputDialog(BASE, WIDGET):
         super().__init__(None)
         self.setupUi(self)
 
-        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstLayers.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.selectedoptions = options
 
         # Additional buttons
         self.btnAdd = QPushButton(self.tr('Add file'))
         self.buttonBox.addButton(self.btnAdd,
-                                 QDialogButtonBox.ActionRole)
+                                 QDialogButtonBox.ButtonRole.ActionRole)
         self.btnRemove = QPushButton(self.tr('Remove file(s)'))
         self.buttonBox.addButton(self.btnRemove,
-                                 QDialogButtonBox.ActionRole)
+                                 QDialogButtonBox.ButtonRole.ActionRole)
         self.btnRemoveAll = QPushButton(self.tr('Remove all'))
         self.buttonBox.addButton(self.btnRemoveAll,
-                                 QDialogButtonBox.ActionRole)
+                                 QDialogButtonBox.ButtonRole.ActionRole)
 
         self.btnAdd.clicked.connect(self.addFile)
         self.btnRemove.clicked.connect(lambda: self.removeRows())

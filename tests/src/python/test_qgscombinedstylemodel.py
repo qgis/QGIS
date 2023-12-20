@@ -37,8 +37,8 @@ class TestQgsCombinedStyleModel(QgisTestCase):
 
         model.addStyle(style1)
         self.assertEqual(model.styles(), [style1])
-        self.assertEqual(model.headerData(0, Qt.Horizontal), 'Name')
-        self.assertEqual(model.headerData(1, Qt.Horizontal), 'Tags')
+        self.assertEqual(model.headerData(0, Qt.Orientation.Horizontal), 'Name')
+        self.assertEqual(model.headerData(1, Qt.Orientation.Horizontal), 'Tags')
 
         self.assertEqual(model.columnCount(), 2)
         self.assertEqual(model.rowCount(), 1)
@@ -90,7 +90,7 @@ class TestQgsCombinedStyleModel(QgisTestCase):
 
         style1.deleteLater()
         style1 = None
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
 
         self.assertEqual(model.rowCount(), 3)
         self.assertEqual(model.data(model.index(0, 0)), 'second style')

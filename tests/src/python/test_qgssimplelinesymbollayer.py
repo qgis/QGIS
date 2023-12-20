@@ -70,7 +70,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
         s[0].setUseCustomDashPattern(True)
-        s[0].setPenCapStyle(Qt.FlatCap)
+        s[0].setPenCapStyle(Qt.PenCapStyle.FlatCap)
         s[0].setCustomDashVector([3, 4, 5, 6])
 
         s[0].dataDefinedProperties().setProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('3'))
@@ -189,7 +189,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         # rendering test
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
-        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setDashPatternOffset(10)
         s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
 
@@ -201,7 +201,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         # rendering test
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
-        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setDashPatternOffset(-10)
         s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
 
@@ -214,7 +214,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
         s.symbolLayer(0).setUseCustomDashPattern(True)
-        s.symbolLayer(0).setPenCapStyle(Qt.FlatCap)
+        s.symbolLayer(0).setPenCapStyle(Qt.PenCapStyle.FlatCap)
         s.symbolLayer(0).setCustomDashVector([3, 4, 5, 6])
         s.symbolLayer(0).setDashPatternOffset(10)
 
@@ -247,7 +247,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         # rendering test
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
-        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setAlignDashPattern(True)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
@@ -258,10 +258,10 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         # rendering test
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
-        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setAlignDashPattern(True)
         s.symbolLayer(0).setTweakDashPatternOnCorners(True)
-        s.symbolLayer(0).setPenJoinStyle(Qt.RoundJoin)
+        s.symbolLayer(0).setPenJoinStyle(Qt.PenJoinStyle.RoundJoin)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 2 1, 3 1, 10 0, 10 10, 5 5)')
         rendered_image = self.renderGeometry(s, g)
@@ -377,7 +377,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

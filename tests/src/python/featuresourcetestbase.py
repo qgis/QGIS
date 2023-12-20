@@ -92,7 +92,7 @@ class FeatureSourceTestCase:
             attributes[f['pk']] = attrs
             geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
-        tz = Qt.UTC if self.treat_datetime_tz_as_utc() else Qt.LocalTime
+        tz = Qt.TimeSpec.UTC if self.treat_datetime_tz_as_utc() else Qt.TimeSpec.LocalTime
         expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14), tz) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14', QDate(2020, 5, 2) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 2, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-02', QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01'],
                                3: [3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL],
                                1: [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14), tz) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14', QDate(2020, 5, 3) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 3, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-03', QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14'],
@@ -882,7 +882,7 @@ class FeatureSourceTestCase:
     def testGetFeaturesSubsetAttributes(self):
         """ Test that expected results are returned when using subsets of attributes """
 
-        tz = Qt.UTC if self.treat_datetime_tz_as_utc() else Qt.LocalTime
+        tz = Qt.TimeSpec.UTC if self.treat_datetime_tz_as_utc() else Qt.TimeSpec.LocalTime
         tests = {'pk': {1, 2, 3, 4, 5},
                  'cnt': {-200, 300, 100, 200, 400},
                  'name': {'Pear', 'Orange', 'Apple', 'Honey', NULL},
@@ -953,8 +953,8 @@ class FeatureSourceTestCase:
         else:
             if self.treat_datetime_tz_as_utc():
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 {QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
-                                  QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL})
+                                 {QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.TimeSpec.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.TimeSpec.UTC),
+                                  QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.TimeSpec.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.TimeSpec.UTC), NULL})
             else:
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
                                  {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})

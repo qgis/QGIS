@@ -57,8 +57,8 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeColor(Qt.red)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeColor(Qt.GlobalColor.red)
         fill.setStrokeWidth(6)
         collection.setPageStyleSymbol(fill_symbol)
         self.assertEqual(collection.pageStyleSymbol().symbolLayer(0).color().name(), '#00ff00')
@@ -131,11 +131,11 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         self.assertEqual(collection.pages(), [page, page2])
 
         # make sure page was deleted
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertTrue(sip.isdeleted(page3))
 
         del l
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
         self.assertTrue(sip.isdeleted(page2))
 
@@ -166,7 +166,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         page3 = QgsLayoutItemPage(l)
         # try deleting a page not in collection
         collection.deletePage(page3)
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertFalse(sip.isdeleted(page3))
         self.assertEqual(collection.pageCount(), 2)
         self.assertEqual(len(page_about_to_be_removed_spy), 0)
@@ -176,7 +176,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         self.assertEqual(collection.pageCount(), 1)
         self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 148.0, 210.0))
         self.assertFalse(page in collection.pages())
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
         self.assertEqual(len(page_about_to_be_removed_spy), 1)
         self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
@@ -185,7 +185,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         self.assertEqual(collection.pageCount(), 0)
         self.assertFalse(collection.pages())
         self.assertEqual(l.layoutBounds(ignorePages=False), QRectF())
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertTrue(sip.isdeleted(page2))
         self.assertEqual(len(page_about_to_be_removed_spy), 2)
         self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
@@ -216,7 +216,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         self.assertEqual(collection.pageCount(), 0)
         self.assertEqual(len(page_about_to_be_removed_spy), 2)
 
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
         self.assertTrue(sip.isdeleted(page2))
 
@@ -819,8 +819,8 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeColor(Qt.red)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeColor(Qt.GlobalColor.red)
         fill.setStrokeWidth(6)
         collection.setPageStyleSymbol(fill_symbol)
 
@@ -963,10 +963,10 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         l.pageCollection().addPage(page2)
 
         # add some guides
-        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(2.5, QgsUnitTypes.LayoutCentimeters),
+        g1 = QgsLayoutGuide(Qt.Orientation.Horizontal, QgsLayoutMeasurement(2.5, QgsUnitTypes.LayoutCentimeters),
                             l.pageCollection().page(0))
         l.guides().addGuide(g1)
-        g2 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(4.5, QgsUnitTypes.LayoutCentimeters),
+        g2 = QgsLayoutGuide(Qt.Orientation.Vertical, QgsLayoutMeasurement(4.5, QgsUnitTypes.LayoutCentimeters),
                             l.pageCollection().page(0))
         l.guides().addGuide(g2)
 

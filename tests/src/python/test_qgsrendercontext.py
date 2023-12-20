@@ -76,8 +76,8 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(c.devicePixelRatio(), 2)
         self.assertEqual(c.deviceOutputSize(), QSize(200, 400))
 
-        c.setImageFormat(QImage.Format_Alpha8)
-        self.assertEqual(c.imageFormat(), QImage.Format_Alpha8)
+        c.setImageFormat(QImage.Format.Format_Alpha8)
+        self.assertEqual(c.imageFormat(), QImage.Format.Format_Alpha8)
 
         # should have an invalid mapToPixel by default
         self.assertFalse(c.mapToPixel().isValid())
@@ -101,7 +101,7 @@ class TestQgsRenderContext(QgisTestCase):
         c1.setZRange(QgsDoubleRange(1, 10))
         c1.setSymbologyReferenceScale(1000)
         c1.setOutputSize(QSize(100, 200))
-        c1.setImageFormat(QImage.Format_Alpha8)
+        c1.setImageFormat(QImage.Format.Format_Alpha8)
         c1.setDevicePixelRatio(2)
         c1.setFrameRate(30)
         c1.setCurrentFrame(6)
@@ -112,7 +112,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(c2.zRange(), QgsDoubleRange(1, 10))
         self.assertEqual(c2.symbologyReferenceScale(), 1000)
         self.assertEqual(c2.outputSize(), QSize(100, 200))
-        self.assertEqual(c2.imageFormat(), QImage.Format_Alpha8)
+        self.assertEqual(c2.imageFormat(), QImage.Format.Format_Alpha8)
         self.assertEqual(c2.devicePixelRatio(), 2)
         self.assertEqual(c2.deviceOutputSize(), QSize(200, 400))
         self.assertEqual(c2.frameRate(), 30)
@@ -150,14 +150,14 @@ class TestQgsRenderContext(QgisTestCase):
         # should have an invalid mapToPixel by default
         self.assertFalse(c.mapToPixel().isValid())
 
-        im = QImage(1000, 600, QImage.Format_RGB32)
+        im = QImage(1000, 600, QImage.Format.Format_RGB32)
         dots_per_m = int(300 / 25.4 * 1000)  # 300 dpi to dots per m
         im.setDotsPerMeterX(dots_per_m)
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
-        p.setRenderHint(QPainter.Antialiasing)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
         try:
-            p.setRenderHint(QPainter.LosslessImageRendering)
+            p.setRenderHint(QPainter.RenderHint.LosslessImageRendering)
             supports_lossless = True
         except AttributeError:
             supports_lossless = False
@@ -182,7 +182,7 @@ class TestQgsRenderContext(QgisTestCase):
         ms.setZRange(QgsDoubleRange(1, 10))
         ms.setOutputSize(QSize(100, 100))
         ms.setDevicePixelRatio(2)
-        ms.setOutputImageFormat(QImage.Format_Alpha8)
+        ms.setOutputImageFormat(QImage.Format.Format_Alpha8)
         ms.setFrameRate(30)
         ms.setCurrentFrame(6)
 
@@ -197,7 +197,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(rc.outputSize(), QSize(100, 100))
         self.assertEqual(rc.devicePixelRatio(), 2)
         self.assertEqual(rc.deviceOutputSize(), QSize(200, 200))
-        self.assertEqual(rc.imageFormat(), QImage.Format_Alpha8)
+        self.assertEqual(rc.imageFormat(), QImage.Format.Format_Alpha8)
         self.assertEqual(rc.frameRate(), 30)
         self.assertEqual(rc.currentFrame(), 6)
 
@@ -798,12 +798,12 @@ class TestQgsRenderContext(QgisTestCase):
     def testSetPainterFlags(self):
         rc = QgsRenderContext()
         p = QPainter()
-        im = QImage(1000, 600, QImage.Format_RGB32)
+        im = QImage(1000, 600, QImage.Format.Format_RGB32)
         p.begin(im)
         rc.setPainterFlagsUsingContext(p)
-        self.assertFalse(p.testRenderHint(QPainter.Antialiasing))
+        self.assertFalse(p.testRenderHint(QPainter.RenderHint.Antialiasing))
         try:
-            self.assertFalse(p.testRenderHint(QPainter.LosslessImageRendering))
+            self.assertFalse(p.testRenderHint(QPainter.RenderHint.LosslessImageRendering))
         except AttributeError:
             pass
 
@@ -811,9 +811,9 @@ class TestQgsRenderContext(QgisTestCase):
         rc.setFlag(QgsRenderContext.Antialiasing, True)
         rc.setFlag(QgsRenderContext.LosslessImageRendering, True)
         rc.setPainterFlagsUsingContext(p)
-        self.assertTrue(p.testRenderHint(QPainter.Antialiasing))
+        self.assertTrue(p.testRenderHint(QPainter.RenderHint.Antialiasing))
         try:
-            self.assertTrue(p.testRenderHint(QPainter.LosslessImageRendering))
+            self.assertTrue(p.testRenderHint(QPainter.RenderHint.LosslessImageRendering))
         except AttributeError:
             pass
 

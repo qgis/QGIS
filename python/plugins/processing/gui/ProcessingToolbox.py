@@ -57,9 +57,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     PROVIDER_ITEM = 'PROVIDER_ITEM'
     GROUP_ITEM = 'GROUP_ITEM'
 
-    NAME_ROLE = Qt.UserRole
-    TAG_ROLE = Qt.UserRole + 1
-    TYPE_ROLE = Qt.UserRole + 2
+    NAME_ROLE = Qt.ItemDataRole.UserRole
+    TAG_ROLE = Qt.ItemDataRole.UserRole + 1
+    TYPE_ROLE = Qt.ItemDataRole.UserRole + 2
 
     # Trigger algorithm execution
     executeWithGui = pyqtSignal(str, QWidget, bool, bool)
@@ -69,7 +69,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.tipWasClosed = False
         self.in_place_mode = False
         self.setupUi(self)
-        self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.setAllowedAreas(Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
@@ -152,7 +152,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             toolbarButton.setObjectName('provideraction_' + provider.id())
             toolbarButton.setIcon(provider.icon())
             toolbarButton.setToolTip(provider.name())
-            toolbarButton.setPopupMode(QToolButton.InstantPopup)
+            toolbarButton.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
             actions = ProviderActions.actions[provider.id()]
             menu = QMenu(provider.name(), self)

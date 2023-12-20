@@ -87,8 +87,8 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -158,8 +158,8 @@ class TestQgsPlot(QgisTestCase):
         plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.EveryLabel)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -229,8 +229,8 @@ class TestQgsPlot(QgisTestCase):
         plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstLabel)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -300,8 +300,8 @@ class TestQgsPlot(QgisTestCase):
         plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -371,8 +371,8 @@ class TestQgsPlot(QgisTestCase):
         plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -435,8 +435,8 @@ class TestQgsPlot(QgisTestCase):
         plot.xAxis().setLabelInterval(5)
         plot.yAxis().setLabelInterval(70)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -490,8 +490,8 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 
@@ -525,8 +525,8 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        im = QImage(600, 500, QImage.Format_ARGB32)
-        im.fill(Qt.white)
+        im = QImage(600, 500, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
         im.setDotsPerMeterX(int(96 / 25.4 * 1000))
         im.setDotsPerMeterY(int(96 / 25.4 * 1000))
 

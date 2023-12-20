@@ -291,7 +291,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
                                      self.tr("Invalid target srid: must be a valid crs."))
                 return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             # store current input layer crs and encoding, so I can restore it
             prevInCrs = self.inLayer.crs()
             prevInEncoding = self.inLayer.dataProvider().encoding()

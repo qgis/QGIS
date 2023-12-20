@@ -349,7 +349,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         painter = QPainter()
         ms = QgsMapSettings()
 
@@ -391,7 +391,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         layer = QgsSimpleFillSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
-        layer.setStrokeStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
         symbol = QgsFillSymbol()
@@ -435,7 +435,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         symbol = QgsLineSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         painter = QPainter()
         ms = QgsMapSettings()
 
@@ -524,7 +524,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         symbol = QgsMarkerSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         painter = QPainter()
         ms = QgsMapSettings()
 
@@ -570,7 +570,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
         layer.setColor(QColor(100, 150, 150))
         layer.setSize(5)
-        layer.setStrokeStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.PenStyle.NoPen)
 
         symbol = QgsMarkerSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -622,7 +622,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = Qt.SolidPattern
+        mExpectedValue = Qt.BrushStyle.SolidPattern
         mValue = mSymbolLayer.brushStyle()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
@@ -632,7 +632,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = Qt.DotLine
+        mExpectedValue = Qt.PenStyle.DotLine
         mValue = mSymbolLayer.strokeStyle()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
@@ -1014,12 +1014,12 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = Qt.RoundCap
+        mExpectedValue = Qt.PenCapStyle.RoundCap
         mValue = mSymbolLayer.penCapStyle()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = Qt.MiterJoin
+        mExpectedValue = Qt.PenJoinStyle.MiterJoin
         mValue = mSymbolLayer.penJoinStyle()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage

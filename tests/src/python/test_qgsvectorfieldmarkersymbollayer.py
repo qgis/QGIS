@@ -209,7 +209,7 @@ class TestQgsVectorFieldMarkerSymbolLayer(QgisTestCase):
         assert self.imageCheck('radians_polar', 'radians_polar', rendered_image)
 
     def renderFeature(self, symbol, f, buffer=20, map_rotation=0):
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

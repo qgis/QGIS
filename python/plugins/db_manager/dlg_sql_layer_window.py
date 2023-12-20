@@ -109,7 +109,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             self.uniqueColumnCheck.setText(self.tr("Column with unique values"))
 
         self.editSql.setFocus()
-        self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.editSql.setLineNumbersVisible(True)
         self.initCompleter()
         self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
@@ -117,7 +117,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         # allow copying results
         copyAction = QAction("copy", self)
         self.viewResult.addAction(copyAction)
-        copyAction.setShortcuts(QKeySequence.Copy)
+        copyAction.setShortcuts(QKeySequence.StandardKey.Copy)
 
         copyAction.triggered.connect(self.copySelectedResults)
 
@@ -184,18 +184,18 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         # Then the columns
         self.geomCombo.setCurrentIndex(self.geomCombo.findText(uri.geometryColumn(), Qt.MatchExactly))
         if uri.keyColumn() != '_uid_':
-            self.uniqueColumnCheck.setCheckState(Qt.Checked)
+            self.uniqueColumnCheck.setCheckState(Qt.CheckState.Checked)
             if self.allowMultiColumnPk:
                 # Unchecked default values
                 for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.checkState() == Qt.Checked:
-                        item.setCheckState(Qt.Unchecked)
+                    if item.checkState() == Qt.CheckState.Checked:
+                        item.setCheckState(Qt.CheckState.Unchecked)
                 # Get key columns
                 itemsData = uri.keyColumn().split(',')
                 # Checked key columns
                 for keyColumn in itemsData:
                     for item in self.uniqueModel.findItems(keyColumn):
-                        item.setCheckState(Qt.Checked)
+                        item.setCheckState(Qt.CheckState.Checked)
             else:
                 keyColumn = uri.keyColumn()
                 if self.uniqueModel.findItems(keyColumn):
@@ -205,7 +205,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.layerNameEdit.setText(layer.name())
         self.filter = uri.sql()
         if uri.selectAtIdDisabled():
-            self.avoidSelectById.setCheckState(Qt.Checked)
+            self.avoidSelectById.setCheckState(Qt.CheckState.Checked)
 
     def getQueryHash(self, name):
         return 'q%s' % md5(name.encode('utf8')).hexdigest()
@@ -264,7 +264,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if sql == "":
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
 
             # delete the old model
             old_model = self.viewResult.model()
@@ -294,12 +294,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             self.update()
 
     def _getSqlLayer(self, _filter):
-        hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
+        hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.CheckState.Checked
         if hasUniqueField and self.allowMultiColumnPk:
             checkedCols = [
                 item.data()
                 for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
-                if item.checkState() == Qt.Checked
+                if item.checkState() == Qt.CheckState.Checked
             ]
 
             uniqueFieldName = ",".join(checkedCols)
@@ -311,7 +311,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
         else:
             uniqueFieldName = None
-        hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
+        hasGeomCol = self.hasGeometryCol.checkState() == Qt.CheckState.Checked
         if hasGeomCol:
             geomFieldName = self.geomCombo.currentText()
         else:
@@ -350,7 +350,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             return None
 
     def loadSqlLayer(self):
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             layer = self._getSqlLayer(self.filter)
             if layer is None:
                 return
@@ -358,7 +358,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             QgsProject.instance().addMapLayers([layer], True)
 
     def updateSqlLayer(self):
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             layer = self._getSqlLayer(self.filter)
             if layer is None:
                 return
@@ -382,7 +382,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query == "":
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             # remove a trailing ';' from query if present
             if query.strip().endswith(';'):
                 query = query.strip()[:-1]
@@ -448,9 +448,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                 matchingItems = self.uniqueModel.findItems(col)
                 if matchingItems:
                     item.setCheckState(matchingItems[0].checkState())
-                    uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.Checked
+                    uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.CheckState.Checked
                 else:
-                    item.setCheckState(Qt.Unchecked)
+                    item.setCheckState(Qt.CheckState.Unchecked)
             newItems.append(item)
         if self.allowMultiColumnPk:
             self.uniqueModel.clear()
@@ -478,7 +478,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         items = self.uniqueModel.findItems(defaultUniqueCol)
         if items and not uniqueIsFilled:
             if self.allowMultiColumnPk:
-                items[0].setCheckState(Qt.Checked)
+                items[0].setCheckState(Qt.CheckState.Checked)
             else:
                 self.uniqueCombo.setEditText(defaultUniqueCol)
 
@@ -492,8 +492,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         for idx in self.viewResult.selectionModel().selectedRows():
             text += "\n" + model.rowToString(idx.row(), "\t")
 
-        QApplication.clipboard().setText(text, QClipboard.Selection)
-        QApplication.clipboard().setText(text, QClipboard.Clipboard)
+        QApplication.clipboard().setText(text, QClipboard.Mode.Selection)
+        QApplication.clipboard().setText(text, QClipboard.Mode.Clipboard)
 
     def initCompleter(self):
         dictionary = None
@@ -521,7 +521,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         dlg = QueryBuilderDlg(self.iface, self.db, self, reset=self.queryBuilderFirst)
         self.queryBuilderFirst = False
         r = dlg.exec_()
-        if r == QDialog.Accepted:
+        if r == QDialog.DialogCode.Accepted:
             self.editSql.setText(dlg.query)
 
     def _getSqlQuery(self):
@@ -539,7 +539,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         checkedItems = [
             item.text()
             for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
-            if item.checkState() == Qt.Checked
+            if item.checkState() == Qt.CheckState.Checked
         ]
 
         label = ", ".join(checkedItems)
@@ -566,12 +566,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             ret = QMessageBox.question(
                 self, self.tr('Unsaved Changes?'),
                 self.tr('There are unsaved changes. Do you want to keep them?'),
-                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel)
 
-            if ret == QMessageBox.Save:
+            if ret == QMessageBox.StandardButton.Save:
                 self.saveAsFilePreset()
                 return True
-            elif ret == QMessageBox.Discard:
+            elif ret == QMessageBox.StandardButton.Discard:
                 return True
             else:
                 return False

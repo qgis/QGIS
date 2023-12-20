@@ -42,7 +42,7 @@ class TestColorRampLegend(QgsColorRampLegendNode):
     """
 
     def data(self, role):
-        if role == Qt.FontRole:
+        if role == Qt.ItemDataRole.FontRole:
             return QgsFontUtils.getStandardTestFont('Bold', 18)
 
         else:
@@ -67,9 +67,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         self.assertEqual(settings.prefix(), 'pref')
         settings.setSuffix('suff')
         self.assertEqual(settings.suffix(), 'suff')
-        self.assertEqual(settings.orientation(), Qt.Vertical)
-        settings.setOrientation(Qt.Horizontal)
-        self.assertEqual(settings.orientation(), Qt.Horizontal)
+        self.assertEqual(settings.orientation(), Qt.Orientation.Vertical)
+        settings.setOrientation(Qt.Orientation.Horizontal)
+        self.assertEqual(settings.orientation(), Qt.Orientation.Horizontal)
         # Test default
         self.assertTrue(settings.useContinuousLegend())
         settings.setUseContinuousLegend(False)
@@ -93,7 +93,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         self.assertEqual(settings2.prefix(), 'pref')
         self.assertEqual(settings2.suffix(), 'suff')
         self.assertEqual(settings2.textFormat().size(), 13)
-        self.assertEqual(settings2.orientation(), Qt.Horizontal)
+        self.assertEqual(settings2.orientation(), Qt.Orientation.Horizontal)
 
         settings2.setTextFormat(QgsTextFormat())
         settings2a = QgsColorRampLegendNodeSettings(settings2)
@@ -112,7 +112,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         self.assertEqual(settings3.prefix(), 'pref')
         self.assertEqual(settings3.suffix(), 'suff')
         self.assertEqual(settings3.textFormat().size(), 13)
-        self.assertEqual(settings3.orientation(), Qt.Horizontal)
+        self.assertEqual(settings3.orientation(), Qt.Orientation.Horizontal)
         self.assertFalse(settings3.useContinuousLegend())
 
         # no text format
@@ -149,9 +149,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         node = TestColorRampLegend(layer_tree_layer, r, 'min_label', 'max_label')
 
-        pixmap = node.data(Qt.DecorationRole)
+        pixmap = node.data(Qt.ItemDataRole.DecorationRole)
 
-        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im = QImage(pixmap.size(), QImage.Format.Format_ARGB32)
         im.fill(QColor(255, 255, 255))
         p = QPainter(im)
         p.drawPixmap(0, 0, pixmap)
@@ -175,9 +175,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
 
-        pixmap = node.data(Qt.DecorationRole)
+        pixmap = node.data(Qt.ItemDataRole.DecorationRole)
 
-        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im = QImage(pixmap.size(), QImage.Format.Format_ARGB32)
         im.fill(QColor(255, 255, 255))
         p = QPainter(im)
         p.drawPixmap(0, 0, pixmap)
@@ -198,9 +198,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
 
-        pixmap = node.data(Qt.DecorationRole)
+        pixmap = node.data(Qt.ItemDataRole.DecorationRole)
 
-        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im = QImage(pixmap.size(), QImage.Format.Format_ARGB32)
         im.fill(QColor(255, 255, 255))
         p = QPainter(im)
         p.drawPixmap(0, 0, pixmap)
@@ -216,13 +216,13 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
 
         settings = QgsColorRampLegendNodeSettings()
-        settings.setOrientation(Qt.Horizontal)
+        settings.setOrientation(Qt.Orientation.Horizontal)
 
         node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
 
-        pixmap = node.data(Qt.DecorationRole)
+        pixmap = node.data(Qt.ItemDataRole.DecorationRole)
 
-        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im = QImage(pixmap.size(), QImage.Format.Format_ARGB32)
         im.fill(QColor(255, 255, 255))
         p = QPainter(im)
         p.drawPixmap(0, 0, pixmap)
@@ -239,13 +239,13 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         settings = QgsColorRampLegendNodeSettings()
         settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
-        settings.setOrientation(Qt.Horizontal)
+        settings.setOrientation(Qt.Orientation.Horizontal)
 
         node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
 
-        pixmap = node.data(Qt.DecorationRole)
+        pixmap = node.data(Qt.ItemDataRole.DecorationRole)
 
-        im = QImage(pixmap.size(), QImage.Format_ARGB32)
+        im = QImage(pixmap.size(), QImage.Format.Format_ARGB32)
         im.fill(QColor(255, 255, 255))
         p = QPainter(im)
         p.drawPixmap(0, 0, pixmap)
@@ -269,7 +269,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
-        image = QImage(400, 250, QImage.Format_ARGB32)
+        image = QImage(400, 250, QImage.Format.Format_ARGB32)
         image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)
@@ -319,7 +319,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
-        image = QImage(400, 250, QImage.Format_ARGB32)
+        image = QImage(400, 250, QImage.Format.Format_ARGB32)
         image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)
@@ -365,7 +365,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
-        image = QImage(400, 250, QImage.Format_ARGB32)
+        image = QImage(400, 250, QImage.Format.Format_ARGB32)
         image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)
@@ -414,7 +414,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
-        image = QImage(400, 250, QImage.Format_ARGB32)
+        image = QImage(400, 250, QImage.Format.Format_ARGB32)
         image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)
@@ -449,7 +449,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
 
         settings = QgsColorRampLegendNodeSettings()
-        settings.setOrientation(Qt.Horizontal)
+        settings.setOrientation(Qt.Orientation.Horizontal)
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
         ls = QgsLegendSettings()
@@ -459,7 +459,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
-        image = QImage(400, 250, QImage.Format_ARGB32)
+        image = QImage(400, 250, QImage.Format.Format_ARGB32)
         image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)
@@ -494,7 +494,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
 
         settings = QgsColorRampLegendNodeSettings()
-        settings.setOrientation(Qt.Horizontal)
+        settings.setOrientation(Qt.Orientation.Horizontal)
         settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
@@ -505,7 +505,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
-        image = QImage(400, 250, QImage.Format_ARGB32)
+        image = QImage(400, 250, QImage.Format.Format_ARGB32)
         image.fill(QColor(255, 255, 255))
 
         p = QPainter(image)

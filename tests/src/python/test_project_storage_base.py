@@ -12,7 +12,7 @@ __date__ = '2022-04-19'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 
-from PyQt5.QtCore import QDateTime
+from qgis.PyQt.QtCore import QDateTime
 from qgis.core import (
     QgsApplication,
     QgsProject,

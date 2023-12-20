@@ -127,10 +127,10 @@ class ModelerDialog(QgsModelDesignerDialog):
         if not valid:
             message_box = QMessageBox()
             message_box.setWindowTitle(self.tr('Model is Invalid'))
-            message_box.setIcon(QMessageBox.Warning)
+            message_box.setIcon(QMessageBox.Icon.Warning)
             message_box.setText(self.tr('This model is not valid and contains one or more issues. Are you sure you want to run it in this state?'))
-            message_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-            message_box.setDefaultButton(QMessageBox.Cancel)
+            message_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel)
+            message_box.setDefaultButton(QMessageBox.StandardButton.Cancel)
 
             error_string = ''
             for e in errors:
@@ -138,7 +138,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 error_string += f'• {e}\n'
 
             message_box.setDetailedText(error_string)
-            if message_box.exec_() == QMessageBox.Cancel:
+            if message_box.exec_() == QMessageBox.StandardButton.Cancel:
                 return
 
         def on_finished(successful, results):

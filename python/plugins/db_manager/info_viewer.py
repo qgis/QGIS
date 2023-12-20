@@ -45,7 +45,7 @@ class InfoViewer(QTextBrowser):
             return
 
         if url.scheme() == "action":
-            with OverrideCursor(Qt.WaitCursor):
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
                 try:
                     if self.item.runAction(url.path()):
                         self.refresh()

@@ -145,7 +145,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         nodes = renderer.createLegendNodes(layer_tree_layer)
         self.assertEqual(len(nodes), 2)
         self.assertIsInstance(nodes[0], QgsSimpleLegendNode)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'Intensity')
+        self.assertEqual(nodes[0].data(Qt.ItemDataRole.DisplayRole), 'Intensity')
         self.assertIsInstance(nodes[1], QgsColorRampLegendNode)
         self.assertEqual(nodes[1].ramp().color1().name(), '#440154')
         self.assertEqual(nodes[1].ramp().color2().name(), '#fde725')
@@ -157,9 +157,9 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         renderer.setColorRampShader(shader)
         nodes = renderer.createLegendNodes(layer_tree_layer)
         self.assertEqual(len(nodes), 3)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'Intensity')
-        self.assertEqual(nodes[1].data(Qt.DisplayRole), '200')
-        self.assertEqual(nodes[2].data(Qt.DisplayRole), '600')
+        self.assertEqual(nodes[0].data(Qt.ItemDataRole.DisplayRole), 'Intensity')
+        self.assertEqual(nodes[1].data(Qt.ItemDataRole.DisplayRole), '200')
+        self.assertEqual(nodes[2].data(Qt.ItemDataRole.DisplayRole), '600')
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):

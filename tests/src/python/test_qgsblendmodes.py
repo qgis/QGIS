@@ -94,8 +94,8 @@ class TestQgsBlendModes(unittest.TestCase):
         self.map_settings.setExtent(self.extent)
 
         # Set blending modes for both layers
-        self.line_layer.setBlendMode(QPainter.CompositionMode_Difference)
-        self.polygon_layer.setBlendMode(QPainter.CompositionMode_Difference)
+        self.line_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
+        self.polygon_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
 
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_blendmodes")
@@ -105,8 +105,8 @@ class TestQgsBlendModes(unittest.TestCase):
         result = checker.runTest("vector_blendmodes", 20)
 
         # Reset layers
-        self.line_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
-        self.polygon_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.line_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        self.polygon_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
         self.assertTrue(result)
 
@@ -118,7 +118,7 @@ class TestQgsBlendModes(unittest.TestCase):
         self.map_settings.setExtent(self.extent)
 
         # Set feature blending for line layer
-        self.line_layer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
+        self.line_layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Plus)
 
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_featureblendmodes")
@@ -128,7 +128,7 @@ class TestQgsBlendModes(unittest.TestCase):
         result = checker.runTest("vector_featureblendmodes", 20)
 
         # Reset layers
-        self.line_layer.setFeatureBlendMode(QPainter.CompositionMode_SourceOver)
+        self.line_layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
         self.assertTrue(result)
 
@@ -158,7 +158,7 @@ class TestQgsBlendModes(unittest.TestCase):
         self.map_settings.setExtent(self.raster_layer1.extent())
 
         # Set blending mode for top layer
-        self.raster_layer1.setBlendMode(QPainter.CompositionMode_Difference)
+        self.raster_layer1.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_raster_blendmodes")
         checker.setMapSettings(self.map_settings)
@@ -167,7 +167,7 @@ class TestQgsBlendModes(unittest.TestCase):
 
         result = checker.runTest("raster_blendmodes", 20)
 
-        self.raster_layer1.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.raster_layer1.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
         self.assertTrue(result)
 

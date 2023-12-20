@@ -63,7 +63,7 @@ class TestQgsGroupLayer(QgisTestCase):
         # force deletion of a layer
         layer1.deleteLater()
         layer1 = None
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         # should be automatically cleaned
         self.assertEqual(group_layer.childLayers(), [layer2])
 
@@ -212,16 +212,16 @@ class TestQgsGroupLayer(QgisTestCase):
         options = QgsGroupLayer.LayerOptions(QgsCoordinateTransformContext())
         group_layer = QgsGroupLayer('group', options)
         group_layer.setChildLayers([vl2, vl1])
-        vl1.setBlendMode(QPainter.CompositionMode_DestinationIn)
-        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode_DestinationIn)
+        vl1.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationIn)
+        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode.CompositionMode_DestinationIn)
         # temporarily remove layer from group and check blend mode
         group_layer.setChildLayers([vl2])
         # blend mode must be reset to a non-clipping mode
-        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode_SourceOver)
+        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode.CompositionMode_SourceOver)
         # readd layer to group
         group_layer.setChildLayers([vl2, vl1])
         # group blend mode should be restored
-        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode_DestinationIn)
+        self.assertEqual(vl1.blendMode(), QPainter.CompositionMode.CompositionMode_DestinationIn)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(600, 400))

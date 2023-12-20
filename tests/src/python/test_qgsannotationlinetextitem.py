@@ -220,7 +220,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
-        image = QImage(600, 300, QImage.Format_ARGB32)
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -254,7 +254,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
-        image = QImage(600, 300, QImage.Format_ARGB32)
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -288,7 +288,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
-        image = QImage(600, 300, QImage.Format_ARGB32)
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -320,7 +320,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
-        image = QImage(600, 300, QImage.Format_ARGB32)
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -352,7 +352,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
-        image = QImage(600, 300, QImage.Format_ARGB32)
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -386,7 +386,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
         rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
-        image = QImage(600, 300, QImage.Format_ARGB32)
+        image = QImage(600, 300, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))

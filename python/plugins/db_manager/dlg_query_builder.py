@@ -33,7 +33,7 @@ class FocusEventFilter(QObject):
         self.focus = ''
 
     def eventFilter(self, obj, event):
-        if event.type() == QEvent.FocusIn:
+        if event.type() == QEvent.Type.FocusIn:
             self.focus = obj.objectName()
         return QObject.eventFilter(self, obj, event)
 
@@ -197,8 +197,8 @@ class QueryBuilderDlg(QDialog):
             return  # No object with this name
         self.table = tableObj[0]
         if (ag in self.coltables):  # table already use
-            response = QMessageBox.question(self, "Table already used", "Do you want to add table %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
-            if response == QMessageBox.No:
+            response = QMessageBox.question(self, "Table already used", "Do you want to add table %s again?" % ag, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if response == QMessageBox.StandardButton.No:
                 return
         ag = self.table.quotedName()
         txt = self.ui.tab.text()
@@ -214,16 +214,16 @@ class QueryBuilderDlg(QDialog):
         ag = self.ui.columns.currentText()
         if self.evt.focus == "where":  # in where section
             if ag in self.col_where:  # column already called in where section
-                response = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
-                if response == QMessageBox.No:
+                response = QMessageBox.question(self, "Column already used in WHERE clause", "Do you want to add column %s again?" % ag, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if response == QMessageBox.StandardButton.No:
                     self.ui.columns.setCurrentIndex(0)
                     return
             self.ui.where.insertPlainText(ag)
             self.col_where.append(ag)
         elif self.evt.focus == "col":
             if ag in self.col_col:  # column already called in col section
-                response = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again?" % ag, QMessageBox.Yes | QMessageBox.No)
-                if response == QMessageBox.No:
+                response = QMessageBox.question(self, "Column already used in COLUMNS section", "Do you want to add column %s again?" % ag, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if response == QMessageBox.StandardButton.No:
                     self.ui.columns.setCurrentIndex(0)
                     return
             if len(self.ui.col.toPlainText().strip()) > 0:
@@ -284,7 +284,7 @@ class QueryBuilderDlg(QDialog):
         self.ui.values.setModel(model)
 
     def query_item(self, index):
-        value = index.data(Qt.EditRole)
+        value = index.data(Qt.ItemDataRole.EditRole)
 
         if value is None:
             queryWord = 'NULL'
@@ -305,7 +305,7 @@ class QueryBuilderDlg(QDialog):
             tab_idx = idx.split(".")[0][1:-1]  # remove "
             col_idx = idx.split(".")[1][1:-1]  # remove '
         except:
-            QMessageBox.warning(self, "Use R-Tree", "All fields are necessary", QMessageBox.Cancel)
+            QMessageBox.warning(self, "Use R-Tree", "All fields are necessary", QMessageBox.StandardButton.Cancel)
         tgt = self.ui.table_target.currentText()
         if tgt in (None, "", " ", "Table (Target)"):
             return

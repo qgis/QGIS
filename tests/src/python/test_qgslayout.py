@@ -72,7 +72,7 @@ class TestQgsLayout(QgisTestCase):
         grid = l.gridSettings()
         grid.setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutPoints))
 
-        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters),
+        g1 = QgsLayoutGuide(Qt.Orientation.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters),
                             l.pageCollection().page(0))
         l.guides().addGuide(g1)
 
@@ -103,7 +103,7 @@ class TestQgsLayout(QgisTestCase):
         self.assertEqual(collection2.page(0).pageSize().height(), 148)
         self.assertEqual(l2.gridSettings().resolution().length(), 5.0)
         self.assertEqual(l2.gridSettings().resolution().units(), QgsUnitTypes.LayoutPoints)
-        self.assertEqual(l2.guides().guidesOnPage(0)[0].orientation(), Qt.Horizontal)
+        self.assertEqual(l2.guides().guidesOnPage(0)[0].orientation(), Qt.Orientation.Horizontal)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().length(), 5.0)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(l2.snapper().snapTolerance(), 7)

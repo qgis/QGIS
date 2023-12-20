@@ -155,12 +155,12 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
                             page_item.rect().width(),
                             page_item.rect().height())
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
@@ -183,7 +183,7 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 50))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
         layout.addLayoutItem(item1)
 
@@ -210,7 +210,7 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             style.setTextFormat(text_format)
             legend.setStyle(legend_item, style)
 
-        legend.setBlendMode(QPainter.CompositionMode_Darken)
+        legend.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         self.assertTrue(legend.requiresRasterization())
 
@@ -231,7 +231,7 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 50))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
         layout.addLayoutItem(item1)
 
@@ -258,7 +258,7 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             style.setTextFormat(text_format)
             legend.setStyle(legend_item, style)
 
-        legend.setBlendMode(QPainter.CompositionMode_Darken)
+        legend.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         page_item = layout.pageCollection().page(0)
         paper_rect = QRectF(
@@ -268,12 +268,12 @@ class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
             page_item.rect().height(),
         )
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         layout.render(
             painter,

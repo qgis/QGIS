@@ -119,11 +119,11 @@ def svgToPng(svg_file_path, rendered_file_path, width):
 
     height = int(width / svgr.viewBoxF().width() * svgr.viewBoxF().height())
 
-    image = QImage(width, height, QImage.Format_ARGB32)
-    image.fill(Qt.transparent)
+    image = QImage(width, height, QImage.Format.Format_ARGB32)
+    image.fill(Qt.GlobalColor.transparent)
 
     p = QPainter(image)
-    p.setRenderHint(QPainter.Antialiasing, False)
+    p.setRenderHint(QPainter.RenderHint.Antialiasing, False)
     svgr.render(p)
     p.end()
 
@@ -174,14 +174,14 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
         # get width/height, create image and render the composition to it
         size = QSize(1122, 794)
-        output_image = QImage(size, QImage.Format_RGB32)
+        output_image = QImage(size, QImage.Format.Format_RGB32)
 
         output_image.setDotsPerMeterX(self.dots_per_meter)
         output_image.setDotsPerMeterY(self.dots_per_meter)
@@ -207,8 +207,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
@@ -234,7 +234,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         l.initializeDefaults()
 
         # add a guide, to ensure it is not included in export
-        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters), l.pageCollection().page(0))
+        g1 = QgsLayoutGuide(Qt.Orientation.Horizontal, QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters), l.pageCollection().page(0))
         l.guides().addGuide(g1)
 
         # add some items
@@ -243,14 +243,14 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
         # get width/height, create image and render the composition to it
         size = QSize(560, 509)
-        output_image = QImage(size, QImage.Format_RGB32)
+        output_image = QImage(size, QImage.Format.Format_RGB32)
 
         output_image.setDotsPerMeterX(self.dots_per_meter)
         output_image.setDotsPerMeterY(self.dots_per_meter)
@@ -275,8 +275,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
@@ -330,8 +330,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
@@ -341,8 +341,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.cyan)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.cyan)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item2.setSymbol(fill_symbol)
         l.addItem(item2)
 
@@ -431,8 +431,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
@@ -442,8 +442,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.cyan)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.cyan)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item2.setSymbol(fill_symbol)
         l.addItem(item2)
 
@@ -561,8 +561,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.cyan)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.cyan)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item2.setSymbol(fill_symbol)
         l.addItem(item2)
 
@@ -607,8 +607,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
@@ -618,8 +618,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.cyan)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.cyan)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item2.setSymbol(fill_symbol)
         l.addItem(item2)
 
@@ -757,8 +757,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         l.addItem(item1)
 
@@ -768,8 +768,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.cyan)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.cyan)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item2.setSymbol(fill_symbol)
         l.addItem(item2)
 
@@ -783,7 +783,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         # make a qprinter directed to pdf
         printer = QPrinter()
         printer.setOutputFileName(pdf_file_path)
-        printer.setOutputFormat(QPrinter.PdfFormat)
+        printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
 
         self.assertEqual(exporter.print(printer, settings), QgsLayoutExporter.Success)
         self.assertTrue(os.path.exists(pdf_file_path))
@@ -1052,7 +1052,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         # make a qprinter directed to pdf
         printer = QPrinter()
         printer.setOutputFileName(pdf_path)
-        printer.setOutputFormat(QPrinter.PdfFormat)
+        printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
 
         result, error = QgsLayoutExporter.print(atlas, printer, settings)
         self.assertEqual(result, QgsLayoutExporter.Success, error)
@@ -1085,8 +1085,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.green)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.green)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item1.setSymbol(fill_symbol)
         report_header.addItem(item1)
 
@@ -1102,8 +1102,8 @@ class TestQgsLayoutExporter(QgisTestCase):
         fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, fill)
-        fill.setColor(Qt.cyan)
-        fill.setStrokeStyle(Qt.NoPen)
+        fill.setColor(Qt.GlobalColor.cyan)
+        fill.setStrokeStyle(Qt.PenStyle.NoPen)
         item2.setSymbol(fill_symbol)
         report_footer.addItem(item2)
 
@@ -1137,7 +1137,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertFalse(QgsLayoutExporter.requiresRasterization(l))
 
         # an item with a blend mode will force the whole layout to be rasterized
-        label.setBlendMode(QPainter.CompositionMode_Overlay)
+        label.setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         self.assertTrue(QgsLayoutExporter.requiresRasterization(l))
 
         # but if the item is NOT visible, it won't affect the output in any way..

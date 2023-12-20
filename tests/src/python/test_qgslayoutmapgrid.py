@@ -84,7 +84,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationDirection(
             QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_grid", layout)
@@ -112,7 +112,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_crossgrid", layout)
@@ -140,7 +140,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.grid().markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         map.updateBoundingRect()
 
@@ -169,7 +169,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
         map.grid().setFramePenSize(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_gridframeonly", layout)
@@ -196,7 +196,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setGridLineColor(QColor(0, 0, 0))
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
@@ -227,7 +227,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setGridLineColor(QColor(0, 0, 0))
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
@@ -279,7 +279,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.setExtent(myRectangle)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.InteriorTicks)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
@@ -676,7 +676,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationDirection(
             QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
@@ -715,7 +715,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
@@ -760,7 +760,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setFramePenColor(QColor(0, 0, 0))
         map.grid().setFrameFillColor1(QColor(0, 0, 0))
         map.grid().setFrameFillColor2(QColor(255, 255, 255))
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
@@ -796,7 +796,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
@@ -832,7 +832,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setFramePenColor(QColor(0, 0, 0))
         map.grid().setFrameFillColor1(QColor(0, 0, 0))
         map.grid().setFrameFillColor2(QColor(255, 255, 255))
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
@@ -886,7 +886,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationDirection(
             QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
@@ -1009,7 +1009,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationDirection(
             QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().refresh()

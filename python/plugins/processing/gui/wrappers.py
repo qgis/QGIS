@@ -1325,7 +1325,7 @@ class StringWidgetWrapper(WidgetWrapper):
             value = ''
         dlg = QgsExpressionBuilderDialog(None, value, self.widget, 'generic', context)
         dlg.setWindowTitle(self.tr('Expression based input'))
-        if dlg.exec_() == QDialog.Accepted:
+        if dlg.exec_() == QDialog.DialogCode.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
                 if self.dialogType == DIALOG_STANDARD:

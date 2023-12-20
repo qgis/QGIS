@@ -95,7 +95,7 @@ class GPKGDBPlugin(DBPlugin):
             if not filename:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         conn_name = QFileInfo(filename).fileName()
         uri = QgsDataSourceUri()
@@ -150,7 +150,7 @@ class GPKGDatabase(Database):
                                            Qgis.Info, parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         self.runVacuum()
 

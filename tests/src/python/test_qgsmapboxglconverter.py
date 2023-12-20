@@ -681,7 +681,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         """ Test icon-rotate property that depends on a data attribute """
         context = QgsMapBoxGlStyleConversionContext()
 
-        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
         context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
         style = {
             "layout": {
@@ -876,7 +876,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         """ Test line-pattern property """
         context = QgsMapBoxGlStyleConversionContext()
 
-        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
         context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
         style = {
             "id": "mountain range/ridge",
@@ -1173,7 +1173,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         # mapbox fill strokes are always 1 px wide
         self.assertEqual(renderer.symbol()[0].strokeWidth(), 0)
 
-        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.SolidLine)
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.PenStyle.SolidLine)
         # if "fill-outline-color" is not specified, then MapBox specs state the
         # stroke color matches the value of fill-color if unspecified.
         self.assertEqual(renderer.symbol()[0].strokeColor().name(), '#47b312')
@@ -1194,7 +1194,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
         self.assertTrue(has_renderer)
 
-        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.SolidLine)
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.PenStyle.SolidLine)
         self.assertEqual(renderer.symbol()[0].strokeColor().name(), '#ff0000')
         self.assertEqual(renderer.symbol()[0].strokeColor().alpha(), 255)
 
@@ -1216,7 +1216,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         # resulting in visible seams between tiles. Accordingly, we only
         # set the stroke color if it's a completely different color to the
         # fill if the stroke color is opaque and the double-rendering artifacts aren't an issue
-        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.NoPen)
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.PenStyle.NoPen)
 
     def testFillOpacityWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()

@@ -105,7 +105,7 @@ class TestQgsRasterAttributeTableModel(QgisTestCase):
 
         # Set Values for now zero value column
         for i in range(self.model.rowCount(QModelIndex())):
-            self.assertTrue(self.model.setData(self.model.index(i, 0), i, Qt.EditRole))
+            self.assertTrue(self.model.setData(self.model.index(i, 0), i, Qt.ItemDataRole.EditRole))
 
         # Insert rows
         self.assertFalse(self.model.insertRow(-1, [4, 'four', 'four2', 'four3', 123456, 1.2345])[0])
@@ -115,10 +115,10 @@ class TestQgsRasterAttributeTableModel(QgisTestCase):
         self.assertFalse(self.model.insertRow(2, [4, 'four', 'four2', 'four3', 999])[0])
         self.assertTrue(self.model.insertRow(2, [4, 'four', 'four2', 'four3', 4444, 1.4444])[0])
         self.assertEqual(self.model.rowCount(QModelIndex()), 4)
-        self.assertEqual(self.model.data(self.model.index(2, 0), Qt.DisplayRole), 4)
+        self.assertEqual(self.model.data(self.model.index(2, 0), Qt.ItemDataRole.DisplayRole), 4)
         self.assertTrue(self.model.insertRow(4, [5, 'five', 'five', 'five', 5555, 1.5555])[0])
         self.assertEqual(self.model.rowCount(QModelIndex()), 5)
-        self.assertEqual(self.model.data(self.model.index(4, 0), Qt.DisplayRole), 5)
+        self.assertEqual(self.model.data(self.model.index(4, 0), Qt.ItemDataRole.DisplayRole), 5)
 
         # Remove rows
         self.assertFalse(self.model.removeRow(-1)[0])
@@ -135,19 +135,19 @@ class TestQgsRasterAttributeTableModel(QgisTestCase):
         self.model.insertField(self.model.columnCount(QModelIndex()), 'Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int)
 
         for i in range(self.model.rowCount(QModelIndex())):
-            self.assertTrue(self.model.setData(self.model.index(i, 6), i, Qt.EditRole))
-            self.assertTrue(self.model.setData(self.model.index(i, 7), i, Qt.EditRole))
-            self.assertTrue(self.model.setData(self.model.index(i, 8), i, Qt.EditRole))
+            self.assertTrue(self.model.setData(self.model.index(i, 6), i, Qt.ItemDataRole.EditRole))
+            self.assertTrue(self.model.setData(self.model.index(i, 7), i, Qt.ItemDataRole.EditRole))
+            self.assertTrue(self.model.setData(self.model.index(i, 8), i, Qt.ItemDataRole.EditRole))
 
         # Check data from color
-        self.assertEqual(self.model.data(self.model.index(1, 9), Qt.DisplayRole), '#010101')
-        self.assertEqual(self.model.data(self.model.index(1, 9), Qt.BackgroundRole).name(), '#010101')
+        self.assertEqual(self.model.data(self.model.index(1, 9), Qt.ItemDataRole.DisplayRole), '#010101')
+        self.assertEqual(self.model.data(self.model.index(1, 9), Qt.ItemDataRole.BackgroundRole).name(), '#010101')
 
         for i in range(self.model.rowCount(QModelIndex())):
-            self.assertTrue(self.model.setData(self.model.index(i, 9), QColor(f'#0{i}0{i}0{i}'), Qt.EditRole))
+            self.assertTrue(self.model.setData(self.model.index(i, 9), QColor(f'#0{i}0{i}0{i}'), Qt.ItemDataRole.EditRole))
 
-        self.assertEqual(self.model.data(self.model.index(0, 9), Qt.DisplayRole), '#000000')
-        self.assertEqual(self.model.data(self.model.index(2, 9), Qt.DisplayRole), '#020202')
+        self.assertEqual(self.model.data(self.model.index(0, 9), Qt.ItemDataRole.DisplayRole), '#000000')
+        self.assertEqual(self.model.data(self.model.index(2, 9), Qt.ItemDataRole.DisplayRole), '#020202')
 
 
 if __name__ == '__main__':

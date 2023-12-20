@@ -157,7 +157,7 @@ class PGDatabase(Database):
                                            parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.runVacuumAnalyze()
 
@@ -169,7 +169,7 @@ class PGDatabase(Database):
                                            parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.runRefreshMaterializedView()
 
@@ -229,10 +229,10 @@ class PGTable(Table):
 
             try:
                 if QMessageBox.question(None, self.tr("Table rule"), msg,
-                                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
                     return False
             finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if rule_action == "delete":
                 self.aboutToChange.emit()

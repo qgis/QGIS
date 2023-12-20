@@ -323,7 +323,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(QgisTestCase):
         symbol = QgsLineSymbol()
         symbol.changeSymbolLayer(0, buffer_layer)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
         image.fill(QColor(255, 255, 255))
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -352,7 +352,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(QgisTestCase):
         symbol = QgsLineSymbol()
         symbol.changeSymbolLayer(0, buffer_layer)
 
-        image = QImage(400, 400, QImage.Format_RGB32)
+        image = QImage(400, 400, QImage.Format.Format_RGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))

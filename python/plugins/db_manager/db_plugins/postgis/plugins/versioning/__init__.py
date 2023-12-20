@@ -48,4 +48,4 @@ def run(item, action, mainwindow):
     try:
         dlg.exec_()
     finally:
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)

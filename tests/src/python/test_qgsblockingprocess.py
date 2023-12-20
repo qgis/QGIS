@@ -53,7 +53,7 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
-        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
         self.assertIn('GDAL', std_out.val)
         self.assertEqual(std_err.val, '')
 
@@ -74,7 +74,7 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 1)
-        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
         self.assertIn('Usage', std_out.val)
         self.assertIn('FAILURE', std_err.val)
 
@@ -106,7 +106,7 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertNotEqual(p.run(f), 0)
-        self.assertEqual(p.exitStatus(), QProcess.CrashExit)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.CrashExit)
 
     def test_process_no_file(self):
         """
@@ -130,8 +130,8 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 1)
-        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
-        self.assertEqual(p.processError(), QProcess.FailedToStart)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
+        self.assertEqual(p.processError(), QProcess.ProcessError.FailedToStart)
 
     def test_process_env(self):
         """
@@ -162,7 +162,7 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
-        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
         self.assertFalse(std_out.val.strip())
         self.assertFalse(std_err.val.strip())
 
@@ -176,7 +176,7 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
-        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
         self.assertEqual(std_out.val.strip(), 'my test variable')
         self.assertFalse(std_err.val.strip())
 
@@ -198,7 +198,7 @@ class TestQgsBlockingProcess(QgisTestCase):
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
-        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
         self.assertEqual(std_out.val.strip(), new_path)
         self.assertFalse(std_err.val.strip())
 

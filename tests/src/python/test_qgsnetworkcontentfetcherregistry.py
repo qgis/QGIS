@@ -59,7 +59,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
         def check_reply():
             self.assertEqual(content.status(), QgsFetchedContent.Failed)
-            self.assertNotEqual(content.error(), QNetworkReply.NoError)
+            self.assertNotEqual(content.error(), QNetworkReply.NetworkError.NoError)
             self.assertEqual(content.filePath(), '')
             self.loaded = True
 
@@ -77,7 +77,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
         def check_reply():
             self.loaded = True
             self.assertEqual(content.status(), QgsFetchedContent.Finished)
-            self.assertEqual(content.error(), QNetworkReply.NoError)
+            self.assertEqual(content.error(), QNetworkReply.NetworkError.NoError)
             self.assertNotEqual(content.filePath(), '')
 
         content.fetched.connect(check_reply)
@@ -105,7 +105,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
         def check_reply():
             self.loaded = True
             self.assertEqual(content.status(), QgsFetchedContent.Finished)
-            self.assertEqual(content.error(), QNetworkReply.NoError)
+            self.assertEqual(content.error(), QNetworkReply.NetworkError.NoError)
             self.assertNotEqual(content.filePath(), '')
             with open(content.filePath(), encoding="utf-8") as file:
                 self.assertEqual(file.readline().rstrip(), self.file_content)

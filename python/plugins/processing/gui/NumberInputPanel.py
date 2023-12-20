@@ -89,7 +89,7 @@ class ModelerNumberInputPanel(BASE, WIDGET):
         dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
         dlg.setWindowTitle(self.tr('Expression Based Input'))
-        if dlg.exec_() == QDialog.Accepted:
+        if dlg.exec_() == QDialog.DialogCode.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
                 self.setValue(dlg.expressionText())

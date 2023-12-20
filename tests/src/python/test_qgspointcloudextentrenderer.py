@@ -62,7 +62,7 @@ class TestQgsPointCloudExtentRenderer(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
         nodes = renderer.createLegendNodes(layer_tree_layer)
         self.assertEqual(len(nodes), 1)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'test')
+        self.assertEqual(nodes[0].data(Qt.ItemDataRole.DisplayRole), 'test')
         self.assertTrue(nodes[0].isEmbeddedInParent())
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')

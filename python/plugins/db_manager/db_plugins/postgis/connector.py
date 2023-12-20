@@ -86,7 +86,7 @@ class CursorAdapter():
                     else:
                         col = str(col)  # force to string
                 if isinstance(col, QDateTime) or isinstance(col, QDate) or isinstance(col, QTime):
-                    col = col.toString(Qt.ISODate)
+                    col = col.toString(Qt.DateFormat.ISODate)
                 newrec.append(col)
             newres.append(newrec)
         return newres

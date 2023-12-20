@@ -247,7 +247,7 @@ class TestQgsLegendPatchShape(QgisTestCase):
         self.assertEqual(s2.symbolType(), QgsSymbol.Line)
 
     def renderPatch(self, patch):
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
 

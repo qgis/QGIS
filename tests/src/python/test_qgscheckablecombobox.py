@@ -40,8 +40,8 @@ class TestQgsCheckableComboBox(QgisTestCase):
         self.assertEqual(len(w.checkedItems()), 2)
         self.assertEqual(w.checkedItems(), ['Two', 'Three'])
 
-        w.setItemCheckState(2, Qt.Unchecked)
-        self.assertEqual(w.itemCheckState(2), Qt.Unchecked)
+        w.setItemCheckState(2, Qt.CheckState.Unchecked)
+        self.assertEqual(w.itemCheckState(2), Qt.CheckState.Unchecked)
 
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when clearing"""

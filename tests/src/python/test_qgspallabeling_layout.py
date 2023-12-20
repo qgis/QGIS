@@ -137,7 +137,7 @@ class TestLayoutBase(TestQgsPalLabeling):
 
         p = QPainter(image)
         p.setRenderHint(
-            QPainter.Antialiasing,
+            QPainter.RenderHint.Antialiasing,
             self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
         )
         exporter = QgsLayoutExporter(self._c)
@@ -186,10 +186,10 @@ class TestLayoutBase(TestQgsPalLabeling):
         svgr = QSvgRenderer(svgpath)
         p = QPainter(image)
         p.setRenderHint(
-            QPainter.Antialiasing,
+            QPainter.RenderHint.Antialiasing,
             self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
         )
-        p.setRenderHint(QPainter.TextAntialiasing)
+        p.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         svgr.render(p)
         p.end()
 
@@ -207,12 +207,12 @@ class TestLayoutBase(TestQgsPalLabeling):
         temp_size = os.path.getsize(pdfpath)
 
         p = QPrinter()
-        p.setOutputFormat(QPrinter.PdfFormat)
+        p.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
         p.setOutputFileName(pdfpath)
         p.setPaperSize(QSizeF(self._c.pageCollection().page(0).sizeWithUnits().width(), self._c.pageCollection().page(0).sizeWithUnits().height()),
-                       QPrinter.Millimeter)
+                       QPrinter.Unit.Millimeter)
         p.setFullPage(True)
-        p.setColorMode(QPrinter.Color)
+        p.setColorMode(QPrinter.ColorMode.Color)
         p.setResolution(int(self._c.renderContext().dpi()))
 
         pdf_p = QPainter(p)

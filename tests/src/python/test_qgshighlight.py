@@ -74,7 +74,7 @@ class TestQgsHighlight(QgisTestCase):
             highlight.setColor(highlight_color)
             highlight.setFillColor(highlight_color)
         else:
-            color = QColor(Qt.red)
+            color = QColor(Qt.GlobalColor.red)
             highlight.setColor(color)
             color.setAlpha(50)
             highlight.setFillColor(color)
@@ -82,8 +82,8 @@ class TestQgsHighlight(QgisTestCase):
         highlight.setWidth(2)
         highlight.show()
 
-        image = QImage(QSize(400, 400), QImage.Format_ARGB32)
-        image.fill(Qt.white)
+        image = QImage(QSize(400, 400), QImage.Format.Format_ARGB32)
+        image.fill(Qt.GlobalColor.white)
         painter = QPainter()
         painter.begin(image)
         canvas.render(painter)
@@ -203,7 +203,7 @@ class TestQgsHighlight(QgisTestCase):
         self.assertTrue(feature.isValid())
 
         highlight = QgsHighlight(canvas, feature, layer)
-        color = QColor(Qt.red)
+        color = QColor(Qt.GlobalColor.red)
         highlight.setColor(color)
         color.setAlpha(50)
         highlight.setFillColor(color)
@@ -217,7 +217,7 @@ class TestQgsHighlight(QgisTestCase):
         )
 
     def canvas_image_check(self, name, reference_image, canvas):
-        image = QImage(canvas.size(), QImage.Format_ARGB32)
+        image = QImage(canvas.size(), QImage.Format.Format_ARGB32)
         painter = QPainter(image)
         canvas.render(painter)
         painter.end()

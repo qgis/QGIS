@@ -18,7 +18,7 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
 
     def testFormatXPair(self):
         """Test formatting x as pair"""
@@ -367,7 +367,7 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
     def testFormatLocale(self):
         """Test formatting with locales that use comma as decimal separator"""
 
-        QLocale.setDefault(QLocale(QLocale.Italian))
+        QLocale.setDefault(QLocale(QLocale.Language.Italian))
 
         self.assertEqual(QgsCoordinateFormatter.formatY(20, QgsCoordinateFormatter.FormatDecimalDegrees, 2), "20,00°N")
         self.assertEqual(QgsCoordinateFormatter.formatX(20, QgsCoordinateFormatter.FormatDecimalDegrees, 2), "20,00°E")
@@ -394,7 +394,7 @@ class TestQgsCoordinateFormatter(unittest.TestCase):
 
         self.assertEqual(QgsCoordinateFormatter.separator(), ',')
 
-        QLocale.setDefault(QLocale(QLocale.Italian))
+        QLocale.setDefault(QLocale(QLocale.Language.Italian))
         self.assertEqual(QgsCoordinateFormatter.separator(), ' ')
 
 

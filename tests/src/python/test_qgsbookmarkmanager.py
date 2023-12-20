@@ -43,7 +43,7 @@ class TestQgsBookmarkManager(QgisTestCase):
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsBookmarkManager.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsBookmarkManager")
         QgsSettings().clear()
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
     def setUp(self):
@@ -456,7 +456,7 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # destroy manager, causes write to disk
         manager.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         del manager
 
         # create another new manager with same key, should contain existing bookmarks

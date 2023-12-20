@@ -113,7 +113,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
 
         project.deleteLater()
         del project
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
 
         project2 = QgsProject()
         self.assertTrue(project2.read(tmp_project_file))
@@ -144,27 +144,27 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertFalse(p.styles())
         self.assertEqual(p.combinedStyleModel().rowCount(), 0)
         self.assertEqual(model.rowCount(QModelIndex()), 0)
-        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole))
+        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 1)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
 
         self.assertEqual(model_with_project_style.rowCount(QModelIndex()), 2)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'project')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), project_style)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'Default')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
 
         self.assertEqual(proxy_model.rowCount(QModelIndex()), 1)
-        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'Default')
         self.assertEqual(
             proxy_model.data(proxy_model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
             QgsStyle.defaultStyle())
@@ -178,18 +178,18 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertEqual(p.styles()[0].fileName(), unitTestDataPath() + '/style1.db')
         self.assertEqual(p.styles()[0].name(), 'style1')
         self.assertEqual(model.rowCount(QModelIndex()), 1)
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'style1')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style1')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[0])
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.PathRole),
                          unitTestDataPath() + '/style1.db')
 
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 2)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
-        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'style1')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
@@ -199,17 +199,17 @@ class TestQgsProjectViewSettings(QgisTestCase):
 
         self.assertEqual(model_with_project_style.rowCount(QModelIndex()), 3)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'project')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), project_style)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'Default')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'style1')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
@@ -218,11 +218,11 @@ class TestQgsProjectViewSettings(QgisTestCase):
                          unitTestDataPath() + '/style1.db')
 
         self.assertEqual(proxy_model.rowCount(QModelIndex()), 2)
-        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'Default')
         self.assertEqual(
             proxy_model.data(proxy_model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
             QgsStyle.defaultStyle())
-        self.assertEqual(proxy_model.data(proxy_model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'style1')
+        self.assertEqual(proxy_model.data(proxy_model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style1')
         self.assertEqual(
             proxy_model.data(proxy_model.index(1, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
             p.styles()[0])
@@ -236,15 +236,15 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertEqual(p.combinedStyleModel().rowCount(), 1)
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style1')
         self.assertEqual(model.rowCount(QModelIndex()), 1)
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'style1')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style1')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[0])
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 2)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
-        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'style1')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
@@ -260,44 +260,44 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style1')
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(1, 0)), 'style2')
         self.assertEqual(model.rowCount(QModelIndex()), 2)
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'style1')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style1')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[0])
-        self.assertEqual(model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'style2')
+        self.assertEqual(model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style2')
         self.assertEqual(model.data(model.index(1, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[1])
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 3)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
-        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'style1')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
-        self.assertEqual(model_with_default.data(model_with_default.index(2, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'style2')
         self.assertEqual(model_with_default.data(model_with_default.index(2, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[1])
 
         self.assertEqual(model_with_project_style.rowCount(QModelIndex()), 4)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'project')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), project_style)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'Default')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'style1')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(3, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(3, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'style2')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(3, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), p.styles()[1])
@@ -314,32 +314,32 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style3')
 
         self.assertEqual(model.rowCount(QModelIndex()), 1)
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'style3')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style3')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[0])
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 2)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
-        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'style3')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
 
         self.assertEqual(model_with_project_style.rowCount(QModelIndex()), 3)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'project')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(0, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), project_style)
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'Default')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(1, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
         self.assertEqual(
-            model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()), Qt.DisplayRole),
+            model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'style3')
         self.assertEqual(model_with_project_style.data(model_with_project_style.index(2, 0, QModelIndex()),
                                                        QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
@@ -353,15 +353,15 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style3')
 
         self.assertEqual(model.rowCount(QModelIndex()), 1)
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'style3')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'style3')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[0])
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 2)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
-        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'style3')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
@@ -374,7 +374,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
 
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 1)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
@@ -389,21 +389,21 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(3, 0)), 'a')
 
         self.assertEqual(model.rowCount(QModelIndex()), 1)
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'categorized')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'categorized')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
                          p.styles()[0])
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 2)
-        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
-        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          'categorized')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
         # read only style should not be included
         self.assertEqual(proxy_model.rowCount(QModelIndex()), 1)
-        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'Default')
         self.assertEqual(
             proxy_model.data(proxy_model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole),
             QgsStyle.defaultStyle())

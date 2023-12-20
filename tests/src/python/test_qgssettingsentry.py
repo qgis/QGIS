@@ -265,7 +265,7 @@ class TestQgsSettingsEntry(QgisTestCase):
         settingsEntryVariantMap = QgsSettingsEntryVariantMap(settingsKey, self.pluginName, defaultValue)
         self.assertEqual(settingsEntryVariantMap.value(), defaultValue)
 
-        newValue = {"number": 123, "text": "hi there", "color": QColor(Qt.yellow)}
+        newValue = {"number": 123, "text": "hi there", "color": QColor(Qt.GlobalColor.yellow)}
         settingsEntryVariantMap.setValue(newValue)
         self.assertEqual(newValue, settingsEntryVariantMap.value())
 
@@ -357,14 +357,14 @@ class TestQgsSettingsEntry(QgisTestCase):
         # Make sure settings does not exists
         QgsSettings().remove(settingsKeyComplete)
 
-        defaultValue = QColor(Qt.darkGreen)
+        defaultValue = QColor(Qt.GlobalColor.darkGreen)
         settingsEntry = QgsSettingsEntryColor(settingsKey, self.pluginName, defaultValue, None, Qgis.SettingsOptions(), False)
 
         # Check default value
         self.assertEqual(settingsEntry.defaultValue(), defaultValue)
 
         # Check alpha option
-        self.assertTrue(settingsEntry.setValue(QColor(Qt.yellow)))
+        self.assertTrue(settingsEntry.setValue(QColor(Qt.GlobalColor.yellow)))
         self.assertFalse(settingsEntry.setValue(QColor(100, 100, 100, 100)))
 
     def test_settings_entry_enum(self):

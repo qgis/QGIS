@@ -334,7 +334,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         settings.setFlag(QgsMapSettings.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
-        image = QImage(200, 200, QImage.Format_ARGB32)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -394,7 +394,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         rc.setCoordinateTransform(QgsCoordinateTransform(layer.crs(), settings.destinationCrs(), QgsProject.instance()))
         rc.setExtent(
             rc.coordinateTransform().transformBoundingBox(settings.extent(), QgsCoordinateTransform.ReverseTransform))
-        image = QImage(200, 200, QImage.Format_ARGB32)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
@@ -459,7 +459,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         layer.item(i3_id).setUseSymbologyReferenceScale(True)
         layer.item(i3_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
 
-        image = QImage(200, 200, QImage.Format_ARGB32)
+        image = QImage(200, 200, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
         image.fill(QColor(255, 255, 255))
