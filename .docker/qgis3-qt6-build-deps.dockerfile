@@ -49,6 +49,7 @@ RUN dnf -y --refresh install \
     qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
     qt6-qtmultimedia-devel \
+    qt6-qtwebengine-devel \
     qtkeychain-qt6-devel \
     qwt-qt6-devel \
     qscintilla-qt6-devel \
