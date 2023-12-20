@@ -60,6 +60,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconditionalbranch.cpp
