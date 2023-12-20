@@ -12135,19 +12135,35 @@ void PDFXFAEngineImpl::drawUi(const xfa::XFA_ui* ui,
                                 passwordEdit || signature || textEdit;
     const bool isDefaultUi = !isNonDefaultUi || defaultUi;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     if (textEdit || (isDefaultUi && value.value.typeId() == QMetaType::QString))
+#else
+    if (textEdit || (isDefaultUi && value.value.type() == QVariant::String))
+#endif
     {
         drawUiTextEdit(textEdit, value, errors, nominalExtentArea, paragraphSettingsIndex, painter);
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (checkButton || (isDefaultUi && value.value.typeId() == QMetaType::Bool))
+#else
+    else if (checkButton || (isDefaultUi && value.value.type() == QVariant::Bool))
+#endif
     {
         drawUiCheckButton(checkButton, value, nominalExtentArea, painter);
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (imageEdit || (isDefaultUi && value.value.typeId() == QMetaType::QImage))
+#else
+    else if (imageEdit || (isDefaultUi && value.value.type() == QVariant::Image))
+#endif
     {
         drawUiImageEdit(imageEdit, value, errors, nominalExtentArea, painter);
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (numericEdit || (isDefaultUi && value.value.typeId() == QMetaType::Double))
+#else
+    else if (numericEdit || (isDefaultUi && value.value.type() == QVariant::Double))
+#endif
     {
         drawUiNumericEdit(numericEdit, value, errors, nominalExtentArea, paragraphSettingsIndex, painter);
     }
@@ -12167,9 +12183,15 @@ void PDFXFAEngineImpl::drawUi(const xfa::XFA_ui* ui,
     {
         errors << PDFRenderError(RenderErrorType::NotImplemented, PDFTranslationContext::tr("XFA: Buttons not implemented."));
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (dateTimeEdit || (isDefaultUi && (value.value.typeId() == QMetaType::QDateTime ||
                                               value.value.typeId() == QMetaType::QDate ||
                                               value.value.typeId() == QMetaType::QTime)))
+#else
+    else if (dateTimeEdit || (isDefaultUi && (value.value.type() == QVariant::DateTime ||
+                                              value.value.type() == QVariant::Date ||
+                                              value.value.type() == QVariant::Time)))
+#endif
     {
         drawUiDateTimeEdit(dateTimeEdit, value, errors, nominalExtentArea, paragraphSettingsIndex, painter);
     }
@@ -12392,15 +12414,27 @@ void PDFXFAEngineImpl::drawUiDateTimeEdit(const xfa::XFA_dateTimeEdit* dateTimeE
 
     QString text;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     if (value.value.typeId() == QMetaType::QDateTime)
+#else
+    if (value.value.type() == QVariant::DateTime)
+#endif
     {
         text = value.value.toDateTime().toString();
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (value.value.typeId() == QMetaType::QTime)
+#else
+    else if (value.value.type() == QVariant::Time)
+#endif
     {
         text = value.value.toTime().toString();
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (value.value.typeId() == QMetaType::QDate)
+#else
+    else if (value.value.type() == QVariant::Date)
+#endif
     {
         text = value.value.toDate().toString();
     }

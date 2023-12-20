@@ -506,7 +506,11 @@ PDFObject PDFObjectFactory::createTextString(QString textString)
 
         {
             QTextStream textStream(&ba, QIODevice::WriteOnly);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             textStream.setEncoding(QStringConverter::Utf16BE);
+#else
+            textStream.setCodec("UTF-16BE");
+#endif
             textStream.setGenerateByteOrderMark(true);
             textStream << textString;
         }

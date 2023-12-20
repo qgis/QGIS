@@ -39,7 +39,11 @@ public:
     inline ~PDFOpenSSLGlobalLock() = default;
 
 private:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QMutexLocker<QRecursiveMutex> m_mutexLocker;
+#else
+    QMutexLocker m_mutexLocker;
+#endif
     static QRecursiveMutex s_globalOpenSSLMutex;
 };
 
