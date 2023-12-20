@@ -159,9 +159,14 @@ target_link_libraries(Pdf4QtLibCore PRIVATE ${QT_VERSION_BASE}::Core ${QT_VERSIO
 target_link_libraries(Pdf4QtLibCore PRIVATE ${LCMS2_LIBRARIES})
 target_link_libraries(Pdf4QtLibCore PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 target_link_libraries(Pdf4QtLibCore PRIVATE ZLIB::ZLIB)
-target_link_libraries(Pdf4QtLibCore PRIVATE Freetype::Freetype)
+target_link_libraries(Pdf4QtLibCore PRIVATE ${FREETYPE_LIBRARIES})
+target_link_libraries(Pdf4QtLibCore PRIVATE ${Fontconfig_LIBRARIES})
 target_link_libraries(Pdf4QtLibCore PRIVATE openjp2)
 target_link_libraries(Pdf4QtLibCore PRIVATE JPEG::JPEG)
+
+target_include_directories(Pdf4QtLibCore PRIVATE SYSTEM
+                           ${FREETYPE_INCLUDE_DIRS}
+                           ${Fontconfig_INCLUDE_DIRS})
 
 if(PDF4QT_ENABLE_OPENGL)
     target_link_libraries(Pdf4QtLibCore PRIVATE Qt6::OpenGL)
