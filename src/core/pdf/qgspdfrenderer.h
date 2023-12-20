@@ -20,6 +20,11 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsconfig.h"
+
+class QPainter;
+class QRectF;
+class QString;
 
 /**
  * \class QgsPdfRenderer
@@ -35,6 +40,14 @@
 class CORE_EXPORT QgsPdfRenderer
 {
   public:
+
+    /**
+     * Renders the PDF from the specified \a path to a \a painter.
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     */
+    static bool render( const QString &path, QPainter *painter, const QRectF &rectangle, int pageIndex ) SIP_THROW( QgsNotSupportedException );
+
 };
 
 #endif // QGSPDFRENDERER_H

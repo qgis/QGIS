@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPdfRenderer
 {
 %Docstring(signature="appended")
@@ -25,6 +26,14 @@ methods will raise a :py:class:`QgsNotSupportedException`.
 #include "qgspdfrenderer.h"
 %End
   public:
+
+    static bool render( const QString &path, QPainter *painter, const QRectF &rectangle, int pageIndex ) throw( QgsNotSupportedException );
+%Docstring
+Renders the PDF from the specified ``path`` to a ``painter``.
+
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+%End
+
 };
 
 /************************************************************************
