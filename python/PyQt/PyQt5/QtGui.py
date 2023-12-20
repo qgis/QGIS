@@ -41,3 +41,7 @@ def __qcolor_repr__(self: QColor):
 
 # PyQt doesn't provide __repr__ for QColor, but it's highly desirable!
 QColor.__repr__ = __qcolor_repr__
+
+from PyQt5.QtWidgets import QAction as _QAction, QShortcut as _QShortcut
+QAction = _QAction
+QShortcut = _QShortcut
