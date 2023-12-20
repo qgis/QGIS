@@ -248,15 +248,15 @@ class TestQgsFieldModel(QgisTestCase):
 
     def testDisplayRole(self):
         l, m = create_model()
-        self.assertEqual(m.data(m.indexFromName('fldtxt'), Qt.DisplayRole), 'fldtxt')
-        self.assertEqual(m.data(m.indexFromName('fldint'), Qt.DisplayRole), 'fldint')
-        self.assertFalse(m.data(m.indexFromName('an expression'), Qt.DisplayRole))
-        self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+        self.assertEqual(m.data(m.indexFromName('fldtxt'), Qt.ItemDataRole.DisplayRole), 'fldtxt')
+        self.assertEqual(m.data(m.indexFromName('fldint'), Qt.ItemDataRole.DisplayRole), 'fldint')
+        self.assertFalse(m.data(m.indexFromName('an expression'), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(m.data(m.indexFromName(None), Qt.ItemDataRole.DisplayRole))
         m.setAllowExpression(True)
         m.setExpression('an expression')
-        self.assertEqual(m.data(m.indexFromName('an expression'), Qt.DisplayRole), 'an expression')
+        self.assertEqual(m.data(m.indexFromName('an expression'), Qt.ItemDataRole.DisplayRole), 'an expression')
         m.setAllowEmptyFieldName(True)
-        self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+        self.assertFalse(m.data(m.indexFromName(None), Qt.ItemDataRole.DisplayRole))
 
     def testManualFields(self):
         _, m = create_model()
@@ -265,8 +265,8 @@ class TestQgsFieldModel(QgisTestCase):
         fields.append(QgsField('f2', QVariant.String))
         m.setFields(fields)
         self.assertEqual(m.rowCount(), 2)
-        self.assertEqual(m.data(m.index(0, 0, QModelIndex()), Qt.DisplayRole), 'f1')
-        self.assertEqual(m.data(m.index(1, 0, QModelIndex()), Qt.DisplayRole), 'f2')
+        self.assertEqual(m.data(m.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'f1')
+        self.assertEqual(m.data(m.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'f2')
 
     def testEditorWidgetTypeRole(self):
         l, m = create_model()

@@ -73,11 +73,11 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         w = QgsExpressionBuilderWidget()
         m = w.model()
         # check that some standard expression functions are shown
-        items = m.findItems('lower', Qt.MatchRecursive)
+        items = m.findItems('lower', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('upper', Qt.MatchRecursive)
+        items = m.findItems('upper', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('asdasdasda#$@#$', Qt.MatchRecursive)
+        items = m.findItems('asdasdasda#$@#$', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 0)
 
     def testVariables(self):
@@ -93,16 +93,16 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         # check that variables are added when setting context
         w.setExpressionContext(c)
-        items = m.findItems('my_var1', Qt.MatchRecursive)
+        items = m.findItems('my_var1', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('my_var2', Qt.MatchRecursive)
+        items = m.findItems('my_var2', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('not_my_var', Qt.MatchRecursive)
+        items = m.findItems('not_my_var', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 0)
         # double check that functions are still only there once
-        items = m.findItems('lower', Qt.MatchRecursive)
+        items = m.findItems('lower', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('upper', Qt.MatchRecursive)
+        items = m.findItems('upper', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
 
     def testLayers(self):
@@ -116,9 +116,9 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         m = w.model()
 
         # check that layers are shown
-        items = m.findItems('layer1', Qt.MatchRecursive)
+        items = m.findItems('layer1', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('layer2', Qt.MatchRecursive)
+        items = m.findItems('layer2', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
 
         # change project
@@ -127,11 +127,11 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         p2.addMapLayers([layer3])
         w.setProject(p2)
         m = w.model()
-        items = m.findItems('layer1', Qt.MatchRecursive)
+        items = m.findItems('layer1', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 0)
-        items = m.findItems('layer2', Qt.MatchRecursive)
+        items = m.findItems('layer2', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 0)
-        items = m.findItems('layer3', Qt.MatchRecursive)
+        items = m.findItems('layer3', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
 
     def testRelations(self):
@@ -160,9 +160,9 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         m = w.model()
 
         # check that relations are shown
-        items = m.findItems('Relation Number One', Qt.MatchRecursive)
+        items = m.findItems('Relation Number One', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems('Relation Number Two', Qt.MatchRecursive)
+        items = m.findItems('Relation Number Two', Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
 
     def testStoredExpressions(self):
@@ -206,11 +206,11 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         w.setLayer(layer)
 
-        items = m.findItems("layer", Qt.MatchRecursive)
+        items = m.findItems("layer", Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems("layer_id", Qt.MatchRecursive)
+        items = m.findItems("layer_id", Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
-        items = m.findItems("layer_name", Qt.MatchRecursive)
+        items = m.findItems("layer_name", Qt.MatchFlag.MatchRecursive)
         self.assertEqual(len(items), 1)
 
         p.removeMapLayer(layer)
@@ -257,7 +257,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         w.loadAllValues()
 
-        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.UserRole + 1)) for i in range(4)])
         self.assertEqual(datas, [(" [array()]", "array()"),
                                  ("C [array('C')]", "array('C')"),
                                  ("NULL [NULL]", "NULL"),
@@ -273,7 +273,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         w.loadAllValues()
 
-        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.UserRole + 1)) for i in range(4)])
 
         self.assertEqual(datas, [("", "''"),
                                  ("NULL [NULL]", "NULL"),
@@ -290,7 +290,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         w.loadAllValues()
 
-        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.UserRole + 1)) for i in range(4)])
 
         self.assertEqual(datas, [("0", "0"),
                                  ("1", "1"),
@@ -307,7 +307,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         w.loadAllValues()
 
-        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.UserRole + 1)) for i in range(4)])
         self.assertEqual(datas, [(" [array()]", "array()"),
                                  ("1, 2 [array(1, 2)]", "array(1, 2)"),
                                  ("3, 4 [array(3, 4)]", "array(3, 4)"),
@@ -324,7 +324,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
 
         w.loadAllValues()
 
-        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.UserRole + 1)) for i in range(4)])
+        datas = sorted([(valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.UserRole + 1)) for i in range(4)])
         self.assertEqual(datas, [(" [array()]", "array()"),
                                  ("-0.1, 2 [array(-0.1, 2)]", "array(-0.1, 2)"),
                                  ("1.1, 2.1 [array(1.1, 2.1)]", "array(1.1, 2.1)"),

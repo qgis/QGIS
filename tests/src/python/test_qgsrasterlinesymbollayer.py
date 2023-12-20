@@ -109,7 +109,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
         raster_line = QgsRasterLineSymbolLayer()
         raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
         raster_line.setWidth(15)
-        raster_line.setPenCapStyle(Qt.FlatCap)
+        raster_line.setPenCapStyle(Qt.PenCapStyle.FlatCap)
 
         s.appendSymbolLayer(raster_line.clone())
 
@@ -124,7 +124,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
         raster_line = QgsRasterLineSymbolLayer()
         raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
         raster_line.setWidth(15)
-        raster_line.setPenCapStyle(Qt.SquareCap)
+        raster_line.setPenCapStyle(Qt.PenCapStyle.SquareCap)
 
         s.appendSymbolLayer(raster_line.clone())
 
@@ -139,7 +139,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
         raster_line = QgsRasterLineSymbolLayer()
         raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
         raster_line.setWidth(15)
-        raster_line.setPenJoinStyle(Qt.MiterJoin)
+        raster_line.setPenJoinStyle(Qt.PenJoinStyle.MiterJoin)
 
         s.appendSymbolLayer(raster_line.clone())
 
@@ -154,7 +154,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
         raster_line = QgsRasterLineSymbolLayer()
         raster_line.setPath(TEST_DATA_DIR + '/raster_brush.png')
         raster_line.setWidth(15)
-        raster_line.setPenJoinStyle(Qt.BevelJoin)
+        raster_line.setPenJoinStyle(Qt.PenJoinStyle.BevelJoin)
 
         s.appendSymbolLayer(raster_line.clone())
 
@@ -181,7 +181,7 @@ class TestQgsRasterLineSymbolLayer(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

@@ -238,14 +238,14 @@ class ProcessingPlugin(QObject):
         )
 
         self.toolbox = ProcessingToolbox()
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
+        self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
         self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
 
         self.toolbox.executeWithGui.connect(self.executeAlgorithm)
 
         self.resultsDock = ResultsDock()
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
+        self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.resultsDock)
         self.resultsDock.hide()
 
         self.menu = QMenu(self.iface.mainWindow().menuBar())
@@ -258,7 +258,7 @@ class ProcessingPlugin(QObject):
         self.toolboxAction.setIcon(
             QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
         self.iface.registerMainWindowAction(self.toolboxAction,
-                                            QKeySequence('Ctrl+Alt+T').toString(QKeySequence.NativeText))
+                                            QKeySequence('Ctrl+Alt+T').toString(QKeySequence.SequenceFormat.NativeText))
         self.toolboxAction.toggled.connect(self.openToolbox)
         self.iface.attributesToolBar().insertAction(self.iface.actionOpenStatisticalSummary(), self.toolboxAction)
         self.menu.addAction(self.toolboxAction)
@@ -269,7 +269,7 @@ class ProcessingPlugin(QObject):
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction,
-                                            QKeySequence('Ctrl+Alt+G').toString(QKeySequence.NativeText))
+                                            QKeySequence('Ctrl+Alt+G').toString(QKeySequence.SequenceFormat.NativeText))
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
@@ -278,7 +278,7 @@ class ProcessingPlugin(QObject):
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction,
-                                            QKeySequence('Ctrl+Alt+H').toString(QKeySequence.NativeText))
+                                            QKeySequence('Ctrl+Alt+H').toString(QKeySequence.SequenceFormat.NativeText))
         self.menu.addAction(self.historyAction)
         self.toolbox.processingToolbar.addAction(self.historyAction)
 
@@ -288,7 +288,7 @@ class ProcessingPlugin(QObject):
         self.resultsAction.setObjectName('resultsViewer')
         self.resultsAction.setCheckable(True)
         self.iface.registerMainWindowAction(self.resultsAction,
-                                            QKeySequence('Ctrl+Alt+R').toString(QKeySequence.NativeText))
+                                            QKeySequence('Ctrl+Alt+R').toString(QKeySequence.SequenceFormat.NativeText))
 
         self.menu.addAction(self.resultsAction)
         self.toolbox.processingToolbar.addAction(self.resultsAction)
@@ -539,7 +539,7 @@ class ProcessingPlugin(QObject):
 
     def openHistory(self):
         dlg = QgsProcessingHistoryDialog(self.iface.mainWindow())
-        dlg.setAttribute(Qt.WA_DeleteOnClose)
+        dlg.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         dlg.show()
 
     def tr(self, message, disambiguation=None, n=-1):

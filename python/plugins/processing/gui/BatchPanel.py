@@ -112,7 +112,7 @@ class BatchPanelFillWidget(QToolButton):
     def __init__(self, parameterDefinition, column, panel, parent=None):
         super().__init__(parent)
 
-        self.setBackgroundRole(QPalette.Button)
+        self.setBackgroundRole(QPalette.ColorRole.Button)
         self.setAutoFillBackground(True)
 
         self.parameterDefinition = parameterDefinition
@@ -123,7 +123,7 @@ class BatchPanelFillWidget(QToolButton):
         f = self.font()
         f.setItalic(True)
         self.setFont(f)
-        self.setPopupMode(QToolButton.InstantPopup)
+        self.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.setAutoRaise(True)
 
         self.menu = QMenu()
@@ -459,7 +459,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.btnSave.clicked.connect(self.save)
         self.btnAdvanced.toggled.connect(self.toggleAdvancedMode)
 
-        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeMode.ResizeToContents)
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
         self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
 
@@ -522,8 +522,8 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         # Add an empty row to begin
         self.addRow()
 
-        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
-        self.tblParameters.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeMode.ResizeToContents)
+        self.tblParameters.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
     def batchRowCount(self):

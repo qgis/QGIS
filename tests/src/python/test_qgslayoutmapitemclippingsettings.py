@@ -74,7 +74,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         settings.setSourceItem(shape)
         self.assertEqual(len(spy), 6)
         shape.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         del shape
         self.assertIsNone(settings.sourceItem())
 
@@ -96,7 +96,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         settings.setEnabled(True)
         self.assertTrue(settings.isActive())
         shape.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         del shape
         self.assertFalse(settings.isActive())
 

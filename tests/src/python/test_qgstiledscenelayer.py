@@ -44,7 +44,7 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         layer = QgsTiledSceneLayer('uri', 'my layer', 'cesiumtiles')
         self.assertEqual(layer.providerType(), 'cesiumtiles')
         layer.setOpacity(0.25)
-        layer.setBlendMode(QPainter.CompositionMode_Darken)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
@@ -55,7 +55,7 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         self.assertEqual(layer2.providerType(), 'cesiumtiles')
         self.assertEqual(layer2.opacity(), 0.25)
         self.assertEqual(layer2.blendMode(),
-                         QPainter.CompositionMode_Darken)
+                         QPainter.CompositionMode.CompositionMode_Darken)
 
     def test_clone(self):
         """
@@ -64,14 +64,14 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         layer = QgsTiledSceneLayer('uri', 'my layer', 'cesiumtiles')
         self.assertEqual(layer.providerType(), 'cesiumtiles')
         layer.setOpacity(0.25)
-        layer.setBlendMode(QPainter.CompositionMode_Darken)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         layer2 = layer.clone()
         self.assertEqual(layer2.source(), 'uri')
         self.assertEqual(layer2.providerType(), 'cesiumtiles')
         self.assertEqual(layer2.opacity(), 0.25)
         self.assertEqual(layer2.blendMode(),
-                         QPainter.CompositionMode_Darken)
+                         QPainter.CompositionMode.CompositionMode_Darken)
 
     def test_read_write_symbology(self):
         """
@@ -80,7 +80,7 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         layer = QgsTiledSceneLayer('uri', 'my layer', 'tiled_mesh')
         self.assertEqual(layer.providerType(), 'tiled_mesh')
         layer.setOpacity(0.25)
-        layer.setBlendMode(QPainter.CompositionMode_Darken)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("symbology")
@@ -93,12 +93,12 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         layer2.readSymbology(elem, error, context)
         self.assertEqual(layer2.opacity(), 0.25)
         self.assertEqual(layer2.blendMode(),
-                         QPainter.CompositionMode_Darken)
+                         QPainter.CompositionMode.CompositionMode_Darken)
 
         layer = QgsTiledSceneLayer('uri', 'my layer', 'tiled_mesh')
         self.assertEqual(layer.providerType(), 'tiled_mesh')
         layer.setOpacity(0.25)
-        layer.setBlendMode(QPainter.CompositionMode_Darken)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         layer.setMinimumScale(1000)
         layer.setMaximumScale(2000)
         layer.setScaleBasedVisibility(True)
@@ -126,7 +126,7 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
 
         # these should be unchanged
         self.assertEqual(layer2.blendMode(),
-                         QPainter.CompositionMode_SourceOver)
+                         QPainter.CompositionMode.CompositionMode_SourceOver)
         self.assertFalse(layer2.customProperty('prop'))
         self.assertFalse(QgsLayerNotesUtils.layerNotes(layer2))
 

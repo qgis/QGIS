@@ -125,7 +125,7 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenCapStyle(Qt.FlatCap)
+        line.setPenCapStyle(Qt.PenCapStyle.FlatCap)
 
         s.appendSymbolLayer(line.clone())
 
@@ -141,7 +141,7 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenCapStyle(Qt.SquareCap)
+        line.setPenCapStyle(Qt.PenCapStyle.SquareCap)
 
         s.appendSymbolLayer(line.clone())
 
@@ -157,7 +157,7 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenJoinStyle(Qt.MiterJoin)
+        line.setPenJoinStyle(Qt.PenJoinStyle.MiterJoin)
 
         s.appendSymbolLayer(line.clone())
 
@@ -173,7 +173,7 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenJoinStyle(Qt.BevelJoin)
+        line.setPenJoinStyle(Qt.PenJoinStyle.BevelJoin)
 
         s.appendSymbolLayer(line.clone())
 
@@ -201,7 +201,7 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

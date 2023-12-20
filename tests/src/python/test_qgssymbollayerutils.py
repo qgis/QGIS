@@ -519,14 +519,14 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
     def testPreviewColorRampVertical(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
-        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical)
+        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Orientation.Vertical)
         img = QImage(pix)
         self.assertTrue(self.image_check('color_ramp_vertical', 'color_ramp_vertical', img))
 
     def testPreviewColorRampVerticalFlipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
-        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical, flipDirection=True)
+        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Orientation.Vertical, flipDirection=True)
         img = QImage(pix)
         self.assertTrue(self.image_check('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
 
@@ -590,16 +590,16 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         line.setWidth(1.2)
         line.setWidthUnit(QgsUnitTypes.RenderPoints)
         line.setWidthMapUnitScale(QgsMapUnitScale(1, 2))
-        line.setPenJoinStyle(Qt.MiterJoin)
-        line.setPenStyle(Qt.DashDotDotLine)
+        line.setPenJoinStyle(Qt.PenJoinStyle.MiterJoin)
+        line.setPenStyle(Qt.PenStyle.DashDotDotLine)
         self.assertTrue(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         self.assertEqual(fill.strokeColor(), QColor(255, 0, 0))
         self.assertEqual(fill.strokeWidth(), 1.2)
         self.assertEqual(fill.strokeWidthUnit(), QgsUnitTypes.RenderPoints)
         self.assertEqual(fill.strokeWidthMapUnitScale(), QgsMapUnitScale(1, 2))
-        self.assertEqual(fill.penJoinStyle(), Qt.MiterJoin)
-        self.assertEqual(fill.strokeStyle(), Qt.DashDotDotLine)
+        self.assertEqual(fill.penJoinStyle(), Qt.PenJoinStyle.MiterJoin)
+        self.assertEqual(fill.strokeStyle(), Qt.PenStyle.DashDotDotLine)
 
     def test_renderer_frame_rate(self):
         # renderer without an animated symbol

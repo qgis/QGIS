@@ -127,7 +127,7 @@ class TestQgsLayoutMarker(QgisTestCase, LayoutItemTestCase):
         marker2.finalizeRestoreFromXml()
 
         self.assertEqual(marker2.symbol().symbolLayer(0).color().name(), '#008000')
-        self.assertEqual(marker2.symbol().symbolLayer(0).strokeStyle(), Qt.NoPen)
+        self.assertEqual(marker2.symbol().symbolLayer(0).strokeStyle(), Qt.PenStyle.NoPen)
         self.assertEqual(marker2.symbol().symbolLayer(0).size(), 4.4)
 
         self.assertEqual(marker2.linkedMap(), map)

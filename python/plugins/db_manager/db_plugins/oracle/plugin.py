@@ -241,7 +241,7 @@ class ORDatabase(Database):
         action = QAction(QApplication.translate(
             "DBManagerPlugin", "Delete Selected Item"), self)
         mainWindow.registerAction(action, None, self.deleteActionSlot)
-        action.setShortcuts(QKeySequence.Delete)
+        action.setShortcuts(QKeySequence.StandardKey.Delete)
 
         action = QAction(QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
                          QApplication.translate(
@@ -349,10 +349,10 @@ class ORTable(Table):
                         QApplication.translate(
                             "DBManagerPlugin", "Table Index"),
                         msg,
-                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
                     return False
             finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if index_action == "rebuild":
                 self.aboutToChange.emit()

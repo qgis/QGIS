@@ -131,7 +131,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.uniqueColumnCheck.setText(self.tr("Column with unique values"))
 
         self.editSql.setFocus()
-        self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.editSql.setLineNumbersVisible(True)
         self.initCompleter()
         self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
@@ -149,7 +149,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         self.btnCancel.setEnabled(False)
         self.btnCancel.clicked.connect(self.executeSqlCanceled)
-        self.btnCancel.setShortcut(QKeySequence.Cancel)
+        self.btnCancel.setShortcut(QKeySequence.StandardKey.Cancel)
         self.progressBar.setEnabled(False)
         self.progressBar.setRange(0, 100)
         self.progressBar.setValue(0)
@@ -159,7 +159,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         # allow copying results
         copyAction = QAction("copy", self)
         self.viewResult.addAction(copyAction)
-        copyAction.setShortcuts(QKeySequence.Copy)
+        copyAction.setShortcuts(QKeySequence.StandardKey.Copy)
 
         copyAction.triggered.connect(self.copySelectedResults)
 
@@ -211,7 +211,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.presetName.textChanged.connect(self.nameChanged)
 
     def insertQueryInEditor(self, item):
-        sql = item.data(Qt.DisplayRole)
+        sql = item.data(Qt.ItemDataRole.DisplayRole)
         self.editSql.insertText(sql)
 
     def showHideQueryHistory(self, visible):
@@ -383,7 +383,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def executeSqlCompleted(self):
         self.updateUiWhileSqlExecution(False)
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             if self.modelAsync.task.status() == QgsTask.Complete:
                 model = self.modelAsync.model
                 self.showError(None)
@@ -441,12 +441,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.errorText.setVisible(False)
 
     def _getSqlLayer(self, _filter):
-        hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
+        hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.CheckState.Checked
         if hasUniqueField and self.allowMultiColumnPk:
             uniqueFieldName = ",".join(
                 item.data()
                 for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
-                if item.checkState() == Qt.Checked
+                if item.checkState() == Qt.CheckState.Checked
             )
         elif (
             hasUniqueField
@@ -456,7 +456,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
         else:
             uniqueFieldName = None
-        hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
+        hasGeomCol = self.hasGeometryCol.checkState() == Qt.CheckState.Checked
         if hasGeomCol:
             geomFieldName = self.geomCombo.currentText()
         else:
@@ -497,7 +497,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             return None
 
     def loadSqlLayer(self):
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             layer = self._getSqlLayer(self.filter)
             if layer is None:
                 return
@@ -509,7 +509,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query == "":
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             # remove a trailing ';' from query if present
             if query.strip().endswith(';'):
                 query = query.strip()[:-1]
@@ -575,9 +575,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 matchingItems = self.uniqueModel.findItems(col)
                 if matchingItems:
                     item.setCheckState(matchingItems[0].checkState())
-                    uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.Checked
+                    uniqueIsFilled = uniqueIsFilled or matchingItems[0].checkState() == Qt.CheckState.Checked
                 else:
-                    item.setCheckState(Qt.Unchecked)
+                    item.setCheckState(Qt.CheckState.Unchecked)
             newItems.append(item)
         if self.allowMultiColumnPk:
             self.uniqueModel.clear()
@@ -605,7 +605,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         items = self.uniqueModel.findItems(defaultUniqueCol)
         if items and not uniqueIsFilled:
             if self.allowMultiColumnPk:
-                items[0].setCheckState(Qt.Checked)
+                items[0].setCheckState(Qt.CheckState.Checked)
             else:
                 self.uniqueCombo.setEditText(defaultUniqueCol)
 
@@ -619,8 +619,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         for idx in self.viewResult.selectionModel().selectedRows():
             text += "\n" + model.rowToString(idx.row(), "\t")
 
-        QApplication.clipboard().setText(text, QClipboard.Selection)
-        QApplication.clipboard().setText(text, QClipboard.Clipboard)
+        QApplication.clipboard().setText(text, QClipboard.Mode.Selection)
+        QApplication.clipboard().setText(text, QClipboard.Mode.Clipboard)
 
     def initCompleter(self):
         dictionary = None
@@ -648,7 +648,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         dlg = QueryBuilderDlg(self.iface, self.db, self, reset=self.queryBuilderFirst)
         self.queryBuilderFirst = False
         r = dlg.exec_()
-        if r == QDialog.Accepted:
+        if r == QDialog.DialogCode.Accepted:
             self.editSql.setText(dlg.query)
 
     def createView(self):
@@ -681,7 +681,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         label = ", ".join(
             item.text()
             for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
-            if item.checkState() == Qt.Checked
+            if item.checkState() == Qt.CheckState.Checked
         )
         if text != label:
             self.uniqueCombo.setEditText(label)
@@ -706,12 +706,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             ret = QMessageBox.question(
                 self, self.tr('Unsaved Changes?'),
                 self.tr('There are unsaved changes. Do you want to keep them?'),
-                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel)
 
-            if ret == QMessageBox.Save:
+            if ret == QMessageBox.StandardButton.Save:
                 self.saveAsFilePreset()
                 return True
-            elif ret == QMessageBox.Discard:
+            elif ret == QMessageBox.StandardButton.Discard:
                 return True
             else:
                 return False

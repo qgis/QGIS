@@ -86,14 +86,14 @@ class TestPyQgsQgsQueryResultModel(QgisTestCase):
 
         self.assertEqual(model.columnCount(model.index(-1, -1)), 1)
         self.assertEqual(model.rowCount(model.index(-1, -1)), 1000)
-        self.assertEqual(model.data(model.index(999, 0), Qt.DisplayRole), 1000)
+        self.assertEqual(model.data(model.index(999, 0), Qt.ItemDataRole.DisplayRole), 1000)
 
         # Test data
         for i in range(1000):
-            self.assertEqual(model.data(model.index(i, 0), Qt.DisplayRole), i + 1)
+            self.assertEqual(model.data(model.index(i, 0), Qt.ItemDataRole.DisplayRole), i + 1)
 
-        self.assertEqual(model.data(model.index(1000, 0), Qt.DisplayRole), QVariant())
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(1000, 0), Qt.ItemDataRole.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole), QVariant())
 
     def test_model_stop(self):
         """Test that when a model is deleted fetching query rows is also interrupted"""

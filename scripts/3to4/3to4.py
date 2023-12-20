@@ -51,24 +51,68 @@ from tokenize_rt import Offset, src_to_tokens, tokens_to_src, reversed_enumerate
 
 from typing import Sequence
 
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport
 
-qmetatype_mapping = {"String": "QString",
-                     "Invalid": "UnknownType",
-                     "Date": "QDate",
-                     "Time": "QTime",
-                     "DateTime": "QDateTime",
-                     "ByteArray": "QByteArray",
-                     "StringList": "QStringList"
-                     }
+# qmetatype which have been renamed
+qmetatype_mapping = {
+    "Invalid": "UnknownType",
+    "BitArray": "QBitArray",
+    "Bitmap": "QBitmap",
+    "Brush": "QBrush",
+    "ByteArray": "QByteArray",
+    "Char": "QChar",
+    "Color": "QColor",
+    "Cursor": "QCursor",
+    "Date": "QDate",
+    "DateTime": "QDateTime",
+    "EasingCurve": "QEasingCurve",
+    "Uuid": "QUuid",
+    "ModelIndex": "QModelIndex",
+    "PersistentModelIndex": "QPersistentModelIndex",
+    "Font": "QFont",
+    "Hash": "QVariantHash",
+    "Icon": "QIcon",
+    "Image": "QImage",
+    "KeySequence": "QKeySequence",
+    "Line": "QLine",
+    "LineF": "QLineF",
+    "List": "QVariantList",
+    "Locale": "QLocale",
+    "Map": "QVariantMap",
+    "Transform": "QTransform",
+    "Matrix4x4": "QMatrix4x4",
+    "Palette": "QPalette",
+    "Pen": "QPen",
+    "Pixmap": "QPixmap",
+    "Point": "QPoint",
+    "PointF": "QPointF",
+    "Polygon": "QPolygon",
+    "PolygonF": "QPolygonF",
+    "Quaternion": "QQuaternion",
+    "Rect": "QRect",
+    "RectF": "QRectF",
+    "RegularExpression": "QRegularExpression",
+    "Region": "QRegion",
+    "Size": "QSize",
+    "SizeF": "QSizeF",
+    "SizePolicy": "QSizePolicy",
+    "String": "QString",
+    "StringList": "QStringList",
+    "TextFormat": "QTextFormat",
+    "TextLength": "QTextLength",
+    "Time": "QTime",
+    "Url": "QUrl",
+    "Vector2D": "QVector2D",
+    "Vector3D": "QVector3D",
+    "Vector4D": "QVector4D",
+    "UserType": "User",
+}
 
+# { (class, enum_value) : enum_name }
 qt_enums = {}
 
 
-def fix_file(filename: str, args: argparse.Namespace) -> int:
-
-    # if (filename != "/home/julien/work/QGIS/.worktrees/pyqt6/build-fedora/output/python/plugins/processing/algs/qgis/QgisAlgorithmProvider.py"):
-    #     return 0
+def fix_file(filename: str, qgis3_compat: bool) -> int:
 
     with (open(filename, encoding='UTF-8') as f):
         contents = f.read()
@@ -80,7 +124,7 @@ def fix_file(filename: str, args: argparse.Namespace) -> int:
     tree = ast.parse(contents, filename=filename)
     for node in ast.walk(tree):
 
-        if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+        if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                 and node.value.id == "QVariant"):
             fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
 
@@ -136,20 +180,18 @@ def get_class_enums(item):
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('directory')
-    # parser.add_argument('--exit-zero-even-if-changed', action='store_true')
-    # parser.add_argument('--py35-plus', action='store_true')
-    # parser.add_argument('--py36-plus', action='store_true')
+    parser.add_argument('--only-qgis3-compatible-changes', action='store_true',
+                        help='Apply only modifications that would not break behavior on QGIS 3, hence code may not work on QGIS 4')
     args = parser.parse_args(argv)
 
-    print(os.path.join(args.directory, "*.py"))
-
-    for module in QtCore, QtGui, QtWidgets:
+    # get all scope for all qt enum
+    for module in QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport:
         for key, value in module.__dict__.items():
             get_class_enums(value)
 
     ret = 0
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        ret |= fix_file(filename, args)
+        ret |= fix_file(filename, args.only_qgis3_compatible_changes)
     return ret
 
 

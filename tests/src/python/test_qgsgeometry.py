@@ -7043,7 +7043,7 @@ class TestQgsGeometry(QgisTestCase):
                          'GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))')
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         image.fill(QColor(0, 0, 0))
 
         painter = QPainter(image)
@@ -7236,7 +7236,7 @@ class TestQgsGeometry(QgisTestCase):
                                    control_path="geometry_path")
 
     def renderGeometryUsingPath(self, geom):
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         dest_bounds = image.rect()
 
         geom = QgsGeometry(geom)

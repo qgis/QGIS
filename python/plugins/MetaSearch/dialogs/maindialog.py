@@ -114,7 +114,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnSearch.clicked.connect(self.search)
         self.leKeywords.returnPressed.connect(self.search)
         # prevent dialog from closing upon pressing enter
-        self.buttonBox.button(QDialogButtonBox.Close).setAutoDefault(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Close).setAutoDefault(False)
         # launch help from button
         self.buttonBox.helpRequested.connect(self.help)
         self.btnCanvasBbox.setAutoDefault(False)
@@ -302,7 +302,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         conn_new = NewConnectionDialog()
         conn_new.setWindowTitle(self.tr('New Catalog Service'))
-        if conn_new.exec_() == QDialog.Accepted:  # add to service list
+        if conn_new.exec_() == QDialog.DialogCode.Accepted:  # add to service list
             self.populate_connection_list()
         self.textMetadata.clear()
 
@@ -325,7 +325,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         conn_edit.cmbCatalogType.setCurrentText(
             self.settings.value('/MetaSearch/%s/catalog-type' % current_text))
 
-        if conn_edit.exec_() == QDialog.Accepted:  # update service list
+        if conn_edit.exec_() == QDialog.DialogCode.Accepted:  # update service list
             self.populate_connection_list()
 
     def delete_connection(self):
@@ -339,8 +339,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         result = QMessageBox.question(
             self, self.tr('Delete Service'), msg,
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if result == QMessageBox.Yes:  # remove service from list
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+        if result == QMessageBox.StandardButton.Yes:  # remove service from list
             self.settings.remove(key)
             index_to_delete = self.cmbConnectionsServices.currentIndex()
             self.cmbConnectionsServices.removeItem(index_to_delete)
@@ -374,8 +374,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 msg = self.tr('{0} exists.  Overwrite?').format(name)
                 res = QMessageBox.warning(self,
                                           self.tr('Loading connections'), msg,
-                                          QMessageBox.Yes | QMessageBox.No)
-                if res != QMessageBox.Yes:
+                                          QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if res != QMessageBox.StandardButton.Yes:
                     continue
 
             # no dups detected or overwrite is allowed
@@ -480,7 +480,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # TODO: allow users to select resources types
         # to find ('service', 'dataset', etc.)
         try:
-            with OverrideCursor(Qt.WaitCursor):
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
                 self.catalog.query_records(bbox, keywords, self.maxrecords,
                                            self.startfrom)
 
@@ -657,9 +657,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 msg = self.tr('End of results. Go to start?')
                 res = QMessageBox.information(self, self.tr('Navigation'),
                                               msg,
-                                              (QMessageBox.Ok |
-                                               QMessageBox.Cancel))
-                if res == QMessageBox.Ok:
+                                              (QMessageBox.StandardButton.Ok |
+                                               QMessageBox.StandardButton.Cancel))
+                if res == QMessageBox.StandardButton.Ok:
                     self.startfrom = 1
                 else:
                     return
@@ -670,9 +670,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 msg = self.tr('Start of results. Go to end?')
                 res = QMessageBox.information(self, self.tr('Navigation'),
                                               msg,
-                                              (QMessageBox.Ok |
-                                               QMessageBox.Cancel))
-                if res == QMessageBox.Ok:
+                                              (QMessageBox.StandardButton.Ok |
+                                               QMessageBox.StandardButton.Cancel))
+                if res == QMessageBox.StandardButton.Ok:
                     self.startfrom = (self.catalog.matches -
                                       self.maxrecords + 1)
                 else:
@@ -693,7 +693,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         keywords = self.leKeywords.text()
 
         try:
-            with OverrideCursor(Qt.WaitCursor):
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
                 self.catalog.query_records(bbox, keywords,
                                            limit=self.maxrecords,
                                            offset=self.startfrom)
@@ -761,10 +761,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             msg = self.tr('Connection {0} exists. Overwrite?').format(sname)
             res = QMessageBox.warning(
                 self, self.tr('Saving server'), msg,
-                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
-            if res == QMessageBox.No:  # assign new name with serial
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel)
+            if res == QMessageBox.StandardButton.No:  # assign new name with serial
                 sname = serialize_string(sname)
-            elif res == QMessageBox.Cancel:
+            elif res == QMessageBox.StandardButton.Cancel:
                 return
 
         # no dups detected or overwrite is allowed
@@ -852,7 +852,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 pass
 
         try:
-            with OverrideCursor(Qt.WaitCursor):
+            with OverrideCursor(Qt.CursorShape.WaitCursor):
                 cat = get_catalog_service(self.catalog_url,  # spellok
                                           catalog_type=self.catalog_type,
                                           timeout=self.timeout,
@@ -946,7 +946,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 pass
 
         # connect to the server
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 self.catalog = get_catalog_service(
                     self.catalog_url, catalog_type=self.catalog_type,

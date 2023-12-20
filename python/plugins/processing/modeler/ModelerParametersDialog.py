@@ -78,8 +78,8 @@ class ModelerParametersDialog(QDialog):
         QgsGui.enableAutoGeometryRestore(self)
 
         self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok | QDialogButtonBox.Help)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Help)
 
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.reject)
@@ -206,7 +206,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.verticalLayout = QVBoxLayout()
 
         self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.bar.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.verticalLayout.addWidget(self.bar)
 
         hLayout = QHBoxLayout()
@@ -218,8 +218,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         hLayout.addWidget(self.descriptionBox)
         self.verticalLayout.addLayout(hLayout)
         line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
+        line.setFrameShape(QFrame.Shape.HLine)
+        line.setFrameShadow(QFrame.Shadow.Sunken)
         self.verticalLayout.addWidget(line)
 
         widget_context = QgsProcessingParameterWidgetContext()
@@ -321,7 +321,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.scrollArea = QgsScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setFrameStyle(QFrame.NoFrame)
+        self.scrollArea.setFrameStyle(QFrame.Shape.NoFrame)
 
         self.verticalLayout2.addWidget(self.scrollArea)
 

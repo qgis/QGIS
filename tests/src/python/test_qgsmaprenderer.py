@@ -354,7 +354,7 @@ class TestQgsMapRenderer(QgisTestCase):
         labelSettings2 = QgsPalLayerSettings()
         labelSettings2.fieldName = "fldtxt"
         format2 = QgsTextFormat()
-        format2.setBlendMode(QPainter.CompositionMode_SourceIn)
+        format2.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceIn)
         labelSettings2.setFormat(format2)
         layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings2))
         layer2.setLabelsEnabled(True)
@@ -452,7 +452,7 @@ class TestQgsMapRenderer(QgisTestCase):
 
     def testCustomPainterRenderer(self):
         """ run test suite on QgsMapRendererCustomPainterJob"""
-        im = QImage(200, 200, QImage.Format_RGB32)
+        im = QImage(200, 200, QImage.Format.Format_RGB32)
         p = QPainter(im)
 
         def create_job(settings):

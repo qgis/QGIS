@@ -71,7 +71,7 @@ class TestPyQgsNewVectorTableDialog(QgisTestCase):
         has_m_chk = dialog.findChildren(QCheckBox, 'mHasMChk')[0]
         table_name = dialog.findChildren(QLineEdit, 'mTableName')[0]
         buttons = dialog.findChildren(QDialogButtonBox, 'mButtonBox')[0]
-        ok_btn = buttons.button(QDialogButtonBox.Ok)
+        ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
 
         # Default is no geometry, let's check if all geom options are disabled
         self.assertFalse(geom_name_le.isEnabled())
@@ -101,7 +101,7 @@ class TestPyQgsNewVectorTableDialog(QgisTestCase):
 
         # Test validation (ok button enabled)
         buttons = dialog.findChildren(QDialogButtonBox, 'mButtonBox')[0]
-        ok_btn = buttons.button(QDialogButtonBox.Ok)
+        ok_btn = buttons.button(QDialogButtonBox.StandardButton.Ok)
         self.assertTrue(ok_btn.isEnabled())
 
         # Duplicate table name

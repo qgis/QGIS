@@ -16,7 +16,7 @@ from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
-DATE = QDateTime.fromString('2018-01-01 01:02:03', Qt.ISODate)
+DATE = QDateTime.fromString('2018-01-01 01:02:03', Qt.DateFormat.ISODate)
 
 
 class TestQgsDateTimeEdit(QgisTestCase):

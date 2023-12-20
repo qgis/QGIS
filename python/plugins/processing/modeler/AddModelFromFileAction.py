@@ -72,10 +72,10 @@ class AddModelFromFileAction(ToolboxAction):
                     self.toolbox,
                     self.tr('Open Model', 'AddModelFromFileAction'),
                     self.tr('There is already a model file with the same name. Overwrite?', 'AddModelFromFileAction'),
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No)
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No)
 
-                if reply == QMessageBox.No:
+                if reply == QMessageBox.StandardButton.No:
                     return
 
             shutil.copyfile(filename, destFilename)

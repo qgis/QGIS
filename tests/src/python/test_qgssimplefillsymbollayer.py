@@ -81,7 +81,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         # lets render two layers, to make comparison easier
         layer = QgsSimpleFillSymbolLayer()
-        layer.setStrokeStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
 
         symbol = QgsFillSymbol()
@@ -89,7 +89,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         layer = QgsSimpleFillSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyOffset, QgsProperty.fromExpression("array(-(x_min($geometry)+100)/5, (y_min($geometry)-35)/5)"))
-        layer.setStrokeStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
         symbol.appendSymbolLayer(layer)
@@ -113,7 +113,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         self.assertTrue(poly_layer.isValid())
 
         layer = QgsSimpleFillSymbolLayer()
-        layer.setStrokeStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'red', 'green')"))
@@ -144,7 +144,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         self.assertTrue(poly_layer.isValid())
 
         layer = QgsSimpleFillSymbolLayer()
-        layer.setStrokeStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'red', 'green')"))
@@ -173,7 +173,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

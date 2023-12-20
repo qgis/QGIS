@@ -17,7 +17,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-from PyQt5.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,

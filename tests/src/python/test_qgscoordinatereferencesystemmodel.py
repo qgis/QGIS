@@ -39,7 +39,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         # Compound, Vertical amongst others
         self.assertGreaterEqual(model.rowCount(QModelIndex()), 5)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('Projected', top_level_items)
         self.assertIn('Geographic (2D)', top_level_items)
@@ -82,8 +82,8 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                           QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4326'
         ][0]
         # test model roles
-        self.assertEqual(model.data(wgs84_index, Qt.DisplayRole), 'WGS 84')
-        self.assertEqual(model.data(model.index(wgs84_index.row(), 1, wgs84_index.parent()), Qt.DisplayRole), 'EPSG:4326')
+        self.assertEqual(model.data(wgs84_index, Qt.ItemDataRole.DisplayRole), 'WGS 84')
+        self.assertEqual(model.data(model.index(wgs84_index.row(), 1, wgs84_index.parent()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326')
         self.assertEqual(model.data(wgs84_index, QgsCoordinateReferenceSystemModel.RoleName), 'WGS 84')
         self.assertFalse(model.data(wgs84_index,
                                     QgsCoordinateReferenceSystemModel.RoleDeprecated))
@@ -114,10 +114,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                           QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
         ][0]
         # test model roles
-        self.assertEqual(model.data(epsg_4329_index, Qt.DisplayRole), 'WGS 84 (3D)')
+        self.assertEqual(model.data(epsg_4329_index, Qt.ItemDataRole.DisplayRole), 'WGS 84 (3D)')
         self.assertEqual(
             model.data(model.index(epsg_4329_index.row(), 1, epsg_4329_index.parent()),
-                       Qt.DisplayRole), 'EPSG:4329')
+                       Qt.ItemDataRole.DisplayRole), 'EPSG:4329')
         self.assertEqual(model.data(epsg_4329_index,
                                     QgsCoordinateReferenceSystemModel.RoleName),
                          'WGS 84 (3D)')
@@ -150,10 +150,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                           QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:5711'
         ][0]
         # test model roles
-        self.assertEqual(model.data(ahd_index, Qt.DisplayRole), 'AHD height')
+        self.assertEqual(model.data(ahd_index, Qt.ItemDataRole.DisplayRole), 'AHD height')
         self.assertEqual(
             model.data(model.index(ahd_index.row(), 1, ahd_index.parent()),
-                       Qt.DisplayRole), 'EPSG:5711')
+                       Qt.ItemDataRole.DisplayRole), 'EPSG:5711')
         self.assertEqual(model.data(ahd_index,
                                     QgsCoordinateReferenceSystemModel.RoleName),
                          'AHD height')
@@ -196,10 +196,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                           QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:3577'
         ][0]
         # test model roles
-        self.assertEqual(model.data(epsg_3577_index, Qt.DisplayRole), 'GDA94 / Australian Albers')
+        self.assertEqual(model.data(epsg_3577_index, Qt.ItemDataRole.DisplayRole), 'GDA94 / Australian Albers')
         self.assertEqual(
             model.data(model.index(epsg_3577_index.row(), 1, epsg_3577_index.parent()),
-                       Qt.DisplayRole), 'EPSG:3577')
+                       Qt.ItemDataRole.DisplayRole), 'EPSG:3577')
         self.assertEqual(model.data(epsg_3577_index,
                                     QgsCoordinateReferenceSystemModel.RoleName),
                          'GDA94 / Australian Albers')
@@ -223,7 +223,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         self.assertEqual(model.rowCount(QModelIndex()), prev_top_level_count + 1)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('User-defined', top_level_items)
         self.assertNotIn("Custom", top_level_items)
@@ -245,10 +245,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         user_crs_index = model.index(0, 0, user_index)
         # test model roles
-        self.assertEqual(model.data(user_crs_index, Qt.DisplayRole), 'my custom crs')
+        self.assertEqual(model.data(user_crs_index, Qt.ItemDataRole.DisplayRole), 'my custom crs')
         self.assertEqual(
             model.data(model.index(user_crs_index.row(), 1, user_crs_index.parent()),
-                       Qt.DisplayRole), 'USER:100000')
+                       Qt.ItemDataRole.DisplayRole), 'USER:100000')
         self.assertEqual(model.data(user_crs_index,
                                     QgsCoordinateReferenceSystemModel.RoleName),
                          'my custom crs')
@@ -276,10 +276,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         user_crs_index = model.index(0, 0, user_index)
         # test model roles
-        self.assertEqual(model.data(user_crs_index, Qt.DisplayRole), 'my custom crs rev 2')
+        self.assertEqual(model.data(user_crs_index, Qt.ItemDataRole.DisplayRole), 'my custom crs rev 2')
         self.assertEqual(
             model.data(model.index(user_crs_index.row(), 1, user_crs_index.parent()),
-                       Qt.DisplayRole), 'USER:100000')
+                       Qt.ItemDataRole.DisplayRole), 'USER:100000')
         self.assertEqual(model.data(user_crs_index,
                                     QgsCoordinateReferenceSystemModel.RoleName),
                          'my custom crs rev 2')
@@ -303,7 +303,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         self.assertEqual(model.rowCount(QModelIndex()), prev_top_level_count + 1)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn("Custom", top_level_items)
 
@@ -322,10 +322,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         custom_crs_index = model.index(0, 0, custom_index)
         # test model roles
-        self.assertEqual(model.data(custom_crs_index, Qt.DisplayRole), 'Custom CRS')
+        self.assertEqual(model.data(custom_crs_index, Qt.ItemDataRole.DisplayRole), 'Custom CRS')
         self.assertFalse(
             model.data(model.index(custom_crs_index.row(), 1, custom_crs_index.parent()),
-                       Qt.DisplayRole))
+                       Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.data(custom_crs_index,
                                     QgsCoordinateReferenceSystemModel.RoleName), 'Custom CRS')
         self.assertFalse(model.data(custom_crs_index,
@@ -344,7 +344,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         # Compound, Vertical amongst others
         self.assertGreaterEqual(model.rowCount(QModelIndex()), 5)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('Projected', top_level_items)
         self.assertIn('Geographic (2D)', top_level_items)
@@ -355,7 +355,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         # filter by type
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.FilterHorizontal)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('Projected', top_level_items)
@@ -366,7 +366,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.FilterVertical)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
         ]
         self.assertNotIn('Projected', top_level_items)
@@ -377,7 +377,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.FilterCompound)
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
         ]
         self.assertNotIn('Projected', top_level_items)
@@ -389,7 +389,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filters(QgsCoordinateReferenceSystemProxyModel.FilterCompound
                                                                         | QgsCoordinateReferenceSystemProxyModel.FilterVertical))
         top_level_items = [
-            model.data(model.index(row, 0, QModelIndex()), Qt.DisplayRole) for
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
         ]
         self.assertNotIn('Projected', top_level_items)
@@ -415,8 +415,8 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                           QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4326'
         ][0]
         # test model roles
-        self.assertEqual(model.data(wgs84_index, Qt.DisplayRole), 'WGS 84')
-        self.assertEqual(model.data(model.index(wgs84_index.row(), 1, wgs84_index.parent()), Qt.DisplayRole), 'EPSG:4326')
+        self.assertEqual(model.data(wgs84_index, Qt.ItemDataRole.DisplayRole), 'WGS 84')
+        self.assertEqual(model.data(model.index(wgs84_index.row(), 1, wgs84_index.parent()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326')
         self.assertEqual(model.data(wgs84_index, QgsCoordinateReferenceSystemModel.RoleName), 'WGS 84')
         self.assertFalse(model.data(wgs84_index,
                                     QgsCoordinateReferenceSystemModel.RoleDeprecated))
@@ -441,10 +441,10 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                           QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
         ][0]
         # test model roles
-        self.assertEqual(model.data(epsg_4329_index, Qt.DisplayRole), 'WGS 84 (3D)')
+        self.assertEqual(model.data(epsg_4329_index, Qt.ItemDataRole.DisplayRole), 'WGS 84 (3D)')
         self.assertEqual(
             model.data(model.index(epsg_4329_index.row(), 1, epsg_4329_index.parent()),
-                       Qt.DisplayRole), 'EPSG:4329')
+                       Qt.ItemDataRole.DisplayRole), 'EPSG:4329')
         self.assertEqual(model.data(epsg_4329_index,
                                     QgsCoordinateReferenceSystemModel.RoleName),
                          'WGS 84 (3D)')

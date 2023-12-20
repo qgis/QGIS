@@ -17,7 +17,7 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import os
 
 import psycopg2
-from PyQt5.QtCore import QUrl, QUrlQuery
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.core import (
     QgsDataSourceUri,
     QgsVectorLayer,

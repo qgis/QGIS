@@ -147,7 +147,7 @@ class TestQgsLayerMetadataResultModels(TestCase):
         proxy_model.setFilterExtent(QgsRectangle())
         metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
         self.assertEqual(metadata.identifier(), 'layer_0')
-        proxy_model.sort(0, Qt.DescendingOrder)
+        proxy_model.sort(0, Qt.SortOrder.DescendingOrder)
         metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
         self.assertEqual(metadata.identifier(), 'polygon')
 

@@ -809,9 +809,9 @@ class TestQgsMapCanvas(QgisTestCase):
         # Keep track of how many times each tool is activated, deactivated, and reactivated
         for tool in [moveTool, zoomTool, emitTool]:
             counter[tool] = {"activated": 0, "deactivated": 0, "reactivated": 0}
-            tool.activated.connect(lambda tool=tool: increment(tool, "activated"), Qt.DirectConnection)
-            tool.deactivated.connect(lambda tool=tool: increment(tool, "deactivated"), Qt.DirectConnection)
-            tool.reactivated.connect(lambda tool=tool: increment(tool, "reactivated"), Qt.DirectConnection)
+            tool.activated.connect(lambda tool=tool: increment(tool, "activated"), Qt.ConnectionType.DirectConnection)
+            tool.deactivated.connect(lambda tool=tool: increment(tool, "deactivated"), Qt.ConnectionType.DirectConnection)
+            tool.reactivated.connect(lambda tool=tool: increment(tool, "reactivated"), Qt.ConnectionType.DirectConnection)
 
         canvas.setMapTool(moveTool)
         canvas.setMapTool(zoomTool)

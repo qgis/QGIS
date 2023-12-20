@@ -301,7 +301,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         layer.renderer().setPointSize(2)
         layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
 
-        layer.setBlendMode(QPainter.CompositionMode_ColorBurn)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_ColorBurn)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))

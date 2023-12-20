@@ -52,7 +52,7 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         symbol = QgsLineSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         painter = QPainter()
         ms = QgsMapSettings()
 
@@ -134,7 +134,7 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         symbol = QgsLineSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
 

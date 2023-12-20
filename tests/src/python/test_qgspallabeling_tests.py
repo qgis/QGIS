@@ -81,7 +81,7 @@ class TestPointBase:
         self._ColorTols['TestComposerPdfPoint'] = 2
         # Label color change
         format = self.lyr.format()
-        format.setColor(Qt.blue)
+        format.setColor(Qt.GlobalColor.blue)
         self.lyr.setFormat(format)
         self.checkTest()
 
@@ -217,7 +217,7 @@ class TestPointBase:
         # Modified letter spacing
         format = self.lyr.format()
         font = QFont(self._TestFont)
-        font.setLetterSpacing(QFont.AbsoluteSpacing, 3.5)
+        font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 3.5)
         format.setFont(font)
         format.setSize(30)
         self.lyr.setFormat(format)

@@ -2697,7 +2697,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
 
         f = QgsFeature(vl.fields())
-        dt = QDateTime(QDate(2023, 1, 28), QTime(12, 34, 56, 789), Qt.OffsetFromUTC, 1 * 3600 + 30 * 60)
+        dt = QDateTime(QDate(2023, 1, 28), QTime(12, 34, 56, 789), Qt.TimeSpec.OffsetFromUTC, 1 * 3600 + 30 * 60)
         f.setAttribute(1, dt)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.addFeatures([f]))
@@ -2707,7 +2707,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(got[0]["dt"], dt)
 
         self.assertTrue(vl.startEditing())
-        new_dt = QDateTime(QDate(2023, 1, 27), QTime(12, 34, 56, 987), Qt.OffsetFromUTC, 2 * 3600 + 30 * 60)
+        new_dt = QDateTime(QDate(2023, 1, 27), QTime(12, 34, 56, 987), Qt.TimeSpec.OffsetFromUTC, 2 * 3600 + 30 * 60)
         self.assertTrue(vl.changeAttributeValue(1, 1, new_dt))
         self.assertTrue(vl.commitChanges())
 

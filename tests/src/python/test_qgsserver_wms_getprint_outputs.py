@@ -151,11 +151,11 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
         height = width / svgr.viewBoxF().width() * svgr.viewBoxF().height()
 
-        image = QImage(width, height, QImage.Format_ARGB32)
-        image.fill(Qt.transparent)
+        image = QImage(width, height, QImage.Format.Format_ARGB32)
+        image.fill(Qt.GlobalColor.transparent)
 
         p = QPainter(image)
-        p.setRenderHint(QPainter.Antialiasing, False)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing, False)
         svgr.render(p)
         p.end()
 

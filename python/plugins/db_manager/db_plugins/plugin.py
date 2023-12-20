@@ -223,11 +223,11 @@ class DBPlugin(QObject):
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really remove connection to {0}?").format(item.connectionName()),
-                                       QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:
+                                       QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if res != QMessageBox.StandardButton.Yes:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.remove()
 
@@ -365,7 +365,7 @@ class Database(DbItemObject):
 
         action = QAction(QApplication.translate("DBManagerPlugin", "Delete Selected Item"), self)
         mainWindow.registerAction(action, None, self.deleteActionSlot)
-        action.setShortcuts(QKeySequence.Delete)
+        action.setShortcuts(QKeySequence.StandardKey.Delete)
 
         action = QAction(QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
                          QApplication.translate("DBManagerPlugin", "&Create Table…"), self)
@@ -406,7 +406,7 @@ class Database(DbItemObject):
             QApplication.restoreOverrideCursor()
             parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."),
                                        Qgis.Info, parent.iface.messageTimeout())
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
     def createSchemaActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
@@ -421,7 +421,7 @@ class Database(DbItemObject):
             if not ok:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         self.createSchema(schema)
 
@@ -436,11 +436,11 @@ class Database(DbItemObject):
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really delete schema {0}?").format(item.name),
-                                       QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:
+                                       QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if res != QMessageBox.StandardButton.Yes:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.delete()
 
@@ -467,7 +467,7 @@ class Database(DbItemObject):
         from ..dlg_create_table import DlgCreateTable
 
         DlgCreateTable(item, parent).exec_()
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
     def editTableActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
@@ -486,7 +486,7 @@ class Database(DbItemObject):
 
             DlgTableProperties(item, parent).exec_()
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
     def deleteTableActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
@@ -499,11 +499,11 @@ class Database(DbItemObject):
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really delete table/view {0}?").format(item.name),
-                                       QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:
+                                       QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if res != QMessageBox.StandardButton.Yes:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.delete()
 
@@ -517,11 +517,11 @@ class Database(DbItemObject):
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "DB Manager"),
                                        QApplication.translate("DBManagerPlugin",
                                                               "Really delete all items from table {0}?").format(item.name),
-                                       QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:
+                                       QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            if res != QMessageBox.StandardButton.Yes:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.empty()
 
@@ -543,7 +543,7 @@ class Database(DbItemObject):
                                            Qgis.Info, parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.moveToSchema(new_schema)
 
@@ -973,10 +973,10 @@ class Table(DbItemObject):
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table triggers"), msg,
-                                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
                     return False
             finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if trigger_action == "enable" or trigger_action == "disable":
                 enable = trigger_action == "enable"
@@ -995,10 +995,10 @@ class Table(DbItemObject):
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table trigger"), msg,
-                                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
                     return False
             finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if trigger_action == "delete":
                 self.aboutToChange.emit()
@@ -1104,10 +1104,10 @@ class VectorTable(Table):
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Spatial Index"), msg,
-                                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
                     return False
             finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if spatialIndex_action == "create":
                 self.createSpatialIndex()
@@ -1173,8 +1173,8 @@ class VectorTable(Table):
 
         addButton = QPushButton(self.tr('Load Layer'))
         addButton.clicked.connect(lambda: self.addLayer(selectedGeometryType(), selectedCrs()))
-        btns = QDialogButtonBox(QDialogButtonBox.Cancel)
-        btns.addButton(addButton, QDialogButtonBox.ActionRole)
+        btns = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
+        btns.addButton(addButton, QDialogButtonBox.ButtonRole.ActionRole)
 
         layout.addRow(btns)
 

@@ -342,7 +342,7 @@ class TestQgsSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -612,7 +612,7 @@ class TestQgsSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -650,7 +650,7 @@ class TestQgsSymbol(QgisTestCase):
         f.setGeometry(linestring)
         line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'outline_width': '10'})
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         painter.begin(image)
         try:
             image.fill(QColor(0, 0, 0))
@@ -688,7 +688,7 @@ class TestQgsSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -726,7 +726,7 @@ class TestQgsSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -764,7 +764,7 @@ class TestQgsSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1059,12 +1059,12 @@ class TestQgsMarkerSymbol(QgisTestCase):
         s.deleteSymbolLayer(0)
         s.appendSymbolLayer(
             QgsSimpleMarkerSymbolLayer(size=10, color=QColor(255, 255, 0)))
-        s[0].setStrokeStyle(Qt.NoPen)
+        s[0].setStrokeStyle(Qt.PenStyle.NoPen)
 
         # larger layer, but disabled. Should not be considered in the bounds
         s.appendSymbolLayer(
             QgsSimpleMarkerSymbolLayer(size=20, color=QColor(255, 255, 0)))
-        s[1].setStrokeStyle(Qt.NoPen)
+        s[1].setStrokeStyle(Qt.PenStyle.NoPen)
         s[1].setEnabled(False)
 
         g = QgsGeometry.fromWkt('Point(1 1)')
@@ -1083,7 +1083,7 @@ class TestQgsMarkerSymbol(QgisTestCase):
         markerSymbol.appendSymbolLayer(
             QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Triangle, color=QColor(255, 0, 0),
                                        strokeColor=QColor(0, 255, 0), size=10, angle=0))
-        markerSymbol[0].setStrokeStyle(Qt.NoPen)
+        markerSymbol[0].setStrokeStyle(Qt.PenStyle.NoPen)
 
         markerSymbol.animationSettings().setIsAnimated(True)
 
@@ -1098,7 +1098,7 @@ class TestQgsMarkerSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -1252,7 +1252,7 @@ class TestQgsFillSymbol(QgisTestCase):
         marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
-        marker.setStrokeStyle(Qt.NoPen)
+        marker.setStrokeStyle(Qt.PenStyle.NoPen)
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         marker_line.setSubSymbol(marker_symbol)
@@ -1271,7 +1271,7 @@ class TestQgsFillSymbol(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

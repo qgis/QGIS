@@ -279,7 +279,7 @@ class TestQgsArcGisRestUtils(QgisTestCase):
         attributes.append(True)
 
         test_fields.append(QgsField('a_datetime_field', QVariant.DateTime))
-        attributes.append(QDateTime(QDate(2022, 3, 4), QTime(12, 13, 14), Qt.UTC))
+        attributes.append(QDateTime(QDate(2022, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.UTC))
 
         test_fields.append(QgsField('a_date_field', QVariant.Date))
         attributes.append(QDate(2022, 3, 4))

@@ -61,13 +61,13 @@ class TestQgsTreeWidgetItem(QgisTestCase):
         i2.setText(1, 'a')
         i2.setText(2, 'd')
 
-        w.sortItems(0, Qt.AscendingOrder)
+        w.sortItems(0, Qt.SortOrder.AscendingOrder)
         self.assertEqual(i1 < i2, False)
         self.assertEqual(i2 < i1, True)
-        w.sortItems(1, Qt.AscendingOrder)
+        w.sortItems(1, Qt.SortOrder.AscendingOrder)
         self.assertEqual(i1 < i2, False)
         self.assertEqual(i2 < i1, True)
-        w.sortItems(2, Qt.AscendingOrder)
+        w.sortItems(2, Qt.SortOrder.AscendingOrder)
         self.assertEqual(i1 < i2, True)
         self.assertEqual(i2 < i1, False)
 
@@ -75,7 +75,7 @@ class TestQgsTreeWidgetItem(QgisTestCase):
         i1.setText(1, '2')
         i1.setSortData(1, '200')
         i2.setText(1, '3')
-        w.sortItems(1, Qt.AscendingOrder)
+        w.sortItems(1, Qt.SortOrder.AscendingOrder)
         self.assertEqual(i1 < i2, False)
         self.assertEqual(i2 < i1, True)
         i2.setSortData(1, '300')
@@ -85,14 +85,14 @@ class TestQgsTreeWidgetItem(QgisTestCase):
         # test that nulls are sorted before other values
         i1.setSortData(0, '2')
         i2.setSortData(0, NULL)
-        w.sortItems(0, Qt.AscendingOrder)
+        w.sortItems(0, Qt.SortOrder.AscendingOrder)
         self.assertEqual(i1 < i2, False)
         self.assertEqual(i2 < i1, True)
 
         # test numeric sorting
         i1.setSortData(0, '02')
         i2.setSortData(0, '005')
-        w.sortItems(0, Qt.AscendingOrder)
+        w.sortItems(0, Qt.SortOrder.AscendingOrder)
         self.assertEqual(i1 < i2, True)
         self.assertEqual(i2 < i1, False)
         # numbers should come first
@@ -128,9 +128,9 @@ class TestQgsTreeWidgetItemObject(QgisTestCase):
 
         i = QgsTreeWidgetItemObject()
         item_edited_spy = QSignalSpy(i.itemEdited)
-        i.setData(1, Qt.EditRole, 'a')
+        i.setData(1, Qt.ItemDataRole.EditRole, 'a')
         self.assertEqual(len(item_edited_spy), 1)
-        i.setData(1, Qt.EditRole, 'b')
+        i.setData(1, Qt.ItemDataRole.EditRole, 'b')
         self.assertEqual(len(item_edited_spy), 2)
 
 

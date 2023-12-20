@@ -61,7 +61,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
         def check_reply():
             r = fetcher.reply()
-            assert r.error() != QNetworkReply.NoError
+            assert r.error() != QNetworkReply.NetworkError.NoError
             self.loaded = True
 
         fetcher.fetched.connect(check_reply)
@@ -76,7 +76,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
         def check_reply():
             r = fetcher.reply()
-            assert r.error() == QNetworkReply.NoError, r.error()
+            assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
             assert b'QGIS' in r.readAll()
             self.loaded = True

@@ -141,7 +141,7 @@ def initMenusAndToolbars():
 
     toolbar = iface.selectionToolBar()
     toolButton = QToolButton(toolbar)
-    toolButton.setPopupMode(QToolButton.MenuButtonPopup)
+    toolButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
     toolButtonAction = toolbar.addWidget(toolButton)
 
 

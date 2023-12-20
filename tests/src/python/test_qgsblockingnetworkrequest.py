@@ -66,7 +66,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         self.assertEqual(err, QgsBlockingNetworkRequest.ServerExceptionError)
         self.assertIn('Not Found', request.errorMessage())
         reply = request.reply()
-        self.assertEqual(reply.error(), QNetworkReply.ContentNotFoundError)
+        self.assertEqual(reply.error(), QNetworkReply.NetworkError.ContentNotFoundError)
         self.assertEqual(reply.content(), '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"\n        "http://www.w3.org/TR/html4/strict.dtd">\n<html>\n    <head>\n        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: HTTPStatus.NOT_FOUND - Nothing matches the given URI.</p>\n    </body>\n</html>\n')
 
     def testGet(self):
@@ -80,7 +80,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
         self.assertEqual(request.errorMessage(), '')
         reply = request.reply()
-        self.assertEqual(reply.error(), QNetworkReply.NoError)
+        self.assertEqual(reply.error(), QNetworkReply.NetworkError.NoError)
         self.assertEqual(reply.content(), '<html></html>\n')
         self.assertEqual(reply.rawHeaderList(), [b'Server',
                                                  b'Date',
@@ -88,9 +88,9 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
                                                  b'Content-Length'])
         self.assertEqual(reply.rawHeader(b'Content-type'), 'text/html')
         self.assertEqual(reply.rawHeader(b'xxxxxxxxx'), '')
-        self.assertEqual(reply.attribute(QNetworkRequest.HttpStatusCodeAttribute), 200)
-        self.assertEqual(reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute), 'OK')
-        self.assertEqual(reply.attribute(QNetworkRequest.RedirectionTargetAttribute), None)
+        self.assertEqual(reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute), 200)
+        self.assertEqual(reply.attribute(QNetworkRequest.Attribute.HttpReasonPhraseAttribute), 'OK')
+        self.assertEqual(reply.attribute(QNetworkRequest.Attribute.RedirectionTargetAttribute), None)
 
     def testHead(self):
         request = QgsBlockingNetworkRequest()
@@ -110,7 +110,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         handler.add('POST', '/test.html', 200, expected_body=b"foo")
         with mockedwebserver.install_http_handler(handler):
             req = QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html'))
-            req.setHeader(QNetworkRequest.ContentTypeHeader, 'text/plain')
+            req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, 'text/plain')
             err = request.post(req, b"foo")
         self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
         self.assertEqual(request.errorMessage(), '')
@@ -122,7 +122,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         handler.add('PUT', '/test.html', 200, expected_body=b"foo")
         with mockedwebserver.install_http_handler(handler):
             req = QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html'))
-            req.setHeader(QNetworkRequest.ContentTypeHeader, 'text/plain')
+            req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, 'text/plain')
             err = request.put(req, b"foo")
         self.assertEqual(len(spy), 1)
         self.assertEqual(err, QgsBlockingNetworkRequest.NoError)

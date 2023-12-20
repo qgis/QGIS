@@ -111,9 +111,9 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
         nodes = renderer.createLegendNodes(layer_tree_layer)
         self.assertEqual(len(nodes), 2)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'cat 3')
+        self.assertEqual(nodes[0].data(Qt.ItemDataRole.DisplayRole), 'cat 3')
         self.assertEqual(nodes[0].data(QgsLayerTreeModelLegendNode.RuleKeyRole), '3')
-        self.assertEqual(nodes[1].data(Qt.DisplayRole), 'cat 7')
+        self.assertEqual(nodes[1].data(Qt.ItemDataRole.DisplayRole), 'cat 7')
         self.assertEqual(nodes[1].data(QgsLayerTreeModelLegendNode.RuleKeyRole), '7')
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')

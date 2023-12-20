@@ -70,7 +70,7 @@ class TestQgsAuthManager(QgisTestCase):
         layout = QVBoxLayout()
         layout.addWidget(widget)
         layout.setMargin(6)
-        button_box = QDialogButtonBox(QDialogButtonBox.Close)
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
         button_box.rejected.connect(dlg.close)
         layout.addWidget(button_box)
         dlg.setLayout(layout)
@@ -330,10 +330,10 @@ class TestQgsAuthManager(QgisTestCase):
         config = QgsAuthConfigSslServer()
         config.setSslCertificate(ssl_cert)
         config.setSslHostPort(hostport)
-        config.setSslIgnoredErrorEnums([QSslError.SelfSignedCertificate])
-        config.setSslPeerVerifyMode(QSslSocket.VerifyNone)
+        config.setSslIgnoredErrorEnums([QSslError.SslError.SelfSignedCertificate])
+        config.setSslPeerVerifyMode(QSslSocket.PeerVerifyMode.VerifyNone)
         config.setSslPeerVerifyDepth(3)
-        config.setSslProtocol(QSsl.TlsV1_1)
+        config.setSslProtocol(QSsl.SslProtocol.TlsV1_1)
 
         msg = 'SSL config is null'
         self.assertFalse(config.isNull(), msg)
@@ -361,7 +361,7 @@ class TestQgsAuthManager(QgisTestCase):
 
         msg = 'IgnoredErrorEnums of retrieved SSL config does not match'
         enums = config2.sslIgnoredErrorEnums()
-        self.assertTrue(QSslError.SelfSignedCertificate in enums, msg)
+        self.assertTrue(QSslError.SslError.SelfSignedCertificate in enums, msg)
 
         msg = 'PeerVerifyMode of retrieved SSL config does not match'
         self.assertEqual(config.sslPeerVerifyMode(),
@@ -744,7 +744,7 @@ class TestQgsAuthManager(QgisTestCase):
         self.assertFalse(QgsAuthCertUtils.certIsCurrent(cert))
         res = QgsAuthCertUtils.certViabilityErrors(cert)
         self.assertTrue(len(res) > 0)
-        self.assertTrue(QSslError(QSslError.CertificateExpired, cert) in res)
+        self.assertTrue(QSslError(QSslError.SslError.CertificateExpired, cert) in res)
         self.assertFalse(QgsAuthCertUtils.certIsViable(cert))
 
     def test_170_pki_key_encoding(self):

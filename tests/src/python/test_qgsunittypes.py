@@ -1287,7 +1287,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatDistance(0.00168478, 2, QgsUnitTypes.DistanceMeters, True), '1.68e-03 m')
 
         # test different locales
-        QLocale.setDefault(QLocale(QLocale.Italian))
+        QLocale.setDefault(QLocale(QLocale.Language.Italian))
         self.assertEqual(QgsUnitTypes.formatDistance(10, 3, QgsUnitTypes.DistanceMeters, False), '10,000 m')
         self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceMiles, False), '2.640,00 ft')
 
@@ -1343,7 +1343,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaSquareMeters, True), '1.68e-03 m²')
 
         # test different locales
-        QLocale.setDefault(QLocale(QLocale.Italian))
+        QLocale.setDefault(QLocale(QLocale.Language.Italian))
         self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaSquareKilometers, False), '100,00 km²')
         self.assertEqual(QgsUnitTypes.formatArea(2787, 2, QgsUnitTypes.AreaSquareFeet, False), '2.787,00 ft²')
 

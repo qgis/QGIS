@@ -534,9 +534,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
 
         temporalExtents = extent.temporalExtents()
         assert len(temporalExtents) == 3
-        assert temporalExtents[0].begin() == QDateTime.fromString("1980-01-01T12:34:56.789Z", Qt.ISODateWithMs), \
+        assert temporalExtents[0].begin() == QDateTime.fromString("1980-01-01T12:34:56.789Z", Qt.DateFormat.ISODateWithMs), \
             temporalExtents[0].begin()
-        assert temporalExtents[0].end() == QDateTime.fromString("2020-01-01T00:00:00Z", Qt.ISODateWithMs), \
+        assert temporalExtents[0].end() == QDateTime.fromString("2020-01-01T00:00:00Z", Qt.DateFormat.ISODateWithMs), \
             temporalExtents[0].end()
         assert temporalExtents[1].begin().isValid()
         assert not temporalExtents[1].end().isValid()

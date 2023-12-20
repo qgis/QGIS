@@ -238,7 +238,7 @@ class TestQgsPalLabeling(QgisTestCase):
         format.setNamedStyle('Roman')
         format.setSize(32)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
-        format.buffer().setJoinStyle(Qt.BevelJoin)
+        format.buffer().setJoinStyle(Qt.PenJoinStyle.BevelJoin)
         lyr.setFormat(format)
         return lyr
 

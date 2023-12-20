@@ -97,7 +97,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
             self.groupBox.layout().addWidget(label)
             self.groupBox.layout().addWidget(combo)
 
-        verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.groupBox.layout().addItem(verticalSpacer)
 
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -133,7 +133,7 @@ class ExpressionWidget(BASE, WIDGET):
         def addButtonText(text):
             if any(c for c in text if c.islower()):
                 self.text.insertPlainText(f" {text}()")
-                self.text.moveCursor(QTextCursor.PreviousCharacter, QTextCursor.MoveAnchor)
+                self.text.moveCursor(QTextCursor.MoveOperation.PreviousCharacter, QTextCursor.MoveMode.MoveAnchor)
             else:
                 self.text.insertPlainText(f" {text} ")
         buttons = [b for b in self.buttonsGroupBox.children()if isinstance(b, QPushButton)]
@@ -216,7 +216,7 @@ class ExpressionWidget(BASE, WIDGET):
             item = QListWidgetItem(name, self.listWidget)
             tooltip = _find_source(name)
             if tooltip:
-                item.setData(Qt.ToolTipRole, tooltip)
+                item.setData(Qt.ItemDataRole.ToolTipRole, tooltip)
             self.listWidget.addItem(item)
 
     def setValue(self, value):

@@ -60,23 +60,23 @@ class MultipleInputDialog(BASE, WIDGET):
         # Additional buttons
         self.btnSelectAll = QPushButton(self.tr('Select All'))
         self.buttonBox.addButton(self.btnSelectAll,
-                                 QDialogButtonBox.ActionRole)
+                                 QDialogButtonBox.ButtonRole.ActionRole)
         self.btnClearSelection = QPushButton(self.tr('Clear Selection'))
         self.buttonBox.addButton(self.btnClearSelection,
-                                 QDialogButtonBox.ActionRole)
+                                 QDialogButtonBox.ButtonRole.ActionRole)
         self.btnToggleSelection = QPushButton(self.tr('Toggle Selection'))
         self.buttonBox.addButton(self.btnToggleSelection,
-                                 QDialogButtonBox.ActionRole)
+                                 QDialogButtonBox.ButtonRole.ActionRole)
         if self.datatype is not None:
             btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add File(s)…'))
             btnAddFile.clicked.connect(self.addFiles)
             self.buttonBox.addButton(btnAddFile,
-                                     QDialogButtonBox.ActionRole)
+                                     QDialogButtonBox.ButtonRole.ActionRole)
 
             btnAddDir = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add Directory…'))
             btnAddDir.clicked.connect(self.addDirectory)
             self.buttonBox.addButton(btnAddDir,
-                                     QDialogButtonBox.ActionRole)
+                                     QDialogButtonBox.ButtonRole.ActionRole)
 
         self.btnSelectAll.clicked.connect(lambda: self.selectAll(True))
         self.btnClearSelection.clicked.connect(lambda: self.selectAll(False))
@@ -85,8 +85,8 @@ class MultipleInputDialog(BASE, WIDGET):
         self.settings = QgsSettings()
         self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
 
-        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.lstLayers.setDragDropMode(QAbstractItemView.InternalMove)
+        self.lstLayers.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.lstLayers.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
 
         self.populateList()
         self.finished.connect(self.saveWindowGeometry)
@@ -98,8 +98,8 @@ class MultipleInputDialog(BASE, WIDGET):
         self.model = QStandardItemModel()
         for value, text in self.options:
             item = QStandardItem(text)
-            item.setData(value, Qt.UserRole)
-            item.setCheckState(Qt.Checked if value in self.selectedoptions else Qt.Unchecked)
+            item.setData(value, Qt.ItemDataRole.UserRole)
+            item.setCheckState(Qt.CheckState.Checked if value in self.selectedoptions else Qt.CheckState.Unchecked)
             item.setCheckable(True)
             item.setDropEnabled(False)
             self.model.appendRow(item)
@@ -110,8 +110,8 @@ class MultipleInputDialog(BASE, WIDGET):
                 item = QStandardItem(t.staticValue())
             else:
                 item = QStandardItem(t)
-            item.setData(item.text(), Qt.UserRole)
-            item.setCheckState(Qt.Checked)
+            item.setData(item.text(), Qt.ItemDataRole.UserRole)
+            item.setCheckState(Qt.CheckState.Checked)
             item.setCheckable(True)
             item.setDropEnabled(False)
             self.model.appendRow(item)
@@ -123,8 +123,8 @@ class MultipleInputDialog(BASE, WIDGET):
         model = self.lstLayers.model()
         for i in range(model.rowCount()):
             item = model.item(i)
-            if item.checkState() == Qt.Checked:
-                self.selectedoptions.append(item.data(Qt.UserRole))
+            if item.checkState() == Qt.CheckState.Checked:
+                self.selectedoptions.append(item.data(Qt.ItemDataRole.UserRole))
         QDialog.accept(self)
 
     def reject(self):
@@ -143,12 +143,12 @@ class MultipleInputDialog(BASE, WIDGET):
 
     def selectAll(self, value):
         for item in self.getItemsToModify():
-            item.setCheckState(Qt.Checked if value else Qt.Unchecked)
+            item.setCheckState(Qt.CheckState.Checked if value else Qt.CheckState.Unchecked)
 
     def toggleSelection(self):
         for item in self.getItemsToModify():
-            checked = item.checkState() == Qt.Checked
-            item.setCheckState(Qt.Unchecked if checked else Qt.Checked)
+            checked = item.checkState() == Qt.CheckState.Checked
+            item.setCheckState(Qt.CheckState.Unchecked if checked else Qt.CheckState.Checked)
 
     def getFileFilter(self, datatype):
         """
@@ -180,8 +180,8 @@ class MultipleInputDialog(BASE, WIDGET):
                               os.path.dirname(str(files[0])))
             for filename in files:
                 item = QStandardItem(filename)
-                item.setData(filename, Qt.UserRole)
-                item.setCheckState(Qt.Checked)
+                item.setData(filename, Qt.ItemDataRole.UserRole)
+                item.setCheckState(Qt.CheckState.Checked)
                 item.setCheckable(True)
                 item.setDropEnabled(False)
                 self.model.appendRow(item)
@@ -218,8 +218,8 @@ class MultipleInputDialog(BASE, WIDGET):
 
             for filename in files:
                 item = QStandardItem(filename)
-                item.setData(filename, Qt.UserRole)
-                item.setCheckState(Qt.Checked)
+                item.setData(filename, Qt.ItemDataRole.UserRole)
+                item.setCheckState(Qt.CheckState.Checked)
                 item.setCheckable(True)
                 item.setDropEnabled(False)
                 self.model.appendRow(item)

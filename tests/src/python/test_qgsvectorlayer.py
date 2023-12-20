@@ -2398,20 +2398,20 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         self.blendModeTest = 0
         layer.blendModeChanged.connect(self.onBlendModeChanged)
-        layer.setBlendMode(QPainter.CompositionMode_Screen)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
 
-        self.assertEqual(self.blendModeTest, QPainter.CompositionMode_Screen)
-        self.assertEqual(layer.blendMode(), QPainter.CompositionMode_Screen)
+        self.assertEqual(self.blendModeTest, QPainter.CompositionMode.CompositionMode_Screen)
+        self.assertEqual(layer.blendMode(), QPainter.CompositionMode.CompositionMode_Screen)
 
     def test_setFeatureBlendMode(self):
         layer = createLayerWithOnePoint()
 
         self.blendModeTest = 0
         layer.featureBlendModeChanged.connect(self.onBlendModeChanged)
-        layer.setFeatureBlendMode(QPainter.CompositionMode_Screen)
+        layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
 
-        self.assertEqual(self.blendModeTest, QPainter.CompositionMode_Screen)
-        self.assertEqual(layer.featureBlendMode(), QPainter.CompositionMode_Screen)
+        self.assertEqual(self.blendModeTest, QPainter.CompositionMode.CompositionMode_Screen)
+        self.assertEqual(layer.featureBlendMode(), QPainter.CompositionMode.CompositionMode_Screen)
 
     def test_ExpressionField(self):
         layer = createLayerWithOnePoint()
@@ -3270,7 +3270,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         # init map layer styles
         tmplayer = createLayerWithTwoPoints()
         sym1 = QgsLineSymbol()
-        sym1.setColor(Qt.magenta)
+        sym1.setColor(Qt.GlobalColor.magenta)
         tmplayer.setRenderer(QgsSingleSymbolRenderer(sym1))
 
         style0 = QgsMapLayerStyle()
@@ -3284,7 +3284,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # init layer
         layer = createLayerWithTwoPoints()
-        layer.setBlendMode(QPainter.CompositionMode_Screen)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
         layer.styleManager().addStyle('style0', style0)
         layer.styleManager().addStyle('style1', style1)
         layer.setName('MyName')
@@ -3318,10 +3318,10 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.setExcludeAttributesWfs(['MyExcludeAttributeWFS'])
         layer.setExcludeAttributesWms(['MyExcludeAttributeWMS'])
 
-        layer.setFeatureBlendMode(QPainter.CompositionMode_Xor)
+        layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Xor)
 
         sym = QgsLineSymbol()
-        sym.setColor(Qt.magenta)
+        sym.setColor(Qt.GlobalColor.magenta)
         layer.setRenderer(QgsSingleSymbolRenderer(sym))
 
         simplify = layer.simplifyMethod()
@@ -3348,13 +3348,13 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         layer.selectByIds(selected_fids)
 
         cfg = layer.attributeTableConfig()
-        cfg.setSortOrder(Qt.DescendingOrder)  # by default AscendingOrder
+        cfg.setSortOrder(Qt.SortOrder.DescendingOrder)  # by default AscendingOrder
         layer.setAttributeTableConfig(cfg)
 
         pal = QgsPalLayerSettings()
         text_format = QgsTextFormat()
         text_format.setSize(33)
-        text_format.setColor(Qt.magenta)
+        text_format.setColor(Qt.GlobalColor.magenta)
         pal.setFormat(text_format)
 
         labeling = QgsVectorLayerSimpleLabeling(pal)
@@ -4446,7 +4446,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         layer.maximumValue(0)
         layer.minimumAndMaximumValue(0)
         layer.aggregate(QgsAggregateCalculator.Count, 'foo')
-        layer.setFeatureBlendMode(QPainter.CompositionMode_Screen)
+        layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Screen)
         layer.featureBlendMode()
         layer.htmlMetadata()
         layer.setSimplifyMethod(layer.simplifyMethod())

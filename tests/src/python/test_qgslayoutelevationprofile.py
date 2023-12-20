@@ -183,15 +183,15 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
                             page_item.rect().width(),
                             page_item.rect().height())
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
 
         spy = QSignalSpy(profile_item.previewRefreshed)
 
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
@@ -201,9 +201,9 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         # background thread
         spy.wait()
 
-        im.fill(Qt.transparent)
+        im.fill(Qt.GlobalColor.transparent)
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
 
@@ -225,7 +225,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 50))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
         layout.addLayoutItem(item1)
 
@@ -269,7 +269,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         profile_item.plot().setChartBorderSymbol(
             QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
 
-        profile_item.setBlendMode(QPainter.CompositionMode_Darken)
+        profile_item.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         self.assertTrue(profile_item.requiresRasterization())
 
@@ -290,7 +290,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 50))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
         layout.addLayoutItem(item1)
 
@@ -334,7 +334,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         profile_item.plot().setChartBorderSymbol(
             QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
 
-        profile_item.setBlendMode(QPainter.CompositionMode_Darken)
+        profile_item.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         page_item = layout.pageCollection().page(0)
         paper_rect = QRectF(
@@ -344,14 +344,14 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             page_item.rect().height(),
         )
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
         spy = QSignalSpy(profile_item.previewRefreshed)
 
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         layout.render(
             painter,
@@ -365,9 +365,9 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         # background thread
         spy.wait()
 
-        im.fill(Qt.transparent)
+        im.fill(Qt.GlobalColor.transparent)
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         layout.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
 
