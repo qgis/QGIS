@@ -492,6 +492,14 @@ if(WITH_CORE)
       set (HAVE_QTGAMEPAD TRUE)
   endif()
 
+  set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
+  if (WITH_PDF4QT)
+    set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
+    message(STATUS "PDF4Qt enabled")
+  else()
+    message(STATUS "PDF4Qt disabled")
+  endif()
+
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
