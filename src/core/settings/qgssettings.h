@@ -230,7 +230,7 @@ class CORE_EXPORT QgsSettings : public QObject
                         SIP_PYOBJECT type = 0,
                         QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
     % MethodCode
-    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsSettings : public QObject
     value = sipCpp->value( *a0, *a1, a3 );
     Py_END_ALLOW_THREADS
 
-    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a2 );
 
     sipIsErr = !sipRes;

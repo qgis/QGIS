@@ -99,12 +99,12 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
 
     SIP_PYOBJECT valueAs( SIP_PYOBJECT type ) const;
     % MethodCode
-    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     value = sipCpp->value();
 
-    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a0 );
 
     sipIsErr = !sipRes;

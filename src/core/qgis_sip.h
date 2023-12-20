@@ -272,4 +272,10 @@
  */
 #define SIP_PROPERTY(name,getter,setter)
 
+/*
+ * Directive to indicate that following code is only available with Qt 5 version
+ */
+#define SIP_PYQT5_ONLY
+
+
 #endif // QGIS_SIP_H
