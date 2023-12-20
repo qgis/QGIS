@@ -712,7 +712,11 @@ PDFObject PDFParser::getObject()
     {
         case PDFLexicalAnalyzer::TokenType::Boolean:
         {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::Bool);
+#else
+            Q_ASSERT(m_lookAhead1.data.type() == QVariant::Bool);
+#endif
             const bool value = m_lookAhead1.data.toBool();
             shift();
             return PDFObject::createBool(value);
@@ -720,7 +724,11 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::Integer:
         {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::LongLong);
+#else
+            Q_ASSERT(m_lookAhead1.data.type() == QVariant::LongLong);
+#endif
             const PDFInteger value = m_lookAhead1.data.toLongLong();
             shift();
 
@@ -730,7 +738,11 @@ PDFObject PDFParser::getObject()
                 m_lookAhead2.type == PDFLexicalAnalyzer::TokenType::Command &&
                 m_lookAhead2.data.toByteArray() == PDF_REFERENCE_COMMAND)
             {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::LongLong);
+#else
+                Q_ASSERT(m_lookAhead1.data.type() == QVariant::LongLong);
+#endif
                 const PDFInteger generation = m_lookAhead1.data.toLongLong();
                 shift();
                 shift();
@@ -745,7 +757,11 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::Real:
         {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::Double);
+#else
+            Q_ASSERT(m_lookAhead1.data.type() == QVariant::Double);
+#endif
             const PDFReal value = m_lookAhead1.data.toDouble();
             shift();
             return PDFObject::createReal(value);
@@ -753,7 +769,11 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::String:
         {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::QByteArray);
+#else
+            Q_ASSERT(m_lookAhead1.data.type() == QVariant::ByteArray);
+#endif
             QByteArray array = m_lookAhead1.data.toByteArray();
             array.shrink_to_fit();
             shift();
@@ -762,7 +782,11 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::Name:
         {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::QByteArray);
+#else
+            Q_ASSERT(m_lookAhead1.data.type() == QVariant::ByteArray);
+#endif
             QByteArray array = m_lookAhead1.data.toByteArray();
             array.shrink_to_fit();
             shift();
