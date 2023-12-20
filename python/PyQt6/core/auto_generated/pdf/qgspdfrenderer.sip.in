@@ -1,0 +1,36 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pdf/qgspdfrenderer.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPdfRenderer
+{
+%Docstring(signature="appended")
+Utility class for rendering PDF documents.
+
+This functionality is not available on all platforms -- it requires a build
+with the PDF4Qt library support enabled. On other platforms calling these
+methods will raise a :py:class:`QgsNotSupportedException`.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgspdfrenderer.h"
+%End
+  public:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pdf/qgspdfrenderer.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
