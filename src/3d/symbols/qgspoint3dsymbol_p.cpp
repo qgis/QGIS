@@ -87,7 +87,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
     static Qt3DRender::QMaterial *material( const QgsPoint3DSymbol *symbol );
     static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions );
-    static Qt3DQGeometry *symbolGeometry( QgsPoint3DSymbol::Shape shape, const QVariantMap &shapeProperties );
+    static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
 
     //! temporary data we will pass to the tessellator
     struct PointData
@@ -143,7 +143,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   {
     case QgsPoint3DSymbol::Cylinder:
     {
-      const float length = mSymbol->shapeProperties().value( QStringLiteral( "length" ), 10 ).toFloat();
+      const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
       mZMin -= length * 0.5f;
       mZMax += length * 0.5f;
       break;
@@ -151,7 +151,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case QgsPoint3DSymbol::Sphere:
     {
-      const float radius = mSymbol->shapeProperties().value( QStringLiteral( "radius" ), 10 ).toFloat();
+      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       mZMin -= radius;
       mZMax += radius;
       break;
@@ -159,7 +159,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case QgsPoint3DSymbol::Cone:
     {
-      const float length = mSymbol->shapeProperties().value( QStringLiteral( "length" ), 10 ).toFloat();
+      const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
       mZMin -= length * 0.5f;
       mZMax += length * 0.5f;
       break;
@@ -167,7 +167,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case QgsPoint3DSymbol::Cube:
     {
-      const float size = mSymbol->shapeProperties().value( QStringLiteral( "size" ) ).toFloat();
+      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
       mZMin -= size * 0.5f;
       mZMax += size * 0.5f;
       break;
@@ -175,13 +175,22 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case QgsPoint3DSymbol::Torus:
     {
-      const float radius = mSymbol->shapeProperties().value( QStringLiteral( "radius" ), 10 ).toFloat();
+      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       mZMin -= radius;
       mZMax += radius;
       break;
     }
 
     case QgsPoint3DSymbol::Plane:
+    {
+      // worst case scenario -- even though planes are usually rotated so that they are flat,
+      // let's account for possible overridden rotation
+      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+      mZMin -= size * 0.5f;
+      mZMax += size * 0.5f;
+      break;
+    }
+
     case QgsPoint3DSymbol::ExtrudedText:
     case QgsPoint3DSymbol::Model:
     case QgsPoint3DSymbol::Billboard:
@@ -296,7 +305,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   instanceDataAttribute->setCount( count );
   instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
-  Qt3DQGeometry *geometry = symbolGeometry( symbol->shape(), symbol->shapeProperties() );
+  Qt3DQGeometry *geometry = symbolGeometry( symbol );
   geometry->addAttribute( instanceDataAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
 
@@ -307,37 +316,38 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   return renderer;
 }
 
-Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( QgsPoint3DSymbol::Shape shape, const QVariantMap &shapeProperties )
+Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol )
 {
-  switch ( shape )
+  switch ( symbol->shape() )
   {
     case QgsPoint3DSymbol::Cylinder:
     {
-      const float radius = shapeProperties[QStringLiteral( "radius" )].toFloat();
-      const float length = shapeProperties[QStringLiteral( "length" )].toFloat();
+      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+      const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
       Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
       //g->setRings(2);  // how many vertices vertically
       //g->setSlices(8); // how many vertices on circumference
-      g->setRadius( radius ? radius : 10 );
-      g->setLength( length ? length : 10 );
+      g->setRadius( radius );
+      g->setLength( length );
       return g;
     }
 
     case QgsPoint3DSymbol::Sphere:
     {
-      const float radius = shapeProperties[QStringLiteral( "radius" )].toFloat();
+      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
-      g->setRadius( radius ? radius : 10 );
+      g->setRadius( radius );
       return g;
     }
 
     case QgsPoint3DSymbol::Cone:
     {
-      const float length = shapeProperties[QStringLiteral( "length" )].toFloat();
-      const float bottomRadius = shapeProperties[QStringLiteral( "bottomRadius" )].toFloat();
-      const float topRadius = shapeProperties[QStringLiteral( "topRadius" )].toFloat();
+      const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
+      const float bottomRadius = symbol->shapeProperty( QStringLiteral( "bottomRadius" ) ).toFloat();
+      const float topRadius = symbol->shapeProperty( QStringLiteral( "topRadius" ) ).toFloat();
+
       Qt3DExtras::QConeGeometry *g = new Qt3DExtras::QConeGeometry;
-      g->setLength( length ? length : 10 );
+      g->setLength( length );
       g->setBottomRadius( bottomRadius );
       g->setTopRadius( topRadius );
       //g->setHasBottomEndcap(hasBottomEndcap);
@@ -347,47 +357,49 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( QgsPoint3DSymbo
 
     case QgsPoint3DSymbol::Cube:
     {
-      const float size = shapeProperties[QStringLiteral( "size" )].toFloat();
+      const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
       Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
-      g->setXExtent( size ? size : 10 );
-      g->setYExtent( size ? size : 10 );
-      g->setZExtent( size ? size : 10 );
+      g->setXExtent( size );
+      g->setYExtent( size );
+      g->setZExtent( size );
       return g;
     }
 
     case QgsPoint3DSymbol::Torus:
     {
-      const float radius = shapeProperties[QStringLiteral( "radius" )].toFloat();
-      const float minorRadius = shapeProperties[QStringLiteral( "minorRadius" )].toFloat();
+      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+      const float minorRadius = symbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toFloat();
       Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
-      g->setRadius( radius ? radius : 10 );
-      g->setMinorRadius( minorRadius ? minorRadius : 5 );
+      g->setRadius( radius );
+      g->setMinorRadius( minorRadius );
       return g;
     }
 
     case QgsPoint3DSymbol::Plane:
     {
-      const float size = shapeProperties[QStringLiteral( "size" )].toFloat();
+      const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
       Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
-      g->setWidth( size ? size : 10 );
-      g->setHeight( size ? size : 10 );
+      g->setWidth( size );
+      g->setHeight( size );
       return g;
     }
 
     case QgsPoint3DSymbol::ExtrudedText:
     {
-      const float depth = shapeProperties[QStringLiteral( "depth" )].toFloat();
-      const QString text = shapeProperties[QStringLiteral( "text" )].toString();
+      const float depth = symbol->shapeProperty( QStringLiteral( "depth" ) ).toFloat();
+      const QString text = symbol->shapeProperty( QStringLiteral( "text" ) ).toString();
       Qt3DExtras::QExtrudedTextGeometry *g = new Qt3DExtras::QExtrudedTextGeometry;
-      g->setDepth( depth ? depth : 1 );
+      g->setDepth( depth );
       g->setText( text );
       return g;
     }
 
-    default:
-      Q_ASSERT( false );
-      return nullptr;
+    case QgsPoint3DSymbol::Model:
+    case QgsPoint3DSymbol::Billboard:
+      break;
   }
+  Q_ASSERT( false );
+  return nullptr;
 }
 
 //* 3D MODEL RENDERING *//
@@ -469,7 +481,7 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   else
   {
     //  "overwriteMaterial" is a legacy setting indicating that non-embedded material should be used
-    if ( mSymbol->shapeProperties()[QStringLiteral( "overwriteMaterial" )].toBool()
+    if ( mSymbol->shapeProperty( QStringLiteral( "overwriteMaterial" ) ).toBool()
          || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != QLatin1String( "null" ) ) )
     {
       addMeshEntities( context.map(), out.positions, mSymbol.get(), parent, false );
@@ -488,7 +500,7 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
   Q_UNUSED( map )
   for ( const QVector3D &position : positions )
   {
-    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperties()[QStringLiteral( "model" )].toString() );
+    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
     // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
     if ( !source.isEmpty() )
     {
@@ -523,7 +535,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map,
   // get nodes
   for ( const QVector3D &position : positions )
   {
-    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperties()[QStringLiteral( "model" )].toString() );
+    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
     if ( !source.isEmpty() )
     {
       // build the entity

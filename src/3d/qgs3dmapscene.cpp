@@ -153,7 +153,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
         if ( renderer->type() == QLatin1String( "vector" ) )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
+          if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
           {
             removeLayerEntity( layer );
             addLayerEntity( layer );
@@ -165,7 +165,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
           for ( auto rule : rules )
           {
             const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-            if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
+            if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
             {
               removeLayerEntity( layer );
               addLayerEntity( layer );
