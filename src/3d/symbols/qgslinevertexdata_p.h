@@ -71,6 +71,7 @@ struct QgsLineVertexData
 {
   QVector<QVector3D> vertices;
   QVector<unsigned int> indexes;
+  QByteArray materialDataDefined;
 
   bool withAdjacency = false;  //!< Whether line strip with adjacency primitive will be used
 

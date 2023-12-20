@@ -292,16 +292,16 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
   return err;
 }
 
-Qgs3DMapSceneEntity::SceneState sceneState_( QgsAbstract3DEngine *engine )
+Qgs3DMapSceneEntity::SceneContext Qgs3DMapScene::buildSceneContext( ) const
 {
-  Qt3DRender::QCamera *camera = engine->camera();
-  Qgs3DMapSceneEntity::SceneState state;
-  state.cameraFov = camera->fieldOfView();
-  state.cameraPos = camera->position();
-  const QSize size = engine->size();
-  state.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
-  state.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
-  return state;
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  Qgs3DMapSceneEntity::SceneContext sceneContext;
+  sceneContext.cameraFov = camera->fieldOfView();
+  sceneContext.cameraPos = camera->position();
+  const QSize size = mEngine->size();
+  sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  sceneContext.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
+  return sceneContext;
 }
 
 void Qgs3DMapScene::onCameraChanged()
@@ -370,7 +370,7 @@ void Qgs3DMapScene::updateScene()
 
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
-    entity->handleSceneUpdate( sceneState_( mEngine ) );
+    entity->handleSceneUpdate( buildSceneContext() );
     if ( entity->hasReachedGpuMemoryLimit() )
       emit gpuMemoryLimitReached();
   }
@@ -447,7 +447,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
       QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
-      entity->handleSceneUpdate( sceneState_( mEngine ) );
+      entity->handleSceneUpdate( buildSceneContext() );
       if ( entity->hasReachedGpuMemoryLimit() )
         emit gpuMemoryLimitReached();
     }
@@ -1199,7 +1199,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   {
     if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
-      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+      m3DAxis = new Qgs3DAxis( static_cast<Qgs3DWindow *>( engine->window() ),
                                engine->root(),
                                this,
                                mCameraController,

@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    properties.py
+    QtWidgets.py
     ---------------------
-    Date                 : March 2016
-    Copyright            : (C) 2016 by Juergen E. Fischer
-    Email                : jef at norbit dot de
+    Date                 : November 2015
+    Copyright            : (C) 2015 by Matthias Kuhn
+    Email                : matthias at opengis dot ch
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,8 +17,16 @@
 ***************************************************************************
 """
 
-__author__ = 'Juergen E. Fischer'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Juergen E. Fischer'
+__author__ = 'Matthias Kuhn'
+__date__ = 'November 2015'
+__copyright__ = '(C) 2015, Matthias Kuhn'
 
-from PyQt5.uic import properties
+from PyQt@QT_VERSION_MAJOR@.QtCore import QT_VERSION
+from PyQt@QT_VERSION_MAJOR@.QtWidgets import *
+
+QLayout.setMargin = lambda self, m: self.setContentsMargins(m, m, m, m)
+
+if (QT_VERSION >= 0x060000):
+  from PyQt6.QtGui import QAction as _QAction, QShortcut as _QShortcut
+  QAction = _QAction
+  QShortcut = _QShortcut

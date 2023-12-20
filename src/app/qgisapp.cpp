@@ -6386,10 +6386,9 @@ void QgisApp::fileOpen()
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
-
     QStringList fileFilters;
     QStringList extensions;
-    fileFilters << tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS *.QGZ)" );
+    fileFilters << tr( "QGIS Project Formats" ) + QStringLiteral( " (*.qgz *.QGZ *.qgs *.QGS)" );
     extensions << QStringLiteral( "qgs" ) << QStringLiteral( "qgz" );
     for ( QgsCustomProjectOpenHandler *handler : std::as_const( mCustomProjectOpenHandlers ) )
     {
@@ -6636,45 +6635,47 @@ bool QgisApp::fileSave()
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
 
-    const QString qgsExt = tr( "QGIS files" ) + " (*.qgs)";
-    const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
-
-    QString exts;
     Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
-    switch ( defaultProjectFileFormat )
-    {
-      case Qgis::ProjectFileFormat::Qgs:
-      {
-        exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
-        break;
-      }
-      case Qgis::ProjectFileFormat::Qgz:
-      {
-        exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
-      }
-    }
+    const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
+    const QString qgzProjectExt = tr( "QGIS Bundled Project Format" ) + " (*.qgz *.QGZ)";
+    const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
+
     QString filter;
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     exts, &filter );
+                     qgisProjectExt + QStringLiteral( ";;" ) + qgzProjectExt + QStringLiteral( ";;" ) + qgsProjectExt, &filter );
     if ( path.isEmpty() )
       return false;
 
-    QFileInfo fullPath;
-    fullPath.setFile( path );
+    QFileInfo fullPath( path );
+    QgsSettings().setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
-    // make sure we have the .qgs extension in the file name
-    if ( filter == zipExt )
+    const QString ext = fullPath.suffix().toLower();
+    if ( filter == qgisProjectExt && ext != QLatin1String( "qgz" ) && ext != QLatin1String( "qgs" ) )
     {
-      if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
-        fullPath.setFile( fullPath.filePath() + ".qgz" );
+      switch ( defaultProjectFileFormat )
+      {
+        case Qgis::ProjectFileFormat::Qgs:
+        {
+          fullPath.setFile( fullPath.filePath() + ".qgs" );
+          break;
+        }
+        case Qgis::ProjectFileFormat::Qgz:
+        {
+          fullPath.setFile( fullPath.filePath() + ".qgz" );
+          break;
+        }
+      }
     }
-    else
+    else if ( filter == qgzProjectExt && ext != QLatin1String( "qgz" ) )
     {
-      if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
-        fullPath.setFile( fullPath.filePath() + ".qgs" );
+      fullPath.setFile( fullPath.filePath() + ".qgz" );
+    }
+    else if ( filter == qgsProjectExt && ext != QLatin1String( "qgs" ) )
+    {
+      fullPath.setFile( fullPath.filePath() + ".qgs" );
     }
 
     QgsProject::instance()->setFileName( fullPath.filePath() );
@@ -6750,45 +6751,47 @@ void QgisApp::fileSaveAs()
     defaultPath += QString( '/' + QgsProject::instance()->title() );
   }
 
-  const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
-  const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
-
-  QString exts;
   Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
-  switch ( defaultProjectFileFormat )
-  {
-    case Qgis::ProjectFileFormat::Qgs:
-    {
-      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
-      break;
-    }
-    case Qgis::ProjectFileFormat::Qgz:
-    {
-      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
-      break;
-    }
-  }
+  const QString qgisProjectExt = tr( "QGIS Project Formats" ) + ( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz ? " (*.qgz *.QGZ *.qgs *.QGS)" : " (*.qgs *.QGS *.qgz *.QGZ)" );
+  const QString qgzProjectExt = tr( "QGIS Bundled Project Format" ) + " (*.qgz *.QGZ)";
+  const QString qgsProjectExt = tr( "QGIS XML Project Format" ) + " (*.qgs *.QGS)";
+
   QString filter;
-  QString path = QFileDialog::getSaveFileName( this,
-                 tr( "Save Project As" ),
-                 defaultPath,
-                 exts, &filter );
+  QString path = QFileDialog::getSaveFileName(
+                   this,
+                   tr( "Save Project As" ),
+                   defaultPath,
+                   qgisProjectExt + QStringLiteral( ";;" ) + qgzProjectExt + QStringLiteral( ";;" ) + qgsProjectExt, &filter );
   if ( path.isEmpty() )
     return;
 
   QFileInfo fullPath( path );
-
   QgsSettings().setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
-  if ( filter == zipExt )
+  const QString ext = fullPath.suffix().toLower();
+  if ( filter == qgisProjectExt && ext != QLatin1String( "qgz" ) && ext != QLatin1String( "qgs" ) )
   {
-    if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
-      fullPath.setFile( fullPath.filePath() + ".qgz" );
+    switch ( defaultProjectFileFormat )
+    {
+      case Qgis::ProjectFileFormat::Qgs:
+      {
+        fullPath.setFile( fullPath.filePath() + ".qgs" );
+        break;
+      }
+      case Qgis::ProjectFileFormat::Qgz:
+      {
+        fullPath.setFile( fullPath.filePath() + ".qgz" );
+        break;
+      }
+    }
   }
-  else // .qgs
+  else if ( filter == qgzProjectExt && ext != QLatin1String( "qgz" ) )
   {
-    if ( fullPath.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) != 0 )
-      fullPath.setFile( fullPath.filePath() + ".qgs" );
+    fullPath.setFile( fullPath.filePath() + ".qgz" );
+  }
+  else if ( filter == qgsProjectExt && ext != QLatin1String( "qgs" ) )
+  {
+    fullPath.setFile( fullPath.filePath() + ".qgs" );
   }
 
   QgsProject::instance()->setFileName( fullPath.filePath() );

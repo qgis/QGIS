@@ -374,6 +374,19 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertNotEqual(layer.renderer(), r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Fill)
 
+        # reset layer to a non-spatial layer
+        lines_path = os.path.join(unitTestDataPath(), 'nonspatial.dbf')
+        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertFalse(layer.crs().isValid())
+        self.assertIn('nonspatial.dbf', layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 3)
+        # should have REMOVED renderer
+        self.assertIsNone(layer.renderer())
+
     def testSetDataSourceInvalidToValid(self):
         """
         Test that changing an invalid layer path to valid maintains the renderer

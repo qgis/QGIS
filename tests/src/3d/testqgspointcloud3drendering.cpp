@@ -269,7 +269,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img, QString(), 40, QSize( 0, 0 ), 15 );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 
@@ -309,7 +309,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_colorramp", "pointcloud_3d_colorramp", img, QString(), 40, QSize( 0, 0 ), 15 );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_colorramp", "pointcloud_3d_colorramp", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudClassification()
@@ -346,7 +346,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_classification", "pointcloud_3d_classification", img, QString(), 40, QSize( 0, 0 ), 15 );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_classification", "pointcloud_3d_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSizes()

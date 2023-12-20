@@ -55,7 +55,7 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgswindow3dengine.h"
 #include "qgsraycastingutils_p.h"
 
-Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
+Qgs3DAxis::Qgs3DAxis( Qgs3DWindow *parentWindow,
                       Qt3DCore::QEntity *parent3DScene,
                       Qgs3DMapScene *mapScene,
                       QgsCameraController *cameraCtrl,
@@ -74,8 +74,8 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
   mTwoDLabelViewport->setParent( mParentWindow->activeFrameGraph() );
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
-  connect( mParentWindow, &Qt3DExtras::Qt3DWindow::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
-  connect( mParentWindow, &Qt3DExtras::Qt3DWindow::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
+  connect( mParentWindow, &Qgs3DWindow::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
+  connect( mParentWindow, &Qgs3DWindow::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
 
   createAxisScene();
   onAxisViewportSizeUpdate();

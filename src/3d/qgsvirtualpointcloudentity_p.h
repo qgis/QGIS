@@ -60,7 +60,7 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
                                 double zValueScale, double zValueOffset, int pointBudget );
 
     //! This is called when the camera moves. It's responsible for loading new indexes and decides if subindex will be rendered as bbox or chunked entity.
-    void handleSceneUpdate( const SceneState &state ) override;
+    void handleSceneUpdate( const SceneContext &sceneContext ) override;
 
     QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const override;
 

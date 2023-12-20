@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    __init__.py
+    Qsci.py
     ---------------------
-    Date                 : February 2016
-    Copyright            : (C) 2016 by Jürgen E. Fischer
-    Email                : jef at norbit dot de
+    Date                 : November 2015
+    Copyright            : (C) 2015 by Matthias Kuhn
+    Email                : matthias at opengis dot ch
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,23 +17,8 @@
 ***************************************************************************
 """
 
-__author__ = 'Jürgen E. Fischer'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Jürgen E. Fischer'
+__author__ = 'Matthias Kuhn'
+__date__ = 'November 2015'
+__copyright__ = '(C) 2015, Matthias Kuhn'
 
-import warnings
-from PyQt5.uic.Compiler import indenter, compiler
-from PyQt5.uic.objcreator import widgetPluginPath
-from PyQt5.uic import properties, uiparser, Compiler
-from PyQt5.uic import *
-
-__PyQtLoadUiType = loadUiType
-
-
-def __loadUiType(*args, **kwargs):
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-        return __PyQtLoadUiType(*args, **kwargs)
-
-
-loadUiType = __loadUiType
+from PyQt@QT_VERSION_MAJOR@.Qsci import *

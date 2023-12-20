@@ -31,16 +31,16 @@
 ///@cond PRIVATE
 
 
-static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::SceneState &state )
+static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::SceneContext &sceneContext )
 {
   if ( node->error() <= 0 ) //it happens for meshes
     return 0;
 
-  float dist = node->bbox().distanceFromPoint( state.cameraPos );
+  float dist = node->bbox().distanceFromPoint( sceneContext.cameraPos );
 
   // TODO: what to do when distance == 0 ?
 
-  float sse = Qgs3DUtils::screenSpaceError( node->error(), dist, state.screenSizePx, state.cameraFov );
+  float sse = Qgs3DUtils::screenSpaceError( node->error(), dist, sceneContext.screenSizePx, sceneContext.cameraFov );
   return sse;
 }
 
@@ -120,7 +120,7 @@ QgsChunkedEntity::~QgsChunkedEntity()
 }
 
 
-void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
+void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
 {
   if ( !mIsValid )
     return;
@@ -130,7 +130,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
   // of the camera). Removing them keeps the loading queue shorter,
   // and we avoid loading chunks that we only wanted for a short period
   // of time when camera was moving.
-  pruneLoaderQueue( state );
+  pruneLoaderQueue( sceneContext );
 
   QElapsedTimer t;
   t.start();
@@ -142,7 +142,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneState &state )
   mFrustumCulled = 0;
   mCurrentTime = QTime::currentTime();
 
-  update( mRootNode, state );
+  update( mRootNode, sceneContext );
 
 #ifdef QGISDEBUG
   int enabled = 0, disabled = 0, unloaded = 0;
@@ -333,7 +333,7 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
   startJobs();
 }
 
-void QgsChunkedEntity::pruneLoaderQueue( const SceneState &state )
+void QgsChunkedEntity::pruneLoaderQueue( const SceneContext &sceneContext )
 {
   QList<QgsChunkNode *> toRemoveFromLoaderQueue;
 
@@ -344,7 +344,7 @@ void QgsChunkedEntity::pruneLoaderQueue( const SceneState &state )
   while ( e )
   {
     Q_ASSERT( e->chunk->state() == QgsChunkNode::QueuedForLoad || e->chunk->state() == QgsChunkNode::QueuedForUpdate );
-    if ( Qgs3DUtils::isCullable( e->chunk->bbox(), state.viewProjectionMatrix ) )
+    if ( Qgs3DUtils::isCullable( e->chunk->bbox(), sceneContext.viewProjectionMatrix ) )
     {
       toRemoveFromLoaderQueue.append( e->chunk );
     }
@@ -405,7 +405,7 @@ struct
   }
 } ResidencyRequestSorter;
 
-void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
+void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneContext )
 {
   QSet<QgsChunkNode *> nodes;
   QVector<ResidencyRequest> residencyRequests;
@@ -417,14 +417,14 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
   };
   int renderedCount = 0;
   std::priority_queue<slotItem, std::vector<slotItem>, decltype( cmp_funct )> pq( cmp_funct );
-  pq.push( std::make_pair( root, screenSpaceError( root, state ) ) );
+  pq.push( std::make_pair( root, screenSpaceError( root, sceneContext ) ) );
   while ( !pq.empty() && renderedCount <= mPrimitivesBudget )
   {
     slotItem s = pq.top();
     pq.pop();
     QgsChunkNode *node = s.first;
 
-    if ( Qgs3DUtils::isCullable( node->bbox(), state.viewProjectionMatrix ) )
+    if ( Qgs3DUtils::isCullable( node->bbox(), sceneContext.viewProjectionMatrix ) )
     {
       ++mFrustumCulled;
       continue;
@@ -453,7 +453,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 
     // make sure all nodes leading to children are always loaded
     // so that zooming out does not create issues
-    double dist = node->bbox().center().distanceToPoint( state.cameraPos );
+    double dist = node->bbox().center().distanceToPoint( sceneContext.cameraPos );
     residencyRequests.push_back( ResidencyRequest( node, dist, node->level() ) );
 
     if ( !node->entity() )
@@ -463,14 +463,14 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     }
     bool becomesActive = false;
 
-    // QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileId().x ).arg( node->tileId().y ).arg( node->tileId().z ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
+    // QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileId().x ).arg( node->tileId().y ).arg( node->tileId().z ).arg( mTau ).arg( screenSpaceError( node, sceneContext ) ), 2 );
     if ( node->childCount() == 0 )
     {
       // there's no children available for this node, so regardless of whether it has an acceptable error
       // or not, it's the best we'll ever get...
       becomesActive = true;
     }
-    else if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
+    else if ( mTau > 0 && screenSpaceError( node, sceneContext ) <= mTau )
     {
       // acceptable error for the current chunk - let's render it
       becomesActive = true;
@@ -495,15 +495,15 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
           if ( children[i]->entity() || !children[i]->hasData() )
           {
             // chunk is resident - let's visit it recursively
-            pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+            pq.push( std::make_pair( children[i], screenSpaceError( children[i], sceneContext ) ) );
           }
           else
           {
             // chunk is not yet resident - let's try to load it
-            if ( Qgs3DUtils::isCullable( children[i]->bbox(), state.viewProjectionMatrix ) )
+            if ( Qgs3DUtils::isCullable( children[i]->bbox(), sceneContext.viewProjectionMatrix ) )
               continue;
 
-            double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
+            double dist = children[i]->bbox().center().distanceToPoint( sceneContext.cameraPos );
             residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
           }
         }
@@ -517,7 +517,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
         {
           QgsChunkNode *const *children = node->children();
           for ( int i = 0; i < node->childCount(); ++i )
-            pq.push( std::make_pair( children[i], screenSpaceError( children[i], state ) ) );
+            pq.push( std::make_pair( children[i], screenSpaceError( children[i], sceneContext ) ) );
         }
         else
         {
@@ -526,7 +526,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
           QgsChunkNode *const *children = node->children();
           for ( int i = 0; i < node->childCount(); ++i )
           {
-            double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
+            double dist = children[i]->bbox().center().distanceToPoint( sceneContext.cameraPos );
             residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
           }
         }

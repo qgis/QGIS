@@ -22,4 +22,4 @@ __date__ = 'September 2016'
 __copyright__ = '(C) 2016, Marco Bernasocchi'
 
 
-from PyQt5.Qt import *
+from PyQt@QT_VERSION_MAJOR@.Qt import *

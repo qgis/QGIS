@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    Qsci.py
+    pyuic.py
     ---------------------
-    Date                 : November 2015
-    Copyright            : (C) 2015 by Matthias Kuhn
-    Email                : matthias at opengis dot ch
+    Date                 : March 2016
+    Copyright            : (C) 2016 by Juergen E. Fischer
+    Email                : jef at norbit dot de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,8 +17,10 @@
 ***************************************************************************
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'November 2015'
-__copyright__ = '(C) 2015, Matthias Kuhn'
+__author__ = 'Juergen E. Fischer'
+__date__ = 'March 2016'
+__copyright__ = '(C) 2016, Juergen E. Fischer'
 
-from PyQt5.Qsci import *
+from PyQt@QT_VERSION_MAJOR@.uic import pyuic
+if (callable(pyuic.main)):
+    pyuic.main()

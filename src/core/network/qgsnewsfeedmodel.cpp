@@ -31,6 +31,7 @@ QgsNewsFeedModel::QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent )
 
   connect( mParser, &QgsNewsFeedParser::entryAdded, this, &QgsNewsFeedModel::onEntryAdded );
   connect( mParser, &QgsNewsFeedParser::entryDismissed, this, &QgsNewsFeedModel::onEntryRemoved );
+  connect( mParser, &QgsNewsFeedParser::entryUpdated, this, &QgsNewsFeedModel::onEntryUpdated );
   connect( mParser, &QgsNewsFeedParser::imageFetched, this, &QgsNewsFeedModel::onImageFetched );
 }
 
@@ -118,6 +119,19 @@ void QgsNewsFeedModel::onEntryAdded( const QgsNewsFeedParser::Entry &entry )
   beginInsertRows( QModelIndex(), mEntries.count(), mEntries.count() );
   mEntries.append( entry );
   endInsertRows();
+}
+
+void QgsNewsFeedModel::onEntryUpdated( const QgsNewsFeedParser::Entry &entry )
+{
+  for ( int idx = 0; idx < mEntries.count(); idx++ )
+  {
+    if ( mEntries.at( idx ).key == entry.key )
+    {
+      mEntries[ idx ] = entry;
+      emit dataChanged( index( idx, 0 ), index( idx, 0 ) );
+      break;
+    }
+  }
 }
 
 void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )

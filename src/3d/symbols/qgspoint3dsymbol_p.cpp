@@ -227,9 +227,6 @@ Qt3DRender::QMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoin
   filterKey->setName( QStringLiteral( "renderingStyle" ) );
   filterKey->setValue( "forward" );
 
-  // the fragment shader implements a simplified version of phong shading that uses hardcoded light
-  // (instead of whatever light we have defined in the scene)
-  // TODO: use phong shading that respects lights from the scene
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
   shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/instanced.vert" ) ) ) );
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/instanced.frag" ) ) ) );

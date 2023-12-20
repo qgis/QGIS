@@ -221,7 +221,23 @@ Compares this point with another point with a fuzzy tolerance
 
 :return: ``True`` if points are equal within specified tolerance
 
+.. seealso:: :py:func:`distanceCompare`
+
 .. versionadded:: 2.9
+%End
+
+    bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;
+%Docstring
+Compares this point with another point with a fuzzy tolerance using distance comparison
+
+:param other: point to compare with
+:param epsilon: maximum difference for coordinates between the points
+
+:return: ``True`` if points are equal within specified tolerance
+
+.. seealso:: :py:func:`compare`
+
+.. versionadded:: 3.36
 %End
 
     bool operator==( const QgsPointXY &other ) /HoldGIL/;
