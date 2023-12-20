@@ -22,6 +22,7 @@ set(TESTS
  testqgsinterpolator.cpp
  testqgsprocessingalgspt1.cpp
  testqgsprocessingalgspt2.cpp
+ testqgsprocessingcheckgeometry.cpp
  testqgsprocessingmodelalgorithm.cpp
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
