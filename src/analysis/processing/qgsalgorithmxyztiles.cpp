@@ -390,11 +390,6 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
 
     if (mSkipEmptyTiles == true)
     {
-      // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
-      // tempImage.fill( mBackgroundColor );
-
-      // Try next time
-      // isBlank = ( tileImage == tempImage );
       if ( tileImage == mBackgroundImage)
       {
         ++it;
@@ -525,31 +520,11 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
 {
   MetaTile metaTile = mRendererJobs.value( job );
   QImage img = job->renderedImage();
-
-  //CHANGE
-
-  // print SKIP EMPTY TILES TRUE OR FALSE
-  // if ( mSkipEmptyTiles == true)
-  // {
-    
-  //   mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to true" ) );
-  // }
-  // else if ( mSkipEmptyTiles == false)
-  // {
-  //   mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is set to false" ) );
-  // }
-  // else
-  // {
-  //   mFeedback->pushWarning( QObject::tr( "SkipEmptyTiles is something else" ) );
-  // }
   
 
   QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
   while ( it != metaTile.tiles.constEnd() )
   {
-    
-    
-
 
     QPair<int, int> tm = it.key();
     Tile tile = it.value();
@@ -558,14 +533,8 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
     QBuffer buffer( &ba );
     buffer.open( QIODevice::WriteOnly );
 
-    //CHANGE
     if (mSkipEmptyTiles == true)
     {
-      // tempImage = QImage( mTileWidth, mTileHeight, QImage::Format_ARGB32_Premultiplied );
-      // tempImage.fill( mBackgroundColor );
-
-      // Try next time
-      // isBlank = ( tileImage == tempImage );
       if ( tileImage == mBackgroundImage)
       {
         ++it;
@@ -575,13 +544,6 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
 
     tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
     mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
-
-    // Try next time
-    // if ( !isblank)
-    // {
-    //   tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
-    //   mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
-    // }
     
     ++it;
   }
