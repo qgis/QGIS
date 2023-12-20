@@ -1361,56 +1361,6 @@ template <TYPE>
 %End
 };
 
-%MappedType QList<qint64>
-        /TypeHintIn="Iterable[int]",
-        TypeHintOut="List[int]", TypeHintValue="[]"/
-{
-%TypeHeaderCode
-#include <QList>
-%End
-
-%ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
-
-  if ((l = PyList_New(sipCpp->size())) == NULL)
-    return NULL;
-
-  // Set the list elements.
-  QList<qint64>::iterator it = sipCpp->begin();
-  for (int i = 0; it != sipCpp->end(); ++it, ++i)
-  {
-    PyObject *tobj;
-
-    if ((tobj = PyLong_FromLongLong(*it)) == NULL)
-    {
-      Py_DECREF(l);
-      return NULL;
-    }
-    PyList_SET_ITEM(l, i, tobj);
-  }
-
-  return l;
-%End
-
-%ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if (sipIsErr == NULL)
-    return PyList_Check(sipPy);
-
-  QList<qint64> *qlist = new QList<qint64>;
-
-  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-  {
-    *qlist << PyLong_AsLongLong(PyList_GET_ITEM(sipPy, i));
-  }
-
-  *sipCppPtr = qlist;
-  return sipGetState(sipTransferObj);
-%End
-};
-
-
 %MappedType QVector<long long>
     /TypeHintIn="Iterable[int]",
     TypeHintOut="List[int]", TypeHintValue="[]"/
@@ -1687,7 +1637,7 @@ template<TYPE>
 
 %ConvertToTypeCode
     PyObject *kobj, *tobj;
-    SIP_SSIZE_T i = 0;
+    Py_ssize_t i = 0;
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -1805,7 +1755,7 @@ template<TYPE>
 
 %ConvertToTypeCode
     PyObject *kobj, *tobj;
-    SIP_SSIZE_T i = 0;
+    Py_ssize_t i = 0;
 
     // Check the type if that is all that is required.
     if (sipIsErr == NULL)
@@ -3133,7 +3083,7 @@ template <TYPE>
 
     QList<QgsField> *ql = new QList<QgsField>;
 
-    for (SIP_SSIZE_T i = 0; ; ++i)
+    for (Py_ssize_t i = 0; ; ++i)
     {
         PyErr_Clear();
         PyObject *itm = PyIter_Next(iter);
@@ -3207,7 +3157,10 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
     }
 
     sWatchDog = true;
-    PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QVariant_Type );
+
+    // TODO fix this
+    // PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QMetaType_Type );
+    PyObject *vartype = 0;
     PyObject *args = PyTuple_Pack( 1, vartype );
     PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
     *objp = PyObject_Call(( PyObject * )typeObj, args, nullptr );
@@ -3235,3 +3188,1080 @@ void (*register_from_qvariant_converter)(FromQVariantConverterFn);
 register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");  //#spellok
 register_from_qvariant_converter(null_from_qvariant_converter);
 %End
+
+// In Qt6 QVector is just an alias to QList but doesn't appear in pyqt
+// Mapping code is directly copied from QList mapping code in qpycore_qlist.sip and
+// std::pair mapping code in qpycore_std_pair
+
+template<_TYPE_>
+%MappedType QVector<_TYPE_>
+        /TypeHintIn="Iterable[_TYPE_]", TypeHintOut="List[_TYPE_]",
+        TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        _TYPE_ *t = new _TYPE_(sipCpp->at(i));
+        PyObject *tobj = sipConvertFromNewType(t, sipType__TYPE_,
+                sipTransferObj);
+
+        if (!tobj)
+        {
+            delete t;
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, tobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<_TYPE_> *ql = new QList<_TYPE_>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int state;
+        _TYPE_ *t = reinterpret_cast<_TYPE_ *>(
+                sipForceConvertToType(itm, sipType__TYPE_, sipTransferObj,
+                        SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but '_TYPE_' is expected", i,
+                    sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(*t);
+
+        sipReleaseType(t, sipType__TYPE_, state);
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+template<_TYPE_>
+%MappedType QVector<_TYPE_ *>
+        /TypeHintIn="Iterable[_TYPE_]", TypeHintOut="List[_TYPE_]",
+        TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    int gc_enabled = sipEnableGC(0);
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (l)
+    {
+        for (int i = 0; i < sipCpp->size(); ++i)
+        {
+            _TYPE_ *t = sipCpp->at(i);
+
+            // The explicit (void *) cast allows _TYPE_ to be const.
+            PyObject *tobj = sipConvertFromType((void *)t, sipType__TYPE_,
+                    sipTransferObj);
+
+            if (!tobj)
+            {
+                Py_DECREF(l);
+                l = 0;
+
+                break;
+            }
+
+            PyList_SetItem(l, i, tobj);
+        }
+    }
+
+    sipEnableGC(gc_enabled);
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<_TYPE_ *> *ql = new QList<_TYPE_ *>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        _TYPE_ *t = reinterpret_cast<_TYPE_ *>(
+                sipForceConvertToType(itm, sipType__TYPE_, sipTransferObj, 0,
+                        0, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but '_TYPE_' is expected", i,
+                    sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(t);
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QVector<qreal>
+        /TypeHintIn="Iterable[float]", TypeHintOut="List[float]",
+        TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *pobj = PyFloat_FromDouble(sipCpp->value(i));
+
+        if (!pobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, pobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<qreal> *ql = new QList<qreal>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        PyErr_Clear();
+        double val = PyFloat_AsDouble(itm);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'float' is expected", i,
+                    sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(val);
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QVector<float>
+        /TypeHintIn="Iterable[float]", TypeHintOut="List[float]",
+        TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *pobj = PyFloat_FromDouble(sipCpp->value(i));
+
+        if (!pobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, pobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<float> *ql = new QList<float>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        PyErr_Clear();
+        double val = PyFloat_AsDouble(itm);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'float' is expected", i,
+                    sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(val);
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QVector<int>
+        /TypeHintIn="Iterable[int]", TypeHintOut="List[int]",
+        TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *pobj = PyLong_FromLong(sipCpp->value(i));
+
+        if (!pobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, pobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<int> *ql = new QList<int>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int val = sipLong_AsInt(itm);
+
+        if (PyErr_Occurred())
+        {
+            if (PyErr_ExceptionMatches(PyExc_TypeError))
+                PyErr_Format(PyExc_TypeError,
+                        "index %zd has type '%s' but 'int' is expected", i,
+                        sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(val);
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+template<_TYPE1_, _TYPE2_>
+%MappedType QPair<_TYPE1_, _TYPE2_> /TypeHint="Tuple[_TYPE1_, _TYPE2_]"/
+{
+%TypeHeaderCode
+#include <utility>
+%End
+
+%ConvertFromTypeCode
+    _TYPE1_ *first = new _TYPE1_(sipCpp->first);
+    _TYPE2_ *second = new _TYPE2_(sipCpp->second);
+    PyObject *t = sipBuildResult(NULL, "(NN)", first, sipType__TYPE1_,
+            sipTransferObj, second, sipType__TYPE2_, sipTransferObj);
+
+    if (!t)
+    {
+        delete first;
+        delete second;
+
+        return 0;
+    }
+
+    return t;
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return (PySequence_Check(sipPy) && !PyUnicode_Check(sipPy));
+
+    Py_ssize_t len = PySequence_Size(sipPy);
+
+    if (len != 2)
+    {
+        // A negative length should only be an internal error so let the
+        // original exception stand.
+        if (len >= 0)
+            PyErr_Format(PyExc_TypeError,
+                    "sequence has %zd elements but 2 elements are expected",
+                    len);
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *firstobj = PySequence_GetItem(sipPy, 0);
+
+    if (!firstobj)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    int firststate;
+    _TYPE1_ *first = reinterpret_cast<_TYPE1_ *>(
+            sipForceConvertToType(firstobj, sipType__TYPE1_, sipTransferObj,
+                    SIP_NOT_NONE, &firststate, sipIsErr));
+
+    if (*sipIsErr)
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the first element has type '%s' but '_TYPE1_' is expected",
+                sipPyTypeName(Py_TYPE(firstobj)));
+
+        return 0;
+    }
+
+    PyObject *secondobj = PySequence_GetItem(sipPy, 1);
+
+    if (!secondobj)
+    {
+        sipReleaseType(first, sipType__TYPE1_, firststate);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    int secondstate;
+    _TYPE2_ *second = reinterpret_cast<_TYPE2_ *>(
+            sipForceConvertToType(secondobj, sipType__TYPE2_, sipTransferObj,
+                    SIP_NOT_NONE, &secondstate, sipIsErr));
+
+    if (*sipIsErr)
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the second element has type '%s' but '_TYPE2_' is expected",
+                sipPyTypeName(Py_TYPE(secondobj)));
+
+        Py_DECREF(secondobj);
+        sipReleaseType(first, sipType__TYPE1_, firststate);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    *sipCppPtr = new QPair<_TYPE1_, _TYPE2_>(*first, *second);
+
+    sipReleaseType(second, sipType__TYPE2_, secondstate);
+    Py_DECREF(secondobj);
+    sipReleaseType(first, sipType__TYPE1_, firststate);
+    Py_DECREF(firstobj);
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+template<_TYPE_>
+%MappedType QPair<_TYPE_, int> /TypeHint="Tuple[_TYPE_, int]"/
+{
+%TypeHeaderCode
+#include <utility>
+%End
+
+%ConvertFromTypeCode
+    _TYPE_ *first = new _TYPE_(sipCpp->first);
+    PyObject *t = sipBuildResult(NULL, "(Ni)", first, sipType__TYPE_,
+            sipTransferObj, sipCpp->second);
+
+    if (!t)
+    {
+        delete first;
+
+        return 0;
+    }
+
+    return t;
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return (PySequence_Check(sipPy) && !PyUnicode_Check(sipPy));
+
+    Py_ssize_t len = PySequence_Size(sipPy);
+
+    if (len != 2)
+    {
+        // A negative length should only be an internal error so let the
+        // original exception stand.
+        if (len >= 0)
+            PyErr_Format(PyExc_TypeError,
+                    "sequence has %zd elements but 2 elements are expected",
+                    len);
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *firstobj = PySequence_GetItem(sipPy, 0);
+
+    if (!firstobj)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    int firststate;
+    _TYPE_ *first = reinterpret_cast<_TYPE_ *>(
+            sipForceConvertToType(firstobj, sipType__TYPE_, sipTransferObj,
+                    SIP_NOT_NONE, &firststate, sipIsErr));
+
+    if (*sipIsErr)
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the first element has type '%s' but '_TYPE_' is expected",
+                sipPyTypeName(Py_TYPE(firstobj)));
+
+        return 0;
+    }
+
+    PyObject *secondobj = PySequence_GetItem(sipPy, 1);
+
+    if (!secondobj)
+    {
+        sipReleaseType(first, sipType__TYPE_, firststate);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    int second = sipLong_AsInt(secondobj);
+
+    if (PyErr_Occurred())
+    {
+        if (PyErr_ExceptionMatches(PyExc_TypeError))
+            PyErr_Format(PyExc_TypeError,
+                    "the second element has type '%s' but 'int' is expected",
+                    sipPyTypeName(Py_TYPE(secondobj)));
+
+        Py_DECREF(secondobj);
+        sipReleaseType(first, sipType__TYPE_, firststate);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    *sipCppPtr = new QPair<_TYPE_, int>(*first, second);
+
+    Py_DECREF(secondobj);
+    sipReleaseType(first, sipType__TYPE_, firststate);
+    Py_DECREF(firstobj);
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+%MappedType QPair<int, int> /TypeHint="Tuple[int, int]"/
+{
+%TypeHeaderCode
+#include <utility>
+%End
+
+%ConvertFromTypeCode
+    return Py_BuildValue("(ii)", sipCpp->first, sipCpp->second);
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return (PySequence_Check(sipPy) && !PyUnicode_Check(sipPy));
+
+    Py_ssize_t len = PySequence_Size(sipPy);
+
+    if (len != 2)
+    {
+        // A negative length should only be an internal error so let the
+        // original exception stand.
+        if (len >= 0)
+            PyErr_Format(PyExc_TypeError,
+                    "sequence has %zd elements but 2 elements are expected",
+                    len);
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *firstobj = PySequence_GetItem(sipPy, 0);
+
+    if (!firstobj)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    int first = sipLong_AsInt(firstobj);
+
+    if (PyErr_Occurred())
+    {
+        if (PyErr_ExceptionMatches(PyExc_TypeError))
+            PyErr_Format(PyExc_TypeError,
+                    "the first element has type '%s' but 'int' is expected",
+                    sipPyTypeName(Py_TYPE(firstobj)));
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *secondobj = PySequence_GetItem(sipPy, 1);
+
+    if (!secondobj)
+    {
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    int second = sipLong_AsInt(secondobj);
+
+    if (PyErr_Occurred())
+    {
+        if (PyErr_ExceptionMatches(PyExc_TypeError))
+            PyErr_Format(PyExc_TypeError,
+                    "the second element has type '%s' but 'int' is expected",
+                    sipPyTypeName(Py_TYPE(secondobj)));
+
+        Py_DECREF(secondobj);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    *sipCppPtr = new QPair<int, int>(first, second);
+
+    Py_DECREF(secondobj);
+    Py_DECREF(firstobj);
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+%MappedType QPair<float, float> /TypeHint="Tuple[float, float]"/
+{
+%TypeHeaderCode
+#include <utility>
+%End
+
+%ConvertFromTypeCode
+    return Py_BuildValue("(ff)", sipCpp->first, sipCpp->second);
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return (PySequence_Check(sipPy) && !PyUnicode_Check(sipPy));
+
+    Py_ssize_t len = PySequence_Size(sipPy);
+
+    if (len != 2)
+    {
+        // A negative length should only be an internal error so let the
+        // original exception stand.
+        if (len >= 0)
+            PyErr_Format(PyExc_TypeError,
+                    "sequence has %zd elements but 2 elements are expected",
+                    len);
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *firstobj = PySequence_GetItem(sipPy, 0);
+
+    if (!firstobj)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyErr_Clear();
+    double first = PyFloat_AsDouble(firstobj);
+
+    if (PyErr_Occurred())
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the first element has type '%s' but 'float' is expected",
+                sipPyTypeName(Py_TYPE(firstobj)));
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *secondobj = PySequence_GetItem(sipPy, 1);
+
+    if (!secondobj)
+    {
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyErr_Clear();
+    double second = PyFloat_AsDouble(secondobj);
+
+    if (PyErr_Occurred())
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the second element has type '%s' but 'float' is expected",
+                sipPyTypeName(Py_TYPE(secondobj)));
+
+        Py_DECREF(secondobj);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    *sipCppPtr = new QPair<float, float>(first, second);;
+
+    Py_DECREF(secondobj);
+    Py_DECREF(firstobj);
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QPair<qreal, qreal> /TypeHint="Tuple[float, float]"/
+{
+%TypeHeaderCode
+#include <utility>
+%End
+
+%ConvertFromTypeCode
+    return Py_BuildValue("(ff)", sipCpp->first, sipCpp->second);
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return (PySequence_Check(sipPy) && !PyUnicode_Check(sipPy));
+
+    Py_ssize_t len = PySequence_Size(sipPy);
+
+    if (len != 2)
+    {
+        // A negative length should only be an internal error so let the
+        // original exception stand.
+        if (len >= 0)
+            PyErr_Format(PyExc_TypeError,
+                    "sequence has %zd elements but 2 elements are expected",
+                    len);
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *firstobj = PySequence_GetItem(sipPy, 0);
+
+    if (!firstobj)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyErr_Clear();
+    double first = PyFloat_AsDouble(firstobj);
+
+    if (PyErr_Occurred())
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the first element has type '%s' but 'float' is expected",
+                sipPyTypeName(Py_TYPE(firstobj)));
+
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyObject *secondobj = PySequence_GetItem(sipPy, 1);
+
+    if (!secondobj)
+    {
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    PyErr_Clear();
+    double second = PyFloat_AsDouble(secondobj);
+
+    if (PyErr_Occurred())
+    {
+        PyErr_Format(PyExc_TypeError,
+                "the second element has type '%s' but 'float' is expected",
+                sipPyTypeName(Py_TYPE(secondobj)));
+
+        Py_DECREF(secondobj);
+        Py_DECREF(firstobj);
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    *sipCppPtr = new QPair<qreal, qreal>(first, second);;
+
+    Py_DECREF(secondobj);
+    Py_DECREF(firstobj);
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QVector<QVariantMap>
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    // TODO
+    return 0;
+%End
+
+%ConvertToTypeCode
+    // TODO
+    return 0;
+%End
+};
+
+%MappedType QVariantMap /TypeHint="Dict[str, Any]", TypeHintValue="{}"/
+{
+%TypeHeaderCode
+#include <qvariant.h>
+%End
+
+%ConvertFromTypeCode
+    // todo FIX this
+    return 0; //qpycore_fromQVariantMap(*sipCpp);
+%End
+
+%ConvertToTypeCode
+    if (!sipIsErr)
+        return PyDict_Check(sipPy);
+
+    QVariantMap *qvm = new QVariantMap;
+
+    // todo FIX this
+    // if (!qpycore_toQVariantMap(sipPy, *qvm))
+    // {
+    //    delete qvm;
+    //    return 0;
+    //}
+
+    *sipCppPtr = qvm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QList<QVariantMap>
+        /TypeHintIn="Iterable[Dict[str, Any]]",
+        TypeHintOut="Iterable[Dict[str, Any]]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+    // TODO
+    return 0;
+%End
+
+%ConvertToTypeCode
+    // TODO
+    return 0;
+%End
+};
+
+// TODO QVariant::Type is obsolete, migrate to QMetaType
+%MappedType QVariant::Type
+{
+
+%ConvertFromTypeCode
+    return 0;
+%End
+
+%ConvertToTypeCode
+    return 0;
+%End
+};
