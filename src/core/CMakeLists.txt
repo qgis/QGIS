@@ -14,6 +14,8 @@ ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
   SET(PDF4QT_ENABLE_OPENGL FALSE)
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
   SUBDIRS(${CMAKE_SOURCE_DIR}/external/PDF4QT)
 endif()
 
@@ -2330,6 +2332,12 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
+
+if (WITH_PDF4QT)
+  target_include_directories(qgis_core PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/PDF4QT/Pdf4QtLibCore/sources)
+    target_link_libraries(qgis_core Pdf4QtLibCore)
+endif()
 
 if (WITH_EPT)
   target_include_directories(qgis_core PUBLIC
