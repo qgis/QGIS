@@ -275,7 +275,7 @@
 /*
  * Directive to indicate that following code is only available with Qt 5 version
  */
-#define SIP_PYQT5_ONLY
+#define SIP_PYQT5_RUN
 
 
 #endif // QGIS_SIP_H
