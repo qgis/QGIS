@@ -685,7 +685,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
 
-#ifdef SIP_PYQT5_ONLY
+#ifdef SIP_PYQT5_RUN
 
     /**
      * Gets this providers encoding

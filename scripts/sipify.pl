@@ -668,7 +668,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # do not PYQT5 code if we are in qt6
-    if ( $is_qt6 && $LINE =~ m/^\s*#ifdef SIP_PYQT5_ONLY/){
+    if ( $is_qt6 && $LINE =~ m/^\s*#ifdef SIP_PYQT5_RUN/){
         dbg_info("do not process PYQT5 code");
         while ( $LINE !~ m/^#endif/ ){
             $LINE = read_line();
