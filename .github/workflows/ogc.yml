@@ -71,7 +71,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
+          registry: docker.pkg.github.com
           image_name: qgis-deps-ogc
           context: .ci/ogc
           dockerfile: Dockerfile
