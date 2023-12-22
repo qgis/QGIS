@@ -49,9 +49,10 @@
 
 using namespace pal;
 
-QgsMeshLayerLabelProvider::QgsMeshLayerLabelProvider( QgsMeshLayer *layer, const QString &providerId, const QgsPalLayerSettings *settings, const QString &layerName )
+QgsMeshLayerLabelProvider::QgsMeshLayerLabelProvider( QgsMeshLayer *layer, const QString &providerId, const QgsPalLayerSettings *settings, const QString &layerName, bool labelFaces )
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? * settings : QgsPalLayerSettings() )
+  , mLabelFaces( labelFaces )
   , mCrs( layer->crs() )
 {
   mName = layerName.isEmpty() ? layer->id() : layerName;
@@ -73,38 +74,13 @@ void QgsMeshLayerLabelProvider::init()
 
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  if ( mLabelFaces )
-  {
-    mVectorLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=%1" ).arg( mCrs.authid() ), QStringLiteral( "faces" ), QStringLiteral( "memory" ) );
-    QgsMesh *mesh = qobject_cast<QgsMeshLayer *>( layer() )->nativeMesh();
-    int faceCount = mesh->faceCount();
-    QList<QgsFeature> features;
-    for ( int i = 0; i < faceCount; i++ )
-    {
-      QgsFeature f;
-      QgsGeometry geom = QgsMeshUtils::toGeometry( mesh->face( i ), mesh->vertices );
-      f.setGeometry( geom );
-      features << f;
-    }
-    mVectorLayer->dataProvider()->addFeatures( features );
-  }
-  else
-  {
-    mVectorLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=%1" ).arg( mCrs.authid() ), QStringLiteral( "faces" ), QStringLiteral( "memory" ) );
-    QgsMesh *mesh = qobject_cast<QgsMeshLayer *>( layer() )->nativeMesh();
-    int vertexCount = mesh->vertexCount();
-    QList<QgsFeature> features;
-    for ( int i = 0; i < vertexCount; i++ )
-    {
-      QgsFeature f;
-      QgsGeometry geom = QgsGeometry( new QgsPoint( mesh->vertex( i ) ) );
-      f.setGeometry( geom );
-      features << f;
-    }
-    mVectorLayer->dataProvider()->addFeatures( features );
-  }
-
-  mVectorLabelProvider = std::make_unique<QgsVectorLayerLabelProvider>( mVectorLayer.get(), QStringLiteral(), false, &mSettings );
+  mVectorLabelProvider = std::make_unique<QgsVectorLayerLabelProvider>(
+                           mLabelFaces ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Point,
+                           QgsFields(),
+                           mCrs,
+                           QString(),
+                           &mSettings,
+                           mLayer );
 
   if ( mLabelFaces )
   {
@@ -128,6 +104,8 @@ QgsMeshLayerLabelProvider::~QgsMeshLayerLabelProvider()
 bool QgsMeshLayerLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
 {
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
+
+  mVectorLabelProvider->setEngine( mEngine );
 
   return mSettings.prepare( context, attributeNames, QgsFields(), mapSettings, mCrs );
 }

@@ -39,7 +39,7 @@ class QgsStyleEntityVisitorInterface;
  * \ingroup core
  * \brief Abstract base class - its implementations define different approaches to the labeling of a mesh layer.
  *
- * \since QGIS 3.38
+ * \since QGIS 3.36
  */
 class CORE_EXPORT QgsAbstractMeshLayerLabeling
 {
@@ -78,8 +78,6 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
      *
      * \param settings Pal layer settings
      * \param providerId The id of the provider
-     *
-     * \since QGIS 3.0
      */
     virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) = 0;
 
@@ -95,8 +93,6 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
      *
      * This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
      * by \a opacity effectively changing the opacity of the whole labeling elements.
-     *
-     * \since QGIS 3.32
      */
     virtual void multiplyOpacity( double opacityFactor ) { Q_UNUSED( opacityFactor ); };
 
@@ -144,13 +140,17 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
  * \ingroup core
  * \brief Basic implementation of the labeling interface for mesh layer.
  *
- * \since QGIS 3.38
+ * \since QGIS 3.36
  */
 class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeling
 {
   public:
-    //! Constructs simple labeling configuration with given initial settings
-    explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings );
+
+    /**
+     *  Constructs simple labeling configuration with given initial \a settings.
+     *  Labels are placed on mesh vertices unless \a labelFaces is TRUE, when they are placed on mesh faces.
+     */
+    explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces = false );
 
     QString type() const override;
     QgsMeshLayerSimpleLabeling *clone() const override SIP_FACTORY;
@@ -175,6 +175,7 @@ class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeli
 
   private:
     std::unique_ptr<QgsPalLayerSettings> mSettings;
+    bool mLabelFaces = false;
 };
 
 #endif // QGSMESHLAYERLABELING_H

@@ -2016,13 +2016,6 @@ class TestQgsExpression: public QObject
       QTest::newRow( "raster_attributes wrong band 2" ) << QStringLiteral( "raster_attributes('%1',2,243)" ).arg( mRasterLayerWithAttributeTable->name() ) << true << QVariant();
       QTest::newRow( "raster_attributes no attributes" ) << QStringLiteral( "raster_attributes('%1',1,1)" ).arg( mRasterLayerWithAttributeTable->name() ) << false << QVariant();
 
-      // mesh_contour tests
-      QTest::newRow( "mesh_contour invalid geometry" ) << QStringLiteral( "mesh_contour('invalid geom', make_datetime(2023,11,29,10,34,52), '%1')" ).arg( mMeshLayer->name() ) << true << QVariant();
-      QTest::newRow( "mesh_contour valid" ) << QStringLiteral( "mesh_contour(make_point(2000,3000), make_datetime(2023,11,29,10,34,52), '%1')" ).arg( mMeshLayer->name() ) << false << QVariant( 200.0 );
-      QTest::newRow( "mesh_data invalid geometry" ) << QStringLiteral( "mesh_data('invalid geom', 'Bed Elevation', make_datetime(2023,11,29,10,34,52), '%1')" ).arg( mMeshLayer->name() ) << true << QVariant();
-      QTest::newRow( "mesh_data invalid group" ) << QStringLiteral( "mesh_data(make_point(2000,3000), 'Bad elevation', make_datetime(2023,11,29,10,34,52), '%1')" ).arg( mMeshLayer->name() ) << true << QVariant();
-      QTest::newRow( "mesh_data valid" ) << QStringLiteral( "mesh_data(make_point(2000,3000), 'Bed Elevation', make_datetime(2023,11,29,10,34,52), '%1')" ).arg( mMeshLayer->name() ) << false << QVariant( 200.0 );
-
       //test conversions to bool
       QTest::newRow( "feature to bool false" ) << QStringLiteral( "case when get_feature('none','none',499) then true else false end" ) << false << QVariant( false );
       QTest::newRow( "feature to bool true" ) << QStringLiteral( "case when get_feature('test','col1',10) then true else false end" ) << false << QVariant( true );

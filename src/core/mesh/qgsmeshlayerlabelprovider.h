@@ -35,7 +35,7 @@ class QgsMeshLayer;
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
- * \since QGIS 2.12
+ * \since QGIS 3.36
  */
 class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
 {
@@ -45,7 +45,8 @@ class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
     explicit QgsMeshLayerLabelProvider( QgsMeshLayer *layer,
                                         const QString &providerId,
                                         const QgsPalLayerSettings *settings,
-                                        const QString &layerName = QString() );
+                                        const QString &layerName = QString(),
+                                        bool labelFaces = false );
 
     ~QgsMeshLayerLabelProvider() override;
 
@@ -86,6 +87,9 @@ class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
      */
     const QgsPalLayerSettings &settings() const;
 
+    //! Returns FALSE if labeling mesh vertices, TRUE if labeling mesh faces
+    bool labelFaces() const { return mLabelFaces; }
+
   protected:
     //! initialization method - called from constructors
     void init();
@@ -106,7 +110,6 @@ class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
 
   private:
     std::unique_ptr<QgsVectorLayerLabelProvider> mVectorLabelProvider;
-    std::unique_ptr<QgsVectorLayer> mVectorLayer;
 
     friend class TestQgsLabelingEngine;
 };

@@ -140,6 +140,12 @@ QgsMeshLayer *QgsMeshLayer::clone() const
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
 
+  if ( auto *lLabeling = labeling() )
+  {
+    layer->setLabeling( lLabeling->clone() );
+  }
+  layer->setLabelsEnabled( labelsEnabled() );
+
   return layer;
 }
 
@@ -1727,6 +1733,20 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
     setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
   }
 
+  // read labeling definition
+  if ( categories.testFlag( Labeling ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
+
+    QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
+    if ( !labelingElement.isNull() )
+    {
+      QgsAbstractMeshLayerLabeling *labeling = QgsAbstractMeshLayerLabeling::create( labelingElement, context );
+      mLabelsEnabled = node.toElement().attribute( QStringLiteral( "labelsEnabled" ), QStringLiteral( "0" ) ).toInt();
+      setLabeling( labeling );
+    }
+  }
+
   // get and set the layer transparency
   if ( categories.testFlag( Rendering ) )
   {
@@ -2184,4 +2204,5 @@ void QgsMeshLayer::setLabeling( QgsAbstractMeshLayerLabeling *labeling )
 
   delete mLabeling;
   mLabeling = labeling;
+  triggerRepaint();
 }

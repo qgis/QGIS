@@ -18,7 +18,7 @@ class QgsAbstractMeshLayerLabeling
 %Docstring(signature="appended")
 Abstract base class - its implementations define different approaches to the labeling of a mesh layer.
 
-.. versionadded:: 3.38
+.. versionadded:: 3.36
 %End
 
 %TypeHeaderCode
@@ -65,8 +65,6 @@ Set pal settings for a specific provider (takes ownership).
 
 :param settings: Pal layer settings
 :param providerId: The id of the provider
-
-.. versionadded:: 3.0
 %End
 
     virtual bool requiresAdvancedEffects() const = 0;
@@ -82,8 +80,6 @@ Multiply opacity by ``opacityFactor``.
 
 This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
 by ``opacity`` effectively changing the opacity of the whole labeling elements.
-
-.. versionadded:: 3.32
 %End
 
 
@@ -120,16 +116,18 @@ class QgsMeshLayerSimpleLabeling : QgsAbstractMeshLayerLabeling
 %Docstring(signature="appended")
 Basic implementation of the labeling interface for mesh layer.
 
-.. versionadded:: 3.38
+.. versionadded:: 3.36
 %End
 
 %TypeHeaderCode
 #include "qgsmeshlayerlabeling.h"
 %End
   public:
-    explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings );
+
+    explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces = false );
 %Docstring
-Constructs simple labeling configuration with given initial settings
+Constructs simple labeling configuration with given initial ``settings``.
+Labels are placed on mesh vertices unless ``labelFaces`` is ``True``, when they are placed on mesh faces.
 %End
 
     virtual QString type() const;

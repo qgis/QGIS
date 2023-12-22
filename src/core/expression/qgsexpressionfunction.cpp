@@ -64,8 +64,6 @@
 #include "qgsunittypes.h"
 #include "qgsspatialindex.h"
 #include "qgscolorrampimpl.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataset.h"
 
 #include <QMimeDatabase>
 #include <QProcessEnvironment>
@@ -1859,173 +1857,6 @@ static QVariant fcnRasterAttributes( const QVariantList &values, const QgsExpres
   if ( !foundLayer )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_attributes` requires a valid raster layer." ) );
-    return QVariant();
-  }
-  else
-  {
-    return res;
-  }
-}
-
-static QVariant fcnMeshContour( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-
-  QDateTime datetime;
-  if ( values.size() < 2 || QgsVariantUtils::isNull( values.at( 1 ) ) )
-  {
-    datetime = QDateTime::currentDateTimeUtc();
-  }
-  else
-  {
-    datetime = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
-  }
-
-  QVariant layer;
-  if ( values.size() < 3 || QgsVariantUtils::isNull( values.at( 2 ) ) )
-  {
-    layer = context->variable( QStringLiteral( "layer" ) );
-  }
-  else
-  {
-    layer = values.at( 2 );
-  }
-
-  bool foundLayer = false;
-  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [geom, parent]( QgsMapLayer * mapLayer ) -> QVariant
-  {
-    QgsMeshLayer *layer = qobject_cast< QgsMeshLayer * >( mapLayer );
-    if ( !layer )
-    {
-      return QVariant();
-    }
-
-    if ( geom.isNull() || geom.type() != Qgis::GeometryType::Point )
-    {
-      parent->setEvalErrorString( QObject::tr( "Function `mesh_contour` requires a valid point geometry." ) );
-      return QVariant();
-    }
-
-    QgsPointXY point = geom.asPoint();
-    if ( geom.isMultipart() )
-    {
-      QgsMultiPointXY multiPoint = geom.asMultiPoint();
-      if ( multiPoint.count() == 1 )
-      {
-        point = multiPoint[0];
-      }
-      else
-      {
-        return QVariant();
-      }
-    }
-
-    QgsMeshDatasetIndex index = layer->staticScalarDatasetIndex();
-    if ( !index.isValid() )
-    {
-      return QVariant();
-    }
-    const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, point );
-    return scalarValue.scalar();
-  }, foundLayer );
-
-
-  if ( !foundLayer )
-  {
-    return QVariant();
-  }
-  else
-  {
-    return res;
-  }
-}
-
-static QVariant fcnMeshData( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
-{
-  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-
-  QString datasetGroupName = values.at( 1 ).toString();
-  if ( datasetGroupName.isEmpty() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Mesh dataset group name can not be empty." ) );
-    return QVariant();
-  }
-
-  QDateTime datetime;
-  if ( values.size() < 3 || QgsVariantUtils::isNull( values.at( 2 ) ) )
-  {
-    datetime = QDateTime::currentDateTimeUtc();
-  }
-  else
-  {
-    datetime = QgsExpressionUtils::getDateTimeValue( values.at( 2 ), parent );
-  }
-
-  QVariant layer;
-  if ( values.size() < 4 || QgsVariantUtils::isNull( values.at( 3 ) ) )
-  {
-    layer = context->variable( QStringLiteral( "layer" ) );
-  }
-  else
-  {
-    layer = values.at( 3 );
-  }
-
-  bool foundLayer = false;
-  const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe( layer, context, parent, [geom, datasetGroupName, parent]( QgsMapLayer * mapLayer ) -> QVariant
-  {
-    QgsMeshLayer *layer = qobject_cast< QgsMeshLayer * >( mapLayer );
-    if ( !layer )
-    {
-      return QVariant();
-    }
-
-    if ( geom.isNull() || geom.type() != Qgis::GeometryType::Point )
-    {
-      parent->setEvalErrorString( QObject::tr( "Function `mesh_data` requires a valid point geometry." ) );
-      return QVariant();
-    }
-
-    QgsPointXY point = geom.asPoint();
-    if ( geom.isMultipart() )
-    {
-      QgsMultiPointXY multiPoint = geom.asMultiPoint();
-      if ( multiPoint.count() == 1 )
-      {
-        point = multiPoint[0];
-      }
-      else
-      {
-        return QVariant();
-      }
-    }
-
-    QgsMeshDatasetGroupTreeItem *root = layer->datasetGroupTreeRootItem();
-    QList<QgsMeshDatasetIndex> datasetIndexList;
-    const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
-    for ( int groupIndex : allGroup )
-    {
-      QgsMeshDatasetGroupTreeItem *group = root->childFromDatasetGroupIndex( groupIndex );
-      if ( group->name() == datasetGroupName )
-      {
-        datasetIndexList.append( QgsMeshDatasetIndex( groupIndex, 0 ) );
-        break;
-      }
-    }
-
-    if ( datasetIndexList.size() == 0 )
-    {
-      parent->setEvalErrorString( QObject::tr( "Dataset group '%1' not found." ).arg( datasetGroupName ) );
-      return QVariant();
-    }
-
-    const QgsMeshDatasetValue scalarValue = layer->datasetValue( datasetIndexList.at( 0 ), point );
-    return scalarValue.scalar();
-  }, foundLayer );
-
-
-  if ( !foundLayer )
-  {
     return QVariant();
   }
   else
@@ -9363,10 +9194,6 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_attributes" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterAttributes, QStringLiteral( "Rasters" ) )
-
-        // mesh
-        << new QgsStaticExpressionFunction( QStringLiteral( "mesh_contour" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point" ), false ) << QgsExpressionFunction::Parameter( QStringLiteral( "timestamp" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ), fcnMeshContour, QStringLiteral( "Meshes" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "mesh_data" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point" ), false ) << QgsExpressionFunction::Parameter( QStringLiteral( "dataset_group" ), false ) << QgsExpressionFunction::Parameter( QStringLiteral( "timestamp" ), true ) << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ), true ), fcnMeshData, QStringLiteral( "Meshes" ) )
 
         // functions for arrays
         << new QgsArrayForeachExpressionFunction()
