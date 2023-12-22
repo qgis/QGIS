@@ -917,7 +917,7 @@ Access to labeling configuration. May be ``None`` if labeling is not used.
 
 .. seealso:: :py:func:`labelsEnabled`
 
-.. versionadded:: 3.26
+.. versionadded:: 3.36
 %End
 
     void setLabeling( QgsAbstractMeshLayerLabeling *labeling /Transfer/ );

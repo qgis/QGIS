@@ -918,7 +918,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * Access to labeling configuration. May be NULLPTR if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
-     * \since QGIS 3.26
+     * \since QGIS 3.36
      */
     QgsAbstractMeshLayerLabeling *labeling() { return mLabeling; }
 

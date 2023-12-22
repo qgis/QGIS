@@ -1043,6 +1043,17 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
       if ( !context )
         return QVariant();
 
+      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      {
+        int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
+        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        if ( !vertex.isEmpty() )
+          return vertex.z();
+        else
+          return QVariant();
+      }
+
       if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
 
@@ -1080,6 +1091,17 @@ class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
     {
       if ( !context )
         return QVariant();
+
+      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      {
+        int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
+        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        if ( !vertex.isEmpty() )
+          return vertex.x();
+        else
+          return QVariant();
+      }
 
       if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
@@ -1119,6 +1141,17 @@ class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
       if ( !context )
         return QVariant();
 
+      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      {
+        int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
+        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        if ( !vertex.isEmpty() )
+          return vertex.y();
+        else
+          return QVariant();
+      }
+
       if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
 
@@ -1156,6 +1189,17 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
     {
       if ( !context )
         return QVariant();
+
+      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      {
+        int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
+        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        if ( !vertex.isEmpty() )
+          return QVariant::fromValue( QgsGeometry( new QgsPoint( vertex ) ) );
+        else
+          return QVariant();
+      }
 
       if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
@@ -1195,7 +1239,7 @@ class CurrentVertexIndexExpressionFunction: public QgsScopedExpressionFunction
       if ( !context )
         return QVariant();
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) )
         return QVariant();
 
       return context->variable( QStringLiteral( "_mesh_vertex_index" ) );
@@ -1223,6 +1267,32 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
     {
       if ( !context )
         return QVariant();
+
+      if ( context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      {
+        const int faceIndex = context->variable( QStringLiteral( "_mesh_face_index" ) ).toInt();
+        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshFace &face = nativeMesh->face( faceIndex );
+        if ( !face.isEmpty() )
+        {
+          QgsDistanceArea *calc = parent->geomCalculator();
+          QgsGeometry geom = QgsMeshUtils::toGeometry( nativeMesh->face( faceIndex ), nativeMesh->vertices );
+          if ( calc )
+          {
+            double area = calc->measureArea( geom );
+            area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+            return QVariant( area );
+          }
+          else
+          {
+            return QVariant( geom.area() );
+          }
+        }
+        else
+        {
+          return QVariant();
+        }
+      }
 
       if ( !context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
@@ -1275,7 +1345,7 @@ class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
       if ( !context )
         return QVariant();
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+      if ( !context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) )
         return QVariant();
 
       return context->variable( QStringLiteral( "_mesh_face_index" ) ).toInt();

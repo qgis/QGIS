@@ -47,6 +47,8 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerlabeling.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 
@@ -253,6 +255,16 @@ bool QgsMapRendererJob::prepareLabelCache() const
         break;
       }
 
+      case Qgis::LayerType::Mesh:
+      {
+        QgsMeshLayer *l = qobject_cast< QgsMeshLayer *>( ml );
+        if ( l->labelsEnabled() && l->labeling()->requiresAdvancedEffects() )
+        {
+          canCache = false;
+        }
+        break;
+      }
+
       case Qgis::LayerType::VectorTile:
       {
         // TODO -- add detection of advanced labeling effects for vector tile layers
@@ -262,7 +274,6 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case Qgis::LayerType::Raster:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Plugin:
-      case Qgis::LayerType::Mesh:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::TiledScene:

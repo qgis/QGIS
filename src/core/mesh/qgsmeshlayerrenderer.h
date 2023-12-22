@@ -36,6 +36,7 @@ class QgsMeshLayer;
 #include "qgsmapclippingregion.h"
 
 class QgsRenderContext;
+class QgsMeshLayerLabelProvider;
 
 ///@cond PRIVATE
 
@@ -100,12 +101,14 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
+    void prepareLabeling( QgsMeshLayer *layer, QSet<QString> &attributeNames );
     void renderMesh();
     void renderEdgeMesh( const QgsMeshRendererMeshSettings &settings, const QList<int> &edgesInExtent );
     void renderFaceMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> &facesInExtent );
     void renderScalarDataset();
     void renderScalarDatasetOnEdges( const QgsMeshRendererScalarSettings &scalarSettings );
     void renderScalarDatasetOnFaces( const QgsMeshRendererScalarSettings &scalarSettings );
+    void registerLabelFeatures();
 
     void renderVectorDataset();
     void copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context );
@@ -116,6 +119,12 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool mIsMeshSimplificationActive = false;
     QColor colorAt( QgsColorRampShader *shader, double val ) const;
     bool mIsEditable = false;
+
+    /**
+     * used with new labeling engine (QgsLabelingEngine): provider for labels.
+     * may be NULLPTR. no need to delete: if exists it is owned by labeling engine
+     */
+    QgsMeshLayerLabelProvider *mLabelProvider = nullptr;
 
   protected:
     QString mLayerName;

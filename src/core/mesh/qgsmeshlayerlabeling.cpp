@@ -51,8 +51,9 @@ QgsPalLayerSettings QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( const
 ///
 
 
-QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings )
+QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces )
   : mSettings( new QgsPalLayerSettings( settings ) )
+  , mLabelFaces( labelFaces )
 {
 }
 
@@ -63,18 +64,19 @@ QString QgsMeshLayerSimpleLabeling::type() const
 
 QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::clone() const
 {
-  return new QgsMeshLayerSimpleLabeling( *mSettings );
+  return new QgsMeshLayerSimpleLabeling( *mSettings, mLabelFaces );
 }
 
 QgsMeshLayerLabelProvider *QgsMeshLayerSimpleLabeling::provider( QgsMeshLayer *layer ) const
 {
-  return new QgsMeshLayerLabelProvider( layer, QString(), mSettings.get() );
+  return new QgsMeshLayerLabelProvider( layer, QString(), mSettings.get(), QString(), mLabelFaces );
 }
 
 QDomElement QgsMeshLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "simple" ) );
+  elem.setAttribute( QStringLiteral( "labelFaces" ), mLabelFaces ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.appendChild( mSettings->writeXml( doc, context ) );
   return elem;
 }
@@ -108,7 +110,8 @@ QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElemen
   {
     QgsPalLayerSettings settings;
     settings.readXml( settingsElem, context );
-    return new QgsMeshLayerSimpleLabeling( settings );
+    const bool labelFaces = element.attribute( QStringLiteral( "labelFaces" ), QStringLiteral( "0" ) ).toInt();
+    return new QgsMeshLayerSimpleLabeling( settings, labelFaces );
   }
 
   return new QgsMeshLayerSimpleLabeling( QgsPalLayerSettings() );

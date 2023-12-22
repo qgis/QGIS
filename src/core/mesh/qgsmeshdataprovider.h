@@ -114,6 +114,9 @@ struct CORE_EXPORT QgsMesh
   QVector<QgsMeshFace> faces SIP_SKIP;
 };
 
+Q_DECLARE_METATYPE( QgsMesh * );
+
+
 /**
  * \ingroup core
  *
