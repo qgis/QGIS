@@ -501,13 +501,32 @@ if(WITH_CORE)
   else()
     add_definitions(-DQT_NO_PRINTER)
   endif()
-  if (WITH_QTWEBKIT AND NOT BUILD_WITH_QT6)
+  if (WITH_QTWEBKIT)
+    if(BUILD_WITH_QT6)
+      message(FATAL_ERROR "Qt WebKit support cannot be enabled on Qt 6 builds")
+    endif()
     find_package(Qt5WebKit REQUIRED)
     find_package(Qt5WebKitWidgets REQUIRED)
   endif()
   if (WITH_3D)
     find_package(${QT_VERSION_BASE} COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
+  endif()
+
+  set (WITH_QTWEBENGINE FALSE CACHE BOOL "Enable QtWebEngine support")
+  if (WITH_QTWEBENGINE)
+    if(BUILD_WITH_QT6)
+      find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
+    else()
+      # QWebEnginePage is only available in widgets module in Qt5
+      find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore WebEngineWidgets REQUIRED)
+    endif()
+
+    message(STATUS "QtWebEngine support enabled")
+    set(HAVE_WEBENGINE TRUE)  # used in qgsconfig.h
+  else()
+    message(STATUS "QtWebEngine support DISABLED.")
+    set(HAVE_WEBENGINE FALSE)  # used in qgsconfig.h
   endif()
 
   # get the Qt plugins directory

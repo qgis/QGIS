@@ -23,6 +23,8 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
 {
   setupUi( this );
 
+  spinShininess->setClearValue( 0, tr( "None" ) );
+
   QgsPhongTexturedMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
   textureScaleSpinBox->setClearValue( 100 );
@@ -30,7 +32,11 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
 
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    updateWidgetState();
+    emit changed();
+  } );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
@@ -56,6 +62,8 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   textureRotationSpinBox->setValue( phongMaterial->textureRotation() );
 
   mPropertyCollection = settings->dataDefinedProperties();
+
+  updateWidgetState();
 }
 
 QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
@@ -71,4 +79,18 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();
+}
+
+void QgsPhongTexturedMaterialWidget::updateWidgetState()
+{
+  if ( spinShininess->value() > 0 )
+  {
+    btnSpecular->setEnabled( true );
+    btnSpecular->setToolTip( QString() );
+  }
+  else
+  {
+    btnSpecular->setEnabled( false );
+    btnSpecular->setToolTip( tr( "Specular color is disabled because material has no shininess" ) );
+  }
 }

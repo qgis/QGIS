@@ -31,7 +31,7 @@ public:
     void expand(const pdal::BOX3D& bounds, size_t points);
     int calcLevel();
     void resetLevel(int level);
-    VoxelKey key(double x, double y, double z);
+    VoxelKey key(double x, double y, double z) const;
     pdal::BOX3D processingBounds() const
         { return m_cubic ? m_cubicBounds : m_bounds; }
     pdal::BOX3D cubicBounds() const

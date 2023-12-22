@@ -55,6 +55,15 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
     virtual QString sourceUri() const = 0;
 
     /**
+     * Returns an optional group title for the source settings, for use in layer properties dialogs.
+     *
+     * If not specified, a default title will be used.
+     *
+     * \since QGIS 3.36
+     */
+    virtual QString groupTitle() const { return QString(); }
+
+    /**
      * Sets a map \a canvas associated with the widget.
      *
      * \since QGIS 3.26

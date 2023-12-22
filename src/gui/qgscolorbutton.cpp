@@ -168,7 +168,7 @@ void QgsColorButton::unlink()
 
 bool QgsColorButton::event( QEvent *e )
 {
-  if ( e->type() == QEvent::ToolTip )
+  if ( e->type() == QEvent::ToolTip && isEnabled() )
   {
     QColor c = linkedProjectColor();
     const bool isProjectColor = c.isValid();

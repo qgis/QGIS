@@ -25,6 +25,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   setupUi( this );
   mOpacityWidget->setVisible( mHasOpacity );
   mLblOpacity->setVisible( mHasOpacity );
+  spinShininess->setClearValue( 0, tr( "None" ) );
 
   QgsPhongMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
@@ -32,7 +33,11 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [ = ]
+  {
+    updateWidgetState();
+    emit changed();
+  } );
   connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
@@ -53,14 +58,6 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
-    {
-      lblDiffuse->setVisible( true );
-      btnDiffuse->setVisible( true );
-      mAmbientDataDefinedButton->setVisible( false );
-      mDiffuseDataDefinedButton->setVisible( false );
-      mSpecularDataDefinedButton->setVisible( false );
-      break;
-    }
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     {
@@ -109,11 +106,15 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   spinShininess->setValue( phongMaterial->shininess() );
   mOpacityWidget->setOpacity( phongMaterial->opacity() );
 
+  btnSpecular->setEnabled( phongMaterial->shininess() > 0 );
+
   mPropertyCollection = settings->dataDefinedProperties();
 
   mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, mPropertyCollection, settings->propertyDefinitions(), layer, true );
   mAmbientDataDefinedButton->init( QgsAbstractMaterialSettings::Ambient, mPropertyCollection, settings->propertyDefinitions(), layer, true );
   mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, mPropertyCollection, settings->propertyDefinitions(), layer, true );
+
+  updateWidgetState();
 }
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
@@ -122,7 +123,7 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setDiffuse( btnDiffuse->color() );
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
-  m->setShininess( spinShininess->value() );
+  m->setShininess( static_cast<float>( spinShininess->value() ) );
   float opacity = mHasOpacity ? static_cast<float>( mOpacityWidget->opacity() ) : 1.0f;
   m->setOpacity( opacity );
 
@@ -151,5 +152,19 @@ void QgsPhongMaterialWidget::setHasOpacity( const bool opacity )
   else
   {
     disconnect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+  }
+}
+
+void QgsPhongMaterialWidget::updateWidgetState()
+{
+  if ( spinShininess->value() > 0 )
+  {
+    btnSpecular->setEnabled( true );
+    btnSpecular->setToolTip( QString() );
+  }
+  else
+  {
+    btnSpecular->setEnabled( false );
+    btnSpecular->setToolTip( tr( "Specular color is disabled because material has no shininess" ) );
   }
 }

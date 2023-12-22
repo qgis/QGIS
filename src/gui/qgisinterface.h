@@ -328,6 +328,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *webMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Mesh" menu.
+     *
+     * \since QGIS 3.34
+     */
+    virtual QMenu *meshMenu() = 0;
+
+    /**
      * Returns a reference to the right most standard menu, which is
      * usually the last menu item before the "Help" menu.
      *

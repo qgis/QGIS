@@ -2453,6 +2453,20 @@ if (WITH_PDAL)
   )
 endif()
 
+if (WITH_QTWEBENGINE)
+    if(BUILD_WITH_QT6)
+      target_link_libraries(qgis_core
+        ${QT_VERSION_BASE}::WebEngineCore
+      )
+    else()
+      # QWebEnginePage is in WebEngineWidgets for Qt5
+      target_link_libraries(qgis_core
+        ${QT_VERSION_BASE}::WebEngineCore
+        ${QT_VERSION_BASE}::WebEngineWidgets
+      )
+    endif()
+endif()
+
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_core
     provider_wms_a

@@ -35,12 +35,16 @@ class QgsPhongMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Pho
 
     static QgsMaterialSettingsWidget *create();
 
-    void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) override;
-    void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
+    void setTechnique( QgsMaterialSettingsRenderingTechnique technique ) final;
+    void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
     QgsAbstractMaterialSettings *settings() override;
 
     bool hasOpacity() const { return mHasOpacity; }
     void setHasOpacity( const bool opacity );
+
+  private slots:
+
+    void updateWidgetState();
 
   private:
     bool mHasOpacity; //! whether to display the opacity slider

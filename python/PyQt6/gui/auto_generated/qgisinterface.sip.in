@@ -299,6 +299,13 @@ Returns a reference to the main window "Vector" menu.
 Returns a reference to the main window "Web" menu.
 %End
 
+    virtual QMenu *meshMenu() = 0;
+%Docstring
+Returns a reference to the main window "Mesh" menu.
+
+.. versionadded:: 3.34
+%End
+
     virtual QMenu *firstRightStandardMenu() = 0;
 %Docstring
 Returns a reference to the right most standard menu, which is
