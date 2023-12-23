@@ -1669,6 +1669,20 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
+
+    enum class Point3DShape /BaseType=IntFlag/
+    {
+      Cylinder,
+      Sphere,
+      Cone,
+      Cube,
+      Torus,
+      Plane,
+      ExtrudedText,
+      Model,
+      Billboard,
+    };
+
     enum class LightSourceType /BaseType=IntFlag/
     {
       Point,

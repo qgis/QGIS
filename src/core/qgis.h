@@ -2855,6 +2855,28 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( PlotToolFlags, PlotToolFlag )
     Q_FLAG( PlotToolFlags )
 
+
+    /**
+     * 3D point shape types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape
+     *
+     * \since QGIS 3.36
+     */
+    enum class Point3DShape : int
+    {
+      Cylinder, //!< Cylinder
+      Sphere, //!< Sphere
+      Cone, //!< Cone
+      Cube, //!< Cube
+      Torus, //!< Torus
+      Plane, //!< Flat plane
+      ExtrudedText, //!< Extruded text
+      Model, //!< Model
+      Billboard, //!< Billboard
+    };
+    Q_ENUM( Point3DShape )
+
     /**
      * Light source types for 3D scenes.
      *

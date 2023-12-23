@@ -985,7 +985,7 @@ void TestQgs3DRendering::testInstancedRendering()
   layerPointsZ->dataProvider()->addFeatures( featureList );
 
   QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
-  sphere3DSymbol->setShape( QgsPoint3DSymbol::Sphere );
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
   QVariantMap vmSphere;
   vmSphere[QStringLiteral( "radius" )] = 80.0f;
   sphere3DSymbol->setShapeProperties( vmSphere );
@@ -1019,7 +1019,7 @@ void TestQgs3DRendering::testInstancedRendering()
   QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
 
   QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
-  cylinder3DSymbol->setShape( QgsPoint3DSymbol::Cylinder );
+  cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
   vmCylinder[QStringLiteral( "radius" )] = 20.0f;
   vmCylinder[QStringLiteral( "length" )] = 200.0f;
@@ -1066,7 +1066,7 @@ void TestQgs3DRendering::testBillboardRendering()
   sl->setStrokeWidth( 2 );
   QgsPoint3DSymbol *point3DSymbol = new QgsPoint3DSymbol();
   point3DSymbol->setBillboardSymbol( markerSymbol );
-  point3DSymbol->setShape( QgsPoint3DSymbol::Billboard );
+  point3DSymbol->setShape( Qgis::Point3DShape::Billboard );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( point3DSymbol ) );
 

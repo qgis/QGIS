@@ -645,7 +645,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         if ( vlayer->geometryType() == Qgis::GeometryType::Point )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          if ( pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
           }
@@ -657,7 +657,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-          if ( pointSymbol && pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
             break;

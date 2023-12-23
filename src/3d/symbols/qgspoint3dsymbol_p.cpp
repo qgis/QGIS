@@ -141,7 +141,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   // NOTE -- these calculations are naive, and assume no rotation or scaling of the symbol!
   switch ( mSymbol->shape() )
   {
-    case QgsPoint3DSymbol::Cylinder:
+    case Qgis::Point3DShape::Cylinder:
     {
       const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
       mZMin -= length * 0.5f;
@@ -149,7 +149,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
       break;
     }
 
-    case QgsPoint3DSymbol::Sphere:
+    case Qgis::Point3DShape::Sphere:
     {
       const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       mZMin -= radius;
@@ -157,7 +157,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
       break;
     }
 
-    case QgsPoint3DSymbol::Cone:
+    case Qgis::Point3DShape::Cone:
     {
       const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
       mZMin -= length * 0.5f;
@@ -165,7 +165,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
       break;
     }
 
-    case QgsPoint3DSymbol::Cube:
+    case Qgis::Point3DShape::Cube:
     {
       const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
       mZMin -= size * 0.5f;
@@ -173,7 +173,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
       break;
     }
 
-    case QgsPoint3DSymbol::Torus:
+    case Qgis::Point3DShape::Torus:
     {
       const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       mZMin -= radius;
@@ -181,7 +181,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
       break;
     }
 
-    case QgsPoint3DSymbol::Plane:
+    case Qgis::Point3DShape::Plane:
     {
       // worst case scenario -- even though planes are usually rotated so that they are flat,
       // let's account for possible overridden rotation
@@ -191,9 +191,9 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
       break;
     }
 
-    case QgsPoint3DSymbol::ExtrudedText:
-    case QgsPoint3DSymbol::Model:
-    case QgsPoint3DSymbol::Billboard:
+    case Qgis::Point3DShape::ExtrudedText:
+    case Qgis::Point3DShape::Model:
+    case Qgis::Point3DShape::Billboard:
       break;
   }
 
@@ -320,7 +320,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 {
   switch ( symbol->shape() )
   {
-    case QgsPoint3DSymbol::Cylinder:
+    case Qgis::Point3DShape::Cylinder:
     {
       const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
@@ -332,7 +332,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::Sphere:
+    case Qgis::Point3DShape::Sphere:
     {
       const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
@@ -340,7 +340,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::Cone:
+    case Qgis::Point3DShape::Cone:
     {
       const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
       const float bottomRadius = symbol->shapeProperty( QStringLiteral( "bottomRadius" ) ).toFloat();
@@ -355,7 +355,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::Cube:
+    case Qgis::Point3DShape::Cube:
     {
       const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
       Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
@@ -365,7 +365,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::Torus:
+    case Qgis::Point3DShape::Torus:
     {
       const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
       const float minorRadius = symbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toFloat();
@@ -375,7 +375,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::Plane:
+    case Qgis::Point3DShape::Plane:
     {
       const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
       Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
@@ -384,7 +384,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::ExtrudedText:
+    case Qgis::Point3DShape::ExtrudedText:
     {
       const float depth = symbol->shapeProperty( QStringLiteral( "depth" ) ).toFloat();
       const QString text = symbol->shapeProperty( QStringLiteral( "text" ) ).toString();
@@ -394,8 +394,8 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
       return g;
     }
 
-    case QgsPoint3DSymbol::Model:
-    case QgsPoint3DSymbol::Billboard:
+    case Qgis::Point3DShape::Model:
+    case Qgis::Point3DShape::Billboard:
       break;
   }
   Q_ASSERT( false );
@@ -682,10 +682,10 @@ namespace Qgs3DSymbolImpl
     if ( !pointSymbol )
       return nullptr;
 
-    if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+    if ( pointSymbol->shape() == Qgis::Point3DShape::Model )
       return new QgsModelPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
     // Add proper handler for billboard
-    else if ( pointSymbol->shape() == QgsPoint3DSymbol::Billboard )
+    else if ( pointSymbol->shape() == Qgis::Point3DShape::Billboard )
       return new QgsPoint3DBillboardSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
     else
       return new QgsInstancedPoint3DSymbolHandler( pointSymbol, layer->selectedFeatureIds() );
