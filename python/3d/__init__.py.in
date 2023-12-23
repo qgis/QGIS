@@ -40,3 +40,23 @@ Qgs3DTypes.AltBindVertex.is_monkey_patched = True
 Qgs3DTypes.AltBindCentroid = Qgis.AltitudeBinding.Centroid
 Qgs3DTypes.AltBindCentroid.is_monkey_patched = True
 
+QgsPoint3DSymbol.Shape = Qgis.Point3DShape
+QgsPoint3DSymbol.Cylinder = Qgis.Point3DShape.Cylinder
+QgsPoint3DSymbol.Cylinder.is_monkey_patched = True
+QgsPoint3DSymbol.Sphere = Qgis.Point3DShape.Sphere
+QgsPoint3DSymbol.Sphere.is_monkey_patched = True
+QgsPoint3DSymbol.Cone = Qgis.Point3DShape.Cone
+QgsPoint3DSymbol.Cone.is_monkey_patched = True
+QgsPoint3DSymbol.Cube = Qgis.Point3DShape.Cube
+QgsPoint3DSymbol.Cube.is_monkey_patched = True
+QgsPoint3DSymbol.Torus = Qgis.Point3DShape.Torus
+QgsPoint3DSymbol.Torus.is_monkey_patched = True
+QgsPoint3DSymbol.Plane = Qgis.Point3DShape.Plane
+QgsPoint3DSymbol.Plane.is_monkey_patched = True
+QgsPoint3DSymbol.ExtrudedText = Qgis.Point3DShape.ExtrudedText
+QgsPoint3DSymbol.ExtrudedText.is_monkey_patched = True
+QgsPoint3DSymbol.Model = Qgis.Point3DShape.Model
+QgsPoint3DSymbol.Model.is_monkey_patched = True
+QgsPoint3DSymbol.Billboard = Qgis.Point3DShape.Billboard
+QgsPoint3DSymbol.Billboard.is_monkey_patched = True
+
