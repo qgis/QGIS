@@ -201,14 +201,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         showFeatureCount->setEnabled( vlayer->isValid() );
       }
 
-      if ( vlayer || vectorTileLayer )
+      if ( vlayer || vectorTileLayer || meshLayer )
       {
         const QString iconName = vectorTileLayer || ( vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" ) )
                                  ? QStringLiteral( "labelingRuleBased.svg" )
                                  : QStringLiteral( "labelingSingle.svg" );
         QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
         actionShowLabels->setCheckable( true );
-        actionShowLabels->setChecked( vectorTileLayer ? vectorTileLayer->labelsEnabled() : vlayer->labelsEnabled() );
+        actionShowLabels->setChecked( vectorTileLayer ? vectorTileLayer->labelsEnabled()
+                                      : meshLayer ? meshLayer->labelsEnabled()
+                                      : vlayer->labelsEnabled() );
         connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
         menu->addAction( actionShowLabels );
       }
@@ -1363,6 +1365,12 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
       vectorTilelayer->setLabelsEnabled( enabled );
       vectorTilelayer->emitStyleChanged();
       vectorTilelayer->triggerRepaint();
+    }
+    else if ( QgsMeshLayer *meshLayer = qobject_cast< QgsMeshLayer * >( l->layer() ) )
+    {
+      meshLayer->setLabelsEnabled( enabled );
+      meshLayer->emitStyleChanged();
+      meshLayer->triggerRepaint();
     }
   }
 }

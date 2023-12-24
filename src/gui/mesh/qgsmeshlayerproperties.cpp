@@ -286,6 +286,15 @@ void QgsMeshLayerProperties::apply()
   mMeshLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mMeshLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
+  QgsDebugMsgLevel( QStringLiteral( "processing labeling tab" ), 4 );
+  /*
+   * Labeling Tab
+   */
+  if ( mLabelingDialog )
+  {
+    mLabelingDialog->writeSettingsToLayer();
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "processing temporal tab" ), 4 );
   /*
    * Temporal Tab
