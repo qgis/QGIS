@@ -1895,7 +1895,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Custom no data values -> GDAL histogram not sufficient." ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Custom NoData values -> GDAL histogram not sufficient." ), 3 );
     return false;
   }
 
@@ -1980,7 +1980,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Custom no data values, using generic histogram." ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Custom NoData values, using generic histogram." ), 2 );
     return QgsRasterDataProvider::histogram( bandNo, binCount, minimum, maximum, boundingBox, sampleSize, includeOutOfRange, feedback );
   }
 
@@ -2954,7 +2954,7 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Custom no data values -> GDAL statistics not sufficient." ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Custom NoData values -> GDAL statistics not sufficient." ), 2 );
     return false;
   }
 
@@ -3044,7 +3044,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Custom no data values, using generic statistics." ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Custom NoData values, using generic statistics." ), 2 );
     return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize, feedback );
   }
 
@@ -3981,9 +3981,9 @@ bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
   {
     const QStringList errors = handler.popErrors();
     if ( !errors.empty() )
-      QgsDebugError( QStringLiteral( "Cannot set no data value: %1" ).arg( errors.join( QLatin1String( ", " ) ) ) );
+      QgsDebugError( QStringLiteral( "Cannot set NoData value: %1" ).arg( errors.join( QLatin1String( ", " ) ) ) );
     else
-      QgsDebugError( QStringLiteral( "Cannot set no data value" ) );
+      QgsDebugError( QStringLiteral( "Cannot set NoData value" ) );
     return false;
   }
 

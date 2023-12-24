@@ -139,7 +139,7 @@ class gdalcalc(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NO_DATA,
-                self.tr('Set output nodata value'),
+                self.tr('Set output NoData value'),
                 type=QgsProcessingParameterNumber.Double,
                 defaultValue=None,
                 optional=True))

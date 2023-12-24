@@ -38,7 +38,7 @@
        <item>
         <widget class="QRadioButton" name="mRawModeRadioButton">
          <property name="toolTip">
-          <string>Write out raw raster layer data. Optionally user defined no data values may be applied.</string>
+          <string>Write out raw raster layer data. Optionally user defined NoData values may be applied.</string>
          </property>
          <property name="text">
           <string>Raw data</string>
@@ -483,10 +483,10 @@ datasets with maximum width and height specified below.</string>
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Additional no data values. The specified values will be set to no data in output raster.</string>
+          <string>Additional NoData values. The specified values will be set to NoData in output raster.</string>
          </property>
          <property name="title">
-          <string>No data values</string>
+          <string>NoData values</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
