@@ -47,10 +47,14 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
     //! constructor
     QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr, QgsMessageBar *messageBar = nullptr );
 
+    void setDockMode( bool dockMode ) override;
+
     /**
      * Returns the labeling gui widget or NULLPTR if none.
      */
     QgsLabelingGui *labelingGui();
+
+    QgsPalLayerSettings layerSettings();
 
   public slots:
     //! Sets the layer to configure
@@ -89,7 +93,7 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
     QgsMessageBar *mMessageBar = nullptr;
 
     QWidget *mWidget = nullptr;
-    std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
+    std::unique_ptr< QgsPalLayerSettings > mSettings;
     std::unique_ptr< QgsAbstractMeshLayerLabeling > mOldSettings;
     bool mOldLabelsEnabled = false;
 };

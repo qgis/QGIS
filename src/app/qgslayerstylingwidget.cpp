@@ -41,6 +41,7 @@
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlabelingwidget.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
 #include "qgsreadwritecontext.h"
@@ -248,6 +249,10 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       symbolItem->setData( Qt::UserRole, Symbology );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
 
 #ifdef HAVE_3D
       QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
@@ -689,8 +694,16 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] {mMeshStyleWidget->syncToLayer( mCurrentLayer );} );
             break;
           }
+          case 1: // Labeling
+          {
+            mMeshLabelingWidget = new QgsMeshLabelingWidget( meshLayer, mMapCanvas, mWidgetStack, mMessageBar );
+            mMeshLabelingWidget->setDockMode( true );
+            connect( mMeshLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mMeshLabelingWidget );
+            break;
+          }
 #ifdef HAVE_3D
-          case 1:  // 3D View
+          case 2:  // 3D View
           {
             if ( !mMesh3DWidget )
             {

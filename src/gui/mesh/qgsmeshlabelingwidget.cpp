@@ -22,6 +22,7 @@
 #include "qgslabelinggui.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabeling.h"
+#include "qgsmeshlayerlabelprovider.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgslabelobstaclesettingswidget.h"
@@ -37,15 +38,18 @@ QgsMeshLabelingWidget::QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas 
 
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingNone.svg" ) ), tr( "No Labels" ), ModeNone );
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Labels on Vertices" ), ModeVertices );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingRuleBased.svg" ) ), tr( "Labels on Faces" ), ModeFaces );
-
-  //connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsMeshLabelingWidget::showEngineConfigDialog );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Labels on Faces" ), ModeFaces );
 
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeshLabelingWidget::labelModeChanged );
   setLayer( layer );
+}
 
-  //const int iconSize16 = QgsGuiUtils::scaleIconSize( 16 );
-  //mEngineSettingsButton->setIconSize( QSize( iconSize16, iconSize16 ) );
+void QgsMeshLabelingWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+
+  if ( QgsLabelingGui *l = labelingGui() )
+    l->setDockMode( dockMode );
 }
 
 QgsLabelingGui *QgsMeshLabelingWidget::labelingGui()
@@ -98,19 +102,15 @@ void QgsMeshLabelingWidget::adaptToLayer()
   whileBlocking( mLabelModeComboBox )->setCurrentIndex( -1 );
 
   // pick the right mode of the layer
-  if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "verices" ) )
+  Mode mode = ModeNone;
+  if ( mLayer->labelsEnabled() )
   {
-    mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( ModeVertices ) );
+    if ( QgsMeshLayerSimpleLabeling *labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() ) )
+    {
+      mode = labeling->provider( mLayer )->labelFaces() ? ModeFaces : ModeVertices;
+    }
   }
-  else if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "faces" ) )
-  {
-    const QgsPalLayerSettings lyr = mLayer->labeling()->settings();
-    mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( ModeFaces ) );
-  }
-  else
-  {
-    mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( ModeNone ) );
-  }
+  mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( mode ) );
 
   if ( QgsLabelingGui *lg = qobject_cast<QgsLabelingGui *>( mWidget ) )
   {
@@ -125,14 +125,14 @@ void QgsMeshLabelingWidget::writeSettingsToLayer()
   {
     case ModeVertices:
     {
-      mLayer->setLabeling( new QgsMeshLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings() ) );
+      mLayer->setLabeling( new QgsMeshLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings(), false ) );
       mLayer->setLabelsEnabled( true );
       break;
     }
 
     case ModeFaces:
     {
-      mLayer->setLabeling( new QgsMeshLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings() ) );
+      mLayer->setLabeling( new QgsMeshLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings(), true ) );
       mLayer->setLabelsEnabled( true );
       break;
     }
@@ -169,14 +169,35 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
   switch ( mode )
   {
     case ModeVertices:
-    {
-      mStackedWidget->addWidget( mWidget );
-      mStackedWidget->setCurrentWidget( mWidget );
-      break;
-    }
-
     case ModeFaces:
     {
+      QgsMeshLayerSimpleLabeling *labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() );
+      if ( labeling )
+      {
+        mSettings.reset( new QgsPalLayerSettings( labeling->settings() ) );
+      }
+      else
+      {
+        mSettings = std::make_unique< QgsPalLayerSettings >( QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( mLayer ) );
+      }
+
+      QgsSymbolWidgetContext context;
+      context.setMapCanvas( mMapCanvas );
+      context.setMessageBar( mMessageBar );
+
+      Qgis::GeometryType geomType = mode == ModeFaces ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Point;
+      QgsLabelingGui *labelingGui = new QgsLabelingGui( mLayer, mCanvas, *mSettings, this, geomType );
+      labelingGui->setLabelMode( QgsLabelingGui::Labels );
+      labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
+      labelingGui->setContext( context );
+
+      labelingGui->setDockMode( dockMode() );
+      connect( labelingGui, &QgsLabelingGui::widgetChanged, this, &QgsMeshLabelingWidget::widgetChanged );
+      connect( labelingGui, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsMeshLabelingWidget::auxiliaryFieldCreated );
+
+      mWidget = labelingGui;
+
+
       mStackedWidget->addWidget( mWidget );
       mStackedWidget->setCurrentWidget( mWidget );
       break;
@@ -187,23 +208,3 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
   }
   emit widgetChanged();
 }
-
-/*
-void QgsMeshLabelingWidget::showEngineConfigDialog()
-{
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( panel && panel->dockMode() )
-  {
-    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( mCanvas );
-    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
-    panel->openPanel( widget );
-  }
-  else
-  {
-    QgsLabelEngineConfigDialog dialog( mCanvas, this );
-    dialog.exec();
-    // reactivate button's window
-    activateWindow();
-  }
-}
-*/

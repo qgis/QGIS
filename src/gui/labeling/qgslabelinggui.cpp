@@ -50,6 +50,14 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
+  if ( mLayer && mLayer->type() == Qgis::LayerType::Mesh )
+  {
+    if ( mGeomType == Qgis::GeometryType::Point )
+      expContext << QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType::Vertex );
+    else if ( mGeomType == Qgis::GeometryType::Polygon )
+      expContext << QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType::Face );
+  }
+
   expContext << QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
 
   //TODO - show actual value
@@ -251,7 +259,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   }
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qgis::GeometryType geomType )
+QgsLabelingGui::QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qgis::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
   , mSettings( layerSettings )
   , mMode( NoLabels )
@@ -340,16 +348,17 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   setEnabled( true );
 
   mLayer = mapLayer;
-  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( mapLayer );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
   mTextFormatsListWidget->setLayerType( vLayer ? vLayer->geometryType() : mGeomType );
   mBackgroundMarkerSymbolButton->setLayer( vLayer );
   mBackgroundFillSymbolButton->setLayer( vLayer );
 
   // load labeling settings from layer
-  updateGeometryTypeBasedWidgets();
+  if ( vLayer )
+    updateGeometryTypeBasedWidgets();
 
-  mFieldExpressionWidget->setLayer( vLayer );
+  mFieldExpressionWidget->setLayer( mapLayer );
   QgsDistanceArea da;
   if ( vLayer )
     da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
