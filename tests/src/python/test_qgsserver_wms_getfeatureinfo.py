@@ -708,7 +708,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         fields = QgsFields()
         fields.append(QgsField('fid', QVariant.Int))
         vl1 = QgsMemoryProviderUtils.createMemoryLayer(
-            'vl1', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+            'vl1', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
 
         f1 = QgsFeature(vl1.fields())
         f1['fid'] = 1
@@ -720,7 +720,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         vl1.dataProvider().addFeatures([f1, f2])
 
         vl2 = QgsMemoryProviderUtils.createMemoryLayer(
-            'vl2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+            'vl2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
         vl2.dataProvider().addFeatures([f1, f2])
 
         project.addMapLayers([vl1, vl2])
