@@ -64,9 +64,9 @@ QWidget *QgsActionWidgetWrapper::createWidget( QWidget *parent )
   return new QPushButton( parent );
 }
 
-void QgsActionWidgetWrapper::initWidget( QWidget *editor )
+void QgsActionWidgetWrapper::initWidget( QWidget *editor, QWidget *parentWidget )
 {
-
+  Q_UNUSED( parentWidget )
   mActionButton = qobject_cast<QPushButton *>( editor );
 
   if ( !mActionButton )

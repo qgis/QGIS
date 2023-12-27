@@ -35,8 +35,9 @@ QWidget *QgsHiddenWidgetWrapper::createWidget( QWidget *parent )
   return wdg;
 }
 
-void QgsHiddenWidgetWrapper::initWidget( QWidget *editor )
+void QgsHiddenWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   editor->setVisible( false );
 }
 

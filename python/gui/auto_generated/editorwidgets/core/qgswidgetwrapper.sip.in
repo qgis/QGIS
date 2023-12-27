@@ -200,7 +200,7 @@ in :py:func:`~QgsWidgetWrapper.initWidget`.
 :return: A new widget
 %End
 
-    virtual void initWidget( QWidget *editor );
+    virtual void initWidget( QWidget *editor, QWidget *parent = 0 );
 %Docstring
 This method should initialize the editor widget with runtime data. Fill your comboboxes here.
 

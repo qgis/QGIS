@@ -198,8 +198,9 @@ QWidget *QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget *parent 
   return new QgsRelationReferenceWidget( parent );
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
+void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mWidget = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !mWidget )
     return;

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     QWidget *createWidget( QWidget *parent ) override;
 
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
 
     //! Clears the content and makes new initialization
     void reinitWidget();

@@ -138,8 +138,9 @@ void QgsValueMapSearchWidgetWrapper::setEnabled( bool enabled )
   mComboBox->setEnabled( enabled );
 }
 
-void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
+void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )

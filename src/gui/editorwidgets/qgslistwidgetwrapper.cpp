@@ -45,8 +45,9 @@ QWidget *QgsListWidgetWrapper::createWidget( QWidget *parent )
   }
 }
 
-void QgsListWidgetWrapper::initWidget( QWidget *editor )
+void QgsListWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mWidget = qobject_cast<QgsListWidget *>( editor );
   if ( !mWidget )
   {

@@ -240,7 +240,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \param editor The widget which will represent this attribute editor in a form.
      */
-    virtual void initWidget( QWidget *editor );
+    virtual void initWidget( QWidget *editor, QWidget *parent = nullptr );
 
     //! Data defined property collection
     QgsPropertyCollection mPropertyCollection;

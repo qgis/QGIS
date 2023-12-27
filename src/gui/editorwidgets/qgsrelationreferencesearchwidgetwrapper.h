@@ -74,7 +74,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
 
   public slots:
 

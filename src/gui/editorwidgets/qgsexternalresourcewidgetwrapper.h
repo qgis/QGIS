@@ -63,7 +63,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
     bool valid() const override;
 
     /**

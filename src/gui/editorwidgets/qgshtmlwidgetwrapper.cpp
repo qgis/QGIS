@@ -37,8 +37,9 @@ QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
   return new QgsWebView( parent );
 }
 
-void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
+void QgsHtmlWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mWidget = qobject_cast<QgsWebView *>( editor );
 
   if ( !mWidget )

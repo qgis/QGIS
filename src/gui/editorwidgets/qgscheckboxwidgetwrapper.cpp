@@ -58,8 +58,9 @@ QWidget *QgsCheckboxWidgetWrapper::createWidget( QWidget *parent )
   return new QCheckBox( parent );
 }
 
-void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
+void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mCheckBox = qobject_cast<QCheckBox *>( editor );
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 

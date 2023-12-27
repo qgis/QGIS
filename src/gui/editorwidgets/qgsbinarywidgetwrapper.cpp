@@ -74,8 +74,9 @@ QWidget *QgsBinaryWidgetWrapper::createWidget( QWidget *parent )
   return container;
 }
 
-void QgsBinaryWidgetWrapper::initWidget( QWidget *editor )
+void QgsBinaryWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mLabel = editor->findChild<QLabel *>();
   mButton = editor->findChild<QToolButton *>();
 

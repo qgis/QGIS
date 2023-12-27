@@ -54,7 +54,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
 
   protected slots:
     //! Called when current value of search widget changes

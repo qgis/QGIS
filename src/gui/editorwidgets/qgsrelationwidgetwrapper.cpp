@@ -154,8 +154,9 @@ void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
   Q_UNUSED( showLabel )
 }
 
-void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
+void QgsRelationWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   QgsAbstractRelationEditorWidget *w = qobject_cast<QgsAbstractRelationEditorWidget *>( editor );
 
   // if the editor cannot be cast to relation editor, insert a new one

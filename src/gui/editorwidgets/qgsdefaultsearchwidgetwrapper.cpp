@@ -251,8 +251,9 @@ void QgsDefaultSearchWidgetWrapper::setEnabled( bool enabled )
     mCheckbox->setEnabled( enabled );
 }
 
-void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
+void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );

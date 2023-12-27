@@ -49,7 +49,7 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
 
   protected slots:
     void setExpression( const QString &exp ) override;

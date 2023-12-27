@@ -69,7 +69,7 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
   public:
     QVariant value() const override;
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
     bool valid() const override;
     void showIndeterminateState() override;
 

@@ -56,8 +56,9 @@ QWidget *QgsColorWidgetWrapper::createWidget( QWidget *parent )
   return container;
 }
 
-void QgsColorWidgetWrapper::initWidget( QWidget *editor )
+void QgsColorWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mColorButton = qobject_cast<QgsColorButton *>( editor );
   if ( !mColorButton )
   {

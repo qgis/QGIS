@@ -139,8 +139,9 @@ QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
   return new QgsExternalResourceWidget( parent );
 }
 
-void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
+void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mLineEdit = qobject_cast<QLineEdit *>( editor );
   mLabel = qobject_cast<QLabel *>( editor );
   mQgsWidget = qobject_cast<QgsExternalResourceWidget *>( editor );

@@ -51,8 +51,9 @@ QWidget *QgsEnumerationWidgetWrapper::createWidget( QWidget *parent )
   return combo;
 }
 
-void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
+void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )

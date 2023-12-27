@@ -39,8 +39,9 @@ QWidget *QgsQmlWidgetWrapper::createWidget( QWidget *parent )
   return new QQuickWidget( parent );
 }
 
-void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
+void QgsQmlWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mWidget = qobject_cast<QQuickWidget *>( editor );
 
   if ( !mWidget )

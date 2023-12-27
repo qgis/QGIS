@@ -42,8 +42,9 @@ QWidget *QgsClassificationWidgetWrapper::createWidget( QWidget *parent )
   return combo;
 }
 
-void QgsClassificationWidgetWrapper::initWidget( QWidget *editor )
+void QgsClassificationWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )

@@ -52,7 +52,7 @@ QWidget *QgsWidgetWrapper::widget()
   if ( !mInitialized )
   {
     mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper *>( this ) );
-    initWidget( mWidget );
+    initWidget( mWidget, mParent );
     mInitialized = true;
   }
 
@@ -104,8 +104,9 @@ void QgsWidgetWrapper::notifyAboutToSave()
   aboutToSave();
 }
 
-void QgsWidgetWrapper::initWidget( QWidget *editor )
+void QgsWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   Q_UNUSED( editor )
 }
 

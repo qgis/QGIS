@@ -55,8 +55,9 @@ QWidget *QgsUuidWidgetWrapper::createWidget( QWidget *parent )
   return new QLineEdit( parent );
 }
 
-void QgsUuidWidgetWrapper::initWidget( QWidget *editor )
+void QgsUuidWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mLineEdit = qobject_cast<QLineEdit *>( editor );
   mLabel = qobject_cast<QLabel *>( editor );
   if ( mLineEdit )

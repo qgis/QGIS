@@ -153,8 +153,9 @@ QWidget *QgsDateTimeSearchWidgetWrapper::createWidget( QWidget *parent )
   return widget;
 }
 
-void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor )
+void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mDateTimeEdit = qobject_cast<QgsDateTimeEdit *>( editor );
 
   if ( mDateTimeEdit )

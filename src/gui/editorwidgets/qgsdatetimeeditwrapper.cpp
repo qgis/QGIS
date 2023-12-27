@@ -41,8 +41,9 @@ QWidget *QgsDateTimeEditWrapper::createWidget( QWidget *parent )
   return widget;
 }
 
-void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
+void QgsDateTimeEditWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   QgsDateTimeEdit *qgsEditor = dynamic_cast<QgsDateTimeEdit *>( editor );
   if ( qgsEditor )
   {

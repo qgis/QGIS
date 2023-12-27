@@ -60,7 +60,7 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
     bool valid() const override;
 
   public slots:

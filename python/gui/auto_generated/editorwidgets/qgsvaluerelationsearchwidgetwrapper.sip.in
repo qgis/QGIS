@@ -51,7 +51,7 @@ Constructor for QgsValueRelationSearchWidgetWrapper
   protected:
     virtual QWidget *createWidget( QWidget *parent );
 
-    virtual void initWidget( QWidget *editor );
+    virtual void initWidget( QWidget *editor, QWidget *parent = 0 );
 
 
   protected slots:

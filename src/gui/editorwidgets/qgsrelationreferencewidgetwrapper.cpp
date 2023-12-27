@@ -34,8 +34,9 @@ QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
   return w;
 }
 
-void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
+void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   QgsRelationReferenceWidget *w = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !w )
   {

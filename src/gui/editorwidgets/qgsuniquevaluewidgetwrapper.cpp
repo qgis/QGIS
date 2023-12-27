@@ -59,8 +59,9 @@ QWidget *QgsUniqueValuesWidgetWrapper::createWidget( QWidget *parent )
   }
 }
 
-void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
+void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent );
   mComboBox = qobject_cast<QComboBox *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 

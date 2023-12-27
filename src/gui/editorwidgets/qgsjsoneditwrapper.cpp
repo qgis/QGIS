@@ -38,8 +38,9 @@ QWidget *QgsJsonEditWrapper::createWidget( QWidget *parent )
   return jsonEditWidget;
 }
 
-void QgsJsonEditWrapper::initWidget( QWidget *editor )
+void QgsJsonEditWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mJsonEditWidget = qobject_cast<QgsJsonEditWidget *>( editor );
   if ( !mJsonEditWidget )
   {

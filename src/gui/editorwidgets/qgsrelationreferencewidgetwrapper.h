@@ -54,7 +54,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
         QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
     QVariant value() const override;
     bool valid() const override;
     void showIndeterminateState() override;

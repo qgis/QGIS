@@ -156,8 +156,9 @@ QWidget *QgsCheckboxSearchWidgetWrapper::createWidget( QWidget *parent )
   return c;
 }
 
-void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor )
+void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mCheckBox = qobject_cast<QCheckBox *>( editor );
 
   if ( mCheckBox )

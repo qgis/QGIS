@@ -53,7 +53,7 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
     // QgsWidgetWrapper interface
     bool valid() const override;
     QWidget *createWidget( QWidget *parent ) override;
-    void initWidget( QWidget *editor ) override;
+    void initWidget( QWidget *editor, QWidget *parent = nullptr ) override;
 
   public slots:
 

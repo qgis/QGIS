@@ -79,8 +79,9 @@ static void setupIntEditor( const QVariant &min, const QVariant &max, const QVar
   QObject::connect( slider, SIGNAL( valueChanged( int ) ), wrapper, SLOT( emitValueChanged() ) );
 }
 
-void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
+void QgsRangeWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mDoubleSpinBox = qobject_cast<QDoubleSpinBox *>( editor );
   mIntSpinBox = qobject_cast<QSpinBox *>( editor );
 

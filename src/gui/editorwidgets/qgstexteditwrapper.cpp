@@ -146,8 +146,9 @@ QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
   }
 }
 
-void QgsTextEditWrapper::initWidget( QWidget *editor )
+void QgsTextEditWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mInvalidJSON = false;
   mTextBrowser = qobject_cast<QTextBrowser *>( editor );
   mTextEdit = qobject_cast<QTextEdit *>( editor );

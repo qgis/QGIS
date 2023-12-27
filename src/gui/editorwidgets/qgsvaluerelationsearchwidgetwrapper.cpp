@@ -209,8 +209,9 @@ QWidget *QgsValueRelationSearchWidgetWrapper::createWidget( QWidget *parent )
   }
 }
 
-void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
+void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox *>( editor );

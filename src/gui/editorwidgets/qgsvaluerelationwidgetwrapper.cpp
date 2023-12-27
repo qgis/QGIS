@@ -132,11 +132,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
 QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
-  if ( form )
-    connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsValueRelationWidgetWrapper::widgetValueChanged );
-
-  mExpression = config().value( QStringLiteral( "FilterExpression" ) ).toString();
+  //mExpression = config().value( QStringLiteral( "FilterExpression" ) ).toString();
 
   if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
@@ -155,8 +151,15 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
   }
 }
 
-void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
+void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  if ( form )
+  {
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsValueRelationWidgetWrapper::widgetValueChanged );
+  }
+
+  mExpression = config().value( QStringLiteral( "FilterExpression" ) ).toString();
 
   mComboBox = qobject_cast<QComboBox *>( editor );
   mTableWidget = qobject_cast<QTableWidget *>( editor );

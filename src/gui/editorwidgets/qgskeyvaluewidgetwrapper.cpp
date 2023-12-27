@@ -51,8 +51,9 @@ QWidget *QgsKeyValueWidgetWrapper::createWidget( QWidget *parent )
   }
 }
 
-void QgsKeyValueWidgetWrapper::initWidget( QWidget *editor )
+void QgsKeyValueWidgetWrapper::initWidget( QWidget *editor, QWidget *parent )
 {
+  Q_UNUSED( parent )
   mWidget = qobject_cast<QgsKeyValueWidget *>( editor );
   if ( !mWidget )
   {
