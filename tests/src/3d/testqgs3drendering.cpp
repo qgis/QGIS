@@ -48,9 +48,11 @@
 #include "qgsmarkersymbol.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgs3dsceneexporter.h"
+#include "qgsdirectionallightsettings.h"
 
 #include <QFileInfo>
 #include <QDir>
+#include <QSignalSpy>
 
 class QgsCameraController4Test;
 
@@ -66,6 +68,7 @@ class TestQgs3DRendering : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
+    void testLights();
     void testFlatTerrain();
     void testDemTerrain();
     void testTerrainShading();
@@ -237,6 +240,42 @@ void TestQgs3DRendering::cleanupTestCase()
 {
   mProject.reset();
   QgsApplication::exitQgis();
+}
+
+void TestQgs3DRendering::testLights()
+{
+  // test light change signals
+  Qgs3DMapSettings map;
+  QSignalSpy lightSourceChangedSpy( &map, &Qgs3DMapSettings::lightSourcesChanged );
+
+  QCOMPARE( map.lightSources().size(), 0 );
+  map.setLightSources( {} );
+  QCOMPARE( lightSourceChangedSpy.size(), 0 );
+
+  QgsDirectionalLightSettings *defaultLight = new QgsDirectionalLightSettings();;
+  map.setLightSources( { defaultLight } );
+  QCOMPARE( lightSourceChangedSpy.size(), 1 );
+  // set identical light sources, should be no signal
+  map.setLightSources( { defaultLight->clone() } );
+  QCOMPARE( lightSourceChangedSpy.size(), 1 );
+
+  // different light settings
+  QgsDirectionalLightSettings *dsLight = new QgsDirectionalLightSettings();
+  dsLight->setColor( QColor( 255, 0, 0 ) );
+  map.setLightSources( { dsLight } );
+  QCOMPARE( lightSourceChangedSpy.size(), 2 );
+  // different light type
+  std::unique_ptr< QgsPointLightSettings > pointLight = std::make_unique< QgsPointLightSettings >();
+  pointLight->setColor( QColor( 255, 0, 0 ) );
+  map.setLightSources( { pointLight->clone() } );
+  QCOMPARE( lightSourceChangedSpy.size(), 3 );
+  // different number of lights
+  map.setLightSources( { pointLight->clone(), new QgsDirectionalLightSettings() } );
+  QCOMPARE( lightSourceChangedSpy.size(), 4 );
+
+  // a mix of types, but the same settings. Should be no new signals
+  map.setLightSources( { pointLight->clone(), new QgsDirectionalLightSettings() } );
+  QCOMPARE( lightSourceChangedSpy.size(), 4 );
 }
 
 void TestQgs3DRendering::testFlatTerrain()

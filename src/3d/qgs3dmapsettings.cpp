@@ -796,6 +796,36 @@ QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 
 void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
 {
+  // have lights actually changed?
+  if ( mLightSources.count() == lights.count() )
+  {
+    bool same = true;
+    for ( int i = 0; i < mLightSources.count(); ++i )
+    {
+      if ( mLightSources[i]->type() == lights[i]->type() )
+      {
+        switch ( mLightSources[i]->type() )
+        {
+          case Qgis::LightSourceType::Point:
+            if ( *static_cast< QgsPointLightSettings * >( mLightSources[i] ) == *static_cast< QgsPointLightSettings * >( lights[i] ) )
+              continue;
+            break;
+          case Qgis::LightSourceType::Directional:
+            if ( *static_cast< QgsDirectionalLightSettings * >( mLightSources[i] ) == *static_cast< QgsDirectionalLightSettings * >( lights[i] ) )
+              continue;
+            break;
+        }
+      }
+      same = false;
+      break;
+    }
+    if ( same )
+    {
+      qDeleteAll( lights );
+      return;
+    }
+  }
+
   qDeleteAll( mLightSources );
   mLightSources = lights;
 
