@@ -50,7 +50,7 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   connect( pbnRemoveSelectedRow, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked );
 
   mNodataColorButton->setShowNoColor( true );
-  mNodataColorButton->setColorDialogTitle( tr( "Select No Data Color" ) );
+  mNodataColorButton->setColorDialogTitle( tr( "Select NoData Color" ) );
   syncToLayer();
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );

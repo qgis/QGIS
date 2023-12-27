@@ -98,7 +98,7 @@ class fillnodata(GdalAlgorithm):
         return 'fillnodata'
 
     def displayName(self):
-        return self.tr('Fill nodata')
+        return self.tr('Fill NoData')
 
     def group(self):
         return self.tr('Raster analysis')

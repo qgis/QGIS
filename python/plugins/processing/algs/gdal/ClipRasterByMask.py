@@ -83,7 +83,7 @@ class ClipRasterByMask(GdalAlgorithm):
                                                        self.tr('Target extent'),
                                                        optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
-                                                       self.tr('Assign a specified nodata value to output bands'),
+                                                       self.tr('Assign a specified NoData value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        defaultValue=None,
                                                        optional=True))

@@ -1118,7 +1118,7 @@ bool QgsPostgresRasterProvider::init()
 
         if ( mBandCount != pxTypes.count( ) || mBandCount != noDataValues.count() )
         {
-          throw QgsPostgresRasterProviderException( tr( "Band count and nodata items count differs" ) );
+          throw QgsPostgresRasterProviderException( tr( "Band count and NoData items count differ" ) );
         }
 
         int i = 0;
@@ -1136,7 +1136,7 @@ bool QgsPostgresRasterProvider::init()
           {
             if ( noDataValues.at( i ) != QLatin1String( "NULL" ) )
             {
-              QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double" )
+              QgsMessageLog::logMessage( tr( "Cannot convert NoData value '%1' to double" )
                                          .arg( noDataValues.at( i ) ),
                                          QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
             }
@@ -1422,7 +1422,7 @@ bool QgsPostgresRasterProvider::init()
 
       if ( ! ok )
       {
-        QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double, default to: %2" )
+        QgsMessageLog::logMessage( tr( "Cannot convert NoData value '%1' to double, default to: %2" )
                                    .arg( result.PQgetvalue( rowNumber, 2 ) )
                                    .arg( std::numeric_limits<double>::min() ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
         nodataValue = std::numeric_limits<double>::min();

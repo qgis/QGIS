@@ -103,7 +103,7 @@ class rasterize(GdalAlgorithm):
                                                        self.tr('Output extent'),
                                                        optional=True))
         nodataParam = QgsProcessingParameterNumber(self.NODATA,
-                                                   self.tr('Assign a specified nodata value to output bands'),
+                                                   self.tr('Assign a specified NoData value to output bands'),
                                                    type=QgsProcessingParameterNumber.Double,
                                                    optional=True)
         nodataParam.setGuiDefaultValueOverride(QVariant(QVariant.Double))
