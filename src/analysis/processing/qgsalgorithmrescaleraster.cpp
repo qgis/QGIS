@@ -53,7 +53,7 @@ QString QgsRescaleRasterAlgorithm::shortHelpString() const
                       "(distribution) of the raster's histogram (pixel values). Input values "
                       "are mapped using a linear interpolation from the source raster's minimum "
                       "and maximum pixel values to the destination minimum and maximum pixel range.\n\n"
-                      "By default the algorithm preserves original the NoData value, but there is "
+                      "By default the algorithm preserves the original NoData value, but there is "
                       "an option to override it." );
 }
 

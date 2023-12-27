@@ -1118,7 +1118,7 @@ bool QgsPostgresRasterProvider::init()
 
         if ( mBandCount != pxTypes.count( ) || mBandCount != noDataValues.count() )
         {
-          throw QgsPostgresRasterProviderException( tr( "Band count and NoData items count differs" ) );
+          throw QgsPostgresRasterProviderException( tr( "Band count and NoData items count differ" ) );
         }
 
         int i = 0;
