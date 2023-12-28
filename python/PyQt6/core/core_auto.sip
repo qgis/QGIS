@@ -485,6 +485,7 @@
 %Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/mesh/qgsmeshadvancedediting.sip
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
+%Include auto_generated/mesh/qgsmeshlayerlabeling.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
 %Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip
