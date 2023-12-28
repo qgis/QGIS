@@ -477,7 +477,6 @@
 %Include auto_generated/mesh/qgsmeshlayer.sip
 %Include auto_generated/mesh/qgsmeshlayerelevationproperties.sip
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip
-%Include auto_generated/mesh/qgsmeshlayerlabeling.sip
 %Include auto_generated/mesh/qgsmeshlayertemporalproperties.sip
 %Include auto_generated/mesh/qgsmeshrenderersettings.sip
 %Include auto_generated/mesh/qgsmeshspatialindex.sip
@@ -486,6 +485,7 @@
 %Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/mesh/qgsmeshadvancedediting.sip
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
+%Include auto_generated/mesh/qgsmeshlayerlabeling.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
 %Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip
