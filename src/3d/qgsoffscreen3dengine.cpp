@@ -15,6 +15,7 @@
 
 #include "qgsoffscreen3dengine.h"
 
+#include <QCoreApplication>
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
 #include <QOpenGLFunctions>
@@ -33,31 +34,9 @@
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
-#include <QtGui/QOpenGLContext>
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
-  // Set up the default OpenGL surface format.
-  QSurfaceFormat format;
-
-  // by default we get just some older version of OpenGL from the system,
-  // but for 3D lines we use "primitive restart" functionality supported in OpenGL >= 3.1
-  // Qt3DWindow uses this - requesting OpenGL 4.3 - so let's request the same version.
-#ifdef QT_OPENGL_ES_2
-  format.setRenderableType( QSurfaceFormat::OpenGLES );
-#else
-  if ( QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL )
-  {
-    format.setVersion( 4, 3 );
-    format.setProfile( QSurfaceFormat::CoreProfile );
-  }
-#endif
-
-  format.setMajorVersion( 3 );
-  format.setDepthBufferSize( 32 ); // TODO: or 24?  (used by QWindow3D)
-  format.setSamples( 8 );
-  QSurfaceFormat::setDefaultFormat( format );
-
   // Set up a camera to point at the shapes.
   mCamera = new Qt3DRender::QCamera;
   mCamera->lens()->setPerspectiveProjection( 45.0f, float( mSize.width() ) / float( mSize.height() ), 0.1f, 1000.0f );
@@ -93,7 +72,31 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // Create the offscreen frame graph, which will manage all of the resources required
   // for rendering without a QWindow.
   mOffscreenSurface = new QOffscreenSurface();
-  mOffscreenSurface->setFormat( QSurfaceFormat::defaultFormat() );
+
+  QSurfaceFormat format;
+
+  //Use default format when shared OpenGL context is enabled
+  if ( QCoreApplication::instance() && QCoreApplication::instance()->testAttribute( Qt::AA_ShareOpenGLContexts ) )
+  {
+    format = QSurfaceFormat::defaultFormat();
+  }
+  //Set the surface format when used outside of QGIS application
+  else
+  {
+    format.setRenderableType( QSurfaceFormat::OpenGL );
+#ifdef Q_OS_MAC
+    format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
+    format.setProfile( QSurfaceFormat::CoreProfile );
+#else
+    format.setVersion( 4, 3 );
+    format.setProfile( QSurfaceFormat::CoreProfile );
+#endif
+    format.setDepthBufferSize( 24 );
+    format.setSamples( 4 );
+    format.setStencilBufferSize( 8 );
+  }
+
+  mOffscreenSurface->setFormat( format );
   mOffscreenSurface->create();
 
   mFrameGraph = new QgsShadowRenderingFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );

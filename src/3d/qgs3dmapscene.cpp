@@ -153,7 +153,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
         if ( renderer->type() == QLatin1String( "vector" ) )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
+          if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
           {
             removeLayerEntity( layer );
             addLayerEntity( layer );
@@ -165,7 +165,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
           for ( auto rule : rules )
           {
             const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-            if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
+            if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
             {
               removeLayerEntity( layer );
               addLayerEntity( layer );
@@ -235,7 +235,7 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   }
 }
 
-QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent()
+QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
   QVector<QgsPointXY> extent;
@@ -278,7 +278,7 @@ int Qgs3DMapScene::totalPendingJobsCount() const
   return count;
 }
 
-float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
+float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
   float fov = camera->fieldOfView();
@@ -292,16 +292,16 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
   return err;
 }
 
-Qgs3DMapSceneEntity::SceneState sceneState_( QgsAbstract3DEngine *engine )
+Qgs3DMapSceneEntity::SceneContext Qgs3DMapScene::buildSceneContext( ) const
 {
-  Qt3DRender::QCamera *camera = engine->camera();
-  Qgs3DMapSceneEntity::SceneState state;
-  state.cameraFov = camera->fieldOfView();
-  state.cameraPos = camera->position();
-  const QSize size = engine->size();
-  state.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
-  state.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
-  return state;
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  Qgs3DMapSceneEntity::SceneContext sceneContext;
+  sceneContext.cameraFov = camera->fieldOfView();
+  sceneContext.cameraPos = camera->position();
+  const QSize size = mEngine->size();
+  sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  sceneContext.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
+  return sceneContext;
 }
 
 void Qgs3DMapScene::onCameraChanged()
@@ -370,7 +370,7 @@ void Qgs3DMapScene::updateScene()
 
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
-    entity->handleSceneUpdate( sceneState_( mEngine ) );
+    entity->handleSceneUpdate( buildSceneContext() );
     if ( entity->hasReachedGpuMemoryLimit() )
       emit gpuMemoryLimitReached();
   }
@@ -447,7 +447,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
       QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
-      entity->handleSceneUpdate( sceneState_( mEngine ) );
+      entity->handleSceneUpdate( buildSceneContext() );
       if ( entity->hasReachedGpuMemoryLimit() )
         emit gpuMemoryLimitReached();
     }
@@ -645,7 +645,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         if ( vlayer->geometryType() == Qgis::GeometryType::Point )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          if ( pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
           }
@@ -657,7 +657,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-          if ( pointSymbol && pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
             break;
@@ -1087,7 +1087,7 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
   return chunks;
 }
 
-QgsRectangle Qgs3DMapScene::sceneExtent()
+QgsRectangle Qgs3DMapScene::sceneExtent() const
 {
   return mMap.extent();
 }
@@ -1199,7 +1199,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   {
     if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
-      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+      m3DAxis = new Qgs3DAxis( static_cast<Qgs3DWindow *>( engine->window() ),
                                engine->root(),
                                this,
                                mCameraController,

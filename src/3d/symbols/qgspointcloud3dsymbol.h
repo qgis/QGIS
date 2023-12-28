@@ -513,7 +513,7 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
      */
     QgsPointCloudCategoryList getFilteredOutCategories() const;
 
-    unsigned int byteStride() override { return 4 * sizeof( float ); }
+    unsigned int byteStride() override { return 5 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
 
   private:

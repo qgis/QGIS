@@ -251,19 +251,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 
     static double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol );
 
-    /**
-       * \brief Determine whether two points are equal up to the specified tolerance
-       * \param p1 The first point
-       * \param p2 The second point
-       * \param tol The tolerance
-       * \returns Whether the points are equal
-       */
-    static inline bool pointsFuzzyEqual( const QgsPointXY &p1, const QgsPointXY &p2, double tol )
-    {
-      double dx = p1.x() - p2.x(), dy = p1.y() - p2.y();
-      return ( dx * dx + dy * dy ) < tol * tol;
-    }
-
     static inline bool canDeleteVertex( const QgsAbstractGeometry *geom, int iPart, int iRing )
     {
       const int nVerts = geom->vertexCount( iPart, iRing );

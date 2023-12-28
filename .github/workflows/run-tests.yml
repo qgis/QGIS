@@ -52,6 +52,7 @@ jobs:
             with-clazy: ON
             with-grass7: OFF
             with-grass8: OFF
+            with-webengine: OFF
             with-compile-commands: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
@@ -67,6 +68,7 @@ jobs:
             with-clazy: OFF
             with-grass7: OFF
             with-grass8: ON
+            with-webengine: ON
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
@@ -178,6 +180,7 @@ jobs:
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
+                     --env WITH_QTWEBENGINE=${{ matrix.with-webengine }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
@@ -431,6 +434,7 @@ jobs:
         if: ${{ failure() }}
         run: |
           echo ${{ github.event.number }} | tee qgis_test_report/pr_number
+          echo ${{ github.event.pull_request.head.sha }} | tee qgis_test_report/git_commit
 
       - name: Archive test results report
         if: ${{ failure() }}

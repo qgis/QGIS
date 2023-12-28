@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/gui/qgsrasterformatsaveoptionswidget.h
+QgsRasterFormatSaveOptionsWidget.Default = QgsRasterFormatSaveOptionsWidget.Type.Default
+QgsRasterFormatSaveOptionsWidget.Full = QgsRasterFormatSaveOptionsWidget.Type.Full
+QgsRasterFormatSaveOptionsWidget.Table = QgsRasterFormatSaveOptionsWidget.Type.Table
+QgsRasterFormatSaveOptionsWidget.LineEdit = QgsRasterFormatSaveOptionsWidget.Type.LineEdit
+QgsRasterFormatSaveOptionsWidget.ProfileLineEdit = QgsRasterFormatSaveOptionsWidget.Type.ProfileLineEdit

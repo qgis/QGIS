@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeractioncontext.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapLayerActionContext
+{
+%Docstring(signature="appended")
+Encapsulates the context in which a :py:class:`QgsMapLayerAction` action is executed.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayeractioncontext.h"
+%End
+  public:
+
+    QgsMapLayerActionContext();
+
+    QgsAttributeDialog *attributeDialog() const;
+%Docstring
+Returns the attribute dialog associated with the action's execution.
+
+May be ``None`` if the action is not being executed from an attribute dialog.
+
+.. seealso:: :py:func:`setAttributeDialog`
+%End
+
+    void setAttributeDialog( QgsAttributeDialog *dialog );
+%Docstring
+Sets the attribute ``dialog`` associated with the action's execution.
+
+.. seealso:: :py:func:`attributeDialog`
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the action's execution.
+
+May be ``None``.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the action's execution.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeractioncontext.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

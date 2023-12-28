@@ -268,7 +268,7 @@ void QgsVectorLayerProfileResults::visitFeaturesAtPoint( const QgsProfilePoint &
                 const double snappedDistance = point.distance() < partBounds.xMinimum() ? partBounds.xMinimum()
                                                : point.distance() > partBounds.xMaximum() ? partBounds.xMaximum() : point.distance();
 
-                const QgsGeometry cutLine( new QgsLineString( QgsPoint( snappedDistance, minZ ), QgsPoint( snappedDistance, maxZ ) ) );
+                const QgsGeometry cutLine( new QgsLineString( QgsPoint( snappedDistance, qgsDoubleNear( minZ, maxZ ) ? minZ - 1 : minZ ), QgsPoint( snappedDistance, maxZ ) ) );
                 QgsGeos cutLineGeos( cutLine.constGet() );
 
                 const QgsGeometry points( cutLineGeos.intersection( line ) );
@@ -948,7 +948,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
 
         const double *inX = ls->xData();
         const double *inY = ls->yData();
-        const double *inZ = ls->zData();
+        const double *inZ = ls->is3D() ? ls->zData() : nullptr;
         double *outX = newX.data();
         double *outY = newY.data();
         double *outZ = newZ.data();
@@ -975,11 +975,11 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
           const double distanceAlongOriginalGeometry = curveGeos.lineLocatePoint( QgsPoint( x, y ) );
           std::unique_ptr< QgsPoint > closestOriginalPoint( curve->interpolatePoint( distanceAlongOriginalGeometry ) );
 
-          double z = *inZ++;
+          double z = inZ ? *inZ++ : 0;
 
           *outX++ = x;
           *outY++ = y;
-          *outZ++ = closestOriginalPoint->z();
+          *outZ++ = std::isnan( closestOriginalPoint->z() ) ? 0 : closestOriginalPoint->z();
           if ( extZOut )
             *extZOut++ = z + extrusion;
 

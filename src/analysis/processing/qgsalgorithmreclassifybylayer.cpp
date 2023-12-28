@@ -50,7 +50,7 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   addAlgorithmParams();
 
   std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
-      QObject::tr( "Output no data value" ), QgsProcessingParameterNumber::Double, -9999 );
+      QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999 );
   noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( noDataValueParam.release() );
 
@@ -64,7 +64,7 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( boundsHandling.release() );
 
   std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
-      QObject::tr( "Use no data when no range matches value" ), false, false );
+      QObject::tr( "Use NoData when no range matches value" ), false, false );
   missingValuesParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( missingValuesParam.release() );
 

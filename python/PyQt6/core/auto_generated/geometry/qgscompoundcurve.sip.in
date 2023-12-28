@@ -1,0 +1,237 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgscompoundcurve.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsCompoundCurve: QgsCurve
+{
+%Docstring(signature="appended")
+Compound curve geometry type
+
+.. versionadded:: 2.10
+%End
+
+%TypeHeaderCode
+#include "qgscompoundcurve.h"
+%End
+  public:
+    QgsCompoundCurve();
+    QgsCompoundCurve( const QgsCompoundCurve &curve );
+    ~QgsCompoundCurve();
+
+    virtual bool equals( const QgsCurve &other ) const;
+
+
+    virtual QString geometryType() const /HoldGIL/;
+
+    virtual int dimension() const /HoldGIL/;
+
+    virtual QgsCompoundCurve *clone() const /Factory/;
+
+    virtual void clear();
+
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
+
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
+
+
+    virtual double length() const /HoldGIL/;
+
+    virtual QgsPoint startPoint() const /HoldGIL/;
+
+    virtual QgsPoint endPoint() const /HoldGIL/;
+
+    virtual void points( QgsPointSequence &pts /Out/ ) const;
+
+    virtual int numPoints() const /HoldGIL/;
+
+    virtual bool isEmpty() const /HoldGIL/;
+
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
+
+    int indexOf( const QgsPoint &point ) const final;
+
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
+%Docstring
+Returns a new line string geometry corresponding to a segmentized approximation
+of the curve.
+
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+%End
+
+    virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
+
+    int nCurves() const /HoldGIL/;
+%Docstring
+Returns the number of curves in the geometry.
+%End
+
+    const QgsCurve *curveAt( int i ) const /HoldGIL/;
+%Docstring
+Returns the curve at the specified index.
+%End
+
+    void addCurve( QgsCurve *c /Transfer/, bool extendPrevious = false );
+%Docstring
+Adds a curve to the geometry (takes ownership).
+
+Since QGIS 3.20, if ``extendPrevious`` is ``True``, then adding a LineString when the last existing curve
+in the compound curve is also a LineString will cause the existing linestring to be
+extended with the newly added LineString vertices instead of appending a whole new
+LineString curve to the compound curve. This can result in simplified compound curves with lesser number
+of component curves while still being topologically identical to the desired result.
+%End
+
+    void removeCurve( int i );
+%Docstring
+Removes a curve from the geometry.
+
+:param i: index of curve to remove
+%End
+
+    void addVertex( const QgsPoint &pt );
+%Docstring
+Adds a vertex to the end of the geometry.
+%End
+
+    void condenseCurves();
+%Docstring
+Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+and combining adjacent circularstrings to a single continuous circularstring.
+
+.. versionadded:: 3.20
+%End
+
+    bool toggleCircularAtVertex( QgsVertexId position );
+%Docstring
+Converts the vertex at the given position from/to circular
+
+:return: ``False`` if atVertex does not correspond to a valid vertex
+         on this geometry (including if this geometry is a Point),
+         or if the specified vertex can't be converted (e.g. start/end points).
+
+.. versionadded:: 3.20
+%End
+
+    virtual void draw( QPainter &p ) const;
+
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  throw( QgsCsException );
+
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
+
+    virtual void addToPainterPath( QPainterPath &path ) const;
+
+    virtual void drawAsPolygon( QPainter &p ) const;
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
+    virtual bool deleteVertex( QgsVertexId position );
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
+    virtual bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const;
+
+    virtual void sumUpArea( double &sum /Out/ ) const;
+
+
+    void close();
+%Docstring
+Appends first point if not already closed.
+%End
+
+    virtual bool hasCurvedSegments() const;
+
+    virtual double vertexAngle( QgsVertexId vertex ) const;
+
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
+    virtual QgsCompoundCurve *reversed() const /Factory/;
+
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
+    virtual QgsCompoundCurve *curveSubstring( double startDistance, double endDistance ) const /Factory/;
+
+
+    virtual bool addZValue( double zValue = 0 );
+
+    virtual bool addMValue( double mValue = 0 );
+
+
+    virtual bool dropZValue();
+
+    virtual bool dropMValue();
+
+    virtual void swapXy();
+
+
+    virtual double xAt( int index ) const /HoldGIL/;
+
+    virtual double yAt( int index ) const /HoldGIL/;
+
+    virtual double zAt( int index ) const /HoldGIL/;
+
+    virtual double mAt( int index ) const /HoldGIL/;
+
+
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+    void scroll( int firstVertexIndex ) final;
+
+
+    virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsCompoundCurve: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  protected:
+
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+    virtual QgsBox3D calculateBoundingBox3D() const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgscompoundcurve.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

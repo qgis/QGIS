@@ -1,0 +1,240 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapLayerProxyModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to display the list of layers in widgets.
+
+.. versionadded:: 2.3
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerproxymodel.h"
+%End
+  public:
+
+    explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+:py:class:`QgsMapLayerProxModel` creates a proxy model with a :py:class:`QgsMapLayerModel` as source model.
+It can be used to filter the layers list in a widget.
+%End
+
+    QgsMapLayerModel *sourceLayerModel() const;
+%Docstring
+layerModel returns the :py:class:`QgsMapLayerModel` used in this QSortFilterProxyModel
+%End
+
+    QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
+%Docstring
+Sets ``filter`` flags which affect how layers are filtered within the model.
+
+.. seealso:: :py:func:`filters`
+
+.. versionadded:: 2.3
+%End
+
+ void setFilters( int filters ) /Deprecated/;
+%Docstring
+Filters according to layer type and/or geometry type.
+
+.. note::
+
+   for API compatibility
+
+.. versionadded:: 3.34
+
+.. deprecated:: QGIS 3.34
+   use the flag signature instead
+%End
+
+    const Qgis::LayerFilters &filters() const;
+%Docstring
+Returns the filter flags which affect how layers are filtered within the model.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 2.3
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` from which map layers are shown.
+
+If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
+
+.. versionadded:: 3.24
+%End
+
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Qgis::LayerFilters &filters );
+%Docstring
+Returns if the ``layer`` matches the given ``filters``
+
+.. versionadded:: 3.14
+%End
+
+ void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) /Deprecated/;
+%Docstring
+Sets an allowlist of ``layers`` to include within the model. Only layers
+from this list will be shown.
+
+An empty list indicates that no filter by allowlist should be performed.
+
+.. seealso:: :py:func:`layerAllowlist`
+
+.. seealso:: :py:func:`setExceptedLayerList`
+
+.. deprecated::
+   use :py:func:`~QgsMapLayerProxyModel.setLayerAllowList`
+%End
+
+    void setLayerAllowlist( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets an allowlist of ``layers`` to include within the model. Only layers
+from this list will be shown.
+
+An empty list indicates that no filter by allowlist should be performed.
+
+.. seealso:: :py:func:`layerAllowlist`
+
+.. seealso:: :py:func:`setExceptedLayerList`
+
+.. versionadded:: 3.14
+%End
+
+ QList<QgsMapLayer *> layerWhitelist() /Deprecated/;
+%Docstring
+Returns the list of layers which are excluded from the model.
+
+An empty list indicates that no filtering by allowlist should be performed.
+
+.. seealso:: :py:func:`setLayerAllowlist`
+
+.. seealso:: :py:func:`exceptedLayerList`
+
+.. deprecated::
+   use :py:func:`~QgsMapLayerProxyModel.layerAllowlist` instead
+%End
+
+    QList<QgsMapLayer *> layerAllowlist();
+%Docstring
+Returns the list of layers which are excluded from the model.
+
+An empty list indicates that no filtering by allowlist should be performed.
+
+.. seealso:: :py:func:`setLayerAllowlist`
+
+.. seealso:: :py:func:`exceptedLayerList`
+
+.. versionadded:: 3.14
+%End
+
+    void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
+%Docstring
+Sets a blocklist of layers to exclude from the model.
+
+.. seealso:: :py:func:`exceptedLayerList`
+
+.. seealso:: :py:func:`setExceptedLayerIds`
+
+.. seealso:: :py:func:`setLayerAllowlist`
+%End
+
+    QList<QgsMapLayer *> exceptedLayerList();
+%Docstring
+Returns the blocklist of layers which are excluded from the model.
+
+.. seealso:: :py:func:`setExceptedLayerList`
+
+.. seealso:: :py:func:`exceptedLayerIds`
+
+.. seealso:: :py:func:`layerAllowlist`
+%End
+
+    void setExceptedLayerIds( const QStringList &ids );
+%Docstring
+Sets a blocklist of layers (by layer ID) to exclude from the model.
+
+.. seealso:: :py:func:`exceptedLayerIds`
+
+.. seealso:: :py:func:`setExceptedLayerList`
+%End
+
+    QStringList exceptedLayerIds() const;
+%Docstring
+Returns the blocklist of layer IDs which are excluded from the model.
+
+.. seealso:: :py:func:`setExceptedLayerIds`
+
+.. seealso:: :py:func:`exceptedLayerList`
+%End
+
+    void setExcludedProviders( const QStringList &providers );
+%Docstring
+Sets a blocklist of data providers which should be excluded from the model.
+
+.. seealso:: :py:func:`excludedProviders`
+
+.. versionadded:: 3.0
+%End
+
+    QStringList excludedProviders() const;
+%Docstring
+Returns the blocklist of data providers which are excluded from the model.
+
+.. seealso:: :py:func:`setExcludedProviders`
+
+.. versionadded:: 3.0
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+
+.. versionadded:: 3.4
+%End
+
+    bool acceptsLayer( QgsMapLayer *layer ) const;
+%Docstring
+Returns ``True`` if the proxy model accepts the specified map ``layer``.
+
+.. versionadded:: 3.8
+%End
+
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layers with names matching the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+
+.. versionadded:: 3.4
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

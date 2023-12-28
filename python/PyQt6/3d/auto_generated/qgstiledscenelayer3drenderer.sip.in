@@ -1,0 +1,119 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgstiledscenelayer3drenderer.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsTiledSceneLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
+{
+%Docstring(signature="appended")
+Metadata for tiled scene layer 3D renderer to allow creation of its instances from XML
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenelayer3drenderer.h"
+%End
+  public:
+    QgsTiledSceneLayer3DRendererMetadata();
+
+    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+
+%Docstring
+Creates an instance of a 3D renderer based on a DOM element with renderer configuration
+%End
+};
+
+
+class QgsTiledSceneLayer3DRenderer : QgsAbstract3DRenderer
+{
+%Docstring(signature="appended")
+3D renderer that renders content of a tiled scene layer
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenelayer3drenderer.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QLatin1String( "tiledscene" ) )
+    {
+      sipType = sipType_QgsTiledSceneLayer3DRenderer;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+    QgsTiledSceneLayer3DRenderer();
+
+    void setLayer( QgsTiledSceneLayer *layer );
+%Docstring
+Sets tiled scene layer associated with the renderer
+%End
+    QgsTiledSceneLayer *layer() const;
+%Docstring
+Returns tiled scene layer associated with the renderer
+%End
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when rendering the tiled scene.
+
+Larger values result in a faster render with less content rendered.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when rendering the tiled scene.
+
+Larger values result in a faster render with less content rendered.
+
+.. seealso:: :py:func:`maximumScreenError`
+%End
+
+    bool showBoundingBoxes() const;
+%Docstring
+Returns whether bounding boxes will be visible when rendering the tiled scene.
+
+.. seealso:: :py:func:`setShowBoundingBoxes`
+%End
+
+    void setShowBoundingBoxes( bool showBoundingBoxes );
+%Docstring
+Sets whether bounding boxes will be visible when rendering the tiled scene.
+
+.. seealso:: :py:func:`showBoundingBoxes`
+%End
+
+    virtual QString type() const;
+    virtual QgsAbstract3DRenderer *clone() const /Factory/;
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+    virtual void resolveReferences( const QgsProject &project );
+
+  private:
+    QgsTiledSceneLayer3DRenderer( const QgsTiledSceneLayer3DRenderer & );
+    QgsTiledSceneLayer3DRenderer &operator=( const QgsTiledSceneLayer3DRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgstiledscenelayer3drenderer.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -474,7 +474,6 @@ void QgsDualView::initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &
   connect( mFeatureListView, &QgsFeatureListView::displayExpressionChanged, this, &QgsDualView::displayExpressionChanged );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
-  mFeatureListModel->setSortByDisplayExpression( true );
 }
 
 void QgsDualView::restoreRecentDisplayExpressions()

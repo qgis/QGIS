@@ -1,0 +1,301 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutmanager.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutManager : QObject
+{
+%Docstring(signature="appended")
+
+Manages storage of a set of layouts.
+
+:py:class:`QgsLayoutManager` handles the storage, serializing and deserializing
+of print layouts and reports. Usually this class is not constructed directly, but
+rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.layoutManager()`.
+
+:py:class:`QgsLayoutManager` retains ownership of all the layouts contained
+in the manager.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutmanager.h"
+%End
+  public:
+
+    explicit QgsLayoutManager( QgsProject *project /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutManager. The project will become the parent object for this
+manager.
+%End
+
+    ~QgsLayoutManager();
+
+    bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
+%Docstring
+Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
+Returns ``True`` if the addition was successful, or ``False`` if the layout could not be added (eg
+as a result of a duplicate layout name).
+
+.. seealso:: :py:func:`removeLayout`
+
+.. seealso:: :py:func:`layoutAdded`
+%End
+
+    bool removeLayout( QgsMasterLayoutInterface *layout );
+%Docstring
+Removes a ``layout`` from the manager. The layout is deleted.
+Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
+of removing a layout which is not contained in the manager).
+
+.. seealso:: :py:func:`addLayout`
+
+.. seealso:: :py:func:`layoutRemoved`
+
+.. seealso:: :py:func:`layoutAboutToBeRemoved`
+
+.. seealso:: :py:func:`clear`
+%End
+
+    void clear();
+%Docstring
+Removes and deletes all layouts from the manager.
+
+.. seealso:: :py:func:`removeLayout`
+%End
+
+    QList< QgsMasterLayoutInterface * > layouts() const;
+%Docstring
+Returns a list of all layouts contained in the manager.
+%End
+
+    QList< QgsPrintLayout * > printLayouts() const;
+%Docstring
+Returns a list of all print layouts contained in the manager.
+%End
+
+    QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
+%Docstring
+Returns the layout with a matching name, or ``None`` if no matching layouts
+were found.
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
+%Docstring
+Reads the manager's state from a DOM element, restoring all layouts
+present in the XML document.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
+%Docstring
+Duplicates an existing ``layout`` from the manager. The new
+layout will automatically be stored in the manager.
+Returns the new layout if duplication was successful.
+%End
+
+    QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
+%Docstring
+Generates a unique title for a new layout of the specified ``type``, which does not
+clash with any already contained by the manager.
+%End
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+within the contained layouts.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
+  signals:
+
+    void layoutAboutToBeAdded( const QString &name );
+%Docstring
+Emitted when a layout is about to be added to the manager
+%End
+
+    void layoutAdded( const QString &name );
+%Docstring
+Emitted when a layout has been added to the manager
+%End
+
+    void layoutRemoved( const QString &name );
+%Docstring
+Emitted when a layout was removed from the manager
+%End
+
+    void layoutAboutToBeRemoved( const QString &name );
+%Docstring
+Emitted when a layout is about to be removed from the manager
+%End
+
+    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
+%Docstring
+Emitted when a layout is renamed
+%End
+
+};
+
+
+class QgsLayoutManagerModel : QAbstractListModel
+{
+%Docstring(signature="appended")
+
+List model representing the print layouts and reports available in a
+layout manager.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgslayoutmanager.h"
+%End
+  public:
+
+    enum Role
+    {
+      LayoutRole,
+    };
+
+    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutManagerModel, showing the layouts from the specified ``manager``.
+%End
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the layout at the corresponding ``index``.
+
+.. seealso:: :py:func:`indexFromLayout`
+%End
+
+    QModelIndex indexFromLayout( QgsMasterLayoutInterface *layout ) const;
+%Docstring
+Returns the model index corresponding to a ``layout``.
+
+.. seealso:: :py:func:`layoutFromIndex`
+%End
+
+    void setAllowEmptyLayout( bool allowEmpty );
+%Docstring
+Sets whether an optional empty layout ("not set") option is present in the model.
+
+.. seealso:: :py:func:`allowEmptyLayout`
+%End
+
+    bool allowEmptyLayout() const;
+%Docstring
+Returns ``True`` if the model allows the empty layout ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyLayout`
+%End
+
+};
+
+
+class QgsLayoutManagerProxyModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+
+QSortFilterProxyModel subclass for QgsLayoutManagerModel
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgslayoutmanager.h"
+%End
+  public:
+
+    enum Filter
+    {
+      FilterPrintLayouts,
+      FilterReports,
+    };
+    typedef QFlags<QgsLayoutManagerProxyModel::Filter> Filters;
+
+
+    explicit QgsLayoutManagerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutManagerProxyModel.
+%End
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QgsLayoutManagerProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters used for filtering available layouts.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+    void setFilters( QgsLayoutManagerProxyModel::Filters filters );
+%Docstring
+Sets the current ``filters`` used for filtering available layouts.
+
+.. seealso:: :py:func:`filters`
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+
+.. versionadded:: 3.12
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layouts with names containing the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+
+.. versionadded:: 3.12
+%End
+
+};
+
+QFlags<QgsLayoutManagerProxyModel::Filter> operator|(QgsLayoutManagerProxyModel::Filter f1, QFlags<QgsLayoutManagerProxyModel::Filter> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutmanager.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

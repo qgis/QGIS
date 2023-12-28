@@ -59,7 +59,7 @@ jobs:
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
         run: |
           unzip "QGIS for Windows 64bit.zip"
-          unzip qgis-portable-win64.zip
+          unzip -j qgis-portable-win64.zip pr_number git_commit
 
       - name: 'Post artifact download link as comment on PR'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
@@ -69,6 +69,7 @@ jobs:
           script: |
             let fs = require('fs');
             let issue_number = Number(fs.readFileSync('./pr_number'));
+            let git_sha = String(fs.readFileSync('./git_commit')).trim();
             const prComments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -81,6 +82,7 @@ jobs:
             {
               body += " Debug symbols for this build are available [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
             }
+            body += "\n\n*(Built from commit " + git_sha + ")*";
 
             const winBuildComment = prComments.data?.find(c => c.body.startsWith(PREFIX));
             if (!!winBuildComment) {

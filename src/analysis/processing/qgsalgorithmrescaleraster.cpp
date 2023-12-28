@@ -53,7 +53,7 @@ QString QgsRescaleRasterAlgorithm::shortHelpString() const
                       "(distribution) of the raster's histogram (pixel values). Input values "
                       "are mapped using a linear interpolation from the source raster's minimum "
                       "and maximum pixel values to the destination minimum and maximum pixel range.\n\n"
-                      "By default the algorithm preserves original the NODATA value, but there is "
+                      "By default the algorithm preserves the original NoData value, but there is "
                       "an option to override it." );
 }
 
@@ -68,7 +68,7 @@ void QgsRescaleRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MINIMUM" ), QObject::tr( "New minimum value" ), QgsProcessingParameterNumber::Double, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAXIMUM" ), QObject::tr( "New maximum value" ), QgsProcessingParameterNumber::Double, 255 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NODATA" ), QObject::tr( "New NODATA value" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NODATA" ), QObject::tr( "New NoData value" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Rescaled" ) ) );
 }
 

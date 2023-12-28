@@ -32,8 +32,8 @@ from qgis.core import (
     QgsProcessingFeedback
 )
 from qgis.testing import (
-    start_app,
-    unittest
+    QgisTestCase,
+    start_app
 )
 from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from grassprovider.Grass7Utils import Grass7Utils
@@ -42,7 +42,7 @@ from grassprovider.Grass7Utils import Grass7Utils
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):

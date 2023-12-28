@@ -55,11 +55,12 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     //! temporary data we will pass to the tessellator
     struct PointData
     {
-      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
+      QVector<QVector3D> positions;  // Contains triplets of float x,y,z for each point
       QVector<float> parameter;
+      QVector<float> pointSizes; // Contains point sizes, in case they are overridden for classification renderer
       QVector<QVector3D> colors;
-      QByteArray triangles; // in case of points triangulation, contains index of point in the array positions
-      QByteArray normals; // in case of points triangulation, contains the normals of the solid surface on each vertex
+      QByteArray triangles; // In case of points triangulation, contains index of point in the array positions
+      QByteArray normals; // In case of points triangulation, contains the normals of the solid surface on each vertex
     };
 
   protected:
@@ -181,6 +182,7 @@ class QgsPointCloud3DGeometry: public Qt3DCore::QGeometry
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mParameterAttribute = nullptr;
+    Qt3DRender::QAttribute *mPointSizeAttribute = nullptr;
     Qt3DRender::QAttribute *mColorAttribute = nullptr;
     Qt3DRender::QAttribute *mTriangleIndexAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalsAttribute = nullptr;
@@ -190,6 +192,7 @@ class QgsPointCloud3DGeometry: public Qt3DCore::QGeometry
 #else
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mParameterAttribute = nullptr;
+    Qt3DCore::QAttribute *mPointSizeAttribute = nullptr;
     Qt3DCore::QAttribute *mColorAttribute = nullptr;
     Qt3DCore::QAttribute *mTriangleIndexAttribute = nullptr;
     Qt3DCore::QAttribute *mNormalsAttribute = nullptr;
@@ -234,7 +237,16 @@ class QgsRGBPointCloud3DGeometry : public QgsPointCloud3DGeometry
     void makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data ) override;
 };
 
+class QgsClassificationPointCloud3DGeometry : public QgsPointCloud3DGeometry
+{
+    Q_OBJECT
 
+  public:
+    QgsClassificationPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride );
+
+  private:
+    void makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data ) override;
+};
 /// @endcond
 
 #endif // QGSPOINTCLOUD3DSYMBOL_P_H

@@ -122,5 +122,7 @@
 
 #cmakedefine HAVE_CRASH_HANDLER
 
+#cmakedefine HAVE_WEBENGINE
+
 #endif
 

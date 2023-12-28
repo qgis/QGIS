@@ -145,7 +145,7 @@ namespace QgsWms
 
       /**
        * Returns a configured pdf export task
-       * \tmpFileName the name of the temporary file to store the pdf
+       * \param tmpFileName the name of the temporary file to store the pdf
        * \returns pdf export object
        * \since QGIS 3.36
        */
@@ -297,6 +297,7 @@ namespace QgsWms
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
                                        const QgsPointXY *infoPoint,
+                                       const QgsRenderContext &renderContext,
                                        QDomDocument &infoDocument,
                                        QDomElement &layerElement,
                                        const QString &version ) const;

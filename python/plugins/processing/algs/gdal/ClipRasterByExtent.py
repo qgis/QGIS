@@ -64,7 +64,7 @@ class ClipRasterByExtent(GdalAlgorithm):
                                                         self.tr('Override the projection for the output file'),
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
-                                                       self.tr('Assign a specified nodata value to output bands'),
+                                                       self.tr('Assign a specified NoData value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        defaultValue=None,
                                                        optional=True))

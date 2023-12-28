@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/symbology/qgsrendererregistry.h
+QgsRendererAbstractMetadata.PointLayer = QgsRendererAbstractMetadata.LayerType.PointLayer
+QgsRendererAbstractMetadata.LineLayer = QgsRendererAbstractMetadata.LayerType.LineLayer
+QgsRendererAbstractMetadata.PolygonLayer = QgsRendererAbstractMetadata.LayerType.PolygonLayer
+QgsRendererAbstractMetadata.All = QgsRendererAbstractMetadata.LayerType.All
+QgsRendererAbstractMetadata.LayerTypes = lambda flags=0: QgsRendererAbstractMetadata.LayerType(flags)

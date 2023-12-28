@@ -62,15 +62,15 @@ void QgsRasterLayerPropertiesAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
-  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "HAS_NODATA_VALUE" ), QObject::tr( "Band has a nodata value set" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_VALUE" ), QObject::tr( "Band nodata value" ) ) );
+  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "HAS_NODATA_VALUE" ), QObject::tr( "Band has a NoData value set" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_VALUE" ), QObject::tr( "Band NoData value" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "BAND_COUNT" ), QObject::tr( "Number of bands in raster" ) ) );
 }
 
 QString QgsRasterLayerPropertiesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm returns basic properties of the given raster layer, including the extent, size in pixels and dimensions of pixels (in map units).\n\n"
-                      "If an optional band number is specified then the nodata value for the selected band will also be returned." );
+                      "If an optional band number is specified then the NoData value for the selected band will also be returned." );
 }
 
 QgsRasterLayerPropertiesAlgorithm *QgsRasterLayerPropertiesAlgorithm::createInstance() const

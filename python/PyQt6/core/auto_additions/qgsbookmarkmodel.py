@@ -1,0 +1,15 @@
+# The following has been generated automatically from src/core/qgsbookmarkmodel.h
+QgsBookmarkManagerModel.RoleExtent = QgsBookmarkManagerModel.CustomRoles.RoleExtent
+QgsBookmarkManagerModel.RoleName = QgsBookmarkManagerModel.CustomRoles.RoleName
+QgsBookmarkManagerModel.RoleId = QgsBookmarkManagerModel.CustomRoles.RoleId
+QgsBookmarkManagerModel.RoleGroup = QgsBookmarkManagerModel.CustomRoles.RoleGroup
+QgsBookmarkManagerModel.RoleRotation = QgsBookmarkManagerModel.CustomRoles.RoleRotation
+QgsBookmarkManagerModel.ColumnName = QgsBookmarkManagerModel.Columns.ColumnName
+QgsBookmarkManagerModel.ColumnGroup = QgsBookmarkManagerModel.Columns.ColumnGroup
+QgsBookmarkManagerModel.ColumnXMin = QgsBookmarkManagerModel.Columns.ColumnXMin
+QgsBookmarkManagerModel.ColumnYMin = QgsBookmarkManagerModel.Columns.ColumnYMin
+QgsBookmarkManagerModel.ColumnXMax = QgsBookmarkManagerModel.Columns.ColumnXMax
+QgsBookmarkManagerModel.ColumnYMax = QgsBookmarkManagerModel.Columns.ColumnYMax
+QgsBookmarkManagerModel.ColumnRotation = QgsBookmarkManagerModel.Columns.ColumnRotation
+QgsBookmarkManagerModel.ColumnCrs = QgsBookmarkManagerModel.Columns.ColumnCrs
+QgsBookmarkManagerModel.ColumnStore = QgsBookmarkManagerModel.Columns.ColumnStore

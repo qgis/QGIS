@@ -61,7 +61,6 @@ class TestQgsPdalProvider : public QgsTest
     void querySublayers();
     void brokenPath();
     void validLayer();
-    void testEptGeneration();
     void testCopcGeneration();
 
   private:
@@ -223,22 +222,12 @@ void TestQgsPdalProvider::validLayer()
   QCOMPARE( layer->pointCount(), 253 );
 }
 
-void TestQgsPdalProvider::testEptGeneration()
-{
-  const QTemporaryDir dir;
-  QVERIFY( dir.isValid() );
-  QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path(), QgsPdalIndexingTask::OutputFormat::Ept );
-  QVERIFY( task.run() );
-  const QFileInfo fi( dir.path() + "/ept.json" );
-  QVERIFY( fi.exists() );
-}
-
 void TestQgsPdalProvider::testCopcGeneration()
 {
   const QTemporaryDir dir;
   QString outputPath = dir.path() + QDir::separator() + "cloud.copc.laz";
   QVERIFY( dir.isValid() );
-  QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), outputPath,  QgsPdalIndexingTask::OutputFormat::Copc );
+  QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), outputPath );
   QVERIFY( task.run() );
   const QFileInfo fi( outputPath );
   QVERIFY( fi.exists() );

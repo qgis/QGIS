@@ -1669,6 +1669,20 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
+
+    enum class Point3DShape
+    {
+      Cylinder,
+      Sphere,
+      Cone,
+      Cube,
+      Torus,
+      Plane,
+      ExtrudedText,
+      Model,
+      Billboard,
+    };
+
     enum class LightSourceType
     {
       Point,
@@ -2554,6 +2568,7 @@ Compare two doubles, treating nan values as equal
 
 .. versionadded:: 3.20
 %End
+
 
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
 %Docstring

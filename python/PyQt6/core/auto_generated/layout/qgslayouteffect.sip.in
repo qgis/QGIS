@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayouteffect.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayoutEffect : QGraphicsEffect
+{
+%Docstring(signature="appended")
+
+A QGraphicsEffect subclass used for rendering layout items
+onto a scene with custom composition modes.
+
+.. deprecated:: QGIS 3.34
+   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+%End
+
+%TypeHeaderCode
+#include "qgslayouteffect.h"
+%End
+  public:
+
+ QgsLayoutEffect() /Deprecated/;
+%Docstring
+Constructor for QgsLayoutEffect.
+
+.. deprecated:: QGIS 3.34
+   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+%End
+
+ void setCompositionMode( QPainter::CompositionMode mode ) /Deprecated/;
+%Docstring
+Sets the composition (blending) ``mode`` used for rendering
+the item.
+
+.. seealso:: :py:func:`compositionMode`
+
+.. deprecated:: QGIS 3.34
+   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+%End
+
+ QPainter::CompositionMode compositionMode() const /Deprecated/;
+%Docstring
+Returns the composition (blending) mode used for rendering
+the item.
+
+.. seealso:: :py:func:`setCompositionMode`
+
+.. deprecated:: QGIS 3.34
+   -- this class should not be used, it is non-stable and results in crashes. See https://bugreports.qt.io/browse/QTBUG-58501.
+%End
+
+  protected:
+
+    virtual void draw( QPainter *painter );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayouteffect.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

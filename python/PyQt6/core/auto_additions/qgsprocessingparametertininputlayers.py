@@ -1,0 +1,4 @@
+# The following has been generated automatically from src/core/processing/qgsprocessingparametertininputlayers.h
+QgsProcessingParameterTinInputLayers.Vertices = QgsProcessingParameterTinInputLayers.Type.Vertices
+QgsProcessingParameterTinInputLayers.StructureLines = QgsProcessingParameterTinInputLayers.Type.StructureLines
+QgsProcessingParameterTinInputLayers.BreakLines = QgsProcessingParameterTinInputLayers.Type.BreakLines

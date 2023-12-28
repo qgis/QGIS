@@ -1,0 +1,432 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsbox3d.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsBox3D
+{
+%Docstring(signature="appended")
+A 3-dimensional box composed of x, y, z coordinates.
+
+A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
+extent of a geometry or collection of geometries.
+
+.. note::
+
+   In QGIS 3.34 this class was renamed from :py:class:`QgsBox3d` to :py:class:`QgsBox3D`. The old :py:class:`QgsBox3d` name
+   remains available in PyQGIS for compatibility.
+
+.. seealso:: :py:class:`QgsRectangle`
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsbox3d.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    QgsBox3D( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+%Docstring
+Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
+%End
+%MethodCode
+    if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
+
+      QgsRectangle *p = reinterpret_cast<QgsRectangle *>( sipConvertToType( a0, sipType_QgsRectangle, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( p, sipType_QgsRectangle, state );
+      }
+      else
+      {
+        double z1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+        double z2 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+        bool n = a3 == Py_None ? true : PyObject_IsTrue( a3 );
+
+        sipCpp = new QgsBox3D( *p, z1, z2, n );
+      }
+    }
+    else if ( sipCanConvertToType( a0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsPoint, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    {
+      int state;
+      sipIsErr = 0;
+
+      QgsPoint *pt1 = reinterpret_cast<QgsPoint *>( sipConvertToType( a0, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+      if ( sipIsErr )
+      {
+        sipReleaseType( pt1, sipType_QgsPoint, state );
+      }
+      else
+      {
+        QgsPoint *pt2 = reinterpret_cast<QgsPoint *>( sipConvertToType( a1, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+        if ( sipIsErr )
+        {
+          sipReleaseType( pt2, sipType_QgsPoint, state );
+        }
+        else
+        {
+          bool n = a2 == Py_None ? true : PyObject_IsTrue( a2 );
+          sipCpp = new QgsBox3D( *pt1, *pt2, n );
+        }
+      }
+    }
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a4 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a5 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a6 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+    {
+      double x1 = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
+      double y1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+      double z1 = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+      double x2 = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
+      double y2 = a4 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a4 );
+      double z2 = a5 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a5 );
+      bool n = a6 == Py_None ? true : PyObject_IsTrue( a6 );
+      sipCpp = new QgsBox3D( x1, y1, z1, x2, y2, z2, n );
+    }
+    else // Invalid ctor arguments
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+%End
+
+    void setXMinimum( double x ) /HoldGIL/;
+%Docstring
+Sets the minimum ``x`` value.
+
+.. seealso:: :py:func:`xMinimum`
+
+.. seealso:: :py:func:`setXMaximum`
+%End
+
+    void setXMaximum( double x ) /HoldGIL/;
+%Docstring
+Sets the maximum ``x`` value.
+
+.. seealso:: :py:func:`xMaximum`
+
+.. seealso:: :py:func:`setXMinimum`
+%End
+
+    double xMinimum() const /HoldGIL/;
+%Docstring
+Returns the minimum x value.
+
+.. seealso:: :py:func:`setXMinimum`
+
+.. seealso:: :py:func:`xMaximum`
+%End
+
+    double xMaximum() const /HoldGIL/;
+%Docstring
+Returns the maximum x value.
+
+.. seealso:: :py:func:`setXMaximum`
+
+.. seealso:: :py:func:`xMinimum`
+%End
+
+    void setYMinimum( double y ) /HoldGIL/;
+%Docstring
+Sets the minimum ``y`` value.
+
+.. seealso:: :py:func:`yMinimum`
+
+.. seealso:: :py:func:`setYMaximum`
+%End
+
+    void setYMaximum( double y ) /HoldGIL/;
+%Docstring
+Sets the maximum ``y`` value.
+
+.. seealso:: :py:func:`yMaximum`
+
+.. seealso:: :py:func:`setYMinimum`
+%End
+
+    double yMinimum() const /HoldGIL/;
+%Docstring
+Returns the minimum y value.
+
+.. seealso:: :py:func:`setYMinimum`
+
+.. seealso:: :py:func:`yMaximum`
+%End
+
+    double yMaximum() const /HoldGIL/;
+%Docstring
+Returns the maximum y value.
+
+.. seealso:: :py:func:`setYMaximum`
+
+.. seealso:: :py:func:`yMinimum`
+%End
+
+    void setZMinimum( double z ) /HoldGIL/;
+%Docstring
+Sets the minimum ``z`` value.
+
+.. seealso:: :py:func:`zMinimum`
+
+.. seealso:: :py:func:`setZMaximum`
+%End
+
+    void setZMaximum( double z ) /HoldGIL/;
+%Docstring
+Sets the maximum ``z`` value.
+
+.. seealso:: :py:func:`zMaximum`
+
+.. seealso:: :py:func:`setZMinimum`
+%End
+
+    double zMinimum() const /HoldGIL/;
+%Docstring
+Returns the minimum z value.
+
+.. seealso:: :py:func:`setZMinimum`
+
+.. seealso:: :py:func:`zMaximum`
+%End
+
+    double zMaximum() const /HoldGIL/;
+%Docstring
+Returns the maximum z value.
+
+.. seealso:: :py:func:`setZMaximum`
+
+.. seealso:: :py:func:`zMinimum`
+%End
+
+    void setNull() /HoldGIL/;
+%Docstring
+Mark a box as being null (holding no spatial information).
+
+.. versionadded:: 3.34
+%End
+
+    void normalize() /HoldGIL/;
+%Docstring
+Normalize the box so it has non-negative width/height/depth.
+%End
+
+    double width() const /HoldGIL/;
+%Docstring
+Returns the width of the box.
+
+.. seealso:: :py:func:`height`
+
+.. seealso:: :py:func:`depth`
+%End
+
+    double height() const /HoldGIL/;
+%Docstring
+Returns the height of the box.
+
+.. seealso:: :py:func:`width`
+
+.. seealso:: :py:func:`depth`
+%End
+
+    double depth() const /HoldGIL/;
+%Docstring
+Returns the depth of the box.
+
+.. seealso:: :py:func:`width`
+
+.. seealso:: :py:func:`height`
+%End
+
+    QgsVector3D center() const /HoldGIL/;
+%Docstring
+Returns the center of the box as a vector.
+
+.. versionadded:: 3.34
+%End
+
+    double volume() const /HoldGIL/;
+%Docstring
+Returns the volume of the box.
+%End
+
+    QgsBox3D intersect( const QgsBox3D &other ) const /HoldGIL/;
+%Docstring
+Returns the intersection of this box and another 3D box.
+%End
+
+    bool is2d() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the box can be considered a 2-dimensional box, i.e.
+it has equal minimum and maximum z values.
+%End
+
+    bool is3D() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the box can be considered a 3-dimensional box, i.e.
+it has valid minimum and maximum z values.
+If the box is not normalized, this returns ``False``.
+
+.. versionadded:: 3.34
+%End
+
+    bool intersects( const QgsBox3D &other ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if box intersects with another box.
+%End
+
+    bool contains( const QgsBox3D &other ) const /HoldGIL/;
+%Docstring
+Returns ``True`` when box contains other box.
+%End
+
+    bool contains( const QgsPoint &point ) const /HoldGIL/;
+%Docstring
+Returns ``True`` when box contains a ``point``.
+
+If the point is a 2D point (no z-coordinate), then the containment test
+will be performed on the x/y extent of the box only.
+%End
+
+    bool contains( double x, double y, double z ) const /HoldGIL/;
+%Docstring
+Returns ``True`` when box contains a point (``x``, ``y``, ``z``).
+A point on the border of the box will also return ``True``
+
+If the point is a 2D point (no z-coordinate), then the containment test
+will be performed on the x/y extent of the box only.
+
+.. versionadded:: 3.34
+%End
+
+    void combineWith( const QgsBox3D &box ) /HoldGIL/;
+%Docstring
+Expands the bbox so that it covers both the original rectangle and the given rectangle.
+
+.. versionadded:: 3.34
+%End
+
+    void combineWith( double x, double y, double z ) /HoldGIL/;
+%Docstring
+Expands the bbox so that it covers both the original rectangle and the given point.
+
+.. versionadded:: 3.34
+%End
+
+    QgsRectangle toRectangle() const /HoldGIL/;
+%Docstring
+Converts the box to a 2D rectangle.
+%End
+
+    double distanceTo( const  QVector3D &point ) const /HoldGIL/;
+%Docstring
+Returns the smallest distance between the box and the point ``point``
+(returns 0 if the point is inside the box)
+
+.. versionadded:: 3.18
+%End
+
+    bool operator==( const QgsBox3D &other ) const /HoldGIL/;
+
+    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() ) /HoldGIL/;
+%Docstring
+Scale the rectangle around a ``center`` :py:class:`QgsPoint`.
+
+If no ``center`` point is specified then the current center of the box will be used.
+
+.. versionadded:: 3.26
+%End
+
+    void scale( double scaleFactor, double centerX, double centerY, double centerZ ) /HoldGIL/;
+%Docstring
+Scale the rectangle around a center coordinates.
+
+.. versionadded:: 3.26
+%End
+
+    bool isNull() const /HoldGIL/;
+%Docstring
+Test if the box is null (holding no spatial information).
+
+A null box is also an empty box.
+
+.. seealso:: :py:func:`setNull`
+
+.. versionadded:: 3.34
+%End
+
+    bool isEmpty() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the box is empty.
+An empty box may still be non-null if it contains valid
+spatial information (e.g. bounding box of a point or of a vertical
+or horizontal segment).
+
+.. versionadded:: 3.34
+%End
+
+    QString toString( int precision = 16 ) const /HoldGIL/;
+%Docstring
+Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
+Coordinates will be truncated to the specified precision.
+If the specified precision is less than 0, a suitable minimum precision is used.
+
+.. versionadded:: 3.34
+%End
+
+    QVector< QgsVector3D > corners() const /HoldGIL/;
+%Docstring
+Returns an array of all box corners as 3D vectors.
+%End
+
+    QgsBox3D operator-( const QgsVector3D &v ) const /HoldGIL/;
+
+    QgsBox3D operator+( const QgsVector3D &v ) const /HoldGIL/;
+
+    QgsBox3D &operator-=( const QgsVector3D &v ) /HoldGIL/;
+
+    QgsBox3D &operator+=( const QgsVector3D &v ) /HoldGIL/;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsBox3D(%1, %2, %3, %4, %5, %6)>" )
+                  .arg( sipCpp->xMinimum() )
+                  .arg( sipCpp->yMinimum() )
+                  .arg( sipCpp->zMinimum() )
+                  .arg( sipCpp->xMaximum() )
+                  .arg( sipCpp->yMaximum() )
+                  .arg( sipCpp->zMaximum() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsbox3d.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

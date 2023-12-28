@@ -749,10 +749,12 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     attrItem->setToolTip( 1, representedValue );
     attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
 
-    if ( setup.type() == QLatin1String( "JsonEdit" ) )
+    if ( !QgsVariantUtils::isNull( attrs.at( i ) ) && setup.type() == QLatin1String( "JsonEdit" ) )
     {
       QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget();
       jsonEditWidget->setJsonText( representedValue );
+      jsonEditWidget->jsonEditor()->setWrapMode( QsciScintilla::WrapWord );
+      jsonEditWidget->jsonEditor()->setLineNumbersVisible( false );
       jsonEditWidget->setView( static_cast<QgsJsonEditWidget::View>( setup.config().value( QStringLiteral( "DefaultView" ) ).toInt() ) );
       jsonEditWidget->setFormatJsonMode( static_cast<QgsJsonEditWidget::FormatJson>( setup.config().value( QStringLiteral( "FormatJson" ) ).toInt() ) );
       jsonEditWidget->setControlsVisible( false );

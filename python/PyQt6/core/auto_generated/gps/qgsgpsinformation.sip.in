@@ -1,0 +1,129 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsinformation.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGpsInformation
+{
+%Docstring(signature="appended")
+Encapsulates information relating to a GPS position fix.
+%End
+
+%TypeHeaderCode
+#include "qgsgpsinformation.h"
+%End
+  public:
+
+    double latitude;
+
+    double longitude;
+
+    double elevation;
+
+    double elevation_diff;
+
+    double speed;
+
+
+    double direction;
+
+    QList<QgsSatelliteInfo> satellitesInView;
+
+    double pdop;
+
+    double hdop;
+
+    double vdop;
+
+    //! Horizontal accuracy in meters
+    double hacc;
+    //! Vertical accuracy in meters
+    double vacc;
+
+    double hvacc;
+
+    QTime utcTime;
+
+    QDateTime utcDateTime;
+
+    QChar fixMode;
+
+    int fixType;
+
+    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const;
+%Docstring
+Returns a map of GNSS constellation to fix status.
+
+.. versionadded:: 3.30
+%End
+
+    Qgis::GpsFixStatus bestFixStatus( Qgis::GnssConstellation &constellation /Out/ ) const;
+%Docstring
+Returns the best fix status and corresponding constellation.
+
+
+:return: - best current fix status
+         - constellation: will be set to the constellation with best fix status
+
+.. versionadded:: 3.30
+%End
+
+    int quality;
+
+    Qgis::GpsQualityIndicator qualityIndicator;
+
+    int satellitesUsed;
+
+    QChar status;
+
+    QList<int> satPrn;
+
+    bool satInfoComplete;
+
+    bool isValid() const;
+%Docstring
+Returns whether the connection information is valid
+
+.. versionadded:: 3.10
+%End
+
+ Qgis::GpsFixStatus fixStatus() const /Deprecated/;
+%Docstring
+Returns the fix status
+
+.. deprecated::
+  , use :py:func:`~QgsGpsInformation.constellationFixStatus` or :py:func:`~QgsGpsInformation.bestFixStatus` instead.
+%End
+
+    QString qualityDescription() const;
+%Docstring
+Returns a descriptive string for the signal quality.
+
+.. versionadded:: 3.16
+%End
+
+    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+%Docstring
+Returns the value of the corresponding GPS information ``component``.
+
+.. versionadded:: 3.30
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsinformation.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

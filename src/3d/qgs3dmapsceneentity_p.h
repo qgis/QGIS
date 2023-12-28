@@ -55,7 +55,7 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     }
 
     //! Records some bits about the scene (context for handleSceneUpdate() method)
-    struct SceneState
+    struct SceneContext
     {
       QVector3D cameraPos;   //!< Camera position
       float cameraFov;       //!< Field of view (in degrees)
@@ -64,7 +64,7 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     };
 
     //! Called when e.g. camera changes and entity may need updated
-    virtual void handleSceneUpdate( const SceneState &state ) { Q_UNUSED( state ) }
+    virtual void handleSceneUpdate( const SceneContext &sceneContext ) { Q_UNUSED( sceneContext ) }
 
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
     virtual int pendingJobsCount() const { return 0; }

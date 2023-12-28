@@ -35,7 +35,7 @@ die "directory $ARGV[0] not found" unless -d $ARGV[0];
 
 my %strings;
 
-for my $f (<python/plugins/processing/algs/grass*/description/*.txt>) {
+for my $f (<python/plugins/grassprovider/description/*.txt>) {
 	open I, $f;
 	binmode(I, ":utf8");
 	my $name = scalar(<I>);

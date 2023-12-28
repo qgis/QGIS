@@ -69,7 +69,7 @@ class merge(GdalAlgorithm):
                                                         defaultValue=False))
 
         nodata_param = QgsProcessingParameterNumber(self.NODATA_INPUT,
-                                                    self.tr('Input pixel value to treat as "nodata"'),
+                                                    self.tr('Input pixel value to treat as NoData'),
                                                     type=QgsProcessingParameterNumber.Double,
                                                     defaultValue=None,
                                                     optional=True)
@@ -77,7 +77,7 @@ class merge(GdalAlgorithm):
         self.addParameter(nodata_param)
 
         nodata_out_param = QgsProcessingParameterNumber(self.NODATA_OUTPUT,
-                                                        self.tr('Assign specified "nodata" value to output'),
+                                                        self.tr('Assign specified NoData value to output'),
                                                         type=QgsProcessingParameterNumber.Double,
                                                         defaultValue=None,
                                                         optional=True)

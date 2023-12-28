@@ -1,0 +1,165 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscadutils.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCadUtils
+{
+%Docstring(signature="appended")
+The :py:class:`QgsCadUtils` class provides routines for CAD editing.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgscadutils.h"
+%End
+  public:
+
+    class AlignMapPointConstraint
+{
+%Docstring(signature="appended")
+Structure with details of one constraint
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgscadutils.h"
+%End
+      public:
+
+        AlignMapPointConstraint( bool locked = false, bool relative = false, double value = 0 );
+%Docstring
+Constructor for AlignMapPointConstraint.
+%End
+
+        bool locked;
+        bool relative;
+        double value;
+    };
+
+    class AlignMapPointOutput
+{
+%Docstring(signature="appended")
+Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgscadutils.h"
+%End
+      public:
+        bool valid;
+
+        QgsPointXY finalMapPoint;
+
+        QgsPointLocator::Match snapMatch;
+
+        QgsPointLocator::Match edgeMatch;
+
+        double softLockCommonAngle;
+
+        Qgis::LineExtensionSide softLockLineExtension;
+        double softLockX;
+        double softLockY;
+    };
+
+    class AlignMapPointContext
+{
+%Docstring(signature="appended")
+Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()` method.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgscadutils.h"
+%End
+      public:
+        QgsSnappingUtils *snappingUtils;
+        double mapUnitsPerPixel;
+
+        QgsCadUtils::AlignMapPointConstraint xConstraint;
+        QgsCadUtils::AlignMapPointConstraint yConstraint;
+
+        QgsCadUtils::AlignMapPointConstraint zConstraint;
+
+        QgsCadUtils::AlignMapPointConstraint mConstraint;
+        QgsCadUtils::AlignMapPointConstraint distanceConstraint;
+        QgsCadUtils::AlignMapPointConstraint angleConstraint;
+        QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
+
+        QgsCadUtils::AlignMapPointConstraint lineExtensionConstraint;
+        QgsCadUtils::AlignMapPointConstraint xyVertexConstraint;
+
+        bool snappingToFeaturesOverridesCommonAngle;
+
+
+        QList< QgsPoint > cadPoints() const;
+%Docstring
+Returns the list of recent CAD points in map coordinates.
+
+These are used to turn relative constraints to absolute. The first
+point is the most recent point.
+
+.. seealso:: :py:func:`setCadPoints`
+
+.. versionadded:: 3.22
+%End
+        void setCadPoints( const QList< QgsPoint > &points );
+%Docstring
+Sets the list of recent CAD ``points`` (in map coordinates).
+
+.. seealso:: :py:func:`cadPoints`
+
+.. versionadded:: 3.22
+%End
+        void setCadPoint( int index, const QgsPoint &point );
+%Docstring
+Sets the recent CAD point at the specified ``index`` to ``point`` (in map coordinates).
+
+.. seealso:: :py:func:`cadPoint`
+
+.. versionadded:: 3.22
+%End
+        QgsPoint cadPoint( int index ) const;
+%Docstring
+Returns the recent CAD point at the specified ``index`` (in map coordinates).
+
+.. seealso:: :py:func:`setCadPoint`
+
+.. versionadded:: 3.22
+%End
+
+%Property( name = cadPointList, get = _cadPointList, set = _setCadPointList )
+        void _setCadPointList( const QList< QgsPointXY > &list );
+        QList< QgsPointXY > _cadPointList() const;
+
+    };
+
+    static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
+%Docstring
+Applies X/Y/angle/distance constraints from the given context to a map point.
+Returns a structure containing aligned map point, whether the constraints are valid and
+some extra information.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscadutils.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

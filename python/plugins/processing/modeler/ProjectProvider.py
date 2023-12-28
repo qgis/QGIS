@@ -51,7 +51,10 @@ class ProjectProvider(QgsProcessingProvider):
         self.project.writeProject.connect(self.write_project)
         self.project.cleared.connect(self.clear)
 
-    def on_provider_added(self, _):
+    def on_provider_added(self, provider_id):
+        if provider_id == self.id():
+            return
+
         self.refreshAlgorithms()
 
     def load(self):

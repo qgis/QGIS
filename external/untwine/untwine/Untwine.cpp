@@ -83,7 +83,10 @@ bool handleOptions(pdal::StringList& arglist, Options& options)
             if (options.singleFile)
                 options.tempDir = options.outputName + "_tmp";
             else
-                options.tempDir = options.outputName + "/temp";
+            {
+                throw FatalError("This version of Untwine does not support EPT output.");
+                //options.tempDir = options.outputName + "/temp";
+            }
         }
         if (options.singleFile)
             options.stats = true;

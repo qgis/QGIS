@@ -1,0 +1,14 @@
+# The following has been generated automatically from src/core/qgsvectorsimplifymethod.h
+QgsVectorSimplifyMethod.NoSimplification = QgsVectorSimplifyMethod.SimplifyHint.NoSimplification
+QgsVectorSimplifyMethod.GeometrySimplification = QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification
+QgsVectorSimplifyMethod.AntialiasingSimplification = QgsVectorSimplifyMethod.SimplifyHint.AntialiasingSimplification
+QgsVectorSimplifyMethod.FullSimplification = QgsVectorSimplifyMethod.SimplifyHint.FullSimplification
+QgsVectorSimplifyMethod.SimplifyHint.baseClass = QgsVectorSimplifyMethod
+QgsVectorSimplifyMethod.SimplifyHints = lambda flags=0: QgsVectorSimplifyMethod.SimplifyHint(flags)
+QgsVectorSimplifyMethod.SimplifyHints.baseClass = QgsVectorSimplifyMethod
+SimplifyHints = QgsVectorSimplifyMethod  # dirty hack since SIP seems to introduce the flags in module
+QgsVectorSimplifyMethod.Distance = QgsVectorSimplifyMethod.SimplifyAlgorithm.Distance
+QgsVectorSimplifyMethod.SnapToGrid = QgsVectorSimplifyMethod.SimplifyAlgorithm.SnapToGrid
+QgsVectorSimplifyMethod.Visvalingam = QgsVectorSimplifyMethod.SimplifyAlgorithm.Visvalingam
+QgsVectorSimplifyMethod.SnappedToGridGlobal = QgsVectorSimplifyMethod.SimplifyAlgorithm.SnappedToGridGlobal
+QgsVectorSimplifyMethod.SimplifyAlgorithm.baseClass = QgsVectorSimplifyMethod

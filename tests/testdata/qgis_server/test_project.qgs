@@ -299,6 +299,7 @@
         <property value="0" key="embeddedWidgets/count"/>
         <property value="Value" key="identify/format"/>
       </customproperties>
+      <mapTip enabled="1">[% 'Value Band 5: ' || raster_value(@layer_id, 5, @layer_cursor_point) %]</mapTip>
       <pipe>
         <rasterrenderer opacity="1" type="singlebandgray" grayBand="1" gradient="BlackToWhite" alphaBand="-1">
           <rasterTransparency/>

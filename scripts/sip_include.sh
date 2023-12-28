@@ -38,49 +38,50 @@ else
 fi
 sources=(HDRS MOC_HDRS SRCS)
 
-for module in "${modules[@]}"; do
-  file=${DIR}/python/${module}/${module}_auto.sip
-  echo "Creating python/${module}/${module}_auto.sip"
-  echo "// Include auto-generated SIP files" > $file
+for root_dir in python python/PyQt6; do
+  for module in "${modules[@]}"; do
+    file=${DIR}/$root_dir/${module}/${module}_auto.sip
+    echo "Creating $root_dir/${module}/${module}_auto.sip"
+    echo "// Include auto-generated SIP files" > $file
 
-  headers=$(
-    for source in "${sources[@]}"; do
-      echo "QGIS_${module^^}_${source}"
-      ${GP}sed -r -n -e "/^\s*set\s*\(QGIS_${module^^}_${source}/,/\)\$/{ /^\s*set\s*\(QGIS_${module^^}_${source}/d; /\)\$/d; p; }" src/${module}/CMakeLists.txt | \
-      ${GP}sed -r -e '/\.cc?$/d'     `# remove c and cc extensions` \
-                  -e 's/\.cpp$/.h/'  `# rename cpp file as headers` \
-                  -e '/^\s*\$\{CMAKE_(CURRENT_)?BINARY_DIR\}/d' \
-                  -e '/^\s*#/d'      `# remove commented lines` \
-                  -e 's/\$\{.*\}//g' `# remove CMake variable append` \
-                  -e 's/^\s+//'      `# remove leading spaces` \
-                  -e '/^\s*$/d'      `# remove blank lines`
-    done | cat -n | sort -uk2 | sort -nk1 | cut -f2-  # remove duplicated lines without sorting
-  )
-  for header in ${headers}; do
-    if [ ! -f src/${module}/$header ]; then
-      # if no header, no sip file!
-      #echo "src/${module}/$header not found"
-      continue
-    fi
-    if ! grep -xq -E '^(#define +)?SIP_NO_FILE' src/${module}/${header}; then
-      sip=$(${GP}sed -r 's/(.*)\.h$/\1.sip/' <<< ${header})
-      if_cond=$(grep -x -E '^(#define +)?SIP_IF_MODULE\((.*)\)$' src/${module}/${header} | \
-        ${GP}sed -r -e 's/(#define +)?SIP_IF_MODULE\((.*)\)/%If (\2)/')
-      if [[ -n $if_cond ]]; then
-        echo "$if_cond" >> $file
+    headers=$(
+      for source in "${sources[@]}"; do
+        echo "QGIS_${module^^}_${source}"
+        ${GP}sed -r -n -e "/^\s*set\s*\(QGIS_${module^^}_${source}/,/\)\$/{ /^\s*set\s*\(QGIS_${module^^}_${source}/d; /\)\$/d; p; }" src/${module}/CMakeLists.txt | \
+          ${GP}sed -r -e '/\.cc?$/d'     `# remove c and cc extensions` \
+               -e 's/\.cpp$/.h/'  `# rename cpp file as headers` \
+               -e '/^\s*\$\{CMAKE_(CURRENT_)?BINARY_DIR\}/d' \
+               -e '/^\s*#/d'      `# remove commented lines` \
+               -e 's/\$\{.*\}//g' `# remove CMake variable append` \
+               -e 's/^\s+//'      `# remove leading spaces` \
+               -e '/^\s*$/d'      `# remove blank lines`
+      done | cat -n | sort -uk2 | sort -nk1 | cut -f2-  # remove duplicated lines without sorting
+           )
+    for header in ${headers}; do
+      if [ ! -f src/${module}/$header ]; then
+        # if no header, no sip file!
+        #echo "src/${module}/$header not found"
+        continue
       fi
-      if [[ "$sip" == [0-9]* ]]; then
-        # unfortunately SIP parser does not accept relative paths starting with a number
-        # so "%Include 3d/xxxx.sip" is a syntax error but everything works with "%Include ./3d/xxxx.sip"
-        sip="./$sip"
+      if ! grep -xq -E '^(#define +)?SIP_NO_FILE' src/${module}/${header}; then
+        sip=$(${GP}sed -r 's/(.*)\.h$/\1.sip/' <<< ${header})
+        if_cond=$(grep -x -E '^(#define +)?SIP_IF_MODULE\((.*)\)$' src/${module}/${header} | \
+                    ${GP}sed -r -e 's/(#define +)?SIP_IF_MODULE\((.*)\)/%If (\2)/')
+        if [[ -n $if_cond ]]; then
+          echo "$if_cond" >> $file
+        fi
+        if [[ "$sip" == [0-9]* ]]; then
+          # unfortunately SIP parser does not accept relative paths starting with a number
+          # so "%Include 3d/xxxx.sip" is a syntax error but everything works with "%Include ./3d/xxxx.sip"
+          sip="./$sip"
+        fi
+        echo "%Include auto_generated/$sip" >> $file
+        if [[ -n $if_cond ]]; then
+          echo "%End" >> $file
+        fi
       fi
-      echo "%Include auto_generated/$sip" >> $file
-      if [[ -n $if_cond ]]; then
-        echo "%End" >> $file
-      fi
-    fi
+    done
   done
 done
-
 
 popd > /dev/null

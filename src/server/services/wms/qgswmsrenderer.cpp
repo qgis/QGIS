@@ -1687,7 +1687,7 @@ namespace QgsWms
               getFeatureInfoElement.appendChild( layerElement );
             }
 
-            ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
+            ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
           }
           break;
         }
@@ -2146,6 +2146,7 @@ namespace QgsWms
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer,
       const QgsMapSettings &mapSettings,
       const QgsPointXY *infoPoint,
+      const QgsRenderContext &renderContext,
       QDomDocument &infoDocument,
       QDomElement &layerElement,
       const QString &version ) const
@@ -2157,7 +2158,7 @@ namespace QgsWms
       return false;
     }
 
-    QgsMessageLog::logMessage( QStringLiteral( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
+    QgsMessageLog::logMessage( QStringLiteral( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
     if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) &&
          !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature ) )
@@ -2306,6 +2307,19 @@ namespace QgsWms
             }
           }
         }
+      }
+      //add maptip attribute based on html/expression
+      QString mapTip = layer->mapTipTemplate();
+      if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
+      {
+        QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+        maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
+        QgsExpressionContext context { renderContext.expressionContext() };
+        QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( layer );
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_cursor_point" ), QVariant::fromValue( QgsGeometry::fromPointXY( QgsPointXY( infoPoint->x(), infoPoint->y() ) ) ) ) );
+        context.appendScope( scope );
+        maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &context ) );
+        layerElement.appendChild( maptipElem );
       }
     }
     return true;

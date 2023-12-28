@@ -2855,6 +2855,28 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( PlotToolFlags, PlotToolFlag )
     Q_FLAG( PlotToolFlags )
 
+
+    /**
+     * 3D point shape types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape
+     *
+     * \since QGIS 3.36
+     */
+    enum class Point3DShape : int
+    {
+      Cylinder, //!< Cylinder
+      Sphere, //!< Sphere
+      Cone, //!< Cone
+      Cube, //!< Cube
+      Torus, //!< Torus
+      Plane, //!< Flat plane
+      ExtrudedText, //!< Extruded text
+      Model, //!< Model
+      Billboard, //!< Billboard
+    };
+    Q_ENUM( Point3DShape )
+
     /**
      * Light source types for 3D scenes.
      *
@@ -4419,6 +4441,28 @@ inline bool qgsNanCompatibleEquals( double a, double b )
   return a == b;
 }
 
+#ifndef SIP_RUN
+
+/**
+ * Compare two numbers of type T (but allow some difference)
+ * \param a first number
+ * \param b second number
+ * \param epsilon maximum difference allowable between numbers
+ * \since 3.36
+ */
+template<typename T>
+inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )
+{
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
+
+  const T diff = a - b;
+  return diff >= -epsilon && diff <= epsilon;
+}
+#endif
+
 /**
  * Compare two doubles (but allow some difference)
  * \param a first double
@@ -4427,13 +4471,7 @@ inline bool qgsNanCompatibleEquals( double a, double b )
  */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
-  const bool aIsNan = std::isnan( a );
-  const bool bIsNan = std::isnan( b );
-  if ( aIsNan || bIsNan )
-    return aIsNan && bIsNan;
-
-  const double diff = a - b;
-  return diff >= -epsilon && diff <= epsilon;
+  return qgsNumberNear<double>( a, b, epsilon );
 }
 
 /**
@@ -4444,13 +4482,7 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
-  const bool aIsNan = std::isnan( a );
-  const bool bIsNan = std::isnan( b );
-  if ( aIsNan || bIsNan )
-    return aIsNan && bIsNan;
-
-  const float diff = a - b;
-  return diff >= -epsilon && diff <= epsilon;
+  return qgsNumberNear<float>( a, b, epsilon );
 }
 
 //! Compare two doubles using specified number of significant digits

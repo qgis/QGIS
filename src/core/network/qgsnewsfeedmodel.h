@@ -68,6 +68,7 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
 
     void onEntryAdded( const QgsNewsFeedParser::Entry &entry );
     void onEntryRemoved( const QgsNewsFeedParser::Entry &entry );
+    void onEntryUpdated( const QgsNewsFeedParser::Entry &entry );
     void onImageFetched( int key, const QPixmap &pixmap );
 
   private:

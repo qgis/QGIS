@@ -1,0 +1,199 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfieldmodel.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsFieldModel : QAbstractItemModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsFieldModel` class is a model to display the list of fields in widgets
+(optionally associated with a vector layer).
+If allowed, expressions might be added to the end of the model.
+It can be associated with a :py:class:`QgsMapLayerModel` to dynamically display a layer and its fields.
+
+.. versionadded:: 2.3
+%End
+
+%TypeHeaderCode
+#include "qgsfieldmodel.h"
+%End
+  public:
+
+    enum FieldRoles
+    {
+      FieldNameRole,
+      FieldIndexRole,
+      ExpressionRole,
+      IsExpressionRole,
+      ExpressionValidityRole,
+      FieldTypeRole,
+      FieldOriginRole,
+      IsEmptyRole,
+      EditorWidgetType,
+      JoinedFieldIsEditable,
+      FieldIsWidgetEditable,
+    };
+
+    explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFieldModel - creates a model to display the fields of a given layer.
+%End
+
+    QModelIndex indexFromName( const QString &fieldName );
+%Docstring
+Returns the index corresponding to a given fieldName.
+%End
+
+    void setAllowExpression( bool allowExpression );
+%Docstring
+Sets whether custom expressions are accepted and displayed in the model.
+
+.. seealso:: :py:func:`allowExpression`
+
+.. seealso:: :py:func:`setExpression`
+%End
+
+    bool allowExpression();
+%Docstring
+Returns ``True`` if the model allows custom expressions to be created and displayed.
+
+.. seealso:: :py:func:`setAllowExpression`
+%End
+
+    void setAllowEmptyFieldName( bool allowEmpty );
+%Docstring
+Sets whether an optional empty field ("not set") option is present in the model.
+
+.. seealso:: :py:func:`allowEmptyFieldName`
+
+.. versionadded:: 3.0
+%End
+
+    bool allowEmptyFieldName() const;
+%Docstring
+Returns ``True`` if the model allows the empty field ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyFieldName`
+
+.. versionadded:: 3.0
+%End
+
+    bool isField( const QString &expression ) const;
+%Docstring
+Returns ``True`` if a string represents a field reference, or ``False`` if it is an
+expression consisting of more than direct field reference.
+%End
+
+    void setExpression( const QString &expression );
+%Docstring
+Sets a single expression to be added after the fields at the end of the model.
+
+.. seealso:: :py:func:`setAllowExpression`
+
+.. seealso:: :py:func:`allowExpression`
+
+.. seealso:: :py:func:`removeExpression`
+%End
+
+    void removeExpression();
+%Docstring
+Removes any custom expression from the model.
+
+.. seealso:: :py:func:`setExpression`
+
+.. seealso:: :py:func:`allowExpression`
+%End
+
+    QgsVectorLayer *layer();
+%Docstring
+Returns the layer associated with the model.
+
+.. seealso:: :py:func:`setLayer`
+%End
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &child ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+
+    static QString fieldToolTip( const QgsField &field );
+%Docstring
+Returns a HTML formatted tooltip string for a ``field``, containing details
+like the field name, alias and type.
+
+.. versionadded:: 3.0
+%End
+
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+%Docstring
+Returns a HTML formatted tooltip string for a ``field``, containing details
+like the field name, alias, type and expression.
+
+.. versionadded:: 3.14
+%End
+
+    void setFields( const QgsFields &fields );
+%Docstring
+Manually sets the ``fields`` to use for the model.
+
+This method should only be used when the model ISN'T associated with a :py:func:`~QgsFieldModel.layer`
+and needs to show the fields from an arbitrary field collection instead. Calling
+:py:func:`~QgsFieldModel.setFields` will automatically clear any existing :py:func:`~QgsFieldModel.layer`.
+
+.. seealso:: :py:func:`fields`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFields fields() const;
+%Docstring
+Returns the fields currently shown in the model.
+
+This will either be fields from the associated :py:func:`~QgsFieldModel.layer` or the fields
+manually set by a call to :py:func:`~QgsFieldModel.setFields`.
+
+.. versionadded:: 3.14
+%End
+
+  public slots:
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Set the layer from which fields are displayed.
+
+.. seealso:: :py:func:`layer`
+%End
+
+  protected slots:
+
+    virtual void updateModel();
+%Docstring
+Called when the model must be updated.
+%End
+
+  protected:
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfieldmodel.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

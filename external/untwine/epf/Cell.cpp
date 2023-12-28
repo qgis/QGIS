@@ -19,22 +19,6 @@ namespace untwine
 namespace epf
 {
 
-void Cell::initialize()
-{
-    m_buf = m_writer->fetchBuffer();
-
-    // If we couldn't fetch a buffer, flush all the the buffers for this processor and
-    // try again, but block.
-    if (!m_buf)
-    {
-        m_flush(this);
-        m_buf = m_writer->fetchBufferBlocking();
-    }
-    m_pos = m_buf->data();
-
-    m_endPos = m_pos + m_pointSize * (BufSize / m_pointSize);
-}
-
 // NOTE - After write(), the cell is invalid and must be initialized or destroyed.
 void Cell::write()
 {
@@ -45,13 +29,20 @@ void Cell::write()
         m_writer->replace(std::move(m_buf));
 }
 
+void Cell::initialize(const Cell *exclude)
+{
+    m_buf = m_cellMgr->getBuffer(exclude);
+    m_pos = m_buf->data();
+    m_endPos = m_pos + m_pointSize * (BufSize / m_pointSize);
+}
+
 void Cell::advance()
 {
     m_pos += m_pointSize;
     if (m_pos >= m_endPos)
     {
         write();
-        initialize();
+        initialize(this);
     }
 }
 
@@ -62,33 +53,44 @@ void Cell::advance()
 CellMgr::CellMgr(int pointSize, Writer *writer) : m_pointSize(pointSize), m_writer(writer)
 {}
 
-
-Cell *CellMgr::get(const VoxelKey& key)
+Cell *CellMgr::get(const VoxelKey& key, const Cell *lastCell)
 {
     auto it = m_cells.find(key);
     if (it == m_cells.end())
     {
-        Cell::FlushFunc f = [this](Cell *exclude)
-        {
-            flush(exclude);
-        };
-        std::unique_ptr<Cell> cell(new Cell(key, m_pointSize, m_writer, f));
+        std::unique_ptr<Cell> cell(new Cell(key, m_pointSize, m_writer, this, lastCell));
         it = m_cells.insert( {key, std::move(cell)} ).first;
     }
-    Cell& c = *(it->second);
-    return &c;
+
+    return it->second.get();
+}
+
+DataVecPtr CellMgr::getBuffer(const Cell *exclude)
+{
+    DataVecPtr b = m_writer->fetchBuffer();
+
+    // If we couldn't fetch a buffer, flush all the the buffers for this processor and
+    // try again, but block.
+    if (!b)
+    {
+        flush(exclude);
+        b = m_writer->fetchBufferBlocking();
+    }
+    return b;
 }
 
 // Eliminate all the cells and their associated data buffers except the `exclude`
 // cell.
-void CellMgr::flush(Cell *exclude)
+void CellMgr::flush(const Cell *exclude)
 {
     CellMap::iterator it = m_cells.end();
+
     if (exclude)
         it = m_cells.find(exclude->key());
 
-    // If there was no exclude cell or it isn't in our list, just clear the cells.
+    // If there was no exclude cell just clear the cells.
     // Otherwise, save the exclude cell, clear the list, and reinsert.
+    // Cells are written when they are destroyed.
     if (it == m_cells.end())
         m_cells.clear();
     else

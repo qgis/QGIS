@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspluginlayerregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPluginLayerType
+{
+%Docstring(signature="appended")
+Class for creating plugin specific layers
+%End
+
+%TypeHeaderCode
+#include "qgspluginlayerregistry.h"
+%End
+  public:
+
+    QgsPluginLayerType( const QString &name );
+    virtual ~QgsPluginLayerType();
+
+    QString name() const;
+
+    virtual QgsPluginLayer *createLayer() /Factory/;
+%Docstring
+Returns new layer of this type. Return ``None`` on error
+%End
+
+    virtual QgsPluginLayer *createLayer( const QString &uri ) /Factory/;
+%Docstring
+Returns new layer of this type, using layer URI (specific to this plugin layer type). Return ``None`` on error.
+
+.. versionadded:: 2.10
+%End
+
+    virtual bool showLayerProperties( QgsPluginLayer *layer );
+%Docstring
+Show plugin layer properties dialog. Return ``False`` if the dialog cannot be shown.
+%End
+
+  protected:
+};
+
+
+class QgsPluginLayerRegistry
+{
+%Docstring(signature="appended")
+A registry of plugin layers types.
+
+:py:class:`QgsPluginLayerRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.pluginLayerRegistry()`.
+%End
+
+%TypeHeaderCode
+#include "qgspluginlayerregistry.h"
+%End
+  public:
+
+    QgsPluginLayerRegistry();
+%Docstring
+Constructor for QgsPluginLayerRegistry.
+%End
+    ~QgsPluginLayerRegistry();
+
+
+    QStringList pluginLayerTypes();
+%Docstring
+List all known layer types
+%End
+
+    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType /Transfer/ );
+%Docstring
+Add plugin layer type (take ownership) and return ``True`` on success
+%End
+
+    bool removePluginLayerType( const QString &typeName );
+%Docstring
+Remove plugin layer type and return ``True`` on success
+%End
+
+    QgsPluginLayerType *pluginLayerType( const QString &typeName );
+%Docstring
+Returns plugin layer type metadata or ``None`` if doesn't exist
+%End
+
+    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) /Factory/;
+%Docstring
+Returns new layer if corresponding plugin has been found else returns ``None``.
+
+.. note::
+
+   parameter uri has been added in QGIS 2.10
+%End
+
+  private:
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspluginlayerregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

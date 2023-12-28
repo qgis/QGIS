@@ -1,0 +1,185 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsreferencedgeometry.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsReferencedGeometryBase
+{
+%Docstring(signature="appended")
+A base class for geometry primitives which are stored with an associated reference system.
+
+:py:class:`QgsReferencedGeometryBase` classes represent some form of geometry primitive
+(such as rectangles) which have an optional coordinate reference system
+associated with them.
+
+.. seealso:: :py:class:`QgsReferencedRectangle`
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the associated coordinate reference system, or an invalid CRS if
+no reference system is set.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the associated ``crs``. Set to an invalid CRS if
+no reference system is required.
+
+.. seealso:: :py:func:`crs`
+%End
+
+};
+
+class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
+{
+%Docstring(signature="appended")
+A :py:class:`QgsRectangle` with associated coordinate reference system.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for QgsReferencedRectangle, with the specified initial ``rectangle``
+and ``crs``.
+%End
+
+    QgsReferencedRectangle();
+%Docstring
+Constructor for QgsReferencedRectangle.
+%End
+
+    operator QVariant() const;
+
+    bool operator==( const QgsReferencedRectangle &other ) const;
+    bool operator!=( const QgsReferencedRectangle &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+
+class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
+{
+%Docstring(signature="appended")
+A :py:class:`QgsPointXY` with associated coordinate reference system.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for QgsReferencedPointXY, with the specified initial ``point``
+and ``crs``.
+%End
+
+    QgsReferencedPointXY();
+%Docstring
+Constructor for QgsReferencedPointXY.
+%End
+
+    operator QVariant() const;
+
+    bool operator==( const QgsReferencedPointXY &other );
+    bool operator!=( const QgsReferencedPointXY &other );
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+
+class QgsReferencedGeometry : QgsGeometry, QgsReferencedGeometryBase
+{
+%Docstring(signature="appended")
+A :py:class:`QgsGeometry` with associated coordinate reference system.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for QgsReferencedGeometry, with the specified initial ``geometry``
+and ``crs``.
+%End
+
+    QgsReferencedGeometry();
+%Docstring
+Constructor for QgsReferencedGeometry.
+%End
+
+    operator QVariant() const;
+
+    bool operator==( const QgsReferencedGeometry &other ) const;
+    bool operator!=( const QgsReferencedGeometry &other ) const;
+
+    static QgsReferencedGeometry fromReferencedPointXY( const QgsReferencedPointXY &point );
+%Docstring
+Construct a new QgsReferencedGeometry from referenced ``point``
+%End
+
+    static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
+%Docstring
+Construct a new QgsReferencedGeometry from referenced ``rectangle``
+%End
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsreferencedgeometry.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

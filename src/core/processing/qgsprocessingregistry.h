@@ -105,7 +105,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     /**
      * Returns a matching provider by provider ID.
      */
-    QgsProcessingProvider *providerById( const QString &id );
+    QgsProcessingProvider *providerById( const QString &id ) SIP_HOLDGIL;
 
     /**
      * Returns a list of all available algorithms from registered providers.

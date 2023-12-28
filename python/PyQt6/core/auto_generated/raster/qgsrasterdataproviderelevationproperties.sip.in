@@ -1,0 +1,39 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterdataproviderelevationproperties.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterDataProviderElevationProperties : QgsDataProviderElevationProperties
+{
+%Docstring(signature="appended")
+Handles elevation related properties for a raster data provider.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsrasterdataproviderelevationproperties.h"
+%End
+  public:
+
+    QgsRasterDataProviderElevationProperties();
+%Docstring
+Constructor for QgsRasterDataProviderElevationProperties.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterdataproviderelevationproperties.h           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

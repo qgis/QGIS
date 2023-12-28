@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditoraction.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsAttributeEditorAction : QgsAttributeEditorElement
+{
+%Docstring(signature="appended")
+This element will load a layer action onto the form.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditoraction.h"
+%End
+  public:
+
+    QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display a layer action.
+
+:param action: The action
+:param parent: The parent (used as container)
+%End
+
+    QgsAttributeEditorAction( const QUuid &uuid, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display a layer action, this constructor allows
+to create a QgsAttributeEditorAction when actions are not yet loaded.
+
+:param uuid: The action unique identifier (UUID).
+:param parent: The parent (used as container).
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    const QgsAction &action( const QgsVectorLayer *layer ) const;
+%Docstring
+Returns the (possibly lazy loaded) action for the given ``layer``.
+%End
+
+    void setAction( const QgsAction &newAction );
+%Docstring
+Set the action to ``newAction``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditoraction.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

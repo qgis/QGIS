@@ -507,7 +507,7 @@ QString QgsRasterLayer::htmlMetadata() const
 
   // Band table
   myMetadata += QStringLiteral( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" ) %
-                QStringLiteral( "<tr><th>" ) % tr( "Number" ) % QStringLiteral( "</th><th>" ) % tr( "Band" ) % QStringLiteral( "</th><th>" ) % tr( "No-Data" ) % QStringLiteral( "</th><th>" ) %
+                QStringLiteral( "<tr><th>" ) % tr( "Number" ) % QStringLiteral( "</th><th>" ) % tr( "Band" ) % QStringLiteral( "</th><th>" ) % tr( "NoData" ) % QStringLiteral( "</th><th>" ) %
                 tr( "Min" ) % QStringLiteral( "</th><th>" ) % tr( "Max" ) % QStringLiteral( "</th></tr>\n" );
 
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );

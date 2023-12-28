@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapdecoration.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapDecoration
+{
+%Docstring(signature="appended")
+Interface for map decorations.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsmapdecoration.h"
+%End
+  public:
+
+    QgsMapDecoration();
+%Docstring
+Constructor for QgsMapDecoration.
+%End
+
+    virtual ~QgsMapDecoration();
+
+    virtual void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) = 0;
+%Docstring
+Renders a map decoration.
+%End
+
+    const QString displayName() const;
+%Docstring
+Returns the map decoration display name.
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool hasFixedMapPosition() const;
+%Docstring
+Returns ``True`` if the decoration is attached to a fixed map position (e.g grid, layout extent), or
+``False`` if the annotation uses a position relative to the map canvas (e.g. title, copyright...)
+
+.. versionadded:: 3.34
+%End
+
+  protected:
+
+    void setDisplayName( const QString &name );
+%Docstring
+Sets the map decoration display ``name``.
+
+.. versionadded:: 3.14
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapdecoration.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

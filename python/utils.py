@@ -493,6 +493,25 @@ def startProcessingPlugin(packageName: str) -> bool:
     return True
 
 
+def finalizeProcessingStartup() -> bool:
+    """
+    Finalizes the startup of the Processing plugin
+
+    This should only be called after the startProcessingPlugin() method has been called
+    for every installed and enabled plugin.
+    """
+    global plugins, active_plugins, iface, plugin_times
+    if 'processing' not in plugins:
+        return False
+
+    try:
+        plugins['processing'].finalizeStartup()
+    except:
+        return False
+
+    return True
+
+
 def canUninstallPlugin(packageName: str) -> bool:
     """ confirm that the plugin can be uninstalled """
     global plugins, active_plugins

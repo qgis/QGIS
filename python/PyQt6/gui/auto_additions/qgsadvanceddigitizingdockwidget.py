@@ -1,0 +1,12 @@
+# The following has been generated automatically from src/gui/qgsadvanceddigitizingdockwidget.h
+QgsAdvancedDigitizingDockWidget.AbsoluteAngle = QgsAdvancedDigitizingDockWidget.CadCapacity.AbsoluteAngle
+QgsAdvancedDigitizingDockWidget.RelativeAngle = QgsAdvancedDigitizingDockWidget.CadCapacity.RelativeAngle
+QgsAdvancedDigitizingDockWidget.RelativeCoordinates = QgsAdvancedDigitizingDockWidget.CadCapacity.RelativeCoordinates
+QgsAdvancedDigitizingDockWidget.Distance = QgsAdvancedDigitizingDockWidget.CadCapacity.Distance
+QgsAdvancedDigitizingDockWidget.CadCapacities = lambda flags=0: QgsAdvancedDigitizingDockWidget.CadCapacity(flags)
+QgsAdvancedDigitizingDockWidget.CadCapacities.baseClass = QgsAdvancedDigitizingDockWidget
+CadCapacities = QgsAdvancedDigitizingDockWidget  # dirty hack since SIP seems to introduce the flags in module
+QgsAdvancedDigitizingDockWidget.ReturnPressed = QgsAdvancedDigitizingDockWidget.WidgetSetMode.ReturnPressed
+QgsAdvancedDigitizingDockWidget.CadConstraint.NoLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.NoLock
+QgsAdvancedDigitizingDockWidget.CadConstraint.SoftLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.SoftLock
+QgsAdvancedDigitizingDockWidget.CadConstraint.HardLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.HardLock

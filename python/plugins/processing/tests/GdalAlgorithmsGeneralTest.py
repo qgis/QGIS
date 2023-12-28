@@ -38,8 +38,8 @@ from qgis.core import (QgsProcessingContext,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition)
 
-from qgis.testing import (start_app,
-                          unittest)
+from qgis.testing import (QgisTestCase,
+                          start_app)
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ogr2ogr import ogr2ogr
@@ -48,7 +48,7 @@ from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGdalAlgorithms(unittest.TestCase):
+class TestGdalAlgorithms(QgisTestCase):
 
     @classmethod
     def setUpClass(cls):

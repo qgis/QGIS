@@ -107,6 +107,9 @@ jobs:
           echo ${{ github.event.number }} | tee pr_number
           zip -u qgis-portable-win64.zip pr_number
           zip -u qgis-portable-win64-debugsym.zip pr_number
+          echo ${{ github.event.pull_request.head.sha }} | tee git_commit
+          zip -u qgis-portable-win64.zip git_commit
+          zip -u qgis-portable-win64-debugsym.zip git_commit
 
       - name: Upload QGIS for Windows 64bit
         uses: actions/upload-artifact@v3

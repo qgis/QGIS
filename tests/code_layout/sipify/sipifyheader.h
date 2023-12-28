@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
   public:
     //! This is an enum
-    enum MyEnum
+    enum MyEnum : int
     {
       Success = 0, //!< Edit operation was successful
       NoSuccess = 1, //!< Edit operation resulted in an empty geometry

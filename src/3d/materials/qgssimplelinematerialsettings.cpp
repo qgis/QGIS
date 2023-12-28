@@ -21,6 +21,23 @@
 #include <Qt3DRender/QEffect>
 #include <QMap>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QGeometry>
+
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+#endif
 
 QString QgsSimpleLineMaterialSettings::type() const
 {
@@ -55,14 +72,18 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
   return new QgsSimpleLineMaterialSettings( *this );
 }
 
-void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
+void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+
+  QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
-void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
+void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
+
+  QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
 Qt3DRender::QMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
@@ -80,11 +101,16 @@ Qt3DRender::QMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSet
     case QgsMaterialSettingsRenderingTechnique::Lines:
     {
       QgsLineMaterial *mat = new QgsLineMaterial;
-      mat->setLineColor( mAmbient );
-      if ( context.isSelected() )
+      if ( !context.isSelected() )
+      {
+        mat->setLineColor( mAmbient );
+        mat->setUseVertexColors( dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) );
+      }
+      else
       {
         // update the material with selection colors
         mat->setLineColor( context.selectionColor() );
+        mat->setUseVertexColors( false );
       }
       return mat;
     }
@@ -104,4 +130,36 @@ void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *
   Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
   ambientParameter->setValue( mAmbient );
   effect->addParameter( ambientParameter );
+}
+
+QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
+{
+  const QColor ambient = dataDefinedProperties().valueAsColor( Ambient, expressionContext, mAmbient );
+
+  QByteArray array;
+  array.resize( sizeof( unsigned char ) * 3 );
+  unsigned char *fptr = reinterpret_cast<unsigned char *>( array.data() );
+
+  *fptr++ = static_cast<unsigned char>( ambient.red() );
+  *fptr++ = static_cast<unsigned char>( ambient.green() );
+  *fptr++ = static_cast<unsigned char>( ambient.blue() );
+  return array;
+}
+
+void QgsSimpleLineMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geometry, int vertexCount, const QByteArray &data ) const
+{
+  Qt3DQBuffer *dataBuffer = new Qt3DQBuffer( geometry );
+
+  Qt3DQAttribute *colorAttribute = new Qt3DQAttribute( geometry );
+  colorAttribute->setName( QStringLiteral( "dataDefinedColor" ) );
+  colorAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedByte );
+  colorAttribute->setVertexSize( 3 );
+  colorAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  colorAttribute->setBuffer( dataBuffer );
+  colorAttribute->setByteStride( 3 * sizeof( unsigned char ) );
+  colorAttribute->setByteOffset( 0 );
+  colorAttribute->setCount( vertexCount );
+  geometry->addAttribute( colorAttribute );
+
+  dataBuffer->setData( data );
 }

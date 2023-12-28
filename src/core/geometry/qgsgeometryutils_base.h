@@ -19,6 +19,7 @@ email                : loic dot bartoletti at oslandia dot com
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 #include "qgsvector.h"
+#include <iterator>
 
 /**
  * \ingroup core
@@ -464,4 +465,77 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \since QGIS 3.34
      */
     static double azimuth( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL;
+
+#ifndef SIP_RUN
+
+    /**
+     * Performs fuzzy comparison between pairs of values within a specified epsilon.
+     *
+     * This function compares a variable number of pairs of values to check if their differences
+     * fall within a specified epsilon range using qgsNumberNear. It returns true if all the differences
+     * are within the given epsilon range; otherwise, it returns false.
+     *
+     * \tparam T Floating-point type (double or float) for the values to be compared.
+     * \tparam Args Type of arguments for the values to be compared.
+     * \param epsilon The range within which the differences are checked.
+     * \param args Variadic list of values to be compared in pairs.
+     *             The number of arguments must be greater than 0 and even.
+     *             It must follow the pattern: x1, y1, x2, y2, or x1, y1, z1, x2, y2, z2, ...
+     * \return true if all the differences between pairs of values are within epsilon, false otherwise.
+     *
+     * \see fuzzyDistanceEqual
+     *
+     * \since QGIS 3.36
+     */
+    template<typename T, typename... Args>
+    static bool fuzzyEqual( T epsilon, const Args &... args ) noexcept
+    {
+      static_assert( ( sizeof...( args ) % 2 == 0 || sizeof...( args ) != 0 ), "The number of arguments must be greater than 0 and even" );
+      constexpr size_t numArgs = sizeof...( args );
+      bool result = true;
+      T values[] = {static_cast<T>( args )...};
+
+      for ( size_t i = 0; i < numArgs / 2; ++i )
+      {
+        result = result && qgsNumberNear( values[i], values[i + numArgs / 2], epsilon );
+      }
+
+      return result;
+    }
+
+    /**
+     * Compare equality between multiple pairs of values with a specified epsilon.
+     *
+     * \tparam T Floating-point type (double or float) for the values to be compared.
+     * \tparam Args Type of arguments for the values to be compared.
+     * \param epsilon The range within which the differences are checked.
+     * \param args Variadic list of values to be compared in pairs.
+     *             The number of arguments must be greater than or equal to 4.
+     *             It must follow the pattern: x1, y1, x2, y2, or x1, y1, z1, x2, y2, z2, ...
+     * \return true if the squares of differences between pairs of values sum up to less than epsilon squared, false otherwise.
+     *
+     * \see fuzzyEqual
+     *
+     * \since QGIS 3.36
+     */
+    template<typename T, typename... Args>
+    static bool fuzzyDistanceEqual( T epsilon, const Args &... args ) noexcept
+    {
+      static_assert( ( sizeof...( args ) % 2 == 0 || sizeof...( args ) >= 4 ), "The number of arguments must be greater than 4 and even" );
+      constexpr size_t numArgs = sizeof...( args );
+      const T squaredEpsilon = epsilon * epsilon;
+      T sum = 0;
+
+      T values[] = {static_cast<T>( args )...};
+
+      for ( size_t i = 0; i < numArgs / 2; ++i )
+      {
+        const T diff = values[i] - values[i + numArgs / 2];
+        sum += diff * diff;
+      }
+
+      return sum < squaredEpsilon;
+    }
+#endif
+
 };

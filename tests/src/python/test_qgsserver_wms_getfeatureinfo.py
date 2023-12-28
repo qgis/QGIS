@@ -116,7 +116,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'with_geometry=true',
                                  'wms_getfeatureinfo-text-html-geometry')
 
-        # Test getfeatureinfo response html with maptip and display name
+        # Test getfeatureinfo response html with maptip and display name for vector layer
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=text%2Fhtml&transparent=true&' +
@@ -127,7 +127,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'with_maptip=true',
                                  'wms_getfeatureinfo-text-html-maptip')
 
-        # Test getfeatureinfo response html with maptip and display name in text mode
+        # Test getfeatureinfo response html with maptip and display name in text mode for vector layer
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
                                  'info_format=text%2Fplain&transparent=true&' +
@@ -242,6 +242,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
                                  'query_layers=landsat&X=250&Y=250',
                                  'wms_getfeatureinfo-raster-text-xml')
+
+        # Test GetFeatureInfo on raster layer with maptip
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=landsat&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=500&height=500&srs=EPSG%3A3857&' +
+                                 'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
+                                 'query_layers=landsat&X=250&Y=250&' +
+                                 'with_maptip=true',
+                                 'wms_getfeatureinfo-raster-text-xml-maptip')
 
     def testGetFeatureInfoValueRelation(self):
         """Test GetFeatureInfo resolves "value relation" widget values. regression 18518"""
@@ -698,7 +708,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         fields = QgsFields()
         fields.append(QgsField('fid', QVariant.Int))
         vl1 = QgsMemoryProviderUtils.createMemoryLayer(
-            'vl1', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+            'vl1', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
 
         f1 = QgsFeature(vl1.fields())
         f1['fid'] = 1
@@ -710,7 +720,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         vl1.dataProvider().addFeatures([f1, f2])
 
         vl2 = QgsMemoryProviderUtils.createMemoryLayer(
-            'vl2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326))
+            'vl2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
         vl2.dataProvider().addFeatures([f1, f2])
 
         project.addMapLayers([vl1, vl2])

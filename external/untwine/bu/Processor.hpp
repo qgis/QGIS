@@ -59,7 +59,7 @@ private:
     void writeEptFile(const std::string& filename, pdal::PointViewPtr view);
     void createChunk(const VoxelKey& key, pdal::PointViewPtr view);
     void sortChunk(pdal::PointViewPtr view);
-    void fillPointBuf(pdal::PointRef& point, std::vector<char>& buf);
+    void fillPointBuf(pdal::PointRef& point, std::vector<char>& buf, pdal::Dimension::Id bitsDim);
 
     VoxelInfo m_vi;
     const BaseInfo& m_b;

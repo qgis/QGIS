@@ -2732,6 +2732,19 @@ Qgis.PlotToolFlag.baseClass = Qgis
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
+Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
+Qgis.Point3DShape.Cone.__doc__ = "Cone"
+Qgis.Point3DShape.Cube.__doc__ = "Cube"
+Qgis.Point3DShape.Torus.__doc__ = "Torus"
+Qgis.Point3DShape.Plane.__doc__ = "Flat plane"
+Qgis.Point3DShape.ExtrudedText.__doc__ = "Extruded text"
+Qgis.Point3DShape.Model.__doc__ = "Model"
+Qgis.Point3DShape.Billboard.__doc__ = "Billboard"
+Qgis.Point3DShape.__doc__ = "3D point shape types.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsPoint3DSymbol`.Shape\n\n.. versionadded:: 3.36\n\n" + '* ``Cylinder``: ' + Qgis.Point3DShape.Cylinder.__doc__ + '\n' + '* ``Sphere``: ' + Qgis.Point3DShape.Sphere.__doc__ + '\n' + '* ``Cone``: ' + Qgis.Point3DShape.Cone.__doc__ + '\n' + '* ``Cube``: ' + Qgis.Point3DShape.Cube.__doc__ + '\n' + '* ``Torus``: ' + Qgis.Point3DShape.Torus.__doc__ + '\n' + '* ``Plane``: ' + Qgis.Point3DShape.Plane.__doc__ + '\n' + '* ``ExtrudedText``: ' + Qgis.Point3DShape.ExtrudedText.__doc__ + '\n' + '* ``Model``: ' + Qgis.Point3DShape.Model.__doc__ + '\n' + '* ``Billboard``: ' + Qgis.Point3DShape.Billboard.__doc__
+# --
+Qgis.Point3DShape.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
 Qgis.LightSourceType.__doc__ = "Light source types for 3D scenes.\n\n.. versionadded:: 3.26\n\n" + '* ``Point``: ' + Qgis.LightSourceType.Point.__doc__ + '\n' + '* ``Directional``: ' + Qgis.LightSourceType.Directional.__doc__
