@@ -32,6 +32,7 @@
 #include "qgsimageoperation.h"
 #include "qgscolorrampimpl.h"
 #include "qgsfillsymbol.h"
+#include "qgscolorutils.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -104,16 +105,16 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
 
   if ( props.contains( QStringLiteral( "line_color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "line_color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "line_color" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "outline_color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "outline_color" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "color" ) ) )
   {
     //pre 2.5 projects used "color"
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "color" )].toString() );
   }
   if ( props.contains( QStringLiteral( "line_width" ) ) )
   {
@@ -507,7 +508,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
 QVariantMap QgsSimpleLineSymbolLayer::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "line_color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
+  map[QStringLiteral( "line_color" )] = QgsColorUtils::colorToString( mColor );
   map[QStringLiteral( "line_width" )] = QString::number( mWidth );
   map[QStringLiteral( "line_width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
   map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
@@ -3596,11 +3597,11 @@ QgsSymbolLayer *QgsLineburstSymbolLayer::create( const QVariantMap &properties )
 
   if ( properties.contains( QStringLiteral( "color" ) ) )
   {
-    res->setColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "color" )].toString() ) );
+    res->setColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "color" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "gradient_color2" ) ) )
   {
-    res->setColor2( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "gradient_color2" )].toString() ) );
+    res->setColor2( QgsColorUtils::colorFromString( properties[QStringLiteral( "gradient_color2" )].toString() ) );
   }
 
   //attempt to create color ramp from props
@@ -3631,8 +3632,8 @@ QVariantMap QgsLineburstSymbolLayer::properties() const
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
 
-  map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
-  map[QStringLiteral( "gradient_color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
+  map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mColor );
+  map[QStringLiteral( "gradient_color2" )] = QgsColorUtils::colorToString( mColor2 );
   map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mGradientColorType ) );
   if ( mGradientRamp )
   {
@@ -3982,7 +3983,7 @@ QVariantMap QgsFilledLineSymbolLayer::properties() const
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   if ( mFill )
   {
-    map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mFill->color() );
+    map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mFill->color() );
   }
   return map;
 }

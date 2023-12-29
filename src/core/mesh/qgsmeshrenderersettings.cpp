@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshrenderersettings.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsunittypes.h"
 
 bool QgsMeshRendererMeshSettings::isEnabled() const
@@ -64,7 +64,7 @@ QDomElement QgsMeshRendererMeshSettings::writeXml( QDomDocument &doc ) const
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-settings" ) );
   elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
-  elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  elem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
   elem.setAttribute( QStringLiteral( "line-width-unit" ), QgsUnitTypes::encodeUnit( mLineWidthUnit ) );
   return elem;
 }
@@ -73,7 +73,7 @@ void QgsMeshRendererMeshSettings::readXml( const QDomElement &elem )
 {
   mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
-  mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mLineWidthUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "line-width-unit" ) ) );
 }
 // ---------------------------------------------------------------------
@@ -599,7 +599,7 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc, const Qg
 
   elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
   elem.setAttribute( QStringLiteral( "coloring-method" ), coloringMethod() );
-  elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  elem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
   const QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   elem.appendChild( elemShader );
   elem.setAttribute( QStringLiteral( "filter-min" ), mFilterMin );
@@ -624,7 +624,7 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem, const QgsR
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
   mColoringMethod = static_cast<QgsInterpolatedLineColor::ColoringMethod>(
                       elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
-  mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mColorRampShader.readXml( elem.firstChildElement( "colorrampshader" ), context );
   mFilterMin = elem.attribute( QStringLiteral( "filter-min" ) ).toDouble();
   mFilterMax = elem.attribute( QStringLiteral( "filter-max" ) ).toDouble();

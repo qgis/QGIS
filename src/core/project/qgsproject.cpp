@@ -51,7 +51,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
 #include "qgsauxiliarystorage.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
@@ -4836,7 +4836,7 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   QgsNamedColorList::const_iterator colorIt = colors.constBegin();
   for ( ; colorIt != colors.constEnd(); ++colorIt )
   {
-    const QString color = QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first );
+    const QString color = QgsColorUtils::colorToString( ( *colorIt ).first );
     const QString label = ( *colorIt ).second;
     customColors.append( color );
     customColorLabels.append( label );
@@ -5025,7 +5025,7 @@ GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
   for ( QStringList::iterator it = colorStrings.begin();
         it != colorStrings.end(); ++it )
   {
-    const QColor color = QgsSymbolLayerUtils::decodeColor( *it );
+    const QColor color = QgsColorUtils::colorFromString( *it );
     QString label;
     if ( colorLabels.length() > colorIndex )
     {

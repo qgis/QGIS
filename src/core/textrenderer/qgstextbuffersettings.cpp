@@ -24,6 +24,7 @@
 #include "qgstextrendererutils.h"
 #include "qgsapplication.h"
 #include "qgsunittypes.h"
+#include "qgscolorutils.h"
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
@@ -354,7 +355,7 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   {
     d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textBufferElem.attribute( QStringLiteral( "bufferSizeMapUnitScale" ) ) );
   }
-  d->color = QgsSymbolLayerUtils::decodeColor( textBufferElem.attribute( QStringLiteral( "bufferColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
+  d->color = QgsColorUtils::colorFromString( textBufferElem.attribute( QStringLiteral( "bufferColor" ), QgsColorUtils::colorToString( Qt::white ) ) );
 
   if ( !textBufferElem.hasAttribute( QStringLiteral( "bufferOpacity" ) ) )
   {
@@ -384,7 +385,7 @@ QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
   textBufferElem.setAttribute( QStringLiteral( "bufferSize" ), d->size );
   textBufferElem.setAttribute( QStringLiteral( "bufferSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
   textBufferElem.setAttribute( QStringLiteral( "bufferSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferColor" ), QgsSymbolLayerUtils::encodeColor( d->color ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferColor" ), QgsColorUtils::colorToString( d->color ) );
   textBufferElem.setAttribute( QStringLiteral( "bufferNoFill" ), !d->fillBufferInterior );
   textBufferElem.setAttribute( QStringLiteral( "bufferOpacity" ), d->opacity );
   textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );

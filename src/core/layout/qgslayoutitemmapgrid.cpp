@@ -23,6 +23,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgssymbol.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
@@ -277,9 +278,9 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( QStringLiteral( "gridFrameWidth" ), qgsDoubleToString( mGridFrameWidth ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFrameMargin" ), qgsDoubleToString( mGridFrameMargin ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFramePenThickness" ), qgsDoubleToString( mGridFramePenThickness ) );
-  mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsSymbolLayerUtils::encodeColor( mGridFramePenColor ) );
-  mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor1 ) );
-  mapGridElem.setAttribute( QStringLiteral( "frameFillColor2" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor2 ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsColorUtils::colorToString( mGridFramePenColor ) );
+  mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsColorUtils::colorToString( mGridFrameFillColor1 ) );
+  mapGridElem.setAttribute( QStringLiteral( "frameFillColor2" ), QgsColorUtils::colorToString( mGridFrameFillColor2 ) );
   mapGridElem.setAttribute( QStringLiteral( "leftFrameDivisions" ), mLeftFrameDivisions );
   mapGridElem.setAttribute( QStringLiteral( "rightFrameDivisions" ), mRightFrameDivisions );
   mapGridElem.setAttribute( QStringLiteral( "topFrameDivisions" ), mTopFrameDivisions );
@@ -347,9 +348,9 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridFrameWidth = itemElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble();
   mGridFrameMargin = itemElem.attribute( QStringLiteral( "gridFrameMargin" ), QStringLiteral( "0.0" ) ).toDouble();
   mGridFramePenThickness = itemElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.3" ) ).toDouble();
-  mGridFramePenColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
-  mGridFrameFillColor1 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
-  mGridFrameFillColor2 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor2" ), QStringLiteral( "0,0,0,255" ) ) );
+  mGridFramePenColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
+  mGridFrameFillColor1 = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
+  mGridFrameFillColor2 = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "frameFillColor2" ), QStringLiteral( "0,0,0,255" ) ) );
   mLeftFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "leftFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
   mRightFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "rightFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
   mTopFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "topFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
@@ -431,7 +432,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
     mAnnotationFormat.setFont( font );
     mAnnotationFormat.setSize( font.pointSizeF() );
     mAnnotationFormat.setSizeUnit( Qgis::RenderUnit::Points );
-    mAnnotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) ) );
+    mAnnotationFormat.setColor( QgsColorUtils::colorFromString( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) ) );
   }
 
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();

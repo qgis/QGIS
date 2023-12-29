@@ -52,6 +52,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgscolorutils.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -1138,7 +1139,7 @@ QString QgsSymbol::dump() const
     default:
       Q_ASSERT( false && "unknown symbol type" );
   }
-  QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerUtils::encodeColor( color() ) );
+  QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsColorUtils::colorToString( color() ) );
 
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
