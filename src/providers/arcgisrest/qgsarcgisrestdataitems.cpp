@@ -198,7 +198,7 @@ QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
   const QString url = QgsArcGisConnectionSettings::settingsUrl->value( mConnName );
   const QString authcfg = QgsArcGisConnectionSettings::settingsAuthcfg->value( mConnName );
 
-  QgsHttpHeaders headers( QgsArcGisConnectionSettings::settingsHeaders->value() );
+  QgsHttpHeaders headers( QgsArcGisConnectionSettings::settingsHeaders->value( mConnName ) );
 
   QVector<QgsDataItem *> items;
   if ( !mPortalCommunityEndpoint.isEmpty() && !mPortalContentEndpoint.isEmpty() )
