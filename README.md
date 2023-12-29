@@ -34,7 +34,7 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 
 - Support for raster, vector, mesh, and point cloud data in a range of industry-standard formats
     - *Raster formats include*: GeoPackage, GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
-    - *Vector formats include*: GeoPackage, ESRI shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html). 
+    - *Vector formats include*: GeoPackage, ESRI shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](https://www.gdal.org/ogr_formats.html). 
     - *Mesh formats include*: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
     - *Point-cloud format*: LAS/LAZ and EPT datasets.
 - Data abstraction framework, with local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), and web services (WMS, WCS, WFS, ArcGIS REST) all accessed through a unified data model and browser interface, and as flexible layers in user-created projects 
@@ -181,8 +181,8 @@ There are several channels where you can find help and support for QGIS:
 - Using the [QGIS community site](https://qgis.org)
 - Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
 - Chatting with other users real-time. *Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question. The following paths all take you to the same chat room:*
-    - Using an IRC client and joining the [#qgis](http://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.
-    - Using a Matrix client and joining the [#qgis:matrix.org](http://matrix.to/#/#qgis:matrix.org) room.
+    - Using an IRC client and joining the [#qgis](https://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.
+    - Using a Matrix client and joining the [#qgis:matrix.org](https://matrix.to/#/#qgis:matrix.org) room.
     - Using [Gitter](https://gitter.im/qgis/QGIS) chat.
  - At the [GIS stackexchange](https://gis.stackexchange.com/) or [r/QGIS reddit](https://www.reddit.com/r/QGIS/), which are not maintained by the QGIS team, but where the QGIS and broader GIS community provides lots of advice
 - [Other support channels](https://qgis.org/en/site/forusers/support.html)
