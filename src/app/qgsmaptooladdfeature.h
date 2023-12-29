@@ -37,6 +37,8 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
 
     void featureDigitized( const QgsFeature &feature ) override;
 
+    void featureDialogFinished();
+
   private:
 
     bool addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal = true );

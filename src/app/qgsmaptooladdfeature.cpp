@@ -59,6 +59,8 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), feat, vlayer, QUuid(), -1, this );
 
+  connect( action, &QgsFeatureAction::addFeatureFinished, this, &QgsMapToolAddFeature::featureDialogFinished );
+
   std::unique_ptr< QgsHighlight > highlight;
   if ( QgsRubberBand *rb = takeRubberBand() )
   {
@@ -149,5 +151,14 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
       }
       vlayer->addTopologicalPoints( feature.geometry() );
     }
+  }
+}
+
+void QgsMapToolAddFeature::featureDialogFinished()
+{
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( vlayer->geometryType() == Qgis::GeometryType::Null )
+  {
+    mCanvas->unsetMapTool( mCanvas->mapTool() );
   }
 }
