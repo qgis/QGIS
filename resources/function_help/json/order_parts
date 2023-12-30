@@ -7,7 +7,7 @@
     "arg": "geometry",
     "description": "a multi-type geometry"
   }, {
-    "arg": "orderby",
+    "arg": "order_by",
     "description": "an expression string defining the order criteria"
   }, {
     "arg": "ascending",
