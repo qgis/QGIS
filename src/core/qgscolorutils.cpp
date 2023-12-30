@@ -281,7 +281,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
 
-      color.getCmykF( &c, &y, &m, &k, &alpha );
+      color.getCmykF( &c, &m, &y, &k, &alpha );
       return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
              qgsDoubleToString( m ),
              qgsDoubleToString( y ),
