@@ -23,6 +23,7 @@ uniform int lightCount;
 struct EnvironmentLight {
     samplerCube irradiance; // For diffuse contribution
     samplerCube specular; // For specular contribution
+        int specularMipLevels;
 };
 uniform EnvironmentLight envLight;
 uniform int envLightCount = 0;
