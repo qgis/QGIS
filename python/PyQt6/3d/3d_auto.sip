@@ -19,6 +19,7 @@
 %Include auto_generated/materials/qgsabstractmaterialsettings.sip
 %Include auto_generated/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/materials/qgsmaterialregistry.sip
+%Include auto_generated/materials/qgsmetalroughmaterialsettings.sip
 %Include auto_generated/materials/qgsnullmaterialsettings.sip
 %Include auto_generated/materials/qgsphongmaterialsettings.sip
 %Include auto_generated/materials/qgsphongtexturedmaterialsettings.sip
