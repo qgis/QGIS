@@ -229,7 +229,8 @@ QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    const auto constSplit = props[QStringLiteral( "stops" )].toString().split( ':' );
+    const thread_local QRegularExpression rx( QStringLiteral( "(?<!,rgb)(?<!,cmyk)(?<!,hsl)(?<!,hsv):" ) );
+    const auto constSplit = props[QStringLiteral( "stops" )].toString().split( rx );
     for ( const QString &stop : constSplit )
     {
       const QStringList parts = stop.split( ';' );
