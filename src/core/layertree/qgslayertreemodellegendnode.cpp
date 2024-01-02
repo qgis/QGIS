@@ -144,25 +144,24 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
 
   if ( ctx && ctx->painter )
   {
+    const QgsScopedRenderContextScaleToPixels scopedScaleToPixels(*(ctx->context));
+    const double scaleFactor = ctx->context->scaleFactor();
+    const int width = static_cast<int>(size.width() * scaleFactor);
+    const int height = static_cast<int>(size.height() * scaleFactor);
+    const int y = static_cast<int>((ctx->top + (itemHeight - size.height()) / 2) * scaleFactor);
+    int x = 0;
+
     switch ( settings.symbolAlignment() )
     {
       case Qt::AlignLeft:
       default:
-        symbolIcon.paint( ctx->painter,
-                          static_cast< int >( ctx->columnLeft ),
-                          static_cast< int >( ctx->top + ( itemHeight - size.height() ) / 2 ),
-                          static_cast< int >( size.width() ),
-                          static_cast< int >( size.height() ) );
+        x = static_cast<int>(ctx->columnLeft * scaleFactor);
         break;
-
       case Qt::AlignRight:
-        symbolIcon.paint( ctx->painter,
-                          static_cast< int >( ctx->columnRight - size.width() ),
-                          static_cast< int >( ctx->top + ( itemHeight - size.height() ) / 2 ),
-                          static_cast< int >( size.width() ),
-                          static_cast< int >( size.height() ) );
+        x = static_cast<int>((ctx->columnRight - size.width()) * scaleFactor);
         break;
     }
+    symbolIcon.paint(ctx->painter, x, y, width, height);
   }
   return size;
 }
