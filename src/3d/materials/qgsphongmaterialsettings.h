@@ -124,6 +124,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     float mOpacity = 1.0f;
 
     //! Constructs a material from shader files
+    Qt3DRender::QMaterial *constantColorMaterial( const QgsMaterialContext &context ) const;
     Qt3DRender::QMaterial *dataDefinedMaterial() const;
 };
 

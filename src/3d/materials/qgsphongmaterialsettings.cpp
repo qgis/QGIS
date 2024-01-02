@@ -110,25 +110,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
     {
       if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
-
-      int opacity = mOpacity * 255;
-      Qt3DExtras::QDiffuseSpecularMaterial *material  = new Qt3DExtras::QDiffuseSpecularMaterial;
-      material->setDiffuse( QColor( mDiffuse.red(), mDiffuse.green(), mDiffuse.blue(), opacity ) );
-      material->setAmbient( QColor( mAmbient.red(), mAmbient.green(), mAmbient.blue(), opacity ) );
-      material->setSpecular( QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) );
-      material->setShininess( mShininess );
-      if ( mOpacity != 1 )
-      {
-        material->setAlphaBlendingEnabled( true );
-      }
-
-      if ( context.isSelected() )
-      {
-        // update the material with selection colors
-        material->setDiffuse( context.selectionColor() );
-        material->setAmbient( context.selectionColor().darker() );
-      }
-      return material;
+      else
+        return constantColorMaterial( context );
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
@@ -227,6 +210,46 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
   geometry->addAttribute( specularAttribute );
 
   dataBuffer->setData( data );
+}
+
+Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const QgsMaterialContext &context ) const
+{
+  Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+
+  Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( material );
+
+  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
+  technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
+  technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
+  technique->graphicsApiFilter()->setMajorVersion( 3 );
+  technique->graphicsApiFilter()->setMinorVersion( 3 );
+  Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey();
+  filterKey->setName( QStringLiteral( "renderingStyle" ) );
+  filterKey->setValue( QStringLiteral( "forward" ) );
+  technique->addFilterKey( filterKey );
+
+  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
+  Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
+
+  //Load shader programs
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/phongConstant.vert" ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
+  const QUrl urlFrag( QStringLiteral( "qrc:/shaders/phongConstant.frag" ) );
+  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
+
+  renderPass->setShaderProgram( shaderProgram );
+  technique->addRenderPass( renderPass );
+
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), context.isSelected() ? context.selectionColor().darker() : mAmbient ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ), context.isSelected() ? context.selectionColor() : mDiffuse ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular ) );
+
+  eff->addTechnique( technique );
+  material->setEffect( eff );
+
+  return material;
 }
 
 Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
