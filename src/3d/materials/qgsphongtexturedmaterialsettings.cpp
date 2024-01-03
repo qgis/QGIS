@@ -151,8 +151,8 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
 
       int opacity = mOpacity * 255;
       QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
-      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) ) );
-      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
 
@@ -198,8 +198,8 @@ QMap<QString, QString> QgsPhongTexturedMaterialSettings::toExportParameters() co
 
 void QgsPhongTexturedMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
+  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
 
   ambientParameter->setValue( mAmbient );

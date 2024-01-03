@@ -211,9 +211,9 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
     // update the material with selection colors
     for ( Qt3DRender::QParameter *param : mat->effect()->parameters() )
     {
-      if ( param->name() == QLatin1String( "kd" ) ) // diffuse
+      if ( param->name() == QLatin1String( "diffuseColor" ) )
         param->setValue( context.map().selectionColor() );
-      else if ( param->name() == QLatin1String( "ka" ) ) // ambient
+      else if ( param->name() == QLatin1String( "ambientColor" ) )
         param->setValue( context.map().selectionColor().darker() );
     }
   }
