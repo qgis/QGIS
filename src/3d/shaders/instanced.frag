@@ -15,12 +15,17 @@ in vec3 worldNormal;
 
 out vec4 fragColor;
 
-#pragma include light.inc.frag
+#pragma include phong.inc.frag
 
 void main()
 {
-    vec3 diffuseColor, specularColor;
     vec3 worldView = normalize(eyePosition - worldPosition);
-    adsModel(worldPosition, worldNormal, worldView, shininess, diffuseColor, specularColor);
-    fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, opacity );
+    fragColor = phongFunction(
+                    vec4(ka, opacity),
+                    vec4(kd, opacity),
+                    vec4(ks, opacity),
+                    shininess,
+                    worldPosition,
+                    worldView,
+                    worldNormal);
 }
