@@ -83,6 +83,9 @@ void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWr
   mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toFloat();
+  mAmbientCoefficient = elem.attribute( QStringLiteral( "ka" ), QStringLiteral( "1.0" ) ).toFloat();
+  mDiffuseCoefficient = elem.attribute( QStringLiteral( "kd" ), QStringLiteral( "1.0" ) ).toFloat();
+  mSpecularCoefficient = elem.attribute( QStringLiteral( "ks" ), QStringLiteral( "1.0" ) ).toFloat();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -94,6 +97,9 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
   elem.setAttribute( QStringLiteral( "specular" ), QgsColorUtils::colorToString( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
   elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
+  elem.setAttribute( QStringLiteral( "ka" ), mAmbientCoefficient );
+  elem.setAttribute( QStringLiteral( "kd" ), mDiffuseCoefficient );
+  elem.setAttribute( QStringLiteral( "ks" ), mSpecularCoefficient );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
@@ -139,12 +145,18 @@ void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effec
   Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess );
   Qt3DRender::QParameter *opacityParameter = new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity );
+  Qt3DRender::QParameter *kaParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient );
+  Qt3DRender::QParameter *kdParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient );
+  Qt3DRender::QParameter *ksParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient );
 
   effect->addParameter( ambientParameter );
   effect->addParameter( diffuseParameter );
   effect->addParameter( specularParameter );
   effect->addParameter( shininessParameter );
   effect->addParameter( opacityParameter );
+  effect->addParameter( kaParameter );
+  effect->addParameter( kdParameter );
+  effect->addParameter( ksParameter );
 }
 
 QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
@@ -247,6 +259,9 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const Qg
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), context.isSelected() ? context.selectionColor().darker() : mAmbient ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ), context.isSelected() ? context.selectionColor() : mDiffuse ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient ) );
 
   if ( mOpacity < 1.0f )
   {
@@ -300,6 +315,9 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
 
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient ) );
 
   if ( mOpacity < 1.0f )
   {
