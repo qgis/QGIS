@@ -25,7 +25,7 @@ Highly inspired from this video https://www.youtube.com/watch?v=G1omxo5pphw
 needed tools:
 pip install astpretty tokenize-rt
 
-Few usefull commands:
+Few useful commands:
 
 - display python file ast
 astpretty --no-show-offsets myfile.py
