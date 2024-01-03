@@ -1649,7 +1649,7 @@ namespace QgsWms
             }
 
             layerElement.setAttribute( QStringLiteral( "name" ), layerName );
-            QString layerTitle = layer->title();
+            const QString layerTitle = layer->title();
             if ( !layerTitle.isEmpty() )
             {
               layerElement.setAttribute( QStringLiteral( "title" ), layerTitle );
