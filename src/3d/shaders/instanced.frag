@@ -1,10 +1,8 @@
 #version 150 core
 
-// copy of phong.frag from qt3d extras
-
-uniform vec3 ka;                            // Ambient reflectivity
-uniform vec3 kd;                            // Diffuse reflectivity
-uniform vec3 ks;                            // Specular reflectivity
+uniform vec3 ambientColor;
+uniform vec3 diffuseColor;
+uniform vec3 specularColor;
 uniform float shininess;                    // Specular shininess factor
 uniform float opacity;                      // Opacity
 
@@ -21,9 +19,9 @@ void main()
 {
     vec3 worldView = normalize(eyePosition - worldPosition);
     fragColor = phongFunction(
-                    vec4(ka, opacity),
-                    vec4(kd, opacity),
-                    vec4(ks, opacity),
+                    vec4(ambientColor, opacity),
+                    vec4(diffuseColor, opacity),
+                    vec4(specularColor, opacity),
                     shininess,
                     worldPosition,
                     worldView,
