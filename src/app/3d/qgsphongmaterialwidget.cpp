@@ -41,6 +41,15 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
+
+  mAmbientCoefficientWidget->setToolTip( tr( "Sets the strength of the ambient color contribution" ) );
+  mDiffuseCoefficientWidget->setToolTip( tr( "Sets the strength of the diffuse color contribution" ) );
+  mSpecularCoefficientWidget->setToolTip( tr( "Sets the strength of the specular color contribution" ) );
+
+  connect( mAmbientCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::changed );
+  connect( mDiffuseCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::changed );
+  connect( mSpecularCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::changed );
+
   if ( mHasOpacity )
   {
     connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
@@ -106,6 +115,10 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   spinShininess->setValue( phongMaterial->shininess() );
   mOpacityWidget->setOpacity( phongMaterial->opacity() );
 
+  mAmbientCoefficientWidget->setValue( phongMaterial->ambientCoefficient() );
+  mDiffuseCoefficientWidget->setValue( phongMaterial->diffuseCoefficient() );
+  mSpecularCoefficientWidget->setValue( phongMaterial->specularCoefficient() );
+
   btnSpecular->setEnabled( phongMaterial->shininess() > 0 );
 
   mPropertyCollection = settings->dataDefinedProperties();
@@ -124,6 +137,11 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( static_cast<float>( spinShininess->value() ) );
+
+  m->setAmbientCoefficient( mAmbientCoefficientWidget->value() );
+  m->setDiffuseCoefficient( mDiffuseCoefficientWidget->value() );
+  m->setSpecularCoefficient( mSpecularCoefficientWidget->value() );
+
   float opacity = mHasOpacity ? static_cast<float>( mOpacityWidget->opacity() ) : 1.0f;
   m->setOpacity( opacity );
 
