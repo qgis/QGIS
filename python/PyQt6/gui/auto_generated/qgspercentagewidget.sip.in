@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspercentagewidget.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPercentageWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget for setting a percentage value.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgspercentagewidget.h"
+%End
+  public:
+
+    explicit QgsPercentageWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPercentageWidget.
+%End
+
+    double value() const;
+%Docstring
+Returns the current percentage selected in the widget, as a factor from 0.0 to 1.0.
+
+.. seealso:: :py:func:`setValue`
+
+.. seealso:: :py:func:`valueChanged`
+%End
+
+  public slots:
+
+    void setValue( double value );
+%Docstring
+Sets the current ``value`` to show in the widget, where ``value`` is a factor which ranges from 0.0 to 1.0.
+
+.. seealso:: :py:func:`value`
+
+.. seealso:: :py:func:`valueChanged`
+%End
+
+  signals:
+
+    void valueChanged( double value );
+%Docstring
+Emitted when the ``value`` is changed in the widget, where ``value`` is a factor which ranges from 0.0 to 1.0.
+
+.. seealso:: :py:func:`setValue`
+
+.. seealso:: :py:func:`value`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspercentagewidget.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
