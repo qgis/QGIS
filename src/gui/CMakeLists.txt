@@ -673,6 +673,7 @@ set(QGIS_GUI_SRCS
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
+  qgspercentagewidget.cpp
   qgspixmaplabel.cpp
   qgsplaybackcontrollerwidget.cpp
   qgspluginmanagerinterface.cpp
@@ -953,6 +954,7 @@ set(QGIS_GUI_HDRS
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
+  qgspercentagewidget.h
   qgspixmaplabel.h
   qgsplaybackcontrollerwidget.h
   qgspluginmanagerinterface.h
