@@ -63,13 +63,13 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     //! Returns specular color component
     QColor specular() const { return mSpecular; }
     //! Returns shininess of the surface
-    float shininess() const { return mShininess; }
+    double shininess() const { return mShininess; }
 
     /**
      * Returns the opacity of the surface
      * \since QGIS 3.26
      */
-    float opacity() const { return mOpacity; }
+    double opacity() const { return mOpacity; }
 
     /**
      * Returns the coefficient for the ambient color contribution (ie strength factor of the ambient color).
@@ -80,7 +80,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 3.36
      */
-    float ambientCoefficient() const { return mAmbientCoefficient; }
+    double ambientCoefficient() const { return mAmbientCoefficient; }
 
     /**
      * Returns the coefficient for the diffuse color contribution (ie strength factor of the diffuse color).
@@ -91,7 +91,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 3.36
      */
-    float diffuseCoefficient() const { return mDiffuseCoefficient; }
+    double diffuseCoefficient() const { return mDiffuseCoefficient; }
 
     /**
      * Returns the coefficient for the specular color contribution (ie strength factor of the specular color).
@@ -102,7 +102,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 3.36
      */
-    float specularCoefficient() const { return mSpecularCoefficient; }
+    double specularCoefficient() const { return mSpecularCoefficient; }
 
     QMap<QString, QString> toExportParameters() const override;
 
@@ -119,7 +119,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      * Sets opacity of the surface
      * \since QGIS 3.26
      */
-    void setOpacity( float opacity ) { mOpacity = opacity; }
+    void setOpacity( double opacity ) { mOpacity = opacity; }
 
     /**
      * Sets the \a coefficient for the ambient color contribution (ie strength factor of the ambient color).
@@ -130,7 +130,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 3.36
      */
-    void setAmbientCoefficient( float coefficient ) { mAmbientCoefficient = coefficient; }
+    void setAmbientCoefficient( double coefficient ) { mAmbientCoefficient = coefficient; }
 
     /**
      * Sets the \a coefficient for the diffuse color contribution (ie strength factor of the diffuse color).
@@ -141,7 +141,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 3.36
      */
-    void setDiffuseCoefficient( float coefficient ) { mDiffuseCoefficient = coefficient; }
+    void setDiffuseCoefficient( double coefficient ) { mDiffuseCoefficient = coefficient; }
 
     /**
      * Sets the \a coefficient for the specular color contribution (ie strength factor of the specular color).
@@ -152,7 +152,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      *
      * \since QGIS 3.36
      */
-    void setSpecularCoefficient( float coefficient ) { mSpecularCoefficient = coefficient; }
+    void setSpecularCoefficient( double coefficient ) { mSpecularCoefficient = coefficient; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -187,13 +187,13 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
-    float mShininess = 0.0f;
+    double mShininess = 0.0;
 
-    float mAmbientCoefficient = 1.0f;
-    float mDiffuseCoefficient = 1.0f;
-    float mSpecularCoefficient = 1.0f;
+    double mAmbientCoefficient = 1.0;
+    double mDiffuseCoefficient = 1.0;
+    double mSpecularCoefficient = 1.0;
 
-    float mOpacity = 1.0f;
+    double mOpacity = 1.0;
 
     //! Constructs a material from shader files
     Qt3DRender::QMaterial *constantColorMaterial( const QgsMaterialContext &context ) const;
