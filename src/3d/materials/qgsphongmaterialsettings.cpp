@@ -81,11 +81,11 @@ void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWr
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
   mDiffuse = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
   mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
-  mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
-  mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toFloat();
-  mAmbientCoefficient = elem.attribute( QStringLiteral( "ka" ), QStringLiteral( "1.0" ) ).toFloat();
-  mDiffuseCoefficient = elem.attribute( QStringLiteral( "kd" ), QStringLiteral( "1.0" ) ).toFloat();
-  mSpecularCoefficient = elem.attribute( QStringLiteral( "ks" ), QStringLiteral( "1.0" ) ).toFloat();
+  mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toDouble();
+  mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
+  mAmbientCoefficient = elem.attribute( QStringLiteral( "ka" ), QStringLiteral( "1.0" ) ).toDouble();
+  mDiffuseCoefficient = elem.attribute( QStringLiteral( "kd" ), QStringLiteral( "1.0" ) ).toDouble();
+  mSpecularCoefficient = elem.attribute( QStringLiteral( "ks" ), QStringLiteral( "1.0" ) ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -143,11 +143,11 @@ void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effec
   Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), mAmbient );
   Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ), mDiffuse );
   Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular );
-  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess );
-  Qt3DRender::QParameter *opacityParameter = new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity );
-  Qt3DRender::QParameter *kaParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient );
-  Qt3DRender::QParameter *kdParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient );
-  Qt3DRender::QParameter *ksParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient );
+  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), static_cast< float >( mShininess ) );
+  Qt3DRender::QParameter *opacityParameter = new Qt3DRender::QParameter( QStringLiteral( "opacity" ), static_cast< float >( mOpacity ) );
+  Qt3DRender::QParameter *kaParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), static_cast< float >( mAmbientCoefficient ) );
+  Qt3DRender::QParameter *kdParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), static_cast< float >( mDiffuseCoefficient ) );
+  Qt3DRender::QParameter *ksParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), static_cast< float >( mSpecularCoefficient ) );
 
   effect->addParameter( ambientParameter );
   effect->addParameter( diffuseParameter );
@@ -254,14 +254,14 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const Qg
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
 
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ),  static_cast< float >( mShininess ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ),  static_cast< float >( mOpacity ) ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), context.isSelected() ? context.selectionColor().darker() : mAmbient ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ), context.isSelected() ? context.selectionColor() : mDiffuse ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ),  static_cast< float >( mAmbientCoefficient ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ),  static_cast< float >( mDiffuseCoefficient ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ),  static_cast< float >( mSpecularCoefficient ) ) );
 
   if ( mOpacity < 1.0f )
   {
@@ -313,8 +313,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
 
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ),  static_cast< float >( mShininess ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), static_cast< float >( mOpacity ) ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient ) );
