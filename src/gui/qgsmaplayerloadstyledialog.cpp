@@ -138,6 +138,28 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   setTabOrder( mRelatedTable, mOthersTable );
 
   mStyleCategoriesListView->adjustSize();
+
+  // select and deselect all categories
+  connect( mShowAllButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::showAll );
+  connect( mHideAllButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::hideAll );
+}
+
+void QgsMapLayerLoadStyleDialog::showAll()
+{
+  for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mModel->index( i, 0 );
+    mModel->setData( index, Qt::Checked, Qt::CheckStateRole );
+  }
+}
+
+void QgsMapLayerLoadStyleDialog::hideAll()
+{
+  for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mModel->index( i, 0 );
+    mModel->setData( index, Qt::Unchecked, Qt::CheckStateRole );
+  }
 }
 
 QgsMapLayer::StyleCategories QgsMapLayerLoadStyleDialog::styleCategories() const

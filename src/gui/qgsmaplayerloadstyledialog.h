@@ -84,6 +84,8 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
 
   public slots:
     void accept() override;
+    void showAll();
+    void hideAll();
 
   private slots:
     void updateLoadButtonState();
