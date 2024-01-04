@@ -76,10 +76,34 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
 
+  // select and deselect all categories
+  connect( mShowAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::showAll );
+  connect( mHideAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::hideAll );
+
   mStyleCategoriesListView->adjustSize();
 
   setupMultipleStyles();
 
+}
+
+void QgsMapLayerSaveStyleDialog::showAll()
+{
+  for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mModel->index( i, 0 );
+    mModel->setData( index, Qt::Checked, Qt::CheckStateRole );
+  }
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+}
+
+void QgsMapLayerSaveStyleDialog::hideAll()
+{
+  for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mModel->index( i, 0 );
+    mModel->setData( index, Qt::Unchecked, Qt::CheckStateRole );
+  }
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
 }
 
 void QgsMapLayerSaveStyleDialog::populateStyleComboBox()
