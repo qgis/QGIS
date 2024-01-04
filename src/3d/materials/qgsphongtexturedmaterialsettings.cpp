@@ -15,8 +15,8 @@
 
 #include "qgsphongtexturedmaterialsettings.h"
 
-#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgscolorutils.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
@@ -69,8 +69,8 @@ float QgsPhongTexturedMaterialSettings::textureRotation() const
 
 void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
-  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toFloat();
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
@@ -82,8 +82,8 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
 
 void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
-  elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
+  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
+  elem.setAttribute( QStringLiteral( "specular" ), QgsColorUtils::colorToString( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
   elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
   elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mDiffuseTexturePath );

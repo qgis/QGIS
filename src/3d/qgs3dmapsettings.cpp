@@ -27,7 +27,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsrasterlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
@@ -159,8 +159,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
   if ( !elemColor.isNull() )
   {
-    mBackgroundColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "background" ) ) );
-    mSelectionColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "selection" ) ) );
+    mBackgroundColor = QgsColorUtils::colorFromString( elemColor.attribute( QStringLiteral( "background" ) ) );
+    mSelectionColor = QgsColorUtils::colorFromString( elemColor.attribute( QStringLiteral( "selection" ) ) );
   }
 
   QDomElement elemCrs = elem.firstChildElement( QStringLiteral( "crs" ) );
@@ -349,8 +349,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
-  elemColor.setAttribute( QStringLiteral( "background" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
-  elemColor.setAttribute( QStringLiteral( "selection" ), QgsSymbolLayerUtils::encodeColor( mSelectionColor ) );
+  elemColor.setAttribute( QStringLiteral( "background" ), QgsColorUtils::colorToString( mBackgroundColor ) );
+  elemColor.setAttribute( QStringLiteral( "selection" ), QgsColorUtils::colorToString( mSelectionColor ) );
   elem.appendChild( elemColor );
 
   QDomElement elemCrs = doc.createElement( QStringLiteral( "crs" ) );

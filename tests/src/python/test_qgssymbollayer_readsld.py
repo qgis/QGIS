@@ -115,7 +115,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         def testLineOpacity():
             # stroke-opacity CSSParameter NOT within ogc:Literal
             # stroke-opacity=0.1
-            self.assertEqual(props['line_color'], '0,62,186,25')
+            self.assertEqual(props['line_color'], '0,62,186,25,rgb:0,0.24313725490196078,0.72941176470588232,0.09803921568627451')
 
         testLineColor()
         testLineWidth()
@@ -433,7 +433,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         def testLineOpacity():
             # stroke-opacity SvgParameter NOT within ogc:Literal
             # stroke-opacity=0.1
-            self.assertEqual(props['line_color'], '0,62,186,24')
+            self.assertEqual(props['line_color'], '0,62,186,24,rgb:0,0.24313725490196078,0.72941176470588232,0.09411764705882353')
 
         testLineColor()
         testLineWidth()
