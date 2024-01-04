@@ -2580,33 +2580,40 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
   {
-    QString featureInfoString = QStringLiteral( R"HTML(
-    <!DOCTYPE html>
+    QString featureInfoString = QStringLiteral( R"HTML(    <!DOCTYPE html>
+
     <head>
-    <title>Information</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style>
-     body {
-       font-family: 'Open Sans','Calluna Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif;
-     }
-     table, th, td {
-       width: 100%;
-       border: 1px solid black;
-       border-collapse: collapse;
-       text-align: left;
-       padding: 2px;
-     }
-     th {
-       width: 25%;
-       font-weight: bold;
-     }
-     .layer-title {
-       font-weight: bold;
-       padding: 2px;
-     }
-    </style>
+      <title>Information</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <style>
+        body {
+          font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
+        }
+
+        table,
+        th,
+        td {
+          width: 100%;
+          border: 1px solid black;
+          border-collapse: collapse;
+          text-align: left;
+          padding: 2px;
+        }
+
+        th {
+          width: 25%;
+          font-weight: bold;
+        }
+
+        .layer-title {
+          font-weight: bold;
+          padding: 2px;
+        }
+      </style>
     </head>
-    <body>)HTML" );
+
+    <body>
+    )HTML" );
 
     const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
 
@@ -2621,24 +2628,30 @@ namespace QgsWms
 
       if ( !featureNodeList.isEmpty() ) //vector layer
       {
-        const QString featureInfoLayerTitleString = QStringLiteral( R"HTML(<div class='layer-title'>%1</div>)HTML" ).arg( layerElem.attribute( QStringLiteral( "title" ) ) );
+        const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ) );
         featureInfoString.append( featureInfoLayerTitleString );
 
         for ( int j = 0; j < featureNodeList.size(); ++j )
         {
           const QDomElement featureElement = featureNodeList.at( j ).toElement();
-          featureInfoString.append( QStringLiteral( R"HTML(<table>)HTML" ) );
+          featureInfoString.append( QStringLiteral( R"HTML(
+      <table>)HTML" ) );
 
           //attribute loop
           const QDomNodeList attributeNodeList = featureElement.elementsByTagName( QStringLiteral( "Attribute" ) );
           for ( int k = 0; k < attributeNodeList.size(); ++k )
           {
             const QDomElement attributeElement = attributeNodeList.at( k ).toElement();
-            const QString featureInfoAttributeString = QStringLiteral( R"HTML(<tr><th>%1</th><td>%2</td></tr>)HTML" ).arg( attributeElement.attribute( QStringLiteral( "name" ) ), attributeElement.attribute( QStringLiteral( "value" ) ) );
+            const QString featureInfoAttributeString = QStringLiteral( R"HTML(
+        <tr>
+          <th>%1</th>
+          <td>%2</td>
+        </tr>)HTML" ).arg( attributeElement.attribute( QStringLiteral( "name" ) ), attributeElement.attribute( QStringLiteral( "value" ) ) );
+
             featureInfoString.append( featureInfoAttributeString );
           }
-
-          featureInfoString.append( QStringLiteral( R"HTML(</table><br>)HTML" ) );
+          featureInfoString.append( QStringLiteral( R"HTML(
+      </table>)HTML" ) );
         }
       }
       else //no result or raster layer
@@ -2648,10 +2661,11 @@ namespace QgsWms
         //  raster layer
         if ( !attributeNodeList.isEmpty() )
         {
-          const QString featureInfoLayerTitleString = QStringLiteral( R"HTML(<div class='layer-title'>%1</div>)HTML" ).arg( layerElem.attribute( QStringLiteral( "title" ) ) );
+          const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ) );
           featureInfoString.append( featureInfoLayerTitleString );
 
-          featureInfoString.append( QStringLiteral( R"HTML(<table>)HTML" ) );
+          featureInfoString.append( QStringLiteral( R"HTML(
+      <table>)HTML" ) );
           for ( int j = 0; j < attributeNodeList.size(); ++j )
           {
             const QDomElement attributeElement = attributeNodeList.at( j ).toElement();
@@ -2661,16 +2675,23 @@ namespace QgsWms
               value = QStringLiteral( "no data" );
             }
 
-            const QString featureInfoAttributeString = QStringLiteral( R"HTML(<tr><th>%1</th><td>%2</td></tr>)HTML" ).arg( attributeElement.attribute( QStringLiteral( "name" ) ), value );
+            const QString featureInfoAttributeString = QStringLiteral( R"HTML(
+        <tr>
+          <th>%1</th>
+          <td>%2</td>
+        </tr>)HTML" ).arg( attributeElement.attribute( QStringLiteral( "name" ) ), value );
+
             featureInfoString.append( featureInfoAttributeString );
           }
-          featureInfoString.append( QStringLiteral( R"HTML(</table><br>)HTML" ) );
+          featureInfoString.append( QStringLiteral( R"HTML(
+      </table>)HTML" ) );
         }
       }
     }
 
-    //start the html body
-    featureInfoString.append( QStringLiteral( R"HTML(</body>)HTML" ) );
+    //end the html body
+    featureInfoString.append( QStringLiteral( R"HTML(
+    </body>)HTML" ) );
 
     return featureInfoString.toUtf8();
   }
