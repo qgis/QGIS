@@ -1040,34 +1040,18 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( !context )
-        return QVariant();
-
-      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      if ( context &&
+           context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) &&
+           context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
       {
         int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
-        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh.vertex( vertexIndex );
         if ( !vertex.isEmpty() )
           return vertex.z();
-        else
-          return QVariant();
       }
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
-        return QVariant();
-
-      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-
-      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
-      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
-        return QVariant();
-
-      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
-      if ( !vertex.isEmpty() )
-        return vertex.z();
-      else
-        return QVariant();
+      return QVariant();
     }
 
     bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
@@ -1089,34 +1073,18 @@ class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( !context )
-        return QVariant();
-
-      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      if ( context &&
+           context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) &&
+           context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
       {
         int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
-        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh.vertex( vertexIndex );
         if ( !vertex.isEmpty() )
           return vertex.x();
-        else
-          return QVariant();
       }
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
-        return QVariant();
-
-      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-
-      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
-      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
-        return QVariant();
-
-      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
-      if ( !vertex.isEmpty() )
-        return vertex.x();
-      else
-        return QVariant();
+      return QVariant();
     }
 
     bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
@@ -1138,34 +1106,18 @@ class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( !context )
-        return QVariant();
-
-      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      if ( context &&
+           context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) &&
+           context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
       {
         int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
-        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh.vertex( vertexIndex );
         if ( !vertex.isEmpty() )
           return vertex.y();
-        else
-          return QVariant();
       }
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
-        return QVariant();
-
-      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-
-      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
-      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
-        return QVariant();
-
-      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
-      if ( !vertex.isEmpty() )
-        return vertex.y();
-      else
-        return QVariant();
+      return QVariant();
     }
 
     bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
@@ -1187,34 +1139,18 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      if ( !context )
-        return QVariant();
-
-      if ( context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      if ( context &&
+           context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) &&
+           context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
       {
         int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
-        const QgsMeshVertex &vertex = nativeMesh->vertex( vertexIndex );
+        const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshVertex &vertex = nativeMesh.vertex( vertexIndex );
         if ( !vertex.isEmpty() )
           return QVariant::fromValue( QgsGeometry( new QgsPoint( vertex ) ) );
-        else
-          return QVariant();
       }
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
-        return QVariant();
-
-      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
-
-      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
-      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
-        return QVariant();
-
-      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
-      if ( !vertex.isEmpty() )
-        return QVariant::fromValue( QgsGeometry( new QgsPoint( vertex ) ) );
-      else
-        return QVariant();
+      return QVariant();
     }
 
     bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
@@ -1265,18 +1201,17 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * ) override
     {
-      if ( !context )
-        return QVariant();
-
-      if ( context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) && context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
+      if ( context &&
+           context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) &&
+           context->hasVariable( QStringLiteral( "_native_mesh" ) ) )
       {
         const int faceIndex = context->variable( QStringLiteral( "_mesh_face_index" ) ).toInt();
-        QgsMesh *nativeMesh = qvariant_cast<QgsMesh *>( context->variable( QStringLiteral( "_native_mesh" ) ) );
-        const QgsMeshFace &face = nativeMesh->face( faceIndex );
+        const QgsMesh nativeMesh = qvariant_cast<QgsMesh>( context->variable( QStringLiteral( "_native_mesh" ) ) );
+        const QgsMeshFace &face = nativeMesh.face( faceIndex );
         if ( !face.isEmpty() )
         {
           QgsDistanceArea *calc = parent->geomCalculator();
-          QgsGeometry geom = QgsMeshUtils::toGeometry( nativeMesh->face( faceIndex ), nativeMesh->vertices );
+          QgsGeometry geom = QgsMeshUtils::toGeometry( nativeMesh.face( faceIndex ), nativeMesh.vertices );
           if ( calc )
           {
             double area = calc->measureArea( geom );
@@ -1288,39 +1223,9 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
             return QVariant( geom.area() );
           }
         }
-        else
-        {
-          return QVariant();
-        }
       }
 
-      if ( !context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
-        return QVariant();
-
-      int faceIndex = context->variable( QStringLiteral( "_mesh_face_index" ) ).toInt();
-
-      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
-      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->faceCount() <= faceIndex )
-        return QVariant();
-
-      const QgsMeshFace &face = layer->nativeMesh()->face( faceIndex );
-      if ( !face.isEmpty() )
-      {
-        QgsDistanceArea *calc = parent->geomCalculator();
-        QgsGeometry geom = QgsMeshUtils::toGeometry( layer->nativeMesh()->face( faceIndex ), layer->nativeMesh()->vertices );
-        if ( calc )
-        {
-          double area = calc->measureArea( geom );
-          area = calc->convertAreaMeasurement( area, parent->areaUnits() );
-          return QVariant( area );
-        }
-        else
-        {
-          return QVariant( geom.area() );
-        }
-      }
-      else
-        return QVariant();
+      return QVariant();
     }
 
     bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
