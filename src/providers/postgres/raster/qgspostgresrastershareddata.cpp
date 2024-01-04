@@ -302,7 +302,10 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
   }
 
   // Include actual bounds
-  mLoadedIndexBounds[ cacheKey ] = requestPolygon.combine( QgsGeometry::fromWkt( overallExtent.asWktPolygon() ) );
+  if ( !overallExtent.isNull() )
+  {
+    mLoadedIndexBounds[ cacheKey ] = requestPolygon.combine( QgsGeometry::fromRect( overallExtent ) );
+  }
 
   return true;
 }
@@ -415,8 +418,8 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
     }
   }
 
-  // Include actual bounds
-  mLoadedIndexBounds[ cacheKey ] = requestPolygon.combine( QgsGeometry::fromWkt( response.extent.asWktPolygon() ) );
+  // Include requested bounds
+  mLoadedIndexBounds[ cacheKey ] = requestPolygon;
 
   return response;
 }
