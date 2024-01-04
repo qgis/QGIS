@@ -3,7 +3,7 @@ Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
- <Layer name="json">
+ <Layer title="json" name="json">
   <Feature id="2">
    <Attribute value="2" name="pk"/>
    <Attribute value="{&#xa;    &quot;a&quot;: 1,&#xa;    &quot;b&quot;: 2&#xa;}&#xa;" name="jvalue"/>
