@@ -93,7 +93,6 @@ void QgsMapLayerSaveStyleDialog::showAll()
     QModelIndex index = mModel->index( i, 0 );
     mModel->setData( index, Qt::Checked, Qt::CheckStateRole );
   }
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
 }
 
 void QgsMapLayerSaveStyleDialog::hideAll()
@@ -103,7 +102,6 @@ void QgsMapLayerSaveStyleDialog::hideAll()
     QModelIndex index = mModel->index( i, 0 );
     mModel->setData( index, Qt::Unchecked, Qt::CheckStateRole );
   }
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
 }
 
 void QgsMapLayerSaveStyleDialog::populateStyleComboBox()
