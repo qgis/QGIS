@@ -306,7 +306,8 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context;
       context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), 2 );
-      context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
+      const QgsMesh mesh = *mMeshLayer->nativeMesh();
+      context.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( mesh ) );
 
       QgsExpression expression( QStringLiteral( "$vertex_x" ) );
       QCOMPARE( expression.evaluate( &context ).toDouble(), 2500.0 );
