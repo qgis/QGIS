@@ -9934,7 +9934,22 @@ void QgisApp::reshapeFeatures()
 
 void QgisApp::addFeature()
 {
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
+  if ( mMapCanvas->mapTool()->toolName() != tr( "Add feature" ) )
+  {
+    mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
+    if ( !mMapCanvas->currentLayer()->isSpatial() )
+    {
+      mMapCanvas->setCursor( QCursor( Qt::ClosedHandCursor ) );
+      mMapCanvas->mapTool()->action()->setChecked( false );
+      mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
+    }
+    return;
+  }
+  if ( !mMapCanvas->currentLayer()->isSpatial() )
+  {
+    mMapCanvas->mapTool()->activate();
+    mMapCanvas->mapTool()->action()->setChecked( false );
+  }
 }
 
 void QgisApp::setMapTool( QgsMapTool *tool, bool clean )
@@ -15160,6 +15175,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
       QString addFeatureText;
 
+      manageDigitizingCursor( vlayer );
+
       bool isEditable = vlayer->isEditable();
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
       bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, createMapLayerActionContext() ).isEmpty();
@@ -15858,6 +15875,21 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   }
 
   refreshFeatureActions();
+}
+
+void QgisApp::manageDigitizingCursor( QgsVectorLayer *vlayer )
+{
+  if ( mMapCanvas->mapTool()->toolName() == tr( "Add feature" ) )
+  {
+    if ( vlayer->isSpatial() )
+    {
+      mMapCanvas->mapTool()->action()->setChecked( true );
+      mMapCanvas->mapTool()->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+      return;
+    }
+    mMapCanvas->mapTool()->action()->setChecked( false );
+    mMapCanvas->mapTool()->setCursor( QCursor( Qt::ClosedHandCursor ) );
+  }
 }
 
 void QgisApp::refreshActionFeatureAction()

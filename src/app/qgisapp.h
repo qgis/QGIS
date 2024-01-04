@@ -1893,6 +1893,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates or deactivates actions depending on the selected layers in the layer panel.
     void activateDeactivateMultipleLayersRelatedActions();
 
+    void manageDigitizingCursor( QgsVectorLayer *vlayer );
+
     void selectionChanged( QgsMapLayer *layer );
 
     void extentChanged();
