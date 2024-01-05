@@ -217,7 +217,11 @@ void QgsMetalRoughMaterial::init()
 
   mMetalRoughGL3ShaderBuilder->setParent( this );
   mMetalRoughGL3ShaderBuilder->setShaderProgram( mMetalRoughGL3Shader );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mMetalRoughGL3ShaderBuilder->setFragmentShaderGraph( QUrl( QStringLiteral( "qrc:/shaders/metalrough.frag.json" ) ) );
+#else
+  mMetalRoughGL3ShaderBuilder->setFragmentShaderGraph( QUrl( QStringLiteral( "qrc:/shaders/metalrough.qt6.frag.json" ) ) );
+#endif
 
   mMetalRoughGL3ShaderBuilder->setEnabledLayers( {QStringLiteral( "baseColor" ),
       QStringLiteral( "metalness" ),
