@@ -489,7 +489,7 @@ void QgsGrassTools::mFilterInput_textChanged( QString text )
 
   // using simple wildcard filter which is probably what users is expecting, at least until
   // there is a filter type switch in UI
-  mModelProxy->setFilterRegularExpression( QRegularExpression::fromWildcard( text, Qt::CaseInsensitive ) );
+  mModelProxy->setFilterRegularExpression( QRegularExpression( QRegularExpression::wildcardToRegularExpression( text ), QRegularExpression::CaseInsensitiveOption ) );
 }
 
 void QgsGrassTools::itemClicked( const QModelIndex &index )
@@ -630,7 +630,7 @@ void QgsGrassToolsTreeFilterProxyModel::setFilter( const QString &filter )
     return;
   }
   mFilter = filter;
-  mRegExp = QRegularExpression::fromWildcard( mFilter, Qt::CaseInsensitive );
+  mRegExp = QRegularExpression( QRegularExpression::wildcardToRegularExpression( mFilter ), QRegularExpression::CaseInsensitiveOption );
 
   invalidateFilter();
 }
