@@ -23,6 +23,7 @@
 #include <Qt3DRender/QShaderProgramBuilder>
 #include <Qt3DRender/QGraphicsApiFilter>
 
+///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   : QMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColor" ), QColor( "grey" ) ) )
@@ -265,3 +266,4 @@ void QgsMetalRoughMaterial::updateLayersOnTechnique( const QStringList &layers )
 {
   mMetalRoughGL3ShaderBuilder->setEnabledLayers( layers );
 }
+///@endcond PRIVATE
