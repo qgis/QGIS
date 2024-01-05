@@ -36,6 +36,8 @@ namespace Qt3DRender
 
 } // namespace Qt3DRender
 
+///@cond PRIVATE
+
 /**
  * \ingroup 3d
  * \brief A PBR metal rough material.
@@ -98,5 +100,7 @@ class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
 
 };
+
+///@endcond PRIVATE
 
 #endif // QGSMETALROUGHMATERIAL_H
