@@ -91,7 +91,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
   QString errorTitle;
   QString error;
   QVariantMap objectIdData = QgsArcGisRestQueryUtils::getObjectIds( mDataSource.param( QStringLiteral( "url" ) ), mDataSource.authConfigId(),
-                             errorTitle, error, mDataSource.httpHeaders(), mLimitBBox ? mExtent : QgsRectangle(), mDataSource.sql() );
+                             errorTitle, error, mDataSource.httpHeaders(), mDataSource.param( QStringLiteral( "urlprefix" ) ), mLimitBBox ? mExtent : QgsRectangle(), mDataSource.sql() );
   if ( objectIdData.isEmpty() )
   {
     errorMessage = QObject::tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, error );
@@ -186,7 +186,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     queryData = QgsArcGisRestQueryUtils::getObjects(
                   mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                   QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), feedback );
+                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), mDataSource.param( QStringLiteral( "urlprefix" ) ) ,feedback );
 
     if ( feedback && feedback->isCanceled() )
     {
@@ -287,7 +287,7 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 
   const QString authcfg = mDataSource.authConfigId();
   const QList<quint32> objectIdsInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                         extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql() );
+                                         extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), mDataSource.param( QStringLiteral( "urlprefix" ) ), feedback, mDataSource.sql() );
 
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   QgsFeatureIds ids;

@@ -154,6 +154,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
     QgsHttpHeaders mRequestHeaders;
+    QString mUrlPrefix;
     int mTileReqNo = 0;
     bool mTiled = false;
     bool mImageServer = false;
@@ -174,7 +175,7 @@ class QgsAmsTiledImageDownloadHandler : public QObject
     Q_OBJECT
   public:
 
-    QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsHttpHeaders &requestHeaders, int reqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback );
+    QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, int reqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback );
     ~QgsAmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -206,6 +207,7 @@ class QgsAmsTiledImageDownloadHandler : public QObject
 
     QString mAuth;
     QgsHttpHeaders mRequestHeaders;
+    QString mUrlPrefix;
 
     QImage *mImage = nullptr;
     QgsRectangle mViewExtent;

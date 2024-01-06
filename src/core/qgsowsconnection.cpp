@@ -51,6 +51,7 @@ const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsAuthcfg = new
 const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeConnectionArcgis );
 const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeConnectionArcgis );
 const QgsSettingsEntryVariantMap *QgsArcGisConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeConnectionArcgis );
+const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsUrlPrefix = new QgsSettingsEntryString( QStringLiteral( "urlprefix" ), sTreeConnectionArcgis );
 const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsContentEndpoint = new QgsSettingsEntryString( QStringLiteral( "content-endpoint" ), sTreeConnectionArcgis );
 const QgsSettingsEntryString *QgsArcGisConnectionSettings::settingsCommunityEndpoint = new QgsSettingsEntryString( QStringLiteral( "community-endpoint" ), sTreeConnectionArcgis );
 

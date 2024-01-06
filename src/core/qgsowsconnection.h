@@ -79,6 +79,7 @@ class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
     static const QgsSettingsEntryVariantMap *settingsHeaders;
     static const QgsSettingsEntryString *settingsContentEndpoint;
     static const QgsSettingsEntryString *settingsCommunityEndpoint;
+    static const QgsSettingsEntryString *settingsUrlPrefix;
 };
 
 

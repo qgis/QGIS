@@ -49,12 +49,13 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      *
      * \returns JSON user info
      * \since QGIS 3.24
      */
-    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
+    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString(), QgsFeedback *feedback = nullptr );
 
     /**
      * Retrieves JSON user info for the specified user name. Only to avoid API break.
@@ -67,12 +68,13 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      *
      * \returns JSON user info
      * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
      */
-    Q_DECL_DEPRECATED static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, const QString &urlPrefix, QgsFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
     /**
      * Retrieves JSON definitions for all groups which the specified user name is a member of.
@@ -85,12 +87,13 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      *
      * \returns a list of JSON group info
      * \since QGIS 3.24
      */
-    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
+    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString(), QgsFeedback *feedback = nullptr );
 
     /**
      * Retrieves JSON definitions for all groups which the specified user name is a member of. Only to avoid API break.
@@ -103,12 +106,13 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      *
      * \returns a list of JSON group info
      * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
      */
-    Q_DECL_DEPRECATED static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, const QString &urlPrefix = QString(), QgsFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId.
@@ -119,13 +123,14 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      *
      * \returns a list of JSON item info for all items within the group
      * \since QGIS 3.24
      */
-    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, int pageSize = 100 );
+    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString(),  QgsFeedback *feedback = nullptr, int pageSize = 100 );
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId. Only to avoid API break.
@@ -136,13 +141,14 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      *
      * \returns a list of JSON item info for all items within the group
      * \deprecated since QGIS 3.24, use the version with QgsHttpHeaders instead
      */
-    Q_DECL_DEPRECATED static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100 ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, const QString &urlPrefix = QString(), QgsFeedback *feedback = nullptr, int pageSize = 100 ) SIP_DEPRECATED;
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId.
@@ -154,6 +160,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      *
@@ -162,7 +169,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      */
     static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
         const QList< int > &itemTypes,
-        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, int pageSize = 100 );
+        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), const QString &urlPrefix = QString(), QgsFeedback *feedback = nullptr, int pageSize = 100 );
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId. Only to avoid API break.
@@ -174,6 +181,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param errorTitle title summary of any encountered errors
      * \param errorText error text of any encountered errors
      * \param requestHeaders optional additional request headers
+     * \param urlPrefix http web proxy url prefix
      * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      *
@@ -182,7 +190,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      */
     Q_DECL_DEPRECATED static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
         const QList< int > &itemTypes,
-        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100 ) SIP_DEPRECATED;
+        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, const QString &urlPrefix = QString(), QgsFeedback *feedback = nullptr, int pageSize = 100 ) SIP_DEPRECATED;
 
   private:
 
