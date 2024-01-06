@@ -73,7 +73,7 @@ Content-Type: text/xml; charset=utf-8
    <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
     <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
    </Server>
-   <ows:Abstract>A test vector layer with tag chars with title</ows:Abstract>
+   <ows:Abstract>A test vector layer with &lt;tag> chars with title</ows:Abstract>
    <StyleList>
     <Style current="true">
      <Name>default</Name>
@@ -87,7 +87,7 @@ Content-Type: text/xml; charset=utf-8
    <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
     <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
    </Server>
-   <ows:Abstract>A test vector layer with tag chars without title</ows:Abstract>
+   <ows:Abstract>A test vector layer with &lt;tag> chars without title</ows:Abstract>
    <StyleList>
     <Style current="true">
      <Name>default</Name>

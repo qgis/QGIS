@@ -237,7 +237,7 @@ Content-Type: text/xml; charset=utf-8
    <Layer geometryType="Point" queryable="1" expanded="1" displayField="name" visibilityChecked="1" visible="1" opacity="1">
     <Name>&lt;test layer name></Name>
     <Title>&lt;test layer name></Title>
-    <Abstract>A test vector layer with tag chars without title</Abstract>
+    <Abstract>A test vector layer with &lt;tag> chars without title</Abstract>
     <CRS>CRS:84</CRS>
     <CRS>EPSG:4326</CRS>
     <CRS>EPSG:3857</CRS>
@@ -267,7 +267,7 @@ Content-Type: text/xml; charset=utf-8
    <Layer geometryType="Point" queryable="1" expanded="1" displayField="name" visibilityChecked="1" visible="1" opacity="1">
     <Name>&lt;test layer title></Name>
     <Title>&lt;title></Title>
-    <Abstract>A test vector layer with tag chars with title</Abstract>
+    <Abstract>A test vector layer with &lt;tag> chars with title</Abstract>
     <CRS>CRS:84</CRS>
     <CRS>EPSG:4326</CRS>
     <CRS>EPSG:3857</CRS>

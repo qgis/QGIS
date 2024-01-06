@@ -573,7 +573,7 @@
       <id>testlayer2024010401</id>
       <datasource>./testlayer_tag_chars.shp</datasource>
       <title></title>
-      <abstract>A test vector layer with tag chars without title</abstract>
+      <abstract>A test vector layer with &lt;tag> chars without title</abstract>
       <keywordList>
         <value></value>
       </keywordList>
@@ -797,7 +797,7 @@
       <id>testlayer2024010402</id>
       <datasource>./testlayer_tag_chars.shp</datasource>
       <title>&lt;title></title>
-      <abstract>A test vector layer with tag chars with title</abstract>
+      <abstract>A test vector layer with &lt;tag> chars with title</abstract>
       <keywordList>
         <value></value>
       </keywordList>
