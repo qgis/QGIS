@@ -34,5 +34,7 @@
         <file>shaders/ssao_factor_render.vert</file>
         <file>shaders/ssao_factor_blur.frag</file>
         <file>shaders/ssao_factor_blur.vert</file>
+        <file>shaders/phongConstant.frag</file>
+        <file>shaders/phongConstant.vert</file>
     </qresource>
 </RCC>

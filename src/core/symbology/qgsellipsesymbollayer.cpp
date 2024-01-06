@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsellipsesymbollayer.h"
 #include "qgsdxfexport.h"
 #include "qgsfeature.h"
@@ -20,6 +21,7 @@
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 
 #include <QPainter>
 #include <QSet>
@@ -128,19 +130,19 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
   if ( properties.contains( QStringLiteral( "fill_color" ) ) )
   {
     //pre 2.5 projects used "fill_color"
-    layer->setFillColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "fill_color" )].toString() ) );
+    layer->setFillColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "fill_color" )].toString() ) );
   }
   else if ( properties.contains( QStringLiteral( "color" ) ) )
   {
-    layer->setFillColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "color" )].toString() ) );
+    layer->setFillColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "color" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "outline_color" ) ) )
   {
-    layer->setStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "outline_color" )].toString() ) );
+    layer->setStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "outline_color" )].toString() ) );
   }
   else if ( properties.contains( QStringLiteral( "line_color" ) ) )
   {
-    layer->setStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "line_color" )].toString() ) );
+    layer->setStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "line_color" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "offset" ) ) )
   {
@@ -553,8 +555,8 @@ QVariantMap QgsEllipseSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
   map[QStringLiteral( "cap_style" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
-  map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
-  map[QStringLiteral( "outline_color" )] = QgsSymbolLayerUtils::encodeColor( mStrokeColor );
+  map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mColor );
+  map[QStringLiteral( "outline_color" )] = QgsColorUtils::colorToString( mStrokeColor );
   map[QStringLiteral( "offset" )] = QgsSymbolLayerUtils::encodePoint( mOffset );
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );

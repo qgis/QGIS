@@ -17,9 +17,9 @@
 
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgscolorutils.h"
 
 QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
@@ -51,7 +51,7 @@ QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parent
   element.setAttribute( QStringLiteral( "point_size" ), qgsDoubleToString( mPointSize ) );
   element.setAttribute( QStringLiteral( "point_size_unit" ), QgsUnitTypes::encodeUnit( mPointSizeUnit ) );
   element.setAttribute( QStringLiteral( "point_symbol" ), qgsEnumValueToKey( mPointSymbol ) );
-  element.setAttribute( QStringLiteral( "point_color" ), QgsSymbolLayerUtils::encodeColor( mPointColor ) );
+  element.setAttribute( QStringLiteral( "point_color" ), QgsColorUtils::colorToString( mPointColor ) );
   element.setAttribute( QStringLiteral( "respect_layer_colors" ), mRespectLayerColors ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "opacity_by_distance" ), mApplyOpacityByDistanceEffect ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
@@ -77,7 +77,7 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
   const QString colorString = elevationElement.attribute( QStringLiteral( "point_color" ) );
   if ( !colorString.isEmpty() )
   {
-    mPointColor = QgsSymbolLayerUtils::decodeColor( elevationElement.attribute( QStringLiteral( "point_color" ) ) );
+    mPointColor = QgsColorUtils::colorFromString( elevationElement.attribute( QStringLiteral( "point_color" ) ) );
   }
   else
   {

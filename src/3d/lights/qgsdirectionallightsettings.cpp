@@ -15,6 +15,7 @@
 
 #include "qgsdirectionallightsettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 
 #include <QDomDocument>
 #include <Qt3DRender/QDirectionalLight>
@@ -53,7 +54,7 @@ QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc, const QgsR
   elemLight.setAttribute( QStringLiteral( "x" ), mDirection.x() );
   elemLight.setAttribute( QStringLiteral( "y" ), mDirection.y() );
   elemLight.setAttribute( QStringLiteral( "z" ), mDirection.z() );
-  elemLight.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  elemLight.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
   elemLight.setAttribute( QStringLiteral( "intensity" ), mIntensity );
   return elemLight;
 }
@@ -63,7 +64,7 @@ void QgsDirectionalLightSettings::readXml( const QDomElement &elem, const QgsRea
   mDirection.set( elem.attribute( QStringLiteral( "x" ) ).toFloat(),
                   elem.attribute( QStringLiteral( "y" ) ).toFloat(),
                   elem.attribute( QStringLiteral( "z" ) ).toFloat() );
-  mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
 }
 

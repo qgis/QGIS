@@ -15,6 +15,7 @@ from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
+    QgsEditorWidgetSetup,
     QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSink,
@@ -475,6 +476,25 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
             self.assertEqual(f.subType(), importedFields.field(f.name()).subType())
             self.assertEqual(f.precision(), importedFields.field(f.name()).precision())
             self.assertEqual(f.length(), importedFields.field(f.name()).length())
+
+    def testSaveFieldWithEditorWidget(self):
+        """
+        Test that fields with editor widget retain their widget configuration after calling commitChanges
+        (ref: https://github.com/qgis/QGIS/issues/52288)
+        """
+        layer = QgsVectorLayer("Point", "test", "memory")
+
+        widget = QgsEditorWidgetSetup('ValueMap', {'map': {'key': 'value'}})
+        field = QgsField('my_field', QVariant.String)
+
+        self.assertTrue(layer.startEditing())
+
+        field.setEditorWidgetSetup(widget)
+        layer.addAttribute(field)
+
+        self.assertEqual(layer.fields()[0].editorWidgetSetup().type(), widget.type())
+        self.assertTrue(layer.commitChanges())
+        self.assertEqual(layer.fields()[0].editorWidgetSetup().type(), widget.type())
 
     def testRenameAttributes(self):
         layer = QgsVectorLayer("Point", "test", "memory")

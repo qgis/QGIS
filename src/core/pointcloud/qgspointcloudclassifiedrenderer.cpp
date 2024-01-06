@@ -19,7 +19,7 @@
 #include "qgspointcloudblock.h"
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgspointclouddataprovider.h"
 
@@ -200,7 +200,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
         const double size = catElem.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "0" ) ).toDouble();
         const QString label = catElem.attribute( QStringLiteral( "label" ) );
         const bool render = catElem.attribute( QStringLiteral( "render" ) ) != QLatin1String( "false" );
-        const QColor color = QgsSymbolLayerUtils::decodeColor( catElem.attribute( QStringLiteral( "color" ) ) );
+        const QColor color = QgsColorUtils::colorFromString( catElem.attribute( QStringLiteral( "color" ) ) );
         categories.append( QgsPointCloudCategory( value, color, label, render, size ) );
       }
       catElem = catElem.nextSiblingElement();
@@ -251,7 +251,7 @@ QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsR
     catElem.setAttribute( QStringLiteral( "value" ), QString::number( category.value() ) );
     catElem.setAttribute( QStringLiteral( "pointSize" ), QString::number( category.pointSize() ) );
     catElem.setAttribute( QStringLiteral( "label" ), category.label() );
-    catElem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( category.color() ) );
+    catElem.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( category.color() ) );
     catElem.setAttribute( QStringLiteral( "render" ), category.renderState() ? "true" : "false" );
     catsElem.appendChild( catElem );
   }

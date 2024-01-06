@@ -196,8 +196,8 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         overviewMap.overview().setFrameSymbol(fill_symbol)
         layer = overviewMap.overview().asMapLayer()
         self.assertIsInstance(layer.renderer(), QgsSingleSymbolRenderer)
-        self.assertEqual(layer.renderer().symbol().symbolLayer(0).properties()['color'], '0,255,0,255')
-        self.assertEqual(layer.renderer().symbol().symbolLayer(0).properties()['outline_color'], '255,0,0,255')
+        self.assertEqual(layer.renderer().symbol().symbolLayer(0).properties()['color'], '0,255,0,255,rgb:0,1,0,1')
+        self.assertEqual(layer.renderer().symbol().symbolLayer(0).properties()['outline_color'], '255,0,0,255,rgb:1,0,0,1')
 
         # test layer blend mode
         self.assertEqual(layer.blendMode(), QPainter.CompositionMode_SourceOver)

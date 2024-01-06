@@ -34,6 +34,8 @@
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QSvgRenderer>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 extern "C"
 {
@@ -562,7 +564,8 @@ void QgsGrassModule::run()
 
       // Quote options with special characters so that user
       // can copy-paste-run the command
-      if ( it->contains( QRegExp( "[ <>\\$|;&]" ) ) )
+      const thread_local QRegularExpression rx( "[ <>\\$|;&]" );
+      if ( it->contains( rx ) )
       {
         argumentsHtml.append( "\"" + *it + "\"" );
       }
@@ -763,7 +766,7 @@ void QgsGrassModule::readStdout()
   QgsDebugMsgLevel( "called.", 4 );
 
   QString line;
-  QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
+  const thread_local QRegularExpression rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
 
   mProcess.setReadChannel( QProcess::StandardOutput );
   while ( mProcess.canReadLine() )
@@ -773,9 +776,10 @@ void QgsGrassModule::readStdout()
 
     // GRASS_INFO_PERCENT is caught here only because of bugs in GRASS,
     // normally it should be printed to stderr
-    if ( rxpercent.indexIn( line ) != -1 )
+    const QRegularExpressionMatch match = rxpercent.match( line );
+    if ( match.hasMatch() )
     {
-      int progress = rxpercent.cap( 1 ).toInt();
+      int progress = match.captured( 1 ).toInt();
       setProgress( progress );
     }
     else

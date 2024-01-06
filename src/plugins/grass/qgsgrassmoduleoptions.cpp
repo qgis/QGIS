@@ -17,6 +17,8 @@
 #include <QDomElement>
 #include <QFileDialog>
 #include <QTextCodec>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include "qgisinterface.h"
 
@@ -928,10 +930,11 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
   // TODO: We should check the correct encoding by using the BOM (Byte
   // Order Mark) from the beginning of the data.
   QString xmlDeclaration = QString::fromUtf8( baDesc ).section( '>', 0, 0, QString::SectionIncludeTrailingSep );
-  QRegExp reg( "<\\?xml\\s+.*encoding\\s*=\\s*(['\"])([A-Za-z][-a-zA-Z0-9_.]*)\\1\\s*\\?>" );
-  if ( reg.indexIn( xmlDeclaration ) != -1 )
+  const thread_local QRegularExpression reg( "<\\?xml\\s+.*encoding\\s*=\\s*(['\"])([A-Za-z][-a-zA-Z0-9_.]*)\\1\\s*\\?>" );
+  const QRegularExpressionMatch match = reg.match( xmlDeclaration );
+  if ( match.hasMatch() )
   {
-    QByteArray enc = reg.cap( 2 ).toLocal8Bit();
+    QByteArray enc = match.captured( 2 ).toLocal8Bit();
     QgsDebugMsgLevel( QString( "found encoding name '%1'" ).arg( QString::fromUtf8( enc ) ), 3 );
 
     codec = QTextCodec::codecForName( enc );

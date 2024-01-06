@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsgoochmaterialsettings.h"
+#include "qgscolorutils.h"
 
-#include "qgssymbollayerutils.h"
 #include <Qt3DExtras/QGoochMaterial>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
@@ -75,10 +75,10 @@ QgsGoochMaterialSettings *QgsGoochMaterialSettings::clone() const
 
 void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mWarm = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "warm" ), QStringLiteral( "107,0,107" ) ) );
-  mCool = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "cool" ), QStringLiteral( "255,130,0" ) ) );
-  mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
-  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ) ) );
+  mWarm = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "warm" ), QStringLiteral( "107,0,107" ) ) );
+  mCool = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "cool" ), QStringLiteral( "255,130,0" ) ) );
+  mDiffuse = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
+  mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess2" ), QStringLiteral( "100" ) ).toFloat();
   mAlpha = elem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "0.25" ) ).toFloat();
   mBeta = elem.attribute( QStringLiteral( "beta" ), QStringLiteral( "0.5" ) ).toFloat();
@@ -88,10 +88,10 @@ void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWr
 
 void QgsGoochMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "warm" ), QgsSymbolLayerUtils::encodeColor( mWarm ) );
-  elem.setAttribute( QStringLiteral( "cool" ), QgsSymbolLayerUtils::encodeColor( mCool ) );
-  elem.setAttribute( QStringLiteral( "diffuse" ), QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
-  elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
+  elem.setAttribute( QStringLiteral( "warm" ), QgsColorUtils::colorToString( mWarm ) );
+  elem.setAttribute( QStringLiteral( "cool" ), QgsColorUtils::colorToString( mCool ) );
+  elem.setAttribute( QStringLiteral( "diffuse" ), QgsColorUtils::colorToString( mDiffuse ) );
+  elem.setAttribute( QStringLiteral( "specular" ), QgsColorUtils::colorToString( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess2" ), mShininess );
   elem.setAttribute( QStringLiteral( "alpha" ), mAlpha );
   elem.setAttribute( QStringLiteral( "beta" ), mBeta );

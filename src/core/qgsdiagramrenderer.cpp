@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsdiagramrenderer.h"
 
+#include "qgscolorutils.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
@@ -474,9 +475,9 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
 
   if ( properties.hasActiveProperties() )
   {
-    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.backgroundColor ) );
+    c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.backgroundColor ) );
     s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
-    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.penColor ) );
+    c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.penColor ) );
     s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::StrokeColor, c.expressionContext(), s.penColor );
     c.expressionContext().setOriginalValueVariable( s.penWidth );
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::StrokeWidth, c.expressionContext(), s.penWidth );
