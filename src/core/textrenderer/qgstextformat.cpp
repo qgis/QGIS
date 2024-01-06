@@ -26,6 +26,7 @@
 #include "qgsfontmanager.h"
 #include "qgsapplication.h"
 #include "qgsunittypes.h"
+#include "qgscolorutils.h"
 
 #include <QFontDatabase>
 #include <QMimeData>
@@ -615,7 +616,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->textFont.setKerning( textStyleElem.attribute( QStringLiteral( "fontKerning" ), QStringLiteral( "1" ) ).toInt() );
   d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, textStyleElem.attribute( QStringLiteral( "fontLetterSpacing" ), QStringLiteral( "0" ) ).toDouble() );
   d->textFont.setWordSpacing( textStyleElem.attribute( QStringLiteral( "fontWordSpacing" ), QStringLiteral( "0" ) ).toDouble() );
-  d->textColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
+  d->textColor = QgsColorUtils::colorFromString( textStyleElem.attribute( QStringLiteral( "textColor" ), QgsColorUtils::colorToString( Qt::black ) ) );
   if ( !textStyleElem.hasAttribute( QStringLiteral( "textOpacity" ) ) )
   {
     d->opacity = ( 1 - textStyleElem.attribute( QStringLiteral( "textTransp" ) ).toInt() / 100.0 ); //0 -100
@@ -628,7 +629,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->textFont.setStretch( textStyleElem.attribute( QStringLiteral( "stretchFactor" ), QStringLiteral( "100" ) ).toInt() );
 #endif
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( QStringLiteral( "textOrientation" ) ) );
-  d->previewBackgroundColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
+  d->previewBackgroundColor = QgsColorUtils::colorFromString( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QgsColorUtils::colorToString( Qt::white ) ) );
 
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< Qgis::BlendMode >( textStyleElem.attribute( QStringLiteral( "blendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
@@ -729,8 +730,8 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontUnderline" ), d->textFont.underline() );
   textStyleElem.setAttribute( QStringLiteral( "forcedBold" ), d->forcedBold );
   textStyleElem.setAttribute( QStringLiteral( "forcedItalic" ), d->forcedItalic );
-  textStyleElem.setAttribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( d->textColor ) );
-  textStyleElem.setAttribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( d->previewBackgroundColor ) );
+  textStyleElem.setAttribute( QStringLiteral( "textColor" ), QgsColorUtils::colorToString( d->textColor ) );
+  textStyleElem.setAttribute( QStringLiteral( "previewBkgrdColor" ), QgsColorUtils::colorToString( d->previewBackgroundColor ) );
   textStyleElem.setAttribute( QStringLiteral( "fontLetterSpacing" ), d->textFont.letterSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );

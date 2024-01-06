@@ -101,8 +101,6 @@ Sets opacity of the surface
 .. versionadded:: 3.26
 %End
 
-
-
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -112,7 +110,6 @@ Sets opacity of the surface
     bool operator==( const QgsPhongMaterialSettings &other ) const;
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

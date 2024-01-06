@@ -82,6 +82,7 @@ class QgsFieldPrivate : public QSharedData
       , flags( other.flags )
       , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
+      , editorWidgetSetup( other.editorWidgetSetup )
       , splitPolicy( other.splitPolicy )
       , isReadOnly( other.isReadOnly )
     {

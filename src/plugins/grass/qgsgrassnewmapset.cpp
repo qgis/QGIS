@@ -40,7 +40,8 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QTextStream>
-
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 extern "C"
 {
@@ -128,14 +129,14 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   databaseChanged();
 
   // LOCATION
-  QRegExp rx( "[A-Za-z0-9_.]+" );
-  mLocationLineEdit->setValidator( new QRegExpValidator( rx, mLocationLineEdit ) );
+  const thread_local QRegularExpression rx( "[A-Za-z0-9_.]+" );
+  mLocationLineEdit->setValidator( new QRegularExpressionValidator( rx, mLocationLineEdit ) );
 
   // CRS
 
   // MAPSET
   mMapsetsListView->clear();
-  mMapsetLineEdit->setValidator( new QRegExpValidator( rx, mMapsetLineEdit ) );
+  mMapsetLineEdit->setValidator( new QRegularExpressionValidator( rx, mMapsetLineEdit ) );
 
   mMapsetsListView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
@@ -902,7 +903,6 @@ void QgsGrassNewMapset::drawRegion()
   tpoints << QgsPointXY( e, n );
   tpoints << QgsPointXY( w, n );
   tpoints << QgsPointXY( w, s );
-
 
   // Because of possible shift +/- 360 in LL we have to split
   // the lines at least in 3 parts

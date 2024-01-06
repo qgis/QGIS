@@ -24,6 +24,7 @@
 #include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
 #include "qgsunittypes.h"
+#include "qgscolorutils.h"
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 {
@@ -479,7 +480,6 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   d->radii = QSizeF( layer->customProperty( QStringLiteral( "labeling/shapeRadiiX" ), QVariant( 0.0 ) ).toDouble(),
                      layer->customProperty( QStringLiteral( "labeling/shapeRadiiY" ), QVariant( 0.0 ) ).toDouble() );
 
-
   if ( layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnit" ) ).toString().isEmpty() )
   {
     d->radiiUnits = QgsTextRendererUtils::convertFromOldLabelUnit( layer->customProperty( QStringLiteral( "labeling/shapeRadiiUnits" ), 0 ).toUInt() );
@@ -628,8 +628,8 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   {
     d->radiiMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeRadiiMapUnitScale" ) ) );
   }
-  d->fillColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeFillColor" ), QgsSymbolLayerUtils::encodeColor( Qt::white ) ) );
-  d->strokeColor = QgsSymbolLayerUtils::decodeColor( backgroundElem.attribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( Qt::darkGray ) ) );
+  d->fillColor = QgsColorUtils::colorFromString( backgroundElem.attribute( QStringLiteral( "shapeFillColor" ), QgsColorUtils::colorToString( Qt::white ) ) );
+  d->strokeColor = QgsColorUtils::colorFromString( backgroundElem.attribute( QStringLiteral( "shapeBorderColor" ), QgsColorUtils::colorToString( Qt::darkGray ) ) );
   d->strokeWidth = backgroundElem.attribute( QStringLiteral( "shapeBorderWidth" ), QStringLiteral( "0" ) ).toDouble();
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeBorderWidthUnit" ) ) )
@@ -728,8 +728,8 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
   backgroundElem.setAttribute( QStringLiteral( "shapeRadiiY" ), d->radii.height() );
   backgroundElem.setAttribute( QStringLiteral( "shapeRadiiUnit" ), QgsUnitTypes::encodeUnit( d->radiiUnits ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeRadiiMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeFillColor" ), QgsSymbolLayerUtils::encodeColor( d->fillColor ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBorderColor" ), QgsSymbolLayerUtils::encodeColor( d->strokeColor ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeFillColor" ), QgsColorUtils::colorToString( d->fillColor ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBorderColor" ), QgsColorUtils::colorToString( d->strokeColor ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidth" ), d->strokeWidth );
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->strokeWidthUnits ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );

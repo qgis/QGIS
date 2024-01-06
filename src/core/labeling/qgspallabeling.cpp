@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspallabeling.h"
+#include "qgscolorutils.h"
 #include "qgstextlabelfeature.h"
 #include "qgsunittypes.h"
 #include "qgsexception.h"
@@ -600,7 +601,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   delete expression;
 }
 
-
 const QgsPropertiesDefinition &QgsPalLayerSettings::propertyDefinitions()
 {
   initPropertyDefinitions();
@@ -873,7 +873,6 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     // keep scaleMin and scaleMax at new 1.0 defaults (1 and 10000000, were 0 and 0)
     scaleVisibility = false;
   }
-
 
   fontLimitPixelSize = layer->customProperty( QStringLiteral( "labeling/fontLimitPixelSize" ), QVariant( false ) ).toBool();
   fontMinPixelSize = layer->customProperty( QStringLiteral( "labeling/fontMinPixelSize" ), QVariant( 0 ) ).toInt();
@@ -2202,7 +2201,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     doClip = true;
   }
 
-
   Qgis::LabelPolygonPlacementFlags polygonPlacement = mPolygonPlacementFlags;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PolygonLabelOutside ) )
   {
@@ -3134,7 +3132,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
       case DDColor:
       {
         QString colorstr = exprVal.toString().trimmed();
-        QColor color = QgsSymbolLayerUtils::decodeColor( colorstr );
+        QColor color = QgsColorUtils::colorFromString( colorstr );
 
         if ( color.isValid() )
         {
@@ -3368,7 +3366,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
   // pass the rest on to QgsPalLabeling::drawLabeling
 
   // data defined font color?
-  dataDefinedValEval( DDColor, QgsPalLayerSettings::Color, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( mFormat.color() ) );
+  dataDefinedValEval( DDColor, QgsPalLayerSettings::Color, exprVal, context.expressionContext(), QgsColorUtils::colorToString( mFormat.color() ) );
 
   // data defined font opacity?
   dataDefinedValEval( DDOpacity, QgsPalLayerSettings::FontOpacity, exprVal, context.expressionContext(), mFormat.opacity() * 100 );
@@ -3428,7 +3426,7 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   dataDefinedValEval( DDUnits, QgsPalLayerSettings::BufferUnit, exprVal, context.expressionContext() );
 
   // data defined buffer color?
-  dataDefinedValEval( DDColor, QgsPalLayerSettings::BufferColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( buffer.color() ) );
+  dataDefinedValEval( DDColor, QgsPalLayerSettings::BufferColor, exprVal, context.expressionContext(), QgsColorUtils::colorToString( buffer.color() ) );
 
   // data defined buffer pen join style?
   dataDefinedValEval( DDJoinStyle, QgsPalLayerSettings::BufferJoinStyle, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( buffer.joinStyle() ) );
@@ -3780,10 +3778,10 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   dataDefinedValEval( DDBlendMode, QgsPalLayerSettings::ShapeBlendMode, exprVal, context.expressionContext() );
 
   // data defined shape fill color?
-  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeFillColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( background.fillColor() ) );
+  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeFillColor, exprVal, context.expressionContext(), QgsColorUtils::colorToString( background.fillColor() ) );
 
   // data defined shape stroke color?
-  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeStrokeColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( background.strokeColor() ) );
+  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShapeStrokeColor, exprVal, context.expressionContext(), QgsColorUtils::colorToString( background.strokeColor() ) );
 
   // data defined shape stroke width?
   dataDefinedValEval( DDDoublePos, QgsPalLayerSettings::ShapeStrokeWidth, exprVal, context.expressionContext(), background.strokeWidth() );
@@ -3879,14 +3877,13 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
   dataDefinedValEval( DDIntPos, QgsPalLayerSettings::ShadowScale, exprVal, context.expressionContext(), shadow.scale() );
 
   // data defined shadow color?
-  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShadowColor, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( shadow.color() ) );
+  dataDefinedValEval( DDColor, QgsPalLayerSettings::ShadowColor, exprVal, context.expressionContext(), QgsColorUtils::colorToString( shadow.color() ) );
 
   // data defined shadow blend mode?
   dataDefinedValEval( DDBlendMode, QgsPalLayerSettings::ShadowBlendMode, exprVal, context.expressionContext() );
 }
 
 // -------------
-
 
 bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
 {
@@ -3921,7 +3918,6 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
   }
   return false;
 }
-
 
 bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry, bool mergeLines )
 {
@@ -4165,7 +4161,6 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
   }
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
-
 
 void QgsPalLabeling::dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr,
     const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues )
@@ -4636,7 +4631,6 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
     shadow.setScale( ddValues.value( QgsPalLayerSettings::ShadowScale ).toInt() );
     changed = true;
   }
-
 
   if ( ddValues.contains( QgsPalLayerSettings::ShadowBlendMode ) )
   {

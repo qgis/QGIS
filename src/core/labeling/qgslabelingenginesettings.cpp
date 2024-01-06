@@ -16,7 +16,7 @@
 #include "qgslabelingenginesettings.h"
 
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
 {
@@ -51,7 +51,7 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   if ( projectTextFormat >= 0 )
     mDefaultTextRenderFormat = static_cast< Qgis::TextRenderFormat >( projectTextFormat );
 
-  mUnplacedLabelColor = QgsSymbolLayerUtils::decodeColor( prj->readEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QStringLiteral( "#ff0000" ) ) );
+  mUnplacedLabelColor = QgsColorUtils::colorFromString( prj->readEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QStringLiteral( "#ff0000" ) ) );
 
   mPlacementVersion = static_cast< Qgis::LabelPlacementEngineVersion >( prj->readNumEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( Qgis::LabelPlacementEngineVersion::Version1 ) ) );
 }
@@ -71,7 +71,7 @@ void QgsLabelingEngineSettings::writeSettingsToProject( QgsProject *project )
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/TextFormat" ), static_cast< int >( mDefaultTextRenderFormat ) );
 
-  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QgsSymbolLayerUtils::encodeColor( mUnplacedLabelColor ) );
+  project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/UnplacedColor" ), QgsColorUtils::colorToString( mUnplacedLabelColor ) );
 
   project->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/PlacementEngineVersion" ), static_cast< int >( mPlacementVersion ) );
 }

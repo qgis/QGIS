@@ -53,7 +53,6 @@
 #define PROVIDER_KEY QStringLiteral( "cesiumtiles" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Cesium 3D Tiles data provider" )
 
-
 // This is to support a case seen with Google's tiles. Root URL is something like this:
 // https://tile.googleapis.com/.../root.json?key=123
 // The returned JSON contains relative links with "session" (e.g. "/.../abc.json?session=456")
@@ -74,7 +73,6 @@ static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &ba
   newContentUrl.setQuery( contentQuery );
   return newContentUrl.toString();
 }
-
 
 class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
@@ -147,7 +145,6 @@ class QgsCesiumTilesDataProviderSharedData
     QReadWriteLock mReadWriteLock;
 
 };
-
 
 //
 // QgsCesiumTiledSceneIndex
@@ -377,7 +374,6 @@ void QgsCesiumTiledSceneIndex::refineNodeFromJson( QgsTiledSceneNode *node, cons
   // should be the same between the node being refined and the root node of the fetched sub dataset!
   // (Ie the bounding volume, geometric error, etc).
   node->tile()->setResources( newTile->resources() );
-
 
   // root tile of the sub dataset may have transform as well, we need to bring it back
   // (actually even the referencing tile may have transform - if that's the case,
@@ -702,7 +698,6 @@ QByteArray QgsCesiumTiledSceneIndex::fetchContent( const QString &uri, QgsFeedba
   return QByteArray();
 }
 
-
 //
 // QgsCesiumTilesDataProviderSharedData
 //
@@ -729,8 +724,15 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
     const auto &asset = mTileset[ "asset" ];
     if ( asset.contains( "tilesetVersion" ) )
     {
-      const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
-      mLayerMetadata.setIdentifier( tilesetVersion );
+      try
+      {
+        const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
+        mLayerMetadata.setIdentifier( tilesetVersion );
+      }
+      catch ( json::type_error & )
+      {
+        QgsDebugError( QStringLiteral( "Error when parsing tilesetVersion value" ) );
+      }
     }
   }
 
@@ -879,7 +881,6 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
     }
   }
 }
-
 
 //
 // QgsCesiumTilesDataProvider
@@ -1150,8 +1151,15 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
 
     if ( asset.contains( "tilesetVersion" ) )
     {
-      const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( tilesetVersion ) % QStringLiteral( "</td></tr>\n" );
+      try
+      {
+        const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( tilesetVersion ) % QStringLiteral( "</td></tr>\n" );
+      }
+      catch ( json::type_error & )
+      {
+        QgsDebugError( QStringLiteral( "Error when parsing tilesetVersion value" ) );
+      }
     }
 
     if ( asset.contains( "generator" ) )
@@ -1243,7 +1251,6 @@ QgsDoubleRange QgsCesiumTilesDataProvider::zRange() const
   QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   return mShared->mZRange;
 }
-
 
 //
 // QgsCesiumTilesProviderMetadata

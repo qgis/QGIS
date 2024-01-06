@@ -18,7 +18,7 @@
 
 #include "qgsrectangle.h"
 #include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsprocessingparameters.h"
 #include "qgsremappingproxyfeaturesink.h"
 #include "qgsunittypes.h"
@@ -88,8 +88,6 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement &element )
 
   return aoi;
 }
-
-
 
 QDomElement QgsXmlUtils::writeMapUnits( Qgis::DistanceUnit units, QDomDocument &doc )
 {
@@ -212,7 +210,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
 
     case QVariant::Color:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
-      element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsSymbolLayerUtils::encodeColor( value.value< QColor >() ) : QString() );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsColorUtils::colorToString( value.value< QColor >() ) : QString() );
       break;
 
     case QVariant::DateTime:
@@ -329,7 +327,7 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   }
   else if ( type == QLatin1String( "color" ) )
   {
-    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QColor() : QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "value" ) ) );
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QColor() : QgsColorUtils::colorFromString( element.attribute( QStringLiteral( "value" ) ) );
   }
   else if ( type == QLatin1String( "datetime" ) )
   {

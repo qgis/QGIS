@@ -51,7 +51,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
 #include "qgsauxiliarystorage.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
@@ -132,8 +132,6 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
   return keyTokens;
 }
 
-
-
 /**
  * Returns the property that matches the given key sequence, if any
  *
@@ -208,8 +206,6 @@ QgsProjectProperty *findKey_( const QString &scope,
 
   return nullptr;
 }
-
-
 
 /**
  * Adds the given key and value.
@@ -455,7 +451,6 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   mStyleSettings->combinedStyleModel()->addDefaultStyle();
 }
 
-
 QgsProject::~QgsProject()
 {
   mIsBeingDeleted = true;
@@ -476,7 +471,6 @@ void QgsProject::setInstance( QgsProject *project )
 {
   sProject = project;
 }
-
 
 QgsProject *QgsProject::instance()
 {
@@ -1901,7 +1895,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   profile.switchTask( tr( "Creating auxiliary storage" ) );
   const QString fileName = mFile.fileName();
 
-
   // NOTE [ND] -- I suspect this is wrong, as the archive may contain any number of non-auxiliary
   // storage related files from the previously loaded project.
   std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
@@ -1915,8 +1908,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   mAuxiliaryStorage = std::move( aStorage );
   mArchive = std::move( archive );
-
-
 
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
@@ -1964,7 +1955,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
                                readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 255 ),
                                readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 ) );
   setSelectionColor( selectionColor );
-
 
   const QString distanceUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QString() );
   if ( !distanceUnitString.isEmpty() )
@@ -2035,7 +2025,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     mElevationShadingRenderer.readXml( elevationShadingNode.toElement(), context );
   }
   emit elevationShadingRendererChanged();
-
 
   //add variables defined in project file - do this early in the reading cycle, as other components
   //(e.g. layouts) may depend on these variables
@@ -2336,7 +2325,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
   if ( !timeSettingsElement.isNull() )
     mTimeSettings->readXml( timeSettingsElement, context );
-
 
   profile.switchTask( tr( "Loading elevation properties" ) );
   const QDomElement elevationPropertiesElement = doc->documentElement().firstChildElement( QStringLiteral( "ElevationProperties" ) );
@@ -3375,7 +3363,6 @@ QStringList QgsProject::readListEntry( const QString &scope,
   else if ( ok )
     *ok = false;
 
-
   return def;
 }
 
@@ -4235,11 +4222,9 @@ QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGrou
   return mTransactionGroups;
 }
 
-
 //
 // QgsMapLayerStore methods
 //
-
 
 int QgsProject::count() const
 {
@@ -4836,7 +4821,7 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   QgsNamedColorList::const_iterator colorIt = colors.constBegin();
   for ( ; colorIt != colors.constEnd(); ++colorIt )
   {
-    const QString color = QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first );
+    const QString color = QgsColorUtils::colorToString( ( *colorIt ).first );
     const QString label = ( *colorIt ).second;
     customColors.append( color );
     customColorLabels.append( label );
@@ -5025,7 +5010,7 @@ GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
   for ( QStringList::iterator it = colorStrings.begin();
         it != colorStrings.end(); ++it )
   {
-    const QColor color = QgsSymbolLayerUtils::decodeColor( *it );
+    const QColor color = QgsColorUtils::colorFromString( *it );
     QString label;
     if ( colorLabels.length() > colorIndex )
     {

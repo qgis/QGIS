@@ -27,14 +27,13 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsrasterlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-
 
 Qgs3DMapSettings::Qgs3DMapSettings()
   : QObject( nullptr )
@@ -159,8 +158,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
   if ( !elemColor.isNull() )
   {
-    mBackgroundColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "background" ) ) );
-    mSelectionColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "selection" ) ) );
+    mBackgroundColor = QgsColorUtils::colorFromString( elemColor.attribute( QStringLiteral( "background" ) ) );
+    mSelectionColor = QgsColorUtils::colorFromString( elemColor.attribute( QStringLiteral( "selection" ) ) );
   }
 
   QDomElement elemCrs = elem.firstChildElement( QStringLiteral( "crs" ) );
@@ -349,8 +348,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
-  elemColor.setAttribute( QStringLiteral( "background" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
-  elemColor.setAttribute( QStringLiteral( "selection" ), QgsSymbolLayerUtils::encodeColor( mSelectionColor ) );
+  elemColor.setAttribute( QStringLiteral( "background" ), QgsColorUtils::colorToString( mBackgroundColor ) );
+  elemColor.setAttribute( QStringLiteral( "selection" ), QgsColorUtils::colorToString( mSelectionColor ) );
   elem.appendChild( elemColor );
 
   QDomElement elemCrs = doc.createElement( QStringLiteral( "crs" ) );
@@ -746,7 +745,6 @@ void Qgs3DMapSettings::setShowCameraRotationCenter( bool enabled )
   emit showCameraRotationCenterChanged();
 }
 
-
 void Qgs3DMapSettings::setShowLightSourceOrigins( bool enabled )
 {
   if ( mShowLightSources == enabled )
@@ -953,7 +951,6 @@ void Qgs3DMapSettings::setIsDebugOverlayEnabled( bool debugOverlayEnabled )
   emit debugOverlayEnabledChanged( mIsDebugOverlayEnabled );
 }
 
-
 void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 {
   connect( this, &Qgs3DMapSettings::selectionColorChanged, this, &Qgs3DMapSettings::settingsChanged );
@@ -990,7 +987,6 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
-
 
 void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings, bool force )
 {

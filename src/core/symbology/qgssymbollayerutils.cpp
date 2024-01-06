@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
+#include "qgscolorutils.h"
 #include "qgsexpression.h"
 #include "qgsexpressionnode.h"
 #include "qgspainteffect.h"
@@ -1223,7 +1224,6 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, Qgis::GeometryType
 
 /////
 
-
 QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )
@@ -1764,7 +1764,6 @@ bool QgsSymbolLayerUtils::hasWellKnownMark( QDomElement &element )
   return !wellKnownNameElem.isNull();
 }
 
-
 bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
 {
   const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
@@ -1923,7 +1922,6 @@ bool QgsSymbolLayerUtils::needRasterImageFill( QDomElement &element )
   return hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/png" ) ) || hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/jpeg" ) ) || hasExternalGraphicV2( graphicFillElem, QStringLiteral( "image/gif" ) );
 }
 
-
 bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
@@ -1967,8 +1965,8 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
     {
       QVariantMap map;
       map[QStringLiteral( "name" )] = QStringLiteral( "square" );
-      map[QStringLiteral( "color" )] = encodeColor( validFill ? fillColor : Qt::transparent );
-      map[QStringLiteral( "color_border" )] = encodeColor( validStroke ? strokeColor : Qt::transparent );
+      map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( validFill ? fillColor : Qt::transparent );
+      map[QStringLiteral( "color_border" )] = QgsColorUtils::colorToString( validStroke ? strokeColor : Qt::transparent );
       map[QStringLiteral( "size" )] = QString::number( 6 );
       map[QStringLiteral( "angle" )] = QString::number( 0 );
       map[QStringLiteral( "offset" )] = encodePoint( QPointF( 0, 0 ) );
@@ -2160,7 +2158,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
         QVariantMap map;
         map[QStringLiteral( "font" )] = name;
         map[QStringLiteral( "chr" )] = markIndex;
-        map[QStringLiteral( "color" )] = encodeColor( validFill ? fillColor : Qt::transparent );
+        map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( validFill ? fillColor : Qt::transparent );
         if ( size > 0 )
           map[QStringLiteral( "size" )] = QString::number( size );
         if ( !qgsDoubleNear( angle, 0.0 ) )
@@ -2368,7 +2366,6 @@ void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
   }
 }
 
-
 bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
                                        Qt::PenStyle &penStyle, QColor &color, double &width,
                                        Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
@@ -2546,7 +2543,6 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
     graphicElem.appendChild( sizeElem );
   }
 }
-
 
 QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth )
 {
@@ -2784,7 +2780,6 @@ bool QgsSymbolLayerUtils::rotationFromSldElement( QDomElement &element, QString 
   }
   return true;
 }
-
 
 void QgsSymbolLayerUtils::createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc )
 {
@@ -3039,7 +3034,6 @@ bool QgsSymbolLayerUtils::createExpressionElement( QDomDocument &doc, QDomElemen
   return true;
 }
 
-
 bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function )
 {
   // else rule is not a valid expression
@@ -3135,7 +3129,6 @@ bool QgsSymbolLayerUtils::onlineResourceFromSldElement( QDomElement &element, QS
   return true;
 }
 
-
 QDomElement QgsSymbolLayerUtils::createSvgParameterElement( QDomDocument &doc, const QString &name, const QString &value )
 {
   QDomElement nodeElem = doc.createElement( QStringLiteral( "se:SvgParameter" ) );
@@ -3210,7 +3203,6 @@ QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
   return params;
 }
 
-
 QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 {
   const QVariant newSymbols = QgsXmlUtils::readVariant( element.firstChildElement( QStringLiteral( "Option" ) ) );
@@ -3238,7 +3230,6 @@ QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
   }
 }
 
-
 void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element )
 {
   element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
@@ -3265,7 +3256,6 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
     }
     e = e.nextSiblingElement();
   }
-
 
   // now walk through the list of symbols and find those prefixed with @
   // these symbols are sub-symbols of some other symbol layers
@@ -3311,7 +3301,6 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsRe
     {
       QgsDebugError( "symbol layer refused subsymbol: " + it.key() );
     }
-
 
   }
 
@@ -3384,7 +3373,6 @@ QgsSymbol *QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
   return nullptr;
 }
 
-
 QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
 {
   const QString rampType = element.attribute( QStringLiteral( "type" ) );
@@ -3408,7 +3396,6 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
     return nullptr;
   }
 }
-
 
 QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc )
 {
@@ -3618,7 +3605,7 @@ QgsNamedColorList QgsSymbolLayerUtils::colorListFromMimeData( const QMimeData *d
         }
 
         QPair< QColor, QString> namedColor;
-        namedColor.first = QgsSymbolLayerUtils::decodeColor( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
+        namedColor.first = QgsColorUtils::colorFromString( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
         namedColor.second = currentElem.attribute( QStringLiteral( "label" ), QString() );
 
         mimeColors << namedColor;
@@ -3715,7 +3702,7 @@ QMimeData *QgsSymbolLayerUtils::colorListToMimeData( const QgsNamedColorList &co
   for ( ; colorIt != colorList.constEnd(); ++colorIt )
   {
     QDomElement namedColor = xmlDoc.createElement( QStringLiteral( "NamedColor" ) );
-    namedColor.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first ) );
+    namedColor.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( ( *colorIt ).first ) );
     namedColor.setAttribute( QStringLiteral( "label" ), ( *colorIt ).second );
     xmlRootElement.appendChild( namedColor );
   }
@@ -4217,7 +4204,6 @@ QPointF QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF startPoint, QPoint
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
-
 QStringList QgsSymbolLayerUtils::listSvgFiles()
 {
   // copied from QgsMarkerCatalogue - TODO: unify  //#spellok
@@ -4370,7 +4356,6 @@ QString QgsSymbolLayerUtils::svgSymbolPathToName( const QString &p, const QgsPat
 
   return pathResolver.writePath( path );
 }
-
 
 QPointF QgsSymbolLayerUtils::polygonCentroid( const QPolygonF &points )
 {

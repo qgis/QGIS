@@ -90,7 +90,6 @@
 #include <QUrl>
 #include <QRegularExpressionValidator>
 
-
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsMapCanvas *canvas,
   QgsMessageBar *messageBar,
@@ -243,11 +242,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsVectorLayerProperties::loadMetadataFromFile );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsVectorLayerProperties::saveMetadataToFile );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata from File…" ), this, &QgsVectorLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata to File…" ), this, &QgsVectorLayerProperties::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveMetadataAsDefault );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save to Default Location" ), this, &QgsVectorLayerProperties::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore from Default Location" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -488,7 +487,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#legend-properties" ) );
   mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#qgis-server-properties" ) );
 
-
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
 
   initialize();
@@ -708,7 +706,6 @@ void QgsVectorLayerProperties::syncToLayer()
   mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
   mNotifyMessagValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
 
-
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -922,7 +919,6 @@ void QgsVectorLayerProperties::apply()
     mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
     mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
   }
-
 
   QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
   if ( mSelectionColorButton->color() != mSelectionColorButton->defaultColor() )
@@ -1465,7 +1461,6 @@ void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
   mAttributesFormPropertiesDialog->init();
 }
 
-
 void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
 {
   if ( !mLayer )
@@ -1617,7 +1612,6 @@ void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
   serverProperties->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
   mWmsDimensionsTreeWidget->takeTopLevelItem( mWmsDimensionsTreeWidget->indexOfTopLevelItem( currentWmsDimensionItem ) );
 }
-
 
 void QgsVectorLayerProperties::updateSymbologyPage()
 {

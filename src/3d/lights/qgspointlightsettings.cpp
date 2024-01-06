@@ -15,6 +15,7 @@
 
 #include "qgspointlightsettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgs3dmapsettings.h"
 
 #include <QDomDocument>
@@ -90,7 +91,7 @@ QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWri
   elemLight.setAttribute( QStringLiteral( "x" ), mPosition.x() );
   elemLight.setAttribute( QStringLiteral( "y" ), mPosition.y() );
   elemLight.setAttribute( QStringLiteral( "z" ), mPosition.z() );
-  elemLight.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  elemLight.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
   elemLight.setAttribute( QStringLiteral( "intensity" ), mIntensity );
   elemLight.setAttribute( QStringLiteral( "attenuation-0" ), mConstantAttenuation );
   elemLight.setAttribute( QStringLiteral( "attenuation-1" ), mLinearAttenuation );
@@ -103,7 +104,7 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
   mPosition.set( elem.attribute( QStringLiteral( "x" ) ).toDouble(),
                  elem.attribute( QStringLiteral( "y" ) ).toDouble(),
                  elem.attribute( QStringLiteral( "z" ) ).toDouble() );
-  mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
   mConstantAttenuation = elem.attribute( QStringLiteral( "attenuation-0" ) ).toDouble();
   mLinearAttenuation = elem.attribute( QStringLiteral( "attenuation-1" ) ).toDouble();

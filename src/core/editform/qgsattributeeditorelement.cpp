@@ -24,7 +24,7 @@
 #include "qgsattributeeditorrelation.h"
 #include "qgsattributeeditorspacerelement.h"
 #include "qgsattributeeditortextelement.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsfontutils.h"
 
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
@@ -123,7 +123,6 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   return newElement;
 }
 
-
 void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 {
   QDomElement element { node.firstChildElement( QStringLiteral( "labelStyle" ) ) };
@@ -134,7 +133,7 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
     // Label font and color
     if ( element.hasAttribute( QStringLiteral( "labelColor" ) ) )
     {
-      color = QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "labelColor" ) ) );
+      color = QgsColorUtils::colorFromString( element.attribute( QStringLiteral( "labelColor" ) ) );
     }
 
     QFont newFont;
@@ -157,7 +156,7 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 QDomElement QgsAttributeEditorElement::LabelStyle::writeXml( QDomDocument &document ) const
 {
   QDomElement elem {  document.createElement( QStringLiteral( "labelStyle" ) ) };
-  elem.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( color ) );
+  elem.setAttribute( QStringLiteral( "labelColor" ), QgsColorUtils::colorToString( color ) );
   elem.appendChild( QgsFontUtils::toXmlElement( font, document, QStringLiteral( "labelFont" ) ) );
   elem.setAttribute( QStringLiteral( "overrideLabelColor" ), overrideColor ? QChar( '1' ) : QChar( '0' ) );
   elem.setAttribute( QStringLiteral( "overrideLabelFont" ), overrideFont ? QChar( '1' ) : QChar( '0' ) );

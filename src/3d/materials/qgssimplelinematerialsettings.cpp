@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgssimplelinematerialsettings.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgslinematerial_p.h"
+
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
@@ -74,14 +75,14 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
 
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
 void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
+  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }

@@ -309,7 +309,6 @@ void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-
 QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
 {
   static QgsGrassModuleInputModel sInstance;
@@ -691,13 +690,11 @@ void QgsGrassModuleInputSelectedDelegate::paint( QPainter *painter, const QStyle
     painter->fillRect( option.rect, brush );
   }
 
-
   QStyledItemDelegate::paint( painter, option, index );
 
   if ( index.column() == 1 && option.state & QStyle::State_MouseOver )
   {
     const QIcon icon = ( option.state & QStyle::State_Selected ) ? QgsGrassPlugin::getThemeIcon( "closebutton.png" ) : QgsGrassPlugin::getThemeIcon( "darkclosebutton.png" );
-
 
     QRect iconRect( option.rect.right() - option.rect.height(),
                     option.rect.top(),
@@ -916,7 +913,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   mComboBox = new QgsGrassModuleInputComboBox( mType, this );
   mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsGrassModuleInput::onActivated );
+  connect( mComboBox, qOverload< int >( &QComboBox::activated ), this, [ = ]( int index ) { onActivated( mComboBox->itemText( index ) ); } );
   connect( mComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassModuleInput::onActivated );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsGrassModuleInput::onChanged );
   mapLayout->addWidget( mComboBox );

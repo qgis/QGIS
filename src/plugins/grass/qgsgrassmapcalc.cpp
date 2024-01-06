@@ -33,7 +33,7 @@
 #include <QMouseEvent>
 #include <QTextStream>
 #include <QToolBar>
-
+#include <QActionGroup>
 
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
@@ -74,7 +74,6 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   resizeCanvas( 400, 300 );
 
   mView->setScene( mCanvasScene );
-
 
   QActionGroup *ag = new QActionGroup( this );
   QToolBar *tb = addToolBar( tr( "Mapcalc tools" ) );
@@ -144,7 +143,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   mMapComboBox = new QgsGrassModuleInputComboBox( QgsGrassObject::Raster, this );
   mMapComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mMapComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsGrassMapcalc::mapChanged );
+  connect( mMapComboBox, qOverload< int >( &QComboBox::activated ), this, [ = ]( int index ) { mapChanged( mMapComboBox->itemText( index ) ); } );
   connect( mMapComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassMapcalc::mapChanged );
   connect( mMapComboBox, &QComboBox::editTextChanged, this, &QgsGrassMapcalc::mapChanged );
   bool firstSet = mMapComboBox->setFirst();
@@ -1493,7 +1492,6 @@ void QgsGrassMapcalcObject::paint( QPainter *painter,
       */
       QString l = mFunction.inputLabels().at( i );
 
-
       int lx = mRect.x() + mSpace;
       int ly = mRect.y() + mSpace + i * ( mTextHeight + mSpace );
       QRect lr( lx, ly, metrics.horizontalAdvance( l ), mTextHeight );
@@ -1885,7 +1883,6 @@ void QgsGrassMapcalcConnector::selectEnd( QPoint point )
 
   double d1 = std::sqrt( std::pow( ( double )( point.x() - mPoints[1].x() ), 2.0 )
                          + std::pow( ( double )( point.y() - mPoints[1].y() ), 2.0 ) );
-
 
   if ( d0 < 15 || d1 < 15 )
   {

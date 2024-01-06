@@ -465,6 +465,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setDataDefinedProperties( propertyColection );
   materialSettings.setAmbient( Qt::red );
+  materialSettings.setShininess( 1 );
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
   symbol3d->setMaterialSettings( materialSettings.clone() );
   symbol3d->setExtrusionHeight( 10.f );
@@ -1683,7 +1684,6 @@ void TestQgs3DRendering::test3DSceneExporter()
   delete scene;
   mapSettings.setLayers( {} );
 }
-
 
 QGSTEST_MAIN( TestQgs3DRendering )
 #include "testqgs3drendering.moc"

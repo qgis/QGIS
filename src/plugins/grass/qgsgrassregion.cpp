@@ -32,7 +32,6 @@
 #include <QSettings>
 #include <QDoubleValidator>
 
-
 //! Map tool which uses rubber band for changing grass region
 QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -226,7 +225,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mResRadio->setChecked( true );
   radioChanged();
 
-  connect( mRadioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
+  connect( mRadioGroup, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
 
   // Connect entries
   connect( mNorth, &QLineEdit::editingFinished, this, &QgsGrassRegion::northChanged );
@@ -281,7 +280,6 @@ void QgsGrassRegion::refreshGui()
   }
 
   mUpdatingGui = true;
-
 
   mNorth->setText( formatExtent( mWindow.north ) );
   mSouth->setText( formatExtent( mWindow.south ) );
@@ -516,5 +514,3 @@ void QgsGrassRegion::buttonClicked( QAbstractButton *button )
   // Better to keep the tool selected until another tool is chosen?
   mCanvas->unsetMapTool( mRegionEdit );
 }
-
-

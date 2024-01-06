@@ -22,7 +22,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgstextrenderer.h"
 
 #include <QPainter>
@@ -33,7 +33,6 @@
 
 //non qt includes
 #include <cmath>
-
 
 QgsDecorationTitle::QgsDecorationTitle( QObject *parent )
   : QgsDecorationItem( parent )
@@ -52,7 +51,7 @@ void QgsDecorationTitle::projectRead()
   QgsDecorationItem::projectRead();
 
   mLabelText = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Label" ), QString() );
-  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
+  mBackgroundColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
 
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
@@ -75,7 +74,7 @@ void QgsDecorationTitle::saveToProject()
   QgsDecorationItem::saveToProject();
 
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Label" ), mLabelText );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QgsColorUtils::colorToString( mBackgroundColor ) );
 
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
@@ -94,7 +93,6 @@ void QgsDecorationTitle::run()
   QgsDecorationTitleDialog dlg( *this, QgisApp::instance() );
   dlg.exec();
 }
-
 
 void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
@@ -218,4 +216,3 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   // Paint label to canvas
   QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
 }
-

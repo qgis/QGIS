@@ -20,8 +20,8 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorutils.h"
 #include "qgspointxy.h"
-
 
 //
 // QgsPropertyTransformer
@@ -123,7 +123,6 @@ double QgsPropertyTransformer::transformNumeric( double input ) const
 
   return mMinValue + ( mMaxValue - mMinValue ) * mCurveTransform->y( scaledInput );
 }
-
 
 //
 // QgsGenericNumericTransformer
@@ -295,8 +294,6 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   }
   return new QgsGenericNumericTransformer( minValue, maxValue, minOutput, maxOutput, nullValue, exponent );
 }
-
-
 
 //
 // QgsSizeScaleProperty
@@ -517,7 +514,6 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
   return new QgsSizeScaleTransformer( type, minValue, maxValue, minSize, maxSize, nullSize, exponent );
 }
 
-
 //
 // QgsColorRampTransformer
 //
@@ -571,7 +567,7 @@ QVariant QgsColorRampTransformer::toVariant() const
   {
     transformerMap.insert( QStringLiteral( "colorramp" ), QgsSymbolLayerUtils::colorRampToVariant( QStringLiteral( "[source]" ), mGradientRamp.get() ) );
   }
-  transformerMap.insert( QStringLiteral( "nullColor" ), QgsSymbolLayerUtils::encodeColor( mNullColor ) );
+  transformerMap.insert( QStringLiteral( "nullColor" ), QgsColorUtils::colorToString( mNullColor ) );
   transformerMap.insert( QStringLiteral( "rampName" ), mRampName );
 
   return transformerMap;
@@ -589,7 +585,7 @@ bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
     setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( QStringLiteral( "colorramp" ) ).toMap() ) );
   }
 
-  mNullColor = QgsSymbolLayerUtils::decodeColor( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );
+  mNullColor = QgsColorUtils::colorFromString( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );
   mRampName = transformerMap.value( QStringLiteral( "rampName" ) ).toString();
   return true;
 }
@@ -648,7 +644,6 @@ void QgsColorRampTransformer::setColorRamp( QgsColorRamp *ramp )
 {
   mGradientRamp.reset( ramp );
 }
-
 
 //
 // QgsCurveTransform
@@ -1036,4 +1031,3 @@ void QgsCurveTransform::calcSecondDerivativeArray()
   delete[] result;
   delete[] matrix;
 }
-

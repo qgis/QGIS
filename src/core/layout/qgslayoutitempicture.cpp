@@ -27,6 +27,7 @@
 #include "qgsproperty.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgssvgcache.h"
 #include "qgslogger.h"
 #include "qgsreadwritecontext.h"
@@ -792,8 +793,8 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   elem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
   elem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast< int >( mPictureAnchor ) ) );
-  elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
-  elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+  elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( mSvgFillColor ) );
+  elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
   elem.setAttribute( QStringLiteral( "mode" ), mOriginalMode );
 
@@ -820,8 +821,8 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   //when loading from xml, default to anchor point of middle to match pre 2.4 behavior
   mPictureAnchor = static_cast< QgsLayoutItem::ReferencePoint >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsLayoutItem::Middle ) ).toInt() );
 
-  mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
-  mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
+  mSvgFillColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( QColor( 255, 255, 255 ) ) ) );
+  mSvgStrokeColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
   mOriginalMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
   mMode = mOriginalMode;

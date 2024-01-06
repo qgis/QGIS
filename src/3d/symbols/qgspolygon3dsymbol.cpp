@@ -18,8 +18,8 @@
 #include <Qt3DCore/QEntity>
 
 #include "qgs3dutils.h"
-#include "qgssymbollayerutils.h"
 #include "qgs3d.h"
+#include "qgscolorutils.h"
 #include "qgsmaterialregistry.h"
 #include "qgs3dsceneexporter.h"
 #include "qgsvectorlayerelevationproperties.h"
@@ -82,7 +82,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   QDomElement elemEdges = doc.createElement( QStringLiteral( "edges" ) );
   elemEdges.setAttribute( QStringLiteral( "enabled" ), mEdgesEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemEdges.setAttribute( QStringLiteral( "width" ), mEdgeWidth );
-  elemEdges.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mEdgeColor ) );
+  elemEdges.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mEdgeColor ) );
   elem.appendChild( elemEdges );
 }
 
@@ -116,7 +116,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   {
     mEdgesEnabled = elemEdges.attribute( QStringLiteral( "enabled" ) ).toInt();
     mEdgeWidth = elemEdges.attribute( QStringLiteral( "width" ) ).toFloat();
-    mEdgeColor = QgsSymbolLayerUtils::decodeColor( elemEdges.attribute( QStringLiteral( "color" ) ) );
+    mEdgeColor = QgsColorUtils::colorFromString( elemEdges.attribute( QStringLiteral( "color" ) ) );
   }
 }
 

@@ -23,6 +23,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgssymbol.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
@@ -156,7 +157,6 @@ void QgsLayoutItemMapGridStack::calculateMaxGridExtension( double &top, double &
   }
 }
 
-
 //
 // QgsLayoutItemMapGrid
 //
@@ -277,9 +277,9 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( QStringLiteral( "gridFrameWidth" ), qgsDoubleToString( mGridFrameWidth ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFrameMargin" ), qgsDoubleToString( mGridFrameMargin ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFramePenThickness" ), qgsDoubleToString( mGridFramePenThickness ) );
-  mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsSymbolLayerUtils::encodeColor( mGridFramePenColor ) );
-  mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor1 ) );
-  mapGridElem.setAttribute( QStringLiteral( "frameFillColor2" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor2 ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsColorUtils::colorToString( mGridFramePenColor ) );
+  mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsColorUtils::colorToString( mGridFrameFillColor1 ) );
+  mapGridElem.setAttribute( QStringLiteral( "frameFillColor2" ), QgsColorUtils::colorToString( mGridFrameFillColor2 ) );
   mapGridElem.setAttribute( QStringLiteral( "leftFrameDivisions" ), mLeftFrameDivisions );
   mapGridElem.setAttribute( QStringLiteral( "rightFrameDivisions" ), mRightFrameDivisions );
   mapGridElem.setAttribute( QStringLiteral( "topFrameDivisions" ), mTopFrameDivisions );
@@ -347,9 +347,9 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridFrameWidth = itemElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble();
   mGridFrameMargin = itemElem.attribute( QStringLiteral( "gridFrameMargin" ), QStringLiteral( "0.0" ) ).toDouble();
   mGridFramePenThickness = itemElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.3" ) ).toDouble();
-  mGridFramePenColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
-  mGridFrameFillColor1 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
-  mGridFrameFillColor2 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor2" ), QStringLiteral( "0,0,0,255" ) ) );
+  mGridFramePenColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
+  mGridFrameFillColor1 = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
+  mGridFrameFillColor2 = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "frameFillColor2" ), QStringLiteral( "0,0,0,255" ) ) );
   mLeftFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "leftFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
   mRightFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "rightFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
   mTopFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "topFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
@@ -431,7 +431,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
     mAnnotationFormat.setFont( font );
     mAnnotationFormat.setSize( font.pointSizeF() );
     mAnnotationFormat.setSizeUnit( Qgis::RenderUnit::Points );
-    mAnnotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) ) );
+    mAnnotationFormat.setColor( QgsColorUtils::colorFromString( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) ) );
   }
 
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();
@@ -656,7 +656,6 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
   p->setClipRect( mMap->mapRectFromScene( mMap->sceneBoundingRect() ).adjusted( -10, -10, 10, 10 ) );
 #endif
 
-
   if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame || mShowGridAnnotation )
     updateGridLinesAnnotationsPositions();
 
@@ -809,7 +808,6 @@ void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, GridExtension *extension 
     p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   }
 
-
   switch ( mGridFrameStyle )
   {
     case QgsLayoutItemMapGrid::Zebra:
@@ -933,7 +931,6 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, BorderSide bor
         pos.insert( annot.position.x(), it->coordinate );
     }
   }
-
 
   if ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right )
   {
@@ -1520,7 +1517,6 @@ int QgsLayoutItemMapGrid::xGridLines() const
     return 1;
   }
 
-
   QPolygonF mapPolygon = mMap->transformedMapPolygon();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
   double gridIntervalY = mEvaluatedIntervalY;
@@ -1610,7 +1606,6 @@ int QgsLayoutItemMapGrid::xGridLines() const
     }
     currentLevel += gridIntervalY;
   }
-
 
   return 0;
 }
@@ -1911,7 +1906,6 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( QgsLayoutItemMapGrid::Annot
          || ( mode == QgsLayoutItemMapGrid::LongitudeOnly && coordinate == QgsLayoutItemMapGrid::Longitude );
 }
 
-
 QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD( QString ddValue, QgsLayoutItemMapGrid::DisplayMode defValue )
 {
   if ( ddValue.compare( QLatin1String( "x_only" ), Qt::CaseInsensitive ) == 0 )
@@ -1925,7 +1919,6 @@ QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD( QString ddVal
   else
     return defValue;
 }
-
 
 void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 {
@@ -2582,7 +2575,6 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
     const QPolygonF mapPolygon = mMap->transformedMapPolygon();
     const QRectF mbr = mapPolygon.boundingRect();
     const QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
-
 
     if ( mCRS.isGeographic() )
     {

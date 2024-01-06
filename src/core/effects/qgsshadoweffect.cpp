@@ -18,6 +18,7 @@
 #include "qgsshadoweffect.h"
 #include "qgsimageoperation.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
@@ -111,7 +112,7 @@ QVariantMap QgsShadowEffect::properties() const
   props.insert( QStringLiteral( "offset_distance" ), QString::number( mOffsetDist ) );
   props.insert( QStringLiteral( "offset_unit" ), QgsUnitTypes::encodeUnit( mOffsetUnit ) );
   props.insert( QStringLiteral( "offset_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  props.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  props.insert( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
   return props;
 }
 
@@ -167,7 +168,7 @@ void QgsShadowEffect::readProperties( const QVariantMap &props )
   mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offset_unit_scale" ) ).toString() );
   if ( props.contains( QStringLiteral( "color" ) ) )
   {
-    mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "color" ) ).toString() );
+    mColor = QgsColorUtils::colorFromString( props.value( QStringLiteral( "color" ) ).toString() );
   }
 }
 
@@ -183,7 +184,6 @@ QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext
   spread += blurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
 }
-
 
 //
 // QgsDropShadowEffect
@@ -216,7 +216,6 @@ bool QgsDropShadowEffect::exteriorShadow() const
 {
   return true;
 }
-
 
 //
 // QgsInnerShadowEffect

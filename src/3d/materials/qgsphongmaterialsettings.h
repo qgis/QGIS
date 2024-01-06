@@ -88,8 +88,6 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      */
     void setOpacity( float opacity ) { mOpacity = opacity; }
 
-
-
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
@@ -124,8 +122,8 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     float mOpacity = 1.0f;
 
     //! Constructs a material from shader files
+    Qt3DRender::QMaterial *constantColorMaterial( const QgsMaterialContext &context ) const;
     Qt3DRender::QMaterial *dataDefinedMaterial() const;
 };
-
 
 #endif // QGSPHONGMATERIALSETTINGS_H

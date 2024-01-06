@@ -21,6 +21,8 @@
 #include "qgslogger.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
                                         int nLayers )
@@ -71,7 +73,6 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
   return fi.exists();
 }
 
-
 QString QgsGrassUtils::htmlBrowserPath()
 {
   return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser"  + QString::number( QgsGrass::versionMajor() );
@@ -99,7 +100,7 @@ QString QgsGrassElementDialog::getItem( QString element,
   layout->addWidget( mLabel );
 
   mLineEdit = new QLineEdit( text );
-  QRegExp rx;
+  QRegularExpression rx;
   if ( element == QLatin1String( "vector" ) )
   {
     rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
@@ -108,7 +109,7 @@ QString QgsGrassElementDialog::getItem( QString element,
   {
     rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
   }
-  QRegExpValidator *val = new QRegExpValidator( rx, this );
+  QRegularExpressionValidator *val = new QRegularExpressionValidator( rx, this );
   mLineEdit->setValidator( val );
 
   layout->addWidget( mLineEdit );

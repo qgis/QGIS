@@ -17,7 +17,7 @@
 
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelcomment.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 
 ///@cond NOT_STABLE
 
@@ -114,7 +114,7 @@ void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
   map.insert( QStringLiteral( "component_height" ), mSize.height() );
   map.insert( QStringLiteral( "parameters_collapsed" ), mTopEdgeLinksCollapsed );
   map.insert( QStringLiteral( "outputs_collapsed" ), mBottomEdgeLinksCollapsed );
-  map.insert( QStringLiteral( "color" ), mColor.isValid() ? QgsSymbolLayerUtils::encodeColor( mColor ) : QString() );
+  map.insert( QStringLiteral( "color" ), mColor.isValid() ? QgsColorUtils::colorToString( mColor ) : QString() );
   const QgsProcessingModelComment *thisComment = comment();
   if ( thisComment )
     map.insert( QStringLiteral( "comment" ), thisComment->toVariant() );
@@ -129,7 +129,7 @@ void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &ma
   mDescription = map.value( QStringLiteral( "component_description" ) ).toString();
   mSize.setWidth( map.value( QStringLiteral( "component_width" ), QString::number( DEFAULT_COMPONENT_WIDTH ) ).toDouble() );
   mSize.setHeight( map.value( QStringLiteral( "component_height" ), QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
-  mColor = map.value( QStringLiteral( "color" ) ).toString().isEmpty() ? QColor() : QgsSymbolLayerUtils::decodeColor( map.value( QStringLiteral( "color" ) ).toString() );
+  mColor = map.value( QStringLiteral( "color" ) ).toString().isEmpty() ? QColor() : QgsColorUtils::colorFromString( map.value( QStringLiteral( "color" ) ).toString() );
   mTopEdgeLinksCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
   mBottomEdgeLinksCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
   QgsProcessingModelComment *thisComment = comment();

@@ -52,6 +52,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgscolorutils.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -297,7 +298,6 @@ QPolygonF QgsSymbol::_getLineString2d( QgsRenderContext &context, const QgsCurve
   return pts;
 }
 
-
 QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
 {
   if ( curve.is3D() )
@@ -473,7 +473,6 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
 
   return out;
 }
-
 
 QPolygonF QgsSymbol::_getPolygonRing2d( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
 {
@@ -778,7 +777,6 @@ bool QgsSymbol::insertSymbolLayer( int index, QgsSymbolLayer *layer )
   return true;
 }
 
-
 bool QgsSymbol::appendSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer || !layer->isCompatibleWithSymbol( this ) )
@@ -787,7 +785,6 @@ bool QgsSymbol::appendSymbolLayer( QgsSymbolLayer *layer )
   mLayers.append( layer );
   return true;
 }
-
 
 bool QgsSymbol::deleteSymbolLayer( int index )
 {
@@ -799,7 +796,6 @@ bool QgsSymbol::deleteSymbolLayer( int index )
   return true;
 }
 
-
 QgsSymbolLayer *QgsSymbol::takeSymbolLayer( int index )
 {
   if ( index < 0 || index >= mLayers.count() )
@@ -807,7 +803,6 @@ QgsSymbolLayer *QgsSymbol::takeSymbolLayer( int index )
 
   return mLayers.takeAt( index );
 }
-
 
 bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
 {
@@ -823,7 +818,6 @@ bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
   mLayers[index] = layer; // set new layer
   return true;
 }
-
 
 void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
@@ -1059,7 +1053,6 @@ QImage QgsSymbol::asImage( QSize size, QgsRenderContext *customContext )
   return image;
 }
 
-
 QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext, Qgis::SymbolPreviewFlags flags, const QgsScreenProperties &screen )
 {
   const double devicePixelRatio = screen.isValid() ? screen.devicePixelRatio() : 1;
@@ -1138,7 +1131,7 @@ QString QgsSymbol::dump() const
     default:
       Q_ASSERT( false && "unknown symbol type" );
   }
-  QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerUtils::encodeColor( color() ) );
+  QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsColorUtils::colorToString( color() ) );
 
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {

@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsdiagramrenderer.h"
 
+#include "qgscolorutils.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
@@ -295,7 +296,6 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   categoryColors.clear();
   const QDomNodeList attributes = elem.elementsByTagName( QStringLiteral( "attribute" ) );
 
-
   if ( attributes.length() > 0 )
   {
     for ( int i = 0; i < attributes.size(); i++ )
@@ -474,9 +474,9 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
 
   if ( properties.hasActiveProperties() )
   {
-    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.backgroundColor ) );
+    c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.backgroundColor ) );
     s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::BackgroundColor, c.expressionContext(), s.backgroundColor );
-    c.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( s.penColor ) );
+    c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.penColor ) );
     s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::StrokeColor, c.expressionContext(), s.penColor );
     c.expressionContext().setOriginalValueVariable( s.penWidth );
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::StrokeWidth, c.expressionContext(), s.penWidth );
@@ -641,7 +641,6 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
   _writeXml( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
 }
-
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
 {
