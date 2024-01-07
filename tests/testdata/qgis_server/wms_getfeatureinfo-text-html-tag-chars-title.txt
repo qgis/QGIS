@@ -34,11 +34,19 @@ Content-Type: text/html; charset=utf-8
 </head>
 
 <body>
-  <div class='layer-title'>requires_warped_vrt</div>
+  <div class='layer-title'>&lt;title&gt;</div>
   <table>
     <tr>
-      <th>Band 1</th>
-      <td>0</td>
+      <th>id</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td>three</td>
+    </tr>
+    <tr>
+      <th>&lt;name&gt;</th>
+      <td>&lt;three&gt;</td>
     </tr>
   </table>
 </body>

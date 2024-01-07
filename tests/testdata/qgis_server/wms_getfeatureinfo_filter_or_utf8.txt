@@ -1,10 +1,10 @@
-Content-Length: 943
+*****
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
  <BoundingBox maxy="5606017.87425818" maxx="913214.67407005" miny="5606011.45647302" CRS="EPSG:3857" minx="913204.91280263"/>
- <Layer name="testlayer èé">
+ <Layer title="A test vector layer" name="testlayer èé">
   <Feature id="1">
    <Attribute value="2" name="id"/>
    <Attribute value="two" name="name"/>

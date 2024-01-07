@@ -1,9 +1,9 @@
-Content-Length: 1400
+*****
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
- <Layer name="layer4">
+ <Layer title="layer4" name="layer4">
   <Feature id="1">
    <Attribute value="one èé" name="utf8nameè"/>
    <Attribute value="Id no. 1 value" name="j_value_id"/>
