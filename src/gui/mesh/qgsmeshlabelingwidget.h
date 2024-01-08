@@ -2,8 +2,8 @@
     qgsmeshlabelingwidget.h
     ---------------------
     begin                : November 2023
-    copyright            : (C) 2023 by LutraConsulting
-    email                : info at lutraconsulting dot co dot uk
+    copyright            : (C) 2023 by Alexander Bruy
+    email                : alexander dot bruy at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
