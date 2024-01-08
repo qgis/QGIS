@@ -17,6 +17,7 @@ from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
     QgsAbstractMeshLayerLabeling,
     QgsCoordinateReferenceSystem,
+    QgsFontUtils,
     QgsMapSettings,
     QgsMeshLayer,
     QgsMeshLayerSimpleLabeling
@@ -43,12 +44,18 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
         ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
-        ms.setExtent(ml.extent())
+        ms.setExtent(ml.extent().buffered(200))
         ms.setLayers([ml])
 
         s = QgsAbstractMeshLayerLabeling.defaultSettingsForLayer(ml)
-        s.fieldName = "'Vertex id: ' || $vertex_index"
+        s.fieldName = "$vertex_index"
         s.isExpression = True
+        f = s.format()
+        f.setFont(QgsFontUtils.getStandardTestFont('Bold'))
+        f.setSize(20)
+        f.buffer().setEnabled(True)
+        s.setFormat(f)
+
         ml.setLabelsEnabled(True)
         # Label on vertices:
         ml.setLabeling(QgsMeshLayerSimpleLabeling(s, False))
@@ -80,12 +87,18 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
         ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
-        ms.setExtent(ml.extent())
+        ms.setExtent(ml.extent().buffered(200))
         ms.setLayers([ml])
 
         s = QgsAbstractMeshLayerLabeling.defaultSettingsForLayer(ml)
-        s.fieldName = "'Face id: ' || $face_index || ' ( ' || round($face_area) || 'sqm )'"
+        s.fieldName = "$face_index"
         s.isExpression = True
+        f = s.format()
+        f.setFont(QgsFontUtils.getStandardTestFont('Bold'))
+        f.setSize(20)
+        f.buffer().setEnabled(True)
+        s.setFormat(f)
+
         ml.setLabelsEnabled(True)
         # Label on faces:
         ml.setLabeling(QgsMeshLayerSimpleLabeling(s, True))
