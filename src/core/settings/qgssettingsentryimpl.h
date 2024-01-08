@@ -18,7 +18,6 @@
 
 #include "qgssettingsentry.h"
 
-
 /**
  * \class QgsSettingsEntryVariant
  * \ingroup core
@@ -782,6 +781,7 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
     QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
   private:
+
     bool checkValuePrivate( const QColor &value ) const override SIP_FORCE;
     bool mAllowAlpha = true;
 };

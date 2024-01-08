@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgssettingsentryimpl.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgssettingsproxy.h"
 
 Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 {
@@ -222,7 +222,6 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
   return mDisplayHintDecimals;
 }
 
-
 QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const
 {
   return value.value<QColor>();
@@ -246,21 +245,21 @@ bool QgsSettingsEntryColor::checkValuePrivate( const QColor &value ) const
 
 bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey, bool removeSettingAtKey ) const
 {
-  QgsSettings settings;
-  if ( settings.contains( redKey ) && settings.contains( greenKey ) && settings.contains( blueKey ) && ( alphaKey.isNull() || settings.contains( alphaKey ) ) )
+  auto settings = QgsSettings::get();
+  if ( settings->contains( redKey ) && settings->contains( greenKey ) && settings->contains( blueKey ) && ( alphaKey.isNull() || settings->contains( alphaKey ) ) )
   {
     QVariant oldValue;
     if ( alphaKey.isNull() )
-      oldValue = QColor( settings.value( redKey ).toInt(), settings.value( greenKey ).toInt(), settings.value( blueKey ).toInt() );
+      oldValue = QColor( settings->value( redKey ).toInt(), settings->value( greenKey ).toInt(), settings->value( blueKey ).toInt() );
     else
-      oldValue = QColor( settings.value( redKey ).toInt(), settings.value( greenKey ).toInt(), settings.value( blueKey ).toInt(), settings.value( alphaKey ).toInt() );
+      oldValue = QColor( settings->value( redKey ).toInt(), settings->value( greenKey ).toInt(), settings->value( blueKey ).toInt(), settings->value( alphaKey ).toInt() );
 
     if ( removeSettingAtKey )
     {
-      settings.remove( redKey );
-      settings.remove( greenKey );
-      settings.remove( blueKey );
-      settings.remove( alphaKey );
+      settings->remove( redKey );
+      settings->remove( greenKey );
+      settings->remove( blueKey );
+      settings->remove( alphaKey );
     }
 
     setVariantValue( oldValue );
@@ -271,13 +270,13 @@ bool QgsSettingsEntryColor::copyValueFromKeys( const QString &redKey, const QStr
 
 void QgsSettingsEntryColor::copyValueToKeys( const QString &redKey, const QString &greenKey, const QString &blueKey, const QString &alphaKey ) const
 {
-  QgsSettings settings;
+  auto settings = QgsSettings::get();
   const QColor color = value();
-  settings.setValue( redKey, color.red() );
-  settings.setValue( greenKey, color.green() );
-  settings.setValue( blueKey, color.blue() );
+  settings->setValue( redKey, color.red() );
+  settings->setValue( greenKey, color.green() );
+  settings->setValue( blueKey, color.blue() );
   if ( !alphaKey.isNull() )
-    settings.setValue( alphaKey, color.alpha() );
+    settings->setValue( alphaKey, color.alpha() );
 }
 
 QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const

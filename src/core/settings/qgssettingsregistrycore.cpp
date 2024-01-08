@@ -32,6 +32,7 @@
 #include "qgsgpsdetector.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgssettingsproxy.h"
 
 #include "pal.h"
 
@@ -125,6 +126,14 @@ QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
 
 void QgsSettingsRegistryCore::migrateOldSettings()
 {
+  // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive
+  // as it involves writing new values to the underlying ini files.
+  // Accordingly we place a hold on constructing new QgsSettings objects for the duration of the method,
+  // so that only a single QgsSettings object is created and destroyed at the end of this method.
+  QgsSettings::holdFlush();
+
+  auto settings = QgsSettings::get();
+
   // copy values from old keys to new keys and delete the old ones
   // for backward compatibility, old keys are recreated when the registry gets deleted
 
@@ -157,13 +166,13 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   // handle bad migration - Fix profiles for old QGIS versions (restore the Map/scales key on windows)
   // TODO: Remove this from QGIS 3.36
   // PR Link: https://github.com/qgis/QGIS/pull/52580
-  if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
+  if ( settings->contains( QStringLiteral( "Map/scales" ) ) )
   {
-    const QStringList oldScales = QgsSettings().value( QStringLiteral( "Map/scales" ) ).toStringList();
+    const QStringList oldScales = settings->value( QStringLiteral( "Map/scales" ) ).toStringList();
     if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
-      QgsSettings().setValue( QStringLiteral( "Map/scales" ), oldScales.join( ',' ) );
+      settings->setValue( QStringLiteral( "Map/scales" ), oldScales.join( ',' ) );
     else
-      QgsSettings().setValue( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() );
+      settings->setValue( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() );
   }
 
   // migrate only one way for map scales
@@ -171,7 +180,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     // Handle bad migration. Prefer map/scales over Map/scales
     // TODO: Discard this part starting from QGIS 3.36
-    const QStringList oldScales = QgsSettings().value( QStringLiteral( "map/scales" ) ).toStringList();
+    const QStringList oldScales = settings->value( QStringLiteral( "map/scales" ) ).toStringList();
     if ( ! oldScales.isEmpty() && !oldScales.at( 0 ).isEmpty() )
     {
       // If migration has failed before (QGIS < 3.30.2), all scales might be
@@ -184,9 +193,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       settingsMapScales->setValue( actualScales );
     }
     // TODO: keep only this part of the migration starting from QGIS 3.36
-    else if ( QgsSettings().contains( QStringLiteral( "Map/scales" ) ) )
+    else if ( settings->contains( QStringLiteral( "Map/scales" ) ) )
     {
-      settingsMapScales->setValue( QgsSettings().value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
+      settingsMapScales->setValue( settings->value( QStringLiteral( "Map/scales" ) ).toString().split( ',' ) );
     }
   }
 
@@ -219,9 +228,9 @@ void QgsSettingsRegistryCore::migrateOldSettings()
 
   // locator filters - added in 3.30
   {
-    QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "gui/locator_filters" ) );
-    const QStringList childKeys = settings.childKeys();
+    settings->beginGroup( QStringLiteral( "gui/locator_filters" ) );
+    const QStringList childKeys = settings->childKeys();
+    settings->endGroup();
     for ( const QString &childKey : childKeys )
     {
       if ( childKey.startsWith( QLatin1String( "enabled" ) ) )
@@ -353,7 +362,7 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   {
     if ( QgsBabelFormatRegistry::sTreeBabelDevices->items().count() == 0 )
     {
-      const QStringList deviceNames = QgsSettings().value( QStringLiteral( "/Plugin-GPS/devices/deviceList" ) ).toStringList();
+      const QStringList deviceNames = settings->value( QStringLiteral( "/Plugin-GPS/devices/deviceList" ) ).toStringList();
 
       for ( const QString &device : deviceNames )
       {
@@ -366,11 +375,19 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
+  QgsSettings::releaseFlush();
 }
 
 // TODO QGIS 4.0: Remove
 void QgsSettingsRegistryCore::backwardCompatibility()
 {
+  // This method triggers a ton of QgsSettings constructions and destructions, which is very expensive
+  // as it involves writing new values to the underlying ini files.
+  // Accordingly we place a hold on constructing new QgsSettings objects for the duration of the method,
+  // so that only a single QgsSettings object is created and destroyed at the end of this method.
+  QgsSettings::holdFlush();
+  auto settings = QgsSettings::get();
+
   // single settings - added in 3.30
   QgsLayout::settingsSearchPathForTemplates->copyValueToKey( QStringLiteral( "core/Layout/searchPathsForTemplates" ) );
 
@@ -557,7 +574,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
   // babel devices settings - added in 3.30
   {
     const QStringList devices = QgsBabelFormatRegistry::sTreeBabelDevices->items();
-    QgsSettings().setValue( QStringLiteral( "/Plugin-GPS/devices/deviceList" ), devices );
+    settings->setValue( QStringLiteral( "/Plugin-GPS/devices/deviceList" ), devices );
     for ( const QString &device : devices )
     {
       QgsBabelFormatRegistry::settingsBabelWptDownload->copyValueToKey( QStringLiteral( "/Plugin-GPS/devices/%1/wptdownload" ), {device} );
@@ -568,5 +585,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       QgsBabelFormatRegistry::settingsBabelTrkUpload->copyValueToKey( QStringLiteral( "/Plugin-GPS/devices/%1/trkupload" ), {device} );
     }
   }
+
+  QgsSettings::releaseFlush();
 }
 
