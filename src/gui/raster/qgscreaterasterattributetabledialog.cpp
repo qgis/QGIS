@@ -143,7 +143,7 @@ void QgsCreateRasterAttributeTableDialog::accept()
     if ( storageIsFile )
     {
       const QString destinationPath { filePath() };
-      if ( QFile::exists( destinationPath ) && QMessageBox::warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+      if ( ! QFile::exists( destinationPath ) || QMessageBox::warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
       {
         success = rat->writeToFile( destinationPath, &errorMessage );
         if ( ! success )
