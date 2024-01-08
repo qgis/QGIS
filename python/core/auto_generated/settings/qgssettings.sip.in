@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSettings : QObject
 {
 %Docstring(signature="appended")
@@ -286,6 +287,10 @@ Returns the sanitized and prefixed key
 %Docstring
 Removes all entries in the user settings
 %End
+
+
+
+
 
 };
 

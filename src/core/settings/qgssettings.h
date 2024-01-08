@@ -25,6 +25,8 @@
 #include "qgslogger.h"
 #include "qgssettingstreenode.h"
 
+class QgsSettingsProxy;
+
 /**
  * \ingroup core
  * \class QgsSettings
@@ -438,6 +440,65 @@ class CORE_EXPORT QgsSettings : public QObject
     QString prefixedKey( const QString &key, QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
     void clear();
+
+    /**
+     * Temporarily places a hold on flushing QgsSettings objects and writing
+     * new values to the underlying ini files.
+     *
+     * This can be used in code which access multiple settings to avoid creation and
+     * destruction of many QgsSettings objects for each in turn. This can be
+     * a VERY expensive operation due to flushing of new values to disk.
+     *
+     * \warning This method ONLY affects access to the settings from the current thread!
+     *
+     * \warning A corresponding call to releaseFlush() MUST be made from the SAME thread.
+     *
+     * \see releaseFlush()
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.36
+     */
+    static void holdFlush() SIP_SKIP;
+
+    /**
+     * Releases a previously made hold on flushing QgsSettings objects and writing
+     * new values to the underlying ini files.
+     *
+     * \warning This method ONLY affects access to the settings from the current thread!
+     *
+     * \warning This must ALWAYS be called after a corresponding call to holdFlush() and MUST be made from the SAME thread.
+     *
+     * \see holdFlush()
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.36
+     */
+    static void releaseFlush() SIP_SKIP;
+
+    /**
+     * Returns a proxy for a QgsSettings object.
+     *
+     * This either directly constructs a QgsSettings object, or if a
+     * previous call to holdFlush() has been made then the thread local
+     * QgsSettings object will be used.
+     *
+     * \warning ALWAYS use this function to retrieve a QgsSettings object
+     * for entries, NEVER create one manually!
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.36
+     */
+    static QgsSettingsProxy get() SIP_SKIP;
+
+    /**
+     * Thread local QgsSettings storage.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.36
+     */
+    static thread_local QgsSettings *sThreadSettings SIP_SKIP;
 
   private:
     void init();
