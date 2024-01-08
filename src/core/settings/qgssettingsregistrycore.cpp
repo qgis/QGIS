@@ -465,8 +465,7 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {service.toLower()} );
       if ( connections.count() == 0 )
         continue;
-      QgsSettings settings;
-      settings.beginGroup( QStringLiteral( "qgis/connections-%1" ).arg( service.toLower() ) );
+
       for ( const QString &connection : connections )
       {
         QgsOwsConnection::settingsUrl->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/url" ), {service.toLower(), connection} );
@@ -484,29 +483,27 @@ void QgsSettingsRegistryCore::backwardCompatibility()
         QgsOwsConnection::settingsIgnoreAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/ignoreAxisOrientation" ), {service.toLower(), connection} );
         QgsOwsConnection::settingsInvertAxisOrientation->copyValueToKey( QStringLiteral( "qgis/connections-%1/%2/invertAxisOrientation" ), {service.toLower(), connection} );
 
-        Q_NOWARN_DEPRECATED_PUSH
-        settings.beginGroup( service );
         if ( QgsOwsConnection::settingsHeaders->exists( connection ) )
-          QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) ).updateSettings( settings );
-        settings.endGroup();
-        Q_NOWARN_DEPRECATED_POP
+        {
+          Q_NOWARN_DEPRECATED_PUSH
+          const QgsHttpHeaders headers = QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {service.toLower(), service} ) );
+          settings->beginGroup( QStringLiteral( "qgis/connections-%1/%2" ).arg( service.toLower(), connection ) );
+          headers.updateSettings( *settings );
+          settings->endGroup();
+          Q_NOWARN_DEPRECATED_POP
+        }
 
         QgsOwsConnection::settingsUsername->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/username" ), {service, connection} );
         QgsOwsConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/password" ), {service, connection} );
         QgsOwsConnection::settingsAuthCfg->copyValueToKey( QStringLiteral( "qgis/connections/%1/%2/authcfg" ), {service, connection} );
-
-        if ( settings.contains( QStringLiteral( "selected" ) ) )
-          QgsOwsConnection::sTreeOwsConnections->setSelectedItem( settings.value( QStringLiteral( "selected" ) ).toString(), {service.toLower()} );
       }
     }
   }
 
-  // Vector tile - added in 3.30
+// Vector tile - added in 3.30
   {
-    QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "qgis/connections-vector-tile" ) );
-
     const QStringList connections = QgsVectorTileProviderConnection::sTreeConnectionVectorTile->items();
+
     for ( const QString &connection : connections )
     {
       // do not overwrite already set setting
@@ -518,19 +515,20 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       QgsVectorTileProviderConnection::settingsPassword->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/password" ), {connection} );
       QgsVectorTileProviderConnection::settingsStyleUrl->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/styleUrl" ), {connection} );
       QgsVectorTileProviderConnection::settingsServiceType->copyValueToKey( QStringLiteral( "qgis/connections-vector-tile/%1/serviceType" ), {connection} );
-      Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( connection );
+
       if ( QgsVectorTileProviderConnection::settingsHeaders->exists( connection ) )
-        QgsHttpHeaders( QgsVectorTileProviderConnection::settingsHeaders->value( connection ) ).updateSettings( settings );
-      settings.endGroup();
-      Q_NOWARN_DEPRECATED_POP
+      {
+        Q_NOWARN_DEPRECATED_PUSH        const QgsHttpHeaders headers = QgsHttpHeaders( QgsVectorTileProviderConnection::settingsHeaders->value( connection ) );
+        settings->beginGroup( QStringLiteral( "qgis/connections-vector-tile/%1" ).arg( connection ) );
+        headers.updateSettings( *settings );
+        settings->endGroup();
+        Q_NOWARN_DEPRECATED_POP
+      }
     }
   }
 
   // xyz - added in 3.30
   {
-    QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
     const QStringList connections = QgsXyzConnectionSettings::sTreeXyzConnections->items();
     for ( const QString &connection : connections )
     {
@@ -543,20 +541,21 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       QgsXyzConnectionSettings::settingsTilePixelRatio->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/tilePixelRatio" ), {connection} );
       QgsXyzConnectionSettings::settingsHidden->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/hidden" ), {connection} );
       QgsXyzConnectionSettings::settingsInterpretation->copyValueToKey( QStringLiteral( "qgis/connections-xyz/%1/interpretation" ), {connection} );
-      Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( connection );
+
       if ( QgsXyzConnectionSettings::settingsHeaders->exists( connection ) )
-        QgsHttpHeaders( QgsXyzConnectionSettings::settingsHeaders->value( connection ) ).updateSettings( settings );
-      settings.endGroup();
-      Q_NOWARN_DEPRECATED_POP
+      {
+        Q_NOWARN_DEPRECATED_PUSH
+        const QgsHttpHeaders headers = QgsHttpHeaders( QgsXyzConnectionSettings::settingsHeaders->value( connection ) );
+        settings->beginGroup( QStringLiteral( "qgis/connections-xyz/%1" ).arg( connection ) );
+        headers.updateSettings( *settings );
+        settings->endGroup();
+        Q_NOWARN_DEPRECATED_POP
+      }
     }
   }
 
   // Arcgis - added in 3.30
   {
-    QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "qgis/connections-arcgisfeatureserver" ) );
-
     const QStringList connections = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
     for ( const QString &connection : connections )
     {
@@ -567,12 +566,18 @@ void QgsSettingsRegistryCore::backwardCompatibility()
       QgsArcGisConnectionSettings::settingsPassword->copyValueToKey( QStringLiteral( "qgis/ARCGISFEATURESERVER/%1/password" ), {connection} );
       QgsArcGisConnectionSettings::settingsContentEndpoint->copyValueToKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/content_endpoint" ), {connection} );
       QgsArcGisConnectionSettings::settingsCommunityEndpoint->copyValueToKey( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1/community_endpoint" ), {connection} );
-      Q_NOWARN_DEPRECATED_PUSH
-      settings.beginGroup( connection );
       if ( QgsArcGisConnectionSettings::settingsHeaders->exists( connection ) )
-        QgsHttpHeaders( QgsArcGisConnectionSettings::settingsHeaders->value( connection ) ).updateSettings( settings );
-      settings.endGroup();
-      Q_NOWARN_DEPRECATED_POP
+      {
+        if ( QgsArcGisConnectionSettings::settingsHeaders->exists( connection ) )
+        {
+          Q_NOWARN_DEPRECATED_PUSH
+          const QgsHttpHeaders headers = QgsHttpHeaders( QgsArcGisConnectionSettings::settingsHeaders->value( connection ) );
+          settings->beginGroup( QStringLiteral( "qgis/connections-arcgisfeatureserver/%1" ).arg( connection ) );
+          headers.updateSettings( *settings );
+          settings->endGroup();
+          Q_NOWARN_DEPRECATED_POP
+        }
+      }
     }
   }
 
