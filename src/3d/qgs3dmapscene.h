@@ -204,8 +204,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
-    //! Emitted when the number of terrain's pending jobs changes
-    void terrainPendingJobsCountChanged();
 
     /**
      * Emitted when the total number of pending jobs changes

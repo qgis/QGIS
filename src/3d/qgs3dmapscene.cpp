@@ -507,7 +507,6 @@ void Qgs3DMapScene::createTerrainDeferred()
     mSceneEntities << mTerrain;
 
     connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
-    connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
   }
   else
   {
