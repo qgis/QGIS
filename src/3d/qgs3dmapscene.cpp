@@ -369,11 +369,12 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   if ( forceUpdate )
     QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
+  Qgs3DMapSceneEntity::SceneContext sceneContext = buildSceneContext();
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
     if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
     {
-      entity->handleSceneUpdate( buildSceneContext() );
+      entity->handleSceneUpdate( sceneContext );
       if ( entity->hasReachedGpuMemoryLimit() )
         emit gpuMemoryLimitReached();
     }
