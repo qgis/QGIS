@@ -709,13 +709,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
-
-  if ( layer->type() == Qgis::LayerType::Mesh )
+  else if ( layer->type() == Qgis::LayerType::Mesh )
   {
     connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
-
-  if ( layer->type() == Qgis::LayerType::PointCloud )
+  else if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
@@ -744,13 +742,11 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     disconnect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     mModelVectorLayers.removeAll( layer );
   }
-
-  if ( layer->type() == Qgis::LayerType::Mesh )
+  else if ( layer->type() == Qgis::LayerType::Mesh )
   {
     disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
-
-  if ( layer->type() == Qgis::LayerType::PointCloud )
+  else if ( layer->type() == Qgis::LayerType::PointCloud )
   {
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
