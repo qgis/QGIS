@@ -9,8 +9,9 @@ __author__ = 'Vincent Cloares'
 __date__ = '2021-04'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
     QgsColorRampShader,
@@ -22,40 +23,22 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMapSettings,
     QgsProperty,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsStyle,
     QgsSymbolLayer,
 )
-from qgis.testing import unittest
+from qgis.testing import QgisTestCase
 
 
-class TestQgsLineSymbolLayers(unittest.TestCase):
+class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsInterpolatedLineSymbolLayer Tests</h1>\n"
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_interpolatedline"
 
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbollayer_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_interpolatedline")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 0)
-        self.report += checker.report()
-        print(self.report)
-        return result
-
-    def renderImage(self, interpolated_width, interpolated_color, image_name):
+    def render_image(self,
+                     interpolated_width: QgsInterpolatedLineWidth,
+                     interpolated_color: QgsInterpolatedLineColor) -> QImage:
         layer = QgsInterpolatedLineSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
@@ -93,10 +76,13 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         symbol.stopRender(context)
         painter.end()
 
-        self.assertTrue(self.imageCheck(image_name, image_name, image))
+        return image
 
     def testFixedColorFixedWidth(self):
-        """ test that rendering a interpolated line with fixed width and fixed color"""
+        """
+        Test that rendering an interpolated line with fixed width and fixed
+        color
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -106,10 +92,26 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(QColor(255, 0, 0))
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
 
-        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_1')
+        rendered_image = self.render_image(
+            interpolated_width,
+            interpolated_color
+        )
+
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_1',
+                'interpolatedlinesymbollayer_1',
+                rendered_image,
+                'expected_interpolatedlinesymbollayer_1',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
     def testRenderNoFeature(self):
-        """ test that rendering a interpolated line outside of a map render works"""
+        """
+        Test that rendering an interpolated line outside of a map render works
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -143,10 +145,22 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         symbol.stopRender(context)
         painter.end()
 
-        self.assertTrue(self.imageCheck('interpolatedlinesymbollayer_no_feature', 'interpolatedlinesymbollayer_no_feature', image))
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_no_feature',
+                'interpolatedlinesymbollayer_no_feature',
+                image,
+                'expected_interpolatedlinesymbollayer_no_feature',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
     def testVaryingColorFixedWidth(self):
-        """ test that rendering a interpolated line with fixed width and varying color"""
+        """
+        Test rendering an interpolated line with fixed width
+        and varying color
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -159,10 +173,27 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(color_ramp)
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
 
-        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_2')
+        rendered_image = self.render_image(
+            interpolated_width,
+            interpolated_color
+        )
+
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_2',
+                'interpolatedlinesymbollayer_2',
+                rendered_image,
+                'expected_interpolatedlinesymbollayer_2',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
     def testFixedColorVaryingWidth(self):
-        """ test that rendering a interpolated line with varying width and fixed color"""
+        """
+        Test rendering an interpolated line with varying width and
+        fixed color
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -175,10 +206,27 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(QColor(0, 255, 0))
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
 
-        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_3')
+        rendered_image = self.render_image(
+            interpolated_width,
+            interpolated_color
+        )
+
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_3',
+                'interpolatedlinesymbollayer_3',
+                rendered_image,
+                'expected_interpolatedlinesymbollayer_3',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
     def testVaryingColorVaryingWidth(self):
-        """ test that rendering a interpolated line with varying width and varying color"""
+        """
+        Test rendering an interpolated line with varying width and
+        varying color
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -194,10 +242,27 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(color_ramp)
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
 
-        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_4')
+        rendered_image = self.render_image(
+            interpolated_width,
+            interpolated_color
+        )
+
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_4',
+                'interpolatedlinesymbollayer_4',
+                rendered_image,
+                'expected_interpolatedlinesymbollayer_4',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
     def testVaryingColorVaryingWidthDiscrete(self):
-        """ test that rendering a interpolated line with varying width and varying color with discrete color ramp """
+        """
+        Test rendering an interpolated line with varying width and
+        varying color with discrete color ramp
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -213,10 +278,27 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(color_ramp)
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
 
-        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_5')
+        rendered_image = self.render_image(
+            interpolated_width,
+            interpolated_color
+        )
+
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_5',
+                'interpolatedlinesymbollayer_5',
+                rendered_image,
+                'expected_interpolatedlinesymbollayer_5',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
     def testVaryingColorVaryingWidthExact(self):
-        """ test that rendering a interpolated line with varying width and varying color with exact color ramp """
+        """
+        Test rendering an interpolated line with varying width
+        and varying color with exact color ramp
+        """
 
         interpolated_width = QgsInterpolatedLineWidth()
         interpolated_color = QgsInterpolatedLineColor()
@@ -232,7 +314,21 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         interpolated_color.setColor(color_ramp)
         interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
 
-        self.renderImage(interpolated_width, interpolated_color, 'interpolatedlinesymbollayer_6')
+        rendered_image = self.render_image(
+            interpolated_width,
+            interpolated_color
+        )
+
+        self.assertTrue(
+            self.image_check(
+                'interpolatedlinesymbollayer_6',
+                'interpolatedlinesymbollayer_6',
+                rendered_image,
+                'expected_interpolatedlinesymbollayer_6',
+                color_tolerance=2,
+                allowed_mismatch=0
+            )
+        )
 
 
 if __name__ == '__main__':
