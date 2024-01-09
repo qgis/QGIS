@@ -105,11 +105,20 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
                                     tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
   mActionAnim->setCheckable( true );
 
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
-                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage );
+  // Export Menu
+  mExportMenu = new QMenu( this );
 
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ),
-                      tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasWidget::exportScene );
+  mActionExport = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingExport.svg" ) ), tr( "Export" ), this );
+  mActionExport->setMenu( mExportMenu );
+  toolBar->addAction( mActionExport );
+  QToolButton *exportButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionExport ) );
+  exportButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
+
+  mExportMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
+                          tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage );
+
+  mExportMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ),
+                          tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasWidget::exportScene );
 
   toolBar->addSeparator();
 
@@ -128,44 +137,14 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   toolBar->addSeparator();
 
-  // Options Menu
-  mOptionsMenu = new QMenu( this );
+  // Camera Menu
+  mCameraMenu = new QMenu( this );
 
-  mActionOptions = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ), tr( "Options" ), this );
-  mActionOptions->setMenu( mOptionsMenu );
-  toolBar->addAction( mActionOptions );
-  QToolButton *optionsButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionOptions ) );
-  optionsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
-
-  mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
-  mActionEnableShadows->setCheckable( true );
-  connect( mActionEnableShadows, &QAction::toggled, this, [ = ]( bool enabled )
-  {
-    QgsShadowSettings settings = mCanvas->mapSettings()->shadowSettings();
-    settings.setRenderShadows( enabled );
-    mCanvas->mapSettings()->setShadowSettings( settings );
-  } );
-  mOptionsMenu->addAction( mActionEnableShadows );
-
-  mActionEnableEyeDome = new QAction( tr( "Show Eye Dome Lighting" ), this );
-  mActionEnableEyeDome->setCheckable( true );
-  connect( mActionEnableEyeDome, &QAction::triggered, this, [ = ]( bool enabled )
-  {
-    mCanvas->mapSettings()->setEyeDomeLightingEnabled( enabled );
-  } );
-  mOptionsMenu->addAction( mActionEnableEyeDome );
-
-  mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
-  mActionEnableAmbientOcclusion->setCheckable( true );
-  connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [ = ]( bool enabled )
-  {
-    QgsAmbientOcclusionSettings ambientOcclusionSettings = mCanvas->mapSettings()->ambientOcclusionSettings();
-    ambientOcclusionSettings.setEnabled( enabled );
-    mCanvas->mapSettings()->setAmbientOcclusionSettings( ambientOcclusionSettings );
-  } );
-  mOptionsMenu->addAction( mActionEnableAmbientOcclusion );
-
-  mOptionsMenu->addSeparator();
+  mActionCamera = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconCamera.svg" ) ), tr( "Camera" ), this );
+  mActionCamera->setMenu( mCameraMenu );
+  toolBar->addAction( mActionCamera );
+  QToolButton *cameraButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionCamera ) );
+  cameraButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
   mActionSync2DNavTo3D->setCheckable( true );
@@ -175,7 +154,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     syncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, enabled );
     mCanvas->mapSettings()->setViewSyncMode( syncMode );
   } );
-  mOptionsMenu->addAction( mActionSync2DNavTo3D );
+  mCameraMenu->addAction( mActionSync2DNavTo3D );
 
   mActionSync3DNavTo2D = new QAction( tr( "3D Camera Follows 2D Map View" ), this );
   mActionSync3DNavTo2D->setCheckable( true );
@@ -185,7 +164,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     syncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, enabled );
     mCanvas->mapSettings()->setViewSyncMode( syncMode );
   } );
-  mOptionsMenu->addAction( mActionSync3DNavTo2D );
+  mCameraMenu->addAction( mActionSync3DNavTo2D );
 
   mShowFrustumPolyogon = new QAction( tr( "Show Visible Camera Area in 2D Map View" ), this );
   mShowFrustumPolyogon->setCheckable( true );
@@ -193,9 +172,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   {
     mCanvas->mapSettings()->setViewFrustumVisualizationEnabled( enabled );
   } );
-  mOptionsMenu->addAction( mShowFrustumPolyogon );
+  mCameraMenu->addAction( mShowFrustumPolyogon );
 
-  mActionSetSceneExtent = mOptionsMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
+  mActionSetSceneExtent = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
                           tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
   mActionSetSceneExtent->setCheckable( true );
   auto createShortcuts = [ = ]( const QString & objectName, void ( Qgs3DMapCanvasWidget::* slot )() )
@@ -205,12 +184,48 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   };
   createShortcuts( QStringLiteral( "m3DSetSceneExtent" ), &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
-  mOptionsMenu->addSeparator();
+  // Effects Menu
+  mEffectsMenu = new QMenu( this );
 
+  mActionEffects = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconShadow.svg" ) ), tr( "Effects" ), this );
+  mActionEffects->setMenu( mEffectsMenu );
+  toolBar->addAction( mActionEffects );
+  QToolButton *effectsButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionEffects ) );
+  effectsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
+
+  mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
+  mActionEnableShadows->setCheckable( true );
+  connect( mActionEnableShadows, &QAction::toggled, this, [ = ]( bool enabled )
+  {
+    QgsShadowSettings settings = mCanvas->mapSettings()->shadowSettings();
+    settings.setRenderShadows( enabled );
+    mCanvas->mapSettings()->setShadowSettings( settings );
+  } );
+  mEffectsMenu->addAction( mActionEnableShadows );
+
+  mActionEnableEyeDome = new QAction( tr( "Show Eye Dome Lighting" ), this );
+  mActionEnableEyeDome->setCheckable( true );
+  connect( mActionEnableEyeDome, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    mCanvas->mapSettings()->setEyeDomeLightingEnabled( enabled );
+  } );
+  mEffectsMenu->addAction( mActionEnableEyeDome );
+
+  mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
+  mActionEnableAmbientOcclusion->setCheckable( true );
+  connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    QgsAmbientOcclusionSettings ambientOcclusionSettings = mCanvas->mapSettings()->ambientOcclusionSettings();
+    ambientOcclusionSettings.setEnabled( enabled );
+    mCanvas->mapSettings()->setAmbientOcclusionSettings( ambientOcclusionSettings );
+  } );
+  mEffectsMenu->addAction( mActionEnableAmbientOcclusion );
+
+  // Options Menu
   QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                                           tr( "Configure…" ), this );
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
-  mOptionsMenu->addAction( configureAction );
+  toolBar->addAction( configureAction );
 
   mCanvas = new Qgs3DMapCanvas;
   mCanvas->setMinimumSize( QSize( 200, 200 ) );

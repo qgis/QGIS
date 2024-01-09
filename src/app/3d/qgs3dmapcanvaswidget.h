@@ -111,8 +111,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
+    QMenu *mExportMenu = nullptr;
     QMenu *mMapThemeMenu = nullptr;
-    QMenu *mOptionsMenu = nullptr;
+    QMenu *mCameraMenu = nullptr;
+    QMenu *mEffectsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
@@ -121,7 +123,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolyogon = nullptr;
     QAction *mActionAnim = nullptr;
+    QAction *mActionExport = nullptr;
     QAction *mActionMapThemes = nullptr;
+    QAction *mActionCamera = nullptr;
+    QAction *mActionEffects = nullptr;
     QAction *mActionOptions = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
