@@ -16,11 +16,29 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputs.h"
+#include "qgsvariantutils.h"
 
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )
   , mDescription( description )
 {}
+
+QString QgsProcessingOutputDefinition::valueAsString( const QVariant &value, QgsProcessingContext &, bool &ok ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    ok = true;
+    return QObject::tr( "NULL" );
+  }
+
+  if ( value.type() == QVariant::String )
+  {
+    ok = true;
+    return value.toString();
+  }
+  ok = false;
+  return QString();
+}
 
 QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, QgsProcessing::SourceType type )
   : QgsProcessingOutputDefinition( name, description )
@@ -57,6 +75,24 @@ QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QString QgsProcessingOutputNumber::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      ok = true;
+      return value.toString();
+    default:
+      break;
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -64,6 +100,17 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
 QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QString QgsProcessingOutputBoolean::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  if ( value.type() == QVariant::Bool )
+  {
+    ok = true;
+    return value.toBool() ? QObject::tr( "True" ) : QObject::tr( "False" );
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
 
 QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
@@ -91,6 +138,37 @@ QString QgsProcessingOutputMultipleLayers::type() const
   return typeName();
 }
 
+QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  switch ( value.type() )
+  {
+    case QVariant::List:
+    {
+      ok = true;
+      const QVariantList list = value.toList();
+
+      QStringList layerNames;
+      for ( const QVariant &v : list )
+      {
+        layerNames << v.toString();
+      }
+      return layerNames.join( QStringLiteral( ", " ) );
+    }
+
+    case QVariant::StringList:
+    {
+      ok = true;
+      const QStringList list = value.toStringList();
+      return list.join( QStringLiteral( ", " ) );
+    }
+
+    default:
+      break;
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -104,4 +182,46 @@ QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, con
 QString QgsProcessingOutputVariant::type() const
 {
   return typeName();
+}
+
+QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      ok = true;
+      return value.toString();
+    case QVariant::Bool:
+      ok = true;
+      return value.toBool() ? QObject::tr( "True" ) : QObject::tr( "False" );
+
+    case QVariant::List:
+    {
+      ok = true;
+      const QVariantList list = value.toList();
+
+      QStringList names;
+      for ( const QVariant &v : list )
+      {
+        names << v.toString();
+      }
+      return names.join( QStringLiteral( ", " ) );
+    }
+
+    case QVariant::StringList:
+    {
+      ok = true;
+      const QStringList list = value.toStringList();
+      return list.join( QStringLiteral( ", " ) );
+    }
+
+    default:
+      break;
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }
