@@ -74,16 +74,16 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
 
   if ( mStyle->isInitialized() )
   {
-    initStyle();
+    initStyleModel();
   }
   else
   {
     // lazy initialized style
-    connect( mStyle, &QgsStyle::initialized, this, &QgsStyleModel::initStyle );
+    connect( mStyle, &QgsStyle::initialized, this, &QgsStyleModel::initStyleModel );
   }
 }
 
-void QgsStyleModel::initStyle()
+void QgsStyleModel::initStyleModel()
 {
   beginResetModel();
   for ( QgsStyle::StyleEntity entity : ENTITIES )
