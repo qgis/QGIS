@@ -148,6 +148,34 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   }
 }
 
+void QgsProcessingFeedback::pushFormattedResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &results )
+{
+  if ( results.empty() )
+    return;
+
+  pushInfo( tr( "Results:" ) );
+
+  const QList< const QgsProcessingOutputDefinition * > outputs = algorithm->outputDefinitions();
+  for ( const QgsProcessingOutputDefinition *output : outputs )
+  {
+    const QString outputName = output->name();
+    if ( outputName == QLatin1String( "CHILD_RESULTS" ) || outputName == QLatin1String( "CHILD_INPUTS" ) )
+      continue;
+
+    if ( !results.contains( outputName ) )
+      continue;
+
+    bool ok = false;
+    const QString textValue = output->valueAsString( results.value( output->name() ), context, ok );
+    const QString formattedValue = output->valueAsFormattedString( results.value( output->name() ), context, ok );
+    if ( ok )
+    {
+      pushFormattedMessage( QStringLiteral( "<code>&nbsp;&nbsp;%1: %2</code>" ).arg( output->name(), formattedValue ),
+                            QStringLiteral( "  %1: %2" ).arg( output->name(), textValue ) );
+    }
+  }
+}
+
 QString QgsProcessingFeedback::htmlLog() const
 {
   return mHtmlLog;

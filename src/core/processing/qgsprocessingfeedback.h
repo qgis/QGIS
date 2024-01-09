@@ -23,6 +23,8 @@
 #include "qgsmessagelog.h"
 
 class QgsProcessingProvider;
+class QgsProcessingAlgorithm;
+class QgsProcessingContext;
 
 /**
  * \class QgsProcessingFeedback
@@ -140,6 +142,13 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \since QGIS 3.4.7
      */
     void pushVersionInfo( const QgsProcessingProvider *provider = nullptr );
+
+    /**
+     * Pushes a summary of the execution \a results to the log
+     *
+     * \since QGIS 3.36
+     */
+    void pushFormattedResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &results );
 
     /**
      * Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
