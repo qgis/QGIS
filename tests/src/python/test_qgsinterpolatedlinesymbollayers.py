@@ -27,7 +27,9 @@ from qgis.core import (
     QgsStyle,
     QgsSymbolLayer,
 )
-from qgis.testing import QgisTestCase
+from qgis.testing import start_app, QgisTestCase
+
+start_app()
 
 
 class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
