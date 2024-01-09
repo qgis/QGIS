@@ -84,7 +84,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QTextEdit" name="txtLog">
+         <widget class="QTextBrowser" name="txtLog">
           <property name="readOnly">
            <bool>true</bool>
           </property>

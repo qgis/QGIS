@@ -27,6 +27,7 @@
 #include "qgspanelwidget.h"
 #include "qgsjsonutils.h"
 #include "qgsunittypes.h"
+#include "qgsnative.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -118,6 +119,9 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   splitterHandle->setLayout( handleLayout );
 
   QgsGui::enableAutoGeometryRestore( this );
+
+  txtLog->setOpenLinks( false );
+  connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
 
   const QgsSettings settings;
   splitter->restoreState( settings.value( QStringLiteral( "/Processing/dialogBaseSplitter" ), QByteArray() ).toByteArray() );
@@ -582,6 +586,15 @@ void QgsProcessingAlgorithmDialogBase::closeClicked()
 {
   reject();
   close();
+}
+
+void QgsProcessingAlgorithmDialogBase::urlClicked( const QUrl &url )
+{
+  const QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }
 
 QgsProcessingContext::LogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
