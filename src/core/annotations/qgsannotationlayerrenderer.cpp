@@ -85,6 +85,9 @@ bool QgsAnnotationLayerRenderer::render()
       break;
     }
 
+    if ( !item.second->enabled() )
+      continue;
+
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
     if ( item.second->useSymbologyReferenceScale() )
     {

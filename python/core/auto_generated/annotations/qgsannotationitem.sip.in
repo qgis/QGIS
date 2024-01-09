@@ -148,6 +148,24 @@ are rendered in the layer.
 .. seealso:: :py:func:`zIndex`
 %End
 
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the item is enabled and will be rendered in the layer.
+
+.. seealso:: :py:func:`setEnabled`
+
+.. versionadded:: 3.36
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets if the item will be rendered or not in the layer.
+
+.. seealso:: :py:func:`enabled`
+
+.. versionadded:: 3.36
+%End
+
     virtual QList< QgsAnnotationItemNode > nodes() const;
 %Docstring
 Returns the nodes for the item, used for editing the item.
