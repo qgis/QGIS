@@ -143,9 +143,27 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      * \param ok will be set to TRUE if value could be represented as a string.
      * \returns value converted to string
      *
+     * \see valueAsFormattedString()
+     *
      * \since QGIS 3.36
      */
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
+    /**
+     * Returns a HTML string version of the parameter output \a value (if possible).
+     *
+     * By default this will return the same value as valueAsString().
+     *
+     * \param value value to convert
+     * \param context processing context
+     * \param ok will be set to TRUE if value could be represented as a string.
+     * \returns value converted to string
+     *
+     * \see valueAsString()
+     *
+     * \since QGIS 3.36
+     */
+    virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
 
   protected:
 
@@ -322,6 +340,7 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputHtml" ); }
     QString type() const override { return typeName(); }
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 
@@ -439,6 +458,8 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputFolder" ); }
     QString type() const override { return typeName(); }
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -461,6 +482,8 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
     QString type() const override { return typeName(); }
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**

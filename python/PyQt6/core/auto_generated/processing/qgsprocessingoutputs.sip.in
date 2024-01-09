@@ -135,6 +135,27 @@ Returns a string version of the parameter output ``value`` (if possible).
 :return: - value converted to string
          - ok: will be set to ``True`` if value could be represented as a string.
 
+.. seealso:: :py:func:`valueAsFormattedString`
+
+
+.. versionadded:: 3.36
+%End
+
+    virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+%Docstring
+Returns a HTML string version of the parameter output ``value`` (if possible).
+
+By default this will return the same value as :py:func:`~QgsProcessingOutputDefinition.valueAsString`.
+
+:param value: value to convert
+:param context: processing context
+
+:return: - value converted to string
+         - ok: will be set to ``True`` if value could be represented as a string.
+
+.. seealso:: :py:func:`valueAsString`
+
+
 .. versionadded:: 3.36
 %End
 
@@ -328,6 +349,8 @@ Constructor for QgsProcessingOutputHtml.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
 };
 
 
@@ -464,6 +487,9 @@ Constructor for QgsProcessingOutputFolder.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+
 };
 
 class QgsProcessingOutputFile : QgsProcessingOutputDefinition
@@ -489,6 +515,9 @@ Constructor for QgsProcessingOutputFile.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+
 };
 
 class QgsProcessingOutputConditionalBranch : QgsProcessingOutputDefinition

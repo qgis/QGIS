@@ -12863,6 +12863,10 @@ void TestQgsProcessing::testOutputs()
             QStringLiteral( "/home/test/test.html" ) );
   QVERIFY( ok );
   ok = false;
+  QCOMPARE( outputHtml.valueAsFormattedString( QStringLiteral( "/home/test/test.html" ), context, ok ),
+            QStringLiteral( "<a href=\"file:///home/test/test.html\">/home/test/test.html</a>" ) );
+  QVERIFY( ok );
+  ok = false;
   QCOMPARE( outputHtml.valueAsString( QVariant(), context, ok ),
             QStringLiteral( "NULL" ) );
   QVERIFY( ok );
@@ -12873,6 +12877,10 @@ void TestQgsProcessing::testOutputs()
             QStringLiteral( "/home/test/test.txt" ) );
   QVERIFY( ok );
   ok = false;
+  QCOMPARE( outputFile.valueAsFormattedString( QStringLiteral( "/home/test/test.txt" ), context, ok ),
+            QStringLiteral( "<a href=\"file:///home/test/test.txt\">/home/test/test.txt</a>" ) );
+  QVERIFY( ok );
+  ok = false;
   QCOMPARE( outputFile.valueAsString( QVariant(), context, ok ),
             QStringLiteral( "NULL" ) );
   QVERIFY( ok );
@@ -12881,6 +12889,10 @@ void TestQgsProcessing::testOutputs()
   QgsProcessingOutputFolder outputFolder( QStringLiteral( "folder" ) );
   QCOMPARE( outputFolder.valueAsString( QStringLiteral( "/home/test" ), context, ok ),
             QStringLiteral( "/home/test" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputFolder.valueAsFormattedString( QStringLiteral( "/home/test" ), context, ok ),
+            QStringLiteral( "<a href=\"file:///home/test\">/home/test</a>" ) );
   QVERIFY( ok );
   ok = false;
   QCOMPARE( outputFolder.valueAsString( QVariant(), context, ok ),
