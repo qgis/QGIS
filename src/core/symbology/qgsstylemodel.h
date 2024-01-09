@@ -221,7 +221,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
 
   private:
 
-    void initStyle();
+    void initStyleModel();
 
     QgsStyle *mStyle = nullptr;
 
