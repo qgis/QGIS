@@ -50,6 +50,8 @@ class ConsoleFeedback : public QgsProcessingFeedback
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
+    void pushFormattedMessage( const QString &html, const QString &text ) override;
+
     QVariantMap jsonLog() const;
 
   private slots:

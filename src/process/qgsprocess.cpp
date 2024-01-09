@@ -146,6 +146,19 @@ void ConsoleFeedback::pushConsoleInfo( const QString &info )
   QgsProcessingFeedback::pushConsoleInfo( info );
 }
 
+void ConsoleFeedback::pushFormattedMessage( const QString &html, const QString &text )
+{
+  if ( !mUseJson )
+    std::cout << text.toLocal8Bit().constData() << '\n';
+  else
+  {
+    if ( !mJsonLog.contains( QStringLiteral( "info" ) ) )
+      mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
+    mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << text;
+  }
+  QgsProcessingFeedback::pushFormattedMessage( html, text );
+}
+
 QVariantMap ConsoleFeedback::jsonLog() const
 {
   return mJsonLog;

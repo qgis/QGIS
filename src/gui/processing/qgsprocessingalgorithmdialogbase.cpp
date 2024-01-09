@@ -86,6 +86,12 @@ void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info 
   emit consoleInfoPushed( info );
 }
 
+void QgsProcessingAlgorithmDialogFeedback::pushFormattedMessage( const QString &html, const QString &text )
+{
+  QgsProcessingFeedback::pushFormattedMessage( html, text );
+  emit formattedMessagePushed( html );
+}
+
 //
 // QgsProcessingAlgorithmDialogBase
 //
@@ -414,6 +420,7 @@ QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmDialogBase::reportError );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmDialogBase::pushWarning );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmDialogBase::pushInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmDialogBase::pushFormattedMessage );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmDialogBase::setProgressText );
   connect( buttonCancel, &QPushButton::clicked, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
@@ -605,6 +612,12 @@ void QgsProcessingAlgorithmDialogBase::pushWarning( const QString &warning )
 void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
 {
   setInfo( info );
+  processEvents();
+}
+
+void QgsProcessingAlgorithmDialogBase::pushFormattedMessage( const QString &html )
+{
+  setInfo( html, false, false );
   processEvents();
 }
 

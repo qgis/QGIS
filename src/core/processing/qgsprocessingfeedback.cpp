@@ -83,6 +83,15 @@ void QgsProcessingFeedback::pushInfo( const QString &info )
   mTextLog.append( info + '\n' );
 }
 
+void QgsProcessingFeedback::pushFormattedMessage( const QString &html, const QString &text )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( text, tr( "Processing" ), Qgis::MessageLevel::Info );
+
+  mHtmlLog.append( html + QStringLiteral( "<br/>" ) );
+  mTextLog.append( text + '\n' );
+}
+
 void QgsProcessingFeedback::pushCommandInfo( const QString &info )
 {
   if ( mLogFeedback )
@@ -197,6 +206,11 @@ void QgsProcessingMultiStepFeedback::pushDebugInfo( const QString &info )
 void QgsProcessingMultiStepFeedback::pushConsoleInfo( const QString &info )
 {
   mFeedback->pushConsoleInfo( info );
+}
+
+void QgsProcessingMultiStepFeedback::pushFormattedMessage( const QString &html, const QString &text )
+{
+  mFeedback->pushFormattedMessage( html, text );
 }
 
 QString QgsProcessingMultiStepFeedback::htmlLog() const
