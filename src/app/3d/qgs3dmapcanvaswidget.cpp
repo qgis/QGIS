@@ -22,6 +22,7 @@
 #include <QToolBar>
 #include <QUrl>
 #include <QAction>
+#include <QShortcut>
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
@@ -36,6 +37,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsmapthemecollection.h"
+#include "qgsshortcutsmanager.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -196,6 +198,12 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionSetSceneExtent = mOptionsMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ),
                           tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
   mActionSetSceneExtent->setCheckable( true );
+  auto createShortcuts = [ = ]( const QString & objectName, void ( Qgs3DMapCanvasWidget::* slot )() )
+  {
+    if ( QShortcut *sc = QgsGui::shortcutsManager()->shortcutByName( objectName ) )
+      connect( sc, &QShortcut::activated, this, slot );
+  };
+  createShortcuts( QStringLiteral( "m3DSetSceneExtent" ), &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
   mOptionsMenu->addSeparator();
 
