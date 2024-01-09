@@ -452,6 +452,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void linkClicked( const QUrl &url );
     void taskTriggered( QgsTask *task );
     void closeClicked();
+    void urlClicked( const QUrl &url );
 
   private:
 
