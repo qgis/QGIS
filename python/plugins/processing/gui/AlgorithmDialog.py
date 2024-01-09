@@ -19,7 +19,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-from pprint import pformat
 import datetime
 import time
 
@@ -283,9 +282,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     if ok:
                         self.feedback.pushInfo(
                             self.tr(elapsed_time(start_time, 'Execution completed in')))
-                        self.feedback.pushInfo(self.tr('Results:'))
-                        r = {k: v for k, v in results.items() if k not in ('CHILD_RESULTS', 'CHILD_INPUTS')}
-                        self.feedback.pushCommandInfo(pformat(r))
+                        self.feedback.pushFormattedResults(self.algorithm(), self.context, results)
                     else:
                         self.feedback.reportError(
                             self.tr(elapsed_time(start_time, 'Execution failed after')))
