@@ -18,14 +18,12 @@
 
 #include "qgsmeshlabelingwidget.h"
 
-#include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabeling.h"
 #include "qgsmeshlayerlabelprovider.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
-#include "qgslabelobstaclesettingswidget.h"
 
 QgsMeshLabelingWidget::QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
