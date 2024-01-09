@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsProcessingOutputDefinition
 {
 %Docstring(signature="appended")
@@ -123,6 +125,19 @@ Returns ``True`` if the output was automatically created when adding a parameter
 .. versionadded:: 3.14
 %End
 
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+%Docstring
+Returns a string version of the parameter output ``value`` (if possible).
+
+:param value: value to convert
+:param context: processing context
+
+:return: - value converted to string
+         - ok: will be set to ``True`` if value could be represented as a string.
+
+.. versionadded:: 3.36
+%End
+
   protected:
 
 
@@ -158,6 +173,7 @@ Returns the type name for the output class.
 %End
 
     virtual QString type() const;
+
 
 };
 
@@ -284,6 +300,9 @@ Returns the type name for the output class.
 %End
     virtual QString type() const;
 
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+
 };
 
 class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
@@ -336,6 +355,9 @@ Returns the type name for the output class.
 %End
     virtual QString type() const;
 
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+
 };
 
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
@@ -361,6 +383,9 @@ Constructor for QgsProcessingOutputNumber.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
+
 };
 
 class QgsProcessingOutputString : QgsProcessingOutputDefinition
@@ -411,6 +436,8 @@ Constructor for :py:class:`QgsProcessingOutputNumber`.
 Returns the type name for the output class.
 %End
     virtual QString type() const;
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
+
 };
 
 class QgsProcessingOutputFolder : QgsProcessingOutputDefinition

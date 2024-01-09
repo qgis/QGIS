@@ -21,6 +21,9 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessing.h"
+
+class QgsProcessingContext;
+
 //
 // Output definitions
 //
@@ -132,6 +135,18 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      */
     bool autoCreated() const { return mAutoCreated; }
 
+    /**
+     * Returns a string version of the parameter output \a value (if possible).
+     *
+     * \param value value to convert
+     * \param context processing context
+     * \param ok will be set to TRUE if value could be represented as a string.
+     * \returns value converted to string
+     *
+     * \since QGIS 3.36
+     */
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
   protected:
 
     //! Output name
@@ -171,6 +186,7 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     static QString typeName() { return QStringLiteral( "outputLayer" ); }
 
     QString type() const override;
+
 };
 
 /**
@@ -282,6 +298,8 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
      */
     static QString typeName() { return QStringLiteral( "outputMultilayer" ); }
     QString type() const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -327,6 +345,8 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
      */
     static QString typeName() { return QStringLiteral( "outputVariant" ); }
     QString type() const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -349,6 +369,8 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputNumber" ); }
     QString type() const override { return typeName(); }
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -393,6 +415,7 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
      */
     static QString typeName() { return QStringLiteral( "outputBoolean" ); }
     QString type() const override { return typeName(); }
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 /**
