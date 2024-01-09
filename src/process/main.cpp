@@ -145,6 +145,13 @@ int main( int argc, char *argv[] )
     args.removeAt( noPythonIndex );
   }
 
+  const int skipLoadingPluginsIndex = args.indexOf( QLatin1String( "--skip-loading-plugins" ) );
+  if ( skipLoadingPluginsIndex >= 0 )
+  {
+    flags |= QgsProcessingExec::Flag::SkipLoadingPlugins;
+    args.removeAt( skipLoadingPluginsIndex );
+  }
+
   const QString command = args.value( 1 );
   if ( args.size() == 1 || command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
   {

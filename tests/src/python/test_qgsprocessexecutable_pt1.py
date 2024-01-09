@@ -85,6 +85,16 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
 
     def testPlugins(self):
         rc, output, err = self.run_process(['plugins'])
+        self.assertIn('indicates loaded plugins', output.lower())
+        self.assertIn('available plugins', output.lower())
+        self.assertIn('processing', output.lower())
+        self.assertNotIn('metasearch', output.lower())
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+
+    def testPluginsSkipLoading(self):
+        rc, output, err = self.run_process(['plugins', '--skip-loading-plugins'])
+        self.assertIn('indicates enabled plugins', output.lower())
         self.assertIn('available plugins', output.lower())
         self.assertIn('processing', output.lower())
         self.assertNotIn('metasearch', output.lower())
@@ -122,7 +132,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertEqual(rc, 0)
 
     def testAlgorithmsListJson(self):
-        rc, output, err = self.run_process(['list', '--no-python', '--json'])
+        rc, output, err = self.run_process(['list', '--json'])
         res = json.loads(output)
         self.assertIn('gdal_version', res)
         self.assertIn('geos_version', res)
@@ -135,6 +145,8 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertIn('native', res['providers'])
         self.assertTrue(res['providers']['native']['is_active'])
         self.assertIn('native:buffer', res['providers']['native']['algorithms'])
+        self.assertIn('gdal:translate',
+                      res['providers']['gdal']['algorithms'])
         self.assertFalse(res['providers']['native']['algorithms']['native:buffer']['deprecated'])
 
         self.assertEqual(rc, 0)

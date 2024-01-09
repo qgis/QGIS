@@ -276,8 +276,11 @@ int QgsProcessingExec::run( const QStringList &args, QgsProcessingContext::LogLe
   {
     if ( args.size() == 2 || ( args.size() == 3 && args.at( 2 ) == QLatin1String( "list" ) ) )
     {
-      loadPlugins();
-      listPlugins( mFlags & Flag::UseJson, true );
+      if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+      {
+        loadPlugins();
+      }
+      listPlugins( mFlags & Flag::UseJson, !( mFlags & Flag::SkipLoadingPlugins ) );
       return 0;
     }
     else if ( args.size() == 4 && args.at( 2 ) == QLatin1String( "enable" ) )
@@ -293,7 +296,10 @@ int QgsProcessingExec::run( const QStringList &args, QgsProcessingContext::LogLe
   }
   else if ( command == QLatin1String( "list" ) )
   {
-    loadPlugins();
+    if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+    {
+      loadPlugins();
+    }
     listAlgorithms();
     return 0;
   }
@@ -305,7 +311,10 @@ int QgsProcessingExec::run( const QStringList &args, QgsProcessingContext::LogLe
       return 1;
     }
 
-    loadPlugins();
+    if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+    {
+      loadPlugins();
+    }
     const QString algId = args.at( 2 );
     return showAlgorithmHelp( algId );
   }
@@ -317,7 +326,10 @@ int QgsProcessingExec::run( const QStringList &args, QgsProcessingContext::LogLe
       return 1;
     }
 
-    loadPlugins();
+    if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+    {
+      loadPlugins();
+    }
 
     const QString algId = args.at( 2 );
 
@@ -501,13 +513,14 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--no-python] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--no-python] [--skip-loading-plugins] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
       << "\nOptions:\n"
       << "\t--help or -h\t\tOutput the help\n"
       << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
       << "\t--json\t\tOutput results as JSON objects\n"
       << "\t--verbose\tOutput verbose logs\n"
       << "\t--no-python\tDisable Python support (results in faster startup)"
+      << "\t--skip-loading-plugins\tAvoid loading enabled plugins (results in faster startup)"
       << "\nAvailable commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"
       << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"

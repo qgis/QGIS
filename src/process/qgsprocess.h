@@ -72,6 +72,7 @@ class QgsProcessingExec
     {
       UseJson = 1 << 0,
       SkipPython = 1 << 1,
+      SkipLoadingPlugins = 1 << 2,
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
