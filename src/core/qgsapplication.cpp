@@ -448,8 +448,9 @@ void QgsApplication::init( QString profileFolder )
     bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
   }
 
-  // trigger creation of default style
-  QgsStyle *defaultStyle = QgsStyle::defaultStyle();
+  // trigger creation of default style, but defer initialization until
+  // it's actually required
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
   if ( !members()->mStyleModel )
     members()->mStyleModel = new QgsStyleModel( defaultStyle );
 
