@@ -246,6 +246,11 @@ QString createProtocolURI( const QString &type, const QString &url, const QStrin
     uri = url;
     uri.prepend( QStringLiteral( "/vsiaz/" ) );
   }
+  else if ( type == QLatin1String( "Microsoft Azure Data Lake Storage" ) )
+  {
+    uri = url;
+    uri.prepend( QStringLiteral( "/vsiadls/" ) );
+  }
   else if ( type == QLatin1String( "Alibaba Cloud OSS" ) )
   {
     uri = url;
