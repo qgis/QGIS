@@ -355,12 +355,11 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mBackgroundFillSymbolButton->setLayer( vLayer );
 
   // load labeling settings from layer
-  if ( vLayer )
-    updateGeometryTypeBasedWidgets();
+  updateGeometryTypeBasedWidgets();
 
   mFieldExpressionWidget->setLayer( mapLayer );
   QgsDistanceArea da;
-  if ( vLayer )
+  if ( mLayer )
     da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
