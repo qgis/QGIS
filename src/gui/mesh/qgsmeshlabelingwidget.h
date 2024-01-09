@@ -54,8 +54,6 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
      */
     QgsLabelingGui *labelingGui();
 
-    QgsPalLayerSettings layerSettings();
-
   public slots:
     //! Sets the layer to configure
     void setLayer( QgsMapLayer *layer );
@@ -77,7 +75,6 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
 
   private slots:
     void labelModeChanged( int index );
-    //void showEngineConfigDialog();
 
   private:
 
