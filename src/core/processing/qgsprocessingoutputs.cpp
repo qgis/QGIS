@@ -18,6 +18,9 @@
 #include "qgsprocessingoutputs.h"
 #include "qgsvariantutils.h"
 
+#include <QUrl>
+#include <QDir>
+
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )
   , mDescription( description )
@@ -38,6 +41,11 @@ QString QgsProcessingOutputDefinition::valueAsString( const QVariant &value, Qgs
   }
   ok = false;
   return QString();
+}
+
+QString QgsProcessingOutputDefinition::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsString( value, context, ok );
 }
 
 QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, QgsProcessing::SourceType type )
@@ -70,6 +78,17 @@ QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QS
 QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  {
+    ok = true;
+    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+  }
+
+  return valueAsString( value, context, ok );
+}
 
 QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
@@ -116,9 +135,31 @@ QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QString QgsProcessingOutputFolder::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  {
+    ok = true;
+    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+  }
+
+  return valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QString QgsProcessingOutputFile::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  {
+    ok = true;
+    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+  }
+
+  return valueAsString( value, context, ok );
+}
 
 QgsProcessingOutputMapLayer::QgsProcessingOutputMapLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
