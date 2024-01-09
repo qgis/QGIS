@@ -340,6 +340,16 @@ class TestQgsProcessExecutablePt2(unittest.TestCase):
         self.assertEqual(res['algorithm_details']['id'], 'native:buffer')
         self.assertEqual(res['inputs']['DISTANCE'], {'field': 'fid', 'type': 'data_defined'})
 
+    def testStartupOptimisationsStyleLazyInitialized(self):
+        """
+        Ensure that the costly QgsStyle.defaultStyle() initialization is NOT
+        performed by default when running qgis_process commands
+        """
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/report_style_initialization_status.py'])
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+        self.assertIn('IS_INITIALIZED:	false', output)
+
 
 if __name__ == '__main__':
     # look for qgis bin path
