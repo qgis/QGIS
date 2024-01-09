@@ -72,10 +72,25 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
 {
   Q_ASSERT( mStyle );
 
+  if ( mStyle->isInitialized() )
+  {
+    initStyle();
+  }
+  else
+  {
+    // lazy initialized style
+    connect( mStyle, &QgsStyle::initialized, this, &QgsStyleModel::initStyle );
+  }
+}
+
+void QgsStyleModel::initStyle()
+{
+  beginResetModel();
   for ( QgsStyle::StyleEntity entity : ENTITIES )
   {
     mEntityNames.insert( entity, mStyle->allNames( entity ) );
   }
+  endResetModel();
 
   // ensure we always generate icons using default screen properties
   // in addition to actual target screen properties (ie device pixel ratio of 1, 96 dpi)

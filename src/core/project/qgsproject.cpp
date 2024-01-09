@@ -484,7 +484,7 @@ QgsProject *QgsProject::instance()
   {
     sProject = new QgsProject;
 
-    connect( sProject, &QgsProject::projectColorsChanged, QgsStyle::defaultStyle(), &QgsStyle::triggerIconRebuild );
+    connect( sProject, &QgsProject::projectColorsChanged, QgsStyle::defaultStyle( false ), &QgsStyle::triggerIconRebuild );
   }
   return sProject;
 }

@@ -105,7 +105,7 @@ void QgsCombinedStyleModel::removeStyle( QgsStyle *style )
 
 void QgsCombinedStyleModel::addDefaultStyle()
 {
-  QgsStyle *defaultStyle = QgsStyle::defaultStyle();
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
   QgsStyleModel *styleModel = QgsApplication::defaultStyleModel();
   if ( !defaultStyle || !styleModel )
     return;
