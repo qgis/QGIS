@@ -116,28 +116,24 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &Qgs3DMapCanvasWidget::currentMapThemeRenamed );
 
-  mBtnMapThemes = new QToolButton();
-  mBtnMapThemes->setAutoRaise( true );
-  mBtnMapThemes->setToolTip( tr( "Set View Theme" ) );
-  mBtnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
-  mBtnMapThemes->setPopupMode( QToolButton::InstantPopup );
-  mBtnMapThemes->setMenu( mMapThemeMenu );
+  mActionMapThemes = new QAction( tr( "Set View Theme" ), this );
+  mActionMapThemes->setMenu( mMapThemeMenu );
+  mActionMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  toolBar->addAction( mActionMapThemes );
+  QToolButton *mapThemesButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionMapThemes ) );
+  mapThemesButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
-  toolBar->addWidget( mBtnMapThemes );
 
   toolBar->addSeparator();
 
   // Options Menu
   mOptionsMenu = new QMenu( this );
 
-  mBtnOptions = new QToolButton();
-  mBtnOptions->setAutoRaise( true );
-  mBtnOptions->setToolTip( tr( "Options" ) );
-  mBtnOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
-  mBtnOptions->setPopupMode( QToolButton::InstantPopup );
-  mBtnOptions->setMenu( mOptionsMenu );
-
-  toolBar->addWidget( mBtnOptions );
+  mActionOptions = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ), tr( "Options" ), this );
+  mActionOptions->setMenu( mOptionsMenu );
+  toolBar->addAction( mActionOptions );
+  QToolButton *optionsButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionOptions ) );
+  optionsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
   mActionEnableShadows->setCheckable( true );
@@ -292,9 +288,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     const int initialSize = fm.horizontalAdvance( '0' ) * 75;
     dialog->resize( initialSize, initialSize );
   }
-  QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
-  toggleButton->setToolTip( tr( "Dock 3D Map View" ) );
-  toolBar->addWidget( toggleButton );
+  QAction *dockAction = mDockableWidgetHelper->createDockUndockAction( tr( "Dock 3D Map View" ), this );
+  toolBar->addAction( dockAction );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
   {
     QgisApp::instance()->close3DMapView( canvasName() );
@@ -401,9 +396,9 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   mAnimationWidget->setMap( map );
 
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
-  mBtnMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled()
-                              || !mCanvas->mapSettings()->terrainGenerator()
-                              || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  mActionMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled()
+                                 || !mCanvas->mapSettings()->terrainGenerator()
+                                 || mCanvas->mapSettings()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
   connect( map, &Qgs3DMapSettings::viewFrustumVisualizationEnabledChanged, this, &Qgs3DMapCanvasWidget::onViewFrustumVisualizationEnabledChanged );
@@ -485,9 +480,9 @@ void Qgs3DMapCanvasWidget::configure()
     }
 
     // Disable map theme button if the terrain generator is a mesh, or if there is no terrain
-    mBtnMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled()
-                                || !mCanvas->mapSettings()->terrainGenerator()
-                                || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+    mActionMapThemes->setDisabled( !mCanvas->mapSettings()->terrainRenderingEnabled()
+                                   || !mCanvas->mapSettings()->terrainGenerator()
+                                   || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
   connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
