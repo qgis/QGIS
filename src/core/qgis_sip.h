@@ -151,6 +151,11 @@
 #define SIP_PYARGREMOVE
 
 /*
+ * remove argument in SIP method only for Qt version >= 6
+ */
+#define SIP_PYARGREMOVE6
+
+/*
  * rename argument in SIP method
  */
 #define SIP_PYARGRENAME(pyname)
