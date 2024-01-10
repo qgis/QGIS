@@ -195,16 +195,16 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pbDeselectAll">
+             <widget class="QPushButton" name="pbSelectAll">
               <property name="text">
-               <string>Deselect All</string>
+               <string>Select All</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pbSelectAll">
+             <widget class="QPushButton" name="pbDeselectAll">
               <property name="text">
-               <string>Select All</string>
+               <string>Deselect All</string>
               </property>
              </widget>
             </item>
@@ -269,18 +269,17 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mSourceDrawingFileWidget</tabstop>
   <tabstop>pbImportDrawing</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mDatabaseFileWidget</tabstop>
   <tabstop>pbLoadDatabase</tabstop>
   <tabstop>mBlockModeComboBox</tabstop>
   <tabstop>cbUseCurves</tabstop>
   <tabstop>leLayerGroup</tabstop>
   <tabstop>mLayers</tabstop>
   <tabstop>cbMergeLayers</tabstop>
-  <tabstop>pbDeselectAll</tabstop>
   <tabstop>pbSelectAll</tabstop>
+  <tabstop>pbDeselectAll</tabstop>
+  <tabstop>mMapCanvas</tabstop>
  </tabstops>
  <resources/>
  <connections>
