@@ -1,9 +1,9 @@
 /***************************************************************************
-      qgsogrguiprovider.h  - GUI for QGIS Data provider for GDAL rasters
-                             -------------------
-    begin                : June, 2019
-    copyright            : (C) 2019 by Peter Petrik
-    email                : zilolv at gmail dot com
+    qgsogrfilesourcewidget.h
+     --------------------------------------
+    Date                 : January 2024
+    Copyright            : (C) 2024 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,25 +14,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSOGRFILESOURCEWIDGET_H
+#define QGSOGRFILESOURCEWIDGET_H
 
-#ifndef QGSOGRGUIPROVIDER_H
-#define QGSOGRGUIPROVIDER_H
+#include "qgsprovidersourcewidget.h"
+#include <QVariantMap>
 
-#include "qgsproviderguimetadata.h"
-#include "qgis_sip.h"
+class QgsFileWidget;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class QgsOgrGuiProviderMetadata: public QgsProviderGuiMetadata
+class QgsOgrFileSourceWidget : public QgsProviderSourceWidget
 {
+    Q_OBJECT
+
   public:
-    QgsOgrGuiProviderMetadata();
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-    QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
+    QgsOgrFileSourceWidget( QWidget *parent = nullptr );
+
+    void setSourceUri( const QString &uri ) override;
+    QString sourceUri() const override;
+
+  private slots:
+
+    void validate();
+
+  private:
+    QgsFileWidget *mFileWidget = nullptr;
+
+    QVariantMap mSourceParts;
+    bool mIsValid = false;
 };
 
 ///@endcond
-#endif
+#endif // QGSOGRFILESOURCEWIDGET_H

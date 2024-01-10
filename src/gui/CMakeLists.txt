@@ -435,6 +435,7 @@ set(QGIS_GUI_SRCS
   providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.cpp
   providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.cpp
 
+  providers/ogr/qgsogrfilesourcewidget.cpp
   providers/ogr/qgsogrguiprovider.cpp
   providers/ogr/qgsogrdbsourceselect.cpp
   providers/ogr/qgsogrdbtablemodel.cpp
@@ -1390,6 +1391,7 @@ set(QGIS_GUI_HDRS
   providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.h
   providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.h
 
+  providers/ogr/qgsogrfilesourcewidget.h
   providers/ogr/qgsgeopackageitemguiprovider.h
   providers/ogr/qgsgeopackageprojectstoragedialog.h
   providers/ogr/qgsgeopackageprojectstorageguiprovider.h
