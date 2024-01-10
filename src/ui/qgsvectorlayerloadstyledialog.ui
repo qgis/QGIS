@@ -114,16 +114,16 @@
     </spacer>
    </item>
    <item row="4" column="2">
-    <widget class="QPushButton" name="mHideAllButton">
+    <widget class="QPushButton" name="mSelectAllButton">
      <property name="text">
-      <string>Deselect All</string>
+      <string>Select All</string>
      </property>
     </widget>
    </item>
    <item row="4" column="3">
-    <widget class="QPushButton" name="mShowAllButton">
+    <widget class="QPushButton" name="mDeselectAllButton">
      <property name="text">
-      <string>Select All</string>
+      <string>Deselect All</string>
      </property>
     </widget>
    </item>
