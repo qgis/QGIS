@@ -538,7 +538,11 @@ Returns the squared 2D distance between two points.
 %Docstring
 Returns the squared 3D distance between two points.
 
-No check is done, if z contains NaN value.
+.. warning::
+
+   No check is done if z contains NaN value. This is the caller's responsibility.
+
+.. versionadded:: 3.36
 %End
 
  static double distance2D( double x1, double y1, double x2, double y2 ) /Deprecated,HoldGIL/;
@@ -558,7 +562,11 @@ Returns the 2D distance between two points.
 %Docstring
 Returns the 3D distance between two points.
 
-No check is done, if z contains NaN value.
+.. warning::
+
+   No check is done if z contains NaN value. This is the caller's responsibility.
+
+.. versionadded:: 3.36
 %End
 
 
