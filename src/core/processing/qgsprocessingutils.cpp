@@ -317,19 +317,19 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( components.isEmpty() )
       return nullptr;
 
-    QFileInfo fi;
-    if ( QFileInfo::exists( uri ) )
-      fi = QFileInfo( uri );
-    else if ( QFileInfo::exists( components.at( 0 ) ) )
-      fi = QFileInfo( components.at( 0 ) );
+    if ( QFileInfo fi( components.at( 0 ) ); fi.isFile() )
+      name = fi.baseName();
     else
-      return nullptr;
-    name = fi.baseName();
+      name = QFileInfo( uri ).baseName();
   }
 
   if ( name.isEmpty() )
   {
     name = QgsDataSourceUri( uri ).table();
+  }
+  if ( name.isEmpty() )
+  {
+    name = uri;
   }
 
   QList< Qgis::LayerType > candidateTypes;

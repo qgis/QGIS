@@ -1541,14 +1541,17 @@ void TestQgsProcessing::mapLayers()
   // Test layers from a string with parameters
   const QString osmFilePath = testDataDir + "openstreetmap/testdata.xml";
   std::unique_ptr< QgsVectorLayer > osm( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath, QgsCoordinateTransformContext() ) ) );
+  QVERIFY( osm );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), Qgis::GeometryType::Point );
 
   osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3", QgsCoordinateTransformContext() ) ) );
+  QVERIFY( osm );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), Qgis::GeometryType::Polygon );
 
   osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null", QgsCoordinateTransformContext() ) ) );
+  QVERIFY( osm );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), Qgis::GeometryType::Polygon );
   QCOMPARE( osm->subsetString(), QStringLiteral( "\"building\" is not null" ) );
@@ -1677,6 +1680,25 @@ void TestQgsProcessing::mapLayerFromString()
   // since it's now in temporary store, should be accessible even if we deny loading new layers
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );
   QCOMPARE( c.getMapLayer( newRaster ), loadedLayer );
+
+  // try something which looks like a valid filename, but doesn't actually exist
+  loadedLayer = QgsProcessingUtils::mapLayerFromString( testDataDir + "looks_like_a_filename_but_does_not_exist.tif", c, true );
+  QVERIFY( !loadedLayer );
+
+  // using GDAL's virtual I/O (/vsizip/, etc.)
+  loadedLayer = QgsProcessingUtils::mapLayerFromString( "/vsizip/" + testDataDir + "zip/points2.zip/points.shp", c, true );
+  QVERIFY( loadedLayer );
+  QVERIFY( loadedLayer->isValid() );
+  QCOMPARE( loadedLayer->type(), Qgis::LayerType::Vector );
+  // should now be in temporary store
+  QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
+
+  loadedLayer = QgsProcessingUtils::mapLayerFromString( "/vsizip/" + testDataDir + "zip/landsat_b1.zip/landsat_b1.tif", c, true );
+  QVERIFY( loadedLayer );
+  QVERIFY( loadedLayer->isValid() );
+  QCOMPARE( loadedLayer->type(), Qgis::LayerType::Raster );
+  // should now be in temporary store
+  QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 }
 
 void TestQgsProcessing::algorithm()
@@ -2395,6 +2417,7 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( sink->addFeature( f ) );
   sink.reset( nullptr );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
+  QVERIFY( layer );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->wkbType(), Qgis::WkbType::Polygon );
   QVERIFY( layer->getFeatures().nextFeature( f ) );
