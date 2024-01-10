@@ -745,8 +745,17 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   QgsSettings settings;
   if ( enabled )
   {
-    mPythonUtils->loadPlugin( name );
-    mPythonUtils->startProcessingPlugin( name );
+    if ( !mPythonUtils->loadPlugin( name ) )
+    {
+      std::cerr << "error loading plugin: " << name.toLocal8Bit().constData() << "\n\n";
+      return 1;
+    }
+    else if ( !mPythonUtils->startProcessingPlugin( name ) )
+    {
+      std::cerr << "error starting plugin: " << name.toLocal8Bit().constData() << "\n\n";
+      return 1;
+    }
+
     const QString pluginName = mPythonUtils->getPluginMetadata( name, QStringLiteral( "name" ) );
     settings.setValue( "/PythonPlugins/" + name, true );
 

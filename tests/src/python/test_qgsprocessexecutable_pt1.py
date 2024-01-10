@@ -101,6 +101,64 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
+    def testPluginStatus(self):
+        rc, output, err = self.run_process(['plugins'])
+        self.assertIn('available plugins', output.lower())
+        previously_enabled = '* grassprovider' in output.lower()
+
+        # ensure plugin is enabled initially
+        self.run_process(['plugins', 'enable', 'grassprovider'])
+
+        # try to re-enable, should error out
+        rc, output, err = self.run_process(['plugins', 'enable', 'grassprovider'])
+
+        self.assertIn('plugin is already enabled', err.lower())
+        self.assertEqual(rc, 1)
+
+        rc, output, err = self.run_process(['plugins'])
+        self.assertIn('available plugins', output.lower())
+        self.assertIn('* grassprovider', output.lower())
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+
+        # disable
+        rc, output, err = self.run_process(['plugins', 'disable', 'grassprovider'])
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+
+        # try to re-disable
+        rc, output, err = self.run_process(['plugins', 'disable', 'grassprovider'])
+        self.assertIn('plugin is already disabled', err.lower())
+        self.assertEqual(rc, 1)
+
+        rc, output, err = self.run_process(['plugins'])
+        self.assertIn('available plugins', output.lower())
+        self.assertNotIn('* grassprovider', output.lower())
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+
+        rc, output, err = self.run_process(['plugins', 'enable', 'grassprovider'])
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+
+        rc, output, err = self.run_process(['plugins'])
+        self.assertIn('available plugins', output.lower())
+        self.assertIn('* grassprovider', output.lower())
+        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertEqual(rc, 0)
+
+        if not previously_enabled:
+            self.run_process(['plugins', 'disable', 'grassprovider'])
+
+        # not a plugin
+        rc, output, err = self.run_process(['plugins', 'enable', 'reformatplugin'])
+        self.assertIn('no matching plugins found', err.lower())
+        self.assertEqual(rc, 1)
+
+        rc, output, err = self.run_process(['plugins', 'disable', 'reformatplugin'])
+        self.assertIn('no matching plugins found', err.lower())
+        self.assertEqual(rc, 1)
+
     def testPluginsJson(self):
         rc, output, err = self.run_process(['plugins', '--json'])
         res = json.loads(output)
