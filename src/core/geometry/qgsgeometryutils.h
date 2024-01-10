@@ -685,7 +685,8 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Returns the squared 3D distance between two points.
      *
-     * No check is done, if z contains NaN value.
+     * \warning No check is done if z contains NaN value. This is the caller's responsibility.
+     * \since QGIS 3.36
      */
     static double sqrDistance3D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
     {
@@ -707,7 +708,8 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Returns the 3D distance between two points.
      *
-     * No check is done, if z contains NaN value.
+     * \warning No check is done if z contains NaN value. This is the caller's responsibility.
+     * \since QGIS 3.36
      */
     static double distance3D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL
     {
