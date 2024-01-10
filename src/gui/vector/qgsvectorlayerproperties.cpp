@@ -968,6 +968,11 @@ void QgsVectorLayerProperties::apply()
     {
       mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
                              QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+
+      // resync dialog to layer's new state -- this allows any changed layer properties
+      // (such as a forced creation of a new renderer compatible with the new layer, new field configuration, etc)
+      // to show in the dialog correctly
+      syncToLayer();
     }
   }
 

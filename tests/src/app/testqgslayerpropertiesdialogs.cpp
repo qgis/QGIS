@@ -163,7 +163,6 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       // ie the settings for the renderer which were present in the dialog MUST be ignored and overwritten
       // by the logic which triggers when the geometry type is changed via a data source change
       QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Line );
-
     }
 
     void testValidRasterProperties()
