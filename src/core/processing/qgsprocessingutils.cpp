@@ -326,13 +326,49 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return nullptr;
     name = fi.baseName();
   }
+
   if ( name.isEmpty() )
   {
     name = QgsDataSourceUri( uri ).table();
   }
 
+  QList< Qgis::LayerType > candidateTypes;
+  switch ( typeHint )
+  {
+    case LayerHint::UnknownType:
+    {
+      if ( providerMetadata )
+      {
+        // refine the type hint based on what the provider supports
+        candidateTypes = providerMetadata->supportedLayerTypes();
+      }
+      break;
+    }
+    case LayerHint::Vector:
+      candidateTypes.append( Qgis::LayerType::Vector );
+      break;
+    case LayerHint::Raster:
+      candidateTypes.append( Qgis::LayerType::Raster );
+      break;
+    case LayerHint::Mesh:
+      candidateTypes.append( Qgis::LayerType::Mesh );
+      break;
+    case LayerHint::PointCloud:
+      candidateTypes.append( Qgis::LayerType::PointCloud );
+      break;
+    case LayerHint::Annotation:
+      candidateTypes.append( Qgis::LayerType::Annotation );
+      break;
+    case LayerHint::VectorTile:
+      candidateTypes.append( Qgis::LayerType::VectorTile );
+      break;
+    case LayerHint::TiledScene:
+      candidateTypes.append( Qgis::LayerType::TiledScene );
+      break;
+  }
+
   // brute force attempt to load a matching layer
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::Vector ) )
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
@@ -353,7 +389,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return layer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Raster )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::Raster ) )
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
@@ -375,7 +411,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return rasterLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::Mesh ) )
   {
     QgsMeshLayer::LayerOptions meshOptions;
     meshOptions.skipCrsValidation = true;
@@ -394,7 +430,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return meshLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::PointCloud )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::PointCloud ) )
   {
     QgsPointCloudLayer::LayerOptions pointCloudOptions;
     pointCloudOptions.skipCrsValidation = true;
@@ -422,7 +458,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return pointCloudLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::VectorTile )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::VectorTile ) )
   {
     QgsDataSourceUri dsUri;
     dsUri.setParam( "type", "mbtiles" );
@@ -436,7 +472,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return tileLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::TiledScene )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::TiledScene ) )
   {
     QgsTiledSceneLayer::LayerOptions tiledSceneOptions;
     tiledSceneOptions.skipCrsValidation = true;
