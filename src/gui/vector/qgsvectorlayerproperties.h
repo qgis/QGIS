@@ -228,6 +228,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     void openPanel( QgsPanelWidget *panel );
 
     friend class QgsAppScreenShots;
+    friend class TestQgsLayerPropertiesDialogs;
 };
 
 #endif
