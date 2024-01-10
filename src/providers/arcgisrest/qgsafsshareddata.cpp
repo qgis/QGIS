@@ -186,7 +186,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     queryData = QgsArcGisRestQueryUtils::getObjects(
                   mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                   QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), mDataSource.param( QStringLiteral( "urlprefix" ) ) ,feedback );
+                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), mDataSource.param( QStringLiteral( "urlprefix" ) ), feedback );
 
     if ( feedback && feedback->isCanceled() )
     {

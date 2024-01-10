@@ -29,7 +29,7 @@
 #include <QRegularExpression>
 #include <QJsonParseError>
 
-QVariantMap QgsArcGisRestQueryUtils::getServiceInfo(const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders , const QString &urlPrefix)
+QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
@@ -39,7 +39,7 @@ QVariantMap QgsArcGisRestQueryUtils::getServiceInfo(const QString &baseurl, cons
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, urlPrefix );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getLayerInfo(const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders , const QString &urlPrefix)
+QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1?f=json
   QUrl queryUrl( layerurl );
@@ -49,7 +49,7 @@ QVariantMap QgsArcGisRestQueryUtils::getLayerInfo(const QString &layerurl, const
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, urlPrefix );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getObjectIds(const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, const QgsRectangle &bbox, const QString &whereClause )
+QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, const QgsRectangle &bbox, const QString &whereClause )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
@@ -69,7 +69,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjectIds(const QString &layerurl, const
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, urlPrefix );
 }
 
-QgsRectangle QgsArcGisRestQueryUtils::getExtent(const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders , const QString &urlPrefix)
+QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnExtentOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
@@ -90,7 +90,7 @@ QgsRectangle QgsArcGisRestQueryUtils::getExtent(const QString &layerurl, const Q
   return QgsArcGisRestUtils::convertRectangle( res.value( QStringLiteral( "extent" ) ) );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getObjects(const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
+QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
     bool fetchGeometry, const QStringList &fetchAttributes,
     bool fetchM, bool fetchZ,
     const QgsRectangle &filterRect,
@@ -132,7 +132,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects(const QString &layerurl, const Q
   return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, urlPrefix, feedback );
 }
 
-QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent(const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, QgsFeedback *feedback, const QString &whereClause )
+QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix, QgsFeedback *feedback, const QString &whereClause )
 {
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
@@ -166,8 +166,8 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
 {
   QUrl url = parseUrl( u );
 
-  if (!urlPrefix.isEmpty())
-      url = QUrl( urlPrefix + url.toString() );
+  if ( !urlPrefix.isEmpty() )
+    url = QUrl( urlPrefix + url.toString() );
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
@@ -515,12 +515,12 @@ QgsArcGisAsyncQuery::~QgsArcGisAsyncQuery()
     mReply->deleteLater();
 }
 
-void QgsArcGisAsyncQuery::start(const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsHttpHeaders &headers , const QString &urlPrefix)
+void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache, const QgsHttpHeaders &headers, const QString &urlPrefix )
 {
   mResult = result;
   QUrl mUrl = url;
-  if (!urlPrefix.isEmpty())
-      mUrl = QUrl( urlPrefix + url.toString());
+  if ( !urlPrefix.isEmpty() )
+    mUrl = QUrl( urlPrefix + url.toString() );
   QNetworkRequest request( mUrl );
 
   headers.updateNetworkRequest( request );
