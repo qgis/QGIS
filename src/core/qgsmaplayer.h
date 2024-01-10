@@ -2409,4 +2409,28 @@ typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
 typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 #endif
 
+
+/**
+ * \ingroup core
+ *
+ * \brief Represents a fake/dummy map layer
+ * \since QGIS 3.36
+ */
+class CORE_EXPORT QgsDummyLayer : public QgsMapLayer
+{
+    Q_OBJECT
+  public:
+    //! Default constructor
+    QgsDummyLayer( Qgis::LayerType type, const QString &name = QString() ): QgsMapLayer( type, name ) {}
+    virtual QgsMapLayer *clone() const override { return nullptr;}
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext & ) override { return nullptr;}
+    virtual bool readSymbology( const QDomNode &, QString &, QgsReadWriteContext &, StyleCategories ) override
+    { return false;}
+    virtual bool writeSymbology( QDomNode &, QDomDocument &, QString &,
+                                 const QgsReadWriteContext &, QgsMapLayer::StyleCategories ) const override
+    { return false;}
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext & ) override {}
+};
+
 #endif

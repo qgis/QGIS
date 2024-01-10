@@ -86,7 +86,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * Returns terrain entity (may be temporarily NULLPTR)
      * \note Not available in Python bindings
      */
-    QgsTerrainEntity *terrainEntity() SIP_SKIP { return mTerrain; }
+    QgsTerrainEntity *terrainEntity() const SIP_SKIP;
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
@@ -283,8 +283,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! Provides a way to have a synchronous function executed each frame
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
-    QgsTerrainEntity *mTerrain = nullptr;
-    QList<Qgs3DMapSceneEntity *> mSceneEntities;
+    QgsMapLayer *mTerrainLayer = nullptr;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer
