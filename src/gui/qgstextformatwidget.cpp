@@ -868,12 +868,11 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
 
 void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
-  if ( mLayer->type() !=  Qgis::LayerType::Vector )
-  {
-    return;
-  }
-
   QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+
+  if ( !vLayer )
+    return;
+
   button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), vLayer, true );
   if ( !mButtons.contains( key ) )
   {
@@ -1842,12 +1841,11 @@ void QgsTextFormatWidget::createAuxiliaryField()
   if ( !mLayer )
     return;
 
-  if ( mLayer->type() != Qgis::LayerType::Vector )
-  {
-    return;
-  }
-
   QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
+
+  if ( !vLayer )
+    return;
+
   // try to create an auxiliary layer if not yet created
   if ( !vLayer->auxiliaryLayer() )
   {
@@ -2153,8 +2151,8 @@ Qgis::GeometryType QgsTextFormatWidget::labelGeometryType() const
 {
   if ( mGeometryGeneratorGroupBox->isChecked() )
     return mGeometryGeneratorType->currentData().value<Qgis::GeometryType>();
-  else if ( mLayer && mLayer->type() == Qgis::LayerType::Vector )
-    return qobject_cast< QgsVectorLayer * >( mLayer )->geometryType();
+  else if ( QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer ) )
+    return vLayer->geometryType();
   else
     return mGeomType;
 }
