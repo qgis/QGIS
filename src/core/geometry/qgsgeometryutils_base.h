@@ -522,6 +522,11 @@ class CORE_EXPORT QgsGeometryUtilsBase
     /**
      * Compare equality between multiple pairs of values with a specified epsilon.
      *
+     * Traditionally, the comparison is done by examining the specific values (such as x and y) that define the location of points.
+     * It focuses on the numerical differences or relationships between these values.
+     * On the other hand, comparing distances between points considers the actual spatial separation or length between the points, regardless of their coordinate values.
+     * This comparison involves measuring the distance between two points using formulas like the distance formula. Here, it's the "distance comparison" (fuzzyDistanceEqual).
+     *
      * \tparam T Floating-point type (double or float) for the values to be compared.
      * \tparam Args Type of arguments for the values to be compared.
      * \param epsilon The range within which the differences are checked.
