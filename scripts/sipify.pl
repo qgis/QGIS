@@ -475,8 +475,11 @@ sub fix_annotations {
     my $line = $_[0];
 
     # get removed params to be able to drop them out of the API doc
-    if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/ ){
+    if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/){
       my @removed_params = $line =~ m/(\w+)\s+SIP_PYARGREMOVE/g;
+      if ( $is_qt6 ){
+        my @removed_params = $line =~ m/(\w+)\s+SIP_PYARGREMOVE6{0,1}/g;
+      }
       foreach ( @removed_params ) {
         push @SKIPPED_PARAMS_REMOVE, $_;
         dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
@@ -545,7 +548,14 @@ sub fix_annotations {
             $line = "$prev_line $line\n";
         }
         # see https://regex101.com/r/5iNptO/4
-        $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        if ( $is_qt6 ){
+          $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        }
+        else {
+          $line =~ s/SIP_PYARGREMOVE6\s*//g;
+          $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        }
+
         $line =~ s/\(\s+\)/()/;
     }
     $line =~ s/SIP_FORCE//;
