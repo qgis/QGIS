@@ -295,12 +295,25 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
 
   QString name;
 
-  // for disk based sources, we use the filename to determine a layer name
   const QgsProviderMetadata *providerMetadata = useProvider ? QgsProviderRegistry::instance()->providerMetadata( provider ) : nullptr;
-  if ( !useProvider
-       || ( providerMetadata && providerMetadata->providerCapabilities() & QgsProviderMetadata::ProviderCapability::FileBasedUris ) )
+  if ( providerMetadata )
   {
-    QStringList components = uri.split( '|' );
+    // use the uri parts to determine a suitable layer name
+    const QVariantMap parts = providerMetadata->decodeUri( uri );
+    const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+
+    if ( !layerName.isEmpty() )
+    {
+      name = layerName;
+    }
+    else if ( const QString path = parts.value( QStringLiteral( "path" ) ).toString(); !path.isEmpty() )
+    {
+      name = QFileInfo( path ).baseName();
+    }
+  }
+  else
+  {
+    const QStringList components = uri.split( '|' );
     if ( components.isEmpty() )
       return nullptr;
 
