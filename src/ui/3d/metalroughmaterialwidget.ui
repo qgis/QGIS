@@ -16,9 +16,6 @@
   <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
    <item row="0" column="0">
     <widget class="QLabel" name="lblSpecular">
-     <property name="toolTip">
-      <string>Color of light reflecting from smooth surfaces.</string>
-     </property>
      <property name="text">
       <string>Base color</string>
      </property>
@@ -42,9 +39,6 @@
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lblShininess">
-     <property name="toolTip">
-      <string>How shiny smooth surfaces are.</string>
-     </property>
      <property name="text">
       <string>Metalness</string>
      </property>
@@ -59,9 +53,6 @@
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="lblShininess_2">
-     <property name="toolTip">
-      <string>How shiny smooth surfaces are.</string>
-     </property>
      <property name="text">
       <string>Roughness</string>
      </property>
@@ -78,15 +69,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
