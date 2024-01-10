@@ -294,8 +294,11 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     uri = string;
 
   QString name;
+
   // for disk based sources, we use the filename to determine a layer name
-  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "pdal" ) || provider == QLatin1String( "ept" ) || provider == QLatin1String( "copc" ) ) )
+  const QgsProviderMetadata *providerMetadata = useProvider ? QgsProviderRegistry::instance()->providerMetadata( provider ) : nullptr;
+  if ( !useProvider
+       || ( providerMetadata && providerMetadata->providerCapabilities() & QgsProviderMetadata::ProviderCapability::FileBasedUris ) )
   {
     QStringList components = uri.split( '|' );
     if ( components.isEmpty() )
@@ -310,7 +313,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return nullptr;
     name = fi.baseName();
   }
-  else
+  if ( name.isEmpty() )
   {
     name = QgsDataSourceUri( uri ).table();
   }
