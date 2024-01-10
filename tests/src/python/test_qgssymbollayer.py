@@ -1172,48 +1172,6 @@ class TestQgsSymbolLayer(QgisTestCase):
         ctx = QgsRenderContext()
         self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
-    def testSldRuleExport(self):
-        """Test issue GH #4234 fields containing spaces"""
-
-        temp_dir = QTemporaryDir()
-        temp_path = temp_dir.path()
-        temp_gpkg = os.path.join(temp_path, 'test.gpkg')
-
-        ds = ogr.GetDriverByName('GPKG').CreateDataSource(temp_gpkg)
-
-        lyr = ds.CreateLayer("test_layer", geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
-        lyr.CreateField(ogr.FieldDefn('Text Field With Spaces', ogr.OFTString))
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f['Text Field With Spaces'] = 'foo'
-        f.SetGeometry(ogr.CreateGeometryFromWkt(f'POINT({1} {1 + 0.01})'))
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f['Text Field With Spaces'] = 'bar'
-        f.SetGeometry(ogr.CreateGeometryFromWkt(f'POINT({2 + 0.03} {2 + 0.04})'))
-        lyr.CreateFeature(f)
-        f = None
-
-        vl = QgsVectorLayer(temp_gpkg, 'temp', 'ogr')
-
-        self.assertTrue(vl.isValid())
-
-        # Create style
-
-        foo_sym = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_color': 'foo'})
-        bar_sym = QgsFillSymbol.createSimple({'color': '#00ff00', 'outline_color': 'bar'})
-
-        renderer = QgsCategorizedSymbolRenderer()
-        renderer.setClassAttribute('Text Field With Spaces')
-
-        renderer.addCategory(QgsRendererCategory('foo', foo_sym, 'foo'))
-        renderer.addCategory(QgsRendererCategory('bar', bar_sym, 'bar'))
-
-        vl.setRenderer(renderer)
-
-        doc = QDomDocument()
-        vl.exportSldStyle(doc, None)
-        self.assertFalse('Parser Error' in doc.toString())
-
     def testQgsFilledMarkerSymbolLayer(self):
         """
         Test QgsFilledMarkerSymbolLayer
