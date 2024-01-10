@@ -84,7 +84,7 @@
     </widget>
    </item>
    <item row="3" column="1" colspan="3">
-    <widget class="QgsFileWidget" name="mFileWidget"/>
+    <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
    </item>
    <item row="4" column="0" colspan="4">
     <widget class="QWidget" name="mSaveToDbWidget" native="true">
@@ -108,7 +108,7 @@
        <widget class="QPlainTextEdit" name="mDbStyleDescriptionEdit"/>
       </item>
       <item row="2" column="1">
-       <widget class="QgsFileWidget" name="mDbStyleUIFileWidget">
+       <widget class="QgsFileWidget" name="mDbStyleUIFileWidget" native="true">
         <property name="toolTip">
          <string>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</string>
         </property>
@@ -175,16 +175,16 @@
     </spacer>
    </item>
    <item row="6" column="2">
-    <widget class="QPushButton" name="mHideAllButton">
+    <widget class="QPushButton" name="mSelectAllButton">
      <property name="text">
-      <string>Deselect All</string>
+      <string>Select All</string>
      </property>
     </widget>
    </item>
    <item row="6" column="3">
-    <widget class="QPushButton" name="mShowAllButton">
+    <widget class="QPushButton" name="mDeselectAllButton">
      <property name="text">
-      <string>Select All</string>
+      <string>Deselect All</string>
      </property>
     </widget>
    </item>

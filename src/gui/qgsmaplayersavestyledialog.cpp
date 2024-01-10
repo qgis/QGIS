@@ -77,8 +77,8 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
   mStyleCategoriesListView->setModel( mModel );
 
   // select and deselect all categories
-  connect( mSelectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::showAll );
-  connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::hideAll );
+  connect( mSelectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::selectAll );
+  connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::deselectAll );
 
   mStyleCategoriesListView->adjustSize();
 
@@ -86,7 +86,7 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
 
 }
 
-void QgsMapLayerSaveStyleDialog::showAll()
+void QgsMapLayerSaveStyleDialog::selectAll()
 {
   for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
   {
@@ -95,7 +95,7 @@ void QgsMapLayerSaveStyleDialog::showAll()
   }
 }
 
-void QgsMapLayerSaveStyleDialog::hideAll()
+void QgsMapLayerSaveStyleDialog::deselectAll()
 {
   for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
   {

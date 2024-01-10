@@ -140,11 +140,11 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   mStyleCategoriesListView->adjustSize();
 
   // select and deselect all categories
-  connect( mShowAllButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::showAll );
-  connect( mHideAllButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::hideAll );
+  connect( mSelectAllButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::selectAll );
+  connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::deselectAll );
 }
 
-void QgsMapLayerLoadStyleDialog::showAll()
+void QgsMapLayerLoadStyleDialog::selectAll()
 {
   for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
   {
@@ -153,7 +153,7 @@ void QgsMapLayerLoadStyleDialog::showAll()
   }
 }
 
-void QgsMapLayerLoadStyleDialog::hideAll()
+void QgsMapLayerLoadStyleDialog::deselectAll()
 {
   for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
   {
