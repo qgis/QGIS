@@ -75,7 +75,7 @@ class TestQgsMultiLineString(QgisTestCase):
         geom2.addGeometry(line1)
         geom2.addGeometry(line2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -101,7 +101,7 @@ class TestQgsMultiLineString(QgisTestCase):
         geom2.addGeometry(line1)
         geom2.addGeometry(line2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -127,7 +127,7 @@ class TestQgsMultiLineString(QgisTestCase):
         geom2.addGeometry(line1)
         geom2.addGeometry(line2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -153,7 +153,7 @@ class TestQgsMultiLineString(QgisTestCase):
         geom2.addGeometry(line1)
         geom2.addGeometry(line2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
