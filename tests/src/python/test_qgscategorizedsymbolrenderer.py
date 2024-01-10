@@ -891,6 +891,36 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertTrue(ok)
         self.assertEqual(exp, """upper("field_name") IN ('d', 'e')""")
 
+    def testSldRuleExport(self):
+        """Test issue GH #4234 fields containing spaces"""
+
+        vl = QgsVectorLayer("Point", "test_layer", "memory")
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(
+            vl.dataProvider().addAttributes([
+                QgsField('Text Field With Spaces', QVariant.String)
+            ])
+        )
+        vl.updateFields()
+
+        # Create style
+
+        foo_sym = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_color': 'foo'})
+        bar_sym = QgsFillSymbol.createSimple({'color': '#00ff00', 'outline_color': 'bar'})
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('Text Field With Spaces')
+
+        renderer.addCategory(QgsRendererCategory('foo', foo_sym, 'foo'))
+        renderer.addCategory(QgsRendererCategory('bar', bar_sym, 'bar'))
+
+        vl.setRenderer(renderer)
+
+        doc = QDomDocument()
+        vl.exportSldStyle(doc, None)
+        self.assertNotIn('Parser Error', doc.toString())
+
     def test_to_sld(self):
         renderer = QgsCategorizedSymbolRenderer()
         renderer.setClassAttribute('field_name')
