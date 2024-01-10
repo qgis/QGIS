@@ -890,6 +890,337 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertTrue(ok)
         self.assertEqual(exp, """upper("field_name") IN ('d', 'e')""")
 
+    def test_to_sld(self):
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('field_name')
+
+        symbol_a = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a', True, '0'))
+        symbol_b = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(5, symbol_b, 'b', True, '1'))
+        symbol_c = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(5.5, symbol_c, 'c', False, '2'))
+        symbol_d = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(['d', 'e'], symbol_d, 'de', True, '3'))
+        symbol_f = createMarkerSymbol()
+        renderer.addCategory(QgsRendererCategory(None, symbol_f, 'f', True, '4'))
+
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        renderer.toSld(dom, root, {})
+
+        expected = """<FakeRoot>
+ <se:Rule>
+  <se:Name>a</se:Name>
+  <se:Description>
+   <se:Title>a</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:PropertyIsEqualTo>
+    <ogc:PropertyName>field_name</ogc:PropertyName>
+    <ogc:Literal>a</ogc:Literal>
+   </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>b</se:Name>
+  <se:Description>
+   <se:Title>b</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:PropertyIsEqualTo>
+    <ogc:PropertyName>field_name</ogc:PropertyName>
+    <ogc:Literal>5</ogc:Literal>
+   </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>c</se:Name>
+  <se:Description>
+   <se:Title>c</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:PropertyIsEqualTo>
+    <ogc:PropertyName>field_name</ogc:PropertyName>
+    <ogc:Literal>5.5</ogc:Literal>
+   </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>de</se:Name>
+  <se:Description>
+   <se:Title>de</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:Or>
+    <ogc:PropertyIsEqualTo>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>d</ogc:Literal>
+    </ogc:PropertyIsEqualTo>
+    <ogc:PropertyIsEqualTo>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>e</ogc:Literal>
+    </ogc:PropertyIsEqualTo>
+   </ogc:Or>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>f</se:Name>
+  <se:Description>
+   <se:Title>f</se:Title>
+  </se:Description>
+  <se:ElseFilter xmlns:se="http://www.opengis.net/se"/>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+</FakeRoot>
+"""
+
+        self.assertEqual(dom.toString(), expected)
+
+        # with class attribute quoted
+        renderer.setClassAttribute('"field_name"')
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        renderer.toSld(dom, root, {})
+        self.assertEqual(dom.toString(), expected)
+
+        # with an expression for attribute
+        renderer.setClassAttribute('field_name + 2')
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        renderer.toSld(dom, root, {})
+        self.assertEqual(dom.toString(), """<FakeRoot>
+ <se:Rule>
+  <se:Name>a</se:Name>
+  <se:Description>
+   <se:Title>a</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:PropertyIsEqualTo>
+    <ogc:Add>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>2</ogc:Literal>
+    </ogc:Add>
+    <ogc:Literal>a</ogc:Literal>
+   </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>b</se:Name>
+  <se:Description>
+   <se:Title>b</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:PropertyIsEqualTo>
+    <ogc:Add>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>2</ogc:Literal>
+    </ogc:Add>
+    <ogc:Literal>5</ogc:Literal>
+   </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>c</se:Name>
+  <se:Description>
+   <se:Title>c</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:PropertyIsEqualTo>
+    <ogc:Add>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>2</ogc:Literal>
+    </ogc:Add>
+    <ogc:Literal>5.5</ogc:Literal>
+   </ogc:PropertyIsEqualTo>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>de</se:Name>
+  <se:Description>
+   <se:Title>de</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:Or>
+    <ogc:PropertyIsEqualTo>
+     <ogc:Add>
+      <ogc:PropertyName>field_name</ogc:PropertyName>
+      <ogc:Literal>2</ogc:Literal>
+     </ogc:Add>
+     <ogc:Literal>d</ogc:Literal>
+    </ogc:PropertyIsEqualTo>
+    <ogc:PropertyIsEqualTo>
+     <ogc:Add>
+      <ogc:PropertyName>field_name</ogc:PropertyName>
+      <ogc:Literal>2</ogc:Literal>
+     </ogc:Add>
+     <ogc:Literal>e</ogc:Literal>
+    </ogc:PropertyIsEqualTo>
+   </ogc:Or>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>f</se:Name>
+  <se:Description>
+   <se:Title>f</se:Title>
+  </se:Description>
+  <se:ElseFilter xmlns:se="http://www.opengis.net/se"/>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+</FakeRoot>
+""")
+
 
 if __name__ == "__main__":
     unittest.main()
