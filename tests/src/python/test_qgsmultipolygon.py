@@ -42,7 +42,7 @@ class TestQgsMultiPolygon(QgisTestCase):
         assert geom2.addGeometry(p1)
         assert geom2.addGeometry(p2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -73,7 +73,7 @@ class TestQgsMultiPolygon(QgisTestCase):
         assert geom2.addGeometry(p1)
         assert geom2.addGeometry(p2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -104,7 +104,7 @@ class TestQgsMultiPolygon(QgisTestCase):
         assert geom2.addGeometry(p1)
         assert geom2.addGeometry(p2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -135,7 +135,7 @@ class TestQgsMultiPolygon(QgisTestCase):
         assert geom2.addGeometry(p1)
         assert geom2.addGeometry(p2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)

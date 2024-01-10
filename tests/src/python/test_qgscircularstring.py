@@ -28,7 +28,7 @@ class TestQgsCircularString(QgisTestCase):
         geom1 = QgsCircularString(QgsPoint(0.0, 0.0), QgsPoint(0.001, 0.001), QgsPoint(0.5, 0.5))
         geom2 = QgsCircularString(QgsPoint(0.0, 0.0), QgsPoint(0.002, 0.002), QgsPoint(0.5, 0.5))
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -45,7 +45,7 @@ class TestQgsCircularString(QgisTestCase):
         geom1 = QgsCircularString(QgsPoint(0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001), QgsPoint(0.5, 0.5, 0.5))
         geom2 = QgsCircularString(QgsPoint(0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.002), QgsPoint(0.5, 0.5, 0.5))
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -62,7 +62,7 @@ class TestQgsCircularString(QgisTestCase):
         geom1 = QgsCircularString(QgsPoint(0.0, 0.0, m=0.0), QgsPoint(0.001, 0.001, m=0.001), QgsPoint(0.5, 0.5, m=0.5))
         geom2 = QgsCircularString(QgsPoint(0.0, 0.0, m=0.0), QgsPoint(0.001, 0.001, m=0.002), QgsPoint(0.5, 0.5, m=0.5))
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -79,7 +79,7 @@ class TestQgsCircularString(QgisTestCase):
         geom1 = QgsCircularString(QgsPoint(0.0, 0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001, 0.001), QgsPoint(0.5, 0.5, 0.5, 0.5))
         geom2 = QgsCircularString(QgsPoint(0.0, 0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.002, 0.002), QgsPoint(0.5, 0.5, 0.5, 0.5))
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)

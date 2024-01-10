@@ -40,7 +40,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -65,7 +65,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -93,7 +93,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -118,7 +118,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -146,7 +146,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -171,7 +171,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -199,7 +199,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
@@ -224,7 +224,7 @@ class TestQgsCompoundCurve(QgisTestCase):
         geom2.addCurve(line2)
         geom2.addCurve(circularString2)
 
-        assert not geom1 == geom2  # epsilon = 1e-8 here
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
         assert geom1.fuzzyEqual(geom2, epsilon)
         assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
