@@ -375,9 +375,9 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     options.skipCrsValidation = true;
 
     std::unique_ptr< QgsVectorLayer > layer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      layer = std::make_unique<QgsVectorLayer>( uri, name, provider, options );
+      layer = std::make_unique<QgsVectorLayer>( uri, name, providerMetadata->key(), options );
     }
     else
     {
@@ -396,9 +396,9 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     rasterOptions.skipCrsValidation = true;
 
     std::unique_ptr< QgsRasterLayer > rasterLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      rasterLayer = std::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
+      rasterLayer = std::make_unique< QgsRasterLayer >( uri, name, providerMetadata->key(), rasterOptions );
     }
     else
     {
@@ -417,9 +417,9 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     meshOptions.skipCrsValidation = true;
 
     std::unique_ptr< QgsMeshLayer > meshLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      meshLayer = std::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
+      meshLayer = std::make_unique< QgsMeshLayer >( uri, name, providerMetadata->key(), meshOptions );
     }
     else
     {
@@ -441,9 +441,9 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     }
 
     std::unique_ptr< QgsPointCloudLayer > pointCloudLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, provider, pointCloudOptions );
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, providerMetadata->key(), pointCloudOptions );
     }
     else
     {
@@ -478,9 +478,9 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     tiledSceneOptions.skipCrsValidation = true;
 
     std::unique_ptr< QgsTiledSceneLayer > tiledSceneLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, provider, tiledSceneOptions );
+      tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, providerMetadata->key(), tiledSceneOptions );
     }
     else
     {
