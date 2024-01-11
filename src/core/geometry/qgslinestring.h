@@ -323,31 +323,40 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       if ( mWkbType != otherLine->mWkbType )
         return false;
 
-      if ( mX.count() != otherLine->mX.count() )
+      const int size = mX.count();
+      if ( size != otherLine->mX.count() )
         return false;
 
       bool result = true;
-      for ( int i = 0; i < mX.count(); ++i )
+      const double *xData = mX.constData();
+      const double *yData = mY.constData();
+      const double *zData = is3DFlag ? mZ.constData() : nullptr;
+      const double *mData = isMeasureFlag ? mM.constData() : nullptr;
+      const double *otherXData = otherLine->mX.constData();
+      const double *otherYData = otherLine->mY.constData();
+      const double *otherZData = is3DFlag ? otherLine->mZ.constData() : nullptr;
+      const double *otherMData = isMeasureFlag ? otherLine->mM.constData() : nullptr;
+      for ( int i = 0; i < size; ++i )
       {
         if ( is3DFlag && isMeasureFlag )
         {
-          result &= comparator3DMeasure( epsilon, mX.at( i ), mY.at( i ), mZ.at( i ), mM.at( i ),
-                                         otherLine->mX.at( i ), otherLine->mY.at( i ), otherLine->mZ.at( i ), otherLine->mM.at( i ) );
+          result &= comparator3DMeasure( epsilon, *xData++, *yData++, *zData++, *mData++,
+                                         *otherXData++, *otherYData++, *otherZData++, *otherMData++ );
         }
         else if ( is3DFlag )
         {
-          result &= comparator3D( epsilon, mX.at( i ), mY.at( i ), mZ.at( i ),
-                                  otherLine->mX.at( i ), otherLine->mY.at( i ), otherLine->mZ.at( i ) );
+          result &= comparator3D( epsilon, *xData++, *yData++, *zData++,
+                                  *otherXData++, *otherYData++, *otherZData++ );
         }
         else if ( isMeasureFlag )
         {
-          result &= comparatorMeasure( epsilon, mX.at( i ), mY.at( i ), mM.at( i ),
-                                       otherLine->mX.at( i ), otherLine->mY.at( i ), otherLine->mM.at( i ) );
+          result &= comparatorMeasure( epsilon, *xData++, *yData++, *mData++,
+                                       *otherXData++, *otherYData++, *otherMData++ );
         }
         else
         {
-          result &= comparator2D( epsilon, mX.at( i ), mY.at( i ),
-                                  otherLine->mX.at( i ), otherLine->mY.at( i ) );
+          result &= comparator2D( epsilon, *xData++, *yData++,
+                                  *otherXData++, *otherYData++ );
         }
         if ( ! result )
         {
