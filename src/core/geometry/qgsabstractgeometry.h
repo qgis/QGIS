@@ -165,8 +165,10 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Performs fuzzy comparison between this geometry and \a other using an \a epsilon.
      *
+     * The comparison is done by examining the specific values (such as x and y) that define the location of vertices in the geometry.
+     *
      * \see fuzzyDistanceEqual
-     * \see QgsGeometryUtilsBase::fuzzyEqual
+     * \see QgsGeometryUtilsBase::fuzzyDistanceEqual
      *
      * \since QGIS 3.36
      */
@@ -175,13 +177,13 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Performs fuzzy distance comparison between this geometry and \a other using an \a epsilon.
      *
-     * Traditionally, the comparison is done by examining the specific values (such as x and y) that define the location of points.
+     * Traditionally, the comparison is done by examining the specific values (such as x and y) that define the location of vertices in the geometry.
      * It focuses on the numerical differences or relationships between these values.
      * On the other hand, comparing distances between points considers the actual spatial separation or length between the points, regardless of their coordinate values.
      * This comparison involves measuring the distance between two points using formulas like the distance formula. Here, it's the "distance comparison" (fuzzyDistanceEqual).
      *
      * \see fuzzyEqual
-     * \see QgsGeometryUtilsBase::fuzzyDistanceEqual
+     * \see QgsGeometryUtilsBase::fuzzyEqual
      *
      * \since QGIS 3.36
      */
