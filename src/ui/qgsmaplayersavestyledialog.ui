@@ -21,16 +21,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mStyleTypeComboBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="mStylesWidgetLabel">
      <property name="text">
@@ -82,9 +72,6 @@
       <string>File</string>
      </property>
     </widget>
-   </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="QgsFileWidget" name="mFileWidget"/>
    </item>
    <item row="4" column="0" colspan="5">
     <widget class="QWidget" name="mSaveToDbWidget" native="true">
@@ -191,6 +178,19 @@
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="0" column="1" colspan="4">
+    <widget class="QComboBox" name="mStyleTypeComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="4">
+    <widget class="QgsFileWidget" name="mFileWidget"/>
    </item>
   </layout>
  </widget>
