@@ -32,25 +32,25 @@ class TestQgsMultiPolygon(QgisTestCase):
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0), QgsPoint(6.0, 5.0), QgsPoint(6.0, 6.0), QgsPoint(5.0, 5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0), QgsPoint(0.001, 0.001), QgsPoint(0.003, 0.003), QgsPoint(0.0, 0.0)]))
-        assert geom1.addGeometry(p1)
-        assert geom1.addGeometry(p2)
+        self.assertTrue(geom1.addGeometry(p1))
+        self.assertTrue(geom1.addGeometry(p2))
 
         p1 = QgsPolygon()
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0), QgsPoint(6.0, 5.0), QgsPoint(6.0, 6.0), QgsPoint(5.0, 5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0), QgsPoint(0.002, 0.002), QgsPoint(0.003, 0.003), QgsPoint(0.0, 0.0)]))
-        assert geom2.addGeometry(p1)
-        assert geom2.addGeometry(p2)
+        self.assertTrue(geom2.addGeometry(p1))
+        self.assertTrue(geom2.addGeometry(p2))
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         #######
         # 3DZ #
@@ -63,25 +63,25 @@ class TestQgsMultiPolygon(QgisTestCase):
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0, 5.0), QgsPoint(6.0, 5.0, 5.0), QgsPoint(6.0, 6.0, 5.0), QgsPoint(5.0, 5.0, 5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001), QgsPoint(0.003, 0.003, 0.003), QgsPoint(0.0, 0.0, 0.0)]))
-        assert geom1.addGeometry(p1)
-        assert geom1.addGeometry(p2)
+        self.assertTrue(geom1.addGeometry(p1))
+        self.assertTrue(geom1.addGeometry(p2))
 
         p1 = QgsPolygon()
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0, 5.0), QgsPoint(6.0, 5.0, 5.0), QgsPoint(6.0, 6.0, 5.0), QgsPoint(5.0, 5.0, 5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.002), QgsPoint(0.003, 0.003, 0.003), QgsPoint(0.0, 0.0, 0.0)]))
-        assert geom2.addGeometry(p1)
-        assert geom2.addGeometry(p2)
+        self.assertTrue(geom2.addGeometry(p1))
+        self.assertTrue(geom2.addGeometry(p2))
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         #######
         # 3DM #
@@ -94,25 +94,25 @@ class TestQgsMultiPolygon(QgisTestCase):
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0, m=5.0), QgsPoint(6.0, 5.0, m=5.0), QgsPoint(6.0, 6.0, m=5.0), QgsPoint(5.0, 5.0, m=5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0, m=0.0), QgsPoint(0.001, 0.001, m=0.001), QgsPoint(0.003, 0.003, m=0.003), QgsPoint(0.0, 0.0, m=0.0)]))
-        assert geom1.addGeometry(p1)
-        assert geom1.addGeometry(p2)
+        self.assertTrue(geom1.addGeometry(p1))
+        self.assertTrue(geom1.addGeometry(p2))
 
         p1 = QgsPolygon()
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0, m=5.0), QgsPoint(6.0, 5.0, m=5.0), QgsPoint(6.0, 6.0, m=5.0), QgsPoint(5.0, 5.0, m=5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0, m=0.0), QgsPoint(0.001, 0.001, m=0.002), QgsPoint(0.003, 0.003, m=0.003), QgsPoint(0.0, 0.0, m=0.0)]))
-        assert geom2.addGeometry(p1)
-        assert geom2.addGeometry(p2)
+        self.assertTrue(geom2.addGeometry(p1))
+        self.assertTrue(geom2.addGeometry(p2))
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         ######
         # 4D #
@@ -125,25 +125,25 @@ class TestQgsMultiPolygon(QgisTestCase):
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0, 5.0, 5.0), QgsPoint(6.0, 5.0, 5.0, 5.0), QgsPoint(6.0, 6.0, 5.0, 5.0), QgsPoint(5.0, 5.0, 5.0, 5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001, 0.001), QgsPoint(0.003, 0.003, 0.003, 0.003), QgsPoint(0.0, 0.0, 0.0, 0.0)]))
-        assert geom1.addGeometry(p1)
-        assert geom1.addGeometry(p2)
+        self.assertTrue(geom1.addGeometry(p1))
+        self.assertTrue(geom1.addGeometry(p2))
 
         p1 = QgsPolygon()
         p1.setExteriorRing(QgsLineString([QgsPoint(5.0, 5.0, 5.0, 5.0), QgsPoint(6.0, 5.0, 5.0, 5.0), QgsPoint(6.0, 6.0, 5.0, 5.0), QgsPoint(5.0, 5.0, 5.0, 5.0)]))
         p2 = QgsPolygon()
         p2.setExteriorRing(QgsLineString([QgsPoint(0.0, 0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.002, 0.002), QgsPoint(0.003, 0.003, 0.003, 0.003), QgsPoint(0.0, 0.0, 0.0, 0.0)]))
-        assert geom2.addGeometry(p1)
-        assert geom2.addGeometry(p2)
+        self.assertTrue(geom2.addGeometry(p1))
+        self.assertTrue(geom2.addGeometry(p2))
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
 
 if __name__ == '__main__':
