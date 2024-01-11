@@ -350,7 +350,7 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
 QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperations() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize PROJ operations" ) );
 
@@ -380,7 +380,7 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 #if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Initialize celestial bodies" ) );
 
@@ -414,7 +414,7 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Initialize authorities" ) );
 
@@ -436,7 +436,7 @@ QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
 QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     const QString srsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
     if ( QFileInfo::exists( srsDatabaseFileName ) )

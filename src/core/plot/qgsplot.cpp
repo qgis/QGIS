@@ -711,7 +711,7 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
     double minorIntervalX = mXAxis.gridIntervalMinor();
     const QString suffixX = mXAxis.labelSuffix();
     const double suffixWidth = !suffixX.isEmpty() ? QgsTextRenderer::textWidth( context,  mXAxis.textFormat(), { suffixX } ) : 0;
-    refineIntervalForAxis( mMinX, mMaxX, [ = ]( double position ) -> double
+    refineIntervalForAxis( mMinX, mMaxX, [this, &context, suffixWidth, &numericContext]( double position ) -> double
     {
       const QString text = mXAxis.numericFormat()->formatDouble( position, numericContext );
       // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
@@ -729,7 +729,7 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
     double majorIntervalY = mYAxis.gridIntervalMajor();
     double minorIntervalY = mYAxis.gridIntervalMinor();
     const QString suffixY = mYAxis.labelSuffix();
-    refineIntervalForAxis( mMinY, mMaxY, [ = ]( double position ) -> double
+    refineIntervalForAxis( mMinY, mMaxY, [this, &context, suffixY, &numericContext]( double position ) -> double
     {
       const QString text = mYAxis.numericFormat()->formatDouble( position, numericContext );
       // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider

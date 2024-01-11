@@ -186,7 +186,7 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
 #endif
 
   connect( mUdpSocket.get(), &QAbstractSocket::stateChanged, this, &QgsUdpSocketSensor::socketStateChanged );
-  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [ = ]()
+  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [this]()
   {
     QByteArray datagram;
     while ( mUdpSocket->hasPendingDatagrams() )

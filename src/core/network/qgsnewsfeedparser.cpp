@@ -324,7 +324,7 @@ void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entr
 {
   // start fetching image
   QgsNetworkContentFetcher *fetcher = new QgsNetworkContentFetcher();
-  connect( fetcher, &QgsNetworkContentFetcher::finished, this, [ = ]
+  connect( fetcher, &QgsNetworkContentFetcher::finished, this, [this, fetcher, entry]
   {
     const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
     {

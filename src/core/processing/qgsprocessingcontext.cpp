@@ -25,7 +25,7 @@ QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
   , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
 {
-  auto callback = [ = ]( const QgsFeature & feature )
+  auto callback = [this]( const QgsFeature & feature )
   {
     if ( mFeedback )
       mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
@@ -101,7 +101,7 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
 
     case QgsFeatureRequest::GeometrySkipInvalid:
     {
-      auto callback = [ = ]( const QgsFeature & feature )
+      auto callback = [this, sourceName]( const QgsFeature & feature )
       {
         if ( mFeedback )
         {

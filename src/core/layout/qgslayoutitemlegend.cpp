@@ -54,8 +54,8 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
 
   mTitle = mSettings.title();
 
-  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestStarted, this, [ = ] { emit backgroundTaskCountChanged( 1 ); } );
-  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [ = ]
+  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestStarted, this, [this] { emit backgroundTaskCountChanged( 1 ); } );
+  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [this]
   {
     adjustBoxSize();
     emit backgroundTaskCountChanged( 0 );
@@ -66,12 +66,12 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
 
   // If project colors change, we need to redraw legend, as legend symbols may rely on project colors
-  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [ = ]
+  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this]
   {
     invalidateCache();
     update();
   } );
-  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [ = ]
+  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [this]
   {
     // NOTE -- we do NOT connect to ::refresh here, as we don't want to trigger the call to onAtlasFeature() which sets mFilterAskedForUpdate to true,
     // causing an endless loop.
@@ -1284,7 +1284,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
 {
   std::function<bool( QgsLayerTreeGroup *group ) >visit;
 
-  visit = [ =, &visit]( QgsLayerTreeGroup * group ) -> bool
+  visit = [this, visitor, &visit]( QgsLayerTreeGroup * group ) -> bool
   {
     const QList<QgsLayerTreeNode *> childNodes = group->children();
     for ( QgsLayerTreeNode *node : childNodes )
