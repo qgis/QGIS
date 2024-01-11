@@ -79,11 +79,23 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
   // select and deselect all categories
   connect( mSelectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::selectAll );
   connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::deselectAll );
+  connect( mInvertSelectionButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::invertSelection );
 
   mStyleCategoriesListView->adjustSize();
 
   setupMultipleStyles();
 
+}
+
+void QgsMapLayerSaveStyleDialog::invertSelection()
+{
+  for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mModel->index( i, 0 );
+    Qt::CheckState currentState = Qt::CheckState( mModel->data(index, Qt::CheckStateRole).toInt() );
+    Qt::CheckState newState = ( currentState == Qt::Checked ) ? Qt::Unchecked : Qt::Checked;
+    mModel->setData( index, newState, Qt::CheckStateRole );
+  }
 }
 
 void QgsMapLayerSaveStyleDialog::selectAll()
