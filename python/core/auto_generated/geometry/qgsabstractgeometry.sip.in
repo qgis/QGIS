@@ -103,9 +103,11 @@ Constructor for QgsAbstractGeometry.
 %Docstring
 Performs fuzzy comparison between this geometry and ``other`` using an ``epsilon``.
 
+The comparison is done by examining the specific values (such as x and y) that define the location of vertices in the geometry.
+
 .. seealso:: :py:func:`fuzzyDistanceEqual`
 
-.. seealso:: :py:func:`QgsGeometryUtilsBase.fuzzyEqual`
+.. seealso:: :py:func:`QgsGeometryUtilsBase.fuzzyDistanceEqual`
 
 .. versionadded:: 3.36
 %End
@@ -114,14 +116,14 @@ Performs fuzzy comparison between this geometry and ``other`` using an ``epsilon
 %Docstring
 Performs fuzzy distance comparison between this geometry and ``other`` using an ``epsilon``.
 
-Traditionally, the comparison is done by examining the specific values (such as x and y) that define the location of points.
+Traditionally, the comparison is done by examining the specific values (such as x and y) that define the location of vertices in the geometry.
 It focuses on the numerical differences or relationships between these values.
 On the other hand, comparing distances between points considers the actual spatial separation or length between the points, regardless of their coordinate values.
 This comparison involves measuring the distance between two points using formulas like the distance formula. Here, it's the "distance comparison" (fuzzyDistanceEqual).
 
 .. seealso:: :py:func:`fuzzyEqual`
 
-.. seealso:: :py:func:`QgsGeometryUtilsBase.fuzzyDistanceEqual`
+.. seealso:: :py:func:`QgsGeometryUtilsBase.fuzzyEqual`
 
 .. versionadded:: 3.36
 %End
