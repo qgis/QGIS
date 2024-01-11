@@ -12,6 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QSignalSpy>
+
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
@@ -28,6 +31,7 @@
 #include "qgsapplication.h"
 #include "qgsrenderchecker.h"
 #include "qgssettings.h"
+#include "qgsmessagelog.h"
 
 /**
  * \ingroup UnitTests
@@ -61,6 +65,7 @@ class TestQgsImageCache : public QgsTest
     void nextFrameDelay();
     void imageFrames();
     void preseedAnimation();
+    void cmykImage();
 };
 
 
@@ -476,5 +481,23 @@ bool TestQgsImageCache::imageCheck( const QString &testName, QImage &image, int 
   mReport += checker.report();
   return resultFlag;
 }
+
+void TestQgsImageCache::cmykImage()
+{
+  QgsImageCache cache;
+  const QString imagePath = TEST_DATA_DIR + QStringLiteral( "/cmyk.jpg" );
+  bool fitInCache;
+  const QImage image = cache.pathAsImage( imagePath, QSize( 130, 50 ), true, 1.0, fitInCache );
+  QVERIFY( !image.isNull() );
+  QCOMPARE( image.size(), QSize( 130, 50 ) );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  QCOMPARE( image.format(), QImage::Format_CMYK8888 );
+#else
+  QCOMPARE( image.format(), QImage::Format_ARGB32 );
+#endif
+}
+
+
 QGSTEST_MAIN( TestQgsImageCache )
 #include "testqgsimagecache.moc"
