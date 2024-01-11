@@ -32,13 +32,13 @@ class TestQgsPolygon(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         #######
         # 3DZ #
@@ -51,13 +51,13 @@ class TestQgsPolygon(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         #######
         # 3DM #
@@ -70,13 +70,13 @@ class TestQgsPolygon(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         ######
         # 4D #
@@ -89,13 +89,13 @@ class TestQgsPolygon(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
 
 if __name__ == '__main__':

@@ -30,13 +30,13 @@ class TestQgsPointXY(QgisTestCase):
         myExpectedValue = 10.0
         myActualValue = self.mPoint.x()
         myMessage = f'Expected: {myExpectedValue} Got: {myActualValue}'
-        assert myExpectedValue == myActualValue, myMessage
+        self.assertTrue(myExpectedValue == myActualValue, myMessage)
 
     def test_pointToString(self):
         myExpectedValue = '10, 10'
         myActualValue = self.mPoint.toString()
         myMessage = f'Expected: {myExpectedValue} Got: {myActualValue}'
-        assert myExpectedValue == myActualValue, myMessage
+        self.assertTrue(myExpectedValue == myActualValue, myMessage)
 
     def test_hash(self):
         a = QgsPointXY(2.0, 1.0)
@@ -44,48 +44,48 @@ class TestQgsPointXY(QgisTestCase):
         c = QgsPointXY(1.0, 2.0)
         d = QgsPointXY(1.0, 1.0)
         e = QgsPointXY(2.0, 1.0)
-        assert a.__hash__() != b.__hash__()
-        assert e.__hash__() == a.__hash__()
+        self.assertTrue(a.__hash__() != b.__hash__())
+        self.assertTrue(e.__hash__() == a.__hash__())
 
         mySet = {a, b, c, d, e}
-        assert len(mySet) == 4
+        self.assertTrue(len(mySet) == 4)
 
     def test_issue_32443(self):
         p = QgsPoint()
-        assert p.wkbType() == QgsWkbTypes.Point and p.x() != p.x() and p.y() != p.y()
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() != p.x() and p.y() != p.y())
 
         # ctor from QgsPointXY should be available
         p = QgsPoint(QgsPointXY(1, 2))
-        assert p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2)
 
         # ctor from QPointF should be available
         p = QgsPoint(QPointF(1, 2))
-        assert p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2)
 
         p = QgsPoint(1, 2)
-        assert p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2)
 
         p = QgsPoint(1, 2, 3)
-        assert p.wkbType() == QgsWkbTypes.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3
+        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
 
         p = QgsPoint(1, 2, z=3)
-        assert p.wkbType() == QgsWkbTypes.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3
+        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
 
         p = QgsPoint(1, 2, m=3)
-        assert p.wkbType() == QgsWkbTypes.PointM and p.x() == 1 and p.y() == 2 and p.m() == 3
+        self.assertTrue(p.wkbType() == QgsWkbTypes.PointM and p.x() == 1 and p.y() == 2 and p.m() == 3)
 
         p = QgsPoint(1, 2, wkbType=QgsWkbTypes.PointM)
-        assert p.wkbType() == QgsWkbTypes.PointM and p.x() == 1 and p.y() == 2 and p.m() != p.m()
+        self.assertTrue(p.wkbType() == QgsWkbTypes.PointM and p.x() == 1 and p.y() == 2 and p.m() != p.m())
 
         p = QgsPoint(1, 2, 3, 4)
-        assert p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4
+        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
 
         p = QgsPoint(1, 2, m=4, z=3)
-        assert p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4
+        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
 
     def test_empty_QgsPointXY(self):
         p = QgsPoint(QgsPointXY())
-        assert p.isEmpty()
+        self.assertTrue(p.isEmpty())
 
 
 class TestQgsPoint(QgisTestCase):
@@ -110,13 +110,13 @@ class TestQgsPoint(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         #######
         # 3DZ #
@@ -127,13 +127,13 @@ class TestQgsPoint(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         #######
         # 3DM #
@@ -144,13 +144,13 @@ class TestQgsPoint(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         ######
         # 4D #
@@ -161,13 +161,13 @@ class TestQgsPoint(QgisTestCase):
 
         self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
 
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert not geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
         # OK for both
         epsilon *= 10
-        assert geom1.fuzzyEqual(geom2, epsilon)
-        assert geom1.fuzzyDistanceEqual(geom2, epsilon)
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
 
 if __name__ == '__main__':
