@@ -23,6 +23,16 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="1" colspan="5">
+    <widget class="QListView" name="mStyleCategoriesListView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mModeLabel">
      <property name="text">
@@ -30,7 +40,31 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
+   <item row="5" column="0" colspan="6">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Open</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Categories</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mFileLabel">
+     <property name="text">
+      <string>File</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="5">
+    <widget class="QgsFileWidget" name="mFileWidget"/>
+   </item>
+   <item row="1" column="0" colspan="6">
     <widget class="QWidget" name="mFromDbWidget" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
@@ -76,67 +110,27 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mFileLabel">
+   <item row="0" column="1" colspan="5">
+    <widget class="QComboBox" name="mStyleTypeComboBox"/>
+   </item>
+   <item row="4" column="5">
+    <widget class="QPushButton" name="mInvertSelectionButton">
      <property name="text">
-      <string>File</string>
+      <string>Invert Selection</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Categories</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="QListView" name="mStyleCategoriesListView">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>235</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="4" column="2">
-    <widget class="QPushButton" name="mSelectAllButton">
-     <property name="text">
-      <string>Select All</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
+   <item row="4" column="4">
     <widget class="QPushButton" name="mDeselectAllButton">
      <property name="text">
       <string>Deselect All</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="QComboBox" name="mStyleTypeComboBox"/>
-   </item>
-   <item row="2" column="1" colspan="3">
-    <widget class="QgsFileWidget" name="mFileWidget"/>
-   </item>
-   <item row="5" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Open</set>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="mSelectAllButton">
+     <property name="text">
+      <string>Select All</string>
      </property>
     </widget>
    </item>

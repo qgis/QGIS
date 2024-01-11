@@ -104,13 +104,14 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
 
   public slots:
     void accept() override;
-    void selectAll();
-    void deselectAll();
 
   private slots:
     void updateSaveButtonState();
     void showHelp();
     void readUiFileContent( const QString &filePath );
+    void selectAll();
+    void deselectAll();
+    void invertSelection();
 
   private:
     void setupMultipleStyles();
