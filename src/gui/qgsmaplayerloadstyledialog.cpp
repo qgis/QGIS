@@ -150,7 +150,7 @@ void QgsMapLayerLoadStyleDialog::invertSelection()
   for ( int i = 0; i < mModel->rowCount( QModelIndex() ); i++ )
   {
     QModelIndex index = mModel->index( i, 0 );
-    Qt::CheckState currentState = Qt::CheckState( mModel->data(index, Qt::CheckStateRole).toInt() );
+    Qt::CheckState currentState = Qt::CheckState( mModel->data( index, Qt::CheckStateRole ).toInt() );
     Qt::CheckState newState = ( currentState == Qt::Checked ) ? Qt::Unchecked : Qt::Checked;
     mModel->setData( index, newState, Qt::CheckStateRole );
   }
