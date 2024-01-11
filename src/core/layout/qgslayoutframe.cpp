@@ -31,7 +31,7 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   if ( multiFrame )
   {
     //repaint frame when multiframe content changes
-    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [ = ]
+    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this]
     {
       update();
     } );

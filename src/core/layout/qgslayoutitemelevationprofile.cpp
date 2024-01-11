@@ -84,7 +84,7 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
     connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemElevationProfile::invalidateCache );
   }
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
   {
     invalidateCache();
   } );

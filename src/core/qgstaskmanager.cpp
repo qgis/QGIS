@@ -156,7 +156,7 @@ void QgsTask::addSubTask( QgsTask *subTask, const QgsTaskList &dependencies,
                           SubTaskDependency subTaskDependency )
 {
   mSubTasks << SubTask( subTask, dependencies, subTaskDependency );
-  connect( subTask, &QgsTask::progressChanged, this, [ = ] { setProgress( mProgress ); } );
+  connect( subTask, &QgsTask::progressChanged, this, [this] { setProgress( mProgress ); } );
   connect( subTask, &QgsTask::statusChanged, this, &QgsTask::subTaskStatusChanged );
 }
 

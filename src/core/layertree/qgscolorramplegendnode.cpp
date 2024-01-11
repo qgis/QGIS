@@ -51,7 +51,7 @@ void QgsColorRampLegendNode::init( QgsLayerTreeLayer *nodeLayer )
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   mIconSize = mSettings.orientation() == Qt::Vertical ? QSize( iconSize, iconSize * 6 ) : QSize( iconSize * 6, iconSize );
 
-  connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
+  connect( nodeLayer, &QObject::destroyed, this, [this]() { mLayerNode = nullptr; } );
 }
 
 const QgsColorRamp *QgsColorRampLegendNode::ramp() const

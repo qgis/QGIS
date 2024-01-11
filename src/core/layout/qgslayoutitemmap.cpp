@@ -57,7 +57,7 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
 
   setCacheMode( QGraphicsItem::NoCache );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
   {
     shapeChanged();
   } );
@@ -65,17 +65,17 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   mGridStack = std::make_unique< QgsLayoutItemMapGridStack >( this );
   mOverviewStack = std::make_unique< QgsLayoutItemMapOverviewStack >( this );
 
-  connect( mAtlasClippingSettings, &QgsLayoutItemMapAtlasClippingSettings::changed, this, [ = ]
+  connect( mAtlasClippingSettings, &QgsLayoutItemMapAtlasClippingSettings::changed, this, [this]
   {
     refresh();
   } );
 
-  connect( mItemClippingSettings, &QgsLayoutItemMapItemClipPathSettings::changed, this, [ = ]
+  connect( mItemClippingSettings, &QgsLayoutItemMapItemClipPathSettings::changed, this, [this]
   {
     refresh();
   } );
 
-  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [ = ]
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this]
   {
     QgsCoordinateReferenceSystem crs = mCrs;
     crs.updateDefinition();
@@ -517,7 +517,7 @@ bool QgsLayoutItemMap::requiresRasterization() const
 
   // SO this logic is a COPY of containsAdvancedEffects, without the opacity check
 
-  auto containsAdvancedEffectsIgnoreItemOpacity = [ = ]()-> bool
+  auto containsAdvancedEffectsIgnoreItemOpacity = [this]()-> bool
   {
     if ( QgsLayoutItem::containsAdvancedEffects() )
       return true;
@@ -2234,7 +2234,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
     connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ),
              this, &QgsLayoutItemMap::layersAboutToBeRemoved );
     // redraws the map AFTER layers are removed
-    connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [ = ]
+    connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [this]
     {
       if ( layers().isEmpty() )
       {
@@ -2243,7 +2243,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
       }
     } );
 
-    connect( project, &QgsProject::crsChanged, this, [ = ]
+    connect( project, &QgsProject::crsChanged, this, [this]
     {
       if ( !mCrs.isValid() )
       {
@@ -2254,7 +2254,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
     } );
 
     // If project colors change, we need to redraw the map, as layer symbols may rely on project colors
-    connect( project, &QgsProject::projectColorsChanged, this, [ = ]
+    connect( project, &QgsProject::projectColorsChanged, this, [this]
     {
       invalidateCache();
     } );
@@ -2263,7 +2263,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
     connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
-  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [ = ]
+  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [this]
   {
     if ( mAtlasScalingMode == Predefined )
       updateAtlasFeature();

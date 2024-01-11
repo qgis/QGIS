@@ -57,7 +57,7 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
 
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [ = ] { refreshPicture(); } );
+  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [this] { refreshPicture(); } );
 
   //connect to layout print resolution changing
   connect( &layout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutItemPicture::recalculateSize );

@@ -840,7 +840,7 @@ void QgsStyleProxyModel::initialize()
 
   if ( mStyle )
   {
-    connect( mStyle, &QgsStyle::entityTagsChanged, this, [ = ]
+    connect( mStyle, &QgsStyle::entityTagsChanged, this, [this]
     {
       // update tagged symbols if filtering by tag
       if ( mTagId >= 0 )
@@ -849,7 +849,7 @@ void QgsStyleProxyModel::initialize()
         setSmartGroupId( mSmartGroupId );
     } );
 
-    connect( mStyle, &QgsStyle::entityRenamed, this, [ = ]( QgsStyle::StyleEntity entity, const QString &, const QString & )
+    connect( mStyle, &QgsStyle::entityRenamed, this, [this]( QgsStyle::StyleEntity entity, const QString &, const QString & )
     {
       switch ( entity )
       {

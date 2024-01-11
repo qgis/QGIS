@@ -95,7 +95,7 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type,
   mID = generateId( lyrname );
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
-  connect( mRefreshTimer, &QTimer::timeout, this, [ = ]
+  connect( mRefreshTimer, &QTimer::timeout, this, [this]
   {
 
     switch ( mAutoRefreshMode )
