@@ -20,12 +20,12 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include "qgspreviewquad.h"
-#include "qgs3dwindow.h"
+#include "qgs3dmapcanvas.h"
 
-QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
+QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   : QgsAbstract3DEngine( parent )
 {
-  mWindow3D = new Qgs3DWindow;
+  mWindow3D = parent;
 
   mRoot = new Qt3DCore::QEntity;
   mWindow3D->setRootEntity( mRoot );

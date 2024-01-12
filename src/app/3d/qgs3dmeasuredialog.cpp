@@ -24,7 +24,7 @@
 #include "qgshelp.h"
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
-  : QDialog( tool->canvas()->topLevelWidget(), f )
+  : QDialog( nullptr, f ) //TODO: parent?
   , mTool( tool )
 {
   setupUi( this );

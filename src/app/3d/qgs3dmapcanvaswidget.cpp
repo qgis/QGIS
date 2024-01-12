@@ -208,9 +208,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
   mOptionsMenu->addAction( configureAction );
 
-  mCanvas = new Qgs3DMapCanvas( this );
+  mCanvas = new Qgs3DMapCanvas;
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
-  mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString & fileName )
   {
@@ -263,7 +262,8 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->addLayout( topLayout );
   layout->addWidget( mMessageBar );
 
-  mContainer = QWidget::createWindowContainer( mCanvas->engine()->window() );
+  // mContainer takes ownership of Qgs3DMapCanvas
+  mContainer = QWidget::createWindowContainer( mCanvas );
   mContainer->setMinimumSize( QSize( 200, 200 ) );
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
@@ -276,17 +276,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
   mCanvas->engine()->setSize( viewportRect.size() );
-
-  // Connect the camera to the navigation widget.
-  connect( mCanvas->cameraController(), &QgsCameraController::cameraChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
-
-  connect( mNavigationWidget, &Qgs3DNavigationWidget::sizeChanged, this, [&]( const QSize & newSize )
-  {
-    QSize widgetSize = size();
-    QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
-    mCanvas->engine()->setSize( viewportRect.size() );
-  } );
-
 
   toggleNavigationWidget(
     setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), false, QgsSettings::Gui ).toBool()
@@ -402,6 +391,8 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mCanvas->setMap( map );
 
+  // Connect the camera to the navigation widget.
+  connect( mCanvas->cameraController(), &QgsCameraController::cameraChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
   connect( mCanvas->scene(), &Qgs3DMapScene::gpuMemoryLimitReached, this, &Qgs3DMapCanvasWidget::onGpuMemoryLimitReached );
 
