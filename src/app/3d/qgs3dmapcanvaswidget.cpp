@@ -42,7 +42,9 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
 #include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dnavigationwidget.h"
 #include "qgs3dutils.h"
+#include "qgswindow3dengine.h"
 
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
@@ -260,7 +262,37 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
   layout->addWidget( mMessageBar );
-  layout->addWidget( mCanvas );
+
+  mContainer = QWidget::createWindowContainer( mCanvas->engine()->window() );
+  mContainer->setMinimumSize( QSize( 200, 200 ) );
+  mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
+  mNavigationWidget->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+
+  QHBoxLayout *hLayout = new QHBoxLayout;
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
+  hLayout->addWidget( mContainer );
+  hLayout->addWidget( mNavigationWidget );
+
+  QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
+  mCanvas->engine()->setSize( viewportRect.size() );
+
+  // Connect the camera to the navigation widget.
+  connect( mCanvas->cameraController(), &QgsCameraController::cameraChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
+
+  connect( mNavigationWidget, &Qgs3DNavigationWidget::sizeChanged, this, [&]( const QSize & newSize )
+  {
+    QSize widgetSize = size();
+    QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
+    mCanvas->engine()->setSize( viewportRect.size() );
+  } );
+
+
+  toggleNavigationWidget(
+    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), false, QgsSettings::Gui ).toBool()
+  );
+
+  layout->addLayout( hLayout );
   layout->addWidget( mAnimationWidget );
 
   setLayout( layout );
@@ -349,7 +381,9 @@ void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( bool visibility )
 {
-  mCanvas->setOnScreenNavigationVisibility( visibility );
+  mNavigationWidget->setVisible( visibility );
+  QgsSettings setting;
+  setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
 }
 
 void Qgs3DMapCanvasWidget::toggleFpsCounter( bool visibility )
