@@ -85,7 +85,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     double mLayerOpacity = 1.0;
     std::unique_ptr<QgsRasterPipe> mPipe;
 
-    QgsRasterDataProvider::Capability mProviderCapabilities;
+    QgsRasterDataProvider::ProviderCapabilities mProviderCapabilities;
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;

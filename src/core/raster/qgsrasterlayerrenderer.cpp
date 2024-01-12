@@ -79,7 +79,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
   , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
-  , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
+  , mProviderCapabilities( layer->dataProvider()->providerCapabilities() )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
   , mEnableProfile( rendererContext.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
