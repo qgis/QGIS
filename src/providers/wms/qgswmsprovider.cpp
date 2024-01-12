@@ -2357,11 +2357,6 @@ int QgsWmsProvider::capabilities() const
     capability |= Capability::Prefetch;
   }
 
-  if ( mSettings.mTiled || mSettings.mXyz )
-  {
-    capability |= DpiDependentData;
-  }
-
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
   return capability;
 }
@@ -3992,12 +3987,20 @@ QgsCoordinateReferenceSystem QgsWmsProvider::crs() const
 
 QgsRasterDataProvider::ProviderCapabilities QgsWmsProvider::providerCapabilities() const
 {
+  QgsRasterDataProvider::ProviderCapabilities capabilities;
   if ( mConverter )
-    return ProviderCapability::ReadLayerMetadata |
-           ProviderCapability::ProviderHintBenefitsFromResampling |
-           ProviderCapability::ProviderHintCanPerformProviderResampling;
+    capabilities = ProviderCapability::ReadLayerMetadata |
+                   ProviderCapability::ProviderHintBenefitsFromResampling |
+                   ProviderCapability::ProviderHintCanPerformProviderResampling;
+  else
+    capabilities = ProviderCapability::ReadLayerMetadata;
 
-  return ProviderCapability::ReadLayerMetadata;
+  if ( mSettings.mTiled || mSettings.mXyz )
+  {
+    capabilities |= DpiDependentData;
+  }
+
+  return capabilities;
 }
 
 QString QgsWmsProvider::lastErrorTitle()
