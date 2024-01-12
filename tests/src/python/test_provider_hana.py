@@ -537,7 +537,7 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         extent = QgsRectangle(-103, 46, -25, 97)
         result = {f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))}
         expected = {1, 2, 4, 5}
-        assert set(expected) == result, f'Expected {expected} and got {result} when testing setFilterRect {extent}'
+        self.assertEqual(set(expected), result)
 
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""

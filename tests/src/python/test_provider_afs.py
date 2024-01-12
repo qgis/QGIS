@@ -936,10 +936,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         # Create test layer
         vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
-        assert vl.isValid()
+        self.assertTrue(vl.isValid())
 
         f = vl.getFeature(0)
-        assert f.isValid()
+        self.assertTrue(f.isValid())
 
     def testDateTime(self):
         """ Test that datetime fields work correctly """

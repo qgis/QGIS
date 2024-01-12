@@ -135,7 +135,7 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         testVectors = ["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon", "None"]
         for v in testVectors:
             layer = QgsVectorLayer(v, "test", "memory")
-            assert layer.isValid(), f"Failed to create valid {v} memory layer"
+            self.assertTrue(layer.isValid(), f"Failed to create valid {v} memory layer")
 
     def testLayerGeometry(self):
         testVectors = [("Point", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point),
@@ -172,11 +172,8 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         for v in testVectors:
             layer = QgsVectorLayer(v[0], "test", "memory")
 
-            myMessage = f'Expected: {v[1]}\nGot: {layer.geometryType()}\n'
-            assert layer.geometryType() == v[1], myMessage
-
-            myMessage = f'Expected: {v[2]}\nGot: {layer.wkbType()}\n'
-            assert layer.wkbType() == v[2], myMessage
+            self.assertEqual(layer.geometryType(), v[1])
+            self.assertEqual(layer.wkbType(), v[2])
 
     def testAddFeatures(self):
         layer = QgsVectorLayer("Point", "test", "memory")
@@ -185,11 +182,9 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         res = provider.addAttributes([QgsField("name", QVariant.String),
                                       QgsField("age", QVariant.Int),
                                       QgsField("size", QVariant.Double)])
-        assert res, "Failed to add attributes"
+        self.assertTrue(res)
 
-        myMessage = f'Expected: {3}\nGot: {len(provider.fields())}\n'
-
-        assert len(provider.fields()) == 3, myMessage
+        self.assertEqual(len(provider.fields()), 3)
 
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
@@ -198,29 +193,18 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
                           0.3])
         res, t = provider.addFeatures([ft])
 
-        assert res, "Failed to add feature"
+        self.assertTrue(res)
 
-        myMessage = f'Expected: {1}\nGot: {provider.featureCount()}\n'
-        assert provider.featureCount() == 1, myMessage
+        self.assertEqual(provider.featureCount(), 1)
 
         for f in provider.getFeatures(QgsFeatureRequest()):
-            myMessage = f"Expected: {'Johny'}\nGot: {f[0]}\n"
-
-            assert f[0] == "Johny", myMessage
-
-            myMessage = f'Expected: {20}\nGot: {f[1]}\n'
-
-            assert f[1] == 20, myMessage
-
-            myMessage = f'Expected: {0.3}\nGot: {f[2]}\n'
-
-            assert (f[2] - 0.3) < 0.0000001, myMessage
+            self.assertEqual(f[0], "Johny")
+            self.assertEqual(f[1], 20)
+            self.assertLess(f[2] - 0.3, 0.0000001)
 
             geom = f.geometry()
 
-            myMessage = f"Expected: {'Point (10 10)'}\nGot: {str(geom.asWkt())}\n"
-
-            assert compareWkt(str(geom.asWkt()), "Point (10 10)"), myMessage
+            self.assertTrue(compareWkt(str(geom.asWkt()), "Point (10 10)"))
 
     def testCloneFeatures(self):
         """
@@ -446,7 +430,7 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
                     QgsField("geom", QVariant.UserType, typeName="geometry")]
         self.assertTrue(myMemoryLayer.startEditing())
         for f in myFields:
-            assert myMemoryLayer.addAttribute(f)
+            self.assertTrue(myMemoryLayer.addAttribute(f))
         self.assertTrue(myMemoryLayer.commitChanges())
         myMemoryLayer.updateFields()
 
@@ -504,7 +488,7 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
                                       QgsField("age", QVariant.Int),
                                       QgsField("size", QVariant.Double)])
         layer.updateFields()
-        assert res, "Failed to add attributes"
+        self.assertTrue(res)
         ft = QgsFeature()
         ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(["Johny",

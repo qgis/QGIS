@@ -101,8 +101,8 @@ class TestAuthManager(QgisTestCase):
         auth_config.setConfig('username', 'qgis,\"rocks\"')
         auth_config.setConfig('password', '\"quoted\"')
         auth_config.setName('test_basic_auth_config_quoted')
-        assert (authm.storeAuthenticationConfig(auth_config)[0])
-        assert auth_config.isValid()
+        self.assertTrue(authm.storeAuthenticationConfig(auth_config)[0])
+        self.assertTrue(auth_config.isValid())
         authcfg = auth_config.id()
         pr = QgsProviderRegistry.instance().createProvider('ogr', '')
         uri = 'MySQL:hostname authcfg=\'%s\''
