@@ -11,7 +11,8 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.QtCore import QSize, QTemporaryDir
+import qgis  # NOQA
+from qgis.PyQt.QtCore import QDir, QSize, QTemporaryDir
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -37,6 +38,7 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
+    QgsRenderChecker,
     QgsRenderContext,
     QgsVertexId,
 )
@@ -52,8 +54,16 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsAnnotationLayer(QgisTestCase):
 
     @classmethod
-    def control_path_prefix(cls):
-        return 'annotation_layer'
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.report = "<h1>Python QgsAnnotationLayer Tests</h1>\n"
+
+    @classmethod
+    def tearDownClass(cls):
+        report_file_path = f"{QDir.tempPath()}/qgistest.html"
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(cls.report)
+        super().tearDownClass()
 
     def testItems(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
@@ -347,7 +357,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.image_check('layer_render', 'layer_render', image))
+        self.assertTrue(self.imageCheck('layer_render', 'layer_render', image))
 
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
@@ -407,7 +417,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.image_check('layer_render_transform', 'layer_render_transform', image))
+        self.assertTrue(self.imageCheck('layer_render_transform', 'layer_render_transform', image))
 
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
@@ -472,7 +482,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.image_check('layer_render_reference_scale', 'layer_render_reference_scale', image))
+        self.assertTrue(self.imageCheck('layer_render_reference_scale', 'layer_render_reference_scale', image))
 
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
@@ -596,6 +606,69 @@ class TestQgsAnnotationLayer(QgisTestCase):
         result = [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0]
         self.assertTrue(compareWkt(result, expected, tol=1000), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
                                                                                                             result))
+
+    def testRenderWithDisabledItems(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        item.setEnabled(False)
+        i2_id = layer.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        settings.setExtent(QgsRectangle(1250958, 1386945, 1420709, 1532518))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        rc.setCoordinateTransform(QgsCoordinateTransform(layer.crs(), settings.destinationCrs(), QgsProject.instance()))
+        rc.setExtent(
+            rc.coordinateTransform().transformBoundingBox(settings.extent(), QgsCoordinateTransform.ReverseTransform))
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(int(96 / 25.4 * 1000))
+        image.setDotsPerMeterY(int(96 / 25.4 * 1000))
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('layer_render_disabled', 'layer_render_disabled', image))
+        # also check details of rendered items
+        item_details = renderer.takeRenderedItemDetails()
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id])
+
+    def imageCheck(self, name, reference_image, image):
+        TestQgsAnnotationLayer.report += f"<h2>Render {name}</h2>\n"
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'patch_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("annotation_layer")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        TestQgsAnnotationLayer.report += checker.report()
+        return result
 
 
 if __name__ == '__main__':
