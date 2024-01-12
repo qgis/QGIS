@@ -15,6 +15,8 @@
 
 #include "qgs3dmaptoolidentify.h"
 
+#include <QScreen>
+
 #include "qgsapplication.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
@@ -107,7 +109,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     // estimate search radius
     Qgs3DMapScene *scene = mCanvas->scene();
     const double searchRadiusMM = QgsMapTool::searchRadiusMM();
-    const double pixelsPerMM = mCanvas->logicalDpiX() / 25.4;
+    const double pixelsPerMM = mCanvas->screen()->logicalDotsPerInchX(); // mCanvas->logicalDpiX() / 25.4;
     const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
     const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
 

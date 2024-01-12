@@ -1193,7 +1193,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   {
     if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
-      m3DAxis = new Qgs3DAxis( static_cast<Qgs3DWindow *>( engine->window() ),
+      m3DAxis = new Qgs3DAxis( static_cast<Qgs3DMapCanvas *>( engine->window() ),
                                engine->root(),
                                this,
                                mCameraController,

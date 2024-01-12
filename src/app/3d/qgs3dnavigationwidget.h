@@ -16,10 +16,6 @@
 #ifndef QGS3DNAVIGATIONWIDGET_H
 #define QGS3DNAVIGATIONWIDGET_H
 
-class QHideEvent;
-class QResizeEvent;
-class QShowEvent;
-class QSize;
 class QStandardItemModel;
 
 class Qgs3DMapCanvas;
@@ -39,14 +35,6 @@ class Qgs3DNavigationWidget : public QWidget, private Ui::Q3DNavigationWidget
      * Update the state of navigation widget from camera's state
      */
     void updateFromCamera();
-
-  signals:
-    void sizeChanged( const QSize &newSize );
-
-  protected:
-    void resizeEvent( QResizeEvent *event ) override;
-    void hideEvent( QHideEvent *event ) override;
-    void showEvent( QShowEvent *event ) override;
 
   private:
     Qgs3DMapCanvas *m3DMapCanvas = nullptr;

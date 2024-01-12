@@ -32,7 +32,7 @@ namespace Qt3DExtras
 }
 
 
-class Qgs3DWindow;
+class Qgs3DMapCanvas;
 class QWindow;
 
 
@@ -55,7 +55,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     /**
      * Constructor for QgsWindow3DEngine with the specified \a parent object.
      */
-    QgsWindow3DEngine( QObject *parent = nullptr );
+    QgsWindow3DEngine( Qgs3DMapCanvas *parent = nullptr );
 
     //! Returns the internal 3D window where all the rendered output is displayed
     QWindow *window();
@@ -80,7 +80,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     void setSize( QSize s ) override;
   private:
     //! 3D window with all the 3D magic inside
-    Qgs3DWindow *mWindow3D = nullptr;
+    Qgs3DMapCanvas *mWindow3D = nullptr;
     //! Frame graph node for render capture
     bool mShadowRenderingEnabled = false;
     Qt3DCore::QEntity *mRoot = nullptr;
