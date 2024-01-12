@@ -557,8 +557,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         flags = QgsMapLayer.ReadFlags()
         vl1.readLayerXml(elem, QgsReadWriteContext(), flags)
 
-        self.assertTrue(extent == vl1.extent())
-        self.assertTrue(wgs84_extent == vl1.wgs84Extent())
+        self.assertEqual(extent, vl1.extent())
+        self.assertEqual(wgs84_extent, vl1.wgs84Extent())
 
         # we add a feature and check that the original extent has been
         # updated (the extent is bigger with the new feature)
@@ -572,11 +572,11 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         vl1.addFeature(f)
         vl1.updateExtents()
 
-        self.assertTrue(extent != vl1.extent())
+        self.assertNotEqual(extent, vl1.extent())
 
         # trust is not activated so the wgs84 extent is updated
         # accordingly
-        self.assertTrue(wgs84_extent != vl1.wgs84Extent())
+        self.assertNotEqual(wgs84_extent, vl1.wgs84Extent())
         vl1.rollBack()
 
         # create a 3rd layer and read the xml document WITH trust
@@ -585,8 +585,8 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         flags |= QgsMapLayer.FlagTrustLayerMetadata
         vl2.readLayerXml(elem, QgsReadWriteContext(), flags)
 
-        self.assertTrue(extent == vl2.extent())
-        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+        self.assertEqual(extent, vl2.extent())
+        self.assertEqual(wgs84_extent, vl2.wgs84Extent())
 
         # we add a feature and check that the original extent has been
         # updated (the extent is bigger with the new feature)
@@ -600,14 +600,14 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         vl2.addFeature(f)
         vl2.updateExtents()
 
-        self.assertTrue(extent != vl2.extent())
+        self.assertNotEqual(extent, vl2.extent())
 
         # trust is activated so the wgs84 extent is not updated
-        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+        self.assertEqual(wgs84_extent, vl2.wgs84Extent())
 
         # but we can still retrieve the current wgs84 xtent with the force
         # parameter
-        self.assertTrue(wgs84_extent != vl2.wgs84Extent(True))
+        self.assertNotEqual(wgs84_extent, vl2.wgs84Extent(True))
         vl2.rollBack()
 
     # ADD FEATURE
@@ -4142,7 +4142,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
                              msg=f'featuresDeleted returned {len(deleted_fids)} instead of 2 deleted feature IDs: '
                              f'{deleted_fids}')
             for d in deleted_fids:
-                self.assertTrue(d in temp_fids)
+                self.assertIn(d, temp_fids)
 
         layer = QgsVectorLayer("point?crs=epsg:4326&field=name:string", "Scratch point layer", "memory")
         layer.featuresDeleted.connect(onFeaturesDeleted)

@@ -260,7 +260,7 @@ class TestLayerDependencies(QgisTestCase):
                 newLinesLayer = l.layer()
         self.assertIsNotNone(newPointsLayer)
         self.assertIsNotNone(newLinesLayer)
-        self.assertTrue(newLinesLayer.id() in [dep.layerId() for dep in newPointsLayer.dependencies()])
+        self.assertIn(newLinesLayer.id(), [dep.layerId() for dep in newPointsLayer.dependencies()])
 
         self.pointsLayer.setDependencies([])
 

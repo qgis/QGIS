@@ -81,7 +81,7 @@ class StyleStorageTestBase():
             # Create
             conn.createSchema(schema)
             schemas = conn.schemas()
-            self.assertTrue(schema in schemas)
+            self.assertIn(schema, schemas)
 
         elif (capabilities & QgsAbstractDatabaseProviderConnection.Schemas):
             schema = self.schemaName()
@@ -97,7 +97,7 @@ class StyleStorageTestBase():
                 pass
 
             schemas = conn.schemas()
-            self.assertTrue(schema in schemas)
+            self.assertIn(schema, schemas)
 
         fields = QgsFields()
         fields.append(QgsField("string_t", QVariant.String))

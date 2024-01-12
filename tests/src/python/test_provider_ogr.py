@@ -357,7 +357,7 @@ class PyQgsOGRProvider(QgisTestCase):
         it = l.getFeatures()
         f = QgsFeature()
         while it.nextFeature(f):
-            self.assertTrue(f.attribute("text") == "shape 2")
+            self.assertEqual(f.attribute("text"), "shape 2")
 
     def testTriangleTINPolyhedralSurface(self):
         """ Test support for Triangles (mapped to Polygons) """
@@ -1674,10 +1674,10 @@ class PyQgsOGRProvider(QgisTestCase):
 
         path = '/vsimem/test.gpkg'
         result, msg = QgsVectorLayerExporter.exportLayer(layer, path, 'ogr', layer.crs())
-        self.assertTrue(result == Qgis.VectorExportResult.Success, msg=msg)
+        self.assertEqual(result, Qgis.VectorExportResult.Success)
         layer = QgsVectorLayer(path)
         self.assertTrue(layer.isValid())
-        self.assertTrue(layer.providerType() == 'ogr')
+        self.assertEqual(layer.providerType(), 'ogr')
 
         field1 = QgsField(name='field1', type=QVariant.String)
         field2 = QgsField(name='field2', type=QVariant.String)

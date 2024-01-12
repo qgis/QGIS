@@ -101,7 +101,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
 
         # Test expression scope
         ctx = model.contextGenerator().createExpressionContext()
-        self.assertTrue('source_field1' in ctx.fields().names())
+        self.assertIn('source_field1', ctx.fields().names())
 
         # Test add fields
         model.appendField(QgsField('destination_field4', QVariant.String))

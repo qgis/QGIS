@@ -501,8 +501,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             vl = QgsVectorLayer("url='http://" + endpoint + "'", 'test', 'WFS')
             self.assertFalse(vl.isValid())
             self.assertEqual(len(logger.messages()), 1, logger.messages())
-            self.assertTrue(logger.messages()[0].decode('UTF-8') == "Missing or empty 'typename' URI parameter",
-                            logger.messages())
+            self.assertEqual(logger.messages()[0].decode('UTF-8'), "Missing or empty 'typename' URI parameter")
 
     def testWFS10(self):
         """Test WFS 1.0 read-only"""
@@ -703,8 +702,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' foo='bar'", 'test', 'WFS')
             self.assertTrue(vl.isValid())
             self.assertEqual(len(logger.messages()), 1, logger.messages())
-            self.assertTrue(logger.messages()[0].decode('UTF-8') == "The following unknown parameter(s) have been found in the URI: foo",
-                            logger.messages())
+            self.assertEqual(logger.messages()[0].decode('UTF-8'), "The following unknown parameter(s) have been found in the URI: foo")
 
     def testWFS10_outputformat_GML3_2(self):
         """Test WFS 1.0 with OUTPUTFORMAT=GML3"""
@@ -1874,8 +1872,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             loop.processEvents()
 
             self.assertEqual(len(logger.messages()), 1, logger.messages())
-            self.assertTrue(logger.messages()[0].decode('UTF-8').find('The download limit has been reached') >= 0,
-                            logger.messages())
+            self.assertGreaterEqual(logger.messages()[0].decode('UTF-8').find('The download limit has been reached'), 0)
 
     def testRetryLogic(self):
         """Test retry logic """
@@ -5141,7 +5138,7 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
             self.assertFalse(vl.isValid())
 
             self.assertEqual(len(logger.messages()), 1, logger.messages())
-            self.assertTrue("foo: bar" in logger.messages()[0].decode('UTF-8'), logger.messages())
+            self.assertIn("foo: bar", logger.messages()[0].decode('UTF-8'))
 
     def testGetCapabilitiesReturnWMSException(self):
         """Test fix for https://github.com/qgis/QGIS/issues/29866
@@ -5167,7 +5164,7 @@ Can't recognize service requested.
             self.assertFalse(vl.isValid())
 
             self.assertEqual(len(logger.messages()), 1, logger.messages())
-            self.assertTrue("InvalidFormat: Can't recognize service requested." in logger.messages()[0].decode('UTF-8'), logger.messages())
+            self.assertIn("InvalidFormat: Can't recognize service requested.", logger.messages()[0].decode('UTF-8'))
 
     def testWFST11(self):
         """Test WFS-T 1.1 (read-write) taken from a geoserver session"""

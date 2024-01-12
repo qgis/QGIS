@@ -123,7 +123,7 @@ class TestPyQgsExternalStorageBase:
         self.assertEqual(storedContent.url(), url)
         self.assertFalse(storedContent.errorString())
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.Finished)
-        self.assertTrue(len(spyProgressChanged) > 0)
+        self.assertGreater(len(spyProgressChanged), 0)
         self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch
@@ -215,7 +215,7 @@ class TestPyQgsExternalStorageBase:
         self.assertEqual(storedContent.url(), url)
         self.assertFalse(storedContent.errorString())
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.Finished)
-        self.assertTrue(len(spyProgressChanged) > 0)
+        self.assertGreater(len(spyProgressChanged), 0)
         self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch
@@ -316,7 +316,7 @@ class TestPyQgsExternalStorageBase:
         self.assertEqual(storedContent.url(), url)
         self.assertFalse(storedContent.errorString())
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.Finished)
-        self.assertTrue(len(spyProgressChanged) > 0)
+        self.assertGreater(len(spyProgressChanged), 0)
         self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch
@@ -475,7 +475,7 @@ class TestPyQgsExternalStorageBase:
         self.assertFalse(storedContent.errorString())
         self.assertEqual(storedContent.url(), self.url + "/" + os.path.basename(f.name))
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.Finished)
-        self.assertTrue(len(spyProgressChanged) > 0)
+        self.assertGreater(len(spyProgressChanged), 0)
         self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch

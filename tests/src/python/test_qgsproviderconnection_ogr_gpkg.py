@@ -132,19 +132,19 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         # Check filters and special cases
         table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Raster))
-        self.assertTrue('osm' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertFalse('myNewAspatialTable' in table_names)
+        self.assertIn('osm', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertNotIn('myNewAspatialTable', table_names)
 
         table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.View))
-        self.assertFalse('osm' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertFalse('myNewAspatialTable' in table_names)
+        self.assertNotIn('osm', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertNotIn('myNewAspatialTable', table_names)
 
         table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Aspatial))
-        self.assertFalse('osm' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertTrue('myNewAspatialTable' in table_names)
+        self.assertNotIn('osm', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertIn('myNewAspatialTable', table_names)
 
     def test_gpkg_fields(self):
         """Test fields"""

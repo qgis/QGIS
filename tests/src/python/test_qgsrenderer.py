@@ -68,12 +68,12 @@ class TestQgsRendererV2Registry(QgisTestCase):
         self.assertTrue(QgsApplication.rendererRegistry())
 
         # instance should be initially populated with some default renderers
-        self.assertTrue('singleSymbol' in QgsApplication.rendererRegistry().renderersList())
+        self.assertIn('singleSymbol', QgsApplication.rendererRegistry().renderersList())
 
         # register a renderer to the singleton, to test that the same instance is always returned
-        self.assertFalse('test' in QgsApplication.rendererRegistry().renderersList())
+        self.assertNotIn('test', QgsApplication.rendererRegistry().renderersList())
         self.assertTrue(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test')))
-        self.assertTrue('test' in QgsApplication.rendererRegistry().renderersList())
+        self.assertIn('test', QgsApplication.rendererRegistry().renderersList())
 
     def testAddRenderer(self):
         """ test adding renderers to registry """
@@ -81,11 +81,11 @@ class TestQgsRendererV2Registry(QgisTestCase):
 
         # add a renderer
         self.assertTrue(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test2')))
-        self.assertTrue('test2' in QgsApplication.rendererRegistry().renderersList())
+        self.assertIn('test2', QgsApplication.rendererRegistry().renderersList())
 
         # try adding it again - should be rejected due to duplicate name
         self.assertFalse(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test2')))
-        self.assertTrue('test2' in QgsApplication.rendererRegistry().renderersList())
+        self.assertIn('test2', QgsApplication.rendererRegistry().renderersList())
 
     def testRemoveRenderer(self):
         """ test removing renderers from registry """
@@ -96,11 +96,11 @@ class TestQgsRendererV2Registry(QgisTestCase):
 
         # now add it
         self.assertTrue(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test3')))
-        self.assertTrue('test3' in QgsApplication.rendererRegistry().renderersList())
+        self.assertIn('test3', QgsApplication.rendererRegistry().renderersList())
 
         # try removing it again - should be OK this time
         self.assertTrue(QgsApplication.rendererRegistry().removeRenderer('test3'))
-        self.assertFalse('test3' in QgsApplication.rendererRegistry().renderersList())
+        self.assertNotIn('test3', QgsApplication.rendererRegistry().renderersList())
 
         # try removing it again - should be false since already removed
         self.assertFalse(QgsApplication.rendererRegistry().removeRenderer('test3'))

@@ -143,7 +143,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         }.items())])
         header, body = self._execute_request(qs)
 
-        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
+        self.assertIn(b"TypeName 'invalid' could not be found", body)
 
         # an invalid typename preceded by a valid one
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -154,7 +154,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         }.items())])
         header, body = self._execute_request(qs)
 
-        self.assertTrue(b"TypeName 'invalid' could not be found" in body)
+        self.assertIn(b"TypeName 'invalid' could not be found", body)
 
     def test_getfeature(self):
 
@@ -674,9 +674,9 @@ class TestQgsServerWFS(QgsServerTestBase):
             header, body = self._execute_request("?MAP={}&SERVICE=WFS&VERSION={}".format(
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs', version), QgsServerRequest.PostMethod, encoded_data)
             if version == '1.0.0':
-                self.assertTrue(b'<SUCCESS/>' in body, body)
+                self.assertIn(b'<SUCCESS/>', body)
             else:
-                self.assertTrue(b'<totalUpdated>1</totalUpdated>' in body, body)
+                self.assertIn(b'<totalUpdated>1</totalUpdated>', body)
             header, body = self._execute_request("?MAP=%s&SERVICE=WFS&REQUEST=GetFeature&TYPENAME=cdb_lines&FEATUREID=cdb_lines.22" % (
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs'))
             if value is not None:
@@ -684,7 +684,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 self.assertTrue(xml_value in body, f"{xml_value} not found in body")
             else:
                 xml_value = f'<qgs:{field}>'.encode()
-                self.assertFalse(xml_value in body)
+                self.assertNotIn(xml_value, body)
             # Check the backend
             vl = QgsVectorLayer(
                 self.testdata_path + 'test_project_wms_grouped_layers.gpkg|layername=cdb_lines', 'vl', 'ogr')
@@ -708,10 +708,10 @@ class TestQgsServerWFS(QgsServerTestBase):
             header, body = self._execute_request("?MAP=%s&SERVICE=WFS" % (
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs'), QgsServerRequest.PostMethod, encoded_data)
             if version == '1.0.0':
-                self.assertTrue(b'<ERROR/>' in body, body)
+                self.assertIn(b'<ERROR/>', body)
             else:
                 self.assertTrue(b'<totalUpdated>0</totalUpdated>' in body)
-            self.assertTrue(b'<Message>NOT NULL constraint error on layer \'cdb_lines\', field \'name\'</Message>' in body, body)
+            self.assertIn(b'<Message>NOT NULL constraint error on layer \'cdb_lines\', field \'name\'</Message>', body)
 
     def test_describeFeatureTypeGeometryless(self):
         """Test DescribeFeatureType with geometryless tables - bug GH-30381"""

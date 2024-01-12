@@ -398,7 +398,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         msg = ""
         layer.exportSldStyle(doc, msg)
         doc.setContent(doc.toString(), True)
-        self.assertTrue(msg == "")
+        self.assertFalse(msg)
 
         # reload the same sld
         root = doc.firstChildElement("StyledLayerDescriptor")

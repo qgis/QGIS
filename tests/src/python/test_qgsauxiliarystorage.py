@@ -755,7 +755,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         al = s.createAuxiliaryLayer(pkf, vl)
 
         self.assertEqual(al, None)
-        self.assertTrue("CREATE TABLE IF NOT EXISTS" in s.errorString())
+        self.assertIn("CREATE TABLE IF NOT EXISTS", s.errorString())
 
     def testQgdCreationInQgz(self):
         # New project

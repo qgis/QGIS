@@ -536,7 +536,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(l.isValid())
         self.assertEqual(l.dataProvider().fields().count(), 2)
         fields = [f.name() for f in l.dataProvider().fields()]
-        self.assertTrue('Geometry' not in fields)
+        self.assertNotIn('Geometry', fields)
 
     def test_invalid_iterator(self):
         """ Test invalid iterator """
@@ -1281,7 +1281,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
                 dbname, sql), 'test', 'spatialite')
             self.assertTrue(
                 vl.isValid(), f'dbname: {dbname} - sql: {sql}')
-            self.assertTrue(vl.featureCount() > 1)
+            self.assertGreater(vl.featureCount(), 1)
             self.assertTrue(vl.isSpatial())
 
     def testPkLessQuery(self):
@@ -1406,7 +1406,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             f = next(vl.getFeatures())
             self.assertTrue(f.isValid())
             fid = f.id()
-            self.assertTrue(fid > 0)
+            self.assertGreater(fid, 0)
             self.assertTrue(vl.getFeature(fid).isValid())
             f2 = next(vl.getFeatures(QgsFeatureRequest().setFilterFid(fid)))
             self.assertTrue(f2.isValid())

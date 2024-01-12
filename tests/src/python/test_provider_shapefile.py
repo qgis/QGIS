@@ -498,7 +498,7 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         # Test the content of the shapefile while it is still opened
         ds = osgeo.ogr.Open(datasource)
         # Test repacking has been done
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        self.assertEqual(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
         ds = None
 
         # Delete another feature while in update mode
@@ -508,13 +508,13 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
 
         # Test that repacking has not been done (since in update mode)
         ds = osgeo.ogr.Open(datasource)
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        self.assertEqual(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
         ds = None
 
         # Test that repacking was performed when leaving updateMode
         vl.dataProvider().leaveUpdateMode()
         ds = osgeo.ogr.Open(datasource)
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 2)
+        self.assertEqual(ds.GetLayer(0).GetFeatureCount(), feature_count - 2)
         ds = None
 
         vl = None
@@ -542,7 +542,7 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
 
         # Test that repacking has not been done (since in update mode)
         ds = osgeo.ogr.Open(datasource)
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count)
+        self.assertEqual(ds.GetLayer(0).GetFeatureCount(), feature_count)
         ds = None
 
         vl = None
@@ -1087,7 +1087,7 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         provider = QgsProviderRegistry.instance().createProvider('ogr', datasource, QgsDataProvider.ProviderOptions(), QgsDataProvider.SkipFeatureCount)
         self.assertTrue(provider.isValid())
         sublayers = provider.subLayers()
-        self.assertTrue(len(sublayers) > 1)
+        self.assertGreater(len(sublayers), 1)
         self.assertEqual(int(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2]), int(Qgis.FeatureCountState.Uncounted))
 
     def testLayersOnSameOGRLayerWithAndWithoutFilter(self):

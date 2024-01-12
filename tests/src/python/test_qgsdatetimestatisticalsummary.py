@@ -100,7 +100,7 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
             self.assertEqual(s3.statistic(t['stat']), t['expected'])
 
             # display name
-            self.assertTrue(len(QgsDateTimeStatisticalSummary.displayName(t['stat'])) > 0)
+            self.assertGreater(len(QgsDateTimeStatisticalSummary.displayName(t['stat'])), 0)
 
     def testVariantStats(self):
         """ test with non-datetime values """

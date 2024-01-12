@@ -53,7 +53,7 @@ class TestQgsVectorWarper(QgisTestCase):
         f5.setAttributes(["test5", 0])
         f5.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
         self.assertTrue(pr.addFeatures([f, f2, f3, f4, f5]))
-        self.assertTrue(source_layer.featureCount() == 5)
+        self.assertEqual(source_layer.featureCount(), 5)
 
         # create sink
         sink = QgsFeatureStore()

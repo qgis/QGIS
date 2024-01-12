@@ -120,13 +120,13 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         conn.createVectorTable('', 'myNewTable', QgsFields(), typ, crs, True, {})
 
         table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.View))
-        self.assertTrue('my_view' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertFalse('myNewAspatialTable' in table_names)
+        self.assertIn('my_view', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertNotIn('myNewAspatialTable', table_names)
 
         table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Aspatial))
-        self.assertFalse('myNewTable' in table_names)
-        self.assertTrue('myNewAspatialTable' in table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertIn('myNewAspatialTable', table_names)
 
     def test_spatialite_fields(self):
         """Test fields"""

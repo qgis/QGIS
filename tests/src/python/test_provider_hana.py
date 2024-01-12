@@ -100,17 +100,17 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
     def getSource(self):
         # create temporary table for edit tests
         create_sql = f'CREATE TABLE "{self.schemaName}"."edit_data" ( ' \
-                     '"pk" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"cnt" INTEGER,' \
-                     '"name" NVARCHAR(100), ' \
-                     '"name2" NVARCHAR(100), ' \
-                     '"num_char" NVARCHAR(100),' \
-                     '"dt" TIMESTAMP,' \
-                     '"date" DATE,' \
-                     '"time" TIME,' \
-                     '"geom" ST_POINT(4326))'
+            '"pk" INTEGER NOT NULL PRIMARY KEY,' \
+            '"cnt" INTEGER,' \
+            '"name" NVARCHAR(100), ' \
+            '"name2" NVARCHAR(100), ' \
+            '"num_char" NVARCHAR(100),' \
+            '"dt" TIMESTAMP,' \
+            '"date" DATE,' \
+            '"time" TIME,' \
+            '"geom" ST_POINT(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
-                     '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+            '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
             [5, -200, None, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01',
              bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
@@ -211,11 +211,11 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testCompositeUniqueConstraints(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."unique_composite_constraints" ( ' \
-                     '"ID" INTEGER PRIMARY KEY,' \
-                     '"VAL1" INTEGER,' \
-                     '"VAL2" INTEGER,' \
-                     '"VAL3" INTEGER,' \
-                     'UNIQUE (VAL1, VAL2))'
+            '"ID" INTEGER PRIMARY KEY,' \
+            '"VAL1" INTEGER,' \
+            '"VAL2" INTEGER,' \
+            '"VAL3" INTEGER,' \
+            'UNIQUE (VAL1, VAL2))'
         QgsHanaProviderUtils.executeSQL(self.conn, create_sql)
 
         vl = self.createVectorLayer(f'table="{self.schemaName}"."unique_composite_constraints" sql=',
@@ -226,10 +226,10 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         val1_field_idx = vl.fields().indexFromName('VAL1')
         val2_field_idx = vl.fields().indexFromName('VAL2')
         val3_field_idx = vl.fields().indexFromName('VAL3')
-        self.assertTrue(id_field_idx >= 0)
-        self.assertTrue(val1_field_idx >= 0)
-        self.assertTrue(val2_field_idx >= 0)
-        self.assertTrue(val3_field_idx >= 0)
+        self.assertGreaterEqual(id_field_idx, 0)
+        self.assertGreaterEqual(val1_field_idx, 0)
+        self.assertGreaterEqual(val2_field_idx, 0)
+        self.assertGreaterEqual(val3_field_idx, 0)
         self.assertTrue(bool(vl.fieldConstraints(id_field_idx) & QgsFieldConstraints.ConstraintUnique))
         self.assertFalse(bool(vl.fieldConstraints(val1_field_idx) & QgsFieldConstraints.ConstraintUnique))
         self.assertFalse(bool(vl.fieldConstraints(val2_field_idx) & QgsFieldConstraints.ConstraintUnique))
@@ -297,8 +297,8 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testBooleanType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."boolean_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"fld1" BOOLEAN)'
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"fld1" BOOLEAN)'
         insert_sql = f'INSERT INTO "{self.schemaName}"."boolean_type" ("id", "fld1") VALUES (?, ?)'
         insert_args = [[1, 'TRUE'], [2, 'FALSE'], [3, None]]
         self.prepareTestTable('boolean_type', create_sql, insert_sql, insert_args)
@@ -314,11 +314,11 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testDecimalAndFloatTypes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."decimal_and_float_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"decimal_field" DECIMAL(15,4),' \
-                     '"float_field" FLOAT(12))'
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"decimal_field" DECIMAL(15,4),' \
+            '"float_field" FLOAT(12))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."decimal_and_float_type" ("id", "decimal_field", ' \
-                     f'"float_field") VALUES (?, ?, ?) '
+            f'"float_field") VALUES (?, ?, ?) '
         insert_args = [[1, 1.1234, 1.76543]]
         self.prepareTestTable('decimal_and_float_type', create_sql, insert_sql, insert_args)
 
@@ -345,12 +345,12 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testDateTimeTypes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."date_time_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"date_field" DATE,' \
-                     '"time_field" TIME,' \
-                     '"datetime_field" TIMESTAMP)'
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"date_field" DATE,' \
+            '"time_field" TIME,' \
+            '"datetime_field" TIMESTAMP)'
         insert_sql = f'INSERT INTO "{self.schemaName}"."date_time_type" ("id", "date_field", "time_field", "datetime_field") ' \
-                     'VALUES (?, ?, ?, ?)'
+            'VALUES (?, ?, ?, ?)'
         insert_args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
         self.prepareTestTable('date_time_type', create_sql, insert_sql, insert_args)
 
@@ -375,8 +375,8 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testBinaryType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"blob" VARBINARY(114))'
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"blob" VARBINARY(114))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmludmFsdWU=')], [2, None]]
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
@@ -393,8 +393,8 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testBinaryTypeEdit(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type_edit" ( ' \
-                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
-                     '"blob" VARBINARY(1000))'
+            '"id" INTEGER NOT NULL PRIMARY KEY,' \
+            '"blob" VARBINARY(1000))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmJi')]]
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
@@ -426,11 +426,11 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
 
     def testGeometryAttributes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."geometry_attribute" ( ' \
-                     'ID INTEGER NOT NULL PRIMARY KEY,' \
-                     'GEOM1 ST_GEOMETRY(4326),' \
-                     'GEOM2 ST_GEOMETRY(4326))'
+            'ID INTEGER NOT NULL PRIMARY KEY,' \
+            'GEOM1 ST_GEOMETRY(4326),' \
+            'GEOM2 ST_GEOMETRY(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."geometry_attribute" (ID, GEOM1, GEOM2) ' \
-                     f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
+            f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
         insert_args = [[1, 'POINT (1 2)', 'LINESTRING (0 0,1 1)']]
         self.prepareTestTable('geometry_attribute', create_sql, insert_sql, insert_args)
 

@@ -121,30 +121,30 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # Check filters and special cases
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
-        self.assertTrue('Raster1' in table_names)
-        self.assertFalse('geometryless_table' in table_names)
-        self.assertFalse('geometries_table' in table_names)
-        self.assertFalse('geometries_view' in table_names)
+        self.assertIn('Raster1', table_names)
+        self.assertNotIn('geometryless_table', table_names)
+        self.assertNotIn('geometries_table', table_names)
+        self.assertNotIn('geometries_view', table_names)
 
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.View))
-        self.assertFalse('Raster1' in table_names)
-        self.assertFalse('geometryless_table' in table_names)
-        self.assertFalse('geometries_table' in table_names)
-        self.assertTrue('geometries_view' in table_names)
+        self.assertNotIn('Raster1', table_names)
+        self.assertNotIn('geometryless_table', table_names)
+        self.assertNotIn('geometries_table', table_names)
+        self.assertIn('geometries_view', table_names)
 
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial))
-        self.assertFalse('Raster1' in table_names)
-        self.assertTrue('geometryless_table' in table_names)
-        self.assertFalse('geometries_table' in table_names)
-        self.assertFalse('geometries_view' in table_names)
+        self.assertNotIn('Raster1', table_names)
+        self.assertIn('geometryless_table', table_names)
+        self.assertNotIn('geometries_table', table_names)
+        self.assertNotIn('geometries_view', table_names)
 
         tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial | QgsAbstractDatabaseProviderConnection.View)
         table_names = self._table_names(tables)
         b32523_view = self._table_by_name(tables, 'b32523')
         self.assertTrue(b32523_view)
         pks = b32523_view.primaryKeyColumns()
-        self.assertTrue('pk' in pks)
-        self.assertTrue('random' in pks)
+        self.assertIn('pk', pks)
+        self.assertIn('random', pks)
 
         geometries_table = self._table_by_name(conn.tables('qgis_test'), 'geometries_table')
         srids_and_types = [[t.crs.postgisSrid(), t.wkbType]
@@ -156,11 +156,11 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         # Check TopoGeometry and Pointcloud layers are found in vector table names
         tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)
         table_names = self._table_names(tables)
-        self.assertTrue('TopoLayer1' in table_names)
-        self.assertTrue('PointCloudPointLayer' in table_names)
-        self.assertTrue('PointCloudPatchLayer' in table_names)
+        self.assertIn('TopoLayer1', table_names)
+        self.assertIn('PointCloudPointLayer', table_names)
+        self.assertIn('PointCloudPatchLayer', table_names)
 
-        self.assertTrue('geometries_table' in table_names)
+        self.assertIn('geometries_table', table_names)
 
         # Revoke select permissions on topology.topology from qgis_test_user
         conn.executeSql('REVOKE SELECT ON topology.topology FROM qgis_test_user')
@@ -180,11 +180,11 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         tableTypes = QgsAbstractDatabaseProviderConnection.Vector | QgsAbstractDatabaseProviderConnection.Raster
         tables = newconn.tables('qgis_test', tableTypes)
         table_names = self._table_names(tables)
-        self.assertFalse('TopoLayer1' in table_names)
-        self.assertFalse('PointCloudPointLayer' in table_names)
-        self.assertFalse('PointCloudPatchLayer' in table_names)
-        self.assertFalse('Raster1' in table_names)
-        self.assertTrue('geometries_table' in table_names)
+        self.assertNotIn('TopoLayer1', table_names)
+        self.assertNotIn('PointCloudPointLayer', table_names)
+        self.assertNotIn('PointCloudPatchLayer', table_names)
+        self.assertNotIn('Raster1', table_names)
+        self.assertIn('geometries_table', table_names)
 
         # TODO: only revoke select permission on topology.layer, grant
         #       on topology.topology
@@ -223,12 +223,12 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster2')
         self.assertTrue(QgsRasterLayer(f"PG: {conn.uri()} dbname='qgis_test' schema='qgis_test' column='{table.geometryColumn()}' table='{table.tableName()}'", 'r1', 'gdal').isValid())
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
-        self.assertFalse('Raster1' in table_names)
-        self.assertTrue('Raster2' in table_names)
+        self.assertNotIn('Raster1', table_names)
+        self.assertIn('Raster2', table_names)
         conn.renameRasterTable('qgis_test', table.tableName(), 'Raster1')
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
-        self.assertFalse('Raster2' in table_names)
-        self.assertTrue('Raster1' in table_names)
+        self.assertNotIn('Raster2', table_names)
+        self.assertIn('Raster1', table_names)
 
     def test_true_false(self):
         """Test returned values from BOOL queries"""

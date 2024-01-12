@@ -94,7 +94,7 @@ class TestExportToPostGis(QgisTestCase):
         self.assertTrue(imported.isValid())
         imported_fields = [f.name() for f in imported.fields()]
         for f in exported.fields():
-            self.assertTrue(f.name().lower() in imported_fields)
+            self.assertIn(f.name().lower(), imported_fields)
 
         # Check data
         imported_f = next(imported.getFeatures("class = 'Jet' AND heading = 85"))

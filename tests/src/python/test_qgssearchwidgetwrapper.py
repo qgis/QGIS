@@ -46,14 +46,14 @@ class PyQgsSearchWidgetWrapper(QgisTestCase):
                  QgsSearchWidgetWrapper.IsNotBetween
                  ]
         for t in tests:
-            self.assertTrue(len(QgsSearchWidgetWrapper.toString(t)) > 0)
+            self.assertGreater(len(QgsSearchWidgetWrapper.toString(t)), 0)
 
     def testExclusiveFlags(self):
         # test flag exclusive/non exclusive
         exclusive = QgsSearchWidgetWrapper.exclusiveFilterFlags()
         non_exclusive = QgsSearchWidgetWrapper.nonExclusiveFilterFlags()
         for e in exclusive:
-            self.assertFalse(e in non_exclusive)
+            self.assertNotIn(e, non_exclusive)
 
 
 class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
