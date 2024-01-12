@@ -852,7 +852,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         percent_path_relative = toPercent("./france_parts.shp")
         with open(temp) as f:
             content = ''.join(f.readlines())
-            self.assertTrue(f'<datasource>?layer=ogr:{percent_path_relative}' in content)
+            self.assertIn(f'<datasource>?layer=ogr:{percent_path_relative}', content)
 
         # Check that project is correctly re-read with all layers
         QgsProject.instance().setFileName(temp)
@@ -871,7 +871,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         percent_path_absolute = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
         with open(temp) as f:
             content = ''.join(f.readlines())
-            self.assertTrue(f'<datasource>?layer=ogr:{percent_path_absolute}' in content)
+            self.assertIn(f'<datasource>?layer=ogr:{percent_path_absolute}', content)
 
         # Check that project is correctly re-read with all layers
         QgsProject.instance().setFileName(temp)

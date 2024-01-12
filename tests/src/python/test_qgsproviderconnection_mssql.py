@@ -112,22 +112,22 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
 
         conn = md.createConnection(self.uri, {})
         schemas = conn.schemas()
-        self.assertTrue('dbo' in schemas)
-        self.assertTrue('qgis_test' in schemas)
+        self.assertIn('dbo', schemas)
+        self.assertIn('qgis_test', schemas)
         filterUri = QgsDataSourceUri(self.uri)
         filterUri.setParam('excludedSchemas', 'dbo')
         conn = md.createConnection(filterUri.uri(), {})
         schemas = conn.schemas()
-        self.assertFalse('dbo' in schemas)
-        self.assertTrue('qgis_test' in schemas)
+        self.assertNotIn('dbo', schemas)
+        self.assertIn('qgis_test', schemas)
 
         # Store the connection
         conn.store('filteredConnection')
 
         otherConn = md.createConnection('filteredConnection')
         schemas = otherConn.schemas()
-        self.assertFalse('dbo' in schemas)
-        self.assertTrue('qgis_test' in schemas)
+        self.assertNotIn('dbo', schemas)
+        self.assertIn('qgis_test', schemas)
 
     def test_exec_sql(self):
 

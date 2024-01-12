@@ -124,24 +124,24 @@ class TestQgsRasterFileWriter(QgisTestCase):
         formats = QgsRasterFileWriter.supportedFiltersAndFormats(QgsRasterFileWriter.SortRecommended)
         self.assertEqual(formats[0].filterString, 'GeoTIFF (*.tif *.TIF *.tiff *.TIFF)')
         self.assertEqual(formats[0].driverName, 'GTiff')
-        self.assertTrue('netCDF' in [f.driverName for f in formats])
+        self.assertIn('netCDF', [f.driverName for f in formats])
 
         # alphabetical sorting
         formats2 = QgsRasterFileWriter.supportedFiltersAndFormats(QgsRasterFileWriter.RasterFormatOptions())
-        self.assertTrue(formats2[0].driverName < formats2[1].driverName)
+        self.assertLess(formats2[0].driverName, formats2[1].driverName)
         self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
         self.assertNotEqual(formats2[0].driverName, 'GTiff')
 
     def testSupportedFormatExtensions(self):
         formats = QgsRasterFileWriter.supportedFormatExtensions()
-        self.assertTrue('tif' in formats)
-        self.assertFalse('exe' in formats)
+        self.assertIn('tif', formats)
+        self.assertNotIn('exe', formats)
         self.assertEqual(formats[0], 'tif')
-        self.assertTrue('nc' in formats)
+        self.assertIn('nc', formats)
 
         # alphabetical sorting
         formats2 = QgsRasterFileWriter.supportedFormatExtensions(QgsRasterFileWriter.RasterFormatOptions())
-        self.assertTrue(formats2[1] < formats2[2])
+        self.assertLess(formats2[1], formats2[2])
         self.assertCountEqual(formats, formats2)
         self.assertNotEqual(formats2[0], 'tif')
 

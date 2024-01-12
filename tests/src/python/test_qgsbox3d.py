@@ -74,10 +74,10 @@ class TestQgsBox3d(unittest.TestCase):
         box = QgsBox3d(QgsRectangle(5, 6, 11, 13))
         self.assertEqual(box.xMinimum(), 5.0)
         self.assertEqual(box.yMinimum(), 6.0)
-        self.assertTrue(box.zMinimum() != box.zMinimum())
+        self.assertNotEqual(box.zMinimum(), box.zMinimum())
         self.assertEqual(box.xMaximum(), 11.0)
         self.assertEqual(box.yMaximum(), 13.0)
-        self.assertTrue(box.zMaximum() != box.zMaximum())
+        self.assertNotEqual(box.zMaximum(), box.zMaximum())
 
         box = QgsBox3d(QgsRectangle(5, 6, 11, 13), -7.0, 9.0)
         self.assertEqual(box.xMinimum(), 5.0)
@@ -143,12 +143,12 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.zMaximum(), 12.0)
 
         box2 = QgsBox3d(float('NaN'), 5, 12, 9, float('NaN'), float('NaN'))
-        self.assertTrue(box2.xMinimum() != box.xMinimum())
+        self.assertNotEqual(box2.xMinimum(), box.xMinimum())
         self.assertEqual(box2.yMinimum(), 5.0)
         self.assertEqual(box2.zMinimum(), 12.0)
         self.assertEqual(box2.xMaximum(), 9.0)
-        self.assertTrue(box2.yMaximum() != box.yMaximum())
-        self.assertTrue(box2.zMaximum() != box.zMaximum())
+        self.assertNotEqual(box2.yMaximum(), box.yMaximum())
+        self.assertNotEqual(box2.zMaximum(), box.zMaximum())
 
     def testDimensions(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)

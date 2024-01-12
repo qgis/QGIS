@@ -1182,7 +1182,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         for u in units:
             s = QgsUnitTypes.toString(u)
             assert len(s) > 0
-            self.assertFalse(s in dupes)
+            self.assertNotIn(s, dupes)
             dupes.add(s)
 
     def testAngleFromUnitToUnitFactor(self):
@@ -1389,7 +1389,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         for u in units:
             self.assertTrue(QgsUnitTypes.toString(u))
             self.assertTrue(QgsUnitTypes.toAbbreviatedString(u))
-            self.assertFalse(QgsUnitTypes.toAbbreviatedString(u) in used)
+            self.assertNotIn(QgsUnitTypes.toAbbreviatedString(u), used)
             used.add(QgsUnitTypes.toAbbreviatedString(u))
 
     def testAbbreviateLayoutUnits(self):
@@ -1407,7 +1407,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         for u in units:
             self.assertTrue(QgsUnitTypes.toString(u))
             self.assertTrue(QgsUnitTypes.toAbbreviatedString(u))
-            self.assertFalse(QgsUnitTypes.toAbbreviatedString(u) in used)
+            self.assertNotIn(QgsUnitTypes.toAbbreviatedString(u), used)
             used.add(QgsUnitTypes.toAbbreviatedString(u))
 
 

@@ -167,10 +167,10 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         """
         registry = QgsGui.sourceSelectProviderRegistry()
         enabled_entries = {reg_entry.name(): reg_entry for reg_entry in registry.providers() if reg_entry.capabilities() & QgsSourceSelectProvider.Capability.ConfigureFromUri}
-        self.assertTrue('ogr' in enabled_entries.keys())
-        self.assertTrue('gdal' in enabled_entries.keys())
-        self.assertTrue('GeoPackage' in enabled_entries.keys())
-        self.assertTrue('spatialite' in enabled_entries.keys())
+        self.assertIn('ogr', enabled_entries.keys())
+        self.assertIn('gdal', enabled_entries.keys())
+        self.assertIn('GeoPackage', enabled_entries.keys())
+        self.assertIn('spatialite', enabled_entries.keys())
 
         # Test ogr
         test_path = os.path.join(unitTestDataPath(), 'points.shp')

@@ -1153,7 +1153,7 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertFalse(rule.isNull())
 
         vendorOptions = rasterSymbolizer.elementsByTagName('sld:VendorOption')
-        self.assertTrue(vendorOptions.size() == 0)
+        self.assertEqual(vendorOptions.size(), 0)
 
         # set no default values and check exported sld
         myRasterLayer.setName('')
@@ -1309,8 +1309,8 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertEqual(len(elements), 1)
         element = elements.at(0).toElement()
         self.assertFalse(element.isNull())
-        self.assertTrue(myRasterLayer.brightnessFilter().brightness() == 0)
-        self.assertTrue(myRasterLayer.brightnessFilter().contrast() == 0)
+        self.assertEqual(myRasterLayer.brightnessFilter().brightness(), 0)
+        self.assertEqual(myRasterLayer.brightnessFilter().contrast(), 0)
         self.assertVendorOption(element, 'brightness', None)
         self.assertVendorOption(element, 'contrast', None)
 

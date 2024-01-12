@@ -356,7 +356,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         }.items())])
         r, h = self._result(self._execute_request(qs))
 
-        self.assertTrue(b"The TEMPLATE parameter is invalid" in r)
+        self.assertIn(b"The TEMPLATE parameter is invalid", r)
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')

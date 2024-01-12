@@ -195,8 +195,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertEqual(vl.dataProvider().defaultValue(3), "some 'default")
         self.assertEqual(vl.dataProvider().defaultValue(4), QDate.currentDate())
         # time may pass, so we allow 1 second difference here
-        self.assertTrue(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()) < 1)
-        self.assertTrue(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()) < 1)
+        self.assertLess(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()), 1)
+        self.assertLess(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()), 1)
 
     def testSubsetStringFids(self):
         """

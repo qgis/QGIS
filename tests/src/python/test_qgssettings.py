@@ -455,16 +455,16 @@ class TestQgsSettings(QgisTestCase):
 
         # Check
         pure_settings = QSettings(self.settings.fileName(), QSettings.Format.IniFormat)
-        self.assertFalse('a_value_with_default' in pure_settings.allKeys())
-        self.assertFalse('an_invalid_value' in pure_settings.allKeys())
+        self.assertNotIn('a_value_with_default', pure_settings.allKeys())
+        self.assertNotIn('an_invalid_value', pure_settings.allKeys())
 
         # Set a changed value
         self.settings.setValue('a_value_with_default', 'a new value')
         self.settings.setValue('an_invalid_value', 'valid value')
 
         # Check
-        self.assertTrue('a_value_with_default' in pure_settings.allKeys())
-        self.assertTrue('an_invalid_value' in pure_settings.allKeys())
+        self.assertIn('a_value_with_default', pure_settings.allKeys())
+        self.assertIn('an_invalid_value', pure_settings.allKeys())
 
         self.assertEqual(self.settings.value('a_value_with_default'), 'a new value')
         self.assertEqual(self.settings.value('an_invalid_value'), 'valid value')
@@ -478,8 +478,8 @@ class TestQgsSettings(QgisTestCase):
 
         # Check if they are gone
         pure_settings = QSettings(self.settings.fileName(), QSettings.Format.IniFormat)
-        self.assertFalse('a_value_with_default' not in pure_settings.allKeys())
-        self.assertFalse('an_invalid_value' not in pure_settings.allKeys())
+        self.assertIn('a_value_with_default', pure_settings.allKeys())
+        self.assertIn('an_invalid_value', pure_settings.allKeys())
 
 
 if __name__ == '__main__':

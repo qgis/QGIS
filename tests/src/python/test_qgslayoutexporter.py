@@ -523,7 +523,7 @@ class TestQgsLayoutExporter(QgisTestCase):
 
         # check that the metadata has _not_ been added to the exported PDF
         metadata = d.GetMetadata()
-        self.assertFalse('AUTHOR' in metadata)
+        self.assertNotIn('AUTHOR', metadata)
 
         exporter = QgsLayoutExporter(l)
         # setup settings

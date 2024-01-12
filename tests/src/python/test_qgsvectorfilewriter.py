@@ -616,8 +616,8 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertEqual(options, [])
         options = QgsVectorFileWriter.defaultDatasetOptions('GML')
         # just test a few
-        self.assertTrue('GML3_LONGSRS=YES' in options)
-        self.assertTrue('STRIP_PREFIX=NO' in options)
+        self.assertIn('GML3_LONGSRS=YES', options)
+        self.assertIn('STRIP_PREFIX=NO', options)
 
     def testDefaultLayerOptions(self):
         """ Test retrieving default layer options for a format """
@@ -818,8 +818,8 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertEqual(formats[1].filterString, 'ESRI Shapefile (*.shp *.SHP)')
         self.assertEqual(formats[1].driverName, 'ESRI Shapefile')
         self.assertEqual(formats[1].globs, ['*.shp'])
-        self.assertTrue('ODS' in [f.driverName for f in formats])
-        self.assertTrue('PGDUMP' in [f.driverName for f in formats])
+        self.assertIn('ODS', [f.driverName for f in formats])
+        self.assertIn('PGDUMP', [f.driverName for f in formats])
 
         interlis_format = [f for f in formats if f.driverName == 'Interlis 2'][0]
         self.assertEqual(interlis_format.globs, ['*.xtf', '*.xml', '*.ili'])
@@ -827,24 +827,24 @@ class TestQgsVectorFileWriter(QgisTestCase):
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
         # print([f.filterString for f in formats2])
-        self.assertTrue(formats2[0].filterString < formats2[1].filterString)
+        self.assertLess(formats2[0].filterString, formats2[1].filterString)
         self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
         self.assertNotEqual(formats2[0].driverName, 'GeoPackage')
 
         # skip non-spatial
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SkipNonSpatialFormats)
-        self.assertFalse('ODS' in [f.driverName for f in formats])
+        self.assertNotIn('ODS', [f.driverName for f in formats])
 
         # multilayer formats
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SupportsMultipleLayers)
-        self.assertTrue('DXF' in [f.driverName for f in formats])
-        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
-        self.assertTrue('XLSX' in [f.driverName for f in formats])
+        self.assertIn('DXF', [f.driverName for f in formats])
+        self.assertNotIn('ESRI Shapefile', [f.driverName for f in formats])
+        self.assertIn('XLSX', [f.driverName for f in formats])
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SupportsMultipleLayers | QgsVectorFileWriter.SkipNonSpatialFormats)
-        self.assertTrue('DXF' in [f.driverName for f in formats])
-        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
-        self.assertFalse('XLSX' in [f.driverName for f in formats])
+        self.assertIn('DXF', [f.driverName for f in formats])
+        self.assertNotIn('ESRI Shapefile', [f.driverName for f in formats])
+        self.assertNotIn('XLSX', [f.driverName for f in formats])
 
     def testOgrDriverList(self):
         # test with drivers in recommended order
@@ -853,7 +853,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertEqual(drivers[0].driverName, 'GPKG')
         self.assertEqual(drivers[1].longName, 'ESRI Shapefile')
         self.assertEqual(drivers[1].driverName, 'ESRI Shapefile')
-        self.assertTrue('ODS' in [f.driverName for f in drivers])
+        self.assertIn('ODS', [f.driverName for f in drivers])
 
         # ensure that XLSX comes before SQLite, because we should sort on longName, not driverName!
         ms_xlsx_index = next(i for i, v in enumerate(drivers) if v.driverName == 'XLSX')
@@ -864,55 +864,55 @@ class TestQgsVectorFileWriter(QgisTestCase):
 
         # alphabetical sorting
         drivers2 = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.VectorFormatOptions())
-        self.assertTrue(drivers2[0].longName < drivers2[1].longName)
+        self.assertLess(drivers2[0].longName, drivers2[1].longName)
         self.assertCountEqual([d.driverName for d in drivers], [d.driverName for d in drivers2])
         self.assertNotEqual(drivers2[0].driverName, 'GPKG')
 
         # skip non-spatial
         formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SkipNonSpatialFormats)
-        self.assertFalse('ODS' in [f.driverName for f in formats])
+        self.assertNotIn('ODS', [f.driverName for f in formats])
 
         # multilayer formats
         formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SupportsMultipleLayers)
-        self.assertTrue('DXF' in [f.driverName for f in formats])
-        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
-        self.assertTrue('XLSX' in [f.driverName for f in formats])
+        self.assertIn('DXF', [f.driverName for f in formats])
+        self.assertNotIn('ESRI Shapefile', [f.driverName for f in formats])
+        self.assertIn('XLSX', [f.driverName for f in formats])
 
         formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SupportsMultipleLayers | QgsVectorFileWriter.SkipNonSpatialFormats)
-        self.assertTrue('DXF' in [f.driverName for f in formats])
-        self.assertFalse('ESRI Shapefile' in [f.driverName for f in formats])
-        self.assertFalse('XLSX' in [f.driverName for f in formats])
+        self.assertIn('DXF', [f.driverName for f in formats])
+        self.assertNotIn('ESRI Shapefile', [f.driverName for f in formats])
+        self.assertNotIn('XLSX', [f.driverName for f in formats])
 
     def testSupportedFormatExtensions(self):
         formats = QgsVectorFileWriter.supportedFormatExtensions()
-        self.assertTrue('gpkg' in formats)
-        self.assertFalse('exe' in formats)
+        self.assertIn('gpkg', formats)
+        self.assertNotIn('exe', formats)
         self.assertEqual(formats[0], 'gpkg')
         self.assertEqual(formats[1], 'shp')
-        self.assertTrue('ods' in formats)
-        self.assertTrue('xtf' in formats)
-        self.assertTrue('ili' in formats)
+        self.assertIn('ods', formats)
+        self.assertIn('xtf', formats)
+        self.assertIn('ili', formats)
 
         for i in range(2, len(formats) - 1):
             self.assertLess(formats[i].lower(), formats[i + 1].lower())
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFormatExtensions(QgsVectorFileWriter.VectorFormatOptions())
-        self.assertTrue(formats2[0] < formats2[1])
+        self.assertLess(formats2[0], formats2[1])
         self.assertCountEqual(formats, formats2)
         self.assertNotEqual(formats2[0], 'gpkg')
         for i in range(0, len(formats2) - 1):
             self.assertLess(formats2[i].lower(), formats2[i + 1].lower())
 
         formats = QgsVectorFileWriter.supportedFormatExtensions(QgsVectorFileWriter.SkipNonSpatialFormats)
-        self.assertFalse('ods' in formats)
+        self.assertNotIn('ods', formats)
 
     def testFileFilterString(self):
         formats = QgsVectorFileWriter.fileFilterString()
-        self.assertTrue('gpkg' in formats)
-        self.assertTrue('shp' in formats)
+        self.assertIn('gpkg', formats)
+        self.assertIn('shp', formats)
         self.assertLess(formats.index('gpkg'), formats.index('shp'))
-        self.assertTrue('ods' in formats)
+        self.assertIn('ods', formats)
         parts = formats.split(';;')
         for i in range(2, len(parts) - 1):
             if 'GeoJSON - Newline Delimited' in parts[i] or 'GeoJSON - Newline Delimited' in parts[i + 1]:
@@ -932,7 +932,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
 
         # hide non spatial
         formats = QgsVectorFileWriter.fileFilterString(QgsVectorFileWriter.SkipNonSpatialFormats)
-        self.assertFalse('ods' in formats)
+        self.assertNotIn('ods', formats)
 
     def testDriverForExtension(self):
         self.assertEqual(QgsVectorFileWriter.driverForExtension('shp'), 'ESRI Shapefile')

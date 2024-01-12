@@ -2243,7 +2243,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                             'test', 'postgres')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().hasMetadata())
-        self.assertTrue("key='pk'" in vl.source())
+        self.assertIn("key='pk'", vl.source())
 
     def testCheckPkUnicityOnView(self):
         # vector layer based on view
@@ -2401,7 +2401,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(g)
         self.assertEqual(g.wkbType(), QgsWkbTypes.MultiPolygon)
         self.assertEqual(g.childCount(), 1)
-        self.assertTrue(g.childGeometry(0).vertexCount() > 3)
+        self.assertGreater(g.childGeometry(0).vertexCount(), 3)
 
     def testMassivePaste(self):
         """Speed test to compare createFeature and createFeatures, for regression #21303"""
@@ -2557,7 +2557,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
             'test', 'postgres')
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.featureCount() > 0)
+        self.assertGreater(vl.featureCount(), 0)
         vl.setSubsetString('"pk" = 3')
         self.assertGreaterEqual(vl.featureCount(), 1)
 
@@ -2573,7 +2573,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."somedataview" (geom) sql=',
             'test', 'postgres')
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.featureCount() > 0)
+        self.assertGreater(vl.featureCount(), 0)
         vl.setSubsetString('"pk" = 3')
         self.assertGreaterEqual(vl.featureCount(), 1)
 
@@ -3302,7 +3302,7 @@ class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
     def testConstraints(self):
         for key in ["key1", "key2"]:
             idx = self.vl.dataProvider().fieldNameIndex(key)
-            self.assertTrue(idx >= 0)
+            self.assertGreaterEqual(idx, 0)
             self.assertFalse(self.vl.dataProvider().fieldConstraints(
                 idx) & QgsFieldConstraints.ConstraintUnique)
 
@@ -3433,7 +3433,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
 
     def testConstraints(self):
         idx = self.vl.dataProvider().fieldNameIndex("pk")
-        self.assertTrue(idx >= 0)
+        self.assertGreaterEqual(idx, 0)
 
     def testGetFeaturesFidTests(self):
         fids = [f.id() for f in self.source.getFeatures()]
@@ -3858,7 +3858,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         self.assertEqual(feat["name"], "test")
 
         fid = feat.id()
-        self.assertTrue(fid > 0)
+        self.assertGreater(fid, 0)
 
         feat = vl.getFeature(fid)
         self.assertTrue(feat.isValid())
@@ -3891,7 +3891,7 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         uri = self.dbconn + ' sslmode=disable srid=4326 type=POINT table="qgis_test"."testExportPkGuessLogic_exported" (geom) sql='
 
         exporter = QgsVectorLayerExporter(uri, 'postgres', source_layer.fields(), source_layer.wkbType(), source_layer.crs(), True, {})
-        self.assertTrue(exporter.lastError() == '')
+        self.assertFalse(exporter.lastError())
 
         exported_layer = QgsVectorLayer(self.dbconn + ' sslmode=disable srid=4326 type=POINT table="qgis_test"."testExportPkGuessLogic_exported" (geom) sql=', 'testExportPkGuessLogic_exported', 'postgres')
         self.assertTrue(exported_layer.isValid())
@@ -3969,7 +3969,7 @@ class TestPyQgsPostgresProviderAsyncCreation(QgisTestCase):
 
     def testReadProject(self):
 
-        self.assertTrue(len(self.layers) > 0)
+        self.assertGreater(len(self.layers), 0)
         for layer in self.layers:
             self.assertTrue(layer.isValid())
 

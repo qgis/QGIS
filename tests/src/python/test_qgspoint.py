@@ -29,14 +29,12 @@ class TestQgsPointXY(QgisTestCase):
     def test_Point(self):
         myExpectedValue = 10.0
         myActualValue = self.mPoint.x()
-        myMessage = f'Expected: {myExpectedValue} Got: {myActualValue}'
-        self.assertTrue(myExpectedValue == myActualValue, myMessage)
+        self.assertEqual(myExpectedValue, myActualValue)
 
     def test_pointToString(self):
         myExpectedValue = '10, 10'
         myActualValue = self.mPoint.toString()
-        myMessage = f'Expected: {myExpectedValue} Got: {myActualValue}'
-        self.assertTrue(myExpectedValue == myActualValue, myMessage)
+        self.assertEqual(myExpectedValue, myActualValue)
 
     def test_hash(self):
         a = QgsPointXY(2.0, 1.0)
@@ -44,11 +42,11 @@ class TestQgsPointXY(QgisTestCase):
         c = QgsPointXY(1.0, 2.0)
         d = QgsPointXY(1.0, 1.0)
         e = QgsPointXY(2.0, 1.0)
-        self.assertTrue(a.__hash__() != b.__hash__())
-        self.assertTrue(e.__hash__() == a.__hash__())
+        self.assertNotEqual(a.__hash__(), b.__hash__())
+        self.assertEqual(e.__hash__(), a.__hash__())
 
         mySet = {a, b, c, d, e}
-        self.assertTrue(len(mySet) == 4)
+        self.assertEqual(len(mySet), 4)
 
     def test_issue_32443(self):
         p = QgsPoint()

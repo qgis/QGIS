@@ -139,10 +139,10 @@ class TestQgsMapCanvas(QgisTestCase):
         # expect canvas to auto refresh...
         while not canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
         while canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
 
         # add a polygon to layer
         f = QgsFeature()
@@ -151,10 +151,10 @@ class TestQgsMapCanvas(QgisTestCase):
         # wait for canvas auto refresh
         while not canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
         while canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
 
         # now canvas should look different...
         self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
@@ -523,7 +523,7 @@ class TestQgsMapCanvas(QgisTestCase):
         c.zoomByFactor(0.5, QgsPointXY(6.5, 46.5), False)
         self.assertEqual(c.center().x(), 6.5)
         self.assertEqual(c.center().y(), 46.5)
-        self.assertTrue(c.magnificationFactor() > 7 / dpr)
+        self.assertGreater(c.magnificationFactor(), 7 / dpr)
         self.assertEqual(round(c.scale()), 2500000)
 
         # Test zoom with center
@@ -538,7 +538,7 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(round(c.center().x(), 1), 6.5)
         self.assertEqual(round(c.center().y(), 1), 46.6)
         self.assertEqual(round(c.scale()), 2500000)
-        self.assertTrue(c.magnificationFactor() > 7 / dpr)
+        self.assertGreater(c.magnificationFactor(), 7 / dpr)
 
         # Test setExtent with different ratio
         c2 = QgsMapCanvas()

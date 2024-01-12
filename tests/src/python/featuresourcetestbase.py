@@ -62,7 +62,7 @@ class FeatureSourceTestCase:
     def testFields(self):
         fields = self.source.fields()
         for f in ('pk', 'cnt', 'name', 'name2', 'num_char'):
-            self.assertTrue(fields.lookupField(f) >= 0)
+            self.assertGreaterEqual(fields.lookupField(f), 0)
 
     def testGetFeatures(self, source=None, extra_features=[], skip_features=[], changed_attributes={},
                         changed_geometries={}):

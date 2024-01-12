@@ -232,7 +232,7 @@ class TestAuthManager(QgisTestCase):
         loop.exec_()
 
         self.assertTrue(self.error_was_called)
-        self.assertTrue("Download failed: Host requires authentication" in str(self.error_args), f"Error args is: {str(self.error_args)}")
+        self.assertIn("Download failed: Host requires authentication", str(self.error_args))
 
     def testValidAuthFileDownload(self):
         """
@@ -269,7 +269,7 @@ class TestAuthManager(QgisTestCase):
 
         # Check the we've got a likely PNG image
         self.assertTrue(self.completed_was_called)
-        self.assertTrue(os.path.getsize(destination) > 2000, f"Image size: {os.path.getsize(destination)}")  # > 1MB
+        self.assertGreater(os.path.getsize(destination), 2000)  # > 1MB
         with open(destination, 'rb') as f:
             self.assertTrue(b'PNG' in f.read())  # is a PNG
 

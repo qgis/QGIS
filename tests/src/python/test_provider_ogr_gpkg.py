@@ -1161,7 +1161,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         for i in range(70):
             got = [feat for feat in vl.getFeatures()]
-            self.assertTrue(len(got) == 1)
+            self.assertEqual(len(got), 1)
 
         # We shouldn't have more than 2 file handles opened:
         # one shared by the QgsOgrProvider object

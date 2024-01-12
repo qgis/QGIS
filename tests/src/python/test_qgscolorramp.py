@@ -475,12 +475,12 @@ class PyQgsColorRamp(unittest.TestCase):
             for j in range(5):
                 c = r.color(r.value(j))
                 self.assertTrue(c.isValid())
-                self.assertTrue(c.hue() >= r.hueMin())
-                self.assertTrue(c.hue() <= r.hueMax())
-                self.assertTrue(c.saturation() >= r.satMin())
-                self.assertTrue(c.saturation() <= r.satMax())
-                self.assertTrue(c.value() >= r.valMin())
-                self.assertTrue(c.value() <= r.valMax())
+                self.assertGreaterEqual(c.hue(), r.hueMin())
+                self.assertLessEqual(c.hue(), r.hueMax())
+                self.assertGreaterEqual(c.saturation(), r.satMin())
+                self.assertLessEqual(c.saturation(), r.satMax())
+                self.assertGreaterEqual(c.value(), r.valMin())
+                self.assertLessEqual(c.value(), r.valMax())
 
         # test creating from properties
         props = r.properties()
@@ -509,12 +509,12 @@ class PyQgsColorRamp(unittest.TestCase):
             self.assertEqual(len(cols), 10)
             for c in cols:
                 self.assertTrue(c.isValid())
-                self.assertTrue(c.hue() >= 30)
-                self.assertTrue(c.hue() <= 60)
-                self.assertTrue(c.saturation() >= 90)
-                self.assertTrue(c.saturation() <= 120)
-                self.assertTrue(c.value() >= 150)
-                self.assertTrue(c.value() <= 180)
+                self.assertGreaterEqual(c.hue(), 30)
+                self.assertLessEqual(c.hue(), 60)
+                self.assertGreaterEqual(c.saturation(), 90)
+                self.assertLessEqual(c.saturation(), 120)
+                self.assertGreaterEqual(c.value(), 150)
+                self.assertLessEqual(c.value(), 180)
 
     def testQgsRandomColorRamp(self):
         # test random colors

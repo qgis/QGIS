@@ -1676,7 +1676,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
 
-        self.assertTrue('ServerException' in str(r))
+        self.assertIn('ServerException', str(r))
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')
@@ -1934,7 +1934,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request_project(qs, p))
         # No exceptions
         self.assertEqual(h['Content-Type'], 'image/png')
-        self.assertFalse(b"The layer 'test plus' does not exist" in r)
+        self.assertNotIn(b"The layer 'test plus' does not exist", r)
 
         # + literal: we get an exception
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1951,7 +1951,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request_project(qs, p))
-        self.assertTrue(b"The layer 'test plus' does not exist" in r)
+        self.assertIn(b"The layer 'test plus' does not exist", r)
 
     def test_wms_annotation_item(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({

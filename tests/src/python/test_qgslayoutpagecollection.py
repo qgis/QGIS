@@ -85,7 +85,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
 
         collection.addPage(page)
 
-        self.assertTrue(page in l.items())
+        self.assertIn(page, l.items())
 
         self.assertEqual(collection.pageCount(), 1)
         self.assertEqual(collection.pages(), [page])
@@ -110,7 +110,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         page3 = QgsLayoutItemPage(l)
         page3.setPageSize('A3')
         collection.insertPage(page3, 1)
-        self.assertTrue(page3 in l.items())
+        self.assertIn(page3, l.items())
 
         self.assertEqual(collection.pageCount(), 3)
         self.assertEqual(collection.pages(), [page, page3, page2])
@@ -175,7 +175,7 @@ class TestQgsLayoutPageCollection(QgisTestCase):
         collection.deletePage(page)
         self.assertEqual(collection.pageCount(), 1)
         self.assertEqual(l.layoutBounds(ignorePages=False), QRectF(0.0, 0.0, 148.0, 210.0))
-        self.assertFalse(page in collection.pages())
+        self.assertNotIn(page, collection.pages())
         QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertTrue(sip.isdeleted(page))
         self.assertEqual(len(page_about_to_be_removed_spy), 1)

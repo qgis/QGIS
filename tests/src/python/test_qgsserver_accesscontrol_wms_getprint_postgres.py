@@ -160,7 +160,7 @@ class TestQgsServerAccessControlWMSGetPrintPG(QgsServerTestBase):
         res = QgsBufferServerResponse()
         self._server.handleRequest(req, res, self.test_project)
         self.assertEqual(res.statusCode(), 400)
-        self.assertTrue(exception_text in bytes(res.body()).decode('utf8'))
+        self.assertIn(exception_text, bytes(res.body()).decode('utf8'))
 
     def _check_white(self, qs):
         """Check that output is a white image"""

@@ -48,11 +48,11 @@ class TestQgsFeature(QgisTestCase):
         # it should be FID_NULL std::numeric_limits<QgsFeatureId>::min(),
         # not sure if I can test the exact value in python
         self.assertNotEqual(feat.id(), 0)
-        self.assertTrue(feat.id() < 0)
+        self.assertLess(feat.id(), 0)
 
         feat = QgsFeature(QgsFields())
         self.assertNotEqual(feat.id(), 0)
-        self.assertTrue(feat.id() < 0)
+        self.assertLess(feat.id(), 0)
 
         feat = QgsFeature(1234)
         self.assertEqual(feat.id(), 1234)

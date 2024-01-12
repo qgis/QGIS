@@ -91,7 +91,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
             self.assertEqual(s3.statistic(t['stat']), t['expected'])
 
             # display name
-            self.assertTrue(len(QgsStringStatisticalSummary.displayName(t['stat'])) > 0)
+            self.assertGreater(len(QgsStringStatisticalSummary.displayName(t['stat'])), 0)
 
     def testVariantStats(self):
         s = QgsStringStatisticalSummary()
