@@ -18,7 +18,6 @@
 
 #include <QWidget>
 #include <Qt3DRender/QRenderCapture>
-#include <QSplitter>
 
 #include "qgis_app.h"
 
@@ -36,7 +35,6 @@ class Qgs3DMapScene;
 class Qgs3DMapTool;
 class QgsWindow3DEngine;
 class QgsPointXY;
-class Qgs3DNavigationWidget;
 class QgsTemporalController;
 class QgsRubberBand;
 
@@ -84,11 +82,6 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
      * Returns the 3D engine.
      */
     QgsWindow3DEngine *engine() const { return mEngine; }
-
-    /**
-     * Sets the visibility of on-screen navigation widget.
-     */
-    void setOnScreenNavigationVisibility( bool visibility );
 
     /**
      * Sets the temporal controller
@@ -155,8 +148,6 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
   private:
     QgsWindow3DEngine *mEngine = nullptr;
 
-    //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
-    QWidget *mContainer = nullptr;
     //! Description of the 3D scene
     Qgs3DMapSettings *mMap = nullptr;
     //! Root entity of the 3D scene
@@ -168,12 +159,7 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
     QString mCaptureFileName;
     QString mCaptureFileFormat;
 
-    //! On-Screen Navigation widget.
-    Qgs3DNavigationWidget *mNavigationWidget = nullptr;
-
     QgsTemporalController *mTemporalController = nullptr;
-
-    QSplitter *mSplitter = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

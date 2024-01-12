@@ -25,7 +25,6 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
-#include "qgs3dnavigationwidget.h"
 #include "qgssettings.h"
 #include "qgstemporalcontroller.h"
 
@@ -42,39 +41,8 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
     emit savedAsImage( mCaptureFileName );
   } );
 
-  mSplitter = new QSplitter( this );
-
-  mContainer = QWidget::createWindowContainer( mEngine->window() );
-  mNavigationWidget = new Qgs3DNavigationWidget( this );
-
-  mSplitter->addWidget( mContainer );
-  mSplitter->addWidget( mNavigationWidget );
-
-  QHBoxLayout *hLayout = new QHBoxLayout( this );
-  hLayout->setContentsMargins( 0, 0, 0, 0 );
-  hLayout->addWidget( mSplitter );
-  this->setOnScreenNavigationVisibility(
-    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
-  );
-
   mEngine->window()->setCursor( Qt::OpenHandCursor );
   mEngine->window()->installEventFilter( this );
-
-  connect( mSplitter, &QSplitter::splitterMoved, this, [&]( int, int )
-  {
-    QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-    mEngine->setSize( viewportRect.size() );
-  } );
-
-  connect( mNavigationWidget, &Qgs3DNavigationWidget::sizeChanged, this, [&]( const QSize & newSize )
-  {
-    QSize widgetSize = size();
-    QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
-    mEngine->setSize( viewportRect.size() );
-  } );
-
-  QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-  mEngine->setSize( viewportRect.size() );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
@@ -95,8 +63,7 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
   if ( !mScene )
     return;
 
-  QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-  mEngine->setSize( viewportRect.size() );
+  mEngine->setSize( size() );
 }
 
 void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
@@ -105,10 +72,9 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   Q_ASSERT( !mMap );
   Q_ASSERT( !mScene );
 
-  QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
   Qgs3DMapScene *newScene = new Qgs3DMapScene( *map, mEngine );
 
-  mEngine->setSize( viewportRect.size() );
+  mEngine->setSize( size() );
   mEngine->setRootEntity( newScene );
 
   if ( mScene )
@@ -125,8 +91,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
 
   resetView();
 
-  // Connect the camera to the navigation widget.
-  connect( cameraController(), &QgsCameraController::cameraChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
   connect( cameraController(), &QgsCameraController::setCursorPosition, this, [ = ]( QPoint point )
   {
     QCursor::setPos( mapToGlobal( point ) );
@@ -272,13 +236,6 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
       break;
   }
   return false;
-}
-
-void Qgs3DMapCanvas::setOnScreenNavigationVisibility( bool visibility )
-{
-  mNavigationWidget->setVisible( visibility );
-  QgsSettings setting;
-  setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
 }
 
 void Qgs3DMapCanvas::setTemporalController( QgsTemporalController *temporalController )
