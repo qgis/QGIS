@@ -236,7 +236,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, ProviderTestCase):
     def testDateTimeTypes(self):
         vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' %
                             (self.dbconn), "testdatetimes", "mssql")
-        assert (vl.isValid())
+        self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName(
