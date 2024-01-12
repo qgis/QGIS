@@ -18,6 +18,8 @@
 
 #include <QObject>
 
+#include "qgis_3d.h"
+
 class Qgs3DMapCanvas;
 class QMouseEvent;
 class QKeyEvent;
@@ -25,7 +27,7 @@ class QKeyEvent;
 /**
  * Base class for map tools operating on 3D map canvas.
  */
-class Qgs3DMapTool : public QObject
+class _3D_EXPORT Qgs3DMapTool : public QObject
 {
     Q_OBJECT
 
