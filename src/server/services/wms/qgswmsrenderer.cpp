@@ -2581,10 +2581,10 @@ namespace QgsWms
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
   {
     const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip();
-    QString featureInfoString;
+    QString featureInfoString = QStringLiteral( "    <!DOCTYPE html>" );
     if ( !onlyMapTip )
     {
-      featureInfoString.append( QStringLiteral( R"HTML(    <!DOCTYPE html>
+      featureInfoString.append( QStringLiteral( R"HTML(
 
     <head>
       <title>Information</title>
@@ -2672,7 +2672,8 @@ namespace QgsWms
             }
             else if ( name == QStringLiteral( "maptip" ) )
             {
-              featureInfoString.append( value );
+              featureInfoString.append( QStringLiteral( R"HTML(
+      %1)HTML" ).arg( value ) );
               break;
             }
 
@@ -2727,7 +2728,8 @@ namespace QgsWms
             }
             else if ( name == QStringLiteral( "maptip" ) )
             {
-              featureInfoString.append( value );
+              featureInfoString.append( QStringLiteral( R"HTML(
+      %1)HTML" ).arg( value ) );
               break;
             }
 

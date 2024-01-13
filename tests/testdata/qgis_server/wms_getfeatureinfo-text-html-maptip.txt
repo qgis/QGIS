@@ -50,8 +50,7 @@ Content-Type: text/html; charset=utf-8
         </tr>
         <tr>
           <th>maptip</th>
-          <td><!DOCTYPE html>
-<title>Maptip</title>
+          <td><title>Maptip</title>
 Name: three</td>
         </tr>
         <tr>

@@ -8,8 +8,7 @@ Feature 2
 id = '3'
 name = 'three'
 utf8nameè = 'three èé↓'
-maptip = '<!DOCTYPE html>
-<title>Maptip</title>
+maptip = '<title>Maptip</title>
 Name: three'
 displayName = 'three'
 
