@@ -1488,27 +1488,27 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 }
 
 
-QgsLayerTreeModel::LayerLegendTree *QgsLayerTreeModel::tryBuildLegendTree( const QList<QgsLayerTreeModelLegendNode *> &nodes, Qgis::LayerType layerType)
+QgsLayerTreeModel::LayerLegendTree *QgsLayerTreeModel::tryBuildLegendTree( const QList<QgsLayerTreeModelLegendNode *> &nodes, Qgis::LayerType layerType )
 {
-  if (layerType == Qgis::LayerType::Mesh)
+  if ( layerType == Qgis::LayerType::Mesh )
   {
-    QHash<QString, QgsLayerTreeModelLegendNode*> rule2node;
+    QHash<QString, QgsLayerTreeModelLegendNode *> rule2node;
     rule2node[QString()] = nullptr;
-    for (QgsLayerTreeModelLegendNode* n : nodes)
+    for ( QgsLayerTreeModelLegendNode *n : nodes )
     {
       QString key = n->objectName();
-      if (key.isEmpty()) // in tree all nodes must have key
+      if ( key.isEmpty() ) // in tree all nodes must have key
         return nullptr;
-      if (rule2node.contains(key)) // and they must be unique
+      if ( rule2node.contains( key ) ) // and they must be unique
         return nullptr;
       rule2node[key] = n;
     }
 
-    LayerLegendTree* tree = new LayerLegendTree;
-    for (QgsLayerTreeModelLegendNode* n : nodes)
+    LayerLegendTree *tree = new LayerLegendTree;
+    for ( QgsLayerTreeModelLegendNode *n : nodes )
     {
-      const QString parentName = n->property("parentNode").toString();
-      QgsLayerTreeModelLegendNode* parent = rule2node.value(parentName, nullptr);
+      const QString parentName = n->property( "parentNode" ).toString();
+      QgsLayerTreeModelLegendNode *parent = rule2node.value( parentName, nullptr );
       tree->parents[n] = parent;
       tree->children[parent] << n;
     }
