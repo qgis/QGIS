@@ -2580,7 +2580,11 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
   {
-    QString featureInfoString = QStringLiteral( R"HTML(    <!DOCTYPE html>
+    const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip();
+    QString featureInfoString;
+    if ( !onlyMapTip )
+    {
+      featureInfoString.append( QStringLiteral( R"HTML(    <!DOCTYPE html>
 
     <head>
       <title>Information</title>
@@ -2613,7 +2617,8 @@ namespace QgsWms
     </head>
 
     <body>
-    )HTML" );
+    )HTML" ) );
+    }
 
     const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
 
@@ -2628,14 +2633,20 @@ namespace QgsWms
 
       if ( !featureNodeList.isEmpty() ) //vector layer
       {
-        const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ).toHtmlEscaped() );
-        featureInfoString.append( featureInfoLayerTitleString );
+        if ( !onlyMapTip )
+        {
+          const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ).toHtmlEscaped() );
+          featureInfoString.append( featureInfoLayerTitleString );
+        }
 
         for ( int j = 0; j < featureNodeList.size(); ++j )
         {
           const QDomElement featureElement = featureNodeList.at( j ).toElement();
-          featureInfoString.append( QStringLiteral( R"HTML(
+          if ( !onlyMapTip )
+          {
+            featureInfoString.append( QStringLiteral( R"HTML(
       <table>)HTML" ) );
+          }
 
           //attribute loop
           const QDomNodeList attributeNodeList = featureElement.elementsByTagName( QStringLiteral( "Attribute" ) );
@@ -2649,16 +2660,28 @@ namespace QgsWms
               value = value.toHtmlEscaped();
             }
 
-            const QString featureInfoAttributeString = QStringLiteral( R"HTML(
+            if ( !onlyMapTip )
+            {
+              const QString featureInfoAttributeString = QStringLiteral( R"HTML(
         <tr>
           <th>%1</th>
           <td>%2</td>
         </tr>)HTML" ).arg( name, value );
 
-            featureInfoString.append( featureInfoAttributeString );
+              featureInfoString.append( featureInfoAttributeString );
+            }
+            else if ( name == QStringLiteral( "maptip" ) )
+            {
+              featureInfoString.append( value );
+              break;
+            }
+
           }
-          featureInfoString.append( QStringLiteral( R"HTML(
+          if ( !onlyMapTip )
+          {
+            featureInfoString.append( QStringLiteral( R"HTML(
       </table>)HTML" ) );
+          }
         }
       }
       else //no result or raster layer
@@ -2668,11 +2691,15 @@ namespace QgsWms
         //  raster layer
         if ( !attributeNodeList.isEmpty() )
         {
-          const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ).toHtmlEscaped() );
-          featureInfoString.append( featureInfoLayerTitleString );
+          if ( !onlyMapTip )
+          {
+            const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ).toHtmlEscaped() );
+            featureInfoString.append( featureInfoLayerTitleString );
 
-          featureInfoString.append( QStringLiteral( R"HTML(
+            featureInfoString.append( QStringLiteral( R"HTML(
       <table>)HTML" ) );
+          }
+
           for ( int j = 0; j < attributeNodeList.size(); ++j )
           {
             const QDomElement attributeElement = attributeNodeList.at( j ).toElement();
@@ -2687,23 +2714,39 @@ namespace QgsWms
               value = value.toHtmlEscaped();
             }
 
-            const QString featureInfoAttributeString = QStringLiteral( R"HTML(
+            if ( !onlyMapTip )
+            {
+              const QString featureInfoAttributeString = QStringLiteral( R"HTML(
         <tr>
           <th>%1</th>
           <td>%2</td>
         </tr>)HTML" ).arg( name, value );
 
-            featureInfoString.append( featureInfoAttributeString );
+
+              featureInfoString.append( featureInfoAttributeString );
+            }
+            else if ( name == QStringLiteral( "maptip" ) )
+            {
+              featureInfoString.append( value );
+              break;
+            }
+
           }
-          featureInfoString.append( QStringLiteral( R"HTML(
+          if ( !onlyMapTip )
+          {
+            featureInfoString.append( QStringLiteral( R"HTML(
       </table>)HTML" ) );
+          }
         }
       }
     }
 
     //end the html body
-    featureInfoString.append( QStringLiteral( R"HTML(
+    if ( !onlyMapTip )
+    {
+      featureInfoString.append( QStringLiteral( R"HTML(
     </body>)HTML" ) );
+    }
 
     return featureInfoString.toUtf8();
   }
