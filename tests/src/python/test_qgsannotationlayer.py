@@ -597,7 +597,6 @@ class TestQgsAnnotationLayer(QgisTestCase):
         self.assertTrue(compareWkt(result, expected, tol=1000), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
                                                                                                             result))
 
-
     def testRenderWithDisabledItems(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
