@@ -1948,6 +1948,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows the map styling dock
     void mapStyleDock( bool enabled );
 
+    /**
+     * Sets whether changes to the active layer should be temporarily
+     * blocked.
+     *
+     * This is a low-level method, designed to avoid unnecessary work when adding lots
+     * of layers at once. Clients which will be adding many layers may call blockActiveLayerChanges( TRUE ) upfront,
+     * add all the layers, and then follow up with a call to blockActiveLayerChanges( FALSE ). This will defer emitting
+     * the active layer changed signal until they've added all layers, and only emit the signal once for
+     * the final layer added.
+     *
+     * \warning This must be accompanied by a subsequent call with \a blocked as FALSE.
+     *
+     * \since QGIS 3.36
+     */
+    void blockActiveLayerChanges( bool blocked );
+
     //! diagrams properties
     void diagramProperties();
 
@@ -2693,8 +2709,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsProxyProgressTask *mProjectLoadingProxyTask = nullptr;
 
-    //! True if we are blocking the activeLayerChanged signal from being emitted
-    bool mBlockActiveLayerChanged = false;
+    // Non-zero if we are blocking the activeLayerChanged signal from being emitted
+    int mBlockActiveLayerChanged = 0;
 
     int mBlockBrowser1Refresh = 0;
     int mBlockBrowser2Refresh = 0;
