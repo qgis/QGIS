@@ -613,7 +613,7 @@ QString QgsProjectionSelectionWidget::crsOptionText( const QgsCoordinateReferenc
 
 void QgsProjectionSelectionWidget::addRecentCrs()
 {
-  const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
+  const QList< QgsCoordinateReferenceSystem> recentProjections = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
   for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
   {
     const long srsid = crs.srsid();
