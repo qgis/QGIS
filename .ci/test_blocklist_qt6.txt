@@ -330,10 +330,13 @@ PyPythonRepr
 TestQgsRandomMarkerSymbolLayer
 ProcessingToolsTest
 test_app_qgisapppython
-PyQgsCesium3dTilesLayer (Failed)
+PyQgsCesium3dTilesLayer
 PyQgsCoordinateReferenceSystemModel
 PyQgsFilledLineSymbolLayer
 PyQgsPainting
 PyQgsProviderRegistry
 PyQgsTiledSceneLayer
 PyQgsTiledSceneTile
+ProcessingScriptUtilsTest
+PyQgsColorScheme
+PyQgsSearchWidgetToolButton
