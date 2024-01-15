@@ -1000,3 +1000,8 @@ QgsUserProfileManager *QgisAppInterface::userProfileManager()
   return qgis->userProfileManager();
 }
 
+void QgisAppInterface::blockActiveLayerChanges( bool blocked )
+{
+  qgis->blockActiveLayerChanges( blocked );
+}
+
