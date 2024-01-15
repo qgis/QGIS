@@ -261,6 +261,17 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
      */
     void setPortName( const QString &portName );
 
+    /**
+    * Returns the baudrate of the serial port the sensor connects to.
+    */
+    QString baudrate() const;
+
+    /**
+     * Sets the baudrate of the serial port the sensor connects to.
+     * \param baudrate the baudrate (e.g. 9600)
+     */
+    void setBaudrate( const QString &baudrate );
+
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document ) override;
 
@@ -278,6 +289,8 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QSerialPort *mSerialPort = nullptr;
 
     QString mPortName;
+
+    QString mBaudrate;
 
 };
 SIP_END

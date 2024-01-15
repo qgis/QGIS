@@ -227,6 +227,18 @@ Sets the serial port the sensor connects to.
 :param portName: the port name (e.g. COM4)
 %End
 
+    QString baudrate() const;
+%Docstring
+Returns the baudrate of the serial port the sensor connects to.
+%End
+
+    void setBaudrate( const QString &baudrate );
+%Docstring
+Sets the baudrate of the serial port the sensor connects to.
+
+:param baudrate: the baudrate (e.g. 9600)
+%End
+
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document );

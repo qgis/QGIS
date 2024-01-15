@@ -186,7 +186,7 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
 #endif
 
   connect( mUdpSocket.get(), &QAbstractSocket::stateChanged, this, &QgsUdpSocketSensor::socketStateChanged );
-  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [this]()
+  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [ = ]()
   {
     QByteArray datagram;
     while ( mUdpSocket->hasPendingDatagrams() )
@@ -353,10 +353,46 @@ void QgsSerialPortSensor::setPortName( const QString &portName )
   mPortName = portName;
 }
 
+// by jtornero
+QString QgsSerialPortSensor::baudrate() const
+{
+  return mBaudrate;
+}
+
+void QgsSerialPortSensor::setBaudrate( const QString &baudrate )
+{
+  if ( mBaudrate == baudrate )
+    return;
+
+  mBaudrate = baudrate;
+}
+
 void QgsSerialPortSensor::handleConnect()
 {
   mSerialPort->setPortName( mPortName );
-  mSerialPort->setBaudRate( QSerialPort::Baud9600 );
+  switch ( mBaudrate.toInt() )
+  {
+    case 4800:
+      mSerialPort->setBaudRate( QSerialPort::Baud4800 );
+      break;
+    case 9600:
+      mSerialPort->setBaudRate( QSerialPort::Baud9600 );
+      break;
+    case 19200:
+      mSerialPort->setBaudRate( QSerialPort::Baud19200 );
+      break;
+    case 38400:
+      mSerialPort->setBaudRate( QSerialPort::Baud38400 );
+      break;
+    case 57600:
+      mSerialPort->setBaudRate( QSerialPort::Baud57600 );
+      break;
+    case 115200:
+      mSerialPort->setBaudRate( QSerialPort::Baud115200 );
+      break;
+  }
+
+  //mSerialPort->setBaudRate( QSerialPort::Baud4800 );
   if ( mSerialPort->open( QIODevice::ReadOnly ) )
   {
     setStatus( Qgis::DeviceConnectionStatus::Connected );
@@ -401,6 +437,7 @@ void QgsSerialPortSensor::handleError( QSerialPort::SerialPortError error )
 bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const
 {
   element.setAttribute( QStringLiteral( "portName" ), mPortName );
+  element.setAttribute( QStringLiteral( "baudrate" ), mBaudrate );
 
   return true;
 }
@@ -408,7 +445,7 @@ bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDo
 bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
   mPortName = element.attribute( QStringLiteral( "portName" ) );
-
+  mBaudrate = element.attribute( QStringLiteral( "baudrate" ) );
   return true;
 }
 #endif

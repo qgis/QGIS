@@ -154,12 +154,20 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
     updateSerialPortDetails();
     emit changed();
   } );
+
+  connect( mBaudrateComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
+  {
+    updateSerialPortDetails();
+    emit changed();
+  } );
+
 }
 
 QgsAbstractSensor *QgsSerialPortSensorWidget::createSensor()
 {
   QgsSerialPortSensor *s = new QgsSerialPortSensor();
   s->setPortName( mSerialPortComboBox->currentData().toString() );
+  s->setBaudrate( mBaudrateComboBox->currentText() );
   return s;
 }
 
@@ -170,6 +178,7 @@ bool QgsSerialPortSensorWidget::updateSensor( QgsAbstractSensor *sensor )
     return false;
 
   s->setPortName( mSerialPortComboBox->currentData().toString() );
+  s->setBaudrate( mBaudrateComboBox->currentText() );
 
   return true;
 }
@@ -190,6 +199,17 @@ bool QgsSerialPortSensorWidget::setSensor( QgsAbstractSensor *sensor )
     mSerialPortComboBox->addItem( s->portName(), s->portName() );
     mSerialPortComboBox->setCurrentIndex( mSerialPortComboBox->count() - 1 );
   }
+
+  const int baudRateIndex = mBaudrateComboBox->findText( s->baudrate() );
+  if ( index >= 0 )
+  {
+    mBaudrateComboBox->setCurrentIndex( baudRateIndex );
+  }
+  else
+  {
+    mBaudrateComboBox->setCurrentIndex( mBaudrateComboBox->count() - 1 );
+  }
+
 
   return true;
 }
