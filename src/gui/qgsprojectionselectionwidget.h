@@ -25,6 +25,7 @@
 #include <QPointer>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatereferencesystemmodel.h"
 #include "qgis_gui.h"
 
 class QgsMapLayer;
@@ -57,8 +58,15 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       CrsNotSet, //!< Not set (hidden by default)
     };
 
-    //! Constructor for QgsProjectionSelectionWidget
-    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    /**
+     * Constructor for QgsProjectionSelectionWidget, with the specified \a parent widget.
+     *
+     * Since QGIS 3.36, the optional \a filter argument can be used to specify filters on the systems
+     * shown in the widget. The default is to show all horizontal and compound CRS in order to match
+     * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
+     */
+    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                           QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     /**
      * Returns the currently selected CRS for the widget
@@ -165,6 +173,22 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     void setFilter( const QList< QgsCoordinateReferenceSystem > &crses );
 
+    /**
+     * Returns the filters set on the available CRS.
+     *
+     * \see setFilters()
+     * \since QGIS 3.36
+     */
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+
+    /**
+     * Sets \a filters for the available CRS.
+     *
+     * \see filters()
+     * \since QGIS 3.36
+     */
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
+
   signals:
 
     /**
@@ -227,6 +251,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QString mDialogTitle;
 
     QList<QgsCoordinateReferenceSystem> mFilter;
+
+    QgsCoordinateReferenceSystemProxyModel::Filters mFilters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound;
 
     void addNotSetOption();
     void addProjectCrsOption();

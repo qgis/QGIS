@@ -29,10 +29,13 @@
 //
 // QgsCrsSelectionWidget
 //
-QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent )
+QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent,
+    QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
+
+  projectionSelector->setFilters( filters );
 
   //we will show this only when a message is set
   textEdit->hide();
@@ -187,6 +190,16 @@ bool QgsCrsSelectionWidget::hasValidSelection() const
   }
 }
 
+QgsCoordinateReferenceSystemProxyModel::Filters QgsCrsSelectionWidget::filters() const
+{
+  return projectionSelector->filters();
+}
+
+void QgsCrsSelectionWidget::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
+{
+  projectionSelector->setFilters( filters );
+}
+
 QgsCoordinateReferenceSystem QgsCrsSelectionWidget::crs() const
 {
   if ( !mComboCrsType->currentData().isValid() )
@@ -247,12 +260,12 @@ void QgsCrsSelectionWidget::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 //
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
-    Qt::WindowFlags fl )
+    Qt::WindowFlags fl, QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QDialog( parent, fl )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
 
-  mCrsWidget = new QgsCrsSelectionWidget();
+  mCrsWidget = new QgsCrsSelectionWidget( nullptr, filters );
   vlayout->addWidget( mCrsWidget, 1 );
 
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
@@ -312,6 +325,16 @@ void QgsProjectionSelectionDialog::setRequireValidSelection()
 bool QgsProjectionSelectionDialog::hasValidSelection() const
 {
   return mCrsWidget->hasValidSelection();
+}
+
+QgsCoordinateReferenceSystemProxyModel::Filters QgsProjectionSelectionDialog::filters() const
+{
+  return mCrsWidget->filters();
+}
+
+void QgsProjectionSelectionDialog::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
+{
+  mCrsWidget->setFilters( filters );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const

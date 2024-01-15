@@ -43,8 +43,13 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
 
     /**
      * Constructor for QgsCrsSelectionWidget, with the specified \a parent widget.
+     *
+     * Since QGIS 3.36, the optional \a filter argument can be used to specify filters on the systems
+     * shown in the widget. The default is to show all horizontal and compound CRS in order to match
+     * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    QgsCrsSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsCrsSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                           QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     ~QgsCrsSelectionWidget() override;
 
@@ -86,6 +91,22 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
      * Returns TRUE if the widget has a valid CRS defined.
      */
     bool hasValidSelection() const;
+
+    /**
+     * Returns the filters set on the available CRS.
+     *
+     * \see setFilters()
+     * \since QGIS 3.36
+     */
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+
+    /**
+     * Sets \a filters for the available CRS.
+     *
+     * \see filters()
+     * \since QGIS 3.36
+     */
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
   public slots:
 
@@ -174,9 +195,14 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
 
     /**
      * Constructor for QgsProjectionSelectionDialog.
+     *
+     * Since QGIS 3.36, the optional \a filter argument can be used to specify filters on the systems
+     * shown in the dialog. The default is to show all horizontal and compound CRS in order to match
+     * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
     QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                  Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+                                  Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                                  QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     /**
      * Returns the CRS currently selected in the widget.
@@ -241,6 +267,22 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
      * \since QGIS 3.24
      */
     bool hasValidSelection() const;
+
+    /**
+     * Returns the filters set on the available CRS.
+     *
+     * \see setFilters()
+     * \since QGIS 3.36
+     */
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+
+    /**
+     * Sets \a filters for the available CRS.
+     *
+     * \see filters()
+     * \since QGIS 3.36
+     */
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
   public slots:
 

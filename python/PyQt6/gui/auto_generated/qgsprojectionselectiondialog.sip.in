@@ -23,9 +23,14 @@ A generic widget allowing users to pick a Coordinate Reference System (or define
 %End
   public:
 
-    QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0 );
+    QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0,
+                           QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsCrsSelectionWidget, with the specified ``parent`` widget.
+
+Since QGIS 3.36, the optional ``filter`` argument can be used to specify filters on the systems
+shown in the widget. The default is to show all horizontal and compound CRS in order to match
+the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
 %End
 
     ~QgsCrsSelectionWidget();
@@ -70,6 +75,24 @@ is shown when the option is selected.
     bool hasValidSelection() const;
 %Docstring
 Returns ``True`` if the widget has a valid CRS defined.
+%End
+
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+%Docstring
+Returns the filters set on the available CRS.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 3.36
+%End
+
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
+%Docstring
+Sets ``filters`` for the available CRS.
+
+.. seealso:: :py:func:`filters`
+
+.. versionadded:: 3.36
 %End
 
   public slots:
@@ -147,9 +170,14 @@ the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instea
   public:
 
     QgsProjectionSelectionDialog( QWidget *parent /TransferThis/ = 0,
-                                  Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+                                  Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                                  QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionDialog.
+
+Since QGIS 3.36, the optional ``filter`` argument can be used to specify filters on the systems
+shown in the dialog. The default is to show all horizontal and compound CRS in order to match
+the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -221,6 +249,24 @@ dialog if no selection is present.
 Returns ``True`` if the dialog has a valid CRS defined.
 
 .. versionadded:: 3.24
+%End
+
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+%Docstring
+Returns the filters set on the available CRS.
+
+.. seealso:: :py:func:`setFilters`
+
+.. versionadded:: 3.36
+%End
+
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
+%Docstring
+Sets ``filters`` for the available CRS.
+
+.. seealso:: :py:func:`filters`
+
+.. versionadded:: 3.36
 %End
 
   public slots:
