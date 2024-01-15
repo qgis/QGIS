@@ -169,20 +169,42 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
   const QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
 
   QByteArray array;
-  array.resize( sizeof( float ) * 9 );
-  float *fptr = reinterpret_cast<float *>( array.data() );
+  if ( mDiffuseCoefficient < 1 || mAmbientCoefficient < 1 || mSpecularCoefficient < 1 )
+  {
+    // use floats if we are adjusting color component strength, bytes don't
+    // give us enough precision
+    array.resize( sizeof( float ) * 9 );
+    float *fptr = reinterpret_cast<float *>( array.data() );
 
-  *fptr++ = static_cast<float>( diffuse.redF() * mDiffuseCoefficient );
-  *fptr++ = static_cast<float>( diffuse.greenF() * mDiffuseCoefficient );
-  *fptr++ = static_cast<float>( diffuse.blueF() * mDiffuseCoefficient );
+    *fptr++ = static_cast<float>( diffuse.redF() * mDiffuseCoefficient );
+    *fptr++ = static_cast<float>( diffuse.greenF() * mDiffuseCoefficient );
+    *fptr++ = static_cast<float>( diffuse.blueF() * mDiffuseCoefficient );
 
-  *fptr++ =  static_cast<float>( ambient.redF() * mAmbientCoefficient );
-  *fptr++ =  static_cast<float>( ambient.greenF() * mAmbientCoefficient );
-  *fptr++ =  static_cast<float>( ambient.blueF() * mAmbientCoefficient );
+    *fptr++ =  static_cast<float>( ambient.redF() * mAmbientCoefficient );
+    *fptr++ =  static_cast<float>( ambient.greenF() * mAmbientCoefficient );
+    *fptr++ =  static_cast<float>( ambient.blueF() * mAmbientCoefficient );
 
-  *fptr++ =  static_cast<float>( specular.redF() * mSpecularCoefficient );
-  *fptr++ =  static_cast<float>( specular.greenF() * mSpecularCoefficient );
-  *fptr++ =  static_cast<float>( specular.blueF() * mSpecularCoefficient );
+    *fptr++ =  static_cast<float>( specular.redF() * mSpecularCoefficient );
+    *fptr++ =  static_cast<float>( specular.greenF() * mSpecularCoefficient );
+    *fptr++ =  static_cast<float>( specular.blueF() * mSpecularCoefficient );
+  }
+  else
+  {
+    array.resize( sizeof( unsigned char ) * 9 );
+    unsigned char *ptr = reinterpret_cast<unsigned char *>( array.data() );
+
+    *ptr++ = static_cast<unsigned char>( diffuse.red() );
+    *ptr++ = static_cast<unsigned char>( diffuse.green() );
+    *ptr++ = static_cast<unsigned char>( diffuse.blue() );
+
+    *ptr++ = static_cast<unsigned char>( ambient.red() );
+    *ptr++ = static_cast<unsigned char>( ambient.green() );
+    *ptr++ = static_cast<unsigned char>( ambient.blue() );
+
+    *ptr++ = static_cast<unsigned char>( specular.red() );
+    *ptr++ = static_cast<unsigned char>( specular.green() );
+    *ptr++ = static_cast<unsigned char>( specular.blue() );
+  }
 
   return array;
 }
@@ -193,36 +215,40 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
 {
   Qt3DQBuffer *dataBuffer = new Qt3DQBuffer( geometry );
 
+  // use floats if we are adjusting color component strength, bytes don't
+  // give us enough precision
+  const bool useFloats = mDiffuseCoefficient < 1 || mAmbientCoefficient < 1 || mSpecularCoefficient < 1;
+
   Qt3DQAttribute *diffuseAttribute = new Qt3DQAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );
-  diffuseAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  diffuseAttribute->setVertexBaseType( useFloats ? Qt3DQAttribute::Float : Qt3DQAttribute::UnsignedByte );
   diffuseAttribute->setVertexSize( 3 );
   diffuseAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   diffuseAttribute->setBuffer( dataBuffer );
-  diffuseAttribute->setByteStride( 9 * sizeof( float ) );
+  diffuseAttribute->setByteStride( 9 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   diffuseAttribute->setByteOffset( 0 );
   diffuseAttribute->setCount( vertexCount );
   geometry->addAttribute( diffuseAttribute );
 
   Qt3DQAttribute *ambientAttribute = new Qt3DQAttribute( geometry );
   ambientAttribute->setName( QStringLiteral( "dataDefinedAmbiantColor" ) );
-  ambientAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  ambientAttribute->setVertexBaseType( useFloats ? Qt3DQAttribute::Float : Qt3DQAttribute::UnsignedByte );
   ambientAttribute->setVertexSize( 3 );
   ambientAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   ambientAttribute->setBuffer( dataBuffer );
-  ambientAttribute->setByteStride( 9 * sizeof( float ) );
-  ambientAttribute->setByteOffset( 3 * sizeof( float ) );
+  ambientAttribute->setByteStride( 9 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
+  ambientAttribute->setByteOffset( 3 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   ambientAttribute->setCount( vertexCount );
   geometry->addAttribute( ambientAttribute );
 
   Qt3DQAttribute *specularAttribute = new Qt3DQAttribute( geometry );
   specularAttribute->setName( QStringLiteral( "dataDefinedSpecularColor" ) );
-  specularAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  specularAttribute->setVertexBaseType( useFloats ? Qt3DQAttribute::Float : Qt3DQAttribute::UnsignedByte );
   specularAttribute->setVertexSize( 3 );
   specularAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   specularAttribute->setBuffer( dataBuffer );
-  specularAttribute->setByteStride( 9 * sizeof( float ) );
-  specularAttribute->setByteOffset( 6 * sizeof( float ) );
+  specularAttribute->setByteStride( 9 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
+  specularAttribute->setByteOffset( 6 * ( useFloats ? sizeof( float ) : sizeof( unsigned char ) ) );
   specularAttribute->setCount( vertexCount );
   geometry->addAttribute( specularAttribute );
 
