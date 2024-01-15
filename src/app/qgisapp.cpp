@@ -5519,7 +5519,18 @@ void QgisApp::about()
     versionString += QLatin1String( "</tr><tr>" );
 
     // Python version
-    versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Python version" ), PYTHON_VERSION );
+    QString pythonVersion;
+    QgsPythonRunner::run( QStringLiteral( "import platform" ) );
+    QgsPythonRunner::eval( QStringLiteral( "platform.python_version()" ), pythonVersion );
+    if ( pythonVersion != PYTHON_VERSION )
+    {
+      versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against Python" ), PYTHON_VERSION );
+      versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against Python" ), pythonVersion );
+    }
+    else
+    {
+      versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "Python version" ), PYTHON_VERSION );
+    }
     versionString += QLatin1String( "</tr><tr>" );
 
     // GDAL version
