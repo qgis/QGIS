@@ -96,7 +96,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
   {
     proj4String = crs.toProj();
   }
-  const QString wktString = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  const QString wktString = crs.toWkt( Qgis::CrsWktVariant::Preferred );
 
   // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
@@ -187,7 +187,7 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
                       + ",ellipsoid_acronym=" + ( !crs.ellipsoidAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() ) : QStringLiteral( "''" ) )
                       + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
                       + ",is_geo=0" // <--shamelessly hard coded for now
-                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) ) : QStringLiteral( "''" ) )
+                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) ) : QStringLiteral( "''" ) )
                       + " where srs_id=" + QgsSqliteUtils::quotedString( QString::number( id ) )
                       ;
 
@@ -532,7 +532,7 @@ void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateRefere
   {
     authids << c.authid();
     proj << c.toProj();
-    wkt << c.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
   }
 
   QgsSettings settings;
@@ -558,7 +558,7 @@ void QgsCoordinateReferenceSystemRegistry::removeRecent( const QgsCoordinateRefe
   {
     authids << c.authid();
     proj << c.toProj();
-    wkt << c.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
   }
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );

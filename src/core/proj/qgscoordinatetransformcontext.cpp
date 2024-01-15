@@ -17,13 +17,12 @@
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransformcontext_p.h"
-#include "qgscoordinatetransform.h"
 #include "qgssettings.h"
 #include "qgsprojutils.h"
 
 QString crsToKey( const QgsCoordinateReferenceSystem &crs )
 {
-  return crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : crs.authid();
+  return crs.authid().isEmpty() ? crs.toWkt( Qgis::CrsWktVariant::Preferred ) : crs.authid();
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

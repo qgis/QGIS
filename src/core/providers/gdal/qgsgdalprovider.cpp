@@ -3931,7 +3931,7 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   }
 
   GDALSetGeoTransform( dataset.get(), geoTransform );
-  GDALSetProjection( dataset.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
+  GDALSetProjection( dataset.get(), crs.toWkt( Qgis::CrsWktVariant::PreferredGDAL ).toLocal8Bit().data() );
 
   QgsDataProvider::ProviderOptions providerOptions;
   return new QgsGdalProvider( uri, providerOptions, true, dataset.release() );

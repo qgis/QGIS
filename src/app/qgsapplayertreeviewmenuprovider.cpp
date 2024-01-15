@@ -517,7 +517,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             if ( crs == layer->crs() )
               continue;
 
-            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
+            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
             connect( action, &QAction::triggered, this, [ = ]
             {
               setLayerCrs( crs );
