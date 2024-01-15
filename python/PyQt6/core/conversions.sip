@@ -3180,15 +3180,6 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 #define SIP_PYQT_FROM_QVARIANT_BY_TYPE "pyqt6_from_qvariant_by_type"
 %End
 
-%PostInitialisationCode  //#spellok
-
-// Import the Chimera helper registration functions.
-typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
-void (*register_from_qvariant_converter)(FromQVariantConverterFn);
-register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt5_register_from_qvariant_convertor");  //#spellok
-register_from_qvariant_converter(null_from_qvariant_converter);
-%End
-
 // In Qt6 QVector is just an alias to QList but doesn't appear in pyqt
 // Mapping code is directly copied from QList mapping code in qpycore_qlist.sip and
 // std::pair mapping code in qpycore_std_pair
