@@ -197,6 +197,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     /**
      * Pushes a recently used CRS to the top of the recent CRS list.
      *
+     * \see recentCrsPushed()
+     *
      * \since QGIS 3.16
      */
     void pushRecent( const QgsCoordinateReferenceSystem &crs );
@@ -204,12 +206,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     /**
      * Removes a CRS from the list of recently used CRS.
      *
+     * \see recentCrsRemoved()
+     *
      * \since QGIS 3.36
      */
     void removeRecent( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Cleans the list of recently used CRS.
+     *
+     * \see recentCrsCleared()
      *
      * \since QGIS 3.36
      */
@@ -254,6 +260,33 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * user-defined CRS) to change.
      */
     void crsDefinitionsChanged();
+
+    /**
+     * Emitted when a recently used CRS has been pushed to the top of the recent CRS list.
+     *
+     * \see pushRecent()
+     *
+     * \since QGIS 3.36
+     */
+    void recentCrsPushed( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Emitted when a recently used CRS has been removed from the recent CRS list.
+     *
+     * \see removeRecent()
+     *
+     * \since QGIS 3.36
+     */
+    void recentCrsRemoved( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Emitted when the list of recently used CRS has been cleared.
+     *
+     * \see clearRecent()
+     *
+     * \since QGIS 3.36
+     */
+    void recentCrsCleared();
 
   private:
 

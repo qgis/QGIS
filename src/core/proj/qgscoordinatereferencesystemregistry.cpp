@@ -508,6 +508,8 @@ void QgsCoordinateReferenceSystemRegistry::clearRecent()
   settings.remove( QStringLiteral( "UI/recentProjectionsAuthId" ) );
   settings.remove( QStringLiteral( "UI/recentProjectionsWkt" ) );
   settings.remove( QStringLiteral( "UI/recentProjectionsProj4" ) );
+
+  emit recentCrsCleared();
 }
 
 void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateReferenceSystem &crs )
@@ -539,6 +541,8 @@ void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateRefere
   settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
   settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
   settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+
+  emit recentCrsPushed( crs );
 }
 
 void QgsCoordinateReferenceSystemRegistry::removeRecent( const QgsCoordinateReferenceSystem &crs )
@@ -564,4 +568,6 @@ void QgsCoordinateReferenceSystemRegistry::removeRecent( const QgsCoordinateRefe
   settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
   settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
   settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+
+  emit recentCrsRemoved( crs );
 }
