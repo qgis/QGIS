@@ -67,7 +67,7 @@ void QgsCrsDefinitionWidget::setCrs( const QgsCoordinateReferenceSystem &crs, Qg
   switch ( nativeFormat )
   {
     case Qgis::CrsDefinitionFormat::Wkt:
-      whileBlocking( mTextEditParameters )->setPlainText( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) );
+      whileBlocking( mTextEditParameters )->setPlainText( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) );
       break;
     case Qgis::CrsDefinitionFormat::Proj:
       whileBlocking( mTextEditParameters )->setPlainText( crs.toProj() );
@@ -106,7 +106,7 @@ void QgsCrsDefinitionWidget::pbnCopyCRS_clicked()
     const QgsCoordinateReferenceSystem srs = selector->crs();
 
     whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( Qgis::CrsDefinitionFormat::Wkt ) ) );
-    mTextEditParameters->setPlainText( srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
+    mTextEditParameters->setPlainText( srs.toWkt( Qgis::CrsWktVariant::Preferred, true ) );
   }
 }
 

@@ -653,7 +653,7 @@ void QgsProjectionSelectionWidget::updateTooltip()
 {
   const QgsCoordinateReferenceSystem c = crs();
   if ( c.isValid() )
-    setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
+    setToolTip( c.toWkt( Qgis::CrsWktVariant::Preferred, true ) );
   else
     setToolTip( QString() );
   updateWarning();

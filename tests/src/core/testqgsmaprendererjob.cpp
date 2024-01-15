@@ -1116,7 +1116,7 @@ void TestQgsMapRendererJob::testMapShading()
   std::unique_ptr< QgsVectorLayer > vectorLayer =
     std::make_unique< QgsVectorLayer >(
       QStringLiteral( "Polygon?crs=%1&field=id:integer&field=name:string(20)&index=no" )
-      .arg( pointCloudLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ),
+      .arg( pointCloudLayer->crs().toWkt( Qgis::CrsWktVariant::Preferred ) ),
       QStringLiteral( "vector-layer" ),
       QStringLiteral( "memory" ) );
   QVERIFY( vectorLayer->isValid() );

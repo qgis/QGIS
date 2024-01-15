@@ -481,7 +481,7 @@ QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinate
   const int newRow = group->children().size();
   beginInsertRows( parentGroupIndex, newRow, newRow );
   QgsCoordinateReferenceSystemModelCrsNode *node = addRecord( userRecord );
-  node->setWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+  node->setWkt( crs.toWkt( Qgis::CrsWktVariant::Preferred ) );
   node->setProj( crs.toProj() );
   endInsertRows();
 

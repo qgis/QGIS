@@ -227,8 +227,8 @@ bool QgsServer::init()
       const QgsDatumTransform::GridDetails & grid )
   {
     QgsServerLogger::instance()->logMessage( QStringLiteral( "Cannot use project transform between %1 and %2 - missing grid %3" )
-        .arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
-              destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+        .arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
+              destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
               grid.shortName ),
         QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
   } );
@@ -247,8 +247,8 @@ bool QgsServer::init()
       }
     }
     QgsServerLogger::instance()->logMessage( QStringLiteral( "Cannot use project transform between %1 and %2 - %3.\n%4" )
-        .arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
-              destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+        .arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
+              destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
               details.name,
               gridMessage ),
         QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
