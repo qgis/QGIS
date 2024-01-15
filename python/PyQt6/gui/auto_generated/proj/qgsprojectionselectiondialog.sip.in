@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsprojectionselectiondialog.h                               *
+ * src/gui/proj/qgsprojectionselectiondialog.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -301,7 +301,7 @@ by the given Coordinate Reference Systems.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsprojectionselectiondialog.h                               *
+ * src/gui/proj/qgsprojectionselectiondialog.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

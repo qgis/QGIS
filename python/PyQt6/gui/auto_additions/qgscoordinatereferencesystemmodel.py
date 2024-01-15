@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/qgscoordinatereferencesystemmodel.h
+# The following has been generated automatically from src/gui/proj/qgscoordinatereferencesystemmodel.h
 QgsCoordinateReferenceSystemModel.RoleNodeType = QgsCoordinateReferenceSystemModel.Roles.RoleNodeType
 QgsCoordinateReferenceSystemModel.RoleName = QgsCoordinateReferenceSystemModel.Roles.RoleName
 QgsCoordinateReferenceSystemModel.RoleAuthId = QgsCoordinateReferenceSystemModel.Roles.RoleAuthId

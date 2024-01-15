@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/gui/qgsprojectionselectionwidget.h
+# The following has been generated automatically from src/gui/proj/qgsprojectionselectionwidget.h
 QgsProjectionSelectionWidget.LayerCrs = QgsProjectionSelectionWidget.CrsOption.LayerCrs
 QgsProjectionSelectionWidget.ProjectCrs = QgsProjectionSelectionWidget.CrsOption.ProjectCrs
 QgsProjectionSelectionWidget.CurrentCrs = QgsProjectionSelectionWidget.CrsOption.CurrentCrs

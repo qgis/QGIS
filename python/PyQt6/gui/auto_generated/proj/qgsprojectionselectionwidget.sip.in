@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsprojectionselectionwidget.h                               *
+ * src/gui/proj/qgsprojectionselectionwidget.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -225,7 +225,7 @@ Opens the dialog for selecting a new CRS
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsprojectionselectionwidget.h                               *
+ * src/gui/proj/qgsprojectionselectionwidget.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
