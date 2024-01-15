@@ -24,6 +24,8 @@
 class QgsSensorThingsSourceWidget;
 class QgsSensorThingsConnectionWidget;
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 class QgsSensorThingsSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsSensorThingsSourceSelectBase
 {
