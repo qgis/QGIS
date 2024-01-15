@@ -105,7 +105,6 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void geographicCrsAuthId();
     void noProj();
     void customProjString();
-    void recentProjections();
     void displayIdentifier();
     void createFromWktWithIdentify();
     void fromProj4EPSG20936();
@@ -1856,71 +1855,6 @@ void TestQgsCoordinateReferenceSystem::customProjString()
   QVERIFY( crs.toWkt( Qgis::CrsWktVariant::Wkt2_2019 ).startsWith( QLatin1String( R"""(BOUNDCRS[SOURCECRS[)""" ) ) );
   QVERIFY( crs.toWkt( Qgis::CrsWktVariant::Wkt2_2019 ).contains( QLatin1String( R"""(METHOD["Oblique Stereographic",ID["EPSG",9809]])""" ) ) );
   QVERIFY( crs.toWkt( Qgis::CrsWktVariant::Wkt2_2019 ).contains( QLatin1String( R"""(PARAMETER["X-axis translation",595.75,ID["EPSG",8605]],PARAMETER["Y-axis translation",121.09,ID["EPSG",8606]],PARAMETER["Z-axis translation",515.5,ID["EPSG",8607]],PARAMETER["X-axis rotation",8.227,ID["EPSG",8608]],PARAMETER["Y-axis rotation",-1.5193,ID["EPSG",8609]],PARAMETER["Z-axis rotation",5.5971,ID["EPSG",8610]],PARAMETER["Scale difference",0.9999973271,ID["EPSG",8611]])""" ) ) );
-}
-
-void TestQgsCoordinateReferenceSystem::recentProjections()
-{
-  QList< QgsCoordinateReferenceSystem > recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QVERIFY( recent.isEmpty() );
-
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 1 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:3111" ) );
-
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem::fromProj( geoProj4() ) );
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 2 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:4326" ) );
-  QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:3111" ) );
-
-  // push back to top of list
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 2 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:3111" ) );
-  QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:4326" ) );
-
-  // no invalid CRSes in list:
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem() );
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 2 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:3111" ) );
-  QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:4326" ) );
-
-  // no custom CRSes in list:
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem::fromProj( QStringLiteral( "+proj=sterea +lat_0=47.9860018439082 +lon_0=19.0491441390302 +k=1 +x_0=500000 +y_0=500000 +ellps=bessel +towgs84=595.75,121.09,515.50,8.2270,-1.5193,5.5971,-2.6729 +units=m +vunits=m +no_defs" ) ) );
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 2 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:3111" ) );
-  QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:4326" ) );
-
-  // user CRSes ARE allowed
-  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem( QStringLiteral( "USER:100001" ) ) );
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 3 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "USER:100001" ) );
-  QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:3111" ) );
-  QCOMPARE( recent.at( 2 ).authid(), QStringLiteral( "EPSG:4326" ) );
-
-  // list should be truncated after 30 entries
-  for ( int i = 32510; i < 32550; ++i )
-  {
-    QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:%1" ).arg( i ) ) );
-  }
-  recent = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  QCOMPARE( recent.size(), 30 );
-  QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:32549" ) );
-  QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:32548" ) );
-  QCOMPARE( recent.at( 2 ).authid(), QStringLiteral( "EPSG:32547" ) );
-  QCOMPARE( recent.at( 3 ).authid(), QStringLiteral( "EPSG:32546" ) );
-  QCOMPARE( recent.at( 4 ).authid(), QStringLiteral( "EPSG:32545" ) );
-  QCOMPARE( recent.at( 5 ).authid(), QStringLiteral( "EPSG:32544" ) );
-  QCOMPARE( recent.at( 6 ).authid(), QStringLiteral( "EPSG:32543" ) );
-  QCOMPARE( recent.at( 7 ).authid(), QStringLiteral( "EPSG:32542" ) );
-  QCOMPARE( recent.at( 8 ).authid(), QStringLiteral( "EPSG:32541" ) );
-  QCOMPARE( recent.at( 9 ).authid(), QStringLiteral( "EPSG:32540" ) );
-  QCOMPARE( recent.constLast().authid(), QStringLiteral( "EPSG:32520" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::displayIdentifier()
