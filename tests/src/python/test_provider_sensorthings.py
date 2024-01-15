@@ -150,7 +150,7 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
 
     def test_invalid_layer(self):
         vl = QgsVectorLayer(
-            f"url='http://fake.com/fake_qgis_http_endpoint'", "test", "sensorthings"
+            "url='http://fake.com/fake_qgis_http_endpoint'", "test", "sensorthings"
         )
         self.assertFalse(vl.isValid())
         self.assertEqual(
