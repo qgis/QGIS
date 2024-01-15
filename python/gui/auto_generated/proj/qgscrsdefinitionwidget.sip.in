@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscrsdefinitionwidget.h                                     *
+ * src/gui/proj/qgscrsdefinitionwidget.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -99,7 +99,7 @@ Emitted when the CRS defined in the widget is changed.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscrsdefinitionwidget.h                                     *
+ * src/gui/proj/qgscrsdefinitionwidget.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

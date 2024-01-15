@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscoordinateboundspreviewmapwidget.h                        *
+ * src/gui/proj/qgscoordinateboundspreviewmapwidget.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -56,7 +56,7 @@ Must be in EPSG:4326 coordinate reference system.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscoordinateboundspreviewmapwidget.h                        *
+ * src/gui/proj/qgscoordinateboundspreviewmapwidget.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

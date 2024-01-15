@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsprojectionselectiontreewidget.h                           *
+ * src/gui/proj/qgsprojectionselectiontreewidget.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -222,7 +222,7 @@ Emitted when the selection in the tree is changed from a valid selection to an i
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsprojectionselectiontreewidget.h                           *
+ * src/gui/proj/qgsprojectionselectiontreewidget.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
