@@ -2899,7 +2899,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
   if ( const auto keys = customPropertyKeys(); !keys.isEmpty() )
   {
     metadata += QStringLiteral( "<h1>" ) + tr( "Custom Properties" ) + QStringLiteral( "</h1>\n<hr>\n" );
-    metadata += QStringLiteral( "<table class=\"list-view\">\n<tbody>" );
+    metadata += QLatin1String( "<table class=\"list-view\">\n<tbody>" );
     for ( const QString &key : keys )
     {
       // keys prefaced with _ are considered private/internal details
@@ -2909,7 +2909,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
       const QVariant propValue = customProperty( key );
       metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
     }
-    metadata += QStringLiteral( "</tbody></table>\n" );
+    metadata += QLatin1String( "</tbody></table>\n" );
     metadata += QLatin1String( "<br><br>\n" );
   }
 

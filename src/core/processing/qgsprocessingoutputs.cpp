@@ -194,14 +194,14 @@ QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value,
       {
         layerNames << v.toString();
       }
-      return layerNames.join( QStringLiteral( ", " ) );
+      return layerNames.join( QLatin1String( ", " ) );
     }
 
     case QVariant::StringList:
     {
       ok = true;
       const QStringList list = value.toStringList();
-      return list.join( QStringLiteral( ", " ) );
+      return list.join( QLatin1String( ", " ) );
     }
 
     default:
@@ -251,14 +251,14 @@ QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsPro
       {
         names << v.toString();
       }
-      return names.join( QStringLiteral( ", " ) );
+      return names.join( QLatin1String( ", " ) );
     }
 
     case QVariant::StringList:
     {
       ok = true;
       const QStringList list = value.toStringList();
-      return list.join( QStringLiteral( ", " ) );
+      return list.join( QLatin1String( ", " ) );
     }
 
     default:

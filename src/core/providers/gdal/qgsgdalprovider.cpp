@@ -3274,7 +3274,7 @@ bool QgsGdalProvider::initIfNeeded()
 
     for ( const QString &option : std::as_const( openOptions ) )
     {
-      if ( option.startsWith( QStringLiteral( "MODE=" ) ) )
+      if ( option.startsWith( QLatin1String( "MODE=" ) ) )
       {
         hasModeOption = true;
         break;

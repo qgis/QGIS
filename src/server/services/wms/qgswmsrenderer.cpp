@@ -2644,7 +2644,7 @@ namespace QgsWms
             const QDomElement attributeElement = attributeNodeList.at( k ).toElement();
             const QString name = attributeElement.attribute( QStringLiteral( "name" ) ).toHtmlEscaped();
             QString value = attributeElement.attribute( QStringLiteral( "value" ) );
-            if ( name != QStringLiteral( "maptip" ) )
+            if ( name != QLatin1String( "maptip" ) )
             {
               value = value.toHtmlEscaped();
             }
@@ -2682,7 +2682,7 @@ namespace QgsWms
             {
               value = QStringLiteral( "no data" );
             }
-            if ( name != QStringLiteral( "maptip" ) )
+            if ( name != QLatin1String( "maptip" ) )
             {
               value = value.toHtmlEscaped();
             }

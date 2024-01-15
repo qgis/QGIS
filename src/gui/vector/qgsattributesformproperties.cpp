@@ -1451,7 +1451,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( qmlCode, QStringLiteral( "expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)" ) );
-        expression.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\"" ) );
+        expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
         QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
 
@@ -1563,7 +1563,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, QStringLiteral( "<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>" ) );
-        expression.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\"" ) );
+        expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
         QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
 
