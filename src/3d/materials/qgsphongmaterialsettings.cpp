@@ -140,23 +140,26 @@ QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const
 
 void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), mAmbient );
-  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ), mDiffuse );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ),
+      QColor::fromRgbF( mAmbient.redF() * mAmbientCoefficient,
+                        mAmbient.greenF() * mAmbientCoefficient,
+                        mAmbient.blueF() * mAmbientCoefficient ) );
+  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ),
+      QColor::fromRgbF( mDiffuse.redF() * mDiffuseCoefficient,
+                        mDiffuse.greenF() * mDiffuseCoefficient,
+                        mDiffuse.blueF() * mDiffuseCoefficient ) );
+  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ),
+      QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient,
+                        mSpecular.greenF() * mSpecularCoefficient,
+                        mSpecular.blueF() * mSpecularCoefficient ) );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), static_cast< float >( mShininess ) );
   Qt3DRender::QParameter *opacityParameter = new Qt3DRender::QParameter( QStringLiteral( "opacity" ), static_cast< float >( mOpacity ) );
-  Qt3DRender::QParameter *kaParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), static_cast< float >( mAmbientCoefficient ) );
-  Qt3DRender::QParameter *kdParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), static_cast< float >( mDiffuseCoefficient ) );
-  Qt3DRender::QParameter *ksParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), static_cast< float >( mSpecularCoefficient ) );
 
   effect->addParameter( ambientParameter );
   effect->addParameter( diffuseParameter );
   effect->addParameter( specularParameter );
   effect->addParameter( shininessParameter );
   effect->addParameter( opacityParameter );
-  effect->addParameter( kaParameter );
-  effect->addParameter( kdParameter );
-  effect->addParameter( ksParameter );
 }
 
 QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
@@ -166,20 +169,20 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
   const QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
 
   QByteArray array;
-  array.resize( sizeof( unsigned char ) * 9 );
-  unsigned char *fptr = reinterpret_cast<unsigned char *>( array.data() );
+  array.resize( sizeof( float ) * 9 );
+  float *fptr = reinterpret_cast<float *>( array.data() );
 
-  *fptr++ = static_cast<unsigned char>( diffuse.red() );
-  *fptr++ = static_cast<unsigned char>( diffuse.green() );
-  *fptr++ = static_cast<unsigned char>( diffuse.blue() );
+  *fptr++ = static_cast<float>( diffuse.redF() * mDiffuseCoefficient );
+  *fptr++ = static_cast<float>( diffuse.greenF() * mDiffuseCoefficient );
+  *fptr++ = static_cast<float>( diffuse.blueF() * mDiffuseCoefficient );
 
-  *fptr++ =  static_cast<unsigned char>( ambient.red() );
-  *fptr++ =  static_cast<unsigned char>( ambient.green() );
-  *fptr++ =  static_cast<unsigned char>( ambient.blue() );
+  *fptr++ =  static_cast<float>( ambient.redF() * mAmbientCoefficient );
+  *fptr++ =  static_cast<float>( ambient.greenF() * mAmbientCoefficient );
+  *fptr++ =  static_cast<float>( ambient.blueF() * mAmbientCoefficient );
 
-  *fptr++ =  static_cast<unsigned char>( specular.red() );
-  *fptr++ =  static_cast<unsigned char>( specular.green() );
-  *fptr++ =  static_cast<unsigned char>( specular.blue() );
+  *fptr++ =  static_cast<float>( specular.redF() * mSpecularCoefficient );
+  *fptr++ =  static_cast<float>( specular.greenF() * mSpecularCoefficient );
+  *fptr++ =  static_cast<float>( specular.blueF() * mSpecularCoefficient );
 
   return array;
 }
@@ -192,34 +195,34 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
 
   Qt3DQAttribute *diffuseAttribute = new Qt3DQAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );
-  diffuseAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedByte );
+  diffuseAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   diffuseAttribute->setVertexSize( 3 );
   diffuseAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   diffuseAttribute->setBuffer( dataBuffer );
-  diffuseAttribute->setByteStride( 9 * sizeof( unsigned char ) );
+  diffuseAttribute->setByteStride( 9 * sizeof( float ) );
   diffuseAttribute->setByteOffset( 0 );
   diffuseAttribute->setCount( vertexCount );
   geometry->addAttribute( diffuseAttribute );
 
   Qt3DQAttribute *ambientAttribute = new Qt3DQAttribute( geometry );
   ambientAttribute->setName( QStringLiteral( "dataDefinedAmbiantColor" ) );
-  ambientAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedByte );
+  ambientAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   ambientAttribute->setVertexSize( 3 );
   ambientAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   ambientAttribute->setBuffer( dataBuffer );
-  ambientAttribute->setByteStride( 9 * sizeof( unsigned char ) );
-  ambientAttribute->setByteOffset( 3 * sizeof( unsigned char ) );
+  ambientAttribute->setByteStride( 9 * sizeof( float ) );
+  ambientAttribute->setByteOffset( 3 * sizeof( float ) );
   ambientAttribute->setCount( vertexCount );
   geometry->addAttribute( ambientAttribute );
 
   Qt3DQAttribute *specularAttribute = new Qt3DQAttribute( geometry );
   specularAttribute->setName( QStringLiteral( "dataDefinedSpecularColor" ) );
-  specularAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedByte );
+  specularAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   specularAttribute->setVertexSize( 3 );
   specularAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   specularAttribute->setBuffer( dataBuffer );
-  specularAttribute->setByteStride( 9 * sizeof( unsigned char ) );
-  specularAttribute->setByteOffset( 6 * sizeof( unsigned char ) );
+  specularAttribute->setByteStride( 9 * sizeof( float ) );
+  specularAttribute->setByteOffset( 6 * sizeof( float ) );
   specularAttribute->setCount( vertexCount );
   geometry->addAttribute( specularAttribute );
 
@@ -254,14 +257,23 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::constantColorMaterial( const Qg
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
 
+  const QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
+  const QColor diffuse = context.isSelected() ? context.selectionColor() : mDiffuse;
+
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ),  static_cast< float >( mShininess ) ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ),  static_cast< float >( mOpacity ) ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), context.isSelected() ? context.selectionColor().darker() : mAmbient ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ), context.isSelected() ? context.selectionColor() : mDiffuse ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ),  static_cast< float >( mAmbientCoefficient ) ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ),  static_cast< float >( mDiffuseCoefficient ) ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ),  static_cast< float >( mSpecularCoefficient ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ),
+                     QColor::fromRgbF( ambient.redF() * mAmbientCoefficient,
+                                       ambient.greenF() * mAmbientCoefficient,
+                                       ambient.blueF() * mAmbientCoefficient ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseColor" ),
+                     QColor::fromRgbF( diffuse.redF() * mDiffuseCoefficient,
+                                       diffuse.greenF() * mDiffuseCoefficient,
+                                       diffuse.blueF() * mDiffuseCoefficient ) ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ),
+                     QColor::fromRgbF( mSpecular.redF() * mSpecularCoefficient,
+                                       mSpecular.greenF() * mSpecularCoefficient,
+                                       mSpecular.blueF() * mSpecularCoefficient ) ) );
 
   if ( mOpacity < 1.0f )
   {
@@ -315,9 +327,6 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
 
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ),  static_cast< float >( mShininess ) ) );
   eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), static_cast< float >( mOpacity ) ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbientCoefficient ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuseCoefficient ) );
-  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecularCoefficient ) );
 
   if ( mOpacity < 1.0f )
   {

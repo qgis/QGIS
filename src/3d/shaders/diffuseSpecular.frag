@@ -21,6 +21,5 @@ void main(void)
     vec3 worldView = normalize(eyePosition - worldPosition);
     fragColor = phongFunction(ambientColor, diffuseTextureColor, specularColor,
                               shininess,
-                              1.0, 1.0, 1.0,
                               worldPosition, worldView, worldNormal);
 }

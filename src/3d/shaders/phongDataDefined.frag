@@ -2,9 +2,6 @@
 
 uniform vec3 eyePosition;
 uniform float shininess;
-uniform float ka;
-uniform float kd;
-uniform float ks;
 
 in vec3 worldPosition;
 in vec3 worldNormal;
@@ -27,7 +24,6 @@ void main(void)
                     vs_in.diffuse,
                     vs_in.specular,
                     shininess,
-                    ka, kd, ks,
                     worldPosition,
                     worldView,
                     worldNormal);
