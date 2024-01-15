@@ -63,6 +63,13 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     }
   }
 
+  if ( pThis->mFeedback && pThis->mFeedback->isCanceled() )
+  {
+    psResult->nStatus = 1;
+    psResult->pszErrBuf = CPLStrdup( "download interrupted by user" );
+    return psResult;
+  }
+
   QgsBlockingNetworkRequest blockingRequest;
   blockingRequest.setAuthCfg( pThis->mAuthCfg );
 

@@ -42,7 +42,7 @@ class QgsFeedback;
  * \note not available in Python bindings
  * \since QGIS 3.18
  */
-class QgsCPLHTTPFetchOverrider
+class CORE_EXPORT QgsCPLHTTPFetchOverrider
 {
   public:
     //! Installs the redirection for the current thread
