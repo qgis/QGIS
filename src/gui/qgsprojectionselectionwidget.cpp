@@ -24,11 +24,12 @@
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsdatums.h"
 
-QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
+QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent,
+    QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QWidget( parent )
   , mDialogTitle( tr( "Coordinate Reference System Selector" ) )
+  , mFilters( filters )
 {
-
   mCrsComboBox = new QgsHighlightableComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
@@ -215,7 +216,7 @@ void QgsProjectionSelectionWidget::selectCrs()
 
   if ( panel && panel->dockMode() )
   {
-    mActivePanel = new QgsCrsSelectionWidget( this );
+    mActivePanel = new QgsCrsSelectionWidget( this, mFilters );
     if ( !ogcFilter.isEmpty() )
       mActivePanel->setOgcWmsCrsFilter( ogcFilter );
     if ( !mMessage.isEmpty() )
@@ -255,7 +256,7 @@ void QgsProjectionSelectionWidget::selectCrs()
   }
   else
   {
-    QgsProjectionSelectionDialog dlg( this );
+    QgsProjectionSelectionDialog dlg( this, QgsGuiUtils::ModalDialogFlags, mFilters );
     if ( !mMessage.isEmpty() )
       dlg.setMessage( mMessage );
     if ( !ogcFilter.isEmpty() )
@@ -375,6 +376,19 @@ void QgsProjectionSelectionWidget::setFilter( const QList<QgsCoordinateReference
     if ( !mFilter.contains( crsAtIndex( i ) ) )
       mCrsComboBox->removeItem( i );
   }
+}
+
+QgsCoordinateReferenceSystemProxyModel::Filters QgsProjectionSelectionWidget::filters() const
+{
+  return mFilters;
+}
+
+void QgsProjectionSelectionWidget::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
+{
+  mFilters = filters;
+  if ( mActivePanel )
+    mActivePanel->setFilters( filters );
+
 }
 
 void QgsProjectionSelectionWidget::setSourceEnsemble( const QString &ensemble )
