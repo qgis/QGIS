@@ -97,6 +97,12 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Map a field name to the pair (typename, fieldname) that describes its source field
     QMap< QString, QPair<QString, QString> > mMapFieldNameToSrcLayerNameFieldName;
 
+    //! Map a field name to the pair (xpath, isNestedContent)
+    QMap<QString, QPair<QString, bool> > mFieldNameToXPathAndIsNestedContentMap;
+
+    //! Map a namespace prefix to its URI
+    QMap<QString, QString> mNamespacePrefixToURIMap;
+
     //! Page size for WFS 2.0. 0 = disabled
     long long mPageSize = 0;
 

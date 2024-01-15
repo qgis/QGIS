@@ -16,13 +16,17 @@
  ***************************************************************************/
 
 #include "qgis.h"
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsfeature.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+#include "qgsogrutils.h"
+#include "qgssqliteutils.h"
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
@@ -33,6 +37,10 @@
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
+#include "cpl_string.h"
+#include "gdal.h"
+
+#include <QAbstractButton>
 #include <QApplication>
 #include <QDateTime>
 #include <QDomDocument>
@@ -605,6 +613,8 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     QgsFields fields;
     Qgis::WkbType geomType;
     if ( !readAttributesFromSchema( describeFeatureDocument,
+                                    response,
+                                    /* singleLayerContext = */ typenameList.size() == 1,
                                     typeName,
                                     geometryAttribute, fields, geomType, errorMsg ) )
     {
@@ -624,7 +634,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     }
   }
 
-  setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, typenameList, errorMsg );
+  setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, response, typenameList, errorMsg );
 
   const QString &defaultTypeName = mShared->mURI.typeName();
   QgsWFSProviderSQLColumnRefValidator oColumnValidator(
@@ -789,7 +799,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   return true;
 }
 
-bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QStringList &typenameList, QString &errorMsg )
+bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QByteArray &response, const QStringList &typenameList, QString &errorMsg )
 {
   mShared->mLayerPropertiesList.clear();
   for ( const QString &typeName : typenameList )
@@ -798,6 +808,8 @@ bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &de
     QgsFields fields;
     Qgis::WkbType geomType;
     if ( !readAttributesFromSchema( describeFeatureDocument,
+                                    response,
+                                    /* singleLayerContext = */ typenameList.size() == 1,
                                     typeName,
                                     geometryAttribute, fields, geomType, errorMsg ) )
     {
@@ -1513,6 +1525,8 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   }
 
   if ( !readAttributesFromSchema( describeFeatureDocument,
+                                  response,
+                                  /* singleLayerContext = */ true,
                                   mShared->mURI.typeName(),
                                   geometryAttribute, fields, geomType, errorMsg ) )
   {
@@ -1522,18 +1536,478 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
     return false;
   }
 
-  setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, {mShared->mURI.typeName()}, errorMsg );
+  setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, response, {mShared->mURI.typeName()}, errorMsg );
 
   return true;
 }
 
+
 bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
+    const QByteArray &response,
+    bool singleLayerContext,
     const QString &prefixedTypename,
     QString &geometryAttribute,
     QgsFields &fields,
     Qgis::WkbType &geomType,
     QString &errorMsg )
 {
+  bool mayTryWithGMLAS = false;
+  bool ret = readAttributesFromSchemaWithoutGMLAS( schemaDoc, prefixedTypename, geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS );
+  if ( singleLayerContext &&
+       mayTryWithGMLAS &&
+       GDALGetDriverByName( "GMLAS" ) )
+  {
+    QgsFields fieldsGMLAS;
+    Qgis::WkbType geomTypeGMLAS;
+    QString errorMsgGMLAS;
+    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttribute, fieldsGMLAS, geomTypeGMLAS, errorMsgGMLAS ) )
+    {
+      fields = fieldsGMLAS;
+      geomType = geomTypeGMLAS;
+      ret = true;
+    }
+    else if ( !ret )
+    {
+      errorMsg = errorMsgGMLAS;
+    }
+  }
+  return ret;
+}
+
+static QVariant::Type getVariantTypeFromXML( const QString &xmlType )
+{
+  QVariant::Type attributeType = QVariant::Invalid;
+
+  const QString type = QString( xmlType )
+                       .replace( QLatin1String( "xs:" ), QString() )
+                       .replace( QLatin1String( "xsd:" ), QString() );
+
+  if ( type.compare( QLatin1String( "string" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "token" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "NMTOKEN" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "NCName" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "QName" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "ID" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "IDREF" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "anyURI" ), Qt::CaseInsensitive ) == 0 ||
+       type.compare( QLatin1String( "anySimpleType" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::String;
+  }
+  else if ( type.compare( QLatin1String( "boolean" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::Bool;
+  }
+  else if ( type.compare( QLatin1String( "double" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "float" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "decimal" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::Double;
+  }
+  else if ( type.compare( QLatin1String( "byte" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "unsignedByte" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "int" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "short" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "unsignedShort" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::Int;
+  }
+  else if ( type.compare( QLatin1String( "long" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "unsignedLong" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "integer" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "negativeInteger" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "nonNegativeInteger" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "positiveInteger" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::LongLong;
+  }
+  else if ( type.compare( QLatin1String( "date" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "gYear" ), Qt::CaseInsensitive ) == 0 ||
+            type.compare( QLatin1String( "gYearMonth" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::Date;
+  }
+  else if ( type.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::Time;
+  }
+  else if ( type.compare( QLatin1String( "dateTime" ), Qt::CaseInsensitive ) == 0 )
+  {
+    attributeType = QVariant::DateTime;
+  }
+  return attributeType;
+}
+
+bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &response,
+    const QString &prefixedTypename,
+    QString &geometryAttribute,
+    QgsFields &fields,
+    Qgis::WkbType &geomType,
+    QString &errorMsg )
+{
+  QUrl url( mShared->mURI.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
+  QUrlQuery query( url );
+  query.addQueryItem( QStringLiteral( "TYPENAME" ), prefixedTypename );
+  url.setQuery( query );
+
+  // If a previous attempt with the same URL failed because of cancellation
+  // in the past second, do not retry.
+  // The main use case for that is when QgsWfsProviderMetadata::querySublayers()
+  // is called when adding a layer, and several QgsWFSProvider instances are
+  // quickly created.
+  static QMutex mutex;
+  static QUrl lastCanceledURL;
+  static QDateTime lastCanceledDateTime;
+  {
+    QMutexLocker lock( &mutex );
+    if ( lastCanceledURL == url && lastCanceledDateTime + 1 > QDateTime::currentDateTime() )
+    {
+      mMetadataRetrievalCanceled = true;
+      return false;
+    }
+  }
+
+  // Create a unique /vsimem/ filename
+  constexpr int TEMP_FILENAME_SIZE = 128;
+  void *p = malloc( TEMP_FILENAME_SIZE );
+  char *pszSchemaTempFilename = static_cast<char *>( p );
+  snprintf( pszSchemaTempFilename, TEMP_FILENAME_SIZE, "/vsimem/schema_%p.xsd", p );
+
+  // Serialize the main schema into a temporary /vsimem/ filename
+  char *pszSchema = VSIStrdup( response.constData() );
+  VSILFILE *fp = VSIFileFromMemBuffer( pszSchemaTempFilename,
+                                       reinterpret_cast<GByte *>( pszSchema ), strlen( pszSchema ), /* bTakeOwnership=*/ true );
+  if ( fp )
+    VSIFCloseL( fp );
+
+  QgsFeedback feedback;
+  GDALDatasetH hDS = nullptr;
+
+  // Analyze the DescribeFeatureType response schema with the OGR GMLAS driver
+  // in a thread, so it can get interrupted (with GDAL 3.9: https://github.com/OSGeo/gdal/pull/9019)
+  const auto downloaderLambda = [pszSchemaTempFilename, &feedback, &hDS]()
+  {
+    QgsCPLHTTPFetchOverrider cplHTTPFetchOverrider( QString(), &feedback );
+    QgsSetCPLHTTPFetchOverriderInitiatorClass( cplHTTPFetchOverrider, QStringLiteral( "WFSProviderDownloadSchema" ) )
+
+    char **papszOpenOptions = nullptr;
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "XSD", pszSchemaTempFilename );
+    hDS = GDALOpenEx( "GMLAS:", GDAL_OF_VECTOR, nullptr, papszOpenOptions, nullptr );
+    CSLDestroy( papszOpenOptions );
+  };
+
+  std::unique_ptr<_DownloaderThread> downloaderThread =
+    std::make_unique<_DownloaderThread>( downloaderLambda );
+  downloaderThread->start();
+
+  QTimer timerForHits;
+
+  QMessageBox *box = nullptr;
+  QWidget *parentWidget = nullptr;
+  if ( qApp->thread() == QThread::currentThread() )
+  {
+    parentWidget = QApplication::activeWindow();
+    if ( !parentWidget )
+    {
+      const QWidgetList widgets = QgsApplication::topLevelWidgets();
+      for ( QWidget *widget : widgets )
+      {
+        if ( widget->objectName() == QLatin1String( "QgisApp" ) )
+        {
+          parentWidget = widget;
+          break;
+        }
+      }
+    }
+  }
+  if ( parentWidget )
+  {
+    // Display an information box if within 2 seconds, the schema has not
+    // been analyzed.
+    box = new QMessageBox(
+      QMessageBox::Information, tr( "Information" ), tr( "Download of schemas in progress..." ),
+      QMessageBox::Cancel,
+      parentWidget );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+    connect( box, &QDialog::rejected, &feedback, &QgsFeedback::cancel );
+#else
+    box->button( QMessageBox::Cancel )->setEnabled( false );
+#endif
+
+    QgsSettings s;
+    const double settingDefaultValue = 2.0;
+    const QString settingName = QStringLiteral( "qgis/wfsDownloadSchemasPopupTimeout" );
+    if ( !s.contains( settingName ) )
+    {
+      s.setValue( settingName, settingDefaultValue );
+    }
+    const double timeout = s.value( settingName, settingDefaultValue ).toDouble();
+    if ( timeout > 0 )
+    {
+      timerForHits.setInterval( static_cast<int>( 1000 * timeout ) );
+      timerForHits.setSingleShot( true );
+      timerForHits.start();
+      connect( &timerForHits, &QTimer::timeout, box, &QDialog::exec );
+    }
+
+    // Close dialog when download theread finishes.
+    // Will actually trigger the QDialog::rejected signal...
+    connect( downloaderThread.get(), &QThread::finished, box, &QDialog::accept );
+  }
+
+  // Run an event loop until download thread finishes
+  QEventLoop loop;
+  connect( downloaderThread.get(), &QThread::finished, &loop, &QEventLoop::quit );
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
+  downloaderThread->wait();
+
+  VSIUnlink( pszSchemaTempFilename );
+  VSIFree( pszSchemaTempFilename );
+
+  bool ret = hDS != nullptr;
+  if ( feedback.isCanceled() && !ret )
+  {
+    QMutexLocker lock( &mutex );
+    mMetadataRetrievalCanceled = true;
+    lastCanceledURL = url;
+    lastCanceledDateTime = QDateTime::currentDateTime();
+    errorMsg = tr( "Schema analysis interrupted by user." );
+    return false;
+  }
+  if ( !ret )
+  {
+    errorMsg = tr( "Cannot analyze schema indicated in DescribeFeatureType response." );
+    return false;
+  }
+
+  gdal::dataset_unique_ptr oDSCloser( hDS );
+
+  // Retrieve namespace prefix and URIs
+  OGRLayerH hOtherMetadataLayer = GDALDatasetGetLayerByName( hDS, "_ogr_other_metadata" );
+  if ( !hOtherMetadataLayer )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find _ogr_other_metadata layer" ), 4 );
+    return false;
+  }
+
+  auto hOtherMetadataLayerDefn = OGR_L_GetLayerDefn( hOtherMetadataLayer );
+
+  const int keyIdx = OGR_FD_GetFieldIndex( hOtherMetadataLayerDefn, "key" );
+  if ( keyIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find key field in _ogr_other_metadata" ), 4 );
+    return false;
+  }
+
+  const int valueIdx = OGR_FD_GetFieldIndex( hOtherMetadataLayerDefn, "value" );
+  if ( valueIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find value field in _ogr_other_metadata" ), 4 );
+    return false;
+  }
+
+  std::map<int, QPair<QString, QString>> mapPrefixIdxToPrefixAndUri;
+  while ( true )
+  {
+    gdal::ogr_feature_unique_ptr hFeatureOtherMD(
+      OGR_L_GetNextFeature( hOtherMetadataLayer ) );
+    if ( !hFeatureOtherMD )
+      break;
+
+    const QString key = QString::fromUtf8(
+                          OGR_F_GetFieldAsString( hFeatureOtherMD.get(), keyIdx ) );
+    const QString value = QString::fromUtf8(
+                            OGR_F_GetFieldAsString( hFeatureOtherMD.get(), valueIdx ) );
+
+    if ( key.startsWith( QLatin1String( "namespace_prefix_" ) ) )
+    {
+      mapPrefixIdxToPrefixAndUri[key.mid( int( strlen( "namespace_prefix_" ) ) ).toInt()].first = value;
+    }
+    else if ( key.startsWith( QLatin1String( "namespace_uri_" ) ) )
+    {
+      mapPrefixIdxToPrefixAndUri[key.mid( int( strlen( "namespace_uri_" ) ) ).toInt()].second = value;
+    }
+  }
+  for ( const auto &kv : mapPrefixIdxToPrefixAndUri )
+  {
+    if ( !kv.second.first.isEmpty() && !kv.second.second.isEmpty() )
+    {
+      mShared->mNamespacePrefixToURIMap[kv.second.first] = kv.second.second;
+      QgsDebugMsgLevel( QStringLiteral( "%1 -> %2" ).arg( kv.second.first ).arg( kv.second.second ), 4 );
+    }
+  }
+
+  // Find the layer of interest
+  OGRLayerH hLayersMetadata = GDALDatasetGetLayerByName( hDS, "_ogr_layers_metadata" );
+  if ( !hLayersMetadata )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find _ogr_layers_metadata layer" ), 4 );
+    return false;
+  }
+  OGR_L_SetAttributeFilter( hLayersMetadata,
+                            ( "layer_xpath = " + QgsSqliteUtils::quotedString( prefixedTypename ).toStdString() ).c_str() );
+  gdal::ogr_feature_unique_ptr hFeatureLayersMD( OGR_L_GetNextFeature( hLayersMetadata ) );
+  if ( !hFeatureLayersMD )
+  {
+    QgsDebugMsgLevel(
+      QStringLiteral( "Cannot find feature with layer_xpath = %1 in _ogr_layers_metadata" ).arg( prefixedTypename ), 4 );
+    return false;
+  }
+  const int fldIdx = OGR_F_GetFieldIndex( hFeatureLayersMD.get(), "layer_name" );
+  if ( fldIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find layer_name field in _ogr_layers_metadata" ), 4 );
+    return false;
+  }
+  const QString layerName = QString::fromUtf8(
+                              OGR_F_GetFieldAsString( hFeatureLayersMD.get(), fldIdx ) );
+
+  OGRLayerH hLayer = GDALDatasetGetLayerByName(
+                       hDS, layerName.toStdString().c_str() );
+  if ( !hLayer )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find %& layer" ).arg( layerName ), 4 );
+    return false;
+  }
+
+  // Get field information
+  OGRLayerH hFieldsMetadata = GDALDatasetGetLayerByName( hDS, "_ogr_fields_metadata" );
+  if ( !hFieldsMetadata )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find _ogr_fields_metadata layer" ), 4 );
+    return false;
+  }
+  OGR_L_SetAttributeFilter( hFieldsMetadata,
+                            ( "layer_name = " + QgsSqliteUtils::quotedString( layerName ).toStdString() ).c_str() );
+
+  auto hFieldsMetadataDefn = OGR_L_GetLayerDefn( hFieldsMetadata );
+
+  const int fieldNameIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_name" );
+  if ( fieldNameIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_name field in _ogr_fields_metadata" ), 4 );
+    return false;
+  }
+
+  const int fieldXPathIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_xpath" );
+  if ( fieldXPathIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_xpath field in _ogr_fields_metadata" ), 4 );
+    return false;
+  }
+
+  const int fieldIsListIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_is_list" );
+  if ( fieldIsListIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_is_list field in _ogr_fields_metadata" ), 4 );
+    return false;
+  }
+
+  const int fieldTypeIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_type" );
+  if ( fieldTypeIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_type field in _ogr_fields_metadata" ), 4 );
+    return false;
+  }
+
+  const int fieldCategoryIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_category" );
+  if ( fieldCategoryIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_category field in _ogr_fields_metadata" ), 4 );
+    return false;
+  }
+
+  mShared->mFieldNameToXPathAndIsNestedContentMap.clear();
+  while ( true )
+  {
+    gdal::ogr_feature_unique_ptr hFeatureFieldsMD( OGR_L_GetNextFeature( hFieldsMetadata ) );
+    if ( !hFeatureFieldsMD )
+      break;
+
+    QString fieldName = QString::fromUtf8( OGR_F_GetFieldAsString( hFeatureFieldsMD.get(), fieldNameIdx ) );
+    const char *fieldXPath = OGR_F_GetFieldAsString( hFeatureFieldsMD.get(), fieldXPathIdx );
+    // The xpath includes the one of the feature itself. We can strip it off
+    const char *slash = strchr( fieldXPath, '/' );
+    if ( slash )
+      fieldXPath = slash + 1;
+    const bool fieldIsList = OGR_F_GetFieldAsInteger( hFeatureFieldsMD.get(), fieldIsListIdx ) == 1;
+    const char *fieldType = OGR_F_GetFieldAsString( hFeatureFieldsMD.get(), fieldTypeIdx );
+    const char *fieldCategory = OGR_F_GetFieldAsString( hFeatureFieldsMD.get(), fieldCategoryIdx );
+
+    // For fields that should be linked to other tables and that we will
+    // get as JSON, remove the "_pkid" suffix from the name created by GMLAS.
+    if ( EQUAL( fieldCategory, "PATH_TO_CHILD_ELEMENT_WITH_LINK" ) &&
+         fieldName.endsWith( QLatin1String( "_pkid" ) ) )
+    {
+      fieldName.resize( fieldName.size() - int( strlen( "_pkid" ) ) );
+    }
+
+    QgsDebugMsgLevel(
+      QStringLiteral( "field %1: xpath=%2 is_list=%3 type=%4 category=%5" ).
+      arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 5 );
+    if ( EQUAL( fieldCategory, "REGULAR" ) && EQUAL( fieldType, "geometry" ) )
+    {
+      if ( geometryAttribute.isEmpty() )
+      {
+        mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
+          QPair<QString, bool>( fieldXPath, false );
+        geometryAttribute = fieldName;
+        geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
+                     OGR_L_GetGeomType( hLayer ) );
+      }
+    }
+    else if ( EQUAL( fieldCategory, "REGULAR" ) && !fieldIsList )
+    {
+      QVariant::Type type = getVariantTypeFromXML( QString::fromUtf8( fieldType ) );
+      if ( type != QVariant::Invalid )
+      {
+        fields.append( QgsField( fieldName, type, fieldType ) );
+      }
+      else
+      {
+        // unhandled:duration, base64Binary, hexBinary, anyType
+        QgsDebugMsgLevel(
+          QStringLiteral( "unhandled type for field %1: xpath=%2 is_list=%3 type=%4 category=%5" ).
+          arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 3 );
+        fields.append( QgsField( fieldName, QVariant::String, fieldType ) );
+      }
+      mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
+        QPair<QString, bool>( fieldXPath, false );
+    }
+    else
+    {
+      QgsField field( fieldName, QVariant::String );
+      field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "JsonEdit" ), QVariantMap() ) );
+      fields.append( field );
+      mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
+        QPair<QString, bool>( fieldXPath, true );
+    }
+  }
+
+  return true;
+}
+
+bool QgsWFSProvider::readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaDoc,
+    const QString &prefixedTypename,
+    QString &geometryAttribute,
+    QgsFields &fields,
+    Qgis::WkbType &geomType,
+    QString &errorMsg, bool &mayTryWithGMLAS )
+{
+  mayTryWithGMLAS = false;
+
   //get the <schema> root element
   QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( QgsWFSConstants::XMLSCHEMA_NAMESPACE, QStringLiteral( "schema" ) );
   if ( schemaNodeList.length() < 1 )
@@ -1615,6 +2089,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     if ( foundImport && onlyIncludeOrImport )
     {
       errorMsg = tr( "It is probably a schema for Complex Features." );
+      mayTryWithGMLAS = true;
     }
     // e.g http://services.cuzk.cz/wfs/inspire-CP-wfs.asp?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType
     // which has a single  <include schemaLocation="http://inspire.ec.europa.eu/schemas/cp/4.0/CadastralParcels.xsd"/>
@@ -1643,17 +2118,18 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
                    arg( schemaLocation, errorMsg );
       }
 
-      return readAttributesFromSchema( describeFeatureDocument,
-                                       prefixedTypename,
-                                       geometryAttribute,
-                                       fields,
-                                       geomType,
-                                       errorMsg );
+      return readAttributesFromSchemaWithoutGMLAS( describeFeatureDocument,
+             prefixedTypename,
+             geometryAttribute,
+             fields,
+             geomType,
+             errorMsg, mayTryWithGMLAS );
 
     }
     else
     {
       errorMsg = tr( "Cannot find element '%1'" ).arg( unprefixedTypename );
+      mayTryWithGMLAS = true;
     }
     return false;
   }
@@ -1772,27 +2248,18 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
     }
-    else if ( !name.isEmpty() ) //todo: distinguish between numerical and non-numerical types
+    else if ( !name.isEmpty() )
     {
-      QVariant::Type  attributeType = QVariant::String; //string is default type
-      if ( type.contains( QLatin1String( "double" ), Qt::CaseInsensitive ) || type.contains( QLatin1String( "float" ), Qt::CaseInsensitive ) || type.contains( QLatin1String( "decimal" ), Qt::CaseInsensitive ) )
+      const QVariant::Type attributeType = getVariantTypeFromXML( type );
+      if ( attributeType != QVariant::Invalid )
       {
-        attributeType = QVariant::Double;
+        fields.append( QgsField( name, attributeType, type ) );
       }
-      else if ( type.contains( QLatin1String( "int" ), Qt::CaseInsensitive ) ||
-                type.contains( QLatin1String( "short" ), Qt::CaseInsensitive ) )
+      else
       {
-        attributeType = QVariant::Int;
+        mayTryWithGMLAS = true;
+        fields.append( QgsField( name, QVariant::String, type ) );
       }
-      else if ( type.contains( QLatin1String( "long" ), Qt::CaseInsensitive ) )
-      {
-        attributeType = QVariant::LongLong;
-      }
-      else if ( type.contains( QLatin1String( "dateTime" ), Qt::CaseInsensitive ) )
-      {
-        attributeType = QVariant::DateTime;
-      }
-      fields.append( QgsField( name, attributeType, type ) );
     }
   }
   if ( !foundGeometryAttribute )

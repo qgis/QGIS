@@ -138,6 +138,9 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     //! Perform an initial GetFeature request with a 1-feature limit.
     void issueInitialGetFeature();
 
+    //! Return whether metadata retrieval has been canceled (typically download of the schema)
+    bool metadataRetrievalCanceled() const { return mMetadataRetrievalCanceled; }
+
   private slots:
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
@@ -171,10 +174,23 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     QDomElement geometryElement( const QgsGeometry &geometry, QDomDocument &transactionDoc );
 
     //! Set mShared->mLayerPropertiesList from describeFeatureDocument
-    bool setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QStringList &typenameList, QString &errorMsg );
+    bool setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QByteArray &response, const QStringList &typenameList, QString &errorMsg );
 
     //! backup of mShared->mLayerPropertiesList on the feature type when there is no sql request
     QList< QgsOgcUtils::LayerProperties > mLayerPropertiesListWhenNoSqlRequest;
+
+    //! Set if metadata retrieval has been canceled (typically download of the schema)
+    bool mMetadataRetrievalCanceled = false;
+
+    bool readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaDoc,
+        const QString &prefixedTypename,
+        QString &geometryAttribute,
+        QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg, bool &mayTryWithGMLAS );
+
+    bool readAttributesFromSchemaWithGMLAS( const QByteArray &response,
+                                            const QString &prefixedTypename,
+                                            QString &geometryAttribute,
+                                            QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg );
 
   protected:
 
@@ -206,6 +222,8 @@ class QgsWFSProvider final: public QgsVectorDataProvider
      * thematic attributes and their types from a dom document. Returns true in case of success.
     */
     bool readAttributesFromSchema( QDomDocument &schemaDoc,
+                                   const QByteArray &response,
+                                   bool singleLayerContext,
                                    const QString &prefixedTypename,
                                    QString &geometryAttribute,
                                    QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg );

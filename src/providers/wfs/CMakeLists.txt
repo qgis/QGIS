@@ -63,6 +63,7 @@ target_include_directories(provider_wfs_a PUBLIC
 
 target_link_libraries(provider_wfs_a
   qgis_core
+  GDAL::GDAL
 )
 
 # require c++17
@@ -120,6 +121,7 @@ else()
 
   target_link_libraries (provider_wfs
     qgis_core
+    GDAL::GDAL
   )
 
   if (WITH_GUI)

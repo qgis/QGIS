@@ -213,12 +213,24 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
                         arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
     QgsExpression bboxExp( filterBbox );
     QDomDocument bboxDoc;
+
+    QMap<QString, QString> fieldNameToXPathMap;
+    if ( !mShared->mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
+    {
+      for ( auto iterFieldName = mShared->mFieldNameToXPathAndIsNestedContentMap.constBegin(); iterFieldName != mShared->mFieldNameToXPathAndIsNestedContentMap.constEnd(); ++iterFieldName )
+      {
+        const QString &fieldName = iterFieldName.key();
+        const auto &value = iterFieldName.value();
+        fieldNameToXPathMap[fieldName] = value.first;
+      }
+    }
+
     QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, bboxDoc,
                            gmlVersion, filterVersion,
                            mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(),
                            mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(),
                            geometryAttribute, mShared->srsName(),
-                           honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
+                           honourAxisOrientation, mShared->mURI.invertAxisOrientation(), nullptr, fieldNameToXPathMap, mShared->mNamespacePrefixToURIMap );
     bboxDoc.appendChild( bboxElem );
 
     filters.push_back( bboxDoc.toString() );

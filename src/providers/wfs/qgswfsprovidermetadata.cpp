@@ -236,6 +236,8 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   QgsWFSProvider provider(
     uri + " " + QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE + "='true'",
     QgsDataProvider::ProviderOptions(), caps );
+  if ( provider.metadataRetrievalCanceled() )
+    return res;
   QgsProviderSublayerDetails details;
   details.setType( Qgis::LayerType::Vector );
   details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
