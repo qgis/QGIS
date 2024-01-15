@@ -481,6 +481,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
               const QString selfLink = getString( featureData, "@iot.selfLink" ).toString();
 
               const QVariant properties = getVariantMap( featureData, "properties" );
+              // NOLINTBEGIN(bugprone-branch-clone)
               switch ( mEntityType )
               {
                 case Qgis::SensorThingsEntity::Invalid:
@@ -593,6 +594,7 @@ bool QgsSensorThingsSharedData::processFeatureRequest( QString &nextPage, QgsFee
                   );
                   break;
               }
+              // NOLINTEND(bugprone-branch-clone)
 
               // Set geometry
               if ( mGeometryType != Qgis::WkbType::NoGeometry && featureData.contains( mGeometryField.toLocal8Bit().constData() ) )
