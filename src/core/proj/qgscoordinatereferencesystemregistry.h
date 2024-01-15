@@ -187,6 +187,34 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     QList< QgsCrsDbRecord > crsDbRecords() const SIP_SKIP;
 
+    /**
+     * Returns a list of recently used CRS.
+     *
+     * \since QGIS 3.36
+    */
+    QList< QgsCoordinateReferenceSystem > recentCrs();
+
+    /**
+     * Pushes a recently used CRS to the top of the recent CRS list.
+     *
+     * \since QGIS 3.16
+     */
+    void pushRecent( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Removes a CRS from the list of recently used CRS.
+     *
+     * \since QGIS 3.36
+     */
+    void removeRecent( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Cleans the list of recently used CRS.
+     *
+     * \since QGIS 3.36
+     */
+    void clearRecent();
+
   signals:
 
     /**

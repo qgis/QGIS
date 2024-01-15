@@ -1061,27 +1061,31 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns a list of recently used projections
      * \returns list of srsid for recently used projections
-     * \deprecated QGIS 3.10 Use recentCoordinateReferenceSystems() instead.
+     *
+     * \deprecated QGIS 3.10 Use QgsApplication::coordinateReferenceSystemRegistry()->recentCrs() instead.
      */
     Q_DECL_DEPRECATED static QStringList recentProjections() SIP_DEPRECATED;
 
     /**
      * Returns a list of recently used CRS.
-     * \since QGIS 3.10.3
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->recentCrs() instead.
     */
-    static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems();
+    Q_DECL_DEPRECATED static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() SIP_DEPRECATED;
 
     /**
      * Pushes a recently used CRS to the top of the recent CRS list.
-     * \since QGIS 3.10.3
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->pushRecent() instead.
      */
-    static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+    Q_DECL_DEPRECATED static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
     /**
      * Removes a CRS from the list of recently used CRS.
-     * \since QGIS 3.32
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->removeRecent() instead.
      */
-    static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+    Q_DECL_DEPRECATED static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
     /**
      * Cleans the list of recently used CRS.
