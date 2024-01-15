@@ -18,6 +18,8 @@
 #include "qgsfeedback.h"
 #include "qgsgeometryengine.h"
 
+///@cond PRIVATE
+
 //
 // QgsSensorThingsFeatureSource
 //
@@ -310,3 +312,5 @@ void QgsSensorThingsFeatureIterator::setInterruptionChecker( QgsFeedback *interr
 {
   mInterruptionChecker = interruptionChecker;
 }
+
+///@endcond PRIVATE
