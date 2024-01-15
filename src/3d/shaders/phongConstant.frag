@@ -7,9 +7,6 @@ in vec3 worldNormal;
 
 uniform float shininess;
 uniform float opacity;
-uniform float ka;
-uniform float kd;
-uniform float ks;
 uniform vec3 ambientColor;
 uniform vec3 diffuseColor;
 uniform vec3 specularColor;
@@ -26,7 +23,6 @@ void main(void)
                     vec4(diffuseColor, opacity),
                     vec4(specularColor, opacity),
                     shininess,
-                    ka, kd, ks,
                     worldPosition,
                     worldView,
                     worldNormal);
