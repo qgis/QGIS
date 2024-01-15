@@ -5,6 +5,9 @@ use File::Basename;
 use File::Spec;
 use Getopt::Long;
 use YAML::Tiny;
+use List::Util qw(any);
+use List::Util qw(none);
+
 no if $] >= 5.018000, warnings => 'experimental::smartmatch';
 
 use constant PRIVATE => 0;
@@ -1016,7 +1019,7 @@ while ($LINE_IDX < $LINE_COUNT){
             } else {
               $LINE = "\ntypedef $tpl<$cls1,$cls2,$cls3> ${tpl}${cls1}${cls2}${cls3}Base;\n\n$LINE";
             }
-            if ( not $tpl ~~ @DECLARED_CLASSES ){
+            if ( none { $_ eq $tpl } @DECLARED_CLASSES ){
                 my $tpl_header = lc $tpl . ".h";
                 if ( exists $SIP_CONFIG->{class_headerfile}->{$tpl} ){
                     $tpl_header = $SIP_CONFIG->{class_headerfile}->{$tpl};
@@ -1031,7 +1034,7 @@ while ($LINE_IDX < $LINE_COUNT){
               $LINE .= "\ntypedef $tpl<$cls1,$cls2,$cls3> ${tpl}${cls1}${cls2}${cls3}Base;";
             }
         }
-        if ( PRIVATE ~~ @ACCESS && $#ACCESS != 0){
+        if ( ( any{ $_ == PRIVATE } @ACCESS ) && $#ACCESS != 0){
             # do not write anything in PRIVATE context and not top level
             dbg_info("skipping class in private context");
             next;
@@ -1064,7 +1067,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     pop(@GLOB_BRACKET_NESTING_IDX);
                     pop(@ACCESS);
                     exit_with_error("Class $CLASSNAME[$#CLASSNAME] should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.")
-                        if $EXPORTED[-1] == 0 and not $CLASSNAME[$#CLASSNAME] ~~ $SIP_CONFIG->{no_export_macro};
+                        if $EXPORTED[-1] == 0 and ($CLASSNAME[$#CLASSNAME] ne $SIP_CONFIG->{no_export_macro});
                     pop @EXPORTED;
                 }
                 pop(@CLASSNAME);
@@ -1108,7 +1111,7 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("PRV3", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
         $PRIVATE_SECTION_LINE = '';
     }
-    elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
+    elsif ( ( any{ $_ == PRIVATE } @ACCESS ) && $SIP_RUN == 0 ) {
         $COMMENT = '';
         next;
     }
@@ -1565,8 +1568,8 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
                   #     $RETURN_TYPE = '';
                   # }
                   if ( $comment_line =~ m/^:param\s+(\w+)/) {
-                    if ( $1 ~~ @SKIPPED_PARAMS_OUT || $1 ~~ @SKIPPED_PARAMS_REMOVE ) {
-                      if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
+                    if ( (any { $_ eq $1 } @SKIPPED_PARAMS_OUT) || (any { $_ eq $1 } @SKIPPED_PARAMS_REMOVE) ) {
+                      if ( any { $_ eq $1 } @SKIPPED_PARAMS_OUT ) {
                         $comment_line =~ s/^:param\s+(\w+):\s*(.*?)$/$1: $2/;
                         $comment_line =~ s/(?:optional|if specified|if given)[,]?\s*//g;
                         push @out_params, $comment_line ;
