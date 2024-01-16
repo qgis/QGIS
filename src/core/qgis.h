@@ -1832,10 +1832,8 @@ class CORE_EXPORT Qgis
       Wkt1Esri SIP_MONKEYPATCH_COMPAT_NAME( WKT1_ESRI ), //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
       Wkt2_2015 SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2015 ), //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
       Wkt2_2015Simplified SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2015_SIMPLIFIED ), //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-      Wkt2_2018 SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2018 ), //!< Alias for WKT2_2019
-      Wkt2_2018Simplified SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2018_SIMPLIFIED ), //!< Alias for WKT2_2019_SIMPLIFIED
-      Wkt2_2019  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019 ) = Wkt2_2018, //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-      Wkt2_2019Simplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019_SIMPLIFIED ) = Wkt2_2018Simplified, //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
+      Wkt2_2019  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019 ), //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      Wkt2_2019Simplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019_SIMPLIFIED ), //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
       Preferred SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED ) = Wkt2_2019, //!< Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
       PreferredSimplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_SIMPLIFIED ) = Wkt2_2019Simplified, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
       PreferredGdal SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_GDAL ) = Wkt2_2019, //!< Preferred format for conversion of CRS to WKT for use with the GDAL library.
