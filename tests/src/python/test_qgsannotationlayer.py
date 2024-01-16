@@ -643,7 +643,7 @@ class TestQgsAnnotationLayer(QgisTestCase):
         self.assertTrue(self.image_check('layer_render_disabled', 'layer_render_disabled', image))
         # also check details of rendered items
         item_details = renderer.takeRenderedItemDetails()
-        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 1)
         self.assertCountEqual([i.itemId() for i in item_details], [i1_id])
 
 
