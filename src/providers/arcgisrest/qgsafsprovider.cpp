@@ -249,20 +249,21 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   {
     const QVariantMap timeInfo = layerData.value( QStringLiteral( "timeInfo" ) ).toMap();
 
-    temporalCapabilities()->setHasTemporalCapabilities( true );
-    temporalCapabilities()->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
-    temporalCapabilities()->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
-    if ( !temporalCapabilities()->endField().isEmpty() )
-      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeStartAndEndInSeparateFields );
-    else if ( !temporalCapabilities()->startField().isEmpty() )
-      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeInstantInField );
+    QgsVectorDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+    lTemporalCapabilities->setHasTemporalCapabilities( true );
+    lTemporalCapabilities->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
+    lTemporalCapabilities->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
+    if ( !lTemporalCapabilities->endField().isEmpty() )
+      lTemporalCapabilities->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeStartAndEndInSeparateFields );
+    else if ( !lTemporalCapabilities->startField().isEmpty() )
+      lTemporalCapabilities->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeInstantInField );
     else
-      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::HasFixedTemporalRange );
+      lTemporalCapabilities->setMode( Qgis::VectorDataProviderTemporalMode::HasFixedTemporalRange );
 
     const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
     if ( extent.size() == 2 )
     {
-      temporalCapabilities()->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ),
+      lTemporalCapabilities->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ),
           QgsArcGisRestUtils::convertDateTime( extent.at( 1 ) ) ) );
     }
   }

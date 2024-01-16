@@ -281,18 +281,18 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
       case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
         // in this mode we need to pass on the desired render temporal range to the data provider
-        if ( mPipe->provider()->temporalCapabilities() )
+        if ( QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = mPipe->provider()->temporalCapabilities() )
         {
-          mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
-          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
+          temporalCapabilities->setRequestedTemporalRange( rendererContext.temporalRange() );
+          temporalCapabilities->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
         }
         break;
     }
   }
-  else if ( mPipe->provider()->temporalCapabilities() )
+  else if ( QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = mPipe->provider()->temporalCapabilities() )
   {
-    mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
-    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
+    temporalCapabilities->setRequestedTemporalRange( QgsDateTimeRange() );
+    temporalCapabilities->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
   }
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );

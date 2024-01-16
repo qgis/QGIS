@@ -256,22 +256,23 @@ bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultRef
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const bool isTemporalBefore = dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
+  const QgsDataProviderTemporalCapabilities *temporalCapabilities = dataProvider()->temporalCapabilities();
+  const bool isTemporalBefore = temporalCapabilities->hasTemporalCapabilities();
   if ( mDatasetGroupStore->addPersistentDatasets( path ) )
   {
     mExtraDatasetUri.append( path );
     QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mTemporalProperties );
-    if ( !isTemporalBefore && dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+    if ( !isTemporalBefore && temporalCapabilities->hasTemporalCapabilities() )
     {
       mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities(
-        dataProvider()->temporalCapabilities() );
+        temporalCapabilities );
 
       if ( ! temporalProperties->referenceTime().isValid() )
       {
         QDateTime referenceTime = defaultReferenceTime;
         if ( !defaultReferenceTime.isValid() ) // If project reference time is invalid, use current date
           referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
-        temporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+        temporalProperties->setReferenceTime( referenceTime, temporalCapabilities );
       }
 
       mTemporalProperties->setIsActive( true );
