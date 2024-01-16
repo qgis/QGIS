@@ -23,7 +23,8 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsRecentCoordinateReferenceSystemsModel,
-    QgsRecentCoordinateReferenceSystemsProxyModel
+    QgsRecentCoordinateReferenceSystemsProxyModel,
+    QgsCoordinateReferenceSystemProxyModel
 )
 
 import unittest
@@ -207,7 +208,7 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
                          QgsCoordinateReferenceSystem('EPSG:3111'))
 
         # add filter
-        model.setFilters(QgsRecentCoordinateReferenceSystemsProxyModel.Filter.FilterHorizontal)
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterHorizontal)
         self.assertEqual(model.rowCount(), 1)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
@@ -219,7 +220,7 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:3111'))
 
-        model.setFilters(QgsRecentCoordinateReferenceSystemsProxyModel.Filter.FilterVertical)
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterVertical)
         self.assertEqual(model.rowCount(), 1)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())

@@ -20,9 +20,17 @@
 
 #include <QFont>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
+#ifdef ENABLE_MODELTEST
+  new ModelTest( this, this );
+#endif
+
   mCrs = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
   connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::recentCrsPushed, this, &QgsRecentCoordinateReferenceSystemsModel::recentCrsPushed );
   connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::recentCrsRemoved, this, &QgsRecentCoordinateReferenceSystemsModel::recentCrsRemoved );
@@ -50,6 +58,9 @@ QVariant QgsRecentCoordinateReferenceSystemsModel::data( const QModelIndex &inde
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
       return crs.userFriendlyIdentifier();
+
+    case RoleCrs:
+      return crs;
 
     default:
       break;
@@ -95,7 +106,7 @@ QgsCoordinateReferenceSystem QgsRecentCoordinateReferenceSystemsModel::crs( cons
 void QgsRecentCoordinateReferenceSystemsModel::recentCrsPushed( const QgsCoordinateReferenceSystem &crs )
 {
   const int currentRow = mCrs.indexOf( crs );
-  if ( currentRow >= 0 )
+  if ( currentRow > 0 )
   {
     // move operation
     beginMoveRows( QModelIndex(), currentRow, currentRow, QModelIndex(), 0 );
@@ -103,7 +114,7 @@ void QgsRecentCoordinateReferenceSystemsModel::recentCrsPushed( const QgsCoordin
     mCrs.insert( 0, crs );
     endMoveRows();
   }
-  else
+  else if ( currentRow < 0 )
   {
     // add operation
     beginInsertRows( QModelIndex(), 0, 0 );
@@ -154,7 +165,7 @@ const QgsRecentCoordinateReferenceSystemsModel *QgsRecentCoordinateReferenceSyst
   return mModel;
 }
 
-void QgsRecentCoordinateReferenceSystemsProxyModel::setFilters( QgsRecentCoordinateReferenceSystemsProxyModel::Filters filters )
+void QgsRecentCoordinateReferenceSystemsProxyModel::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
 {
   if ( mFilters == filters )
     return;
@@ -186,17 +197,17 @@ bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int source
     case Qgis::CrsType::Engineering:
     case Qgis::CrsType::Bound:
     case Qgis::CrsType::DerivedProjected:
-      if ( !mFilters.testFlag( Filter::FilterHorizontal ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) )
         return false;
       break;
 
     case Qgis::CrsType::Vertical:
-      if ( !mFilters.testFlag( Filter::FilterVertical ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterVertical ) )
         return false;
       break;
 
     case Qgis::CrsType::Compound:
-      if ( !mFilters.testFlag( Filter::FilterCompound ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterCompound ) )
         return false;
       break;
   }
