@@ -173,7 +173,7 @@ void Qgs3DMeasureDialog::updateSettings()
   const QgsSettings settings;
 
   mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
-  mMapDistanceUnit = mTool->canvas()->map()->crs().mapUnits();
+  mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
   mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
                              settings.value( QStringLiteral( "qgis/measure/displayunits" ),
                                  QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString() );

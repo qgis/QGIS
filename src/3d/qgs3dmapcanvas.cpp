@@ -88,8 +88,8 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   // make sure the scene is deleted while map settings object is still alive
   mScene->deleteLater();
   mScene = nullptr;
-  mMap->deleteLater();
-  mMap = nullptr;
+  mMapSettings->deleteLater();
+  mMapSettings = nullptr;
 
 
   delete m_aspectEngine;
@@ -152,22 +152,9 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent * )
   mEngine->setSize( size() );
 }
 
-
-
-
-
-
-
-
-
-
-void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
+void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 {
-  // TODO: eventually we want to get rid of this
-  Q_ASSERT( !mMap );
-  Q_ASSERT( !mScene );
-
-  Qgs3DMapScene *newScene = new Qgs3DMapScene( *map, mEngine );
+  Qgs3DMapScene *newScene = new Qgs3DMapScene( *mapSettings, mEngine );
 
   mEngine->setSize( size() );
   mEngine->setRootEntity( newScene );
@@ -181,8 +168,8 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
   connect( mScene, &Qgs3DMapScene::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged );
 
-  delete mMap;
-  mMap = map;
+  delete mMapSettings;
+  mMapSettings = mapSettings;
 
   resetView();
 
@@ -190,7 +177,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   {
     QCursor::setPos( mapToGlobal( point ) );
   } );
-  connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMap, &Qgs3DMapSettings::setCameraMovementSpeed );
+  connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMapSettings, &Qgs3DMapSettings::setCameraMovementSpeed );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, this, &Qgs3DMapCanvas::cameraNavigationSpeedChanged );
   connect( cameraController(), &QgsCameraController::navigationModeChanged, this, &Qgs3DMapCanvas::onNavigationModeChanged );
   connect( cameraController(), &QgsCameraController::requestDepthBufferCapture, this, &Qgs3DMapCanvas::captureDepthBuffer );
@@ -218,8 +205,8 @@ void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, f
   if ( !mScene )
     return;
 
-  const float worldX = center.x() - mMap->origin().x();
-  const float worldY = center.y() - mMap->origin().y();
+  const float worldX = center.x() - mMapSettings->origin().x();
+  const float worldY = center.y() - mMapSettings->origin().y();
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }
 
@@ -347,18 +334,13 @@ void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange 
   if ( !mScene )
     return;
 
-  mMap->setTemporalRange( temporalrange );
+  mMapSettings->setTemporalRange( temporalrange );
   mScene->updateTemporal();
-}
-
-QSize Qgs3DMapCanvas::windowSize() const
-{
-  return mEngine->size();
 }
 
 void Qgs3DMapCanvas::onNavigationModeChanged( Qgis::NavigationMode mode )
 {
-  mMap->setCameraNavigationMode( mode );
+  mMapSettings->setCameraNavigationMode( mode );
 }
 
 void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )
