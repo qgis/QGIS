@@ -522,8 +522,43 @@ void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateRefere
   recent.removeAll( crs );
   recent.insert( 0, crs );
 
-  // trim to max 30 items
-  recent = recent.mid( 0, 30 );
+  auto hasVertical = []( const QgsCoordinateReferenceSystem & crs )
+  {
+    switch ( crs.type() )
+    {
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geocentric:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+        return false;
+
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Vertical:
+      case Qgis::CrsType::Compound:
+        return true;
+    }
+    BUILTIN_UNREACHABLE
+  };
+  QList<QgsCoordinateReferenceSystem> recentSameType;
+  std::copy_if( recent.begin(), recent.end(), std::back_inserter( recentSameType ), [crs, &hasVertical]( const QgsCoordinateReferenceSystem & it )
+  {
+    return hasVertical( it ) == hasVertical( crs );
+  } );
+
+  // trim to max 30 items of the same type
+  const QList<QgsCoordinateReferenceSystem> toTrim = recentSameType.mid( 30 );
+  for ( const QgsCoordinateReferenceSystem &crsTrimmed : toTrim )
+  {
+    recent.removeOne( crsTrimmed );
+    emit recentCrsRemoved( crsTrimmed );
+  }
+
   QStringList authids;
   authids.reserve( recent.size() );
   QStringList proj;

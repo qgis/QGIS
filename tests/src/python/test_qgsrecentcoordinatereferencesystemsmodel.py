@@ -134,6 +134,27 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         registry.clearRecent()
         self.assertEqual(model.rowCount(), 0)
 
+        # model limit of 30 items should consider crs types
+        for _id in range(32510, 32550):
+            registry.pushRecent(
+                QgsCoordinateReferenceSystem(f"EPSG:{_id}")
+            )
+
+        self.assertEqual(model.rowCount(), 30)
+        for row in range(30):
+            self.assertEqual(
+                model.crs(model.index(row, 0, QModelIndex())).authid(),
+                f"EPSG:{32549 - row}"
+            )
+
+        # these are vertical CRS, so their addition should NOT cause
+        # the existing items to drop
+        for _id in range(115851, 115867):
+            registry.pushRecent(
+                QgsCoordinateReferenceSystem(f"ESRI:{_id}")
+            )
+        self.assertEqual(model.rowCount(), 46)
+
 
 if __name__ == '__main__':
     unittest.main()
