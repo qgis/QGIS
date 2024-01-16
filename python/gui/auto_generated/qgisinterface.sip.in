@@ -10,6 +10,11 @@
 
 
 
+class Qgs3DMapCanvas /External/;
+
+%ModuleHeaderCode
+class Qgs3DMapCanvas;
+%End
 
 
 class QgisInterface : QObject
@@ -95,6 +100,31 @@ Closes the additional map canvas with matching ``name``.
 .. seealso:: :py:func:`createNewMapCanvas`
 
 .. versionadded:: 3.0
+%End
+
+    virtual QList< Qgs3DMapCanvas * > mapCanvases3D() = 0;
+%Docstring
+Returns a list of all 3D map canvases open in the app.
+
+.. versionadded:: 3.36
+%End
+
+    virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name ) = 0;
+%Docstring
+Create a new 3D map canvas with the specified unique ``name``.
+
+.. seealso:: :py:func:`closeMapCanvas3D`
+
+.. versionadded:: 3.36
+%End
+
+    virtual void closeMapCanvas3D( const QString &name ) = 0;
+%Docstring
+Closes the additional map canvas with matching ``name``.
+
+.. seealso:: :py:func:`createNewMapCanvas3D`
+
+.. versionadded:: 3.36
 %End
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
