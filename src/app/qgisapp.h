@@ -160,6 +160,7 @@ class QgsAppGpsConnection;
 class QgsGpsToolBar;
 class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
+class Qgs3DMapCanvas;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -431,6 +432,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Returns a list of all 3D map canvases open in the app.
+     *
+     * \since QGIS 3.36
+     */
+    QList< Qgs3DMapCanvas * > mapCanvases3D();
+
+    /**
+     * Create a new 3D map canvas with the specified unique \a name.
+     *
+     * \since QGIS 3.36
+     */
+    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name );
 
     /**
      * Opens a 3D view canvas for a 3D map view called \a name.
