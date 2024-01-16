@@ -433,6 +433,7 @@ set(QGIS_GUI_SRCS
   proj/qgsprojectionselectiondialog.cpp
   proj/qgsprojectionselectionwidget.cpp
   proj/qgsprojectionselectiontreewidget.cpp
+  proj/qgsrecentcoordinatereferencesystemsmodel.cpp
 
   providers/qgsabstractdbsourceselect.cpp
   providers/qgspointcloudproviderguimetadata.cpp
@@ -1383,6 +1384,7 @@ set(QGIS_GUI_HDRS
   proj/qgsprojectionselectiondialog.h
   proj/qgsprojectionselectiontreewidget.h
   proj/qgsprojectionselectionwidget.h
+  proj/qgsrecentcoordinatereferencesystemsmodel.h
 
   providers/qgsabstractdbsourceselect.h
   providers/qgspointcloudsourceselect.h

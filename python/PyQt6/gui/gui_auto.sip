@@ -441,6 +441,7 @@
 %Include auto_generated/proj/qgsprojectionselectiondialog.sip
 %Include auto_generated/proj/qgsprojectionselectiontreewidget.sip
 %Include auto_generated/proj/qgsprojectionselectionwidget.sip
+%Include auto_generated/proj/qgsrecentcoordinatereferencesystemsmodel.sip
 %Include auto_generated/providers/qgsabstractdbsourceselect.sip
 %Include auto_generated/raster/qgsrasterattributetablewidget.sip
 %Include auto_generated/raster/qgsrasterattributetabledialog.sip
