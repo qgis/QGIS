@@ -25,14 +25,7 @@ A model for display of recently used coordinate reference systems.
 
     enum Roles
     {
-      RoleNodeType,
-      RoleName,
-      RoleAuthId,
-      RoleDeprecated,
-      RoleType,
-      RoleGroupId,
-      RoleWkt,
-      RoleProj,
+      RoleCrs,
     };
 
     QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0 );
@@ -76,15 +69,6 @@ A sort/filter proxy model for recent coordinate reference systems.
 %End
   public:
 
-    enum Filter
-    {
-      FilterHorizontal,
-      FilterVertical,
-      FilterCompound,
-    };
-    typedef QFlags<QgsRecentCoordinateReferenceSystemsProxyModel::Filter> Filters;
-
-
     explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.
@@ -96,14 +80,14 @@ Returns the underlying source model.
 %End
 
 
-    void setFilters( QgsRecentCoordinateReferenceSystemsProxyModel::Filters filters );
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how CRS are filtered.
 
 .. seealso:: :py:func:`filters`
 %End
 
-    Filters filters() const;
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 %Docstring
 Returns any filters that affect how CRS are filtered.
 
@@ -121,9 +105,6 @@ Returns an invalid CRS if the index is not valid.
 %End
 
 };
-
-QFlags<QgsRecentCoordinateReferenceSystemsProxyModel::Filter> operator|(QgsRecentCoordinateReferenceSystemsProxyModel::Filter f1, QFlags<QgsRecentCoordinateReferenceSystemsProxyModel::Filter> f2);
-
 
 
 /************************************************************************

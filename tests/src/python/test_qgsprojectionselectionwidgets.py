@@ -9,13 +9,20 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QComboBox
-from qgis.core import QgsCoordinateReferenceSystem, QgsProject
+from qgis.core import (
+    QgsApplication,
+    QgsSettings,
+    QgsCoordinateReferenceSystem,
+    QgsProject
+)
 from qgis.gui import (
     QgsProjectionSelectionDialog,
     QgsProjectionSelectionTreeWidget,
     QgsProjectionSelectionWidget,
+    QgsCoordinateReferenceSystemProxyModel
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -25,8 +32,22 @@ start_app()
 
 class TestQgsProjectionSelectionWidgets(QgisTestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        super().setUpClass()
+
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain(cls.__name__)
+        QCoreApplication.setApplicationName(cls.__name__)
+        QgsSettings().clear()
+        start_app()
+
+        QgsSettings().setValue("/projections/defaultProjectCrs", "EPSG:4326")
+
     def testShowingHiding(self):
         """ test showing and hiding options """
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem())
         w = QgsProjectionSelectionWidget()
 
         # layer crs
@@ -84,7 +105,6 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
 
     def testShowingNotSetOption(self):
         """ test showing the not set option """
-
         w = QgsProjectionSelectionWidget()
         # start with an invalid CRS
         w.setCrs(QgsCoordinateReferenceSystem())
@@ -114,28 +134,152 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
 
-    def testFilter(self):
+    def testRecent(self):
+        registry = QgsApplication.coordinateReferenceSystemRegistry()
+        registry.clearRecent()
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
-
         w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
         w.setLayerCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
-        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
 
         self.assertIsInstance(w.children()[0], QComboBox)
         cb = w.children()[0]
         self.assertEqual(cb.count(), 4)
         self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
-        self.assertEqual(cb.itemText(1), 'Default CRS: EPSG:4326 - WGS 84')
-        self.assertEqual(cb.itemText(2), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
-        self.assertEqual(cb.itemText(3), 'EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
 
-        w.setFilter([QgsCoordinateReferenceSystem('EPSG:3111')])
+        # push some recent crs
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(cb.count(), 5)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(4), 'EPSG:3857 - WGS 84 / Pseudo-Mercator')
+
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(cb.count(), 6)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(4), 'EPSG:28356 - GDA94 / MGA zone 56')
+        self.assertEqual(cb.itemText(5), 'EPSG:3857 - WGS 84 / Pseudo-Mercator')
+
+        # push a recent CRS which is already in the list (same as project crs)
+        # this should not be shown twice
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(cb.count(), 6)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(4), 'EPSG:28356 - GDA94 / MGA zone 56')
+        self.assertEqual(cb.itemText(5), 'EPSG:3857 - WGS 84 / Pseudo-Mercator')
+
+        registry.removeRecent(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(cb.count(), 5)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(4), 'EPSG:28356 - GDA94 / MGA zone 56')
+
+    def testFilters(self):
+        registry = QgsApplication.coordinateReferenceSystemRegistry()
+        registry.clearRecent()
+        # a horizontal crs
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:28356'))
+        # a vertical crs
+        registry.pushRecent(QgsCoordinateReferenceSystem('ESRI:115866'))
+
+        QgsProject.instance().setCrs(
+            QgsCoordinateReferenceSystem('EPSG:3113'))
+        w = QgsProjectionSelectionWidget()
+
+        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        # some vertical crses
+        w.setLayerCrs(QgsCoordinateReferenceSystem('ESRI:115851'))
+        w.setCrs(QgsCoordinateReferenceSystem('ESRI:115852'))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+
+        # by default vertical won't be shown
+        self.assertIsInstance(w.children()[0], QComboBox)
+        cb = w.children()[0]
+        self.assertEqual(cb.count(), 3)
+        self.assertEqual(cb.itemText(0),
+                         'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(1), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(2),
+                         'EPSG:28356 - GDA94 / MGA zone 56')
+
+        # filter the combo to show horizontal and vertical
+        w.setFilters(QgsCoordinateReferenceSystemProxyModel.Filters(
+            QgsCoordinateReferenceSystemProxyModel.Filter.FilterHorizontal |
+            QgsCoordinateReferenceSystemProxyModel.Filter.FilterVertical
+        ))
+
+        self.assertEqual(cb.count(), 6)
+        self.assertEqual(cb.itemText(0), 'ESRI:115852 - SIRGAS-CON_DGF01P01')
+        self.assertEqual(cb.itemText(1),
+                         'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3),
+                         'Layer CRS: ESRI:115851 - SIRGAS-CON_DGF00P01')
+        self.assertEqual(cb.itemText(4),
+                         'ESRI:115866 - SIRGAS-CON_SIR17P01')
+        self.assertEqual(cb.itemText(5),
+                         'EPSG:28356 - GDA94 / MGA zone 56')
+
+        # only vertical
+        w.setFilters(QgsCoordinateReferenceSystemProxyModel.Filters(
+            QgsCoordinateReferenceSystemProxyModel.Filter.FilterVertical
+        ))
+
+        self.assertEqual(cb.count(), 3)
+        self.assertEqual(cb.itemText(0), 'ESRI:115852 - SIRGAS-CON_DGF01P01')
+        self.assertEqual(cb.itemText(1),
+                         'Layer CRS: ESRI:115851 - SIRGAS-CON_DGF00P01')
+        self.assertEqual(cb.itemText(2),
+                         'ESRI:115866 - SIRGAS-CON_SIR17P01')
+
+    def testFilteredCrs(self):
+        registry = QgsApplication.coordinateReferenceSystemRegistry()
+        registry.clearRecent()
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        w = QgsProjectionSelectionWidget()
+
+        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        w.setLayerCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+
+        self.assertIsInstance(w.children()[0], QComboBox)
+        cb = w.children()[0]
+        self.assertEqual(cb.count(), 4)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+
+        w.setFilter([QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:3113')])
         self.assertEqual(cb.count(), 2)
-        self.assertEqual(cb.itemText(0), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
-        self.assertEqual(cb.itemText(1), 'EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(0), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(1), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+
+        w.setFilter([])
+        self.assertEqual(cb.count(), 4)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Project CRS: EPSG:3113 - GDA94 / BCSG02')
+        self.assertEqual(cb.itemText(2), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(3), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
 
         QgsProject.instance().setCrs(QgsCoordinateReferenceSystem())
 

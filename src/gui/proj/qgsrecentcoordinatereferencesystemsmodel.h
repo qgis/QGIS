@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgscoordinatereferencesystemmodel.h"
 
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
@@ -42,14 +43,7 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
     //! Custom roles used by the model
     enum Roles
     {
-      RoleNodeType = Qt::UserRole, //!< Corresponds to the node's type
-      RoleName = Qt::UserRole + 1, //!< The coordinate reference system name
-      RoleAuthId = Qt::UserRole + 2, //!< The coordinate reference system authority name and id
-      RoleDeprecated = Qt::UserRole + 3, //!< TRUE if the CRS is deprecated
-      RoleType = Qt::UserRole + 4, //!< The coordinate reference system type
-      RoleGroupId = Qt::UserRole + 5, //!< The node ID (for group nodes)
-      RoleWkt = Qt::UserRole + 6, //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
-      RoleProj = Qt::UserRole + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      RoleCrs = Qt::UserRole, //!< Coordinate reference system
     };
 
     /**
@@ -96,16 +90,6 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilt
 
   public:
 
-    //! Available filter flags for filtering the model
-    enum Filter
-    {
-      FilterHorizontal = 1 << 1, //!< Include horizontal CRS (excludes compound CRS containing a horizontal component)
-      FilterVertical = 1 << 2, //!< Include vertical CRS (excludes compound CRS containing a vertical component)
-      FilterCompound = 1 << 3, //!< Include compound CRS
-    };
-    Q_DECLARE_FLAGS( Filters, Filter )
-    Q_FLAG( Filters )
-
     /**
      * Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given \a parent object.
      */
@@ -126,13 +110,13 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilt
      * Set \a filters that affect how CRS are filtered.
      * \see filters()
      */
-    void setFilters( QgsRecentCoordinateReferenceSystemsProxyModel::Filters filters );
+    void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
     /**
      * Returns any filters that affect how CRS are filtered.
      * \see setFilters()
      */
-    Filters filters() const { return mFilters; }
+    QgsCoordinateReferenceSystemProxyModel::Filters filters() const { return mFilters; }
 
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
@@ -146,10 +130,8 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilt
   private:
 
     QgsRecentCoordinateReferenceSystemsModel *mModel = nullptr;
-    Filters mFilters = Filters();
+    QgsCoordinateReferenceSystemProxyModel::Filters mFilters = QgsCoordinateReferenceSystemProxyModel::Filters();
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRecentCoordinateReferenceSystemsProxyModel::Filters )
 
 
 #endif // QGSRECENTCOORDINATEREFERENCESYSTEMSMODEL_H
