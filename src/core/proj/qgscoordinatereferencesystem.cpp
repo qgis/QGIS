@@ -3070,7 +3070,7 @@ void QgsCoordinateReferenceSystem::removeRecentCoordinateReferenceSystem( const 
 
 void QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems()
 {
-
+  QgsApplication::coordinateReferenceSystemRegistry()->clearRecent();
 }
 
 void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
