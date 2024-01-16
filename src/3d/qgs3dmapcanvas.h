@@ -124,21 +124,16 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     Qt3DRender::QRenderSettings *renderSettings() const;
 #endif
 
-
-
-
-
-
     //! Configure map scene being displayed. Takes ownership.
-    void setMap( Qgs3DMapSettings *map );
+    void setMapSettings( Qgs3DMapSettings *mapSettings );
 
     //! Returns access to the 3D scene configuration
-    Qgs3DMapSettings *map() { return mMap; }
+    Qgs3DMapSettings *mapSettings() { return mMapSettings; }
 
     //! Returns access to the 3D scene (root 3D entity)
     Qgs3DMapScene *scene() { return mScene; }
 
-    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMap()
+    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
     QgsCameraController *cameraController();
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
@@ -151,7 +146,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void saveAsImage( const QString &fileName, const QString &fileFormat );
 
     /**
-     * Sets the active map tool that will receive events from the 3D canvas. Does not transfer ownership.
+     * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
      * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     void setMapTool( Qgs3DMapTool *tool );
@@ -173,23 +168,12 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void setTemporalController( QgsTemporalController *temporalController );
 
     /**
-     * Returns the size of the 3D canvas window
-     *
-     * \since QGIS 3.18
-     */
-    QSize windowSize() const;
-
-    /**
-     * Resets camera view to show the extent \a extent (top view)
-     *
-     * \since QGIS 3.26
+     * Resets camera view to show the \a extent (top view)
      */
     void setViewFrom2DExtent( const QgsRectangle &extent );
 
     /**
      * Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
-     *
-     * \since QGIS 3.26
      */
     QVector<QgsPointXY> viewFrustum2DExtent();
 
@@ -202,22 +186,16 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     //! Emitted when the FPS count changes (at most every frame)
     void fpsCountChanged( float fpsCount );
+
     //! Emitted when the FPS counter is enabled or disabeld
     void fpsCounterEnabledChanged( bool enabled );
 
-    /**
-     * Emitted when the viewed 2D extent seen by the 3D camera has changed
-     *
-     * \since QGIS 3.26
-     */
+    //! Emitted when the viewed 2D extent seen by the 3D camera has changed
     void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
 
-    /**
-     * Emitted when the camera navigation \a speed is changed.
-     *
-     * \since QGIS 3.18
-     */
+    //! Emitted when the camera navigation \a speed is changed.
     void cameraNavigationSpeedChanged( double speed );
+
   public slots:
     void captureDepthBuffer();
 
@@ -236,8 +214,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * Resets the aspect ratio of the 3D window.
      */
     void resizeEvent( QResizeEvent * ) override;
-
-
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
@@ -264,13 +240,10 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     bool m_initialized;
 
-
-
-
     QgsWindow3DEngine *mEngine = nullptr;
 
     //! Description of the 3D scene
-    Qgs3DMapSettings *mMap = nullptr;
+    Qgs3DMapSettings *mMapSettings = nullptr;
     //! Root entity of the 3D scene
     Qgs3DMapScene *mScene = nullptr;
 
