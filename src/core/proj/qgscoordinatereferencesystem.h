@@ -664,7 +664,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \see toProj()
      */
-    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1GDAL, bool multiline = false, int indentationWidth = 4 ) const;
+    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1Gdal, bool multiline = false, int indentationWidth = 4 ) const;
 
     /**
      * Returns a Proj string representation of this CRS.

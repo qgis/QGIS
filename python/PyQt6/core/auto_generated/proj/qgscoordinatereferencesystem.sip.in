@@ -707,7 +707,7 @@ Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 .. seealso:: :py:func:`projectionAcronym`
 %End
 
-    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1GDAL, bool multiline = false, int indentationWidth = 4 ) const;
+    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1Gdal, bool multiline = false, int indentationWidth = 4 ) const;
 %Docstring
 Returns a WKT representation of this CRS.
 

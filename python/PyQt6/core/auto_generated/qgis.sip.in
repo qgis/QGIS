@@ -1095,8 +1095,8 @@ The development version
 
     enum class CrsWktVariant /BaseType=IntFlag/
       {
-      Wkt1GDAL,
-      Wkt1ESRI,
+      Wkt1Gdal,
+      Wkt1Esri,
       Wkt2_2015,
       Wkt2_2015Simplified,
       Wkt2_2018,
@@ -1105,7 +1105,7 @@ The development version
       Wkt2_2019Simplified,
       Preferred,
       PreferredSimplified,
-      PreferredGDAL,
+      PreferredGdal,
     };
 
     enum class Axis /BaseType=IntFlag/

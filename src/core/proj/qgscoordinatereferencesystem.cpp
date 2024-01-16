@@ -1927,10 +1927,10 @@ QString QgsCoordinateReferenceSystem::toWkt( Qgis::CrsWktVariant variant, bool m
     PJ_WKT_TYPE type = PJ_WKT1_GDAL;
     switch ( variant )
     {
-      case Qgis::CrsWktVariant::Wkt1GDAL:
+      case Qgis::CrsWktVariant::Wkt1Gdal:
         type = PJ_WKT1_GDAL;
         break;
-      case Qgis::CrsWktVariant::Wkt1ESRI:
+      case Qgis::CrsWktVariant::Wkt1Esri:
         type = PJ_WKT1_ESRI;
         break;
       case Qgis::CrsWktVariant::Wkt2_2015:
