@@ -52,7 +52,7 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertFalse(model.index(-1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
-        self.assertIsNone(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole))
+        self.assertIsNone(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.crs(model.index(0, 0, QModelIndex())).isValid())
         self.assertFalse(model.crs(model.index(-1, 0, QModelIndex())).isValid())
         self.assertFalse(model.crs(model.index(1, 0, QModelIndex())).isValid())
@@ -64,10 +64,10 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
-        self.assertIsNone(model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
+        self.assertIsNone(model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertIsNone(
-            model.data(model.index(-1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(-1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:3111'))
 
@@ -78,10 +78,10 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:4326 - WGS 84')
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
-        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
+        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
@@ -94,10 +94,10 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:4326 - WGS 84')
-        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
+        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
@@ -110,10 +110,10 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:4326 - WGS 84')
-        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
+        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
@@ -125,8 +125,8 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'EPSG:4326 - WGS 84')
-        self.assertIsNone(model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
+        self.assertIsNone(model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:4326'))
 
@@ -166,7 +166,7 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertFalse(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertIsNone(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.crs(model.index(0, 0, QModelIndex())).isValid())
         self.assertFalse(
             model.crs(model.index(-1, 0, QModelIndex())).isValid())
@@ -178,12 +178,12 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'EPSG:3111 - GDA94 / Vicgrid')
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertIsNone(
-            model.data(model.index(-1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(-1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:3111'))
 
@@ -194,13 +194,13 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'ESRI:115851 - SIRGAS-CON_DGF00P01')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole),
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'EPSG:3111 - GDA94 / Vicgrid')
         self.assertIsNone(
-            model.data(model.index(2, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('ESRI:115851'))
         self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
@@ -212,10 +212,10 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'EPSG:3111 - GDA94 / Vicgrid')
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('EPSG:3111'))
 
@@ -224,10 +224,10 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole),
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
             'ESRI:115851 - SIRGAS-CON_DGF00P01')
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole))
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
                          QgsCoordinateReferenceSystem('ESRI:115851'))
 
