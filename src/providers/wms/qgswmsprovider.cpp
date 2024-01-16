@@ -174,17 +174,18 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // Setup temporal properties for layers in WMS-T
     if ( mSettings.mIsTemporal )
     {
-      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
-      temporalCapabilities()->setHasTemporalCapabilities( true );
-      temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
-      temporalCapabilities()->setAllAvailableTemporalRanges( mSettings.mAllRanges );
-      temporalCapabilities()->setDefaultInterval( mSettings.mDefaultInterval );
+      QgsRasterDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+      Q_ASSERT_X( lTemporalCapabilities, "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      lTemporalCapabilities->setHasTemporalCapabilities( true );
+      lTemporalCapabilities->setAvailableTemporalRange( mSettings.mFixedRange );
+      lTemporalCapabilities->setAllAvailableTemporalRanges( mSettings.mAllRanges );
+      lTemporalCapabilities->setDefaultInterval( mSettings.mDefaultInterval );
 
-      temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange );
+      lTemporalCapabilities->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange );
 
       if ( mSettings.mIsBiTemporal )
       {
-        temporalCapabilities()->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
+        lTemporalCapabilities->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
       }
     }
 
@@ -215,14 +216,15 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // WMTS - may have time dimension
     if ( !mTileLayer->allTimeRanges.empty() )
     {
-      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
-      temporalCapabilities()->setHasTemporalCapabilities( true );
+      QgsRasterDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+      Q_ASSERT_X( lTemporalCapabilities, "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      lTemporalCapabilities->setHasTemporalCapabilities( true );
 
-      temporalCapabilities()->setAvailableTemporalRange( mTileLayer->temporalExtent );
-      temporalCapabilities()->setAllAvailableTemporalRanges( mTileLayer->allTimeRanges );
-      temporalCapabilities()->setDefaultInterval( mTileLayer->temporalInterval );
-      temporalCapabilities()->setFlags( mTileLayer->temporalCapabilityFlags );
-      temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
+      lTemporalCapabilities->setAvailableTemporalRange( mTileLayer->temporalExtent );
+      lTemporalCapabilities->setAllAvailableTemporalRanges( mTileLayer->allTimeRanges );
+      lTemporalCapabilities->setDefaultInterval( mTileLayer->temporalInterval );
+      lTemporalCapabilities->setFlags( mTileLayer->temporalCapabilityFlags );
+      lTemporalCapabilities->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
     }
 
     if ( !mSettings.mXyz )
