@@ -1761,12 +1761,12 @@ Qgis.CrsIdentifierType.__doc__ = "Available identifier string types for represen
 Qgis.CrsIdentifierType.baseClass = Qgis
 QgsCoordinateReferenceSystem.WktVariant = Qgis.CrsWktVariant
 # monkey patching scoped based enum
-QgsCoordinateReferenceSystem.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1GDAL
-QgsCoordinateReferenceSystem.WktVariant.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1GDAL
+QgsCoordinateReferenceSystem.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1Gdal
+QgsCoordinateReferenceSystem.WktVariant.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1Gdal
 QgsCoordinateReferenceSystem.WKT1_GDAL.is_monkey_patched = True
 QgsCoordinateReferenceSystem.WKT1_GDAL.__doc__ = "WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees."
-QgsCoordinateReferenceSystem.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1ESRI
-QgsCoordinateReferenceSystem.WktVariant.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1ESRI
+QgsCoordinateReferenceSystem.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1Esri
+QgsCoordinateReferenceSystem.WktVariant.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1Esri
 QgsCoordinateReferenceSystem.WKT1_ESRI.is_monkey_patched = True
 QgsCoordinateReferenceSystem.WKT1_ESRI.__doc__ = "WKT1 as traditionally output by ESRI software, deriving from OGC 99-049."
 QgsCoordinateReferenceSystem.WKT2_2015 = Qgis.CrsWktVariant.Wkt2_2015
@@ -1801,11 +1801,11 @@ QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED = Qgis.CrsWktVariant.Prefe
 QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_SIMPLIFIED = Qgis.CrsWktVariant.PreferredSimplified
 QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.is_monkey_patched = True
 QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.__doc__ = "Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions."
-QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGDAL
-QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGDAL
+QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGdal
+QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGdal
 QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL.is_monkey_patched = True
 QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL.__doc__ = "Preferred format for conversion of CRS to WKT for use with the GDAL library."
-Qgis.CrsWktVariant.__doc__ = "Coordinate reference system WKT formatting variants.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsCoordinateReferenceSystem`.WktVariant\n\n.. versionadded:: 3.36\n\n" + '* ``WKT1_GDAL``: ' + Qgis.CrsWktVariant.Wkt1GDAL.__doc__ + '\n' + '* ``WKT1_ESRI``: ' + Qgis.CrsWktVariant.Wkt1ESRI.__doc__ + '\n' + '* ``WKT2_2015``: ' + Qgis.CrsWktVariant.Wkt2_2015.__doc__ + '\n' + '* ``WKT2_2015_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2015Simplified.__doc__ + '\n' + '* ``WKT2_2018``: ' + Qgis.CrsWktVariant.Wkt2_2018.__doc__ + '\n' + '* ``WKT2_2018_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2018Simplified.__doc__ + '\n' + '* ``WKT2_2019``: ' + Qgis.CrsWktVariant.Wkt2_2019.__doc__ + '\n' + '* ``WKT2_2019_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2019Simplified.__doc__ + '\n' + '* ``WKT_PREFERRED``: ' + Qgis.CrsWktVariant.Preferred.__doc__ + '\n' + '* ``WKT_PREFERRED_SIMPLIFIED``: ' + Qgis.CrsWktVariant.PreferredSimplified.__doc__ + '\n' + '* ``WKT_PREFERRED_GDAL``: ' + Qgis.CrsWktVariant.PreferredGDAL.__doc__
+Qgis.CrsWktVariant.__doc__ = "Coordinate reference system WKT formatting variants.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsCoordinateReferenceSystem`.WktVariant\n\n.. versionadded:: 3.36\n\n" + '* ``WKT1_GDAL``: ' + Qgis.CrsWktVariant.Wkt1Gdal.__doc__ + '\n' + '* ``WKT1_ESRI``: ' + Qgis.CrsWktVariant.Wkt1Esri.__doc__ + '\n' + '* ``WKT2_2015``: ' + Qgis.CrsWktVariant.Wkt2_2015.__doc__ + '\n' + '* ``WKT2_2015_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2015Simplified.__doc__ + '\n' + '* ``WKT2_2019``: ' + Qgis.CrsWktVariant.Wkt2_2019.__doc__ + '\n' + '* ``WKT2_2019_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2019Simplified.__doc__ + '\n' + '* ``WKT_PREFERRED``: ' + Qgis.CrsWktVariant.Preferred.__doc__ + '\n' + '* ``WKT_PREFERRED_SIMPLIFIED``: ' + Qgis.CrsWktVariant.PreferredSimplified.__doc__ + '\n' + '* ``WKT_PREFERRED_GDAL``: ' + Qgis.CrsWktVariant.PreferredGdal.__doc__
 # --
 Qgis.CrsWktVariant.baseClass = Qgis
 # monkey patching scoped based enum
