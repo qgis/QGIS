@@ -1963,7 +1963,17 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
       {
         mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
           QPair<QString, bool>( fieldXPath, false );
-        geometryAttribute = fieldName;
+        geometryAttribute = fieldXPath;
+        {
+          const auto parts = geometryAttribute.split( '/' );
+          if ( parts.size() > 1 )
+            geometryAttribute = parts[0];
+        }
+        {
+          const auto parts = geometryAttribute.split( ':' );
+          if ( parts.size() == 2 )
+            geometryAttribute = parts[1];
+        }
         geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
                      OGR_L_GetGeomType( hLayer ) );
       }
