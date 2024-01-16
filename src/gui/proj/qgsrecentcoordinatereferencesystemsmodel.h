@@ -84,4 +84,72 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
 };
 
 
+/**
+ * \brief A sort/filter proxy model for recent coordinate reference systems.
+ *
+ * \ingroup gui
+ * \since QGIS 3.36
+ */
+class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Available filter flags for filtering the model
+    enum Filter
+    {
+      FilterHorizontal = 1 << 1, //!< Include horizontal CRS (excludes compound CRS containing a horizontal component)
+      FilterVertical = 1 << 2, //!< Include vertical CRS (excludes compound CRS containing a vertical component)
+      FilterCompound = 1 << 3, //!< Include compound CRS
+    };
+    Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
+
+    /**
+     * Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given \a parent object.
+     */
+    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the underlying source model.
+     */
+    QgsRecentCoordinateReferenceSystemsModel *recentCoordinateReferenceSystemsModel();
+
+    /**
+     * Returns the underlying source model.
+     * \note Not available in Python bindings
+     */
+    const QgsRecentCoordinateReferenceSystemsModel *recentCoordinateReferenceSystemsModel() const SIP_SKIP;
+
+    /**
+     * Set \a filters that affect how CRS are filtered.
+     * \see filters()
+     */
+    void setFilters( QgsRecentCoordinateReferenceSystemsProxyModel::Filters filters );
+
+    /**
+     * Returns any filters that affect how CRS are filtered.
+     * \see setFilters()
+     */
+    Filters filters() const { return mFilters; }
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    /**
+     * Returns the CRS for the corresponding \a index.
+     *
+     * Returns an invalid CRS if the index is not valid.
+     */
+    QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
+
+  private:
+
+    QgsRecentCoordinateReferenceSystemsModel *mModel = nullptr;
+    Filters mFilters = Filters();
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRecentCoordinateReferenceSystemsProxyModel::Filters )
+
+
 #endif // QGSRECENTCOORDINATEREFERENCESYSTEMSMODEL_H

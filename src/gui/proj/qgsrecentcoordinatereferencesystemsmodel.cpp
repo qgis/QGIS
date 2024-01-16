@@ -129,3 +129,83 @@ void QgsRecentCoordinateReferenceSystemsModel::recentCrsCleared()
   mCrs.clear();
   endResetModel();
 }
+
+
+
+//
+// QgsRecentCoordinateReferenceSystemsProxyModel
+//
+
+QgsRecentCoordinateReferenceSystemsProxyModel::QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( new QgsRecentCoordinateReferenceSystemsModel( this ) )
+{
+  setSourceModel( mModel );
+  setDynamicSortFilter( true );
+}
+
+QgsRecentCoordinateReferenceSystemsModel *QgsRecentCoordinateReferenceSystemsProxyModel::recentCoordinateReferenceSystemsModel()
+{
+  return mModel;
+}
+
+const QgsRecentCoordinateReferenceSystemsModel *QgsRecentCoordinateReferenceSystemsProxyModel::recentCoordinateReferenceSystemsModel() const
+{
+  return mModel;
+}
+
+void QgsRecentCoordinateReferenceSystemsProxyModel::setFilters( QgsRecentCoordinateReferenceSystemsProxyModel::Filters filters )
+{
+  if ( mFilters == filters )
+    return;
+
+  mFilters = filters;
+  invalidateFilter();
+}
+
+bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( !mFilters )
+    return true;
+
+  const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+
+  const Qgis::CrsType type = mModel->crs( sourceIndex ).type();
+  switch ( type )
+  {
+    case Qgis::CrsType::Unknown:
+    case Qgis::CrsType::Other:
+      break;
+
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Geographic3d:
+    case Qgis::CrsType::Projected:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+    case Qgis::CrsType::DerivedProjected:
+      if ( !mFilters.testFlag( Filter::FilterHorizontal ) )
+        return false;
+      break;
+
+    case Qgis::CrsType::Vertical:
+      if ( !mFilters.testFlag( Filter::FilterVertical ) )
+        return false;
+      break;
+
+    case Qgis::CrsType::Compound:
+      if ( !mFilters.testFlag( Filter::FilterCompound ) )
+        return false;
+      break;
+  }
+
+  return true;
+}
+
+QgsCoordinateReferenceSystem QgsRecentCoordinateReferenceSystemsProxyModel::crs( const QModelIndex &index ) const
+{
+  const QModelIndex sourceIndex = mapToSource( index );
+  return mModel->crs( sourceIndex );
+}

@@ -63,6 +63,69 @@ Returns an invalid CRS if the index is not valid.
 };
 
 
+class QgsRecentCoordinateReferenceSystemsProxyModel: QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+A sort/filter proxy model for recent coordinate reference systems.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgsrecentcoordinatereferencesystemsmodel.h"
+%End
+  public:
+
+    enum Filter
+    {
+      FilterHorizontal,
+      FilterVertical,
+      FilterCompound,
+    };
+    typedef QFlags<QgsRecentCoordinateReferenceSystemsProxyModel::Filter> Filters;
+
+
+    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.
+%End
+
+    QgsRecentCoordinateReferenceSystemsModel *recentCoordinateReferenceSystemsModel();
+%Docstring
+Returns the underlying source model.
+%End
+
+
+    void setFilters( QgsRecentCoordinateReferenceSystemsProxyModel::Filters filters );
+%Docstring
+Set ``filters`` that affect how CRS are filtered.
+
+.. seealso:: :py:func:`filters`
+%End
+
+    Filters filters() const;
+%Docstring
+Returns any filters that affect how CRS are filtered.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
+%Docstring
+Returns the CRS for the corresponding ``index``.
+
+Returns an invalid CRS if the index is not valid.
+%End
+
+};
+
+QFlags<QgsRecentCoordinateReferenceSystemsProxyModel::Filter> operator|(QgsRecentCoordinateReferenceSystemsProxyModel::Filter f1, QFlags<QgsRecentCoordinateReferenceSystemsProxyModel::Filter> f2);
+
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
