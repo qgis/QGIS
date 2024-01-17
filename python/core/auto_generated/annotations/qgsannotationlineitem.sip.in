@@ -52,7 +52,7 @@ Creates a new linestring annotation item.
     virtual QgsRectangle boundingBox() const;
 
 
-    virtual QgsAnnotationLineItem *clone() /Factory/;
+    virtual QgsAnnotationLineItem *clone() const /Factory/;
 
 
     const QgsCurve *geometry() const;
