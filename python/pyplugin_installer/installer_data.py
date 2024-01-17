@@ -292,7 +292,7 @@ class Repositories(QObject):
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
-        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute.RedirectPolicyAttribute, QNetworkRequest.RedirectPolicy.NoLessSafeRedirectPolicy)
         if force_reload:
             self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.AlwaysNetwork)
         authcfg = self.mRepositories[key]["authcfg"]
