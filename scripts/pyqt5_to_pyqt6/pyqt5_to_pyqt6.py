@@ -275,6 +275,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ret = 0
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
         # print(f'Processing {filename}')
+        if 'auto_additions' in filename:
+            continue
+
         ret |= fix_file(filename, not args.qgis3_incompatible_changes)
     return ret
 
