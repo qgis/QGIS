@@ -213,7 +213,7 @@ iface = None
 
 def initInterface(pointer):
     from qgis.gui import QgisInterface
-    from sip import wrapinstance
+    from qgis.PyQt.sip import wrapinstance
 
     global iface
     iface = wrapinstance(pointer, QgisInterface)
