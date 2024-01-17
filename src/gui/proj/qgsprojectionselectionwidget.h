@@ -61,6 +61,11 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       RecentCrs = 1 << 5, //!< Recently used CRS
       CrsNotSet = 1 << 6, //!< Not set (hidden by default)
     };
+
+    /**
+     * Flags for predefined CRS options shown in widget.
+     * \since QGIS 3.36
+     */
     Q_DECLARE_FLAGS( CrsOptions, CrsOption ) SIP_SKIP;
 
     /**
