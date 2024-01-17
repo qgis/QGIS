@@ -197,8 +197,8 @@ def get_class_enums(item):
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('directory')
-    parser.add_argument('--only-qgis3-compatible-changes', action='store_true',
-                        help='Apply only modifications that would not break behavior on QGIS 3, hence code may not work on QGIS 4')
+    parser.add_argument('--qgis3-incompatible-changes', action='store_true',
+                        help='Apply modifications that would break behavior on QGIS 3, hence code may not work on QGIS 3')
     args = parser.parse_args(argv)
 
     # get all scope for all qt enum
@@ -208,7 +208,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     ret = 0
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        ret |= fix_file(filename, args.only_qgis3_compatible_changes)
+        ret |= fix_file(filename, not args.qgis3_incompatible_changes)
     return ret
 
 
