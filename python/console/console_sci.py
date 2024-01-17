@@ -305,8 +305,8 @@ class ShellScintilla(QgsCodeEditorPython):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
-        self.newShortcutCSS = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Modifier.SHIFT + Qt.Key.Key_Space), self)
-        self.newShortcutCAS = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Modifier.ALT + Qt.Key.Key_Space), self)
+        self.newShortcutCSS = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Modifier.SHIFT | Qt.Key.Key_Space), self)
+        self.newShortcutCAS = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Modifier.ALT | Qt.Key.Key_Space), self)
         self.newShortcutCSS.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.newShortcutCAS.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.newShortcutCAS.activated.connect(self.autoComplete)
