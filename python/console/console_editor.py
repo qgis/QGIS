@@ -76,20 +76,20 @@ class Editor(QgsCodeEditorPython):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
-        self.newShortcutCS = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_Space), self)
+        self.newShortcutCS = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_Space), self)
         self.newShortcutCS.setContext(Qt.ShortcutContext.WidgetShortcut)
-        self.redoScut = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Modifier.SHIFT + Qt.Key.Key_Z), self)
+        self.redoScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Modifier.SHIFT | Qt.Key.Key_Z), self)
         self.redoScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.redoScut.activated.connect(self.redo)
         self.newShortcutCS.activated.connect(self.autoComplete)
-        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_E), self)
+        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E), self)
         self.runScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.runScut.activated.connect(self.runSelectedCode)  # spellok
-        self.runScriptScut = QShortcut(QKeySequence(Qt.Modifier.SHIFT + Qt.Modifier.CTRL + Qt.Key.Key_E), self)
+        self.runScriptScut = QShortcut(QKeySequence(Qt.Modifier.SHIFT | Qt.Modifier.CTRL | Qt.Key.Key_E), self)
         self.runScriptScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.runScriptScut.activated.connect(self.runScriptCode)
 
-        self.syntaxCheckScut = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_4), self)
+        self.syntaxCheckScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_4), self)
         self.syntaxCheckScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.syntaxCheckScut.activated.connect(self.syntaxCheck)
         self.modificationChanged.connect(self.parent.modified)

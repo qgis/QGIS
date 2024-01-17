@@ -151,7 +151,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.setWrapMode(QsciScintilla.WrapMode.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
 
-        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_E), self)
+        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E), self)
         self.runScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.runScut.activated.connect(self.enteredSelected)
         # Reimplemented copy action to prevent paste prompt (>>>,...) in command view
@@ -220,7 +220,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         runAction = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
                                    QCoreApplication.translate("PythonConsole", "Enter Selected"),
                                    self.enteredSelected,
-                                   QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_E))
+                                   QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E))
         clearAction = menu.addAction(QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
