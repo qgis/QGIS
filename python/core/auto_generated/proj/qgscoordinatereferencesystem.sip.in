@@ -1129,11 +1129,12 @@ Removes a CRS from the list of recently used CRS.
    QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
 %End
 
-    static void clearRecentCoordinateReferenceSystems();
+ static void clearRecentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Cleans the list of recently used CRS.
 
-.. versionadded:: 3.32
+.. deprecated::
+   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.clearRecent` instead.
 %End
 
 
