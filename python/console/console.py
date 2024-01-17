@@ -397,7 +397,7 @@ class PythonConsoleWidget(QWidget):
 
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
-        self.toolBar.setFocusPolicy(Qt.NoFocus)
+        self.toolBar.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.toolBar.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.toolBar.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.toolBar.setIconSize(icon_size)
@@ -415,7 +415,7 @@ class PythonConsoleWidget(QWidget):
 
         self.toolBarEditor = QToolBar()
         self.toolBarEditor.setEnabled(False)
-        self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
+        self.toolBarEditor.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.toolBarEditor.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.toolBarEditor.setIconSize(icon_size)
