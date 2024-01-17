@@ -64,7 +64,7 @@ Returns item flags.
 .. versionadded:: 3.22
 %End
 
-    virtual QgsAnnotationItem *clone() = 0 /Factory/;
+    virtual QgsAnnotationItem *clone() const = 0 /Factory/;
 %Docstring
 Returns a clone of the item. Ownership is transferred to the caller.
 

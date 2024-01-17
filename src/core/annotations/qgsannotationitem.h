@@ -99,7 +99,7 @@ class CORE_EXPORT QgsAnnotationItem
      *
      * \see copyCommonProperties()
      */
-    virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
+    virtual QgsAnnotationItem *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns a unique (untranslated) string identifying the type of item.
