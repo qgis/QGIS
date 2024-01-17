@@ -1097,6 +1097,67 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         grid.setCrs(QgsCoordinateReferenceSystem("EPSG:3111"))
         self.assertEqual(len(spy), 9)
 
+    def testCopyGrid(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setEnabled(True)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setGridLineColor(QColor(0, 255, 0))
+        map.grid().setGridLineWidth(0.5)
+
+        format = QgsTextFormat.fromQFont(getTestFont("Bold", 20))
+        format.setColor(QColor(255, 0, 0))
+        format.setOpacity(150 / 255)
+        map.grid().setAnnotationTextFormat(format)
+
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
+        )
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
+        map.updateBoundingRect()
+
+        map.grid().dataDefinedProperties().setProperty(
+            QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance, QgsProperty.fromValue(10)
+        )
+        map.grid().refresh()
+
+        source_grid = map.grid()
+        grid = QgsLayoutItemMapGrid("testGrid", map)
+        grid.copyProperties(source_grid)
+        map.grids().removeGrid(source_grid.id())
+        self.assertEqual(map.grids().size(), 0)
+        map.grids().addGrid(grid)
+        map.grid().refresh()
+        self.assertTrue(
+            self.render_layout_check("composermap_datadefined_annotationdistance",
+                                     layout)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

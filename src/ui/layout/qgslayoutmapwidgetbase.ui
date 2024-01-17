@@ -753,6 +753,20 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="mCopyGridPushButton">
+              <property name="toolTip">
+               <string>Duplicate selected grid</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="mGridUpButton">
               <property name="toolTip">
                <string>Move selected grid up</string>
