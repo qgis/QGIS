@@ -47,6 +47,12 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   lstCoordinateSystems->setModel( mCrsModel );
   lstCoordinateSystems->setSelectionBehavior( QAbstractItemView::SelectRows );
 
+  if ( mCrsModel->rowCount() == 1 )
+  {
+    // if only one group, expand it by default
+    lstCoordinateSystems->expand( mCrsModel->index( 0, 0, QModelIndex() ) );
+  }
+
   QFont f = teProjection->font();
   f.setPointSize( f.pointSize() - 2 );
   teProjection->setFont( f );
@@ -263,6 +269,11 @@ QgsCoordinateReferenceSystemProxyModel::Filters QgsProjectionSelectionTreeWidget
 void QgsProjectionSelectionTreeWidget::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
 {
   mCrsModel->setFilters( filters );
+  if ( mCrsModel->rowCount() == 1 )
+  {
+    // if only one group, expand it by default
+    lstCoordinateSystems->expand( mCrsModel->index( 0, 0, QModelIndex() ) );
+  }
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
