@@ -20,8 +20,43 @@
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystemmodel.h"
+#include "qgsrecentcoordinatereferencesystemsmodel.h"
+
+#include <QIdentityProxyModel>
+#include <QStyledItemDelegate>
 
 class QResizeEvent;
+class QTreeWidgetItem;
+
+///@cond PRIVATE
+// proxy to expand base recent crs model to three column model
+class QgsRecentCoordinateReferenceSystemTableModel : public QgsRecentCoordinateReferenceSystemsProxyModel SIP_SKIP
+{
+    Q_OBJECT
+  public:
+    QgsRecentCoordinateReferenceSystemTableModel( QObject *parent );
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+};
+
+class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
+{
+    Q_OBJECT
+
+  public:
+    RemoveRecentCrsDelegate( QObject *parent );
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+  protected:
+    void paint( QPainter *painter,
+                const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+  private:
+    void setHoveredIndex( const QModelIndex &index );
+
+    QModelIndex mHoveredIndex;
+};
+
+
+///@endcond PRIVATE
 
 /**
  * \class QgsProjectionSelectionTreeWidget
@@ -219,14 +254,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     };
 
     QgsCoordinateReferenceSystemProxyModel *mCrsModel = nullptr;
+    QgsRecentCoordinateReferenceSystemTableModel *mRecentCrsModel = nullptr;
 
-    //! add recently used CRS
-    void insertRecent( const QgsCoordinateReferenceSystem &crs );
-
-    enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, ClearColumn };
-
-    //! Most recently used projections
-    QList< QgsCoordinateReferenceSystem > mRecentProjections;
+    enum Columns { NameColumn, AuthidColumn, ClearColumn };
 
     bool mShowMap = true;
 
@@ -238,12 +268,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     //! Apply projection on double-click
     void lstCoordinateSystemsDoubleClicked( const QModelIndex &index );
-    void lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void lstRecentDoubleClicked( const QModelIndex &index );
+    void lstRecentClicked( const QModelIndex &index );
     void lstCoordinateSystemsSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void filterRecentCrsList();
+    void lstRecentSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-    void removeRecentCrsItem( QTreeWidgetItem *item );
+    void removeRecentCrsItem( const QModelIndex &index );
 };
 
 #endif

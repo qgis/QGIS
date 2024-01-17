@@ -36,6 +36,10 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent, QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QWidget( parent )
 {
@@ -44,8 +48,20 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mCrsModel = new QgsCoordinateReferenceSystemProxyModel( this );
   mCrsModel->setFilters( filters );
 
+  mRecentCrsModel = new QgsRecentCoordinateReferenceSystemTableModel( this );
+  mRecentCrsModel->setFilters( filters );
+
   lstCoordinateSystems->setModel( mCrsModel );
   lstCoordinateSystems->setSelectionBehavior( QAbstractItemView::SelectRows );
+
+  lstRecent->setModel( mRecentCrsModel );
+  lstRecent->viewport()->setAttribute( Qt::WA_Hover );
+  lstRecent->setSelectionBehavior( QAbstractItemView::SelectRows );
+  lstRecent->setRootIsDecorated( false );
+
+  RemoveRecentCrsDelegate *removeDelegate = new RemoveRecentCrsDelegate( lstRecent );
+  lstRecent->setItemDelegateForColumn( 2, removeDelegate );
+  lstRecent->viewport()->installEventFilter( removeDelegate );
 
   if ( mCrsModel->rowCount() == 1 )
   {
@@ -60,29 +76,25 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   leSearch->setShowSearchIcon( true );
 
   connect( lstCoordinateSystems, &QTreeView::doubleClicked, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystemsDoubleClicked );
-  connect( lstRecent, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked );
+  connect( lstRecent, &QTreeView::doubleClicked, this, &QgsProjectionSelectionTreeWidget::lstRecentDoubleClicked );
+  connect( lstRecent, &QTreeView::clicked, this, &QgsProjectionSelectionTreeWidget::lstRecentClicked );
   connect( lstCoordinateSystems->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged );
-  connect( lstRecent, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged );
+  connect( lstRecent->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged );
   connect( cbxHideDeprecated, &QCheckBox::toggled, this, [ = ]( bool selected )
   {
     mCrsModel->setFilterDeprecated( selected );
-    filterRecentCrsList();
+    mRecentCrsModel->setFilterDeprecated( selected );
   } );
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filter )
   {
     mCrsModel->setFilterString( filter );
-    filterRecentCrsList();
+    mRecentCrsModel->setFilterString( filter );
   } );
 
   mAreaCanvas->setVisible( mShowMap );
 
   lstCoordinateSystems->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
-
-  // Hide (internal) ID column
   lstRecent->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
-  lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstRecent->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
-  lstRecent->setColumnHidden( QgisCrsIdColumn, true );
 
   // Clear Crs Column
   lstRecent->header()->setMinimumSectionSize( 10 );
@@ -91,18 +103,18 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   // Clear recent crs context menu
   lstRecent->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( lstRecent, &QTreeWidget::customContextMenuRequested, this, [this]( const QPoint & pos )
+  connect( lstRecent, &QTreeView::customContextMenuRequested, this, [this]( const QPoint & pos )
   {
     // If list is empty, do nothing
-    if ( lstRecent->topLevelItemCount() == 0 )
+    if ( lstRecent->model()->rowCount() == 0 )
       return;
     QMenu menu;
     // Clear selected
-    QTreeWidgetItem *currentItem = lstRecent->itemAt( pos );
-    if ( currentItem )
+    const QModelIndex currentIndex = lstRecent->indexAt( pos );
+    if ( currentIndex.isValid() )
     {
       QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Remove Selected CRS from Recently Used CRS" ) );
-      connect( clearSelected, &QAction::triggered, this, [this, currentItem ] { removeRecentCrsItem( currentItem ); } );
+      connect( clearSelected, &QAction::triggered, this, [this, currentIndex ] { removeRecentCrsItem( currentIndex ); } );
       menu.addSeparator();
     }
     // Clear all
@@ -113,12 +125,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   // Install event fiter to catch delete key press on the recent crs list
   lstRecent->installEventFilter( this );
-
-  mRecentProjections = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
-  for ( const QgsCoordinateReferenceSystem &crs : std::as_const( mRecentProjections ) )
-  {
-    insertRecent( crs );
-  }
 
   mCheckBoxNoProjection->setHidden( true );
   mCheckBoxNoProjection->setEnabled( false );
@@ -157,11 +163,9 @@ void QgsProjectionSelectionTreeWidget::resizeEvent( QResizeEvent *event )
 {
   lstCoordinateSystems->header()->resizeSection( NameColumn, event->size().width() - 240 );
   lstCoordinateSystems->header()->resizeSection( AuthidColumn, 240 );
-  lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
 
   lstRecent->header()->resizeSection( NameColumn, event->size().width() - 260 );
   lstRecent->header()->resizeSection( AuthidColumn, 240 );
-  lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
   lstRecent->header()->resizeSection( ClearColumn, 20 );
 }
 
@@ -176,7 +180,9 @@ bool QgsProjectionSelectionTreeWidget::eventFilter( QObject *obj, QEvent *ev )
   QKeyEvent *keyEvent = static_cast<QKeyEvent *>( ev );
   if ( keyEvent->matches( QKeySequence::Delete ) )
   {
-    removeRecentCrsItem( lstRecent->currentItem() );
+    const QModelIndex currentIndex = lstRecent->selectionModel()->selectedRows( 0 ).value( 0 );
+    if ( currentIndex.isValid() )
+      removeRecentCrsItem( currentIndex );
     return true;
   }
 
@@ -202,27 +208,6 @@ void QgsProjectionSelectionTreeWidget::selectCrsByAuthId( const QString &authid 
     lstRecent->clearSelection();
     teProjection->clear();
   }
-}
-
-void QgsProjectionSelectionTreeWidget::insertRecent( const QgsCoordinateReferenceSystem &crs )
-{
-  const QModelIndex sourceIndex = mCrsModel->coordinateReferenceSystemModel()->authIdToIndex( crs.authid() );
-  if ( !sourceIndex.isValid() )
-    return;
-
-  QTreeWidgetItem *item = new QTreeWidgetItem( lstRecent, QStringList()
-      << sourceIndex.data( QgsCoordinateReferenceSystemModel::RoleName ).toString()
-      << sourceIndex.data( QgsCoordinateReferenceSystemModel::RoleAuthId ).toString() );
-
-  // Insert clear button in the last column
-  QToolButton *clearButton = new QToolButton();
-  clearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ) );
-  clearButton->setAutoRaise( true );
-  clearButton->setToolTip( tr( "Remove from recently used CRS" ) );
-  connect( clearButton, &QToolButton::clicked, this, [this, item] { removeRecentCrsItem( item ); } );
-  lstRecent->setItemWidget( item, ClearColumn, clearButton );
-
-  lstRecent->insertTopLevelItem( 0,  item );
 }
 
 void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -269,6 +254,7 @@ QgsCoordinateReferenceSystemProxyModel::Filters QgsProjectionSelectionTreeWidget
 void QgsProjectionSelectionTreeWidget::setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters )
 {
   mCrsModel->setFilters( filters );
+  mRecentCrsModel->setFilters( filters );
   if ( mCrsModel->rowCount() == 1 )
   {
     // if only one group, expand it by default
@@ -393,11 +379,15 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged( con
     const QString crsAuthId = mCrsModel->coordinateReferenceSystemModel()->data( sourceIndex, QgsCoordinateReferenceSystemModel::RoleAuthId ).toString();
     if ( !crsAuthId.isEmpty() )
     {
-      QList<QTreeWidgetItem *> nodes = lstRecent->findItems( crsAuthId, Qt::MatchExactly, AuthidColumn );
-      if ( !nodes.isEmpty() )
+      const QModelIndexList recentMatches = mRecentCrsModel->match( mRecentCrsModel->index( 0, 0 ),
+                                            QgsRecentCoordinateReferenceSystemsModel::RoleAuthId,
+                                            crsAuthId );
+      if ( !recentMatches.isEmpty() )
       {
         QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( crsAuthId ), 4 );
-        lstRecent->setCurrentItem( nodes.first() );
+
+        lstRecent->selectionModel()->select( recentMatches.at( 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+        lstRecent->scrollTo( recentMatches.at( 0 ) );
       }
       else
       {
@@ -435,19 +425,21 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsDoubleClicked( const 
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged( const QItemSelection &selected, const QItemSelection & )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
-
-  if ( !current )
+  if ( selected.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
-  lstRecent->scrollToItem( current );
+  const QModelIndex selectedIndex = lstRecent->selectionModel()->selectedRows( 0 ).value( 0 );
+  if ( !selectedIndex.isValid() )
+    return;
 
-  const QString selectedAuthId = current->text( AuthidColumn );
+  lstRecent->scrollTo( selectedIndex );
+
+  const QString selectedAuthId = mRecentCrsModel->crs( selectedIndex ).authid();
   const QModelIndex sourceIndex = mCrsModel->coordinateReferenceSystemModel()->authIdToIndex( selectedAuthId );
   if ( sourceIndex.isValid() )
   {
@@ -460,76 +452,23 @@ void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidget
   }
 }
 
-void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelectionTreeWidget::lstRecentDoubleClicked( const QModelIndex &index )
 {
-  Q_UNUSED( column )
-
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
-
-  if ( !current )
+  if ( !index.isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
-  const QString selectedAuthId = current->text( AuthidColumn );
-  const QModelIndex sourceIndex = mCrsModel->coordinateReferenceSystemModel()->authIdToIndex( selectedAuthId );
-  if ( sourceIndex.isValid() )
-  {
-    const QModelIndex proxyIndex = mCrsModel->mapFromSource( sourceIndex );
-    if ( proxyIndex.isValid() )
-    {
-      emit projectionDoubleClicked();
-    }
-  }
+  emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelectionTreeWidget::filterRecentCrsList()
+void QgsProjectionSelectionTreeWidget::lstRecentClicked( const QModelIndex &index )
 {
-  QString filterTxtCopy = QgsStringUtils::qRegExpEscape( leSearch->text() );
-  const thread_local QRegularExpression filterRx( QStringLiteral( "\\s+" ) );
-  filterTxtCopy.replace( filterRx, QStringLiteral( ".*" ) );
-  const QRegularExpression re( filterTxtCopy, QRegularExpression::PatternOption::CaseInsensitiveOption );
-
-  const bool hideDeprecated = cbxHideDeprecated->isChecked();
-
-  QTreeWidgetItemIterator itr( lstRecent );
-  while ( *itr )
+  if ( index.column() == ClearColumn )
   {
-    if ( ( *itr )->childCount() == 0 ) // it's an end node aka a projection
-    {
-      if ( hideDeprecated && ( *itr )->data( 0, RoleDeprecated ).toBool() )
-      {
-        ( *itr )->setHidden( true );
-        if ( ( *itr )->isSelected() )
-        {
-          ( *itr )->setSelected( false );
-          teProjection->clear();
-        }
-      }
-      else if ( ( *itr )->text( NameColumn ).contains( re )
-                || ( *itr )->text( AuthidColumn ).contains( re )
-              )
-      {
-        ( *itr )->setHidden( false );
-        QTreeWidgetItem *parent = ( *itr )->parent();
-        while ( parent )
-        {
-          parent->setExpanded( true );
-          parent->setHidden( false );
-          parent = parent->parent();
-        }
-      }
-      else
-      {
-        ( *itr )->setHidden( true );
-      }
-    }
-    else
-    {
-      ( *itr )->setHidden( true );
-    }
-    ++itr;
+    removeRecentCrsItem( index );
   }
 }
 
@@ -630,7 +569,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
 void QgsProjectionSelectionTreeWidget::clearRecentCrs()
 {
   // If the list is empty, there is nothing to do
-  if ( lstRecent->topLevelItemCount() == 0 )
+  if ( QgsApplication::coordinateReferenceSystemRegistry()->recentCrs().isEmpty() )
   {
     return;
   }
@@ -642,25 +581,148 @@ void QgsProjectionSelectionTreeWidget::clearRecentCrs()
   {
     return;
   }
-  QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems();
-  lstRecent->clear();
+  QgsApplication::coordinateReferenceSystemRegistry()->clearRecent();
 }
 
-void QgsProjectionSelectionTreeWidget::removeRecentCrsItem( QTreeWidgetItem *item )
+void QgsProjectionSelectionTreeWidget::removeRecentCrsItem( const QModelIndex &index )
 {
-  if ( !item )
-    return;
-
-  int index = lstRecent->indexOfTopLevelItem( item );
-  if ( index == -1 )
-    return;
-
-  const QString selectedAuthId = item->text( AuthidColumn );
-  if ( !selectedAuthId.isEmpty() )
-  {
-    const QgsCoordinateReferenceSystem crs( selectedAuthId );
-    QgsApplication::coordinateReferenceSystemRegistry()->removeRecent( crs );
-  }
-  lstRecent->takeTopLevelItem( index );
-  delete item;
+  const QgsCoordinateReferenceSystem selectedRecentCrs = mRecentCrsModel->crs( index );
+  QgsApplication::coordinateReferenceSystemRegistry()->removeRecent( selectedRecentCrs );
 }
+
+
+///@cond PRIVATE
+QgsRecentCoordinateReferenceSystemTableModel::QgsRecentCoordinateReferenceSystemTableModel( QObject *parent )
+  : QgsRecentCoordinateReferenceSystemsProxyModel( parent, 3 )
+{
+#ifdef ENABLE_MODELTEST
+  new ModelTest( this, this );
+#endif
+}
+
+QVariant QgsRecentCoordinateReferenceSystemTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal )
+  {
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+        switch ( section )
+        {
+          case 0:
+            return tr( "Coordinate Reference System" );
+          case 1:
+            return tr( "Authority ID" );
+          case 2:
+            return QString();
+          default:
+            break;
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+  return QVariant();
+}
+
+QVariant QgsRecentCoordinateReferenceSystemTableModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() )
+    return QVariant();
+
+  const int column = index.column();
+  switch ( column )
+  {
+    case 1:
+    {
+      const QgsCoordinateReferenceSystem lCrs = crs( index );
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+          return lCrs.authid();
+
+        default:
+          break;
+      }
+      break;
+    }
+
+    case 2:
+    {
+      switch ( role )
+      {
+        case Qt::ToolTipRole:
+          return tr( "Remove from recently used CRS" );
+
+        default:
+          break;
+      }
+    }
+
+    default:
+      break;
+  }
+  return QgsRecentCoordinateReferenceSystemsProxyModel::data( index, role );
+}
+
+
+//
+// RemoveRecentCrsDelegate
+//
+
+RemoveRecentCrsDelegate::RemoveRecentCrsDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
+
+bool RemoveRecentCrsDelegate::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() == QEvent::HoverEnter || event->type() == QEvent::HoverMove )
+  {
+    QHoverEvent *hoverEvent = static_cast<QHoverEvent *>( event );
+    if ( QAbstractItemView *view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
+    {
+      const QModelIndex indexUnderMouse = view->indexAt( hoverEvent->pos() );
+      setHoveredIndex( indexUnderMouse );
+      view->viewport()->update();
+    }
+  }
+  else if ( event->type() == QEvent::HoverLeave )
+  {
+    setHoveredIndex( QModelIndex() );
+    qobject_cast< QWidget * >( obj )->update();
+  }
+  return QStyledItemDelegate::eventFilter( obj, event );
+}
+
+void RemoveRecentCrsDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QStyledItemDelegate::paint( painter, option, index );
+
+  if ( index == mHoveredIndex )
+  {
+    QStyleOptionButton buttonOption;
+    buttonOption.initFrom( option.widget );
+    buttonOption.rect = option.rect;
+
+    option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+  }
+
+  const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
+  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2,
+                        option.rect.top() + ( option.rect.height() - 16 ) / 2,
+                        16, 16 );
+
+  icon.paint( painter, iconRect );
+}
+
+void RemoveRecentCrsDelegate::setHoveredIndex( const QModelIndex &index )
+{
+  mHoveredIndex = index;
+}
+
+///@endcond PRIVATE

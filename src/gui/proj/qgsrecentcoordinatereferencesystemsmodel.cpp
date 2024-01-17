@@ -24,8 +24,9 @@
 #include "modeltest.h"
 #endif
 
-QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsModel( QObject *parent )
+QgsRecentCoordinateReferenceSystemsModel::QgsRecentCoordinateReferenceSystemsModel( QObject *parent, int subclassColumnCount )
   : QAbstractItemModel( parent )
+  , mColumnCount( subclassColumnCount )
 {
 #ifdef ENABLE_MODELTEST
   new ModelTest( this, this );
@@ -53,17 +54,23 @@ QVariant QgsRecentCoordinateReferenceSystemsModel::data( const QModelIndex &inde
   if ( !crs.isValid() )
     return QVariant();
 
-  switch ( role )
+  if ( index.column() == 0 )
   {
-    case Qt::DisplayRole:
-    case Qt::ToolTipRole:
-      return crs.userFriendlyIdentifier();
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+      case Qt::ToolTipRole:
+        return crs.userFriendlyIdentifier();
 
-    case RoleCrs:
-      return crs;
+      case RoleCrs:
+        return crs;
 
-    default:
-      break;
+      case RoleAuthId:
+        return crs.authid();
+
+      default:
+        break;
+    }
   }
 
   return QVariant();
@@ -79,12 +86,12 @@ int QgsRecentCoordinateReferenceSystemsModel::rowCount( const QModelIndex &paren
 
 int QgsRecentCoordinateReferenceSystemsModel::columnCount( const QModelIndex & ) const
 {
-  return 1;
+  return mColumnCount;
 }
 
 QModelIndex QgsRecentCoordinateReferenceSystemsModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( row < 0 || row >= mCrs.size() || column != 0 || parent.isValid() )
+  if ( row < 0 || row >= mCrs.size() || column < 0 || column >= columnCount( parent ) || parent.isValid() )
     return QModelIndex();
 
   return createIndex( row, column );
@@ -147,9 +154,9 @@ void QgsRecentCoordinateReferenceSystemsModel::recentCrsCleared()
 // QgsRecentCoordinateReferenceSystemsProxyModel
 //
 
-QgsRecentCoordinateReferenceSystemsProxyModel::QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent )
+QgsRecentCoordinateReferenceSystemsProxyModel::QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent, int subclassColumnCount )
   : QSortFilterProxyModel( parent )
-  , mModel( new QgsRecentCoordinateReferenceSystemsModel( this ) )
+  , mModel( new QgsRecentCoordinateReferenceSystemsModel( this, subclassColumnCount ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
@@ -174,6 +181,21 @@ void QgsRecentCoordinateReferenceSystemsProxyModel::setFilters( QgsCoordinateRef
   invalidateFilter();
 }
 
+void QgsRecentCoordinateReferenceSystemsProxyModel::setFilterDeprecated( bool filter )
+{
+  if ( mFilterDeprecated == filter )
+    return;
+
+  mFilterDeprecated = filter;
+  invalidateFilter();
+}
+
+void QgsRecentCoordinateReferenceSystemsProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
+  invalidateFilter();
+}
+
 bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   if ( !mFilters )
@@ -181,7 +203,11 @@ bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int source
 
   const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
 
-  const Qgis::CrsType type = mModel->crs( sourceIndex ).type();
+  const QgsCoordinateReferenceSystem crs = mModel->crs( sourceIndex );
+  if ( mFilterDeprecated && crs.isDeprecated() )
+    return false;
+
+  const Qgis::CrsType type = crs.type();
   switch ( type )
   {
     case Qgis::CrsType::Unknown:
@@ -210,6 +236,13 @@ bool QgsRecentCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int source
       if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterCompound ) )
         return false;
       break;
+  }
+
+  if ( !mFilterString.trimmed().isEmpty() )
+  {
+    if ( !( crs.description().contains( mFilterString, Qt::CaseInsensitive )
+            || crs.authid().contains( mFilterString, Qt::CaseInsensitive ) ) )
+      return false;
   }
 
   return true;
