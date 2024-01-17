@@ -272,6 +272,10 @@ class GUI_EXPORT QgsLayoutMapClippingWidget: public QgsLayoutItemBaseWidget, pri
     void updateGuiElements();
     void atlasLayerChanged( QgsVectorLayer *layer );
     void atlasToggled( bool atlasEnabled );
+    void selectAll();
+    void deselectAll();
+    void invertSelection();
+    void toggleLayersSelectionGui( bool toggled );
 
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
