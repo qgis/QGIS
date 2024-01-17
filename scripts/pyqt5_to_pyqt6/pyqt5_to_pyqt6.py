@@ -44,6 +44,7 @@ import ast
 import glob
 import os
 import inspect
+import sys
 
 from collections import defaultdict
 
@@ -126,6 +127,7 @@ deprecated_renamed_enums = {
 
 # { (class, enum_value) : enum_name }
 qt_enums = {}
+ambiguous_enums = defaultdict(set)
 
 
 def fix_file(filename: str, qgis3_compat: bool) -> int:
@@ -145,6 +147,10 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 and node.value.id == "QVariant"):
             fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
 
+        if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+                and (node.value.id, node.attr) in ambiguous_enums):
+            possible_values = [f'{node.value.id}.{e}.{node.attr}' for e in ambiguous_enums[(node.value.id, node.attr)]]
+            sys.stderr.write(f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n')
         if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                 and (node.value.id, node.attr) in qt_enums):
             fix_qt_enums.append(Offset(node.lineno, node.col_offset))
@@ -200,7 +206,19 @@ def get_class_enums(item):
         if inspect.isclass(value) and type(value).__name__ == 'EnumType':
             for ekey, evalue in value.__dict__.items():
                 if isinstance(evalue, value):
-                    qt_enums[(item.__name__, ekey)] = f"{value.__name__}"
+                    if (item.__name__, ekey) in ambiguous_enums:
+                        if value.__name__ not in ambiguous_enums[(item.__name__, ekey)]:
+                            ambiguous_enums[(item.__name__, ekey)].add(value.__name__)
+                        continue
+
+                    existing_entry = qt_enums.get((item.__name__, ekey))
+                    if existing_entry != value.__name__ and existing_entry:
+                        ambiguous_enums[(item.__name__, ekey)].add(existing_entry)
+                        ambiguous_enums[(item.__name__, ekey)].add(
+                            value.__name__)
+                        del qt_enums[(item.__name__, ekey)]
+                    else:
+                        qt_enums[(item.__name__, ekey)] = f"{value.__name__}"
 
         elif inspect.isclass(value):
             get_class_enums(value)
@@ -238,7 +256,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     ret = 0
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        print(f'Processing {filename}')
+        # print(f'Processing {filename}')
         ret |= fix_file(filename, not args.qgis3_incompatible_changes)
     return ret
 
