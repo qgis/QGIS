@@ -108,10 +108,6 @@ qmetatype_mapping = {
     "UserType": "User",
 }
 
-extra_members = {
-    ('Qt', 'FocusPolicy'): ('StrongFocus', 'WheelFocus', 'NoFocus')
-}
-
 deprecated_renamed_enums = {
     ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
 }
@@ -190,11 +186,9 @@ def get_class_enums(item):
 
     for key, value in item.__dict__.items():
         if inspect.isclass(value) and type(value).__name__ == 'EnumType':
-            for e in value:
-                qt_enums[(item.__name__, e.name)] = f"{value.__name__}"
-
-            for _extra_value in extra_members.get((item.__name__, value.__name__), []):
-                qt_enums[(item.__name__, _extra_value)] = f"{value.__name__}"
+            for ekey, evalue in value.__dict__.items():
+                if isinstance(evalue, value):
+                    qt_enums[(item.__name__, ekey)] = f"{value.__name__}"
 
         elif inspect.isclass(value):
             get_class_enums(value)
