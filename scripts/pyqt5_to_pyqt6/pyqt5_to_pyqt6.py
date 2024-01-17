@@ -112,6 +112,10 @@ extra_members = {
     ('Qt', 'FocusPolicy'): ('StrongFocus', 'WheelFocus', 'NoFocus')
 }
 
+deprecated_renamed_enums = {
+    ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
+}
+
 # { (class, enum_value) : enum_name }
 qt_enums = {}
 
@@ -124,6 +128,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX
     fix_qt_enums = []  # Unscopping of enums
+    rename_qt_enums = [] # Renaming deprecated removed enums
 
     tree = ast.parse(contents, filename=filename)
     for node in ast.walk(tree):
@@ -136,10 +141,14 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 and (node.value.id, node.attr) in qt_enums):
             fix_qt_enums.append(Offset(node.lineno, node.col_offset))
 
+        if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+                and (node.value.id, node.attr) in deprecated_renamed_enums):
+            rename_qt_enums.append(Offset(node.lineno, node.col_offset))
+
         elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
             fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
-    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums:
+    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums:
         return 0
 
     tokens = src_to_tokens(contents)
@@ -160,7 +169,13 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             assert tokens[i + 1].src == "."
             enum_name = qt_enums[(tokens[i].src, tokens[i + 2].src)]
             assert enum_name
-            tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name}.{tokens[i+2].src}")
+            tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name}.{tokens[i + 2].src}")
+
+        if token.offset in rename_qt_enums:
+            assert tokens[i + 1].src == "."
+            enum_name = deprecated_renamed_enums[(tokens[i].src, tokens[i + 2].src)]
+            assert enum_name
+            tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name[0]}.{enum_name[1]}")
 
     new_contents = tokens_to_src(tokens)
     with open(filename, 'w') as f:

@@ -359,7 +359,7 @@ class ShellScintilla(QgsCodeEditorPython):
         e: the mouse press event (QMouseEvent)
         """
         self.setFocus()
-        if e.button() == Qt.MidButton:
+        if e.button() == Qt.MouseButton.MiddleButton:
             stringSel = QApplication.clipboard().text(QClipboard.Mode.Selection)
             if not self.isCursorOnLastLine():
                 self.moveCursorToEnd()
