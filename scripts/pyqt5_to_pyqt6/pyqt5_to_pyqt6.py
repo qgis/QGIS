@@ -53,6 +53,18 @@ from typing import Sequence
 
 from PyQt6 import QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport, Qsci
 
+try:
+    import qgis.core as qgis_core
+    import qgis.gui as qgis_gui
+    import qgis.analysis as qgis_analysis
+    import qgis._3d as qgis_3d
+except ImportError:
+    qgis_core = None
+    qgis_gui = None
+    qgis_analysis = None
+    qgis_3d = None
+    print('QGIS classes not available for introspection, only a partial upgrade will be performed')
+
 # qmetatype which have been renamed
 qmetatype_mapping = {
     "Invalid": "UnknownType",
@@ -202,12 +214,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     # get all scope for all qt enum
-    for module in (QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport, Qsci):
+    enum_modules = [QtCore,
+                    QtGui,
+                    QtWidgets,
+                    QtTest,
+                    QtSql,
+                    QtSvg,
+                    QtXml,
+                    QtNetwork,
+                    QtPrintSupport,
+                    Qsci]
+    if qgis_core is not None:
+        enum_modules.extend([
+            qgis_core,
+            qgis_gui,
+            qgis_analysis,
+            qgis_3d
+            ]
+        )
+    for module in enum_modules:
         for key, value in module.__dict__.items():
             get_class_enums(value)
 
     ret = 0
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
+        print(f'Processing {filename}')
         ret |= fix_file(filename, not args.qgis3_incompatible_changes)
     return ret
 
