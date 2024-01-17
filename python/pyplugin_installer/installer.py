@@ -700,7 +700,7 @@ class QgsPluginInstaller(QObject):
         else:
             msg = "<b>%s:</b> %s" % (self.tr("Plugin installation failed"), infoString)
 
-        level = Qgis.Success if success else Qgis.Critical
+        level = Qgis.MessageLevel.Success if success else Qgis.MessageLevel.Critical
         iface.pluginManagerInterface().pushMessage(msg, level)
 
     def processDependencies(self, plugin_id):
