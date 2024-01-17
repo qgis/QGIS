@@ -128,7 +128,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX
     fix_qt_enums = []  # Unscopping of enums
-    rename_qt_enums = [] # Renaming deprecated removed enums
+    rename_qt_enums = []  # Renaming deprecated removed enums
 
     tree = ast.parse(contents, filename=filename)
     for node in ast.walk(tree):
