@@ -125,6 +125,11 @@ deprecated_renamed_enums = {
     ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
 }
 
+# dict of function name to known enum class name
+disambiguated_enums = {
+    'pushMessage': ('Qgis', 'MessageLevel')
+}
+
 # { (class, enum_value) : enum_name }
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
@@ -137,30 +142,43 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX
-    fix_qt_enums = []  # Unscopping of enums
+    fix_qt_enums = {}  # Unscoping of enums
     rename_qt_enums = []  # Renaming deprecated removed enums
 
     tree = ast.parse(contents, filename=filename)
-    for node in ast.walk(tree):
+    for parent in ast.walk(tree):
 
-        if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
-                and node.value.id == "QVariant"):
-            fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
+        for node in ast.iter_child_nodes(parent):
+            if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+                    and node.value.id == "QVariant"):
+                fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
 
-        if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
-                and (node.value.id, node.attr) in ambiguous_enums):
-            possible_values = [f'{node.value.id}.{e}.{node.attr}' for e in ambiguous_enums[(node.value.id, node.attr)]]
-            sys.stderr.write(f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n')
-        if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
-                and (node.value.id, node.attr) in qt_enums):
-            fix_qt_enums.append(Offset(node.lineno, node.col_offset))
+            if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+                    and (node.value.id, node.attr) in ambiguous_enums):
+                disambiguated = False
+                if isinstance(parent, ast.Call) and isinstance(parent.func, ast.Attribute):
+                    function_name = parent.func.attr
+                    if function_name in disambiguated_enums:
+                        disambiguated = True
+                        fix_qt_enums[Offset(node.lineno, node.col_offset)] = (
+                            disambiguated_enums)[function_name]
 
-        if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
-                and (node.value.id, node.attr) in deprecated_renamed_enums):
-            rename_qt_enums.append(Offset(node.lineno, node.col_offset))
+                if not disambiguated:
+                    possible_values = [f'{node.value.id}.{e}.{node.attr}' for e
+                                       in ambiguous_enums[
+                                           (node.value.id, node.attr)]]
+                    sys.stderr.write(f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n')
+            elif (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+                    and (node.value.id, node.attr) in qt_enums):
+                fix_qt_enums.append(Offset(node.lineno, node.col_offset))
+                fix_qt_enums[Offset(node.lineno, node.col_offset)] = (node.value.id, qt_enums[(node.value.id, node.attr)])
 
-        elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
-            fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
+            if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+                    and (node.value.id, node.attr) in deprecated_renamed_enums):
+                rename_qt_enums.append(Offset(node.lineno, node.col_offset))
+
+            elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
+                fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
     if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums:
         return 0
@@ -181,7 +199,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
-            enum_name = qt_enums[(tokens[i].src, tokens[i + 2].src)]
+            _class, enum_name = fix_qt_enums[token.offset] # = qt_enums[(tokens[i].src, tokens[i + 2].src)]
             assert enum_name
             tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name}.{tokens[i + 2].src}")
 
