@@ -148,7 +148,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
         self.setMinimumHeight(120)
 
-        self.setWrapMode(QsciScintilla.WrapCharacter)
+        self.setWrapMode(QsciScintilla.WrapMode.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
 
         self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_E), self)
@@ -192,7 +192,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
     def initializeLexer(self):
         super().initializeLexer()
         self.setFoldingVisible(False)
-        self.setEdgeMode(QsciScintilla.EdgeNone)
+        self.setEdgeMode(QsciScintilla.EdgeMode.EdgeNone)
 
     def refreshSettingsOutput(self):
         # Set Python lexer

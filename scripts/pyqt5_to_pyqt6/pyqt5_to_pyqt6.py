@@ -51,7 +51,7 @@ from tokenize_rt import Offset, src_to_tokens, tokens_to_src, reversed_enumerate
 
 from typing import Sequence
 
-from PyQt6 import QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport
+from PyQt6 import QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport, Qsci
 
 # qmetatype which have been renamed
 qmetatype_mapping = {
@@ -185,7 +185,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     # get all scope for all qt enum
-    for module in QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport:
+    for module in (QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport, Qsci):
         for key, value in module.__dict__.items():
             get_class_enums(value)
 
