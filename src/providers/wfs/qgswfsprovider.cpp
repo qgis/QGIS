@@ -43,6 +43,7 @@
 #include <QAbstractButton>
 #include <QApplication>
 #include <QDateTime>
+#include <QDir>
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -55,6 +56,7 @@
 #include <QTimer>
 #include <QUrlQuery>
 #include <QRegularExpression>
+#include <QStandardPaths>
 
 #include <cfloat>
 
@@ -1704,6 +1706,56 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
 
     char **papszOpenOptions = nullptr;
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "XSD", pszSchemaTempFilename );
+
+    QgsSettings settings;
+    QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
+    if ( cacheDirectory.isEmpty() )
+      cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+    if ( !cacheDirectory.endsWith( QDir::separator() ) )
+    {
+      cacheDirectory.push_back( QDir::separator() );
+    }
+    // Must be kept in sync with QgsOptions::clearCache()
+    cacheDirectory += QLatin1String( "gmlas_xsd_cache" );
+    QgsDebugMsgLevel( QStringLiteral( "cacheDirectory = %1" ).arg( cacheDirectory ), 4 );
+    char *pszEscaped = CPLEscapeString( cacheDirectory.toStdString().c_str(), -1, CPLES_XML );
+    QString config = QStringLiteral( "<Configuration><SchemaCache><Directory>%1</Directory></SchemaCache>"
+                                     "<IgnoredXPaths>"
+                                     "    <WarnIfIgnoredXPathFoundInDocInstance>true</WarnIfIgnoredXPathFoundInDocInstance>"
+                                     "    <Namespaces>"
+                                     "        <Namespace prefix=\"gml\" uri=\"http://www.opengis.net/gml\"/>"
+                                     "        <Namespace prefix=\"gml32\" uri=\"http://www.opengis.net/gml/3.2\"/>"
+                                     "        <Namespace prefix=\"swe\" uri=\"http://www.opengis.net/swe/2.0\"/>"
+                                     "    </Namespaces>"
+                                     "    <XPath warnIfIgnoredXPathFoundInDocInstance=\"false\">gml:boundedBy</XPath>"
+                                     "    <XPath warnIfIgnoredXPathFoundInDocInstance=\"false\">gml32:boundedBy</XPath>"
+                                     "    <XPath>gml:priorityLocation</XPath>"
+                                     "    <XPath>gml32:priorityLocation</XPath>"
+                                     "    <XPath>gml32:descriptionReference/@owns</XPath>"
+                                     "    <XPath>@xlink:show</XPath>"
+                                     "    <XPath>@xlink:type</XPath>"
+                                     "    <XPath>@xlink:role</XPath>"
+                                     "    <XPath>@xlink:arcrole</XPath>"
+                                     "    <XPath>@xlink:actuate</XPath>"
+                                     "    <XPath>@gml:remoteSchema</XPath>"
+                                     "    <XPath>@gml32:remoteSchema</XPath>"
+                                     "    <XPath>swe:Quantity/swe:extension</XPath>"
+                                     "    <XPath>swe:Quantity/@referenceFrame</XPath>"
+                                     "    <XPath>swe:Quantity/@axisID</XPath>"
+                                     "    <XPath>swe:Quantity/@updatable</XPath>"
+                                     "    <XPath>swe:Quantity/@optional</XPath>"
+                                     "    <XPath>swe:Quantity/@id</XPath>"
+                                     "    <XPath>swe:Quantity/swe:identifier</XPath>"
+                                     "    <!-- <XPath>swe:Quantity/@definition</XPath> -->"
+                                     "    <XPath>swe:Quantity/swe:label</XPath>"
+                                     "    <XPath>swe:Quantity/swe:nilValues</XPath>"
+                                     "    <XPath>swe:Quantity/swe:constraint</XPath>"
+                                     "    <XPath>swe:Quantity/swe:quality</XPath>"
+                                     "</IgnoredXPaths>"
+                                     "</Configuration>" ).arg( pszEscaped );
+    CPLFree( pszEscaped );
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "CONFIG_FILE", config.toStdString().c_str() );
+
     hDS = GDALOpenEx( "GMLAS:", GDAL_OF_VECTOR, nullptr, papszOpenOptions, nullptr );
     CSLDestroy( papszOpenOptions );
   };
