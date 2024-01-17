@@ -133,7 +133,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     //fetch attributes of layer and type of its geometry attribute
     //WBC 111221: extracting geometry type here instead of getFeature allows successful
     //layer creation even when no features are retrieved (due to, e.g., BBOX or FILTER)
-    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mShared->mWKBType ) )
+    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mShared->mWKBType, mGeometryMaybeMissing ) )
     {
       mValid = false;
       return;
@@ -612,11 +612,16 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     QString geometryAttribute;
     QgsFields fields;
     Qgis::WkbType geomType;
+    bool geometryMaybeMissing;
     if ( !readAttributesFromSchema( describeFeatureDocument,
                                     response,
                                     /* singleLayerContext = */ typenameList.size() == 1,
                                     typeName,
-                                    geometryAttribute, fields, geomType, errorMsg ) )
+                                    geometryAttribute,
+                                    fields,
+                                    geomType,
+                                    geometryMaybeMissing,
+                                    errorMsg ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).
                  arg( dataSourceUri(), typeName, errorMsg );
@@ -630,6 +635,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     {
       mShared->mGeometryAttribute = geometryAttribute;
       mShared->mWKBType = geomType;
+      mGeometryMaybeMissing = geometryMaybeMissing;
       mThisTypenameFields = fields;
     }
   }
@@ -807,11 +813,12 @@ bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &de
     QString geometryAttribute;
     QgsFields fields;
     Qgis::WkbType geomType;
+    bool geometryMaybeMissing;
     if ( !readAttributesFromSchema( describeFeatureDocument,
                                     response,
                                     /* singleLayerContext = */ typenameList.size() == 1,
                                     typeName,
-                                    geometryAttribute, fields, geomType, errorMsg ) )
+                                    geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).
                  arg( dataSourceUri(), typeName, errorMsg );
@@ -1496,7 +1503,7 @@ void QgsWFSProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
   mShared = qobject_cast<QgsWFSProvider *>( source )->mShared;
 };
 
-bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType )
+bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing )
 {
   fields.clear();
 
@@ -1528,7 +1535,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
                                   response,
                                   /* singleLayerContext = */ true,
                                   mShared->mURI.typeName(),
-                                  geometryAttribute, fields, geomType, errorMsg ) )
+                                  geometryAttribute, fields, geomType, geometryMaybeMissing, errorMsg ) )
   {
     QgsDebugMsgLevel( response, 4 );
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
@@ -1549,8 +1556,10 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     QString &geometryAttribute,
     QgsFields &fields,
     Qgis::WkbType &geomType,
+    bool &geometryMaybeMissing,
     QString &errorMsg )
 {
+  geometryMaybeMissing = false;
   bool mayTryWithGMLAS = false;
   bool ret = readAttributesFromSchemaWithoutGMLAS( schemaDoc, prefixedTypename, geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS );
   if ( singleLayerContext &&
@@ -1560,7 +1569,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     QgsFields fieldsGMLAS;
     Qgis::WkbType geomTypeGMLAS;
     QString errorMsgGMLAS;
-    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttribute, fieldsGMLAS, geomTypeGMLAS, errorMsgGMLAS ) )
+    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttribute, fieldsGMLAS, geomTypeGMLAS, geometryMaybeMissing, errorMsgGMLAS ) )
     {
       fields = fieldsGMLAS;
       geomType = geomTypeGMLAS;
@@ -1643,8 +1652,11 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     QString &geometryAttribute,
     QgsFields &fields,
     Qgis::WkbType &geomType,
+    bool &geometryMaybeMissing,
     QString &errorMsg )
 {
+  geometryMaybeMissing = false;
+
   QUrl url( mShared->mURI.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
   QUrlQuery query( url );
   query.addQueryItem( QStringLiteral( "TYPENAME" ), prefixedTypename );
@@ -1913,6 +1925,14 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     return false;
   }
 
+  const int fieldMinOccursIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_min_occurs" );
+  if ( fieldMinOccursIdx < 0 )
+  {
+    // should not happen
+    QgsDebugMsgLevel( QStringLiteral( "Cannot find field_min_occurs field in _ogr_fields_metadata" ), 4 );
+    return false;
+  }
+
   const int fieldTypeIdx = OGR_FD_GetFieldIndex( hFieldsMetadataDefn, "field_type" );
   if ( fieldTypeIdx < 0 )
   {
@@ -1974,8 +1994,14 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
           if ( parts.size() == 2 )
             geometryAttribute = parts[1];
         }
-        geomType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
-                     OGR_L_GetGeomType( hLayer ) );
+        geomType = QgsWkbTypes::multiType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
+                                             OGR_L_GetGeomType( hLayer ) ) );
+        if ( geomType == Qgis::WkbType::MultiPolygon )
+          geomType = Qgis::WkbType::MultiSurface;
+        else if ( geomType == Qgis::WkbType::MultiLineString )
+          geomType = Qgis::WkbType::MultiCurve;
+
+        geometryMaybeMissing = OGR_F_GetFieldAsInteger( hFeatureFieldsMD.get(), fieldMinOccursIdx ) == 0;
       }
     }
     else if ( EQUAL( fieldCategory, "REGULAR" ) && !fieldIsList )

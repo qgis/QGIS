@@ -255,10 +255,12 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     return res;
   }
 
-  if ( provider.wkbType() == Qgis::WkbType::Unknown &&
+  if ( ( provider.wkbType() == Qgis::WkbType::Unknown ||
+         ( provider.wkbType() != Qgis::WkbType::NoGeometry &&
+           provider.geometryMaybeMissing() ) ) &&
        provider.sharedData()->layerProperties().size() == 1 )
   {
-    std::vector<std::unique_ptr<QgsWFSGetFeature>> requests;
+    std::map<int, std::unique_ptr<QgsWFSGetFeature>> requests;
     std::set<QgsWFSGetFeature *> finishedRequests;
     constexpr int INDEX_ALL = 0;
     constexpr int INDEX_NULL = 1;
@@ -273,13 +275,42 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
                                       QStringLiteral( "IsSurface" )
                                     };
 
+    constexpr int INDEX_GEOMETRYCOLLECTION = 5;
+    std::vector<int64_t> featureCounts( INDEX_GEOMETRYCOLLECTION + 1, -1 );
+
     const auto downloaderLambda = [ &, feedback]()
     {
       QEventLoop loop;
       QTimer timerForHits;
-      for ( QString function : filterNames )
+      for ( int i = 0; i <= INDEX_SURFACE; ++ i )
       {
+        if ( provider.wkbType() == Qgis::WkbType::MultiPoint )
+        {
+          if ( i != INDEX_ALL && i != INDEX_NULL && i != INDEX_POINT )
+          {
+            featureCounts[i] = 0;
+            continue;
+          }
+        }
+        else if ( provider.wkbType() == Qgis::WkbType::MultiCurve )
+        {
+          if ( i != INDEX_ALL && i != INDEX_NULL && i != INDEX_CURVE )
+          {
+            featureCounts[i] = 0;
+            continue;
+          }
+        }
+        else if ( provider.wkbType() == Qgis::WkbType::MultiSurface )
+        {
+          if ( i != INDEX_ALL && i != INDEX_NULL && i != INDEX_SURFACE )
+          {
+            featureCounts[i] = 0;
+            continue;
+          }
+        }
+
         QString filter;
+        const QString &function = filterNames[i];
         if ( function == QLatin1String( "IsNull" ) )
         {
           filter = QgsWFSProvider::buildIsNullGeometryFilter( caps, provider.geometryAttribute() );
@@ -296,16 +327,16 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
           filter = provider.sharedData()->combineWFSFilters( {filter, provider.sharedData()->WFSFilter()} );
         }
 
-        requests.emplace_back( std::make_unique<QgsWFSGetFeature>( wfsUri ) );
+        requests[i] = std::make_unique<QgsWFSGetFeature>( wfsUri );
+        QgsWFSGetFeature *thisRequest = requests[i].get();
 
-        requests.back()->request( /* synchronous = */ false,
+        thisRequest->request( /* synchronous = */ false,
             caps.version,
             wfsUri.typeName(),
             filter,
             /* hitsOnly = */ true,
             caps );
 
-        QgsWFSGetFeature *thisRequest = requests.back().get();
         const auto downloadFinishedLambda = [ &, thisRequest]()
         {
           finishedRequests.insert( thisRequest );
@@ -331,9 +362,9 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       loop.exec( QEventLoop::ExcludeUserInputEvents );
       // Make sure to terminate requests in this thread, to avoid potential
       // crash in main thread when "requests" goes out of scope.
-      for ( auto &request : requests )
+      for ( auto &pair : requests )
       {
-        request->abort();
+        pair.second->abort();
       }
     };
 
@@ -342,15 +373,14 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     downloaderThread->start();
     downloaderThread->wait();
 
-    constexpr int INDEX_GEOMETRYCOLLECTION = 5;
-    std::vector<int64_t> featureCounts( INDEX_GEOMETRYCOLLECTION + 1, -1 );
     bool countsAllValid = false;
     if ( finishedRequests.size() == requests.size() )
     {
       countsAllValid = true;
-      for ( size_t i = 0; i < requests.size(); ++i )
+      for ( const auto &pair : requests )
       {
-        QByteArray data = requests[i]->response();
+        const int i = pair.first;
+        QByteArray data = pair.second->response();
         QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
         QString errorMsg;
         if ( gmlParser.processData( data, true, errorMsg ) )
@@ -386,6 +416,13 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     res.clear();
     for ( const auto &tuple : types )
     {
+      if ( provider.wkbType() == Qgis::WkbType::MultiPoint && tuple.index != INDEX_NULL && tuple.index != INDEX_POINT )
+        continue;
+      if ( provider.wkbType() == Qgis::WkbType::MultiCurve && tuple.index != INDEX_NULL && tuple.index != INDEX_CURVE )
+        continue;
+      if ( provider.wkbType() == Qgis::WkbType::MultiSurface && tuple.index != INDEX_NULL && tuple.index != INDEX_SURFACE )
+        continue;
+
       if ( !countsAllValid || featureCounts[tuple.index] > 0 ||
            ( tuple.wkbType == Qgis::WkbType::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
       {

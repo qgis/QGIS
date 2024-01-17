@@ -141,6 +141,9 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     //! Return whether metadata retrieval has been canceled (typically download of the schema)
     bool metadataRetrievalCanceled() const { return mMetadataRetrievalCanceled; }
 
+    //! Return whether the geometry may be missing
+    bool geometryMaybeMissing() const { return mGeometryMaybeMissing; }
+
   private slots:
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> );
@@ -160,6 +163,9 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     //! Field set by featureReceivedAnalyzeOneFeature() if a "name" field is set in the sample feature
     bool mSampleFeatureHasName = false;
+
+    //! Whether the geometry may be missing
+    bool mGeometryMaybeMissing = false;
 
     /**
      * Invalidates cache of shared object
@@ -185,12 +191,16 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     bool readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaDoc,
         const QString &prefixedTypename,
         QString &geometryAttribute,
-        QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg, bool &mayTryWithGMLAS );
+        QgsFields &fields, Qgis::WkbType &geomType,
+        QString &errorMsg, bool &mayTryWithGMLAS );
 
     bool readAttributesFromSchemaWithGMLAS( const QByteArray &response,
                                             const QString &prefixedTypename,
                                             QString &geometryAttribute,
-                                            QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg );
+                                            QgsFields &fields,
+                                            Qgis::WkbType &geomType,
+                                            bool &geometryMaybeMissing,
+                                            QString &errorMsg );
 
   protected:
 
@@ -215,7 +225,8 @@ class QgsWFSProvider final: public QgsVectorDataProvider
      * the geometry attribute and the thematic attributes with their types.
     */
     bool describeFeatureType( QString &geometryAttribute,
-                              QgsFields &fields, Qgis::WkbType &geomType );
+                              QgsFields &fields, Qgis::WkbType &geomType,
+                              bool &geometryMaybeMissing );
 
     /**
      * For a given typename, reads the name of the geometry attribute, the
@@ -226,7 +237,10 @@ class QgsWFSProvider final: public QgsVectorDataProvider
                                    bool singleLayerContext,
                                    const QString &prefixedTypename,
                                    QString &geometryAttribute,
-                                   QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg );
+                                   QgsFields &fields,
+                                   Qgis::WkbType &geomType,
+                                   bool &geometryMaybeMissing,
+                                   QString &errorMsg );
 
     //helper methods for WFS-T
 
