@@ -1985,8 +1985,11 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
   mClipItemComboBox->setCurrentLayout( map->layout() );
   mClipItemComboBox->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
 
-  connect( mRadioClipSelectedLayers, &QRadioButton::toggled, mLayersTreeView, &QWidget::setEnabled );
+  connect( mRadioClipSelectedLayers, &QRadioButton::toggled, this, &QgsLayoutMapClippingWidget::toggleLayersSelectionGui );
   mLayersTreeView->setEnabled( false );
+  mSelectAllButton->setEnabled( false );
+  mDeselectAllButton->setEnabled( false );
+  mInvertSelectionButton->setEnabled( false );
   mRadioClipAllLayers->setChecked( true );
 
   connect( mClipToAtlasCheckBox, &QGroupBox::toggled, this, [ = ]( bool active )
@@ -2028,6 +2031,11 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mBlockUpdates = false;
     }
   } );
+  // layers selection buttons
+  connect( mSelectAllButton, &QPushButton::clicked, this, &QgsLayoutMapClippingWidget::selectAll );
+  connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsLayoutMapClippingWidget::deselectAll );
+  connect( mInvertSelectionButton, &QPushButton::clicked, this, &QgsLayoutMapClippingWidget::invertSelection );
+
   connect( mRadioClipAllLayers, &QCheckBox::toggled, this, [ = ]( bool active )
   {
     if ( active && !mBlockUpdates )
@@ -2183,4 +2191,41 @@ void QgsLayoutMapClippingWidget::atlasToggled( bool atlasEnabled )
     mClipToAtlasCheckBox->setEnabled( false );
     mClipToAtlasCheckBox->setChecked( false );
   }
+}
+
+void QgsLayoutMapClippingWidget::invertSelection()
+{
+  for ( int i = 0; i < mLayerModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mLayerModel->index( i, 0 );
+    Qt::CheckState currentState = Qt::CheckState( mLayerModel->data( index, Qt::CheckStateRole ).toInt() );
+    Qt::CheckState newState = ( currentState == Qt::Checked ) ? Qt::Unchecked : Qt::Checked;
+    mLayerModel->setData( index, newState, Qt::CheckStateRole );
+  }
+}
+
+void QgsLayoutMapClippingWidget::selectAll()
+{
+  for ( int i = 0; i < mLayerModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mLayerModel->index( i, 0 );
+    mLayerModel->setData( index, Qt::Checked, Qt::CheckStateRole );
+  }
+}
+
+void QgsLayoutMapClippingWidget::deselectAll()
+{
+  for ( int i = 0; i < mLayerModel->rowCount( QModelIndex() ); i++ )
+  {
+    QModelIndex index = mLayerModel->index( i, 0 );
+    mLayerModel->setData( index, Qt::Unchecked, Qt::CheckStateRole );
+  }
+}
+
+void QgsLayoutMapClippingWidget::toggleLayersSelectionGui( bool toggled )
+{
+  mLayersTreeView->setEnabled( toggled );
+  mSelectAllButton->setEnabled( toggled );
+  mDeselectAllButton->setEnabled( toggled );
+  mInvertSelectionButton->setEnabled( toggled );
 }
