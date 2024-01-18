@@ -121,8 +121,6 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilt
     /**
      * Sets a \a filter string, such that only coordinate reference systems matching the
      * specified string will be shown.
-     *
-     * \see filterString()
     */
     void setFilterString( const QString &filter );
 

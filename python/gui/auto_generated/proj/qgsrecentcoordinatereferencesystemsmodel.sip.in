@@ -95,8 +95,6 @@ Sets whether deprecated CRS should be filtered from the results.
 %Docstring
 Sets a ``filter`` string, such that only coordinate reference systems matching the
 specified string will be shown.
-
-.. seealso:: :py:func:`filterString`
 %End
 
     QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
