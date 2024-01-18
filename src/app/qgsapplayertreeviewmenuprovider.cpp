@@ -555,7 +555,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                 menu->addAction( actionMakePermanent );
               }
               // save as vector file
-              QMenu *menuExportVector = new QMenu( tr( "E&xport" ), menu );
+              QMenu *menuExportVector = new QMenu( tr( "Import/E&xport" ), menu );
               menuExportVector->setObjectName( QStringLiteral( "exportMenu" ) );
               QAction *actionSaveAs = new QAction( tr( "Save Features &As…" ), menuExportVector );
               connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
@@ -573,6 +573,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                 QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportVector );
                 connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
                 menuExportVector->addAction( actionSaveStyle );
+                menuExportVector->addSeparator();
+                QAction *actionLoadStyle = new QAction( tr( "&Load a QGIS Layer Style File…" ), menuExportVector );
+                connect( actionLoadStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->loadStyleFile(); } );
+                menuExportVector->addAction( actionLoadStyle );
               }
               menu->addMenu( menuExportVector );
             }
@@ -586,11 +590,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             bool enableSaveAs = ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) ||
                                 ( rlayer && rlayer->isValid() );
-            QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
+            QMenu *menuExportRaster = new QMenu( tr( "Import/E&xport" ), menu );
             menuExportRaster->setObjectName( QStringLiteral( "exportMenu" ) );
             QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
             QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
+            QAction *actionLoadStyle = new QAction( tr( "&Load a QGIS Layer Style File…" ), menuExportRaster );
             connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
             menuExportRaster->addAction( actionSaveAs );
             actionSaveAs->setEnabled( enableSaveAs );
@@ -598,6 +603,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             menuExportRaster->addAction( actionSaveAsDefinitionLayer );
             connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
             menuExportRaster->addAction( actionSaveStyle );
+            menuExportRaster->addSeparator();
+            connect( actionLoadStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->loadStyleFile(); } );
+            menuExportRaster->addAction( actionLoadStyle );
             menu->addMenu( menuExportRaster );
           }
           break;

@@ -929,11 +929,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void makeMemoryLayerPermanent( QgsVectorLayer *layer );
 
-    //! save qml style for the current layer
+    //! Loads qml style file to the current layer
+    void loadStyleFile( QgsMapLayer *layer = nullptr );
+    //! Saves qml style for the current layer
     void saveStyleFile( QgsMapLayer *layer = nullptr );
-    //! save qrl definition for the current layer
+    //! Saves qlr definition for the current layer
     void saveAsLayerDefinition();
-    //! save current raster layer
+    //! Saves current raster layer
     QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true );
 
     /**

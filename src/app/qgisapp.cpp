@@ -8417,6 +8417,59 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
   }
 }
 
+void QgisApp::loadStyleFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    layer = activeLayer();
+  }
+
+  if ( !layer || !layer->dataProvider() )
+    return;
+
+  switch ( layer->type() )
+  {
+
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( mMapCanvas,
+                                visibleMessageBar(),
+                                qobject_cast<QgsVectorLayer *>( layer ) ).loadStyle();
+      break;
+
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( layer, mMapCanvas ).loadStyle();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( layer, mMapCanvas ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ),
+                                    mMapCanvas,
+                                    visibleMessageBar() ).loadStyle();
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ),
+                                    mMapCanvas,
+                                    visibleMessageBar() ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( layer ),
+                                    mMapCanvas,
+                                    visibleMessageBar() ).loadStyleFromFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+      break;
+  }
+}
+
 ///@cond PRIVATE
 
 /**
