@@ -31,6 +31,7 @@ class QKeyEvent;
  * \ingroup 3d
  * \brief Base class for map tools operating on 3D map canvas.
  * \note Not available in Python bindings
+ * \since QGIS 3.36 (since QGIS 3.4 in QGIS_APP library)
  */
 class _3D_EXPORT Qgs3DMapTool : public QObject
 {
