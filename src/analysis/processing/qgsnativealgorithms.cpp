@@ -243,6 +243,7 @@
 #include "qgsalgorithmzonalstatistics.h"
 #include "qgsalgorithmzonalstatisticsfeaturebased.h"
 #include "qgsalgorithmpolygonstolines.h"
+#include "qgsalgorithmfixgeometryangle.h"
 #include "qgsbookmarkalgorithms.h"
 #include "qgsmetadataalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
@@ -572,6 +573,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );
+  addAlgorithm( new QgsFixGeometryAngleAlgorithm() );
 }
 
 ///@endcond
