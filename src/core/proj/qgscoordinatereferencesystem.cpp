@@ -1374,6 +1374,15 @@ Qgis::CrsType QgsCoordinateReferenceSystem::type() const
   // NOLINTEND(bugprone-branch-clone)
 }
 
+bool QgsCoordinateReferenceSystem::isDeprecated() const
+{
+  const PJ *pj = projObject();
+  if ( !pj )
+    return false;
+
+  return proj_is_deprecated( pj );
+}
+
 bool QgsCoordinateReferenceSystem::isGeographic() const
 {
   return d->mIsGeographic;

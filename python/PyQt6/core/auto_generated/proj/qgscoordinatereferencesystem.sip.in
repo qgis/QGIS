@@ -768,6 +768,13 @@ Returns the type of the CRS.
 .. versionadded:: 3.34
 %End
 
+    bool isDeprecated() const;
+%Docstring
+Returns ``True`` if the CRS is considered deprecated.
+
+.. versionadded:: 3.36
+%End
+
     bool isGeographic() const;
 %Docstring
 Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
