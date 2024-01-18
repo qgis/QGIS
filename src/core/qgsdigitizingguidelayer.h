@@ -47,6 +47,9 @@ class CORE_EXPORT QgsDigitizingGuideLayer : public QgsAnnotationLayer
     //! Enables or disabled the guides
     void setEnabled( bool enabled );
 
+    //! Returns if the guides are enabled
+    bool enabled() const {return mEnabled;}
+
     //! Adds a point guide
     void addPointGuide( const QgsPoint &point, const QString &title, QList<QgsAnnotationItem *> details = QList<QgsAnnotationItem *>(), const QDateTime &creation = QDateTime::currentDateTime() );
 
@@ -78,12 +81,15 @@ class CORE_EXPORT QgsDigitizingGuideLayer : public QgsAnnotationLayer
     void setGuideHighlight( const QString &guideId = QString() );
 
     virtual void clear() override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
 
   protected:
     virtual bool readXml( const QDomNode &node, QgsReadWriteContext &context ) override;
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
+    bool mEnabled = true;
+
     QStringList addDetails( QList<QgsAnnotationItem *> details );
 
     QgsMarkerSymbol *pointGuideSymbol() const;

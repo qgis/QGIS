@@ -255,7 +255,7 @@ static void _snapToGuides( QgsPointLocator::Match &bestMatch, const QgsPointXY &
   double bestDistance = bestMatch.distance();
   QgsCoordinateTransform transform( guideLayer->crs(), destinationCrs, QgsProject::instance()->transformContext() );
 
-  if ( !guideLayer )
+  if ( !guideLayer || !guideLayer->enabled() )
     return;
 
   std::pair<QList<QgsPointXY>, QList<const QgsCurve *> > guides = guideLayer->guides();

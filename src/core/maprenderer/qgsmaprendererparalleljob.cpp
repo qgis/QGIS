@@ -376,7 +376,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 #ifdef SIMULATE_SLOW_RENDERER
     QThread::sleep( 1 );
 #endif
-    job.completed = job.renderer->render();
+    job.completed = job.renderer && job.renderer->render();
   }
   catch ( QgsException &e )
   {
@@ -393,7 +393,8 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     QgsDebugError( QStringLiteral( "Caught unhandled unknown exception" ) );
   }
 
-  job.errors = job.renderer->errors();
+  if ( job.renderer )
+    job.errors = job.renderer->errors();
   job.renderingTime += t.elapsed();
   QgsDebugMsgLevel( QStringLiteral( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }

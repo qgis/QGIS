@@ -40,8 +40,7 @@ QgsDigitizingGuideLayer::QgsDigitizingGuideLayer( const QString &name, const Lay
 
 void QgsDigitizingGuideLayer::setEnabled( bool enabled )
 {
-  // TODO
-  setOpacity( enabled ? 1 : 0 );
+  mEnabled = enabled;
   triggerRepaint();
 }
 
@@ -348,4 +347,12 @@ QgsLineSymbol *QgsDigitizingGuideLayer::detailsLineSymbol() const
   QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer( QColor( Qt::gray ), 0.2, Qt::PenStyle::DashLine );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
   return lineSymbol;
+}
+
+QgsMapLayerRenderer *QgsDigitizingGuideLayer::createMapRenderer( QgsRenderContext &rendererContext )
+{
+  if ( !mEnabled )
+    return nullptr;
+
+  return QgsAnnotationLayer::createMapRenderer( rendererContext );
 }
