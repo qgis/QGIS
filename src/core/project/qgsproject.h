@@ -63,32 +63,33 @@ class QDomDocument;
 class QDomElement;
 class QDomNode;
 
+class QgsDigitizingGuideLayer;
+class QgsAnnotationLayer;
+class QgsAnnotationManager;
+class QgsAttributeEditorContainer;
+class QgsAuxiliaryStorage;
+class QgsBookmarkManager;
+class QgsLabelingEngineSettings;
+class QgsLayerTree;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
+class QgsLayoutManager;
 class QgsMapLayer;
+class QgsMapLayer;
+class QgsMapViewsManager;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
+class QgsProjectElevationProperties;
+class QgsProjectGpsSettings;
 class QgsProjectStorage;
+class QgsProjectStyleSettings;
+class QgsProjectTimeSettings;
+class QgsProjectViewSettings;
+class QgsPropertyCollection;
+class QgsSensorManager;
 class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;
-class QgsAnnotationManager;
-class QgsLayoutManager;
-class QgsLayerTree;
-class QgsLabelingEngineSettings;
-class QgsAuxiliaryStorage;
-class QgsMapLayer;
-class QgsBookmarkManager;
-class QgsProjectViewSettings;
-class QgsProjectStyleSettings;
-class QgsProjectTimeSettings;
-class QgsAnnotationLayer;
-class QgsAttributeEditorContainer;
-class QgsPropertyCollection;
-class QgsMapViewsManager;
-class QgsProjectElevationProperties;
-class QgsProjectGpsSettings;
-class QgsSensorManager;
 
 /**
  * \ingroup core
@@ -1392,6 +1393,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsAnnotationLayer *mainAnnotationLayer();
 
     /**
+     * Returns the advanced digitizing guide layer
+     *
+     * \since QGIS 3.34
+     */
+    QgsDigitizingGuideLayer *digitizingGuideLayer() SIP_SKIP;
+
+
+    /**
      * Removes all registered layers. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
@@ -2349,6 +2358,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsLabelingEngineSettings> mLabelingEngineSettings;
 
     QVariantMap mCustomVariables;
+
+    QgsDigitizingGuideLayer *mDigitizingGuideLayer = nullptr;
 
     std::unique_ptr<QgsArchive> mArchive;
 
