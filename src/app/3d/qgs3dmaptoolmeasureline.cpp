@@ -31,7 +31,7 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
   // Dialog
-  mDialog = new Qgs3DMeasureDialog( this );
+  mDialog = std::make_unique< Qgs3DMeasureDialog >( this );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 }
