@@ -41,21 +41,21 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
 
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
-    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    Qgis::AnnotationItemFlags flags() const override;
-    QList< QgsAnnotationItemNode > nodes() const override;
-    Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
-    QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    virtual Qgis::AnnotationItemFlags flags() const override;
+    virtual QList< QgsAnnotationItemNode > nodes() const override;
+    virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 
     /**
      * Creates a new marker annotation item.
      */
     static QgsAnnotationMarkerItem *create() SIP_FACTORY;
 
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-    QgsAnnotationMarkerItem *clone() const override SIP_FACTORY;
-    QgsRectangle boundingBox() const override;
-    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    virtual QgsAnnotationMarkerItem *clone() const override SIP_FACTORY;
+    virtual QgsRectangle boundingBox() const override;
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const override;
 
     /**
      * Returns the point geometry of the marker.
