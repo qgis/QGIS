@@ -37,6 +37,11 @@ class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapMouseEvent;
+class QgsDigitizingGuideMapTool;
+class QgsDigitizingGuideWidget;
+
+
+
 
 /**
  * \ingroup gui
@@ -961,7 +966,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void setConstructionMode( bool enabled );
 
     //! settings button triggered
-    void settingsButtonTriggered( QAction *action );
+    void angleSoftLockButtonTriggered( QAction *action );
 
   private:
 
@@ -1034,6 +1039,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Snapping indicator
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
+    QgsDigitizingGuideWidget *mDigitizingGuideWidget = nullptr;
+
     CadCapacities mCapacities = CadCapacities();
 
     bool mCurrentMapToolSupportsCad = false;
@@ -1072,8 +1079,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     // UI
     QMap< double, QAction *> mCommonAngleActions; // map the common angle actions with their angle values
-    QAction *mLineExtensionAction;
-    QAction *mXyVertexAction;
+    QAction *mLineExtensionAction = nullptr;
+    QAction *mXyVertexAction = nullptr;
+    QAction *mConstructionMapToolDistanceToPointAlongLine = nullptr;
+    QAction *mConstructionMapToolDistanceToPoints = nullptr;
 
     // Snap indicator
     QgsPointLocator::Match mSnapMatch;
