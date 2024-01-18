@@ -202,7 +202,11 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
 
     for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
     {
-      if ( hits.at( i ).distance() < 500.0f && ( hits.at( i ).entity() == mCubeRoot || hits.at( i ).entity() == mAxisRoot || hits.at( i ).entity()->parent() == mCubeRoot || hits.at( i ).entity()->parent() == mAxisRoot ) )
+      if ( hits.at( i ).distance() < 500.0f && hits.at( i ).entity() &&
+           ( hits.at( i ).entity() == mCubeRoot ||
+             hits.at( i ).entity() == mAxisRoot ||
+             hits.at( i ).entity()->parent() == mCubeRoot ||
+             hits.at( i ).entity()->parent() == mAxisRoot ) )
       {
         mHitsFound = i;
       }
@@ -709,13 +713,8 @@ void Qgs3DAxis::displayMenuAt( const QPoint &sourcePos )
   {
     createMenu();
   }
-  QObject *threeDMapCanvasWidget = mCanvas->parent(); // ie. Qgs3DMapCanvasWidget
 
-  QWidget *container = dynamic_cast<QWidget * >( threeDMapCanvasWidget->parent() );
-  if ( container )
-    mMenu->popup( container->mapToGlobal( sourcePos ) );
-  else
-    mMenu->popup( mCanvas->parent()->mapToGlobal( sourcePos ) );
+  mMenu->popup( mCanvas->mapToGlobal( sourcePos ) );
 }
 
 void Qgs3DAxis::onAxisModeChanged( Qgs3DAxisSettings::Mode mode )
