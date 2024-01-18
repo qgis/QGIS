@@ -45,6 +45,7 @@ import glob
 import os
 import inspect
 import sys
+from enum import Enum
 
 from collections import defaultdict
 
@@ -237,8 +238,27 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 tokens[i + 2] = tokens[i + 2]._replace(
                     src=f"{enum_name}.{tokens[i + 2].src}")
             except AttributeError:
-                sys.stderr.write(
-                    f'{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n')
+                # let's see if we can find what the replacement should be automatically...
+                # print(f'Trying to find {_class}.{value}.')
+                actual = eval(f'{_class}.{value}')
+                # print(f'Trying to find aliases for {actual.__class__}.')
+                obj = globals()[_class]
+                recovered = False
+                if isinstance(obj, type):
+                    for attr_name in dir(obj):
+                        try:
+                            attr = getattr(obj, attr_name)
+                            if attr is actual.__class__:
+                                # print(f'Found alias {_class}.{attr_name}')
+                                recovered = True
+                                tokens[i + 2] = tokens[i + 2]._replace(
+                                    src=f"{attr_name}.{tokens[i + 2].src}")
+
+                        except AttributeError:
+                            continue
+                if not recovered:
+                    sys.stderr.write(
+                        f'{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n')
                 continue
 
         if token.offset in rename_qt_enums:
