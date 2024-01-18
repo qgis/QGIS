@@ -37,6 +37,8 @@ RUN dnf -y --refresh install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
+    python3-mock \
+    python3-OWSLib \
     python3-pyqt6 \
     python3-pyqt6-devel \
     python3-qscintilla-qt6 \
