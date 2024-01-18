@@ -353,46 +353,25 @@ void QgsSerialPortSensor::setPortName( const QString &portName )
   mPortName = portName;
 }
 
-// by jtornero
-QString QgsSerialPortSensor::baudrate() const
+QSerialPort::BaudRate QgsSerialPortSensor::baudRate() const
 {
-  return mBaudrate;
+  return mBaudRate;
 }
 
-void QgsSerialPortSensor::setBaudrate( const QString &baudrate )
+void QgsSerialPortSensor::setBaudRate( const QSerialPort::BaudRate &baudRate )
 {
-  if ( mBaudrate == baudrate )
+  if ( mBaudRate == baudRate )
     return;
 
-  mBaudrate = baudrate;
+  mBaudRate = baudRate;
 }
+
 
 void QgsSerialPortSensor::handleConnect()
 {
   mSerialPort->setPortName( mPortName );
-  switch ( mBaudrate.toInt() )
-  {
-    case 4800:
-      mSerialPort->setBaudRate( QSerialPort::Baud4800 );
-      break;
-    case 9600:
-      mSerialPort->setBaudRate( QSerialPort::Baud9600 );
-      break;
-    case 19200:
-      mSerialPort->setBaudRate( QSerialPort::Baud19200 );
-      break;
-    case 38400:
-      mSerialPort->setBaudRate( QSerialPort::Baud38400 );
-      break;
-    case 57600:
-      mSerialPort->setBaudRate( QSerialPort::Baud57600 );
-      break;
-    case 115200:
-      mSerialPort->setBaudRate( QSerialPort::Baud115200 );
-      break;
-  }
+  mSerialPort->setBaudRate( mBaudRate );
 
-  //mSerialPort->setBaudRate( QSerialPort::Baud4800 );
   if ( mSerialPort->open( QIODevice::ReadOnly ) )
   {
     setStatus( Qgis::DeviceConnectionStatus::Connected );
@@ -437,15 +416,14 @@ void QgsSerialPortSensor::handleError( QSerialPort::SerialPortError error )
 bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDocument & ) const
 {
   element.setAttribute( QStringLiteral( "portName" ), mPortName );
-  element.setAttribute( QStringLiteral( "baudrate" ), mBaudrate );
-
+  element.setAttribute( QStringLiteral( "baudRate" ), static_cast<int>( mBaudRate ) );
   return true;
 }
 
 bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
   mPortName = element.attribute( QStringLiteral( "portName" ) );
-  mBaudrate = element.attribute( QStringLiteral( "baudrate" ) );
+  mBaudRate = static_cast< QSerialPort::BaudRate >( element.attribute( QStringLiteral( "baudRate" ) ).toInt() );
   return true;
 }
 #endif

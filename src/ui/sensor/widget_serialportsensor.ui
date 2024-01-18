@@ -44,53 +44,23 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="mBaudRateLabel">
      <property name="text">
-      <string>Baudrate</string>
+      <string>Data baud rate</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="mBaudrateComboBox">
+    <widget class="QComboBox" name="mBaudRateComboBox">
      <property name="toolTip">
       <string>Choose a baudrate for the sensor connection</string>
      </property>
      <property name="currentText">
-      <string>4800</string>
+      <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>-1</number>
      </property>
-     <item>
-      <property name="text">
-       <string>4800</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>9600</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>19200</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>38400</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>57600</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>115200</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
