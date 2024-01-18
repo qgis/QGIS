@@ -61,6 +61,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
+  processing/qgsalgorithmdeletevertex.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
   processing/qgsalgorithmconditionalbranch.cpp
