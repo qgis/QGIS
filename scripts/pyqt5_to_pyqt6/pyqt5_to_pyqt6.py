@@ -158,11 +158,6 @@ deprecated_renamed_enums = {
     ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
 }
 
-# dict of function name to known enum class name
-disambiguated_enums = {
-    'pushMessage': ('Qgis', 'MessageLevel')
-}
-
 # { (class, enum_value) : enum_name }
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
@@ -189,12 +184,23 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and (node.value.id, node.attr) in ambiguous_enums):
                 disambiguated = False
-                if isinstance(parent, ast.Call) and isinstance(parent.func, ast.Attribute):
-                    function_name = parent.func.attr
-                    if function_name in disambiguated_enums:
-                        disambiguated = True
-                        fix_qt_enums[Offset(node.lineno, node.col_offset)] = (
-                            disambiguated_enums)[function_name] + (node.attr, )
+                try:
+                    actual = eval(f'{node.value.id}.{node.attr}')
+                    obj = globals()[node.value.id]
+                    if isinstance(obj, type):
+                        for attr_name in dir(obj):
+                            attr = getattr(obj, attr_name)
+                            if attr is actual.__class__:
+                                # print(f'Found alias {node.value.id}.{attr_name}')
+                                disambiguated = True
+                                fix_qt_enums[
+                                    Offset(node.lineno, node.col_offset)] = (
+                                    node.value.id, attr_name, node.attr
+                                )
+                                break
+
+                except AttributeError:
+                    pass
 
                 if not disambiguated:
                     possible_values = [f'{node.value.id}.{e}.{node.attr}' for e
