@@ -110,14 +110,11 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilt
 
     /**
      * Set \a filters that affect how CRS are filtered.
-     * \see filters()
      */
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 
     /**
      * Sets whether deprecated CRS should be filtered from the results.
-     *
-     * \see filterDeprecated()
     */
     void setFilterDeprecated( bool filter );
 

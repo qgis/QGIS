@@ -84,15 +84,11 @@ Returns the underlying source model.
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how CRS are filtered.
-
-.. seealso:: :py:func:`filters`
 %End
 
     void setFilterDeprecated( bool filter );
 %Docstring
 Sets whether deprecated CRS should be filtered from the results.
-
-.. seealso:: :py:func:`filterDeprecated`
 %End
 
     void setFilterString( const QString &filter );
