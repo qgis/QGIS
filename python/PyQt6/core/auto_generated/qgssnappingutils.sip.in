@@ -206,7 +206,18 @@ Returns the list of extra snapping layers
 %End
 
     QgsDigitizingGuideLayer *guideLayer() const;
+%Docstring
+Returns the map guide layer
+
+.. versionadded:: 3.36
+%End
+
     void setGuideLayer( QgsDigitizingGuideLayer *guideLayer );
+%Docstring
+Sets the map guide layer
+
+.. versionadded:: 3.36
+%End
 
   public slots:
 

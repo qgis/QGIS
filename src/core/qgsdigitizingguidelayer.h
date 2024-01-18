@@ -32,7 +32,7 @@ class QgsLineSymbol;
 
 /**
  * \ingroup core
- * @brief The QgsDigitizingGuideLayer class holds map guides information saved in the project file.
+ * \brief The QgsDigitizingGuideLayer class holds map guides information saved in the project file.
  *
  * \since QGIS 3.36
  */
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsDigitizingGuideLayer : public QgsAnnotationLayer
     //! Adds a line guide
     void addLineGuide( QgsCurve *curve SIP_TRANSFER, const QString &title, QList<QgsAnnotationItem *> details = QList<QgsAnnotationItem *>(), const QDateTime &creation = QDateTime::currentDateTime() );
 
-    //! Return the guides
+    //! Returns the guides
     std::pair<QList<QgsPointXY>, QList<const QgsCurve *> > guides() const;
 
     //! Returns the model

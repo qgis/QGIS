@@ -232,7 +232,16 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       return mExtraSnapLayers;
     }
 
+    /**
+     * Returns the map guide layer
+     * \since QGIS 3.36
+     */
     QgsDigitizingGuideLayer *guideLayer() const;
+
+    /**
+     * Sets the map guide layer
+     * \since QGIS 3.36
+     */
     void setGuideLayer( QgsDigitizingGuideLayer *guideLayer );
 
   public slots:

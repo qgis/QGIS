@@ -62,7 +62,7 @@ class GUI_EXPORT QgsDigitizingGuideToolUserInputWidget : public QWidget, private
 
 /**
  * \ingroup gui
- * @brief The QgsDigitizingGuideMapTool is a base class for map tools drawing map guides
+ * \brief The QgsDigitizingGuideMapTool is a base class for map tools drawing map guides
  * \since QGIS 3.34
  */
 class GUI_EXPORT QgsDigitizingGuideMapTool : public QgsMapTool
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsDigitizingGuideMapTool : public QgsMapTool
 
 /**
  * \ingroup gui
- * @brief The QgsDigitizingGuideMapToolDistanceToPoints is a map tool to place a point guide at a given distance to 2 points
+ * \brief The QgsDigitizingGuideMapToolDistanceToPoints is a map tool to place a point guide at a given distance to 2 points
  * \since QGIS 3.34
  */
 class GUI_EXPORT QgsDigitizingGuideMapToolDistanceToPoints : public QgsDigitizingGuideMapTool
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsDigitizingGuideMapToolDistanceToPoints : public QgsDigitizin
 
 /**
  * \ingroup gui
- * @brief The QgsDigitizingGuideMapToolLineAbstract is an absctract class for line extension/parallel/perpendicular implementations
+ * \brief The QgsDigitizingGuideMapToolLineAbstract is an absctract class for line extension/parallel/perpendicular implementations
  * \since QGIS 3.34
  */
 class GUI_EXPORT QgsDigitizingGuideMapToolLineAbstract : public QgsDigitizingGuideMapTool
@@ -135,6 +135,7 @@ class GUI_EXPORT QgsDigitizingGuideMapToolLineAbstract : public QgsDigitizingGui
     void deactivate() override;
 
   protected:
+    //! Updates the rubber band using the constructed line
     void updateRubberBand( QgsLineString *line );
 
     bool mHasOffset = false;
@@ -160,7 +161,7 @@ class GUI_EXPORT QgsDigitizingGuideMapToolLineAbstract : public QgsDigitizingGui
 
 /**
  * \ingroup gui
- * @brief The QgsDigitizingGuideMapToolLineExtension is a map tool to place a line guide as an extension of a segment
+ * \brief The QgsDigitizingGuideMapToolLineExtension is a map tool to place a line guide as an extension of a segment
  * \since QGIS 3.34
  */
 class GUI_EXPORT QgsDigitizingGuideMapToolLineExtension : public QgsDigitizingGuideMapToolLineAbstract
@@ -176,7 +177,7 @@ class GUI_EXPORT QgsDigitizingGuideMapToolLineExtension : public QgsDigitizingGu
 
 /**
  * \ingroup gui
- * @brief The QgsDigitizingGuideMapToolLineParallel is a map tool to place a line guide as a parallel to a segment
+ * \brief The QgsDigitizingGuideMapToolLineParallel is a map tool to place a line guide as a parallel to a segment
  * \since QGIS 3.34
  */
 class GUI_EXPORT QgsDigitizingGuideMapToolLineParallel : public QgsDigitizingGuideMapToolLineAbstract
@@ -189,9 +190,10 @@ class GUI_EXPORT QgsDigitizingGuideMapToolLineParallel : public QgsDigitizingGui
   private:
     QgsLineString *createLine( const QgsPointXY &point, double offset = 0 ) override;
 };
+
 /**
  * \ingroup gui
- * @brief The QgsDigitizingGuideMapToolLinePerpendicular is a map tool to place a line guide as a perpendicular to a segment
+ * \brief The QgsDigitizingGuideMapToolLinePerpendicular is a map tool to place a line guide as a perpendicular to a segment
  * \since QGIS 3.34
  */
 class GUI_EXPORT QgsDigitizingGuideMapToolLinePerpendicular : public QgsDigitizingGuideMapToolLineAbstract

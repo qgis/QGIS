@@ -28,29 +28,29 @@ class QgsMapCanvas;
 
 /**
  * \ingroup core
- * @brief The QgsDigitizingGuideLayer class holds map guides information saved in the project file.
+ * \brief The QgsDigitizingGuideLayer class holds map guides information saved in the project file.
  *
  * \since QGIS 3.36
  */
 class GUI_EXPORT QgsDigitizingGuideWidget : public QWidget, private Ui::QgsDigitizingGuideWidget
 {
-  Q_OBJECT
-public:
-  explicit QgsDigitizingGuideWidget(QgsMapCanvas *canvas, QWidget *parent = nullptr);
+    Q_OBJECT
+  public:
+    explicit QgsDigitizingGuideWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-signals:
+  signals:
 
-private:
-  void enableGuideMapTool();
+  private:
+    void enableGuideMapTool();
 
-  void guideSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void guideSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-  void removeButtonClicked();
+    void removeButtonClicked();
 
-  QgsMapCanvas* mCanvas = nullptr;
-  QgsDigitizingGuideLayer* mGuideLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsDigitizingGuideLayer *mGuideLayer = nullptr;
 
-  QMap<QToolButton *, QgsDigitizingGuideMapTool *> mGuidesMapTools;
+    QMap<QToolButton *, QgsDigitizingGuideMapTool *> mGuidesMapTools;
 
 };
 
