@@ -53,18 +53,50 @@ from tokenize_rt import Offset, src_to_tokens, tokens_to_src, reversed_enumerate
 from typing import Sequence
 
 from PyQt6 import QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport, Qsci
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
+from PyQt6.QtTest import *
+from PyQt6.QtSql import *
+from PyQt6.QtXml import *
+from PyQt6.QtNetwork import *
+from PyQt6.QtPrintSupport import *
+from PyQt6.Qsci import *
 
 try:
     import qgis.core as qgis_core
     import qgis.gui as qgis_gui
     import qgis.analysis as qgis_analysis
     import qgis._3d as qgis_3d
+    from qgis.core import *
+    from qgis.gui import *
+    from qgis.analysis import *
+    from qgis._3d import *
 except ImportError:
     qgis_core = None
     qgis_gui = None
     qgis_analysis = None
     qgis_3d = None
     print('QGIS classes not available for introspection, only a partial upgrade will be performed')
+
+target_modules = [QtCore,
+                  QtGui,
+                  QtWidgets,
+                  QtTest,
+                  QtSql,
+                  QtSvg,
+                  QtXml,
+                  QtNetwork,
+                  QtPrintSupport,
+                  Qsci]
+if qgis_core is not None:
+    target_modules.extend([
+        qgis_core,
+        qgis_gui,
+        qgis_analysis,
+        qgis_3d
+    ]
+    )
 
 # qmetatype which have been renamed
 qmetatype_mapping = {
@@ -161,7 +193,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     if function_name in disambiguated_enums:
                         disambiguated = True
                         fix_qt_enums[Offset(node.lineno, node.col_offset)] = (
-                            disambiguated_enums)[function_name]
+                            disambiguated_enums)[function_name] + (node.attr, )
 
                 if not disambiguated:
                     possible_values = [f'{node.value.id}.{e}.{node.attr}' for e
@@ -170,8 +202,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     sys.stderr.write(f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n')
             elif (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and (node.value.id, node.attr) in qt_enums):
-                fix_qt_enums.append(Offset(node.lineno, node.col_offset))
-                fix_qt_enums[Offset(node.lineno, node.col_offset)] = (node.value.id, qt_enums[(node.value.id, node.attr)])
+                fix_qt_enums[Offset(node.lineno, node.col_offset)] = (node.value.id, qt_enums[(node.value.id, node.attr)], node.attr)
 
             if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and (node.value.id, node.attr) in deprecated_renamed_enums):
@@ -199,9 +230,16 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
-            _class, enum_name = fix_qt_enums[token.offset] # = qt_enums[(tokens[i].src, tokens[i + 2].src)]
-            assert enum_name
-            tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name}.{tokens[i + 2].src}")
+            _class, enum_name, value = fix_qt_enums[token.offset]
+            # make sure we CAN import enum!
+            try:
+                eval(f'{_class}.{enum_name}.{value}')
+                tokens[i + 2] = tokens[i + 2]._replace(
+                    src=f"{enum_name}.{tokens[i + 2].src}")
+            except AttributeError:
+                sys.stderr.write(
+                    f'{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n')
+                continue
 
         if token.offset in rename_qt_enums:
             assert tokens[i + 1].src == "."
@@ -250,25 +288,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     # get all scope for all qt enum
-    enum_modules = [QtCore,
-                    QtGui,
-                    QtWidgets,
-                    QtTest,
-                    QtSql,
-                    QtSvg,
-                    QtXml,
-                    QtNetwork,
-                    QtPrintSupport,
-                    Qsci]
-    if qgis_core is not None:
-        enum_modules.extend([
-            qgis_core,
-            qgis_gui,
-            qgis_analysis,
-            qgis_3d
-            ]
-        )
-    for module in enum_modules:
+    for module in target_modules:
         for key, value in module.__dict__.items():
             get_class_enums(value)
 
