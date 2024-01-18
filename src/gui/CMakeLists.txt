@@ -107,6 +107,8 @@ set(QGIS_GUI_SRCS
   attributetable/qgsorganizetablecolumnsdialog.cpp
   attributetable/qgsfeaturefilterwidget.cpp
 
+  advanceddigitizing/qgsdigitizingguidewidget.cpp
+
   annotations/qgsannotationitemcommonpropertieswidget.cpp
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
@@ -499,6 +501,7 @@ set(QGIS_GUI_SRCS
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
   qgsadvanceddigitizingfloater.cpp
+  qgsdigitizingguidemaptool.cpp
   qgsaggregatetoolbutton.cpp
   qgsalignmentcombobox.cpp
   qgsapplicationexitblockerinterface.cpp
@@ -767,6 +770,7 @@ set(QGIS_GUI_HDRS
   qgsadvanceddigitizingcanvasitem.h
   qgsadvanceddigitizingdockwidget.h
   qgsadvanceddigitizingfloater.h
+  qgsdigitizingguidemaptool.h
   qgsaggregatetoolbutton.h
   qgsalignmentcombobox.h
   qgsapplicationexitblockerinterface.h
@@ -1031,6 +1035,8 @@ set(QGIS_GUI_HDRS
   actions/qgsmaplayeractioncontext.h
   actions/qgsmaplayeractioncontextgenerator.h
   actions/qgsmaplayeractionregistry.h
+
+  advanceddigitizing/qgsdigitizingguidewidget.h
 
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
@@ -1614,6 +1620,7 @@ endif()
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/actions
+  ${CMAKE_SOURCE_DIR}/src/gui/advanceddigitizing
   ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology

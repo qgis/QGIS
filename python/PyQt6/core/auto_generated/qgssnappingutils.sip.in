@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSnappingUtils : QObject
 {
 %Docstring(signature="appended")
@@ -204,6 +205,8 @@ Returns the list of extra snapping layers
 .. versionadded:: 3.14
 %End
 
+    QgsDigitizingGuideLayer *guideLayer() const;
+    void setGuideLayer( QgsDigitizingGuideLayer *guideLayer );
 
   public slots:
 
