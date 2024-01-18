@@ -702,6 +702,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     Qgis::CrsType type() const;
 
     /**
+     * Returns TRUE if the CRS is considered deprecated.
+     *
+     * \since QGIS 3.36
+     */
+    bool isDeprecated() const;
+
+    /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */

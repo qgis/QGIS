@@ -43,6 +43,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void idCtor();
     void copyCtor();
     void assignmentCtor();
+    void testDeprecated();
     void compoundCrs();
     void verticalCrs();
     void projectedCrs();
@@ -259,6 +260,12 @@ void TestQgsCoordinateReferenceSystem::assignmentCtor()
   myCrs3.setCoordinateEpoch( 2021.2 );
   QCOMPARE( myCrs.coordinateEpoch(), 2021.3 );
   QCOMPARE( myCrs3.coordinateEpoch(), 2021.2 );
+}
+
+void TestQgsCoordinateReferenceSystem::testDeprecated()
+{
+  QVERIFY( !QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ).isDeprecated() );
+  QVERIFY( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4226" ) ).isDeprecated() );
 }
 
 void TestQgsCoordinateReferenceSystem::compoundCrs()
