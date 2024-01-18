@@ -45,12 +45,6 @@ Constructor for Qgs3DMapCanvas.
 
     ~Qgs3DMapCanvas();
 
-
-    void setMapSettings( Qgs3DMapSettings *mapSettings );
-%Docstring
-Configure map scene being displayed. Takes ownership.
-%End
-
     Qgs3DMapSettings *mapSettings();
 %Docstring
 Returns access to the 3D scene configuration
@@ -66,82 +60,6 @@ Returns access to the 3D scene (root 3D entity)
 Returns access to the view's camera controller. Returns ``None`` if the scene has not been initialized yet with :py:func:`~Qgs3DMapCanvas.setMapSettings`
 %End
 
-    void resetView();
-%Docstring
-Resets camera position to the default: looking down at the origin of world coordinates
-%End
-
-    void setViewFromTop( const QgsPointXY &center, float distance, float rotation = 0 );
-%Docstring
-Sets camera position to look down at the given point (in map coordinates) in given distance from plane with zero elevation
-%End
-
-    void saveAsImage( const QString &fileName, const QString &fileFormat );
-%Docstring
-Saves the current scene as an image
-%End
-
-    void setMapTool( Qgs3DMapTool *tool );
-%Docstring
-Sets the active map ``tool`` that will receive events from the 3D canvas. Does not transfer ownership.
-If the tool is ``None``, events will be used for camera manipulation.
-%End
-
-    Qgs3DMapTool *mapTool() const;
-%Docstring
-Returns the active map tool that will receive events from the 3D canvas.
-If the tool is ``None``, events will be used for camera manipulation.
-%End
-
-
-    void setTemporalController( QgsTemporalController *temporalController );
-%Docstring
-Sets the temporal controller
-%End
-
-    void setViewFrom2DExtent( const QgsRectangle &extent );
-%Docstring
-Resets camera view to show the ``extent`` (top view)
-%End
-
-    QVector<QgsPointXY> viewFrustum2DExtent();
-%Docstring
-Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
-%End
-
-  signals:
-    void savedAsImage( const QString &fileName );
-%Docstring
-Emitted when the 3D map canvas was successfully saved as image
-%End
-
-    void mapSettingsChanged();
-%Docstring
-Emitted when the the map setting is changed
-%End
-
-    void fpsCountChanged( float fpsCount );
-%Docstring
-Emitted when the FPS count changes (at most every frame)
-%End
-
-    void fpsCounterEnabledChanged( bool enabled );
-%Docstring
-Emitted when the FPS counter is enabled or disabeld
-%End
-
-    void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
-%Docstring
-Emitted when the viewed 2D extent seen by the 3D camera has changed
-%End
-
-    void cameraNavigationSpeedChanged( double speed );
-%Docstring
-Emitted when the camera navigation ``speed`` is changed.
-%End
-
-  public slots:
-    void captureDepthBuffer();
 
   protected:
 

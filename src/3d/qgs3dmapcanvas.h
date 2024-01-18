@@ -91,6 +91,15 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      */
     ~Qgs3DMapCanvas();
 
+    //! Returns access to the 3D scene configuration
+    Qgs3DMapSettings *mapSettings() { return mMapSettings; }
+
+    //! Returns access to the 3D scene (root 3D entity)
+    Qgs3DMapScene *scene() { return mScene; }
+
+    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
+    QgsCameraController *cameraController();
+
 #ifndef SIP_RUN
 
     /**
@@ -122,19 +131,9 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * Returns the render settings of the 3D Window.
      */
     Qt3DRender::QRenderSettings *renderSettings() const;
-#endif
 
     //! Configure map scene being displayed. Takes ownership.
     void setMapSettings( Qgs3DMapSettings *mapSettings );
-
-    //! Returns access to the 3D scene configuration
-    Qgs3DMapSettings *mapSettings() { return mMapSettings; }
-
-    //! Returns access to the 3D scene (root 3D entity)
-    Qgs3DMapScene *scene() { return mScene; }
-
-    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
-    QgsCameraController *cameraController();
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
     void resetView();
@@ -160,7 +159,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     /**
      * Returns the 3D engine.
      */
-    QgsWindow3DEngine *engine() const SIP_SKIP { return mEngine; }
+    QgsWindow3DEngine *engine() const { return mEngine; }
 
     /**
      * Sets the temporal controller
@@ -196,10 +195,10 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     //! Emitted when the camera navigation \a speed is changed.
     void cameraNavigationSpeedChanged( double speed );
 
-  public slots:
-    void captureDepthBuffer();
+#endif
 
   private slots:
+    void captureDepthBuffer();
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
     void onNavigationModeChanged( Qgis::NavigationMode mode );
 
