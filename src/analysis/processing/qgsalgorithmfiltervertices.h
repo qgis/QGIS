@@ -36,7 +36,6 @@ class QgsFilterVerticesAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
 
     QString group() const override final;
     QString groupId() const override final;
-    QList<int> inputLayerTypes() const override final;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override final;
     QString shortHelpString() const override final;
 
@@ -78,9 +77,7 @@ class QgsFilterVerticesByM : public QgsFilterVerticesAlgorithmBase
 
     QString componentString() const override;
     void filter( QgsGeometry &geometry, double min, double max ) const override;
-
 };
-
 
 /**
  * Filter vertices by Z value algorithm.
@@ -103,9 +100,6 @@ class QgsFilterVerticesByZ : public QgsFilterVerticesAlgorithmBase
     void filter( QgsGeometry &geometry, double min, double max ) const override;
 };
 
-
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMFILTERVERTICES_H
-
-

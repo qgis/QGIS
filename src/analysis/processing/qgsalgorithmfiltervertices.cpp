@@ -47,11 +47,6 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
                       "the resultant geometries created by this algorithm may no longer be valid." ).arg( componentString() );
 }
 
-QList<int> QgsFilterVerticesAlgorithmBase::inputLayerTypes() const
-{
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
-}
-
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
   auto min = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN" ),
@@ -212,5 +207,3 @@ void QgsFilterVerticesByZ::filter( QgsGeometry &geometry, double min, double max
 }
 
 ///@endcond
-
-
