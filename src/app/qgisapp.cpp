@@ -94,6 +94,7 @@
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsdigitizingguidelayer.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -1216,7 +1217,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, mSnappingUtils, &QgsSnappingUtils::setConfig );
-
+  mSnappingUtils->setGuideLayer( QgsProject::instance()->digitizingGuideLayer() );
   endProfile();
 
   functionProfile( &QgisApp::createMenus, this, QStringLiteral( "Create menus" ) );
