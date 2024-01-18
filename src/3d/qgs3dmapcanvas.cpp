@@ -64,9 +64,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   m_renderSettings->setActiveFrameGraph( m_forwardRenderer );
   m_inputSettings->setEventSource( this );
 
-
-
-
   const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
@@ -154,6 +151,10 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent * )
 
 void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 {
+  // TODO: eventually we want to get rid of this
+  Q_ASSERT( !mMapSettings );
+  Q_ASSERT( !mScene );
+
   Qgs3DMapScene *newScene = new Qgs3DMapScene( *mapSettings, mEngine );
 
   mEngine->setSize( size() );
