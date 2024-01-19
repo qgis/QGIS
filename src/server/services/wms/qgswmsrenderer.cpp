@@ -1989,7 +1989,7 @@ namespace QgsWms
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
         QString mapTip = layer->mapTipTemplate();
-        if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
+        if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -2319,7 +2319,7 @@ namespace QgsWms
       }
       //add maptip attribute based on html/expression
       QString mapTip = layer->mapTipTemplate();
-      if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
       {
         QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
         maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -3093,7 +3093,7 @@ namespace QgsWms
     {
       QString mapTip = layer->mapTipTemplate();
 
-      if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
       {
         QString fieldTextString = QgsExpression::replaceExpressionText( mapTip, &expressionContext );
         QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:maptip" ) );

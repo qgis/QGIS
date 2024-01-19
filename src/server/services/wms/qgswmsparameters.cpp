@@ -2113,7 +2113,10 @@ namespace QgsWms
   {
     const QString mStr = withMapTipAsString();
 
-    if ( mStr.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) )
+    if ( mStr.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) ||
+         mStr.startsWith( QLatin1String( "on" ), Qt::CaseInsensitive ) ||
+         mStr.startsWith( QLatin1String( "yes" ), Qt::CaseInsensitive ) ||
+         mStr.startsWith( QLatin1String( "1" ) ) )
       return true;
     else
       return false;
@@ -2123,7 +2126,7 @@ namespace QgsWms
   {
     const QString mStr = withMapTipAsString();
 
-    if ( mStr.startsWith( QLatin1String( "true_and_html_fi_only_maptip" ), Qt::CaseInsensitive ) )
+    if ( mStr.startsWith( QLatin1String( "html_fi_only_maptip" ), Qt::CaseInsensitive ) )
       return true;
     else
       return false;

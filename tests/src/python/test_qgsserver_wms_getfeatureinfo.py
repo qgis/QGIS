@@ -152,7 +152,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
-                                 'with_maptip=true_and_html_fi_only_maptip',
+                                 'with_maptip=html_fi_only_maptip',
                                  'wms_getfeatureinfo-html-only-with-maptip-vector')
 
         # Test getfeatureinfo response html with maptip and display name in text mode for vector layer
@@ -288,7 +288,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'width=500&height=500&srs=EPSG%3A3857&' +
                                  'bbox=1989139.6,3522745.0,2015014.9,3537004.5&' +
                                  'query_layers=landsat&X=250&Y=250&' +
-                                 'with_maptip=true_and_html_fi_only_maptip',
+                                 'with_maptip=html_fi_only_maptip',
                                  'wms_getfeatureinfo-html-only-with-maptip-raster')
 
     def testGetFeatureInfoValueRelation(self):
