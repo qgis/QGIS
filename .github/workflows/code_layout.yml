@@ -9,7 +9,7 @@ on:
   pull_request:
 
 env:
-  DOXYGEN_VERSION: 1.9.6
+  DOXYGEN_VERSION: 1.9.8
 
 jobs:
   documentation_checks:
