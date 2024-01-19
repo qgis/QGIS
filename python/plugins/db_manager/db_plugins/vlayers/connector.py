@@ -112,7 +112,7 @@ class VLayerRegistry:
 class VLayerConnector(DBConnector):
 
     def __init__(self, uri):
-        pass
+        self.mapSridToName = {}
 
     def _execute(self, cursor, sql):
         # This is only used to get list of fields
@@ -223,8 +223,11 @@ class VLayerConnector(DBConnector):
                             dim += 'Z'
                         if QgsWkbTypes.hasM(g):
                             dim += 'M'
+                    srid = l.crs().postgisSrid()
+                    if srid not in self.mapSridToName:
+                        self.mapSridToName[srid] = l.crs().description()
                     lst.append(
-                        (Table.VectorType, lname, False, False, l.id(), 'geometry', geomType, dim, l.crs().postgisSrid()))
+                        (Table.VectorType, lname, False, False, l.id(), 'geometry', geomType, dim, srid))
                 else:
                     lst.append((Table.TableType, lname, False, False))
         return lst
@@ -281,8 +284,7 @@ class VLayerConnector(DBConnector):
         print("**unimplemented** getViewDefinition")
 
     def getSpatialRefInfo(self, srid):
-        crs = QgsCoordinateReferenceSystem(srid)
-        return crs.description()
+        return self.mapSridToName.get(srid, "")
 
     def isVectorTable(self, table):
         return True
