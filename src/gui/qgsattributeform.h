@@ -556,7 +556,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QMultiMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
 
     /**
-     * List of widgets containing default value expression with functions.
+     * List of widgets containing default value expression with relevant functions like now().
+     * Relevant functions changing the value in every case depending on an effect outside the form.
      */
     QList<QgsWidgetWrapper *> mWidgetsWithDefaultValueFunctionDependencies;
 

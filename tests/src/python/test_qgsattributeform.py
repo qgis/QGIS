@@ -186,7 +186,7 @@ class TestQgsAttributeForm(QgisTestCase):
         layer.setEditorWidgetSetup(2, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for pos (3), it contains a function and should update always (and it contains it's own value, to evaluate if it's changing)
-        layer.setDefaultValueDefinition(3, QgsDefaultValue('pos + age + rand(0,0)', apply_on_update))
+        layer.setDefaultValueDefinition(3, QgsDefaultValue('pos + age + day_of_week( now() ) - day_of_week( now() )', apply_on_update))
         layer.setEditorWidgetSetup(3, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for numbers (4), it will depend on the field age
@@ -216,7 +216,7 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(form.currentFormFeature()['year'], 2023)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['birthday'], 2013)
-        # change because function and dependency: old value 100 + new value 10
+        # change because now-function and dependency: old value 100 + new value 10
         self.assertEqual(form.currentFormFeature()['pos'], 110)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
@@ -229,7 +229,7 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(form.currentFormFeature()['age'], 10)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['birthday'], 2014)
-        # change because function: old value 110 + new value 10
+        # change because now-function: old value 110 + new value 10
         self.assertEqual(form.currentFormFeature()['pos'], 120)
         # no change
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
@@ -246,7 +246,7 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(form.currentFormFeature()['age'], 10)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['year'], 2024)
-        # change because function: old value 120 + new value 10
+        # change because now-function: old value 120 + new value 10
         self.assertEqual(form.currentFormFeature()['pos'], 130)
         # no change
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
