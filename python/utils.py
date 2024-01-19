@@ -882,16 +882,16 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
 
     if 'PyQt4' in name:
         msg = 'PyQt4 classes cannot be imported in QGIS 3.x.\n' \
-              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
+              'Use {} or preferably the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
         raise ImportError(msg)
     qt_version = int(QT_VERSION_STR.split('.')[0])
     if qt_version == 5 and 'PyQt6' in name:
         msg = 'PyQt6 classes cannot be imported in a QGIS build based on Qt5.\n' \
-              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt6', 'PyQt5'), name.replace('PyQt6', 'qgis.PyQt'))
+              'Use {} or preferably the version independent {} import instead (where available).'.format(name.replace('PyQt6', 'PyQt5'), name.replace('PyQt6', 'qgis.PyQt'))
         raise ImportError(msg)
     elif qt_version == 6 and 'PyQt5' in name:
         msg = 'PyQt5 classes cannot be imported in a QGIS build based on Qt6.\n' \
-              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt5', 'PyQt6'), name.replace('PyQt5', 'qgis.PyQt'))
+              'Use {} or preferably the version independent {} import instead (where available).'.format(name.replace('PyQt5', 'PyQt6'), name.replace('PyQt5', 'qgis.PyQt'))
         raise ImportError(msg)
 
     if os.name == 'nt' and sys.version_info < (3, 8):
