@@ -660,6 +660,7 @@ QVariant QgsRecentCoordinateReferenceSystemTableModel::data( const QModelIndex &
         default:
           break;
       }
+      break;
     }
 
     default:
