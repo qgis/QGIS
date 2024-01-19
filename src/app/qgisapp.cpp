@@ -693,6 +693,7 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
           if ( dlg.exec() )
           {
             node->setSymbol( symbol.release() );
+            markDirty();
           }
 
           return;
