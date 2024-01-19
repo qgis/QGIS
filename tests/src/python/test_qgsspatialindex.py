@@ -59,7 +59,7 @@ class TestQgsSpatialIndex(QgisTestCase):
 
     def testGetGeometry(self):
         idx = QgsSpatialIndex()
-        idx2 = QgsSpatialIndex(QgsSpatialIndex.FlagStoreFeatureGeometries)
+        idx2 = QgsSpatialIndex(QgsSpatialIndex.Flag.FlagStoreFeatureGeometries)
         fid = 0
         for y in range(5):
             for x in range(10, 15):

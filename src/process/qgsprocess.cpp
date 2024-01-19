@@ -146,6 +146,19 @@ void ConsoleFeedback::pushConsoleInfo( const QString &info )
   QgsProcessingFeedback::pushConsoleInfo( info );
 }
 
+void ConsoleFeedback::pushFormattedMessage( const QString &html, const QString &text )
+{
+  if ( !mUseJson )
+    std::cout << text.toLocal8Bit().constData() << '\n';
+  else
+  {
+    if ( !mJsonLog.contains( QStringLiteral( "info" ) ) )
+      mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
+    mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << text;
+  }
+  QgsProcessingFeedback::pushFormattedMessage( html, text );
+}
+
 QVariantMap ConsoleFeedback::jsonLog() const
 {
   return mJsonLog;
@@ -232,9 +245,9 @@ QgsProcessingExec::QgsProcessingExec()
 
 }
 
-int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessingContext::LogLevel logLevel, bool skipPython )
+int QgsProcessingExec::run( const QStringList &args, QgsProcessingContext::LogLevel logLevel, Flags flags )
 {
-  mSkipPython = skipPython;
+  mFlags = flags;
 
   QObject::connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level ) >( &QgsMessageLog::messageReceived ), QgsApplication::instance(),
                     [ = ]( const QString & message, const QString &, Qgis::MessageLevel level )
@@ -259,7 +272,7 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
 #endif
 
 #ifdef WITH_BINDINGS
-  if ( !mSkipPython )
+  if ( !( mFlags & Flag::SkipPython ) )
   {
     // give Python plugins a chance to load providers
     mPythonUtils = loadPythonSupport();
@@ -276,8 +289,11 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
   {
     if ( args.size() == 2 || ( args.size() == 3 && args.at( 2 ) == QLatin1String( "list" ) ) )
     {
-      loadPlugins();
-      listPlugins( useJson, true );
+      if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+      {
+        loadPlugins();
+      }
+      listPlugins( mFlags & Flag::UseJson, !( mFlags & Flag::SkipLoadingPlugins ) );
       return 0;
     }
     else if ( args.size() == 4 && args.at( 2 ) == QLatin1String( "enable" ) )
@@ -293,8 +309,11 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
   }
   else if ( command == QLatin1String( "list" ) )
   {
-    loadPlugins();
-    listAlgorithms( useJson );
+    if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+    {
+      loadPlugins();
+    }
+    listAlgorithms();
     return 0;
   }
   else if ( command == QLatin1String( "help" ) )
@@ -305,9 +324,12 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
       return 1;
     }
 
-    loadPlugins();
+    if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+    {
+      loadPlugins();
+    }
     const QString algId = args.at( 2 );
-    return showAlgorithmHelp( algId, useJson );
+    return showAlgorithmHelp( algId );
   }
   else if ( command == QLatin1String( "run" ) )
   {
@@ -317,7 +339,10 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
       return 1;
     }
 
-    loadPlugins();
+    if ( !( mFlags & Flag::SkipLoadingPlugins ) )
+    {
+      loadPlugins();
+    }
 
     const QString algId = args.at( 2 );
 
@@ -353,7 +378,7 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
       params = json.value( QStringLiteral( "inputs" ) ).toMap();
 
       // JSON format for input parameters implies JSON output format
-      useJson = true;
+      mFlags |= Flag::UseJson;
 
       ellipsoid = json.value( QStringLiteral( "ellipsoid" ) ).toString();
       projectPath = json.value( QStringLiteral( "project_path" ) ).toString();
@@ -486,7 +511,7 @@ int QgsProcessingExec::run( const QStringList &args, bool useJson, QgsProcessing
       }
     }
 
-    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, logLevel, useJson, projectPath );
+    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, logLevel, projectPath );
   }
   else
   {
@@ -501,14 +526,15 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--no-python] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [--no-python] [--skip-loading-plugins] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
       << "\nOptions:\n"
       << "\t--help or -h\t\tOutput the help\n"
       << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
-      << "\t--json\t\tOutput results as JSON objects\n"
-      << "\t--verbose\tOutput verbose logs\n"
-      << "\t--no-python\tDisable Python support (results in faster startup)"
-      << "\nAvailable commands:\n"
+      << "\t--json\t\t\tOutput results as JSON objects\n"
+      << "\t--verbose\t\tOutput verbose logs\n"
+      << "\t--no-python\t\tDisable Python support (results in faster startup)\n"
+      << "\t--skip-loading-plugins\tAvoid loading enabled plugins (results in faster startup)\n"
+      << "Available commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"
       << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
       << "\tplugins disable\tdisables an installed plugin. The plugin name must be specified, e.g. \"plugins disable cartography_tools\"\n"
@@ -560,10 +586,10 @@ void QgsProcessingExec::loadPlugins()
 #endif
 }
 
-void QgsProcessingExec::listAlgorithms( bool useJson )
+void QgsProcessingExec::listAlgorithms()
 {
   QVariantMap json;
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
   {
     std::cout << "Available algorithms\n\n";
   }
@@ -578,7 +604,7 @@ void QgsProcessingExec::listAlgorithms( bool useJson )
   {
     QVariantMap providerJson;
 
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
     {
       std::cout << provider->name().toLocal8Bit().constData() << "\n";
     }
@@ -593,7 +619,7 @@ void QgsProcessingExec::listAlgorithms( bool useJson )
       if ( algorithm->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
         continue;
 
-      if ( !useJson )
+      if ( !( mFlags & Flag::UseJson ) )
       {
         if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDeprecated )
           continue;
@@ -607,7 +633,7 @@ void QgsProcessingExec::listAlgorithms( bool useJson )
       }
     }
 
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
     {
       std::cout << "\n";
     }
@@ -618,7 +644,7 @@ void QgsProcessingExec::listAlgorithms( bool useJson )
     }
   }
 
-  if ( useJson )
+  if ( mFlags & Flag::UseJson )
   {
     json.insert( QStringLiteral( "providers" ), jsonProviders );
     std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );
@@ -719,8 +745,17 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   QgsSettings settings;
   if ( enabled )
   {
-    mPythonUtils->loadPlugin( name );
-    mPythonUtils->startProcessingPlugin( name );
+    if ( !mPythonUtils->loadPlugin( name ) )
+    {
+      std::cerr << "error loading plugin: " << name.toLocal8Bit().constData() << "\n\n";
+      return 1;
+    }
+    else if ( !mPythonUtils->startProcessingPlugin( name ) )
+    {
+      std::cerr << "error starting plugin: " << name.toLocal8Bit().constData() << "\n\n";
+      return 1;
+    }
+
     const QString pluginName = mPythonUtils->getPluginMetadata( name, QStringLiteral( "name" ) );
     settings.setValue( "/PythonPlugins/" + name, true );
 
@@ -746,7 +781,7 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
 #endif
 }
 
-int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
+int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
 {
   QString id = inputId;
 
@@ -794,7 +829,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   }
 
   QVariantMap json;
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
   {
     std::cout << QStringLiteral( "%1 (%2)\n" ).arg( alg->displayName(), alg->id() ).toLocal8Bit().constData();
 
@@ -861,7 +896,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
 
     QVariantMap parameterJson;
 
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
     {
       QString line = QStringLiteral( "%1: %2" ).arg( p->name(), p->description() );
       if ( p->flags() & QgsProcessingParameterDefinition::FlagOptional )
@@ -906,12 +941,12 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
 
     if ( ! p->help().isEmpty() )
     {
-      if ( !useJson )
+      if ( !( mFlags & Flag::UseJson ) )
         std::cout << QStringLiteral( "\t%1\n" ).arg( p->help() ).toLocal8Bit().constData();
       else
         parameterJson.insert( QStringLiteral( "help" ), p->help() );
     }
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
       std::cout << QStringLiteral( "\tArgument type:\t%1\n" ).arg( p->type() ).toLocal8Bit().constData();
 
     if ( p->type() == QgsProcessingParameterEnum::typeName() )
@@ -925,14 +960,14 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
         jsonOptions.insert( QString::number( i ), enumParam->options().at( i ) );
       }
 
-      if ( !useJson )
+      if ( !( mFlags & Flag::UseJson ) )
         std::cout << QStringLiteral( "\tAvailable values:\n%1\n" ).arg( options.join( '\n' ) ).toLocal8Bit().constData();
       else
         parameterJson.insert( QStringLiteral( "available_options" ), jsonOptions );
     }
 
     // acceptable command line values
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
     {
       if ( const QgsProcessingParameterType *type = QgsApplication::processingRegistry()->parameterType( p->type() ) )
       {
@@ -952,7 +987,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   }
 
   QVariantMap outputsJson;
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
   {
     std::cout << "\n----------------\n";
     std::cout << "Outputs\n";
@@ -962,7 +997,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   for ( const QgsProcessingOutputDefinition *o : outputs )
   {
     QVariantMap outputJson;
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
     {
       std::cout << QStringLiteral( "%1: <%2>\n" ).arg( o->name(), o->type() ).toLocal8Bit().constData();
       if ( !o->description().isEmpty() )
@@ -976,7 +1011,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     }
   }
 
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
   {
     std::cout << "\n\n";
   }
@@ -990,10 +1025,10 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, const QString &projectPath )
 {
   QVariantMap json;
-  if ( useJson )
+  if ( mFlags & Flag::UseJson )
   {
     addVersionInformation( json );
   }
@@ -1051,14 +1086,14 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
       return 1;
     }
 
-    if ( !useJson && alg->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+    if ( !( mFlags & Flag::UseJson ) && alg->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
     {
       std::cout << "\n****************\n";
       std::cout << "Warning: this algorithm contains known issues and the results may be unreliable!\n";
       std::cout << "****************\n\n";
     }
 
-    if ( !useJson && alg->flags() & QgsProcessingAlgorithm::FlagDeprecated )
+    if ( !( mFlags & Flag::UseJson ) && alg->flags() & QgsProcessingAlgorithm::FlagDeprecated )
     {
       std::cout << "\n****************\n";
       std::cout << "Warning: this algorithm is deprecated and may be removed in a future QGIS version!\n";
@@ -1072,7 +1107,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
     }
   }
 
-  if ( useJson )
+  if ( mFlags & Flag::UseJson )
   {
     QVariantMap algorithmDetails;
     algorithmDetails.insert( QStringLiteral( "id" ), alg->id() );
@@ -1099,7 +1134,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
     json.insert( QStringLiteral( "project_path" ), projectPath );
   }
 
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
   {
     std::cout << "\n----------------\n";
     std::cout << "Inputs\n";
@@ -1108,33 +1143,33 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
   QVariantMap inputsJson;
   for ( auto it = inputs.constBegin(); it != inputs.constEnd(); ++it )
   {
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
       std::cout << it.key().toLocal8Bit().constData() << ":\t" << it.value().toString().toLocal8Bit().constData() << '\n';
     else
       inputsJson.insert( it.key(), it.value() );
   }
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
     std::cout << "\n";
   else
     json.insert( QStringLiteral( "inputs" ), inputsJson );
 
   if ( !ellipsoid.isEmpty() )
   {
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
       std::cout << "Using ellipsoid:\t" << ellipsoid.toLocal8Bit().constData() << '\n';
     else
       json.insert( QStringLiteral( "ellipsoid" ), ellipsoid );
   }
   if ( distanceUnit != Qgis::DistanceUnit::Unknown )
   {
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
       std::cout << "Using distance unit:\t" << QgsUnitTypes::toString( distanceUnit ).toLocal8Bit().constData() << '\n';
     else
       json.insert( QStringLiteral( "distance_unit" ), QgsUnitTypes::toString( distanceUnit ) );
   }
   if ( areaUnit != Qgis::AreaUnit::Unknown )
   {
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
       std::cout << "Using area unit:\t" << QgsUnitTypes::toString( areaUnit ).toLocal8Bit().constData() << '\n';
     else
       json.insert( QStringLiteral( "area_unit" ), QgsUnitTypes::toString( areaUnit ) );
@@ -1181,7 +1216,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
     return 1;
   }
 
-  ConsoleFeedback feedback( useJson );
+  ConsoleFeedback feedback( mFlags & Flag::UseJson );
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   UnixSignalWatcher sigwatch;
@@ -1202,7 +1237,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
 #endif
 
   ok = false;
-  if ( !useJson )
+  if ( !( mFlags & Flag::UseJson ) )
     std::cout << "\n";
 
   QVariantMap res = alg->run( params, context, &feedback, &ok );
@@ -1210,7 +1245,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
   if ( ok )
   {
     QVariantMap resultsJson;
-    if ( !useJson )
+    if ( !( mFlags & Flag::UseJson ) )
     {
       std::cout << "\n----------------\n";
       std::cout << "Results\n";
@@ -1227,7 +1262,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
         continue;
 
       QVariant result = it.value();
-      if ( !useJson )
+      if ( !( mFlags & Flag::UseJson ) )
       {
         if ( result.type() == QVariant::List || result.type() == QVariant::StringList )
         {
@@ -1244,7 +1279,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
       }
     }
 
-    if ( useJson )
+    if ( mFlags & Flag::UseJson )
     {
       json.insert( QStringLiteral( "results" ), resultsJson );
       std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );

@@ -189,7 +189,7 @@ class PyQgsGdalProvider(QgisTestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Float64)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Float64)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)
@@ -227,7 +227,7 @@ class PyQgsGdalProvider(QgisTestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Float64)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Float64)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)
@@ -266,12 +266,12 @@ class PyQgsGdalProvider(QgisTestCase):
         vrtfilename = os.path.join(tmp_dir.path(), 'out.vrt')
         ds = gdal.BuildVRT(vrtfilename, [tmpfilename])
         ds = None
-        assert 'OverviewList' in open(vrtfilename).read()
+        self.assertIn('OverviewList', open(vrtfilename).read())
 
         raster_layer = QgsRasterLayer(vrtfilename, 'test')
         del raster_layer
 
-        assert 'OverviewList' not in open(vrtfilename).read()
+        self.assertNotIn('OverviewList', open(vrtfilename).read())
 
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 7, 0), "GDAL 3.7.0 required")
     def testInt8(self):
@@ -285,7 +285,7 @@ class PyQgsGdalProvider(QgisTestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Int8)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Int8)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)

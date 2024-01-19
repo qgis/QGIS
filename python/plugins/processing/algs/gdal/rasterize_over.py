@@ -59,7 +59,7 @@ class rasterize_over(GdalAlgorithm):
                                                       self.tr('Field to use for burn in value'),
                                                       None,
                                                       self.INPUT,
-                                                      QgsProcessingParameterField.Numeric,
+                                                      QgsProcessingParameterField.DataType.Numeric,
                                                       optional=False))
 
         params = [
@@ -73,7 +73,7 @@ class rasterize_over(GdalAlgorithm):
                                          optional=True)
         ]
         for p in params:
-            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.addParameter(p)
 
         self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT,

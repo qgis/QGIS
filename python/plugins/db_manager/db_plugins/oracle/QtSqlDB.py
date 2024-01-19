@@ -119,7 +119,7 @@ class QtSqlDBCursor:
                 f.length(),  # internal_size
                 f.precision(),  # precision
                 None,  # scale
-                f.requiredStatus() != QSqlField.Required  # null_ok
+                f.requiredStatus() != QSqlField.RequiredStatus.Required  # null_ok
             ])
 
     def executemany(self, operation, seq_of_parameters):

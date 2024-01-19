@@ -294,38 +294,90 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     uri = string;
 
   QString name;
-  // for disk based sources, we use the filename to determine a layer name
-  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "pdal" ) || provider == QLatin1String( "ept" ) || provider == QLatin1String( "copc" ) ) )
-  {
-    QStringList components = uri.split( '|' );
-    if ( components.isEmpty() )
-      return nullptr;
 
-    QFileInfo fi;
-    if ( QFileInfo::exists( uri ) )
-      fi = QFileInfo( uri );
-    else if ( QFileInfo::exists( components.at( 0 ) ) )
-      fi = QFileInfo( components.at( 0 ) );
-    else
-      return nullptr;
-    name = fi.baseName();
+  const QgsProviderMetadata *providerMetadata = useProvider ? QgsProviderRegistry::instance()->providerMetadata( provider ) : nullptr;
+  if ( providerMetadata )
+  {
+    // use the uri parts to determine a suitable layer name
+    const QVariantMap parts = providerMetadata->decodeUri( uri );
+    const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+
+    if ( !layerName.isEmpty() )
+    {
+      name = layerName;
+    }
+    else if ( const QString path = parts.value( QStringLiteral( "path" ) ).toString(); !path.isEmpty() )
+    {
+      name = QFileInfo( path ).baseName();
+    }
   }
   else
   {
+    const QStringList components = uri.split( '|' );
+    if ( components.isEmpty() )
+      return nullptr;
+
+    if ( QFileInfo fi( components.at( 0 ) ); fi.isFile() )
+      name = fi.baseName();
+    else
+      name = QFileInfo( uri ).baseName();
+  }
+
+  if ( name.isEmpty() )
+  {
     name = QgsDataSourceUri( uri ).table();
+  }
+  if ( name.isEmpty() )
+  {
+    name = uri;
+  }
+
+  QList< Qgis::LayerType > candidateTypes;
+  switch ( typeHint )
+  {
+    case LayerHint::UnknownType:
+    {
+      if ( providerMetadata )
+      {
+        // refine the type hint based on what the provider supports
+        candidateTypes = providerMetadata->supportedLayerTypes();
+      }
+      break;
+    }
+    case LayerHint::Vector:
+      candidateTypes.append( Qgis::LayerType::Vector );
+      break;
+    case LayerHint::Raster:
+      candidateTypes.append( Qgis::LayerType::Raster );
+      break;
+    case LayerHint::Mesh:
+      candidateTypes.append( Qgis::LayerType::Mesh );
+      break;
+    case LayerHint::PointCloud:
+      candidateTypes.append( Qgis::LayerType::PointCloud );
+      break;
+    case LayerHint::Annotation:
+      candidateTypes.append( Qgis::LayerType::Annotation );
+      break;
+    case LayerHint::VectorTile:
+      candidateTypes.append( Qgis::LayerType::VectorTile );
+      break;
+    case LayerHint::TiledScene:
+      candidateTypes.append( Qgis::LayerType::TiledScene );
+      break;
   }
 
   // brute force attempt to load a matching layer
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::Vector ) )
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
     options.skipCrsValidation = true;
 
     std::unique_ptr< QgsVectorLayer > layer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      layer = std::make_unique<QgsVectorLayer>( uri, name, provider, options );
+      layer = std::make_unique<QgsVectorLayer>( uri, name, providerMetadata->key(), options );
     }
     else
     {
@@ -337,16 +389,16 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return layer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Raster )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::Raster ) )
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
     rasterOptions.skipCrsValidation = true;
 
     std::unique_ptr< QgsRasterLayer > rasterLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      rasterLayer = std::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
+      rasterLayer = std::make_unique< QgsRasterLayer >( uri, name, providerMetadata->key(), rasterOptions );
     }
     else
     {
@@ -359,15 +411,15 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return rasterLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::Mesh ) )
   {
     QgsMeshLayer::LayerOptions meshOptions;
     meshOptions.skipCrsValidation = true;
 
     std::unique_ptr< QgsMeshLayer > meshLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      meshLayer = std::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
+      meshLayer = std::make_unique< QgsMeshLayer >( uri, name, providerMetadata->key(), meshOptions );
     }
     else
     {
@@ -378,7 +430,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return meshLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::PointCloud )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::PointCloud ) )
   {
     QgsPointCloudLayer::LayerOptions pointCloudOptions;
     pointCloudOptions.skipCrsValidation = true;
@@ -389,9 +441,9 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     }
 
     std::unique_ptr< QgsPointCloudLayer > pointCloudLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, provider, pointCloudOptions );
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, providerMetadata->key(), pointCloudOptions );
     }
     else
     {
@@ -406,7 +458,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return pointCloudLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::VectorTile )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::VectorTile ) )
   {
     QgsDataSourceUri dsUri;
     dsUri.setParam( "type", "mbtiles" );
@@ -420,15 +472,15 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
       return tileLayer.release();
     }
   }
-  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::TiledScene )
+  if ( candidateTypes.empty() || candidateTypes.contains( Qgis::LayerType::TiledScene ) )
   {
     QgsTiledSceneLayer::LayerOptions tiledSceneOptions;
     tiledSceneOptions.skipCrsValidation = true;
 
     std::unique_ptr< QgsTiledSceneLayer > tiledSceneLayer;
-    if ( useProvider )
+    if ( providerMetadata )
     {
-      tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, provider, tiledSceneOptions );
+      tiledSceneLayer = std::make_unique< QgsTiledSceneLayer >( uri, name, providerMetadata->key(), tiledSceneOptions );
     }
     else
     {

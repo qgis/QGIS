@@ -94,28 +94,28 @@ class TestQgsEditFormConfig(QgisTestCase):
         layer = self.createLayer()
         config = layer.editFormConfig()
 
-        config.setLayout(QgsEditFormConfig.GeneratedLayout)
-        self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
+        config.setLayout(QgsEditFormConfig.EditorLayout.GeneratedLayout)
+        self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.GeneratedLayout)
 
         uiLocal = os.path.join(
             unitTestDataPath(), '/qgis_local_server/layer_attribute_form.ui')
         config.setUiForm(uiLocal)
-        self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
+        self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.UiFileLayout)
 
-        config.setLayout(QgsEditFormConfig.GeneratedLayout)
-        self.assertEqual(config.layout(), QgsEditFormConfig.GeneratedLayout)
+        config.setLayout(QgsEditFormConfig.EditorLayout.GeneratedLayout)
+        self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.GeneratedLayout)
 
         uiUrl = 'http://localhost:' + \
             str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
         config.setUiForm(uiUrl)
-        self.assertEqual(config.layout(), QgsEditFormConfig.UiFileLayout)
-        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl, QgsNetworkContentFetcherRegistry.DownloadImmediately)
+        self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.UiFileLayout)
+        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl, QgsNetworkContentFetcherRegistry.FetchingMode.DownloadImmediately)
         self.assertTrue(content is not None)
         while True:
-            if content.status() in (QgsFetchedContent.Finished, QgsFetchedContent.Failed):
+            if content.status() in (QgsFetchedContent.ContentStatus.Finished, QgsFetchedContent.ContentStatus.Failed):
                 break
             app.processEvents()
-        self.assertEqual(content.status(), QgsFetchedContent.Finished)
+        self.assertEqual(content.status(), QgsFetchedContent.ContentStatus.Finished)
 
     # Failing on Travis, seg fault in event loop, no idea why
     """

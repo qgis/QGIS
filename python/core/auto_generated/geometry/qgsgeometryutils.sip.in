@@ -534,6 +534,17 @@ Returns the squared 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
 Returns the squared 2D distance between two points.
 %End
 
+    static double sqrDistance3D( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
+%Docstring
+Returns the squared 3D distance between two points.
+
+.. warning::
+
+   No check is done if z contains NaN value. This is the caller's responsibility.
+
+.. versionadded:: 3.36
+%End
+
  static double distance2D( double x1, double y1, double x2, double y2 ) /Deprecated,HoldGIL/;
 %Docstring
 Returns the 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
@@ -546,6 +557,18 @@ Returns the 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).
 %Docstring
 Returns the 2D distance between two points.
 %End
+
+    static double distance3D( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
+%Docstring
+Returns the 3D distance between two points.
+
+.. warning::
+
+   No check is done if z contains NaN value. This is the caller's responsibility.
+
+.. versionadded:: 3.36
+%End
+
 
  static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX /Out/, double &minDistY /Out/, double epsilon ) /Deprecated,HoldGIL/;
 %Docstring

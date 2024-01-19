@@ -123,6 +123,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/plot
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+      ${CMAKE_SOURCE_DIR}/src/gui/proj
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/sensor
       ${CMAKE_SOURCE_DIR}/src/gui/settings

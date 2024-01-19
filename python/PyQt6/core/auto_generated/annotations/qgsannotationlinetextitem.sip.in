@@ -56,7 +56,7 @@ Creates a new linestring annotation item.
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
 
-    virtual QgsAnnotationLineTextItem *clone() /Factory/;
+    virtual QgsAnnotationLineTextItem *clone() const /Factory/;
 
 
     const QgsCurve *geometry() const;

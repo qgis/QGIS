@@ -280,36 +280,36 @@ class GPKGDBConnector(DBConnector):
         """
 
         items = []
-        for table in self.core_connection.tables(schema, QgsAbstractDatabaseProviderConnection.Vector | QgsAbstractDatabaseProviderConnection.Aspatial):
-            if not (table.flags() & QgsAbstractDatabaseProviderConnection.Aspatial):
+        for table in self.core_connection.tables(schema, QgsAbstractDatabaseProviderConnection.TableFlag.Vector | QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial):
+            if not (table.flags() & QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial):
                 geom_type = table.geometryColumnTypes()[0]
                 # Use integer PG code for SRID
                 srid = geom_type.crs.postgisSrid()
                 geomtype_flatten = QgsWkbTypes.flatType(geom_type.wkbType)
                 geomname = 'GEOMETRY'
-                if geomtype_flatten == QgsWkbTypes.Point:
+                if geomtype_flatten == QgsWkbTypes.Type.Point:
                     geomname = 'POINT'
-                elif geomtype_flatten == QgsWkbTypes.LineString:
+                elif geomtype_flatten == QgsWkbTypes.Type.LineString:
                     geomname = 'LINESTRING'
-                elif geomtype_flatten == QgsWkbTypes.Polygon:
+                elif geomtype_flatten == QgsWkbTypes.Type.Polygon:
                     geomname = 'POLYGON'
-                elif geomtype_flatten == QgsWkbTypes.MultiPoint:
+                elif geomtype_flatten == QgsWkbTypes.Type.MultiPoint:
                     geomname = 'MULTIPOINT'
-                elif geomtype_flatten == QgsWkbTypes.MultiLineString:
+                elif geomtype_flatten == QgsWkbTypes.Type.MultiLineString:
                     geomname = 'MULTILINESTRING'
-                elif geomtype_flatten == QgsWkbTypes.MultiPolygon:
+                elif geomtype_flatten == QgsWkbTypes.Type.MultiPolygon:
                     geomname = 'MULTIPOLYGON'
-                elif geomtype_flatten == QgsWkbTypes.GeometryCollection:
+                elif geomtype_flatten == QgsWkbTypes.Type.GeometryCollection:
                     geomname = 'GEOMETRYCOLLECTION'
-                elif geomtype_flatten == QgsWkbTypes.CircularString:
+                elif geomtype_flatten == QgsWkbTypes.Type.CircularString:
                     geomname = 'CIRCULARSTRING'
-                elif geomtype_flatten == QgsWkbTypes.CompoundCurve:
+                elif geomtype_flatten == QgsWkbTypes.Type.CompoundCurve:
                     geomname = 'COMPOUNDCURVE'
-                elif geomtype_flatten == QgsWkbTypes.CurvePolygon:
+                elif geomtype_flatten == QgsWkbTypes.Type.CurvePolygon:
                     geomname = 'CURVEPOLYGON'
-                elif geomtype_flatten == QgsWkbTypes.MultiCurve:
+                elif geomtype_flatten == QgsWkbTypes.Type.MultiCurve:
                     geomname = 'MULTICURVE'
-                elif geomtype_flatten == QgsWkbTypes.MultiSurface:
+                elif geomtype_flatten == QgsWkbTypes.Type.MultiSurface:
                     geomname = 'MULTISURFACE'
                 geomdim = 'XY'
                 if QgsWkbTypes.hasZ(geom_type.wkbType):
@@ -319,7 +319,7 @@ class GPKGDBConnector(DBConnector):
                 item = [
                     Table.VectorType,
                     table.tableName(),
-                    bool(table.flags() & QgsAbstractDatabaseProviderConnection.View),  # is_view
+                    bool(table.flags() & QgsAbstractDatabaseProviderConnection.TableFlag.View),  # is_view
                     table.tableName(),
                     table.geometryColumn(),
                     geomname,
@@ -331,7 +331,7 @@ class GPKGDBConnector(DBConnector):
                 item = [
                     Table.TableType,
                     table.tableName(),
-                    bool(table.flags() & QgsAbstractDatabaseProviderConnection.View),
+                    bool(table.flags() & QgsAbstractDatabaseProviderConnection.TableFlag.View),
                 ]
 
             items.append(item)
@@ -350,14 +350,14 @@ class GPKGDBConnector(DBConnector):
         """
 
         items = []
-        for table in self.core_connection.tables(schema, QgsAbstractDatabaseProviderConnection.Raster):
+        for table in self.core_connection.tables(schema, QgsAbstractDatabaseProviderConnection.TableFlag.Raster):
             geom_type = table.geometryColumnTypes()[0]
             # Use integer PG code for SRID
             srid = geom_type.crs.postgisSrid()
             item = [
                 Table.RasterType,
                 table.tableName(),
-                bool(table.flags() & QgsAbstractDatabaseProviderConnection.View),
+                bool(table.flags() & QgsAbstractDatabaseProviderConnection.TableFlag.View),
                 table.tableName(),
                 table.geometryColumn(),
                 srid,
@@ -612,7 +612,7 @@ class GPKGDBConnector(DBConnector):
         """
         try:
             name = table[1]  # 0 is schema
-            vector_table_names = [t.tableName() for t in self.core_connection.tables('', QgsAbstractDatabaseProviderConnection.Vector)]
+            vector_table_names = [t.tableName() for t in self.core_connection.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Vector)]
             if name in vector_table_names:
                 self.core_connection.renameVectorTable('', name, new_table)
             else:

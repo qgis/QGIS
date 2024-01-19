@@ -38,6 +38,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryengine.h"
+#include "qgscolorutils.h"
 
 #include <QPainter>
 #include <QFile>
@@ -178,21 +179,21 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::create( const QVariantMap &props )
   QPointF offset;
 
   if ( props.contains( QStringLiteral( "color" ) ) )
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "color" )].toString() );
   if ( props.contains( QStringLiteral( "style" ) ) )
     style = QgsSymbolLayerUtils::decodeBrushStyle( props[QStringLiteral( "style" )].toString() );
   if ( props.contains( QStringLiteral( "color_border" ) ) )
   {
     //pre 2.5 projects used "color_border"
-    strokeColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color_border" )].toString() );
+    strokeColor = QgsColorUtils::colorFromString( props[QStringLiteral( "color_border" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "outline_color" ) ) )
   {
-    strokeColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )].toString() );
+    strokeColor = QgsColorUtils::colorFromString( props[QStringLiteral( "outline_color" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "line_color" ) ) )
   {
-    strokeColor = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "line_color" )].toString() );
+    strokeColor = QgsColorUtils::colorFromString( props[QStringLiteral( "line_color" )].toString() );
   }
 
   if ( props.contains( QStringLiteral( "style_border" ) ) )
@@ -360,9 +361,9 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
 QVariantMap QgsSimpleFillSymbolLayer::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
+  map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mColor );
   map[QStringLiteral( "style" )] = QgsSymbolLayerUtils::encodeBrushStyle( mBrushStyle );
-  map[QStringLiteral( "outline_color" )] = QgsSymbolLayerUtils::encodeColor( mStrokeColor );
+  map[QStringLiteral( "outline_color" )] = QgsColorUtils::colorToString( mStrokeColor );
   map[QStringLiteral( "outline_style" )] = QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle );
   map[QStringLiteral( "outline_width" )] = QString::number( mStrokeWidth );
   map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
@@ -640,15 +641,15 @@ QgsSymbolLayer *QgsGradientFillSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "gradient_color" ) ) )
   {
     //pre 2.5 projects used "gradient_color"
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "gradient_color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "gradient_color" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "color" )].toString() );
   }
   if ( props.contains( QStringLiteral( "gradient_color2" ) ) )
   {
-    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "gradient_color2" )].toString() );
+    color2 = QgsColorUtils::colorFromString( props[QStringLiteral( "gradient_color2" )].toString() );
   }
 
   if ( props.contains( QStringLiteral( "reference_point1" ) ) )
@@ -1023,8 +1024,8 @@ void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
 QVariantMap QgsGradientFillSymbolLayer::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
-  map[QStringLiteral( "gradient_color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
+  map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mColor );
+  map[QStringLiteral( "gradient_color2" )] = QgsColorUtils::colorToString( mColor2 );
   map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mGradientColorType ) );
   map[QStringLiteral( "type" )] = QString::number( static_cast<int>( mGradientType ) );
   map[QStringLiteral( "coordinate_mode" )] = QString::number( static_cast< int >( mCoordinateMode ) );
@@ -1131,21 +1132,21 @@ QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "shapeburst_color" ) ) )
   {
     //pre 2.5 projects used "shapeburst_color"
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "shapeburst_color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "shapeburst_color" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color" )].toString() );
+    color = QgsColorUtils::colorFromString( props[QStringLiteral( "color" )].toString() );
   }
 
   if ( props.contains( QStringLiteral( "shapeburst_color2" ) ) )
   {
     //pre 2.5 projects used "shapeburst_color2"
-    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "shapeburst_color2" )].toString() );
+    color2 = QgsColorUtils::colorFromString( props[QStringLiteral( "shapeburst_color2" )].toString() );
   }
   else if ( props.contains( QStringLiteral( "gradient_color2" ) ) )
   {
-    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "gradient_color2" )].toString() );
+    color2 = QgsColorUtils::colorFromString( props[QStringLiteral( "gradient_color2" )].toString() );
   }
   if ( props.contains( QStringLiteral( "blur_radius" ) ) )
   {
@@ -1679,8 +1680,8 @@ void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double *array, QImage *im, Q
 QVariantMap QgsShapeburstFillSymbolLayer::properties() const
 {
   QVariantMap map;
-  map[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
-  map[QStringLiteral( "gradient_color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
+  map[QStringLiteral( "color" )] = QgsColorUtils::colorToString( mColor );
+  map[QStringLiteral( "gradient_color2" )] = QgsColorUtils::colorToString( mColor2 );
   map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mColorType ) );
   map[QStringLiteral( "blur_radius" )] = QString::number( mBlurRadius );
   map[QStringLiteral( "use_whole_shape" )] = QString::number( mUseWholeShape );
@@ -2005,24 +2006,24 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::create( const QVariantMap &properties )
   if ( properties.contains( QStringLiteral( "svgFillColor" ) ) )
   {
     //pre 2.5 projects used "svgFillColor"
-    symbolLayer->setSvgFillColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "svgFillColor" )].toString() ) );
+    symbolLayer->setSvgFillColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "svgFillColor" )].toString() ) );
   }
   else if ( properties.contains( QStringLiteral( "color" ) ) )
   {
-    symbolLayer->setSvgFillColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "color" )].toString() ) );
+    symbolLayer->setSvgFillColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "color" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "svgOutlineColor" ) ) )
   {
     //pre 2.5 projects used "svgOutlineColor"
-    symbolLayer->setSvgStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "svgOutlineColor" )].toString() ) );
+    symbolLayer->setSvgStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "svgOutlineColor" )].toString() ) );
   }
   else if ( properties.contains( QStringLiteral( "outline_color" ) ) )
   {
-    symbolLayer->setSvgStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "outline_color" )].toString() ) );
+    symbolLayer->setSvgStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "outline_color" )].toString() ) );
   }
   else if ( properties.contains( QStringLiteral( "line_color" ) ) )
   {
-    symbolLayer->setSvgStrokeColor( QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "line_color" )].toString() ) );
+    symbolLayer->setSvgStrokeColor( QgsColorUtils::colorFromString( properties[QStringLiteral( "line_color" )].toString() ) );
   }
   if ( properties.contains( QStringLiteral( "svgOutlineWidth" ) ) )
   {
@@ -2199,8 +2200,8 @@ QVariantMap QgsSVGFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "angle" ), QString::number( mAngle ) );
 
   //svg parameters
-  map.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  map.insert( QStringLiteral( "outline_color" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+  map.insert( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
+  map.insert( QStringLiteral( "outline_color" ), QgsColorUtils::colorToString( mSvgStrokeColor ) );
   map.insert( QStringLiteral( "outline_width" ), QString::number( mSvgStrokeWidth ) );
 
   //units
@@ -2768,15 +2769,15 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::create( const QVariantMap &proper
 
   if ( properties.contains( QStringLiteral( "color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "color" )].toString() );
+    color = QgsColorUtils::colorFromString( properties[QStringLiteral( "color" )].toString() );
   }
   else if ( properties.contains( QStringLiteral( "outline_color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "outline_color" )].toString() );
+    color = QgsColorUtils::colorFromString( properties[QStringLiteral( "outline_color" )].toString() );
   }
   else if ( properties.contains( QStringLiteral( "line_color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( properties[QStringLiteral( "line_color" )].toString() );
+    color = QgsColorUtils::colorFromString( properties[QStringLiteral( "line_color" )].toString() );
   }
   patternLayer->setColor( color );
 
@@ -3367,7 +3368,7 @@ QVariantMap QgsLinePatternFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "angle" ), QString::number( mLineAngle ) );
   map.insert( QStringLiteral( "distance" ), QString::number( mDistance ) );
   map.insert( QStringLiteral( "line_width" ), QString::number( mLineWidth ) );
-  map.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  map.insert( QStringLiteral( "color" ), QgsColorUtils::colorToString( mColor ) );
   map.insert( QStringLiteral( "offset" ), QString::number( mOffset ) );
   map.insert( QStringLiteral( "distance_unit" ), QgsUnitTypes::encodeUnit( mDistanceUnit ) );
   map.insert( QStringLiteral( "line_width_unit" ), QgsUnitTypes::encodeUnit( mLineWidthUnit ) );

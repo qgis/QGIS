@@ -134,7 +134,7 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
   {
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( interGeom.get(), iPart );
     if ( std::fabs( part->area() - overlapError->value().toDouble() ) < mContext->reducedTolerance &&
-         QgsGeometryCheckerUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), mContext->reducedTolerance ) )
+         QgsGeometryUtilsBase::fuzzyDistanceEqual( mContext->reducedTolerance,  part->centroid().x(), part->centroid().y(), overlapError->location().x(), overlapError->location().y() ) ) // TODO: add fuzzyDistanceEqual in QgsAbstractGeometry classes
     {
       interPart = part;
       break;
@@ -278,7 +278,7 @@ bool QgsGeometryOverlapCheckError::isEqual( QgsGeometryCheckError *other ) const
          other->layerId() == layerId() &&
          other->featureId() == featureId() &&
          err->overlappedFeature() == overlappedFeature() &&
-         QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->context()->reducedTolerance ) &&
+         location().distanceCompare( other->location(), mCheck->context()->reducedTolerance ) &&
          std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
 }
 

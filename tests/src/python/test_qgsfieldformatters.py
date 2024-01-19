@@ -315,13 +315,13 @@ class TestQgsRangeFieldFormatter(QgisTestCase):
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
         QgsSettings().clear()
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
     @classmethod
     def tearDownClass(cls):
         """Reset locale"""
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         super().tearDownClass()
 
     def test_representValue(self):
@@ -393,7 +393,7 @@ class TestQgsRangeFieldFormatter(QgisTestCase):
         # Check with custom locale without thousand separator
 
         custom = QLocale('en')
-        custom.setNumberOptions(QLocale.OmitGroupSeparator)
+        custom.setNumberOptions(QLocale.NumberOption.OmitGroupSeparator)
         QLocale.setDefault(custom)
 
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
@@ -437,7 +437,7 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
 
         # displaying stored values
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), '1')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), '0')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
@@ -448,7 +448,7 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), 'false')
 
         # displaying stored values
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), '1')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), '0')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
@@ -460,13 +460,13 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 1, config, None, 'oops'), "(oops)")
 
         # displaying stored values
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'yeah'), 'yeah')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'nooh'), 'nooh')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'oops'), "(oops)")
 
         # bool
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowTrueFalse
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowTrueFalse
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, True), 'true')
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, False), 'false')
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Type.Bool)), 'NULL')
@@ -482,13 +482,13 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsFieldFormatter.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsFieldFormatter")
         QgsSettings().clear()
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
     @classmethod
     def tearDownClass(cls):
         """Reset locale"""
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         super().tearDownClass()
 
     def test_representValue(self):
@@ -576,7 +576,7 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
             # Check with custom locale without thousand separator
 
             custom = QLocale('en')
-            custom.setNumberOptions(QLocale.OmitGroupSeparator)
+            custom.setNumberOptions(QLocale.NumberOption.OmitGroupSeparator)
             QLocale.setDefault(custom)
 
             self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, '9999999'),
@@ -686,13 +686,13 @@ class TestQgsDateTimeFieldFormatter(QgisTestCase):
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsDateTimeFieldFormatter.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsDateTimeFieldFormatter")
         QgsSettings().clear()
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
     @classmethod
     def tearDownClass(cls):
         """Reset locale"""
-        QgsApplication.setLocale(QLocale(QLocale.English))
+        QgsApplication.setLocale(QLocale(QLocale.Language.English))
         super().tearDownClass()
 
     def test_representValue(self):
@@ -706,21 +706,21 @@ class TestQgsDateTimeFieldFormatter(QgisTestCase):
         # if specific display format is set then use that
         config = {"display_format": "dd/MM/yyyy HH:mm:ss"}
         self.assertEqual(field_formatter.representValue(layer, 0, config, None,
-                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.UTC)),
                          '04/03/2020 12:13:14')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None,
-                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
+                                                        QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.OffsetFromUTC, 3600)),
                          '04/03/2020 12:13:14')
 
         locale_assertions = {
-            QLocale(QLocale.English): {
+            QLocale(QLocale.Language.English): {
                 "date_format": 'M/d/yy',
                 "time_format": 'HH:mm:ss',
                 "datetime_format": 'M/d/yy HH:mm:ss',
                 "datetime_utc": '3/4/20 12:13:14 (UTC)',
                 "datetime_utc+1": '3/4/20 12:13:14 (UTC+01:00)'
             },
-            QLocale(QLocale.Finnish): {
+            QLocale(QLocale.Language.Finnish): {
                 "date_format": 'd.M.yyyy',
                 "time_format": 'HH:mm:ss',
                 "datetime_format": 'd.M.yyyy HH:mm:ss',
@@ -740,10 +740,10 @@ class TestQgsDateTimeFieldFormatter(QgisTestCase):
             # default configuration should show timezone information
             config = {}
             self.assertEqual(field_formatter.representValue(layer, 0, config, None,
-                                                            QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.UTC)),
+                                                            QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.UTC)),
                              assertions["datetime_utc"], locale.name())
             self.assertEqual(field_formatter.representValue(layer, 0, config, None,
-                                                            QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.OffsetFromUTC, 3600)),
+                                                            QDateTime(QDate(2020, 3, 4), QTime(12, 13, 14), Qt.TimeSpec.OffsetFromUTC, 3600)),
                              assertions["datetime_utc+1"], locale.name())
             self.assertEqual(field_formatter.representValue(layer, 1, config, None,
                                                             QDate(2020, 3, 4)),

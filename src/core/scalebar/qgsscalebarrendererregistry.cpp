@@ -49,7 +49,7 @@ QStringList QgsScaleBarRendererRegistry::sortedRendererList() const
 {
   QStringList ids = mRenderers.keys();
 
-  std::sort( ids.begin(), ids.end(), [ = ]( const QString & a, const QString & b )->bool
+  std::sort( ids.begin(), ids.end(), [this]( const QString & a, const QString & b )->bool
   {
     if ( sortKey( a ) < sortKey( b ) )
       return true;

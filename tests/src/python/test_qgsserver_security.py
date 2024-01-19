@@ -73,7 +73,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         query = f"{filter_sql} {injection_sql}"
         d, h = self.handle_request_wms_getfeatureinfo(query)
 
-        self.assertFalse(b"name = 'b'" in d)
+        self.assertNotIn(b"name = 'b'", d)
 
     def test_wms_getfeatureinfo_filter_time_based_blind(self):
         """
@@ -151,7 +151,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         query = f"{filter_sql} {injection_sql}"
         d, h = self.handle_request_wms_getfeatureinfo(query)
 
-        self.assertFalse(b'SpatialIndex' in d)
+        self.assertNotIn(b'SpatialIndex', d)
 
     def test_wms_getfeatureinfo_filter_union_1(self):
         """
@@ -168,7 +168,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         query = f"{filter_sql} {injection_sql}"
         d, h = self.handle_request_wms_getfeatureinfo(query)
 
-        self.assertFalse(b'private_value' in d)
+        self.assertNotIn(b'private_value', d)
 
     def test_wms_getfeatureinfo_filter_unicode(self):
         """

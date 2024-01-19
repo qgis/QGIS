@@ -101,10 +101,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     GRASS_VECTOR_EXPORT_NOCAT = 'GRASS_VECTOR_EXPORT_NOCAT'
 
     OUTPUT_TYPES = ['auto', 'point', 'line', 'area']
-    QGIS_OUTPUT_TYPES = {QgsProcessing.TypeVectorAnyGeometry: 'auto',
-                         QgsProcessing.TypeVectorPoint: 'point',
-                         QgsProcessing.TypeVectorLine: 'line',
-                         QgsProcessing.TypeVectorPolygon: 'area'}
+    QGIS_OUTPUT_TYPES = {QgsProcessing.SourceType.TypeVectorAnyGeometry: 'auto',
+                         QgsProcessing.SourceType.TypeVectorPoint: 'point',
+                         QgsProcessing.SourceType.TypeVectorLine: 'line',
+                         QgsProcessing.SourceType.TypeVectorPolygon: 'area'}
 
     def __init__(self,
                  description_file: Optional[Path] = None,
@@ -171,7 +171,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 spec.loader.exec_module(self.module)
 
         except Exception as e:
-            QgsMessageLog.logMessage(self.tr('Failed to load: {0}\n{1}').format(extpath, e), 'Processing', Qgis.Critical)
+            QgsMessageLog.logMessage(self.tr('Failed to load: {0}\n{1}').format(extpath, e), 'Processing', Qgis.MessageLevel.Critical)
             pass
 
     def createInstance(self):
@@ -203,7 +203,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def flags(self):
         # TODO - maybe it's safe to background thread this?
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
 
     def tr(self, string, context=''):
         if context == '':
@@ -280,7 +280,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         self._name),
                     QCoreApplication.translate("GrassAlgorithm",
                                                'Processing'),
-                    Qgis.Critical)
+                    Qgis.MessageLevel.Critical)
                 raise e
 
             if parameter is None:
@@ -312,7 +312,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.tr('GRASS GIS 7 region extent'),
             optional=True
         )
-        param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.params.append(param)
 
         if has_raster_output or has_raster_input:
@@ -320,10 +320,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
                 self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
-                type=QgsProcessingParameterNumber.Double,
+                type=QgsProcessingParameterNumber.Type.Double,
                 minValue=0.0, maxValue=sys.float_info.max + 1, defaultValue=0.0
             )
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
 
         if has_raster_output:
@@ -333,7 +333,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.tr('Output Rasters format options (createopt)'),
                 multiLine=True, optional=True
             )
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             param.setHelp(self.tr('Creation options should be comma separated'))
             self.params.append(param)
 
@@ -343,24 +343,24 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.tr('Output Rasters format metadata options (metaopt)'),
                 multiLine=True, optional=True
             )
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             param.setHelp(self.tr('Metadata options should be comma separated'))
             self.params.append(param)
 
         if has_vector_input:
             param = QgsProcessingParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                                  self.tr('v.in.ogr snap tolerance (-1 = no snap)'),
-                                                 type=QgsProcessingParameterNumber.Double,
+                                                 type=QgsProcessingParameterNumber.Type.Double,
                                                  minValue=-1.0, maxValue=sys.float_info.max + 1,
                                                  defaultValue=-1.0)
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
             param = QgsProcessingParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
                                                  self.tr('v.in.ogr min area'),
-                                                 type=QgsProcessingParameterNumber.Double,
+                                                 type=QgsProcessingParameterNumber.Type.Double,
                                                  minValue=0.0, maxValue=sys.float_info.max + 1,
                                                  defaultValue=0.0001)
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
 
         if has_vector_outputs:
@@ -369,7 +369,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                                self.tr('v.out.ogr output type'),
                                                self.OUTPUT_TYPES,
                                                defaultValue=0)
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
 
             # Add a DSCO parameter for format export
@@ -378,7 +378,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.tr('v.out.ogr output data source options (dsco)'),
                 multiLine=True, optional=True
             )
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
 
             # Add a LCO parameter for format export
@@ -387,7 +387,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.tr('v.out.ogr output layer options (lco)'),
                 multiLine=True, optional=True
             )
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
 
             # Add a -c flag for export
@@ -396,7 +396,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.tr('Also export features without category (not labeled). Otherwise only features with category are exported'),
                 False
             )
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.params.append(param)
 
     def getDefaultCellSize(self):
@@ -488,7 +488,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), Qgis.Info)
+            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), Qgis.MessageLevel.Info)
 
         Grass7Utils.executeGrass(self.commands, feedback, self.outputCommands)
 
@@ -539,7 +539,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                 if paramName not in self.exportedLayers:
                     # Attribute tables are also vector inputs
-                    if QgsProcessing.TypeFile in param.dataTypes():
+                    if QgsProcessing.SourceType.TypeFile in param.dataTypes():
                         self.loadAttributeTableFromParameter(
                             paramName, parameters, context)
                     else:
@@ -588,7 +588,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # Add the default parameters commands
         self.commands.append(command)
 
-        QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
+        QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.MessageLevel.Info)
 
     def processCommand(self, parameters, context, feedback, delOutputs=False):
         """
@@ -686,7 +686,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 value = self.parameterAsString(parameters, paramName, context)
             elif isinstance(param, QgsProcessingParameterRange):
                 v = self.parameterAsRange(parameters, paramName, context)
-                if (param.flags() & QgsProcessingParameterDefinition.FlagOptional) and (math.isnan(v[0]) or math.isnan(v[1])):
+                if (param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional) and (math.isnan(v[0]) or math.isnan(v[1])):
                     continue
                 else:
                     value = '{},{}'.format(v[0], v[1])
@@ -707,7 +707,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if not delOutputs:
             for out in self.destinationParameterDefinitions():
                 # We exclude hidden parameters
-                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if out.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                     continue
                 outName = out.name()
                 # For File destination
@@ -743,7 +743,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         command += ' --overwrite'
         self.commands.append(command)
-        QgsMessageLog.logMessage(self.tr('processCommands end. Commands: {}').format(self.commands), 'Grass7', Qgis.Info)
+        QgsMessageLog.logMessage(self.tr('processCommands end. Commands: {}').format(self.commands), 'Grass7', Qgis.MessageLevel.Info)
 
     def vectorOutputType(self, parameters, context):
         """Determine vector output types for outputs"""

@@ -65,6 +65,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     void commandInfoPushed( const QString &text );
     void debugInfoPushed( const QString &text );
     void consoleInfoPushed( const QString &text );
+    void formattedMessagePushed( const QString &html );
 
   public slots:
 
@@ -75,6 +76,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
+    void pushFormattedMessage( const QString &html, const QString &text ) override;
 
 };
 #endif
@@ -220,6 +222,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * Pushes an information string to the dialog's log.
      */
     void pushInfo( const QString &info );
+
+    /**
+     * Pushes a pre-formatted message to the dialog's log
+     *
+     * This can be used to push formatted HTML messages to the dialog.
+     *
+     * \since QGIS 3.36
+     */
+    void pushFormattedMessage( const QString &html );
 
     /**
      * Pushes a debug info string to the dialog's log.
@@ -441,6 +452,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void linkClicked( const QUrl &url );
     void taskTriggered( QgsTask *task );
     void closeClicked();
+    void urlClicked( const QUrl &url );
 
   private:
 

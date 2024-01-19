@@ -23,8 +23,8 @@ from qgis.PyQt.QtCore import Qt
 
 
 def datetime_range_repr(self):
-    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(Qt.ISODate)}, {self.end().toString(Qt.ISODate)}{']' if self.includeEnd() else ')'}>"
+    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(Qt.DateFormat.ISODate)}, {self.end().toString(Qt.DateFormat.ISODate)}{']' if self.includeEnd() else ')'}>"
 
 
 def date_range_repr(self):
-    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(Qt.ISODate)}, {self.end().toString(Qt.ISODate)}{']' if self.includeEnd() else ')'}>"
+    return f"<QgsDateTimeRange:{'[' if self.includeBeginning() else '('}{self.begin().toString(Qt.DateFormat.ISODate)}, {self.end().toString(Qt.DateFormat.ISODate)}{']' if self.includeEnd() else ')'}>"

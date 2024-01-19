@@ -24,6 +24,8 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
+@MONKEYPATCH_INJECTIONS@
+
 from .additions.edit import edit, QgsEditError
 from .additions.fromfunction import fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
@@ -92,11 +94,6 @@ QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
 QgsVectorLayer.NoMarker.is_monkey_patched = True
 QgsVectorLayer.NoMarker.__doc__ = "No marker"
 
-QgsSymbol.RenderHints = Qgis.SymbolRenderHints
-QgsSymbol.PreviewFlags = Qgis.SymbolPreviewFlags
-QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
-QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
-
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
 
@@ -133,6 +130,16 @@ QgsMapLayerType.GroupLayer = Qgis.LayerType.Group
 QgsMapLayerType.GroupLayer.is_monkey_patched = True
 QgsMapLayerType.GroupLayer.__doc__ = "Composite group layer. Added in QGIS 3.24"
 QgsMapLayerType.baseClass = Qgis
+
+# Monkey patch unused CRS WKT aliases
+QgsCoordinateReferenceSystem.WKT2_2018 = Qgis.CrsWktVariant.Wkt2_2019
+Qgis.CrsWktVariant.WKT2_2018 = Qgis.CrsWktVariant.Wkt2_2019
+QgsCoordinateReferenceSystem.WKT2_2018.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT2_2018.__doc__ = "Alias for WKT2_2019"
+QgsCoordinateReferenceSystem.WKT2_2018_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2019Simplified
+Qgis.CrsWktVariant.WKT2_2018_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2019Simplified
+QgsCoordinateReferenceSystem.WKT2_2018_SIMPLIFIED.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT2_2018_SIMPLIFIED.__doc__ = "Alias for WKT2_2019_SIMPLIFIED"
 
 # Monkey patch QgsDxfExport
 QgsDxfExport.SymbologyExport = Qgis.FeatureSymbologyExport

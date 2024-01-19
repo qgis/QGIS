@@ -168,7 +168,7 @@ class TestQgsSvgCache(QgisTestCase):
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'svg_' + name + ".png"
 
-        output_image = QImage(image.size(), QImage.Format_RGB32)
+        output_image = QImage(image.size(), QImage.Format.Format_RGB32)
         QgsMultiRenderChecker.drawBackground(output_image)
         painter = QPainter(output_image)
         painter.drawImage(0, 0, image)

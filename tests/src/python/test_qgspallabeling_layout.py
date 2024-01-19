@@ -117,8 +117,8 @@ class TestLayoutBase(TestQgsPalLabeling):
         """:type: QgsLayoutItemMap"""
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
-        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.UsePartialCandidates:
-            self._cmap.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
+        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.Flag.UsePartialCandidates:
+            self._cmap.setMapFlags(QgsLayoutItemMap.MapItemFlag.ShowPartialLabels)
         self._c.addLayoutItem(self._cmap)
         # now expand map to fill page and set its extent
         self._cmap.attemptSetSceneRect(QRectF(0, 0, paperw, paperw))
@@ -137,8 +137,8 @@ class TestLayoutBase(TestQgsPalLabeling):
 
         p = QPainter(image)
         p.setRenderHint(
-            QPainter.Antialiasing,
-            self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
+            QPainter.RenderHint.Antialiasing,
+            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing)
         )
         exporter = QgsLayoutExporter(self._c)
         exporter.renderPage(p, 0)
@@ -186,10 +186,10 @@ class TestLayoutBase(TestQgsPalLabeling):
         svgr = QSvgRenderer(svgpath)
         p = QPainter(image)
         p.setRenderHint(
-            QPainter.Antialiasing,
-            self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
+            QPainter.RenderHint.Antialiasing,
+            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing)
         )
-        p.setRenderHint(QPainter.TextAntialiasing)
+        p.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         svgr.render(p)
         p.end()
 
@@ -207,12 +207,12 @@ class TestLayoutBase(TestQgsPalLabeling):
         temp_size = os.path.getsize(pdfpath)
 
         p = QPrinter()
-        p.setOutputFormat(QPrinter.PdfFormat)
+        p.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
         p.setOutputFileName(pdfpath)
         p.setPaperSize(QSizeF(self._c.pageCollection().page(0).sizeWithUnits().width(), self._c.pageCollection().page(0).sizeWithUnits().height()),
-                       QPrinter.Millimeter)
+                       QPrinter.Unit.Millimeter)
         p.setFullPage(True)
-        p.setColorMode(QPrinter.Color)
+        p.setColorMode(QPrinter.ColorMode.Color)
         p.setResolution(int(self._c.renderContext().dpi()))
 
         pdf_p = QPainter(p)

@@ -25,6 +25,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfontutils.h"
+#include "qgscolorutils.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
@@ -401,7 +402,7 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
       ddsLegend->setFont( QgsFontUtils::createFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
                           elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
     }
-    ddsLegend->setTextColor( QgsSymbolLayerUtils::decodeColor( elemTextStyle.attribute( QStringLiteral( "color" ) ) ) );
+    ddsLegend->setTextColor( QgsColorUtils::colorFromString( elemTextStyle.attribute( QStringLiteral( "color" ) ) ) );
     ddsLegend->setTextAlignment( static_cast<Qt::AlignmentFlag>( elemTextStyle.attribute( QStringLiteral( "align" ) ).toInt() ) );
   }
 
@@ -456,7 +457,7 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   elemFont.setAttribute( QStringLiteral( "italic" ), mFont.italic() );
 
   QDomElement elemTextStyle = doc.createElement( QStringLiteral( "text-style" ) );
-  elemTextStyle.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mTextColor ) );
+  elemTextStyle.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mTextColor ) );
   elemTextStyle.setAttribute( QStringLiteral( "align" ), static_cast<int>( mTextAlignment ) );
   elemTextStyle.appendChild( elemFont );
   elem.appendChild( elemTextStyle );

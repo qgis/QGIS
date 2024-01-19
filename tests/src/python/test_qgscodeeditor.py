@@ -56,22 +56,22 @@ class TestQgsCodeEditor(QgisTestCase):
         QgsApplication.setUITheme('Night Mapping')
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#6cbcf7')
 
-        QgsSettings().setValue('codeEditor/colorScheme', 'solarized', QgsSettings.Gui)
+        QgsSettings().setValue('codeEditor/colorScheme', 'solarized', QgsSettings.Section.Gui)
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#859900')
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Background).name(), '#fdf6e3')
-        QgsSettings().setValue('codeEditor/colorScheme', 'solarized_dark', QgsSettings.Gui)
+        QgsSettings().setValue('codeEditor/colorScheme', 'solarized_dark', QgsSettings.Section.Gui)
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#859900')
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Background).name(), '#002b36')
 
-        QgsSettings().setValue('codeEditor/overrideColors', True, QgsSettings.Gui)
+        QgsSettings().setValue('codeEditor/overrideColors', True, QgsSettings.Section.Gui)
         QgsCodeEditor.setColor(QgsCodeEditorColorScheme.ColorRole.Keyword, QColor('#cc11bb'))
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#cc11bb')
 
     def testFontFamily(self):
         f = QgsCodeEditor().getMonospaceFont()
-        self.assertTrue(f.styleHint() & QFont.Monospace)
+        self.assertTrue(f.styleHint() & QFont.StyleHint.Monospace)
 
-        QgsSettings().setValue('codeEditor/fontfamily', getTestFont().family(), QgsSettings.Gui)
+        QgsSettings().setValue('codeEditor/fontfamily', getTestFont().family(), QgsSettings.Section.Gui)
         f = QgsCodeEditor().getMonospaceFont()
         self.assertEqual(f.family(), 'QGIS Vera Sans')
 
@@ -80,7 +80,7 @@ class TestQgsCodeEditor(QgisTestCase):
         f = QgsCodeEditor().getMonospaceFont()
         self.assertEqual(f.pointSize(), 10)
 
-        QgsSettings().setValue('codeEditor/fontsize', 14, QgsSettings.Gui)
+        QgsSettings().setValue('codeEditor/fontsize', 14, QgsSettings.Section.Gui)
         f = QgsCodeEditor().getMonospaceFont()
         self.assertEqual(f.pointSize(), 14)
 

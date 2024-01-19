@@ -30,7 +30,7 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                  QDateTime(),
                  QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54))]
         s = QgsDateTimeStatisticalSummary()
-        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.All)
+        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.Statistic.All)
         s.calculate(dates)
         s2 = QgsDateTimeStatisticalSummary()
         for d in dates:
@@ -60,12 +60,12 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
     def testIndividualStats(self):
         # tests calculation of statistics one at a time, to make sure statistic calculations are not
         # dependent on each other
-        tests = [{'stat': QgsDateTimeStatisticalSummary.Count, 'expected': 9},
-                 {'stat': QgsDateTimeStatisticalSummary.CountDistinct, 'expected': 6},
-                 {'stat': QgsDateTimeStatisticalSummary.CountMissing, 'expected': 2},
-                 {'stat': QgsDateTimeStatisticalSummary.Min, 'expected': QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54))},
-                 {'stat': QgsDateTimeStatisticalSummary.Max, 'expected': QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1))},
-                 {'stat': QgsDateTimeStatisticalSummary.Range, 'expected': QgsInterval(693871147)},
+        tests = [{'stat': QgsDateTimeStatisticalSummary.Statistic.Count, 'expected': 9},
+                 {'stat': QgsDateTimeStatisticalSummary.Statistic.CountDistinct, 'expected': 6},
+                 {'stat': QgsDateTimeStatisticalSummary.Statistic.CountMissing, 'expected': 2},
+                 {'stat': QgsDateTimeStatisticalSummary.Statistic.Min, 'expected': QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54))},
+                 {'stat': QgsDateTimeStatisticalSummary.Statistic.Max, 'expected': QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1))},
+                 {'stat': QgsDateTimeStatisticalSummary.Statistic.Range, 'expected': QgsInterval(693871147)},
                  ]
 
         # we test twice, once with values added as a list and once using values
@@ -100,12 +100,12 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
             self.assertEqual(s3.statistic(t['stat']), t['expected'])
 
             # display name
-            self.assertTrue(len(QgsDateTimeStatisticalSummary.displayName(t['stat'])) > 0)
+            self.assertGreater(len(QgsDateTimeStatisticalSummary.displayName(t['stat'])), 0)
 
     def testVariantStats(self):
         """ test with non-datetime values """
         s = QgsDateTimeStatisticalSummary()
-        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.All)
+        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.Statistic.All)
         s.calculate([QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54)),
                      'asdasd',
                      QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54)),
@@ -129,7 +129,7 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
     def testDates(self):
         """ test with date values """
         s = QgsDateTimeStatisticalSummary()
-        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.All)
+        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.Statistic.All)
         s.calculate([QDate(2015, 3, 4),
                      QDate(2015, 3, 4),
                      QDate(2019, 12, 28),
@@ -152,7 +152,7 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
     def testTimes(self):
         """ test with time values """
         s = QgsDateTimeStatisticalSummary()
-        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.All)
+        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.Statistic.All)
         s.calculate([QTime(11, 3, 4),
                      QTime(15, 3, 4),
                      QTime(19, 12, 28),
@@ -165,8 +165,8 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.countMissing(), 2)
         self.assertEqual(s.min().time(), QTime(8, 1, 2))
         self.assertEqual(s.max().time(), QTime(19, 12, 28))
-        self.assertEqual(s.statistic(QgsDateTimeStatisticalSummary.Min), QTime(8, 1, 2))
-        self.assertEqual(s.statistic(QgsDateTimeStatisticalSummary.Max), QTime(19, 12, 28))
+        self.assertEqual(s.statistic(QgsDateTimeStatisticalSummary.Statistic.Min), QTime(8, 1, 2))
+        self.assertEqual(s.statistic(QgsDateTimeStatisticalSummary.Statistic.Max), QTime(19, 12, 28))
         self.assertEqual(s.range(), QgsInterval(40286))
 
     def testMissing(self):

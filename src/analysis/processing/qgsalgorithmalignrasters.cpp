@@ -116,7 +116,7 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
   {
     QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
-    customCRSWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+    customCRSWkt = crs.toWkt( Qgis::CrsWktVariant::PreferredGdal );
   }
 
   bool hasXValue = parameters.value( QStringLiteral( "CELL_SIZE_X" ) ).isValid();

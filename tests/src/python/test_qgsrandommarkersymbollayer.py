@@ -65,7 +65,7 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
         random_fill = QgsRandomMarkerFillSymbolLayer(10, seed=481523)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
-        marker.setStrokeStyle(Qt.NoPen)
+        marker.setStrokeStyle(Qt.PenStyle.NoPen)
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         random_fill.setSubSymbol(marker_symbol)
@@ -121,7 +121,7 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
 
         # density-based count
         s3.symbolLayer(0).setSeed(1)
-        s3.symbolLayer(0).setCountMethod(QgsRandomMarkerFillSymbolLayer.DensityBasedCount)
+        s3.symbolLayer(0).setCountMethod(QgsRandomMarkerFillSymbolLayer.CountMethod.DensityBasedCount)
         s3.symbolLayer(0).setPointCount(5)
         s3.symbolLayer(0).setDensityArea(250)  # 250 square millimeter
         g = QgsGeometry.fromWkt(
@@ -158,7 +158,7 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
         random_fill = QgsRandomMarkerFillSymbolLayer(12, seed=481523)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
-        marker.setStrokeStyle(Qt.NoPen)
+        marker.setStrokeStyle(Qt.PenStyle.NoPen)
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         random_fill.setSubSymbol(marker_symbol)
@@ -183,7 +183,7 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
         random_fill = QgsRandomMarkerFillSymbolLayer(12, seed=481523)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
-        marker.setStrokeStyle(Qt.NoPen)
+        marker.setStrokeStyle(Qt.PenStyle.NoPen)
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         random_fill.setSubSymbol(marker_symbol)
@@ -209,9 +209,9 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 6)
         marker.setColor(QColor(255, 0, 0))
         marker.setStrokeWidth(1)
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'red', 'green')"))
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'magenta', 'blue')"))
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
@@ -246,9 +246,9 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 6)
         marker.setColor(QColor(255, 0, 0))
         marker.setStrokeWidth(1)
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'red', 'green')"))
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'magenta', 'blue')"))
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
@@ -257,7 +257,7 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(random_fill.clone())
 
-        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
+        s.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
 
         poly_layer.setRenderer(QgsSingleSymbolRenderer(s))
 
@@ -276,7 +276,7 @@ class TestQgsRandomMarkerSymbolLayer(QgisTestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()

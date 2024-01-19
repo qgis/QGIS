@@ -62,12 +62,13 @@ QMenuBar::item:pressed
 /* ==================================================================================== */
 
 QAbstractSpinBox {
-    padding: 0.12em;
+    padding: 0em;
     border: 1px solid @itemdarkbackground;
     background-color: @itembackground;
     selection-background-color: @selection;
     selection-color: @textlight;
     color: @textlight;
+    contents-margin: 0.12em;
 }
 
 QAbstractSpinBox:no-frame {

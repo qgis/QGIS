@@ -63,12 +63,12 @@ class CheckboxesPanel(QWidget):
             self._buttons.append((v, button))
             self._buttonGroup.addButton(button, i)
             layout.addWidget(button, i % rows, i / rows)
-        layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum),
+        layout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
                        0, columns)
         self.setLayout(layout)
 
         if multiple:
-            self.setContextMenuPolicy(Qt.CustomContextMenu)
+            self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.showPopupMenu)
 
     def showPopupMenu(self):

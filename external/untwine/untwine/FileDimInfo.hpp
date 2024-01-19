@@ -19,15 +19,16 @@ namespace untwine
 
 struct FileDimInfo
 {
-    FileDimInfo()
+    FileDimInfo() : shift(-1), extraDim(false)
     {}
 
-    FileDimInfo(const std::string& name) : name(name), extraDim(false)
+    FileDimInfo(const std::string& name) : name(name), shift(-1), extraDim(false)
     {}
 
     std::string name;
     pdal::Dimension::Type type;
     int offset;
+    int shift;
     pdal::Dimension::Id dim;
     bool extraDim;
 };

@@ -40,13 +40,13 @@ class TestQgsZonalStatistics(QgisTestCase):
         TEST_DATA_DIR = unitTestDataPath() + "/zonalstatistics/"
         myTempPath = QDir.tempPath() + "/"
         testDir = QDir(TEST_DATA_DIR)
-        for f in testDir.entryList(QDir.Files):
+        for f in testDir.entryList(QDir.Filter.Files):
             QFile.remove(myTempPath + f)
             QFile.copy(TEST_DATA_DIR + f, myTempPath + f)
 
         myVector = QgsVectorLayer(myTempPath + "polys.shp", "poly", "ogr")
         myRaster = QgsRasterLayer(myTempPath + "edge_problem.asc", "raster", "gdal")
-        zs = QgsZonalStatistics(myVector, myRaster, "", 1, QgsZonalStatistics.All)
+        zs = QgsZonalStatistics(myVector, myRaster, "", 1, QgsZonalStatistics.Statistic.All)
         zs.calculateStatistics(None)
 
         feat = QgsFeature()

@@ -221,6 +221,8 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
 
   private:
 
+    void initStyleModel();
+
     QgsStyle *mStyle = nullptr;
 
     QHash< QgsStyle::StyleEntity, QStringList > mEntityNames;

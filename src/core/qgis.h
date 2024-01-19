@@ -1805,6 +1805,42 @@ class CORE_EXPORT Qgis
     Q_ENUM( CoordinateOrder )
 
     /**
+     * Available identifier string types for representing coordinate reference systems
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystem::IdentifierType
+     *
+     * \since QGIS 3.36
+     */
+    enum class CrsIdentifierType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, IdentifierType ) : int
+      {
+      ShortString, //!< A heavily abbreviated string, for use when a compact representation is required
+      MediumString, //!< A medium-length string, recommended for general purpose use
+      FullString, //!< Full definition -- possibly a very lengthy string, e.g. with no truncation of custom WKT definitions
+    };
+    Q_ENUM( CrsIdentifierType )
+
+    /**
+     * Coordinate reference system WKT formatting variants.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystem::WktVariant
+     *
+     * \since QGIS 3.36
+     */
+    enum class CrsWktVariant SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, WktVariant ) : int
+      {
+      Wkt1Gdal SIP_MONKEYPATCH_COMPAT_NAME( WKT1_GDAL ), //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
+      Wkt1Esri SIP_MONKEYPATCH_COMPAT_NAME( WKT1_ESRI ), //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
+      Wkt2_2015 SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2015 ), //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
+      Wkt2_2015Simplified SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2015_SIMPLIFIED ), //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
+      Wkt2_2019  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019 ), //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      Wkt2_2019Simplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019_SIMPLIFIED ), //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
+      Preferred SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED ) = Wkt2_2019, //!< Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
+      PreferredSimplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_SIMPLIFIED ) = Wkt2_2019Simplified, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+      PreferredGdal SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_GDAL ) = Wkt2_2019, //!< Preferred format for conversion of CRS to WKT for use with the GDAL library.
+    };
+    Q_ENUM( CrsWktVariant )
+
+    /**
      * Cartesian axes.
      *
      * \since QGIS 3.34
@@ -2854,6 +2890,28 @@ class CORE_EXPORT Qgis
     Q_ENUM( PlotToolFlag )
     Q_DECLARE_FLAGS( PlotToolFlags, PlotToolFlag )
     Q_FLAG( PlotToolFlags )
+
+
+    /**
+     * 3D point shape types.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape
+     *
+     * \since QGIS 3.36
+     */
+    enum class Point3DShape : int
+    {
+      Cylinder, //!< Cylinder
+      Sphere, //!< Sphere
+      Cone, //!< Cone
+      Cube, //!< Cube
+      Torus, //!< Torus
+      Plane, //!< Flat plane
+      ExtrudedText, //!< Extruded text
+      Model, //!< Model
+      Billboard, //!< Billboard
+    };
+    Q_ENUM( Point3DShape )
 
     /**
      * Light source types for 3D scenes.
@@ -4419,6 +4477,28 @@ inline bool qgsNanCompatibleEquals( double a, double b )
   return a == b;
 }
 
+#ifndef SIP_RUN
+
+/**
+ * Compare two numbers of type T (but allow some difference)
+ * \param a first number
+ * \param b second number
+ * \param epsilon maximum difference allowable between numbers
+ * \since 3.36
+ */
+template<typename T>
+inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )
+{
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
+
+  const T diff = a - b;
+  return diff >= -epsilon && diff <= epsilon;
+}
+#endif
+
 /**
  * Compare two doubles (but allow some difference)
  * \param a first double
@@ -4427,13 +4507,7 @@ inline bool qgsNanCompatibleEquals( double a, double b )
  */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
-  const bool aIsNan = std::isnan( a );
-  const bool bIsNan = std::isnan( b );
-  if ( aIsNan || bIsNan )
-    return aIsNan && bIsNan;
-
-  const double diff = a - b;
-  return diff >= -epsilon && diff <= epsilon;
+  return qgsNumberNear<double>( a, b, epsilon );
 }
 
 /**
@@ -4444,13 +4518,7 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
-  const bool aIsNan = std::isnan( a );
-  const bool bIsNan = std::isnan( b );
-  if ( aIsNan || bIsNan )
-    return aIsNan && bIsNan;
-
-  const float diff = a - b;
-  return diff >= -epsilon && diff <= epsilon;
+  return qgsNumberNear<float>( a, b, epsilon );
 }
 
 //! Compare two doubles using specified number of significant digits

@@ -74,7 +74,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         settings.setSourceItem(shape)
         self.assertEqual(len(spy), 6)
         shape.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         del shape
         self.assertIsNone(settings.sourceItem())
 
@@ -96,7 +96,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         settings.setEnabled(True)
         self.assertTrue(settings.isActive())
         shape.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         del shape
         self.assertFalse(settings.isActive())
 
@@ -158,7 +158,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         map.attemptSetSceneRect(QRectF(10, 20, 100, 80))
         map.zoomToExtent(QgsRectangle(50, 40, 100, 200))
         l.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Triangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Triangle)
         shape.attemptSetSceneRect(QRectF(20, 30, 70, 50))
 
         settings = map.itemClippingSettings()
@@ -182,7 +182,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         map.attemptSetSceneRect(QRectF(10, 20, 100, 80))
         map.zoomToExtent(QgsRectangle(50, 40, 100, 200))
         l.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Triangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Triangle)
         shape.attemptSetSceneRect(QRectF(20, 30, 70, 50))
 
         settings = map.itemClippingSettings()

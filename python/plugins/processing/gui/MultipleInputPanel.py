@@ -61,7 +61,7 @@ class MultipleInputPanel(BASE, WIDGET):
             self.tr('{0} elements selected').format(len(self.selectedoptions)))
 
     def showSelectionDialog(self):
-        if self.datatype == QgsProcessing.TypeFile:
+        if self.datatype == QgsProcessing.SourceType.TypeFile:
             dlg = MultipleFileInputDialog(self.selectedoptions)
         else:
             dlg = MultipleInputDialog(self.options, self.selectedoptions, datatype=self.datatype)

@@ -818,6 +818,7 @@ class TestQgsProcessing: public QgsTest
     void formatHelp();
     void preprocessParameters();
     void guiDefaultParameterValues();
+    void testOutputs();
 
   private:
 
@@ -1541,14 +1542,17 @@ void TestQgsProcessing::mapLayers()
   // Test layers from a string with parameters
   const QString osmFilePath = testDataDir + "openstreetmap/testdata.xml";
   std::unique_ptr< QgsVectorLayer > osm( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath, QgsCoordinateTransformContext() ) ) );
+  QVERIFY( osm );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), Qgis::GeometryType::Point );
 
   osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3", QgsCoordinateTransformContext() ) ) );
+  QVERIFY( osm );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), Qgis::GeometryType::Polygon );
 
   osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null", QgsCoordinateTransformContext() ) ) );
+  QVERIFY( osm );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), Qgis::GeometryType::Polygon );
   QCOMPARE( osm->subsetString(), QStringLiteral( "\"building\" is not null" ) );
@@ -1677,6 +1681,25 @@ void TestQgsProcessing::mapLayerFromString()
   // since it's now in temporary store, should be accessible even if we deny loading new layers
   QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );
   QCOMPARE( c.getMapLayer( newRaster ), loadedLayer );
+
+  // try something which looks like a valid filename, but doesn't actually exist
+  loadedLayer = QgsProcessingUtils::mapLayerFromString( testDataDir + "looks_like_a_filename_but_does_not_exist.tif", c, true );
+  QVERIFY( !loadedLayer );
+
+  // using GDAL's virtual I/O (/vsizip/, etc.)
+  loadedLayer = QgsProcessingUtils::mapLayerFromString( "/vsizip/" + testDataDir + "zip/points2.zip/points.shp", c, true );
+  QVERIFY( loadedLayer );
+  QVERIFY( loadedLayer->isValid() );
+  QCOMPARE( loadedLayer->type(), Qgis::LayerType::Vector );
+  // should now be in temporary store
+  QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
+
+  loadedLayer = QgsProcessingUtils::mapLayerFromString( "/vsizip/" + testDataDir + "zip/landsat_b1.zip/landsat_b1.tif", c, true );
+  QVERIFY( loadedLayer );
+  QVERIFY( loadedLayer->isValid() );
+  QCOMPARE( loadedLayer->type(), Qgis::LayerType::Raster );
+  // should now be in temporary store
+  QCOMPARE( c.temporaryLayerStore()->mapLayer( loadedLayer->id() ), loadedLayer );
 }
 
 void TestQgsProcessing::algorithm()
@@ -2395,6 +2418,7 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( sink->addFeature( f ) );
   sink.reset( nullptr );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
+  QVERIFY( layer );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->wkbType(), Qgis::WkbType::Polygon );
   QVERIFY( layer->getFeatures().nextFeature( f ) );
@@ -12780,6 +12804,208 @@ void TestQgsProcessing::guiDefaultParameterValues()
 
   s.remove( QStringLiteral( "/Processing/DefaultGuiParam/testAlgorithm/testIntegerParameter" ) );
   s.remove( QStringLiteral( "/Processing/DefaultGuiParam/testAlgorithm/testStringParameter" ) );
+}
+
+void TestQgsProcessing::testOutputs()
+{
+  QgsProcessingContext context;
+  bool ok = false;
+  QgsProcessingOutputVectorLayer outputVectorLayer( QStringLiteral( "vl" ) );
+  QCOMPARE( outputVectorLayer.valueAsString( QStringLiteral( "/home/test/test.shp" ), context, ok ),
+            QStringLiteral( "/home/test/test.shp" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVectorLayer.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputRasterLayer outputRasterLayer( QStringLiteral( "rl" ) );
+  QCOMPARE( outputRasterLayer.valueAsString( QStringLiteral( "/home/test/test.tiff" ), context, ok ),
+            QStringLiteral( "/home/test/test.tiff" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputRasterLayer.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputPointCloudLayer outputPointCloudLayer( QStringLiteral( "pcl" ) );
+  QCOMPARE( outputPointCloudLayer.valueAsString( QStringLiteral( "/home/test/test.laz" ), context, ok ),
+            QStringLiteral( "/home/test/test.laz" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputPointCloudLayer.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputVectorTileLayer outputVectorTileLayer( QStringLiteral( "vtl" ) );
+  QCOMPARE( outputVectorTileLayer.valueAsString( QStringLiteral( "/home/test/test.mbtiles" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVectorTileLayer.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputMapLayer outputMapLayer( QStringLiteral( "ml" ) );
+  QCOMPARE( outputMapLayer.valueAsString( QStringLiteral( "/home/test/test.mbtiles" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputMapLayer.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputMultipleLayers outputMultipleLayers( QStringLiteral( "ml" ) );
+  QCOMPARE( outputMultipleLayers.valueAsString( QStringLiteral( "/home/test/test.mbtiles" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputMultipleLayers.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  QCOMPARE( outputMultipleLayers.valueAsString( QStringList() << QStringLiteral( "/home/test/test.mbtiles" )
+            << QStringLiteral( "/home/test/test.shp" )
+            << QStringLiteral( "/home/test/test.tif" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles, /home/test/test.shp, /home/test/test.tif" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputMultipleLayers.valueAsString( QVariantList() << QStringLiteral( "/home/test/test.mbtiles" )
+            << QStringLiteral( "/home/test/test.shp" )
+            << QStringLiteral( "/home/test/test.tif" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles, /home/test/test.shp, /home/test/test.tif" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputHtml outputHtml( QStringLiteral( "html" ) );
+  QCOMPARE( outputHtml.valueAsString( QStringLiteral( "/home/test/test.html" ), context, ok ),
+            QStringLiteral( "/home/test/test.html" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputHtml.valueAsFormattedString( QStringLiteral( "/home/test/test.html" ), context, ok ),
+            QStringLiteral( "<a href=\"file:///home/test/test.html\">/home/test/test.html</a>" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputHtml.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputFile outputFile( QStringLiteral( "file" ) );
+  QCOMPARE( outputFile.valueAsString( QStringLiteral( "/home/test/test.txt" ), context, ok ),
+            QStringLiteral( "/home/test/test.txt" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputFile.valueAsFormattedString( QStringLiteral( "/home/test/test.txt" ), context, ok ),
+            QStringLiteral( "<a href=\"file:///home/test/test.txt\">/home/test/test.txt</a>" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputFile.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputFolder outputFolder( QStringLiteral( "folder" ) );
+  QCOMPARE( outputFolder.valueAsString( QStringLiteral( "/home/test" ), context, ok ),
+            QStringLiteral( "/home/test" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputFolder.valueAsFormattedString( QStringLiteral( "/home/test" ), context, ok ),
+            QStringLiteral( "<a href=\"file:///home/test\">/home/test</a>" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputFolder.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputNumber outputNumber( QStringLiteral( "number" ) );
+  QCOMPARE( outputNumber.valueAsString( QStringLiteral( "xxx" ), context, ok ),
+            QStringLiteral( "xxx" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputNumber.valueAsString( 5, context, ok ),
+            QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputNumber.valueAsString( 5.5, context, ok ),
+            QStringLiteral( "5.5" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputNumber.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputString outputString( QStringLiteral( "string" ) );
+  QCOMPARE( outputString.valueAsString( QStringLiteral( "lalala" ), context, ok ),
+            QStringLiteral( "lalala" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputString.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputBoolean outputBoolean( QStringLiteral( "string" ) );
+  QCOMPARE( outputBoolean.valueAsString( QStringLiteral( "lalala" ), context, ok ),
+            QStringLiteral( "lalala" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputBoolean.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputBoolean.valueAsString( QVariant( true ), context, ok ),
+            QStringLiteral( "True" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputBoolean.valueAsString( QVariant( false ), context, ok ),
+            QStringLiteral( "False" ) );
+  QVERIFY( ok );
+  ok = false;
+
+  QgsProcessingOutputVariant outputVariant( QStringLiteral( "variant" ) );
+  QCOMPARE( outputVariant.valueAsString( QStringLiteral( "lalala" ), context, ok ),
+            QStringLiteral( "lalala" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( QVariant(), context, ok ),
+            QStringLiteral( "NULL" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( QVariant( true ), context, ok ),
+            QStringLiteral( "True" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( QVariant( false ), context, ok ),
+            QStringLiteral( "False" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( 5, context, ok ),
+            QStringLiteral( "5" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( 5.5, context, ok ),
+            QStringLiteral( "5.5" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( QStringList() << QStringLiteral( "/home/test/test.mbtiles" )
+                                         << QStringLiteral( "/home/test/test.shp" )
+                                         << QStringLiteral( "/home/test/test.tif" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles, /home/test/test.shp, /home/test/test.tif" ) );
+  QVERIFY( ok );
+  ok = false;
+  QCOMPARE( outputVariant.valueAsString( QVariantList() << QStringLiteral( "/home/test/test.mbtiles" )
+                                         << QStringLiteral( "/home/test/test.shp" )
+                                         << QStringLiteral( "/home/test/test.tif" ), context, ok ),
+            QStringLiteral( "/home/test/test.mbtiles, /home/test/test.shp, /home/test/test.tif" ) );
+  QVERIFY( ok );
+  ok = false;
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

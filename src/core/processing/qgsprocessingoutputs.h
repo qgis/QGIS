@@ -21,6 +21,9 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessing.h"
+
+class QgsProcessingContext;
+
 //
 // Output definitions
 //
@@ -132,6 +135,36 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      */
     bool autoCreated() const { return mAutoCreated; }
 
+    /**
+     * Returns a string version of the parameter output \a value (if possible).
+     *
+     * \param value value to convert
+     * \param context processing context
+     * \param ok will be set to TRUE if value could be represented as a string.
+     * \returns value converted to string
+     *
+     * \see valueAsFormattedString()
+     *
+     * \since QGIS 3.36
+     */
+    virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
+    /**
+     * Returns a HTML string version of the parameter output \a value (if possible).
+     *
+     * By default this will return the same value as valueAsString().
+     *
+     * \param value value to convert
+     * \param context processing context
+     * \param ok will be set to TRUE if value could be represented as a string.
+     * \returns value converted to string
+     *
+     * \see valueAsString()
+     *
+     * \since QGIS 3.36
+     */
+    virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
+
   protected:
 
     //! Output name
@@ -171,6 +204,7 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     static QString typeName() { return QStringLiteral( "outputLayer" ); }
 
     QString type() const override;
+
 };
 
 /**
@@ -282,6 +316,8 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
      */
     static QString typeName() { return QStringLiteral( "outputMultilayer" ); }
     QString type() const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -304,6 +340,7 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputHtml" ); }
     QString type() const override { return typeName(); }
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 
@@ -327,6 +364,8 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
      */
     static QString typeName() { return QStringLiteral( "outputVariant" ); }
     QString type() const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -349,6 +388,8 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputNumber" ); }
     QString type() const override { return typeName(); }
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -393,6 +434,7 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
      */
     static QString typeName() { return QStringLiteral( "outputBoolean" ); }
     QString type() const override { return typeName(); }
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 /**
@@ -416,6 +458,8 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputFolder" ); }
     QString type() const override { return typeName(); }
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**
@@ -438,6 +482,8 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
     QString type() const override { return typeName(); }
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+
 };
 
 /**

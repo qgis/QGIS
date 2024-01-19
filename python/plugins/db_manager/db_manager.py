@@ -49,7 +49,7 @@ class DBManager(QMainWindow):
 
     def __init__(self, iface, parent=None):
         QMainWindow.__init__(self, parent)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setupUi()
         self.iface = iface
 
@@ -79,7 +79,7 @@ class DBManager(QMainWindow):
         QMainWindow.closeEvent(self, e)
 
     def refreshItem(self, item=None):
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 if item is None:
                     item = self.tree.currentItem()
@@ -88,7 +88,7 @@ class DBManager(QMainWindow):
                 DlgDbError.showError(e, self)
 
     def itemChanged(self, item):
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 self.reloadButtons()
                 # Force-reload information on the layer
@@ -117,7 +117,7 @@ class DBManager(QMainWindow):
             self._lastDb.registerAllActions(self)
 
     def tabChanged(self, index):
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 self.refreshTabs()
             except BaseError as e:
@@ -154,7 +154,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     Qgis.Info, self.iface.messageTimeout())
+                                     Qgis.MessageLevel.Info, self.iface.messageTimeout())
             return
 
         outUri = db.uri()
@@ -170,7 +170,7 @@ class DBManager(QMainWindow):
     def exportActionSlot(self):
         table = self.tree.currentTable()
         if table is None:
-            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), Qgis.Info,
+            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), Qgis.MessageLevel.Info,
                                      self.iface.messageTimeout())
             return
 
@@ -178,7 +178,7 @@ class DBManager(QMainWindow):
         if inLayer.type() != QgsMapLayerType.VectorLayer:
             self.infoBar.pushMessage(
                 self.tr("Select a vector or a tabular layer you want export."),
-                Qgis.Warning, self.iface.messageTimeout())
+                Qgis.MessageLevel.Warning, self.iface.messageTimeout())
             return
 
         from .dlg_export_vector import DlgExportVector
@@ -192,7 +192,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     Qgis.Info, self.iface.messageTimeout())
+                                     Qgis.MessageLevel.Info, self.iface.messageTimeout())
             # force displaying of the message, it appears on the first tab (i.e. Info)
             self.tabs.setCurrentIndex(0)
             return
@@ -300,7 +300,7 @@ class DBManager(QMainWindow):
                 This method takes care to override and restore the cursor,
                 but also catches exceptions and displays the error dialog.
         """
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 callback(self.tree.currentItem(), self.sender(), self, *params)
             except BaseError as e:
@@ -369,9 +369,9 @@ class DBManager(QMainWindow):
                 widget.deleteLater()
 
     def toolBarOrientation(self):
-        button_style = Qt.ToolButtonIconOnly
-        if self.toolBar.orientation() == Qt.Horizontal:
-            button_style = Qt.ToolButtonTextBesideIcon
+        button_style = Qt.ToolButtonStyle.ToolButtonIconOnly
+        if self.toolBar.orientation() == Qt.Orientation.Horizontal:
+            button_style = Qt.ToolButtonStyle.ToolButtonTextBesideIcon
 
         widget = self.toolBar.widgetForAction(self.actionImport)
         widget.setToolButtonStyle(button_style)
@@ -399,28 +399,28 @@ class DBManager(QMainWindow):
         self.tabs.tabCloseRequested.connect(self.close_tab)
         tabbar = self.tabs.tabBar()
         for i in range(3):
-            btn = tabbar.tabButton(i, QTabBar.RightSide) if tabbar.tabButton(i, QTabBar.RightSide) else tabbar.tabButton(i, QTabBar.LeftSide)
+            btn = tabbar.tabButton(i, QTabBar.ButtonPosition.RightSide) if tabbar.tabButton(i, QTabBar.ButtonPosition.RightSide) else tabbar.tabButton(i, QTabBar.ButtonPosition.LeftSide)
             btn.resize(0, 0)
             btn.hide()
 
         # Creates layout for message bar
         self.layout = QGridLayout(self.info)
         self.layout.setContentsMargins(0, 0, 0, 0)
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.layout.addItem(spacerItem, 1, 0, 1, 1)
         # init messageBar instance
         self.infoBar = QgsMessageBar(self.info)
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
         # create database tree
         self.dock = QDockWidget(self.tr("Providers"), self)
         self.dock.setObjectName("DB_Manager_DBView")
-        self.dock.setFeatures(QDockWidget.DockWidgetMovable)
+        self.dock.setFeatures(QDockWidget.DockWidgetFeature.DockWidgetMovable)
         self.tree = DBTree(self)
         self.dock.setWidget(self.tree)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.dock)
+        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dock)
 
         # create status bar
         self.statusBar = QStatusBar(self)

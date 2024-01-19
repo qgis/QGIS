@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
 #include "qgsunittypes.h"
+#include "qgscolorutils.h"
 
 
 void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
@@ -507,7 +508,7 @@ QDomElement QgsInterpolatedLineColor::writeXml( QDomDocument &doc, const QgsRead
 {
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-stroke-color" ) );
 
-  elem.setAttribute( QStringLiteral( "single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
+  elem.setAttribute( QStringLiteral( "single-color" ), QgsColorUtils::colorToString( mSingleColor ) );
   elem.setAttribute( QStringLiteral( "coloring-method" ), mColoringMethod );
   elem.appendChild( mColorRampShader.writeXml( doc ) );
 
@@ -519,7 +520,7 @@ void QgsInterpolatedLineColor::readXml( const QDomElement &elem, const QgsReadWr
   QDomElement shaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( shaderElem );
 
-  mSingleColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "single-color" ) ) );
+  mSingleColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "single-color" ) ) );
   mColoringMethod = static_cast<QgsInterpolatedLineColor::ColoringMethod>(
                       elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
 }
@@ -855,7 +856,7 @@ QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &prope
     symbolLayer->mLineRender.mStrokeWidth.setIsVariableWidth( properties.value( QStringLiteral( "width_varying_is_variable_width" ) ).toInt() );
 
   if ( properties.contains( QStringLiteral( "single_color" ) ) )
-    symbolLayer->mLineRender.mStrokeColoring.setColor( QgsSymbolLayerUtils::decodeColor( properties.value( QStringLiteral( "single_color" ) ).toString() ) );
+    symbolLayer->mLineRender.mStrokeColoring.setColor( QgsColorUtils::colorFromString( properties.value( QStringLiteral( "single_color" ) ).toString() ) );
   if ( properties.contains( QStringLiteral( "color_ramp_shader" ) ) )
     symbolLayer->mLineRender.mStrokeColoring.setColor( createColorRampShaderFromProperties( properties.value( QStringLiteral( "color_ramp_shader" ) ) ) );
   if ( properties.contains( QStringLiteral( "coloring_method" ) ) )
@@ -887,7 +888,7 @@ QVariantMap QgsInterpolatedLineSymbolLayer::properties() const
 
   // Color varying
   props.insert( QStringLiteral( "coloring_method" ), mLineRender.mStrokeColoring.coloringMethod() );
-  props.insert( QStringLiteral( "single_color" ), QgsSymbolLayerUtils::encodeColor( mLineRender.mStrokeColoring.singleColor() ) );
+  props.insert( QStringLiteral( "single_color" ), QgsColorUtils::colorToString( mLineRender.mStrokeColoring.singleColor() ) );
   props.insert( QStringLiteral( "color_ramp_shader" ), colorRampShaderProperties() );
 
   return props;
@@ -1025,7 +1026,7 @@ QVariant QgsInterpolatedLineSymbolLayer::colorRampShaderProperties() const
   {
     QVariantMap itemVar;
     itemVar[QStringLiteral( "label" )] = item.label;
-    itemVar[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( item.color );
+    itemVar[QStringLiteral( "color" )] = QgsColorUtils::colorToString( item.color );
     itemVar[QStringLiteral( "value" )] = item.value;
     colorRampItemListVariant.append( itemVar );
   }
@@ -1074,7 +1075,7 @@ QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProp
           continue;
 
         item.label = itemVarMap.value( QStringLiteral( "label" ) ).toString();
-        item.color = QgsSymbolLayerUtils::decodeColor( itemVarMap.value( QStringLiteral( "color" ) ).toString() );
+        item.color = QgsColorUtils::colorFromString( itemVarMap.value( QStringLiteral( "color" ) ).toString() );
         item.value = itemVarMap.value( QStringLiteral( "value" ) ).toDouble();
 
         colorRampItemList.append( item );

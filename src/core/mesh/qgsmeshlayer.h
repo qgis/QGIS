@@ -42,6 +42,7 @@ class QgsMeshDatasetGroupStore;
 class QgsMeshEditor;
 class QgsMeshEditingError;
 class QgsMeshLayerElevationProperties;
+class QgsAbstractMeshLayerLabeling;
 
 /**
  * \ingroup core
@@ -881,6 +882,53 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     */
     int meshEdgeCount() const;
 
+    /**
+     * Returns whether the layer contains labels which are enabled and should be drawn.
+     * \returns TRUE if layer contains enabled labels
+     *
+     * \see setLabelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.36
+     */
+    bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is TRUE and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.36
+     */
+    void setLabelsEnabled( bool enabled );
+
+    /**
+     * Access to const labeling configuration. May be NULLPTR if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
+     *
+     * \see labelsEnabled()
+     * \see setLabelsEnabled()
+     * \since QGIS 3.36
+     */
+    const QgsAbstractMeshLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
+
+    /**
+     * Access to labeling configuration. May be NULLPTR if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
+     * \see labelsEnabled()
+     * \since QGIS 3.36
+     */
+    QgsAbstractMeshLayerLabeling *labeling() { return mLabeling; }
+
+    /**
+     * Sets labeling configuration. Takes ownership of the object.
+     * \since QGIS 3.36
+     */
+    void setLabeling( QgsAbstractMeshLayerLabeling *labeling SIP_TRANSFER );
+
+
   public slots:
 
     /**
@@ -990,6 +1038,12 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     int mStaticVectorDatasetIndex = 0;
 
     QgsMeshEditor *mMeshEditor = nullptr;
+
+    //! True if labels are enabled
+    bool mLabelsEnabled = false;
+
+    //! Labeling configuration
+    QgsAbstractMeshLayerLabeling *mLabeling = nullptr;
 
     int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 

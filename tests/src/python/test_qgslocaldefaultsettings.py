@@ -42,23 +42,23 @@ class TestQgsLocalDefaultSettings(QgisTestCase):
 
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(9)
-        format.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
 
         s.setBearingFormat(format)
         self.assertEqual(s.bearingFormat().numberDecimalPlaces(), 9)
-        self.assertEqual(s.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
+        self.assertEqual(s.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
 
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(3)
-        format.setDirectionFormat(QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
         s.setBearingFormat(format)
         self.assertEqual(s.bearingFormat().numberDecimalPlaces(), 3)
-        self.assertEqual(s.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+        self.assertEqual(s.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
 
         # new settings object, should persist.
         s2 = QgsLocalDefaultSettings()
         self.assertEqual(s2.bearingFormat().numberDecimalPlaces(), 3)
-        self.assertEqual(s2.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
+        self.assertEqual(s2.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
 
     def testGeographicCoordinateFormat(self):
         s = QgsLocalDefaultSettings()

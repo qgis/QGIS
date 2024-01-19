@@ -190,7 +190,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
                     QCoreApplication.translate('ModelerGraphicItem', 'Algorithm “{}” is invalid').format(alg.description()),
                     self.tr('Algorithm is Invalid'),
                     QCoreApplication.translate('ModelerGraphicItem', "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)),
-                    level=Qgis.Warning
+                    level=Qgis.MessageLevel.Warning
                 )
             else:
                 self.scene().messageBar().clearWidgets()
@@ -231,7 +231,7 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             model_output.setName(dlg.param.description())
             model_output.setDescription(dlg.param.description())
             model_output.setDefaultValue(dlg.param.defaultValue())
-            model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
+            model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional))
             model_output.comment().setDescription(dlg.comments())
             model_output.comment().setColor(dlg.commentColor())
             model_outputs[model_output.name()] = model_output

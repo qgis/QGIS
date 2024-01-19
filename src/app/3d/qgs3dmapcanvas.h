@@ -26,11 +26,6 @@
 #include "qgscameracontroller.h"
 #include "qgsrectangle.h"
 
-namespace Qt3DExtras
-{
-  class Qt3DWindow;
-}
-
 namespace Qt3DLogic
 {
   class QFrameAction;

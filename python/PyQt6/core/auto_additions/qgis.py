@@ -1779,6 +1779,61 @@ Qgis.CoordinateOrder.YX.__doc__ = "Northing/Easting (or Latitude/Longitude for g
 Qgis.CoordinateOrder.__doc__ = "Order of coordinates.\n\n.. versionadded:: 3.26\n\n" + '* ``Default``: ' + Qgis.CoordinateOrder.Default.__doc__ + '\n' + '* ``XY``: ' + Qgis.CoordinateOrder.XY.__doc__ + '\n' + '* ``YX``: ' + Qgis.CoordinateOrder.YX.__doc__
 # --
 Qgis.CoordinateOrder.baseClass = Qgis
+QgsCoordinateReferenceSystem.IdentifierType = Qgis.CrsIdentifierType
+# monkey patching scoped based enum
+QgsCoordinateReferenceSystem.ShortString = Qgis.CrsIdentifierType.ShortString
+QgsCoordinateReferenceSystem.ShortString.is_monkey_patched = True
+QgsCoordinateReferenceSystem.ShortString.__doc__ = "A heavily abbreviated string, for use when a compact representation is required"
+QgsCoordinateReferenceSystem.MediumString = Qgis.CrsIdentifierType.MediumString
+QgsCoordinateReferenceSystem.MediumString.is_monkey_patched = True
+QgsCoordinateReferenceSystem.MediumString.__doc__ = "A medium-length string, recommended for general purpose use"
+QgsCoordinateReferenceSystem.FullString = Qgis.CrsIdentifierType.FullString
+QgsCoordinateReferenceSystem.FullString.is_monkey_patched = True
+QgsCoordinateReferenceSystem.FullString.__doc__ = "Full definition -- possibly a very lengthy string, e.g. with no truncation of custom WKT definitions"
+Qgis.CrsIdentifierType.__doc__ = "Available identifier string types for representing coordinate reference systems\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsCoordinateReferenceSystem`.IdentifierType\n\n.. versionadded:: 3.36\n\n" + '* ``ShortString``: ' + Qgis.CrsIdentifierType.ShortString.__doc__ + '\n' + '* ``MediumString``: ' + Qgis.CrsIdentifierType.MediumString.__doc__ + '\n' + '* ``FullString``: ' + Qgis.CrsIdentifierType.FullString.__doc__
+# --
+Qgis.CrsIdentifierType.baseClass = Qgis
+QgsCoordinateReferenceSystem.WktVariant = Qgis.CrsWktVariant
+# monkey patching scoped based enum
+QgsCoordinateReferenceSystem.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1Gdal
+QgsCoordinateReferenceSystem.WktVariant.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1Gdal
+QgsCoordinateReferenceSystem.WKT1_GDAL.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT1_GDAL.__doc__ = "WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees."
+QgsCoordinateReferenceSystem.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1Esri
+QgsCoordinateReferenceSystem.WktVariant.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1Esri
+QgsCoordinateReferenceSystem.WKT1_ESRI.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT1_ESRI.__doc__ = "WKT1 as traditionally output by ESRI software, deriving from OGC 99-049."
+QgsCoordinateReferenceSystem.WKT2_2015 = Qgis.CrsWktVariant.Wkt2_2015
+QgsCoordinateReferenceSystem.WktVariant.WKT2_2015 = Qgis.CrsWktVariant.Wkt2_2015
+QgsCoordinateReferenceSystem.WKT2_2015.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT2_2015.__doc__ = "Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names."
+QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2015Simplified
+QgsCoordinateReferenceSystem.WktVariant.WKT2_2015_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2015Simplified
+QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED.__doc__ = "Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure.METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis."
+QgsCoordinateReferenceSystem.WKT2_2019 = Qgis.CrsWktVariant.Wkt2_2019
+QgsCoordinateReferenceSystem.WktVariant.WKT2_2019 = Qgis.CrsWktVariant.Wkt2_2019
+QgsCoordinateReferenceSystem.WKT2_2019.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT2_2019.__doc__ = "Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS."
+QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2019Simplified
+QgsCoordinateReferenceSystem.WktVariant.WKT2_2019_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2019Simplified
+QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED.__doc__ = "WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED"
+QgsCoordinateReferenceSystem.WKT_PREFERRED = Qgis.CrsWktVariant.Preferred
+QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED = Qgis.CrsWktVariant.Preferred
+QgsCoordinateReferenceSystem.WKT_PREFERRED.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT_PREFERRED.__doc__ = "Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions."
+QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED = Qgis.CrsWktVariant.PreferredSimplified
+QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_SIMPLIFIED = Qgis.CrsWktVariant.PreferredSimplified
+QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.__doc__ = "Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions."
+QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGdal
+QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGdal
+QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL.is_monkey_patched = True
+QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL.__doc__ = "Preferred format for conversion of CRS to WKT for use with the GDAL library."
+Qgis.CrsWktVariant.__doc__ = "Coordinate reference system WKT formatting variants.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsCoordinateReferenceSystem`.WktVariant\n\n.. versionadded:: 3.36\n\n" + '* ``WKT1_GDAL``: ' + Qgis.CrsWktVariant.Wkt1Gdal.__doc__ + '\n' + '* ``WKT1_ESRI``: ' + Qgis.CrsWktVariant.Wkt1Esri.__doc__ + '\n' + '* ``WKT2_2015``: ' + Qgis.CrsWktVariant.Wkt2_2015.__doc__ + '\n' + '* ``WKT2_2015_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2015Simplified.__doc__ + '\n' + '* ``WKT2_2019``: ' + Qgis.CrsWktVariant.Wkt2_2019.__doc__ + '\n' + '* ``WKT2_2019_SIMPLIFIED``: ' + Qgis.CrsWktVariant.Wkt2_2019Simplified.__doc__ + '\n' + '* ``WKT_PREFERRED``: ' + Qgis.CrsWktVariant.Preferred.__doc__ + '\n' + '* ``WKT_PREFERRED_SIMPLIFIED``: ' + Qgis.CrsWktVariant.PreferredSimplified.__doc__ + '\n' + '* ``WKT_PREFERRED_GDAL``: ' + Qgis.CrsWktVariant.PreferredGdal.__doc__
+# --
+Qgis.CrsWktVariant.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.Axis.X.__doc__ = "X-axis"
 Qgis.Axis.Y.__doc__ = "Y-axis"
@@ -2779,6 +2834,19 @@ Qgis.PlotToolFlag.baseClass = Qgis
 Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
+Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
+Qgis.Point3DShape.Cone.__doc__ = "Cone"
+Qgis.Point3DShape.Cube.__doc__ = "Cube"
+Qgis.Point3DShape.Torus.__doc__ = "Torus"
+Qgis.Point3DShape.Plane.__doc__ = "Flat plane"
+Qgis.Point3DShape.ExtrudedText.__doc__ = "Extruded text"
+Qgis.Point3DShape.Model.__doc__ = "Model"
+Qgis.Point3DShape.Billboard.__doc__ = "Billboard"
+Qgis.Point3DShape.__doc__ = "3D point shape types.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsPoint3DSymbol`.Shape\n\n.. versionadded:: 3.36\n\n" + '* ``Cylinder``: ' + Qgis.Point3DShape.Cylinder.__doc__ + '\n' + '* ``Sphere``: ' + Qgis.Point3DShape.Sphere.__doc__ + '\n' + '* ``Cone``: ' + Qgis.Point3DShape.Cone.__doc__ + '\n' + '* ``Cube``: ' + Qgis.Point3DShape.Cube.__doc__ + '\n' + '* ``Torus``: ' + Qgis.Point3DShape.Torus.__doc__ + '\n' + '* ``Plane``: ' + Qgis.Point3DShape.Plane.__doc__ + '\n' + '* ``ExtrudedText``: ' + Qgis.Point3DShape.ExtrudedText.__doc__ + '\n' + '* ``Model``: ' + Qgis.Point3DShape.Model.__doc__ + '\n' + '* ``Billboard``: ' + Qgis.Point3DShape.Billboard.__doc__
+# --
+Qgis.Point3DShape.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"

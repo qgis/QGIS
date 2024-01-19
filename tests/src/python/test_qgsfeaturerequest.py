@@ -40,7 +40,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
     def testConstructors(self):
         req = QgsFeatureRequest()
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -48,7 +48,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertTrue(req.referenceGeometry().isNull())
 
         req = QgsFeatureRequest(55)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), 55)
         self.assertFalse(req.filterFids())
@@ -56,7 +56,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertTrue(req.referenceGeometry().isNull())
 
         req = QgsFeatureRequest([55, 56])
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFids)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFids)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), -1)
         self.assertCountEqual(req.filterFids(), [55, 56])
@@ -64,7 +64,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertTrue(req.referenceGeometry().isNull())
 
         req = QgsFeatureRequest(QgsRectangle(55, 56, 57, 58))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterFid(), -1)
         self.assertCountEqual(req.filterFids(), [])
@@ -73,7 +73,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
     def testFilterRect(self):
         req = QgsFeatureRequest().setFilterRect(QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -82,7 +82,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # setting filter rect should not change attribute filter
         req = QgsFeatureRequest().setFilterFid(5).setFilterRect(QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterFid(), 5)
         self.assertFalse(req.filterFids())
@@ -90,7 +90,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # setting attribute filter should not change filter rect
         req = QgsFeatureRequest().setFilterRect(QgsRectangle(1, 2, 3, 4)).setFilterFid(5)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterFid(), 5)
         self.assertFalse(req.filterFids())
@@ -98,7 +98,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # setting null rectangle should clear spatial filter
         req = QgsFeatureRequest().setFilterFid(5).setFilterRect(QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterFid(), 5)
         self.assertFalse(req.filterFids())
@@ -110,7 +110,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         # setting distance within should override filter rect
         req = QgsFeatureRequest().setFilterRect(QgsRectangle(1, 2, 3, 4))
         req.setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 11 2)'), 1.2)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.DistanceWithin)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -119,7 +119,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
     def testDistanceWithin(self):
         req = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 11 2)'), 1.2)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.DistanceWithin)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -130,7 +130,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # setting distance within should not change attribute filter
         req = QgsFeatureRequest().setFilterFid(5).setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 11 2)'), 1.2)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.DistanceWithin)
         self.assertEqual(req.filterFid(), 5)
         self.assertFalse(req.filterFids())
@@ -141,7 +141,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # setting attribute filter should not change distance within
         req = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 11 2)'), 1.2).setFilterFid(5)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.DistanceWithin)
         self.assertEqual(req.filterFid(), 5)
         self.assertFalse(req.filterFids())
@@ -153,7 +153,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         # setting filter rect should override distance within
         req = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 11 2)'), 1.2)
         req.setFilterRect(QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -163,7 +163,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         req = QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 11 2)'), 1.2)
         req.setFilterRect(QgsRectangle())
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -173,7 +173,7 @@ class TestQgsFeatureRequest(QgisTestCase):
 
     def testFilterFid(self):
         req = QgsFeatureRequest().setFilterFid(5)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), 5)
         self.assertFalse(req.filterFids())
@@ -182,20 +182,20 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # filter rect doesn't affect fid filter
         req.setFilterRect(QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.filterFid(), 5)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterRect(), QgsRectangle(1, 2, 3, 4))
         self.assertTrue(req.referenceGeometry().isNull())
         req.setFilterFid(6)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFid)
         self.assertEqual(req.filterFid(), 6)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterRect(), QgsRectangle(1, 2, 3, 4))
 
     def testFilterFids(self):
         req = QgsFeatureRequest().setFilterFids([5, 6])
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFids)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFids)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), -1)
         self.assertCountEqual(req.filterFids(), [5, 6])
@@ -204,14 +204,14 @@ class TestQgsFeatureRequest(QgisTestCase):
 
         # filter rect doesn't affect fids filter
         req.setFilterRect(QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFids)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFids)
         self.assertEqual(req.filterFid(), -1)
         self.assertCountEqual(req.filterFids(), [5, 6])
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterRect(), QgsRectangle(1, 2, 3, 4))
         self.assertTrue(req.referenceGeometry().isNull())
         req.setFilterFids([8, 9])
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFids)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFids)
         self.assertEqual(req.filterFid(), -1)
         self.assertCountEqual(req.filterFids(), [8, 9])
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
@@ -219,17 +219,17 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertTrue(req.referenceGeometry().isNull())
 
     def testInvalidGeomCheck(self):
-        req = QgsFeatureRequest().setFilterFids([5, 6]).setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterFids)
+        req = QgsFeatureRequest().setFilterFids([5, 6]).setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterFids)
         self.assertEqual(req.filterFid(), -1)
         self.assertCountEqual(req.filterFids(), [5, 6])
-        self.assertEqual(req.invalidGeometryCheck(), QgsFeatureRequest.GeometrySkipInvalid)
-        req.setInvalidGeometryCheck(QgsFeatureRequest.GeometryNoCheck)
-        self.assertEqual(req.invalidGeometryCheck(), QgsFeatureRequest.GeometryNoCheck)
+        self.assertEqual(req.invalidGeometryCheck(), QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid)
+        req.setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck)
+        self.assertEqual(req.invalidGeometryCheck(), QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck)
 
     def testFilterExpression(self):
         req = QgsFeatureRequest().setFilterExpression('a=5')
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterExpression)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterExpression)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
@@ -257,7 +257,7 @@ class TestQgsFeatureRequest(QgisTestCase):
     def testCombineFilter(self):
         req = QgsFeatureRequest()
         req.combineFilterExpression('b=9')
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterExpression)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterExpression)
         self.assertEqual(req.filterFid(), -1)
         self.assertFalse(req.filterFids())
         self.assertEqual(req.filterExpression().expression(), 'b=9')
@@ -266,7 +266,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertTrue(req.referenceGeometry().isNull())
 
         req.combineFilterExpression('a=11')
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterExpression)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterExpression)
         self.assertEqual(req.filterExpression().expression(), '(b=9) AND (a=11)')
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertTrue(req.filterRect().isNull())
@@ -287,22 +287,22 @@ class TestQgsFeatureRequest(QgisTestCase):
 
     def testDisableFilter(self):
         req = QgsFeatureRequest().setFilterFid(5).disableFilter()
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
 
         req = QgsFeatureRequest().setFilterFids([5, 6]).disableFilter()
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
 
         req = QgsFeatureRequest().setFilterExpression('a=5').disableFilter()
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.NoFilter)
         self.assertFalse(req.filterExpression())
 
         # disable filter does not disable spatial filter
         req = QgsFeatureRequest().setFilterExpression('a=5').setFilterRect(QgsRectangle(1, 2, 3, 4))
         req.disableFilter()
-        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterNone)
+        self.assertEqual(req.filterType(), QgsFeatureRequest.FilterType.FilterNone)
         self.assertEqual(req.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
         self.assertEqual(req.filterRect(), QgsRectangle(1, 2, 3, 4))
         self.assertFalse(req.filterExpression())
@@ -316,25 +316,25 @@ class TestQgsFeatureRequest(QgisTestCase):
     def testFlags(self):
         req = QgsFeatureRequest()
         self.assertFalse(req.flags())
-        req.setFlags(QgsFeatureRequest.ExactIntersect)
-        self.assertEqual(req.flags(), QgsFeatureRequest.ExactIntersect)
+        req.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
+        self.assertEqual(req.flags(), QgsFeatureRequest.Flag.ExactIntersect)
 
     def testSubsetAttributes(self):
         req = QgsFeatureRequest()
         self.assertFalse(req.subsetOfAttributes())
-        self.assertFalse(req.flags() & QgsFeatureRequest.SubsetOfAttributes)
+        self.assertFalse(req.flags() & QgsFeatureRequest.Flag.SubsetOfAttributes)
 
         req.setSubsetOfAttributes([1, 4])
         self.assertEqual(req.subsetOfAttributes(), [1, 4])
-        self.assertTrue(req.flags() & QgsFeatureRequest.SubsetOfAttributes)
+        self.assertTrue(req.flags() & QgsFeatureRequest.Flag.SubsetOfAttributes)
 
         req.setNoAttributes()
         self.assertEqual(req.subsetOfAttributes(), [])
-        self.assertTrue(req.flags() & QgsFeatureRequest.SubsetOfAttributes)
+        self.assertTrue(req.flags() & QgsFeatureRequest.Flag.SubsetOfAttributes)
 
         req.setSubsetOfAttributes([])
         self.assertFalse(req.subsetOfAttributes())
-        self.assertTrue(req.flags() & QgsFeatureRequest.SubsetOfAttributes)
+        self.assertTrue(req.flags() & QgsFeatureRequest.Flag.SubsetOfAttributes)
 
         req.setFlags(QgsFeatureRequest.Flags())
         f = QgsFields()
@@ -343,15 +343,15 @@ class TestQgsFeatureRequest(QgisTestCase):
         f.append(QgsField('c', QVariant.String))
         req.setSubsetOfAttributes(['a', 'c'], f)
         self.assertEqual(req.subsetOfAttributes(), [0, 2])
-        self.assertTrue(req.flags() & QgsFeatureRequest.SubsetOfAttributes)
+        self.assertTrue(req.flags() & QgsFeatureRequest.Flag.SubsetOfAttributes)
 
     def testSimplifyMethod(self):
         req = QgsFeatureRequest()
-        self.assertEqual(req.simplifyMethod().methodType(), QgsSimplifyMethod.NoSimplification)
+        self.assertEqual(req.simplifyMethod().methodType(), QgsSimplifyMethod.MethodType.NoSimplification)
         method = QgsSimplifyMethod()
-        method.setMethodType(QgsSimplifyMethod.PreserveTopology)
+        method.setMethodType(QgsSimplifyMethod.MethodType.PreserveTopology)
         req.setSimplifyMethod(method)
-        self.assertEqual(req.simplifyMethod().methodType(), QgsSimplifyMethod.PreserveTopology)
+        self.assertEqual(req.simplifyMethod().methodType(), QgsSimplifyMethod.MethodType.PreserveTopology)
 
     def testDestinationCrs(self):
         req = QgsFeatureRequest()
@@ -374,7 +374,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertTrue(req.requestMayBeNested())
 
     def testAssignment(self):
-        req = QgsFeatureRequest().setFilterFids([8, 9]).setFilterRect(QgsRectangle(1, 2, 3, 4)).setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid).setLimit(6).setFlags(QgsFeatureRequest.ExactIntersect).setSubsetOfAttributes([1, 4]).setTimeout(6).setRequestMayBeNested(True)
+        req = QgsFeatureRequest().setFilterFids([8, 9]).setFilterRect(QgsRectangle(1, 2, 3, 4)).setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid).setLimit(6).setFlags(QgsFeatureRequest.Flag.ExactIntersect).setSubsetOfAttributes([1, 4]).setTimeout(6).setRequestMayBeNested(True)
 
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
@@ -382,7 +382,7 @@ class TestQgsFeatureRequest(QgisTestCase):
         context.appendScope(scope)
         req.setExpressionContext(context)
         method = QgsSimplifyMethod()
-        method.setMethodType(QgsSimplifyMethod.PreserveTopology)
+        method.setMethodType(QgsSimplifyMethod.MethodType.PreserveTopology)
         req.setSimplifyMethod(method)
         context = QgsCoordinateTransformContext()
         req.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'), context)
@@ -392,12 +392,12 @@ class TestQgsFeatureRequest(QgisTestCase):
         self.assertCountEqual(req2.filterFids(), [8, 9])
         self.assertEqual(req2.filterRect(), QgsRectangle(1, 2, 3, 4))
         self.assertEqual(req2.spatialFilterType(), Qgis.SpatialFilterType.BoundingBox)
-        self.assertEqual(req2.invalidGeometryCheck(), QgsFeatureRequest.GeometrySkipInvalid)
+        self.assertEqual(req2.invalidGeometryCheck(), QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid)
         self.assertEqual(req2.expressionContext().scopeCount(), 1)
         self.assertEqual(req2.expressionContext().variable('a'), 6)
-        self.assertEqual(req2.flags(), QgsFeatureRequest.ExactIntersect | QgsFeatureRequest.SubsetOfAttributes)
+        self.assertEqual(req2.flags(), QgsFeatureRequest.Flag.ExactIntersect | QgsFeatureRequest.Flag.SubsetOfAttributes)
         self.assertEqual(req2.subsetOfAttributes(), [1, 4])
-        self.assertEqual(req2.simplifyMethod().methodType(), QgsSimplifyMethod.PreserveTopology)
+        self.assertEqual(req2.simplifyMethod().methodType(), QgsSimplifyMethod.MethodType.PreserveTopology)
         self.assertEqual(req2.destinationCrs().authid(), 'EPSG:3857')
         self.assertEqual(req2.timeout(), 6)
         self.assertTrue(req2.requestMayBeNested())

@@ -58,9 +58,9 @@ class TestQgsProviderSublayerDetails(QgisTestCase):
         d.setFeatureCount(1000)
         self.assertEqual(d.featureCount(), 1000)
 
-        self.assertEqual(d.wkbType(), QgsWkbTypes.Unknown)
-        d.setWkbType(QgsWkbTypes.Point)
-        self.assertEqual(d.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(d.wkbType(), QgsWkbTypes.Type.Unknown)
+        d.setWkbType(QgsWkbTypes.Type.Point)
+        self.assertEqual(d.wkbType(), QgsWkbTypes.Type.Point)
 
         d.setGeometryColumnName('geom_col')
         self.assertEqual(d.geometryColumnName(), 'geom_col')
@@ -122,9 +122,9 @@ class TestQgsProviderSublayerDetails(QgisTestCase):
         d2.setFeatureCount(1000)
         self.assertEqual(d, d2)
 
-        d.setWkbType(QgsWkbTypes.Point)
+        d.setWkbType(QgsWkbTypes.Type.Point)
         self.assertNotEqual(d, d2)
-        d2.setWkbType(QgsWkbTypes.Point)
+        d2.setWkbType(QgsWkbTypes.Type.Point)
         self.assertEqual(d, d2)
 
         d.setGeometryColumnName('geom_col')

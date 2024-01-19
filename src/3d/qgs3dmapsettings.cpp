@@ -27,7 +27,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsrasterlayer.h"
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
@@ -159,8 +159,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
   if ( !elemColor.isNull() )
   {
-    mBackgroundColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "background" ) ) );
-    mSelectionColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "selection" ) ) );
+    mBackgroundColor = QgsColorUtils::colorFromString( elemColor.attribute( QStringLiteral( "background" ) ) );
+    mSelectionColor = QgsColorUtils::colorFromString( elemColor.attribute( QStringLiteral( "selection" ) ) );
   }
 
   QDomElement elemCrs = elem.firstChildElement( QStringLiteral( "crs" ) );
@@ -349,8 +349,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
-  elemColor.setAttribute( QStringLiteral( "background" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
-  elemColor.setAttribute( QStringLiteral( "selection" ), QgsSymbolLayerUtils::encodeColor( mSelectionColor ) );
+  elemColor.setAttribute( QStringLiteral( "background" ), QgsColorUtils::colorToString( mBackgroundColor ) );
+  elemColor.setAttribute( QStringLiteral( "selection" ), QgsColorUtils::colorToString( mSelectionColor ) );
   elem.appendChild( elemColor );
 
   QDomElement elemCrs = doc.createElement( QStringLiteral( "crs" ) );
@@ -796,6 +796,36 @@ QList<QgsLightSource *> Qgs3DMapSettings::lightSources() const
 
 void Qgs3DMapSettings::setLightSources( const QList<QgsLightSource *> &lights )
 {
+  // have lights actually changed?
+  if ( mLightSources.count() == lights.count() )
+  {
+    bool same = true;
+    for ( int i = 0; i < mLightSources.count(); ++i )
+    {
+      if ( mLightSources[i]->type() == lights[i]->type() )
+      {
+        switch ( mLightSources[i]->type() )
+        {
+          case Qgis::LightSourceType::Point:
+            if ( *static_cast< QgsPointLightSettings * >( mLightSources[i] ) == *static_cast< QgsPointLightSettings * >( lights[i] ) )
+              continue;
+            break;
+          case Qgis::LightSourceType::Directional:
+            if ( *static_cast< QgsDirectionalLightSettings * >( mLightSources[i] ) == *static_cast< QgsDirectionalLightSettings * >( lights[i] ) )
+              continue;
+            break;
+        }
+      }
+      same = false;
+      break;
+    }
+    if ( same )
+    {
+      qDeleteAll( lights );
+      return;
+    }
+  }
+
   qDeleteAll( mLightSources );
   mLightSources = lights;
 

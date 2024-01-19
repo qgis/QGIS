@@ -1676,7 +1676,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
 
-        self.assertTrue('ServerException' in str(r))
+        self.assertIn('ServerException', str(r))
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')
@@ -1934,7 +1934,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request_project(qs, p))
         # No exceptions
         self.assertEqual(h['Content-Type'], 'image/png')
-        self.assertFalse(b"The layer 'test plus' does not exist" in r)
+        self.assertNotIn(b"The layer 'test plus' does not exist", r)
 
         # + literal: we get an exception
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1951,7 +1951,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request_project(qs, p))
-        self.assertTrue(b"The layer 'test plus' does not exist" in r)
+        self.assertIn(b"The layer 'test plus' does not exist", r)
 
     def test_wms_annotation_item(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -2000,7 +2000,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertFalse(props_date.isActive())
         self.assertEqual(props_date.startField(), 'event_date')
         self.assertFalse(props_date.endField())
-        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
 
         # sample table with likely dual fields
         layer_range = QgsVectorLayer("Point?srid=EPSG:4326&field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test_range", "memory")
@@ -2024,7 +2024,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertFalse(props_range.isActive())
         self.assertEqual(props_range.startField(), 'start_date')
         self.assertEqual(props_range.endField(), 'end_date')
-        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromFields)
 
         project = QgsProject()
         project.addMapLayers([layer_date, layer_range])

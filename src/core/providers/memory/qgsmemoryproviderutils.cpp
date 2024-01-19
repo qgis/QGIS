@@ -79,7 +79,7 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
     if ( !crs.authid().isEmpty() )
       parts << QStringLiteral( "crs=%1" ).arg( crs.authid() );
     else
-      parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+      parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( Qgis::CrsWktVariant::Preferred ) );
   }
   else
   {

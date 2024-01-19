@@ -1694,7 +1694,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
     }
 
     if ( t )
-      GDALSetProjection( outputDS.get(), map->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().constData() );
+      GDALSetProjection( outputDS.get(), map->crs().toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().constData() );
   }
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 

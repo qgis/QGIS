@@ -153,7 +153,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
         if ( renderer->type() == QLatin1String( "vector" ) )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
+          if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
           {
             removeLayerEntity( layer );
             addLayerEntity( layer );
@@ -165,7 +165,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
           for ( auto rule : rules )
           {
             const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-            if ( pointSymbol->shapeProperties().value( QStringLiteral( "model" ) ).toString() == url )
+            if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
             {
               removeLayerEntity( layer );
               addLayerEntity( layer );
@@ -292,16 +292,16 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
   return err;
 }
 
-Qgs3DMapSceneEntity::SceneState sceneState_( QgsAbstract3DEngine *engine )
+Qgs3DMapSceneEntity::SceneContext Qgs3DMapScene::buildSceneContext( ) const
 {
-  Qt3DRender::QCamera *camera = engine->camera();
-  Qgs3DMapSceneEntity::SceneState state;
-  state.cameraFov = camera->fieldOfView();
-  state.cameraPos = camera->position();
-  const QSize size = engine->size();
-  state.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
-  state.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
-  return state;
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  Qgs3DMapSceneEntity::SceneContext sceneContext;
+  sceneContext.cameraFov = camera->fieldOfView();
+  sceneContext.cameraPos = camera->position();
+  const QSize size = mEngine->size();
+  sceneContext.screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  sceneContext.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
+  return sceneContext;
 }
 
 void Qgs3DMapScene::onCameraChanged()
@@ -314,14 +314,14 @@ void Qgs3DMapScene::onCameraChanged()
     mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
   }
 
-  updateScene();
+  updateScene( true );
   bool changedCameraPlanes = updateCameraNearFarPlanes();
 
   if ( changedCameraPlanes )
   {
     // repeat update of entities - because we have updated camera's near/far planes,
     // the active nodes may have changed as well
-    updateScene();
+    updateScene( true );
     updateCameraNearFarPlanes();
   }
 
@@ -364,15 +364,20 @@ void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt
   }
 }
 
-void Qgs3DMapScene::updateScene()
+void Qgs3DMapScene::updateScene( bool forceUpdate )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+  if ( forceUpdate )
+    QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
+  Qgs3DMapSceneEntity::SceneContext sceneContext = buildSceneContext();
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
-    entity->handleSceneUpdate( sceneState_( mEngine ) );
-    if ( entity->hasReachedGpuMemoryLimit() )
-      emit gpuMemoryLimitReached();
+    if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
+    {
+      entity->handleSceneUpdate( sceneContext );
+      if ( entity->hasReachedGpuMemoryLimit() )
+        emit gpuMemoryLimitReached();
+    }
   }
 
   updateSceneState();
@@ -442,18 +447,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
-  {
-    if ( entity->isEnabled() && entity->needsUpdate() )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
-      entity->handleSceneUpdate( sceneState_( mEngine ) );
-      if ( entity->hasReachedGpuMemoryLimit() )
-        emit gpuMemoryLimitReached();
-    }
-  }
-
-  updateSceneState();
+  updateScene();
 
   // lock changing the FPS counter to 5 fps
   static int frameCount = 0;
@@ -645,7 +639,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         if ( vlayer->geometryType() == Qgis::GeometryType::Point )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          if ( pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
           }
@@ -657,7 +651,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
-          if ( pointSymbol && pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );
             break;
@@ -1199,7 +1193,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   {
     if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
-      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+      m3DAxis = new Qgs3DAxis( static_cast<Qgs3DWindow *>( engine->window() ),
                                engine->root(),
                                this,
                                mCameraController,

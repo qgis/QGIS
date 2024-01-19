@@ -20,6 +20,7 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dtypes.h"
+#include "qgis.h"
 
 #include <QMatrix4x4>
 
@@ -76,32 +77,37 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
      */
     void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER );
 
-    //! 3D shape types supported by the symbol
-    enum Shape
-    {
-      Cylinder,
-      Sphere,
-      Cone,
-      Cube,
-      Torus,
-      Plane,
-      ExtrudedText,  //!< Supported in Qt 5.9+
-      Model,
-      Billboard,
-    };
-
     //! Returns shape enum value from a string
-    static Shape shapeFromString( const QString &shape );
+    static Qgis::Point3DShape shapeFromString( const QString &shape );
     //! Returns string from a shape enum value
-    static QString shapeToString( Shape shape );
+    static QString shapeToString( Qgis::Point3DShape shape );
 
     //! Returns 3D shape for points
-    Shape shape() const { return mShape; }
+    Qgis::Point3DShape shape() const { return mShape; }
     //! Sets 3D shape for points
-    void setShape( Shape shape ) { mShape = shape; }
+    void setShape( Qgis::Point3DShape shape ) { mShape = shape; }
 
-    //! Returns a key-value dictionary of point shape properties
+    /**
+     * Returns a key-value dictionary of point shape properties.
+     *
+     * In most cases callers should use shapeProperty() instead, to
+     * correctly handle default values when a property has not been
+     * explicitly set.
+     *
+     * \see shapeProperty()
+     */
     QVariantMap shapeProperties() const { return mShapeProperties; }
+
+    /**
+     * Returns the value for a specific shape \a property.
+     *
+     * This method accounts for default property values for the symbol's shape(),
+     * used when the property has not been explicitly set.
+     *
+     * \since QGIS 3.36
+     */
+    QVariant shapeProperty( const QString &property ) const;
+
     //! Sets a key-value dictionary of point shape properties
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
@@ -128,7 +134,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
 
     std::unique_ptr< QgsAbstractMaterialSettings> mMaterialSettings;  //!< Defines appearance of objects
-    Shape mShape = Cylinder;  //!< What kind of shape to use
+    Qgis::Point3DShape mShape = Qgis::Point3DShape::Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
     std::unique_ptr<QgsMarkerSymbol> mBillboardSymbol;

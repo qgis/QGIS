@@ -16,7 +16,6 @@
 #include "qgsextentwidget.h"
 
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerproxymodel.h"
@@ -252,7 +251,7 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
                       QString::number( extent.xMaximum(), 'f', decimals ),
                       QString::number( extent.yMinimum(), 'f', decimals ),
                       QString::number( extent.yMaximum(), 'f', decimals ) );
-  condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
+  condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
   mCondensedLineEdit->setText( condensed );
 
   mExtentState = state;

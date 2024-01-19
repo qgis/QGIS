@@ -1,6 +1,6 @@
 ARG DISTRO_VERSION=38
 
-FROM fedora:${DISTRO_VERSION} as single
+FROM fedora:${DISTRO_VERSION} as binary-for-oracle
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y --refresh install \
@@ -32,11 +32,19 @@ RUN dnf -y --refresh install \
     PDAL \
     PDAL-libs \
     PDAL-devel \
+    perl-YAML-Tiny \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
+    python3-mock \
+    python3-OWSLib \
+    python3-pyqt6 \
+    python3-pyqt6-devel \
+    python3-qscintilla-qt6 \
+    python3-qscintilla-qt6-devel \
     python3-termcolor \
+    PyQt-builder \
     qca-qt6-devel \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
@@ -49,9 +57,11 @@ RUN dnf -y --refresh install \
     qt6-qtdeclarative-devel \
     qt6-qt5compat-devel \
     qt6-qtmultimedia-devel \
+    qt6-qtwebengine-devel \
     qtkeychain-qt6-devel \
     qwt-qt6-devel \
     qscintilla-qt6-devel \
+    sip6 \
     spatialindex-devel \
     sqlite-devel \
     unzip \
@@ -82,3 +92,14 @@ RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
 
 ENV PATH="/instantclient_19_9:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
+ENV LANG=C.UTF-8
+
+FROM binary-for-oracle as binary-only
+
+RUN dnf -y --refresh install \
+    python3-gdal \
+    python3-nose2 \
+    python3-psycopg2 \
+    python3-pyyaml
+
+FROM binary-only

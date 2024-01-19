@@ -58,7 +58,7 @@ class TestQgsFillSymbolLayers(unittest.TestCase):
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         painter = QPainter()
         ms = QgsMapSettings()
 

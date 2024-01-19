@@ -103,7 +103,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(key, 'pk')
 
         # Add a field in auxiliary layer
-        p = QgsPropertyDefinition('propName', QgsPropertyDefinition.DataTypeNumeric, '', '', 'user')
+        p = QgsPropertyDefinition('propName', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'user')
         self.assertTrue(al0.addAuxiliaryField(p))
 
         # saveAs without saving the auxiliary layer, the auxiliary field is lost
@@ -188,10 +188,10 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(al1.joinInfo().targetFieldName(), 'num_char')
 
         # Add a field in auxiliary layers
-        pdef0 = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        pdef0 = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'ut')
         self.assertTrue(al0.addAuxiliaryField(pdef0))
 
-        pdef1 = QgsPropertyDefinition('propname1', QgsPropertyDefinition.DataTypeString, '', '', 'ut')
+        pdef1 = QgsPropertyDefinition('propname1', QgsPropertyDefinition.DataType.DataTypeString, '', '', 'ut')
         self.assertTrue(al1.addAuxiliaryField(pdef1))
 
         # Check auxiliary fields names
@@ -282,7 +282,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Add a visible property
-        p = QgsPropertyDefinition('propName', QgsPropertyDefinition.DataTypeNumeric, '', '', 'user')
+        p = QgsPropertyDefinition('propName', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'user')
         self.assertTrue(al.addAuxiliaryField(p))
 
         index = al.indexOfPropertyDefinition(p)
@@ -302,7 +302,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertTrue(tested)
 
         # Add a PAL hidden property
-        p = QgsPalLayerSettings.propertyDefinitions()[QgsPalLayerSettings.PositionX]
+        p = QgsPalLayerSettings.propertyDefinitions()[QgsPalLayerSettings.Property.PositionX]
         self.assertTrue(al.addAuxiliaryField(p))
 
         index = al.indexOfPropertyDefinition(p)
@@ -322,7 +322,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertTrue(tested)
 
         # Add a PAL color property
-        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.PropertyFillColor]
+        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.Property.PropertyFillColor]
         self.assertTrue(al.addAuxiliaryField(p))
 
         index = al.indexOfPropertyDefinition(p)
@@ -334,7 +334,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(setup.type(), 'Color')
 
         # Add a symbol hidden property
-        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.PropertyAngle]
+        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.Property.PropertyAngle]
         self.assertTrue(al.addAuxiliaryField(p))
 
         index = al.indexOfPropertyDefinition(p)
@@ -354,7 +354,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertTrue(tested)
 
         # Add a not hidden symbol property
-        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.PropertyWidth]
+        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.Property.PropertyWidth]
         self.assertTrue(al.addAuxiliaryField(p))
 
         index = al.indexOfPropertyDefinition(p)
@@ -372,7 +372,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Add a field in auxiliary layer
-        p = QgsPropertyDefinition('myprop', QgsPropertyDefinition.DataTypeNumeric, '', '', 'me')
+        p = QgsPropertyDefinition('myprop', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'me')
         self.assertFalse(al.exists(p))
         self.assertTrue(al.addAuxiliaryField(p))
         self.assertTrue(al.exists(p))
@@ -428,7 +428,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Create a new labeling property on layer without labels
-        key = QgsPalLayerSettings.PositionX
+        key = QgsPalLayerSettings.Property.PositionX
         index = QgsAuxiliaryLayer.createProperty(key, vl)
         self.assertEqual(index, -1)
 
@@ -441,7 +441,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(index, afIndex)
 
         # with existing property
-        key = QgsPalLayerSettings.PositionY
+        key = QgsPalLayerSettings.Property.PositionY
         settings = QgsPalLayerSettings()
         settings.dataDefinedProperties().setProperty(key, QgsProperty.fromExpression('$y + 20'))
         vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
@@ -458,7 +458,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), 'coalesce("auxiliary_storage_labeling_positiony",$y + 20)')
 
         # with existing but invalid field name
-        key = QgsPalLayerSettings.PositionY
+        key = QgsPalLayerSettings.Property.PositionY
         settings = QgsPalLayerSettings()
         settings.dataDefinedProperties().setProperty(key, QgsProperty.fromField(''))
         vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
@@ -475,7 +475,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), '"auxiliary_storage_labeling_positiony"')
 
         # with existing valid field name
-        key = QgsPalLayerSettings.PositionY
+        key = QgsPalLayerSettings.Property.PositionY
         settings = QgsPalLayerSettings()
         settings.dataDefinedProperties().setProperty(key, QgsProperty.fromField('asd'))
         vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
@@ -491,7 +491,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), 'coalesce("auxiliary_storage_labeling_positiony","asd")')
 
         # with overwrite existing
-        key = QgsPalLayerSettings.Show
+        key = QgsPalLayerSettings.Property.Show
         settings = QgsPalLayerSettings()
         settings.dataDefinedProperties().setProperty(key, QgsProperty.fromExpression('$y > 20'))
         vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
@@ -519,7 +519,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Create a new callout property on layer without labels
-        key = QgsCallout.DestinationX
+        key = QgsCallout.Property.DestinationX
         index = QgsAuxiliaryLayer.createProperty(key, vl)
         self.assertEqual(index, -1)
 
@@ -547,7 +547,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         settings = vl.labeling().settings()
         self.assertEqual(settings.callout().dataDefinedProperties().property(key), QgsProperty.fromField('auxiliary_storage_callouts_destinationx'))
 
-        key2 = QgsCallout.DestinationY
+        key2 = QgsCallout.Property.DestinationY
         index = QgsAuxiliaryLayer.createProperty(key2, vl)
 
         p = QgsCallout.propertyDefinitions()[key2]
@@ -562,7 +562,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
                          QgsProperty.fromField('auxiliary_storage_callouts_destinationy'))
 
         # with existing property
-        key = QgsCallout.OriginX
+        key = QgsCallout.Property.OriginX
         settings = QgsPalLayerSettings()
         callout = QgsSimpleLineCallout()
         callout.dataDefinedProperties().setProperty(key, QgsProperty.fromExpression('$x + 20'))
@@ -582,7 +582,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(settings.callout().dataDefinedProperties().property(key).asExpression(), 'coalesce("auxiliary_storage_callouts_originx",$x + 20)')
 
         # with overwrite existing
-        key = QgsCallout.OriginY
+        key = QgsCallout.Property.OriginY
         callout = QgsSimpleLineCallout()
         callout.dataDefinedProperties().setProperty(key, QgsProperty.fromExpression('$y + 20'))
         settings.setCallout(callout)
@@ -611,7 +611,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Create a new labeling property on layer without labels
-        key = QgsDiagramLayerSettings.PositionX
+        key = QgsDiagramLayerSettings.Property.PositionX
         index = QgsAuxiliaryLayer.createProperty(key, vl)
         self.assertEqual(index, -1)
 
@@ -631,7 +631,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(settings.dataDefinedProperties().property(key).field(), "auxiliary_storage_diagram_positionx")
 
         # with existing property
-        key = QgsDiagramLayerSettings.Distance
+        key = QgsDiagramLayerSettings.Property.Distance
         settings = QgsDiagramLayerSettings()
         settings.dataDefinedProperties().setProperty(key, QgsProperty.fromExpression('$y + 20'))
         vl.setDiagramLayerSettings(settings)
@@ -648,7 +648,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertEqual(settings.dataDefinedProperties().property(key).asExpression(), 'coalesce("auxiliary_storage_diagram_distance",$y + 20)')
 
         # with overwrite existing
-        key = QgsDiagramLayerSettings.PositionY
+        key = QgsDiagramLayerSettings.Property.PositionY
         settings = QgsDiagramLayerSettings()
         settings.dataDefinedProperties().setProperty(key, QgsProperty.fromExpression('$y > 20'))
         vl.setDiagramLayerSettings(settings)
@@ -677,14 +677,14 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
 
         prop = QgsPropertyDefinition()
         prop.setComment('test_field')
-        prop.setDataType(QgsPropertyDefinition.DataTypeNumeric)
+        prop.setDataType(QgsPropertyDefinition.DataType.DataTypeNumeric)
         prop.setOrigin('user')
         prop.setName('custom')
         self.assertTrue(al.addAuxiliaryField(prop))
 
         prop = QgsPropertyDefinition()
         prop.setComment('test_field_string')
-        prop.setDataType(QgsPropertyDefinition.DataTypeString)
+        prop.setDataType(QgsPropertyDefinition.DataType.DataTypeString)
         prop.setOrigin('user')
         prop.setName('custom')
         self.assertTrue(al.addAuxiliaryField(prop))
@@ -723,7 +723,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Add an auxiliary field to have a non empty auxiliary storage
-        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'ut')
         self.assertTrue(al.addAuxiliaryField(pdef))
 
         # Save the project
@@ -755,7 +755,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         al = s.createAuxiliaryLayer(pkf, vl)
 
         self.assertEqual(al, None)
-        self.assertTrue("CREATE TABLE IF NOT EXISTS" in s.errorString())
+        self.assertIn("CREATE TABLE IF NOT EXISTS", s.errorString())
 
     def testQgdCreationInQgz(self):
         # New project
@@ -785,7 +785,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         vl.setAuxiliaryLayer(al)
 
         # Add an auxiliary field to have a non empty auxiliary storage
-        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'ut')
         self.assertTrue(al.addAuxiliaryField(pdef))
 
         # Save the project
@@ -819,7 +819,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertTrue(al0.isValid())
         vl0.setAuxiliaryLayer(al0)
 
-        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'ut')
         self.assertTrue(al0.addAuxiliaryField(pdef))
 
         # add auxiliary layer for vl1
@@ -828,7 +828,7 @@ class TestQgsAuxiliaryStorage(QgisTestCase):
         self.assertTrue(al1.isValid())
         vl1.setAuxiliaryLayer(al1)
 
-        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataType.DataTypeNumeric, '', '', 'ut')
         self.assertTrue(al1.addAuxiliaryField(pdef))
 
         # save project

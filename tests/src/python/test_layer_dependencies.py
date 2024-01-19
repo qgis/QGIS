@@ -260,7 +260,7 @@ class TestLayerDependencies(QgisTestCase):
                 newLinesLayer = l.layer()
         self.assertIsNotNone(newPointsLayer)
         self.assertIsNotNone(newLinesLayer)
-        self.assertTrue(newLinesLayer.id() in [dep.layerId() for dep in newPointsLayer.dependencies()])
+        self.assertIn(newLinesLayer.id(), [dep.layerId() for dep in newPointsLayer.dependencies()])
 
         self.pointsLayer.setDependencies([])
 
@@ -269,11 +269,11 @@ class TestLayerDependencies(QgisTestCase):
         QgsProject.instance().removeAllMapLayers()
         # set dependencies and add back layers
         self.pointsLayer = QgsVectorLayer(f"dbname='{self.fn}' table=\"node\" (geom) sql=", "points", "spatialite")
-        assert (self.pointsLayer.isValid())
+        self.assertTrue(self.pointsLayer.isValid())
         self.linesLayer = QgsVectorLayer(f"dbname='{self.fn}' table=\"section\" (geom) sql=", "lines", "spatialite")
-        assert (self.linesLayer.isValid())
+        self.assertTrue(self.linesLayer.isValid())
         self.pointsLayer2 = QgsVectorLayer(f"dbname='{self.fn}' table=\"node2\" (geom) sql=", "_points2", "spatialite")
-        assert (self.pointsLayer2.isValid())
+        self.assertTrue(self.pointsLayer2.isValid())
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # this should update connections between layers

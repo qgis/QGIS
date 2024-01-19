@@ -21,6 +21,7 @@
 #include "qgspallabeling.h"
 #include "qgstextrendererutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorutils.h"
 
 QgsTextShadowSettings::QgsTextShadowSettings()
 {
@@ -350,7 +351,7 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
     d->opacity = ( shadowElem.attribute( QStringLiteral( "shadowOpacity" ) ).toDouble() );
   }
   d->scale = shadowElem.attribute( QStringLiteral( "shadowScale" ), QStringLiteral( "100" ) ).toInt();
-  d->color = QgsSymbolLayerUtils::decodeColor( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
+  d->color = QgsColorUtils::colorFromString( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< Qgis::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
@@ -371,7 +372,7 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
   shadowElem.setAttribute( QStringLiteral( "shadowRadiusAlphaOnly" ), d->radiusAlphaOnly );
   shadowElem.setAttribute( QStringLiteral( "shadowOpacity" ), d->opacity );
   shadowElem.setAttribute( QStringLiteral( "shadowScale" ), d->scale );
-  shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( d->color ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( d->color ) );
   shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   return shadowElem;
 }

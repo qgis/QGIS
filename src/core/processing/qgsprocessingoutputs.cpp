@@ -16,11 +16,37 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputs.h"
+#include "qgsvariantutils.h"
+
+#include <QUrl>
+#include <QDir>
 
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )
   , mDescription( description )
 {}
+
+QString QgsProcessingOutputDefinition::valueAsString( const QVariant &value, QgsProcessingContext &, bool &ok ) const
+{
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    ok = true;
+    return QObject::tr( "NULL" );
+  }
+
+  if ( value.type() == QVariant::String )
+  {
+    ok = true;
+    return value.toString();
+  }
+  ok = false;
+  return QString();
+}
+
+QString QgsProcessingOutputDefinition::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsString( value, context, ok );
+}
 
 QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, QgsProcessing::SourceType type )
   : QgsProcessingOutputDefinition( name, description )
@@ -53,9 +79,38 @@ QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QSt
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  {
+    ok = true;
+    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+  }
+
+  return valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QString QgsProcessingOutputNumber::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      ok = true;
+      return value.toString();
+    default:
+      break;
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
 
 QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
@@ -65,13 +120,46 @@ QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, con
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QString QgsProcessingOutputBoolean::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  if ( value.type() == QVariant::Bool )
+  {
+    ok = true;
+    return value.toBool() ? QObject::tr( "True" ) : QObject::tr( "False" );
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
 
+QString QgsProcessingOutputFolder::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  {
+    ok = true;
+    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+  }
+
+  return valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QString QgsProcessingOutputFile::valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  if ( value.type() == QVariant::String && !value.toString().isEmpty() )
+  {
+    ok = true;
+    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+  }
+
+  return valueAsString( value, context, ok );
+}
 
 QgsProcessingOutputMapLayer::QgsProcessingOutputMapLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
@@ -91,6 +179,37 @@ QString QgsProcessingOutputMultipleLayers::type() const
   return typeName();
 }
 
+QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  switch ( value.type() )
+  {
+    case QVariant::List:
+    {
+      ok = true;
+      const QVariantList list = value.toList();
+
+      QStringList layerNames;
+      for ( const QVariant &v : list )
+      {
+        layerNames << v.toString();
+      }
+      return layerNames.join( QLatin1String( ", " ) );
+    }
+
+    case QVariant::StringList:
+    {
+      ok = true;
+      const QStringList list = value.toStringList();
+      return list.join( QLatin1String( ", " ) );
+    }
+
+    default:
+      break;
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
+}
+
 QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -104,4 +223,46 @@ QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, con
 QString QgsProcessingOutputVariant::type() const
 {
   return typeName();
+}
+
+QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  ok = false;
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      ok = true;
+      return value.toString();
+    case QVariant::Bool:
+      ok = true;
+      return value.toBool() ? QObject::tr( "True" ) : QObject::tr( "False" );
+
+    case QVariant::List:
+    {
+      ok = true;
+      const QVariantList list = value.toList();
+
+      QStringList names;
+      for ( const QVariant &v : list )
+      {
+        names << v.toString();
+      }
+      return names.join( QLatin1String( ", " ) );
+    }
+
+    case QVariant::StringList:
+    {
+      ok = true;
+      const QStringList list = value.toStringList();
+      return list.join( QLatin1String( ", " ) );
+    }
+
+    default:
+      break;
+  }
+  return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }

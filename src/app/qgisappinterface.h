@@ -182,6 +182,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMenu *vectorMenu() override;
     QMenu *databaseMenu() override;
     QMenu *webMenu() override;
+    QMenu *meshMenu() override;
     QMenu *firstRightStandardMenu() override;
     QMenu *windowMenu() override;
     QMenu *helpMenu() override;
@@ -316,6 +317,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
     QList<QgsMapDecoration *> activeDecorations() override;
     QgsUserProfileManager *userProfileManager() override;
+    void blockActiveLayerChanges( bool blocked ) override;
 
   private slots:
 

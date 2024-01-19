@@ -27,6 +27,7 @@
 #include "qgspanelwidget.h"
 #include "qgsjsonutils.h"
 #include "qgsunittypes.h"
+#include "qgsnative.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -86,6 +87,12 @@ void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info 
   emit consoleInfoPushed( info );
 }
 
+void QgsProcessingAlgorithmDialogFeedback::pushFormattedMessage( const QString &html, const QString &text )
+{
+  QgsProcessingFeedback::pushFormattedMessage( html, text );
+  emit formattedMessagePushed( html );
+}
+
 //
 // QgsProcessingAlgorithmDialogBase
 //
@@ -112,6 +119,9 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   splitterHandle->setLayout( handleLayout );
 
   QgsGui::enableAutoGeometryRestore( this );
+
+  txtLog->setOpenLinks( false );
+  connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
 
   const QgsSettings settings;
   splitter->restoreState( settings.value( QStringLiteral( "/Processing/dialogBaseSplitter" ), QByteArray() ).toByteArray() );
@@ -414,6 +424,7 @@ QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmDialogBase::reportError );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::warningPushed, this, &QgsProcessingAlgorithmDialogBase::pushWarning );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmDialogBase::pushInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::formattedMessagePushed, this, &QgsProcessingAlgorithmDialogBase::pushFormattedMessage );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmDialogBase::setProgressText );
   connect( buttonCancel, &QPushButton::clicked, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
@@ -577,6 +588,15 @@ void QgsProcessingAlgorithmDialogBase::closeClicked()
   close();
 }
 
+void QgsProcessingAlgorithmDialogBase::urlClicked( const QUrl &url )
+{
+  const QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
+}
+
 QgsProcessingContext::LogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
 {
   return mLogLevel;
@@ -605,6 +625,12 @@ void QgsProcessingAlgorithmDialogBase::pushWarning( const QString &warning )
 void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
 {
   setInfo( info );
+  processEvents();
+}
+
+void QgsProcessingAlgorithmDialogBase::pushFormattedMessage( const QString &html )
+{
+  setInfo( html, false, false );
   processEvents();
 }
 

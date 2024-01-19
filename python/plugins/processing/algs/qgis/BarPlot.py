@@ -52,10 +52,10 @@ class BarPlot(QgisAlgorithm):
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
                                                       self.tr('Category name field'),
-                                                      None, self.INPUT, QgsProcessingParameterField.Any))
+                                                      None, self.INPUT, QgsProcessingParameterField.DataType.Any))
         self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
                                                       self.tr('Value field'),
-                                                      None, self.INPUT, QgsProcessingParameterField.Numeric))
+                                                      None, self.INPUT, QgsProcessingParameterField.DataType.Numeric))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Bar plot'), self.tr('HTML files (*.html)')))
 
@@ -87,7 +87,7 @@ class BarPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        x_var = vector.convert_nulls([i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))], '<NULL>')
+        x_var = vector.convert_nulls([i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry))], '<NULL>')
 
         data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]

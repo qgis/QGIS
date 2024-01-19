@@ -20,6 +20,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgscolorutils.h"
 #include "qgspointxy.h"
 
 
@@ -571,7 +572,7 @@ QVariant QgsColorRampTransformer::toVariant() const
   {
     transformerMap.insert( QStringLiteral( "colorramp" ), QgsSymbolLayerUtils::colorRampToVariant( QStringLiteral( "[source]" ), mGradientRamp.get() ) );
   }
-  transformerMap.insert( QStringLiteral( "nullColor" ), QgsSymbolLayerUtils::encodeColor( mNullColor ) );
+  transformerMap.insert( QStringLiteral( "nullColor" ), QgsColorUtils::colorToString( mNullColor ) );
   transformerMap.insert( QStringLiteral( "rampName" ), mRampName );
 
   return transformerMap;
@@ -589,7 +590,7 @@ bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
     setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( QStringLiteral( "colorramp" ) ).toMap() ) );
   }
 
-  mNullColor = QgsSymbolLayerUtils::decodeColor( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );
+  mNullColor = QgsColorUtils::colorFromString( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );
   mRampName = transformerMap.value( QStringLiteral( "rampName" ) ).toString();
   return true;
 }

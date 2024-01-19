@@ -50,6 +50,8 @@ class ConsoleFeedback : public QgsProcessingFeedback
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
+    void pushFormattedMessage( const QString &html, const QString &text ) override;
+
     QVariantMap jsonLog() const;
 
   private slots:
@@ -68,38 +70,46 @@ class QgsProcessingExec
 
   public:
 
+    enum class Flag
+    {
+      UseJson = 1 << 0,
+      SkipPython = 1 << 1,
+      SkipLoadingPlugins = 1 << 2,
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     QgsProcessingExec();
-    int run( const QStringList &args, bool useJson, QgsProcessingContext::LogLevel logLevel, bool skipPython );
+    int run( const QStringList &args, QgsProcessingContext::LogLevel logLevel, Flags flags );
     static void showUsage( const QString &appName );
     static void showVersionInformation();
 
   private:
 
     void loadPlugins();
-    void listAlgorithms( bool useJson );
+    void listAlgorithms();
     void listPlugins( bool useJson, bool showLoaded );
     int enablePlugin( const QString &name, bool enabled );
-    int showAlgorithmHelp( const QString &id, bool useJson );
+    int showAlgorithmHelp( const QString &id );
     int execute( const QString &algId,
                  const QVariantMap &parameters,
                  const QString &ellipsoid,
                  Qgis::DistanceUnit distanceUnit,
                  Qgis::AreaUnit areaUnit,
                  QgsProcessingContext::LogLevel logLevel,
-                 bool useJson,
                  const QString &projectPath = QString() );
 
     void addVersionInformation( QVariantMap &json );
     void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
     void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
 
-
-    bool mSkipPython = false;
+    Flags mFlags;
 #ifdef WITH_BINDINGS
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
     std::unique_ptr<QgsPythonUtils> loadPythonSupport();
 #endif
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingExec::Flags );
 
 #endif // QGSPROCESS_H
 

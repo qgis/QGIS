@@ -132,44 +132,44 @@ class PyQgsStringUtils(unittest.TestCase):
 
     def testMixed(self):
         """ test mixed capitalization - ie, no change! """
-        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.MixedCase))
-        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.MixedCase), '')
-        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.MixedCase), 'testing 123')
-        self.assertEqual(QgsStringUtils.capitalize('    tESTinG 123    ', QgsStringUtils.MixedCase), '    tESTinG 123    ')
-        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.MixedCase), '    TESTING ABC')
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.Capitalization.MixedCase))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.Capitalization.MixedCase), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.Capitalization.MixedCase), 'testing 123')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG 123    ', QgsStringUtils.Capitalization.MixedCase), '    tESTinG 123    ')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.Capitalization.MixedCase), '    TESTING ABC')
 
     def testUpperCase(self):
         """ test uppercase """
-        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.AllUppercase))
-        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.AllUppercase), '')
-        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.AllUppercase), 'TESTING 123')
-        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.AllUppercase), '    TESTING ABC    ')
-        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.AllUppercase), '    TESTING ABC')
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.Capitalization.AllUppercase))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.Capitalization.AllUppercase), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.Capitalization.AllUppercase), 'TESTING 123')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.Capitalization.AllUppercase), '    TESTING ABC    ')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.Capitalization.AllUppercase), '    TESTING ABC')
 
     def testLowerCase(self):
         """ test lowercase """
-        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.AllLowercase))
-        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.AllLowercase), '')
-        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.AllLowercase), 'testing 123')
-        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.AllLowercase),
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.Capitalization.AllLowercase))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.Capitalization.AllLowercase), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.Capitalization.AllLowercase), 'testing 123')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.Capitalization.AllLowercase),
                          '    testing abc    ')
-        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.AllLowercase), '    testing abc')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.Capitalization.AllLowercase), '    testing abc')
 
     def testCapitalizeFirst(self):
         """ test capitalize first """
-        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.ForceFirstLetterToCapital))
-        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.ForceFirstLetterToCapital), '')
-        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.ForceFirstLetterToCapital), 'Testing 123')
-        self.assertEqual(QgsStringUtils.capitalize('testing', QgsStringUtils.ForceFirstLetterToCapital),
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.Capitalization.ForceFirstLetterToCapital))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.Capitalization.ForceFirstLetterToCapital), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.Capitalization.ForceFirstLetterToCapital), 'Testing 123')
+        self.assertEqual(QgsStringUtils.capitalize('testing', QgsStringUtils.Capitalization.ForceFirstLetterToCapital),
                          'Testing')
-        self.assertEqual(QgsStringUtils.capitalize('Testing', QgsStringUtils.ForceFirstLetterToCapital),
+        self.assertEqual(QgsStringUtils.capitalize('Testing', QgsStringUtils.Capitalization.ForceFirstLetterToCapital),
                          'Testing')
-        self.assertEqual(QgsStringUtils.capitalize('TESTING', QgsStringUtils.ForceFirstLetterToCapital),
+        self.assertEqual(QgsStringUtils.capitalize('TESTING', QgsStringUtils.Capitalization.ForceFirstLetterToCapital),
                          'TESTING')
-        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.ForceFirstLetterToCapital),
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.Capitalization.ForceFirstLetterToCapital),
                          '    TESTinG Abc    ')
-        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.ForceFirstLetterToCapital), '    TESTING ABC')
-        self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.Capitalization.ForceFirstLetterToCapital), '    TESTING ABC')
+        self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.Capitalization.ForceFirstLetterToCapital),
                          '    Testing Abc')
 
     def testfuzzyScore(self):

@@ -328,6 +328,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *webMenu() = 0;
 
     /**
+     * Returns a reference to the main window "Mesh" menu.
+     *
+     * \since QGIS 3.34
+     */
+    virtual QMenu *meshMenu() = 0;
+
+    /**
      * Returns a reference to the right most standard menu, which is
      * usually the last menu item before the "Help" menu.
      *
@@ -1476,6 +1483,22 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.16
      */
     virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0;
+
+    /**
+     * Sets whether changes to the active layer should be temporarily
+     * blocked.
+     *
+     * This is a low-level method, designed to avoid unnecessary work when adding lots
+     * of layers at once. Clients which will be adding many layers may call blockActiveLayerChanges( TRUE ) upfront,
+     * add all the layers, and then follow up with a call to blockActiveLayerChanges( FALSE ). This will defer emitting
+     * the active layer changed signal until they've added all layers, and only emit the signal once for
+     * the final layer added.
+     *
+     * \warning This must be accompanied by a subsequent call with \a blocked as FALSE.
+     *
+     * \since QGIS 3.36
+     */
+    virtual void blockActiveLayerChanges( bool blocked ) = 0;
 
   signals:
 

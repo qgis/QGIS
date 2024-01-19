@@ -15,6 +15,7 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
+  qgs3dwindow.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
@@ -64,6 +65,8 @@ set(QGIS_3D_SRCS
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterialregistry.cpp
+  materials/qgsmetalroughmaterial.cpp
+  materials/qgsmetalroughmaterialsettings.cpp
   materials/qgsnullmaterialsettings.cpp
   materials/qgsphongmaterialsettings.cpp
   materials/qgsphongtexturedmaterialsettings.cpp
@@ -115,6 +118,7 @@ set(QGIS_3D_HDRS
   qgs3dsceneexporter.h
   qgs3dtypes.h
   qgs3dutils.h
+  qgs3dwindow.h
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h
@@ -150,6 +154,8 @@ set(QGIS_3D_HDRS
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
   materials/qgsmaterialregistry.h
+  materials/qgsmetalroughmaterial.h
+  materials/qgsmetalroughmaterialsettings.h
   materials/qgsnullmaterialsettings.h
   materials/qgsphongmaterialsettings.h
   materials/qgsphongtexturedmaterialsettings.h

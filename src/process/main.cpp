@@ -121,11 +121,12 @@ int main( int argc, char *argv[] )
   // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
   QStringList args = QCoreApplication::arguments();
 
+  QgsProcessingExec::Flags flags;
+
   const int jsonIndex = args.indexOf( QLatin1String( "--json" ) );
-  bool useJson = false;
   if ( jsonIndex >= 0 )
   {
-    useJson = true;
+    flags |= QgsProcessingExec::Flag::UseJson;
     args.removeAt( jsonIndex );
   }
 
@@ -138,11 +139,17 @@ int main( int argc, char *argv[] )
   }
 
   const int noPythonIndex = args.indexOf( QLatin1String( "--no-python" ) );
-  bool skipPython = false;
   if ( noPythonIndex >= 0 )
   {
-    skipPython = true;
+    flags |= QgsProcessingExec::Flag::SkipPython;
     args.removeAt( noPythonIndex );
+  }
+
+  const int skipLoadingPluginsIndex = args.indexOf( QLatin1String( "--skip-loading-plugins" ) );
+  if ( skipLoadingPluginsIndex >= 0 )
+  {
+    flags |= QgsProcessingExec::Flag::SkipLoadingPlugins;
+    args.removeAt( skipLoadingPluginsIndex );
   }
 
   const QString command = args.value( 1 );
@@ -177,9 +184,9 @@ int main( int argc, char *argv[] )
 
   QgsProcessingExec exec;
   int res = 0;
-  QTimer::singleShot( 0, &app, [&exec, args, useJson, logLevel, skipPython, &res]
+  QTimer::singleShot( 0, &app, [&exec, args, logLevel, flags, &res]
   {
-    res = exec.run( args, useJson, logLevel, skipPython );
+    res = exec.run( args, logLevel, flags );
     QgsApplication::exitQgis();
     QCoreApplication::exit( res );
   } );

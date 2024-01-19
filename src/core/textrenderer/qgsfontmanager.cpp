@@ -1833,7 +1833,7 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
   }
 
   QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( url, QString(), QgsTask::CanCancel, description );
-  connect( task, &QgsNetworkContentFetcherTask::fetched, this, [ = ]
+  connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task, url, identifier]
   {
     if ( task->reply()->error() != QNetworkReply::NoError )
     {

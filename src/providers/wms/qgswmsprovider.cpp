@@ -174,17 +174,18 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // Setup temporal properties for layers in WMS-T
     if ( mSettings.mIsTemporal )
     {
-      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
-      temporalCapabilities()->setHasTemporalCapabilities( true );
-      temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
-      temporalCapabilities()->setAllAvailableTemporalRanges( mSettings.mAllRanges );
-      temporalCapabilities()->setDefaultInterval( mSettings.mDefaultInterval );
+      QgsRasterDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+      Q_ASSERT_X( lTemporalCapabilities, "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      lTemporalCapabilities->setHasTemporalCapabilities( true );
+      lTemporalCapabilities->setAvailableTemporalRange( mSettings.mFixedRange );
+      lTemporalCapabilities->setAllAvailableTemporalRanges( mSettings.mAllRanges );
+      lTemporalCapabilities->setDefaultInterval( mSettings.mDefaultInterval );
 
-      temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange );
+      lTemporalCapabilities->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange );
 
       if ( mSettings.mIsBiTemporal )
       {
-        temporalCapabilities()->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
+        lTemporalCapabilities->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
       }
     }
 
@@ -215,14 +216,15 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // WMTS - may have time dimension
     if ( !mTileLayer->allTimeRanges.empty() )
     {
-      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
-      temporalCapabilities()->setHasTemporalCapabilities( true );
+      QgsRasterDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+      Q_ASSERT_X( lTemporalCapabilities, "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      lTemporalCapabilities->setHasTemporalCapabilities( true );
 
-      temporalCapabilities()->setAvailableTemporalRange( mTileLayer->temporalExtent );
-      temporalCapabilities()->setAllAvailableTemporalRanges( mTileLayer->allTimeRanges );
-      temporalCapabilities()->setDefaultInterval( mTileLayer->temporalInterval );
-      temporalCapabilities()->setFlags( mTileLayer->temporalCapabilityFlags );
-      temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
+      lTemporalCapabilities->setAvailableTemporalRange( mTileLayer->temporalExtent );
+      lTemporalCapabilities->setAllAvailableTemporalRanges( mTileLayer->allTimeRanges );
+      lTemporalCapabilities->setDefaultInterval( mTileLayer->temporalInterval );
+      lTemporalCapabilities->setFlags( mTileLayer->temporalCapabilityFlags );
+      lTemporalCapabilities->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
     }
 
     if ( !mSettings.mXyz )
@@ -590,6 +592,20 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
     if ( mCaps.mTileMatrixSets.contains( mSettings.mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mCaps.mTileMatrixSets[ mSettings.mTileMatrixSetId ];
+
+      if ( crs.isEmpty() )
+      {
+        // if CRS is not specified, use default
+        mSettings.mCrsId = mTileMatrixSet->crs;
+        mExtentDirty = true;
+        mImageCrs = mSettings.mCrsId;
+      }
+      if ( mSettings.mImageMimeType.isEmpty() && mTileLayer )
+      {
+        // if format is not specified, use first available
+        mSettings.mImageMimeType = mTileLayer->formats.value( 0 );
+      }
+
       QList<double> keys = mTileMatrixSet->tileMatrices.keys();
       std::sort( keys.begin(), keys.end() );
       const auto constKeys = keys;
@@ -2357,11 +2373,6 @@ int QgsWmsProvider::capabilities() const
     capability |= Capability::Prefetch;
   }
 
-  if ( mSettings.mTiled || mSettings.mXyz )
-  {
-    capability |= DpiDependentData;
-  }
-
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
   return capability;
 }
@@ -3992,12 +4003,20 @@ QgsCoordinateReferenceSystem QgsWmsProvider::crs() const
 
 QgsRasterDataProvider::ProviderCapabilities QgsWmsProvider::providerCapabilities() const
 {
+  QgsRasterDataProvider::ProviderCapabilities capabilities;
   if ( mConverter )
-    return ProviderCapability::ReadLayerMetadata |
-           ProviderCapability::ProviderHintBenefitsFromResampling |
-           ProviderCapability::ProviderHintCanPerformProviderResampling;
+    capabilities = ProviderCapability::ReadLayerMetadata |
+                   ProviderCapability::ProviderHintBenefitsFromResampling |
+                   ProviderCapability::ProviderHintCanPerformProviderResampling;
+  else
+    capabilities = ProviderCapability::ReadLayerMetadata;
 
-  return ProviderCapability::ReadLayerMetadata;
+  if ( mSettings.mTiled || mSettings.mXyz )
+  {
+    capabilities |= DpiDependentData;
+  }
+
+  return capabilities;
 }
 
 QString QgsWmsProvider::lastErrorTitle()

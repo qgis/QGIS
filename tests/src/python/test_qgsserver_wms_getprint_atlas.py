@@ -52,8 +52,8 @@ class TestQgsServerWMSGetPrintAtlas(QgsServerTestBase):
             "REQUEST": "GetProjectSettings",
         }.items())])
         r, h = self._result(self._execute_request(qs))
-        self.assertTrue('atlasEnabled="1"' in str(r))
-        self.assertTrue('<PrimaryKeyAttribute>' in str(r))
+        self.assertIn('atlasEnabled="1"', str(r))
+        self.assertIn('<PrimaryKeyAttribute>', str(r))
 
     def test_wms_getprint_atlas_no_pk(self):
         """Test issue GH #30817"""

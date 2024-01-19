@@ -45,6 +45,8 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QActionGroup>
+#include <QRegularExpression>
 
 extern "C"
 {
@@ -425,7 +427,8 @@ void QgsGrassPlugin::onFieldsChanged()
     return;
   }
   QString uri = grassProvider->dataSourceUri();
-  uri.remove( QRegExp( "[^_]*$" ) );
+  const thread_local QRegularExpression rx = QRegularExpression( QStringLiteral( "[^_]*$" ) );
+  uri.remove( rx );
   QgsDebugMsgLevel( "uri = " + uri, 3 );
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {

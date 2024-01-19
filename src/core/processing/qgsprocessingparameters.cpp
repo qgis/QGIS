@@ -2587,7 +2587,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       else if ( !crs.authid().isEmpty() )
         return crs.authid();
       else
-        return crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+        return crs.toWkt( Qgis::CrsWktVariant::Preferred );
     }
     else if ( value.userType() == QMetaType::type( "QgsRectangle" ) )
     {
@@ -2626,7 +2626,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
         if ( !g.crs().isValid() )
           return g.asWkt();
         else
-          return QStringLiteral( "CRS=%1;%2" ).arg( g.crs().authid().isEmpty() ? g.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : g.crs().authid(), g.asWkt() );
+          return QStringLiteral( "CRS=%1;%2" ).arg( g.crs().authid().isEmpty() ? g.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : g.crs().authid(), g.asWkt() );
       }
       else
       {
@@ -2771,7 +2771,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     else if ( !crs.authid().isEmpty() )
       return crs.authid();
     else
-      return crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+      return crs.toWkt( Qgis::CrsWktVariant::Preferred );
   }
   else if ( value.userType() == QMetaType::type( "QgsRectangle" ) )
   {
@@ -2809,7 +2809,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
       if ( !g.crs().isValid() )
         return g.asWkt();
       else
-        return QStringLiteral( "CRS=%1;%2" ).arg( g.crs().authid().isEmpty() ? g.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : g.crs().authid(), g.asWkt() );
+        return QStringLiteral( "CRS=%1;%2" ).arg( g.crs().authid().isEmpty() ? g.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : g.crs().authid(), g.asWkt() );
     }
     else
     {
@@ -3753,7 +3753,7 @@ QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &val
     if ( !crs.isValid() )
       return QgsProcessingUtils::stringToPythonLiteral( g.asWkt() );
     else
-      return QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "CRS=%1;%2" ).arg( crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : crs.authid(), g.asWkt() ) );
+      return QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "CRS=%1;%2" ).arg( crs.authid().isEmpty() ? crs.toWkt( Qgis::CrsWktVariant::Preferred ) : crs.authid(), g.asWkt() ) );
   };
 
   if ( !value.isValid() )

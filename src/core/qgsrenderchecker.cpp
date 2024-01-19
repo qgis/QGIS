@@ -585,7 +585,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
 
-      mMarkdownReport += QStringLiteral( "Failed because rendered image and expected image have different formats (8bit format is expected)\n" );
+      mMarkdownReport += QLatin1String( "Failed because rendered image and expected image have different formats (8bit format is expected)\n" );
       performPostTestActions( flags );
       return mResult;
     }
@@ -694,7 +694,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
 
-      mMarkdownReport += QStringLiteral( "Test failed because render step took too long\n" );
+      mMarkdownReport += QLatin1String( "Test failed because render step took too long\n" );
 
       performPostTestActions( flags );
       return mResult;

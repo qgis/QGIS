@@ -53,13 +53,13 @@ class gdal2xyz(GdalAlgorithm):
                                                      parentLayerParameterName=self.INPUT))
 
         self.addParameter(QgsProcessingParameterNumber(self.SRCNODATA,
-                                                       self.tr('Input pixel value to treat as "nodata"'),
+                                                       self.tr('Input pixel value to treat as NoData'),
                                                        optional=True))  # GDAL > 3.6.3
         self.addParameter(QgsProcessingParameterNumber(self.DSTNODATA,
-                                                       self.tr('Assign specified "nodata" value to output'),
+                                                       self.tr('Assign specified NoData value to output'),
                                                        optional=True))  # GDAL > 3.6.3
         self.addParameter(QgsProcessingParameterBoolean(self.SKIPNODATA,
-                                                        self.tr('Do not output nodata values'),
+                                                        self.tr('Do not output NoData values'),
                                                         defaultValue=False))  # GDAL > 3.3
         self.addParameter(QgsProcessingParameterBoolean(self.CSV,
                                                         self.tr('Output comma-separated values'),
@@ -84,7 +84,7 @@ class gdal2xyz(GdalAlgorithm):
         return 'gdal2xyz'
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = [

@@ -262,7 +262,7 @@ class TestQgsAnnotation(QgisTestCase):
         )
 
     def renderAnnotation(self, annotation, offset):
-        image = QImage(600, 400, QImage.Format_RGB32)
+        image = QImage(600, 400, QImage.Format.Format_RGB32)
         image.fill(QColor(0, 0, 0, 0))
         QgsRenderChecker.drawBackground(image)
 

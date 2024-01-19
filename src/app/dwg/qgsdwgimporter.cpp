@@ -217,7 +217,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
     DRW::setCustomDebugPrinter( new QgsDrwDebugPrinter( 4 ) );
   } );
 
-  const QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) );
+  const QString crswkt( crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ) );
   mCrsH = QgsOgrUtils::crsToOGRSpatialReference( crs );
   QgsDebugMsgLevel( QStringLiteral( "CRS %1[%2]: %3" ).arg( mCrs ).arg( ( qint64 ) mCrsH, 0, 16 ).arg( crswkt ), 2 );
 }

@@ -126,11 +126,11 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
         if self.colOrigPkey is None:
             self.txtSql.setPlainText("Table doesn't have a primary key!")
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
             return
         elif len(self.colOrigPkey) > 1:
             self.txtSql.setPlainText("Table has multicolumn primary key!")
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
             return
 
         # take first (and only column of the pkey)
@@ -164,7 +164,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         sql.append(self.sql_updatesView())
 
         self.txtSql.setPlainText('\n\n'.join(sql))
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
 
         return sql
 
@@ -269,7 +269,7 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
 
     def onOK(self):
         # execute and commit the code
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         try:
             sql = "\n".join(self.updateSql())
             self.db.connector._execute_and_commit(sql)

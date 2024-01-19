@@ -108,11 +108,11 @@ class TestQgsColorScheme(QgisTestCase):
         self.assertEqual(scheme.schemeName(), 'user_test.gpl')
         self.assertTrue(scheme.isEditable())
 
-        self.assertFalse(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
+        self.assertFalse(scheme.flags() & QgsColorScheme.SchemeFlag.ShowInColorButtonMenu)
         scheme.setShowSchemeInMenu(True)
-        self.assertTrue(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
+        self.assertTrue(scheme.flags() & QgsColorScheme.SchemeFlag.ShowInColorButtonMenu)
         scheme.setShowSchemeInMenu(False)
-        self.assertFalse(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
+        self.assertFalse(scheme.flags() & QgsColorScheme.SchemeFlag.ShowInColorButtonMenu)
 
         scheme.erase()
 

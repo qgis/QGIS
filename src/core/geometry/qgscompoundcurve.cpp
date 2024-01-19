@@ -40,27 +40,6 @@ QgsCompoundCurve::~QgsCompoundCurve()
   clear();
 }
 
-bool QgsCompoundCurve::equals( const QgsCurve &other ) const
-{
-  const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
-  if ( !otherCurve )
-    return false;
-
-  if ( mWkbType != otherCurve->mWkbType )
-    return false;
-
-  if ( mCurves.size() != otherCurve->mCurves.size() )
-    return false;
-
-  for ( int i = 0; i < mCurves.size(); ++i )
-  {
-    if ( *mCurves.at( i ) != *otherCurve->mCurves.at( i ) )
-      return false;
-  }
-
-  return true;
-}
-
 QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 {
   auto result = std::make_unique< QgsCompoundCurve >();

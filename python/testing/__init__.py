@@ -317,8 +317,8 @@ class QgisTestCase(unittest.TestCase):
 
         # Compare CRS
         if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
-            expected_wkt = layer_expected.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
-            result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+            expected_wkt = layer_expected.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED)
+            result_wkt = layer_result.dataProvider().crs().toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED)
 
             if use_asserts:
                 self.assertEqual(layer_expected.dataProvider().crs(), layer_result.dataProvider().crs())

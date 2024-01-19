@@ -14,7 +14,6 @@
 #include <random>
 
 #include "../untwine/GridKey.hpp"
-#include "../untwine/Las.hpp"
 
 #include <pdal/PDALUtils.hpp>
 #include <pdal/StageFactory.hpp>
@@ -330,7 +329,6 @@ Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter po
     // there's no reason why it should change. We should modify things to use a single
     // layout.
 
-    Dimension::IdList lasDims = pdrfDims(m_b.pointFormatId);
     DimInfoList dims = m_b.dimInfo;
     m_extraDims.clear();
     for (FileDimInfo& fdi : dims)
@@ -346,7 +344,7 @@ Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter po
             else
                 stats.push_back({fdi.dim, Stats(fdi.name, Stats::EnumType::NoEnum, false)});
         }
-        if (!Utils::contains(lasDims, fdi.dim))
+        if (fdi.extraDim)
             m_extraDims.push_back(DimType(fdi.dim, fdi.type));
     }
     table.finalize();
@@ -530,7 +528,7 @@ void Processor::createChunk(const VoxelKey& key, pdal::PointViewPtr view)
     for (PointId idx = 0; idx < view->size(); ++idx)
     {
         PointRef point(*view, idx);
-        fillPointBuf(point, buf);
+        fillPointBuf(point, buf, layout->findDim(UntwineBitsDimName));
         compressor.compress(buf.data());
     }
     std::vector<unsigned char> chunk = compressor.done();
@@ -546,14 +544,13 @@ void Processor::createChunk(const VoxelKey& key, pdal::PointViewPtr view)
         throw FatalError("Failure writing to '" + m_b.opts.outputName + "'.");
 }
 
-void Processor::fillPointBuf(pdal::PointRef& point, std::vector<char>& buf)
+void Processor::fillPointBuf(pdal::PointRef& point, std::vector<char>& buf,
+    pdal::Dimension::Id bitsDim)
 {
     using namespace pdal;
 
     LeInserter ostream(buf.data(), buf.size());
 
-    // We only write PDRF 6, 7, or 8.
-    bool has14PointFormat = true;
     bool hasTime = true; //  m_lasHeader.hasTime();
     bool hasColor = m_b.pointFormatId == 7 || m_b.pointFormatId == 8;
     bool hasInfrared = m_b.pointFormatId == 8;
@@ -580,60 +577,25 @@ void Processor::fillPointBuf(pdal::PointRef& point, std::vector<char>& buf)
         return i;
     };
 
-    double x = (point.getFieldAs<double>(Id::X) - m_b.offset[0]) / m_b.scale[0];
-    double y = (point.getFieldAs<double>(Id::Y) - m_b.offset[1]) / m_b.scale[1];
-    double z = (point.getFieldAs<double>(Id::Z) - m_b.offset[2]) / m_b.scale[2];
+    int32_t x = converter((point.getFieldAs<double>(Id::X) - m_b.offset[0]) / m_b.scale[0], Id::X);
+    int32_t y = converter((point.getFieldAs<double>(Id::Y) - m_b.offset[1]) / m_b.scale[1], Id::Y);
+    int32_t z = converter((point.getFieldAs<double>(Id::Z) - m_b.offset[2]) / m_b.scale[2], Id::Z);
 
-    ostream << converter(x, Id::X);
-    ostream << converter(y, Id::Y);
-    ostream << converter(z, Id::Z);
+    ostream << x;
+    ostream << y;
+    ostream << z;
 
     ostream << point.getFieldAs<uint16_t>(Id::Intensity);
-
-    uint8_t scanChannel = point.getFieldAs<uint8_t>(Id::ScanChannel);
-    uint8_t scanDirectionFlag = point.getFieldAs<uint8_t>(Id::ScanDirectionFlag);
-    uint8_t edgeOfFlightLine = point.getFieldAs<uint8_t>(Id::EdgeOfFlightLine);
-    uint8_t classification = point.getFieldAs<uint8_t>(Id::Classification);
-
-    if (has14PointFormat)
-    {
-        uint8_t bits = returnNumber | (numberOfReturns << 4);
-        ostream << bits;
-
-        uint8_t classFlags;
-        if (point.hasDim(Id::ClassFlags))
-            classFlags = point.getFieldAs<uint8_t>(Id::ClassFlags);
-        else
-            classFlags = classification >> 5;
-        bits = (classFlags & 0x0F) |
-            ((scanChannel & 0x03) << 4) |
-            ((scanDirectionFlag & 0x01) << 6) |
-            ((edgeOfFlightLine & 0x01) << 7);
-        ostream << bits;
-    }
-    else
-    {
-        uint8_t bits = returnNumber | (numberOfReturns << 3) |
-            (scanDirectionFlag << 6) | (edgeOfFlightLine << 7);
-        ostream << bits;
-    }
-
-    ostream << classification;
+    ostream << (uint8_t)(returnNumber | (numberOfReturns << 4));
+    ostream << point.getFieldAs<uint8_t>(bitsDim);
+    ostream << point.getFieldAs<uint8_t>(Id::Classification);
 
     uint8_t userData = point.getFieldAs<uint8_t>(Id::UserData);
-    if (has14PointFormat)
-    {
-         // Guaranteed to fit if scan angle rank isn't wonky.
-        int16_t scanAngleRank =
-            static_cast<int16_t>(std::round(
-                point.getFieldAs<float>(Id::ScanAngleRank) / .006f));
-        ostream << userData << scanAngleRank;
-    }
-    else
-    {
-        int8_t scanAngleRank = point.getFieldAs<int8_t>(Id::ScanAngleRank);
-        ostream << scanAngleRank << userData;
-    }
+     // Guaranteed to fit if scan angle rank isn't wonky.
+    int16_t scanAngleRank =
+        static_cast<int16_t>(std::round(
+            point.getFieldAs<float>(Id::ScanAngleRank) / .006f));
+    ostream << userData << scanAngleRank;
 
     ostream << point.getFieldAs<uint16_t>(Id::PointSourceId);
 

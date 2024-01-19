@@ -3,5 +3,5 @@ Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
- <Layer name="p2d">
+ <Layer title="p2d" name="p2d">
 </GetFeatureInfoResponse>

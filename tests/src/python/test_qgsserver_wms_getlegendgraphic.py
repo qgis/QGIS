@@ -1111,7 +1111,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self.assertFalse(b'Exception' in r)
+        self.assertNotIn(b'Exception', r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_NoWidthNoHeight", max_size_diff=QSize(10, 2))
 
     def testGetLegendGraphicRegression32020(self):
@@ -1141,7 +1141,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self.assertFalse(b'Exception' in r)
+        self.assertNotIn(b'Exception', r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 2"
@@ -1164,7 +1164,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self.assertFalse(b'Exception' in r)
+        self.assertNotIn(b'Exception', r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 2" and 3
@@ -1187,7 +1187,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self.assertFalse(b'Exception' in r)
+        self.assertNotIn(b'Exception', r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_and_3", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 1" and 3
@@ -1210,7 +1210,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self.assertFalse(b'Exception' in r)
+        self.assertNotIn(b'Exception', r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1_and_3", max_size_diff=QSize(10, 5))
 
         # Change CRS: 3857
@@ -1234,7 +1234,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self.assertFalse(b'Exception' in r)
+        self.assertNotIn(b'Exception', r)
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_3857", max_size_diff=QSize(10, 5))
 
     def test_wms_GetLegendGraphic_JSON(self):
@@ -1292,7 +1292,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         # Rule with symbol
         high_scale_rule = QgsRuleBasedRenderer.Rule(
-            QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry),
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry),
             minimumScale=25000, maximumScale=1000, label='high-scale')
         root_rule.appendChild(high_scale_rule)
 
@@ -1301,7 +1301,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         # Sub-rule with a symbol
         sub_rule = QgsRuleBasedRenderer.Rule(
-            QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label='low-scale-sub')
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry), label='low-scale-sub')
 
         low_scale_rule.appendChild(sub_rule)
         root_rule.appendChild(low_scale_rule)

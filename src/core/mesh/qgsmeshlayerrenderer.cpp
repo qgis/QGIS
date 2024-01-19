@@ -34,11 +34,14 @@
 #include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
+#include "qgsmeshlayerlabeling.h"
+#include "qgsmeshlayerlabelprovider.h"
 #include "qgsmapclippingutils.h"
 #include "qgscolorrampshader.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -78,6 +81,9 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   copyVectorDatasetValues( layer );
 
   calculateOutputSize();
+
+  QSet<QString> attrs;
+  prepareLabeling( layer, attrs );
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
@@ -332,6 +338,8 @@ bool QgsMeshLayerRenderer::render()
   mReadyToCompose = true;
   renderMesh();
   renderVectorDataset();
+
+  registerLabelFeatures();
 
   return !renderContext()->renderingStopped();
 }
@@ -648,3 +656,89 @@ void QgsMeshLayerRenderer::renderVectorDataset()
     renderer->draw();
 }
 
+void QgsMeshLayerRenderer::prepareLabeling( QgsMeshLayer *layer, QSet<QString> &attributeNames )
+{
+  QgsRenderContext &context = *renderContext();
+
+  if ( QgsLabelingEngine *engine = context.labelingEngine() )
+  {
+    if ( layer->labelsEnabled() )
+    {
+      mLabelProvider = layer->labeling()->provider( layer );
+      if ( mLabelProvider )
+      {
+        auto c = context.expressionContext();
+
+        c.appendScope( QgsExpressionContextUtils::meshExpressionScope( mLabelProvider->labelFaces() ? QgsMesh::Face : QgsMesh::Vertex ) );
+        c.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( mNativeMesh ) );
+        context.setExpressionContext( c );
+
+        engine->addProvider( mLabelProvider );
+        if ( !mLabelProvider->prepare( context, attributeNames ) )
+        {
+          engine->removeProvider( mLabelProvider );
+          mLabelProvider = nullptr; // deleted by engine
+        }
+      }
+    }
+  }
+}
+
+void QgsMeshLayerRenderer::registerLabelFeatures()
+{
+  if ( !mLabelProvider )
+    return;
+
+  QgsRenderContext &context = *renderContext();
+
+  QgsExpressionContextScope *scope = context.expressionContext().activeScopeForVariable( QStringLiteral( "_native_mesh" ) );
+
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->mapExtent() );
+
+  if ( mLabelProvider->labelFaces() )
+  {
+    if ( !mTriangularMesh.contains( QgsMesh::ElementType::Face ) )
+      return;
+    const QSet<int> nativeFacesInExtent = QgsMeshUtils::nativeFacesFromTriangles( trianglesInExtent,
+                                          mTriangularMesh.trianglesToNativeFaces() );
+
+    for ( const int i : nativeFacesInExtent )
+    {
+      if ( context.renderingStopped() )
+        break;
+
+      if ( i < 0 || i >= mNativeMesh.faces.count() )
+        continue;
+
+      scope->setVariable( QStringLiteral( "_mesh_face_index" ), i, false );
+
+      QgsFeature f( i );
+      QgsGeometry geom = QgsMeshUtils::toGeometry( mNativeMesh.face( i ), mNativeMesh.vertices );
+      f.setGeometry( geom );
+      mLabelProvider->registerFeature( f, context );
+    }
+  }
+  else
+  {
+    if ( !mTriangularMesh.contains( QgsMesh::ElementType::Vertex ) )
+      return;
+    const QSet<int> nativeVerticesInExtent = QgsMeshUtils::nativeVerticesFromTriangles( trianglesInExtent,
+        mTriangularMesh.triangles() );
+
+    for ( const int i : nativeVerticesInExtent )
+    {
+      if ( context.renderingStopped() )
+        break;
+
+      if ( i < 0 || i >= mNativeMesh.vertexCount() )
+        continue;
+
+      scope->setVariable( QStringLiteral( "_mesh_vertex_index" ), i, false );
+
+      QgsFeature f( i );
+      QgsGeometry geom = QgsGeometry( new QgsPoint( mNativeMesh.vertex( i ) ) );
+      f.setGeometry( geom );
+      mLabelProvider->registerFeature( f, context );
+    }
+  }
+}

@@ -60,7 +60,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
             app.processEvents()
 
         r = fetcher.reply()
-        assert r.error() != QNetworkReply.NoError
+        assert r.error() != QNetworkReply.NetworkError.NoError
 
     def testFetchBadUrl(self):
         fetcher = QgsNetworkContentFetcher()
@@ -71,7 +71,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
             app.processEvents()
 
         r = fetcher.reply()
-        assert r.error() != QNetworkReply.NoError
+        assert r.error() != QNetworkReply.NetworkError.NoError
 
     def testFetchUrlContent(self):
         fetcher = QgsNetworkContentFetcher()
@@ -82,7 +82,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
             app.processEvents()
 
         r = fetcher.reply()
-        assert r.error() == QNetworkReply.NoError, r.error()
+        assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
         assert 'QGIS' in html
@@ -97,7 +97,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
             app.processEvents()
 
         r = fetcher.reply()
-        assert r.error() == QNetworkReply.NoError, r.error()
+        assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
         assert 'QGIS' in html
@@ -113,7 +113,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
             app.processEvents()
 
         r = fetcher.reply()
-        assert r.error() == QNetworkReply.NoError, r.error()
+        assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
         assert 'QGIS' in html
@@ -127,7 +127,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
             app.processEvents()
 
         r = fetcher.reply()
-        assert r.error() == QNetworkReply.NoError, r.error()
+        assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
         assert chr(6040) in html

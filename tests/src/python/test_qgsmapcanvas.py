@@ -139,10 +139,10 @@ class TestQgsMapCanvas(QgisTestCase):
         # expect canvas to auto refresh...
         while not canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
         while canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
 
         # add a polygon to layer
         f = QgsFeature()
@@ -151,10 +151,10 @@ class TestQgsMapCanvas(QgisTestCase):
         # wait for canvas auto refresh
         while not canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
         while canvas.isDrawing():
             app.processEvents()
-            self.assertTrue(time.time() < timeout)
+            self.assertLess(time.time(), timeout)
 
         # now canvas should look different...
         self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
@@ -523,7 +523,7 @@ class TestQgsMapCanvas(QgisTestCase):
         c.zoomByFactor(0.5, QgsPointXY(6.5, 46.5), False)
         self.assertEqual(c.center().x(), 6.5)
         self.assertEqual(c.center().y(), 46.5)
-        self.assertTrue(c.magnificationFactor() > 7 / dpr)
+        self.assertGreater(c.magnificationFactor(), 7 / dpr)
         self.assertEqual(round(c.scale()), 2500000)
 
         # Test zoom with center
@@ -538,7 +538,7 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(round(c.center().x(), 1), 6.5)
         self.assertEqual(round(c.center().y(), 1), 46.6)
         self.assertEqual(round(c.scale()), 2500000)
-        self.assertTrue(c.magnificationFactor() > 7 / dpr)
+        self.assertGreater(c.magnificationFactor(), 7 / dpr)
 
         # Test setExtent with different ratio
         c2 = QgsMapCanvas()
@@ -746,7 +746,7 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.Animated)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.Animated)
         self.assertEqual(canvas.mapSettings().frameRate(), 30)
         self.assertEqual(canvas.mapSettings().currentFrame(), 6)
 
@@ -755,15 +755,15 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(canvas.mapSettings().currentFrame(), 6)
 
         # switch off animation mode
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.FixedRange)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.FixedRange)
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.Animated)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.Animated)
         self.assertEqual(canvas.mapSettings().frameRate(), 30)
         self.assertEqual(canvas.mapSettings().currentFrame(), 7)
 
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationOff)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.NavigationOff)
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
@@ -809,9 +809,9 @@ class TestQgsMapCanvas(QgisTestCase):
         # Keep track of how many times each tool is activated, deactivated, and reactivated
         for tool in [moveTool, zoomTool, emitTool]:
             counter[tool] = {"activated": 0, "deactivated": 0, "reactivated": 0}
-            tool.activated.connect(lambda tool=tool: increment(tool, "activated"), Qt.DirectConnection)
-            tool.deactivated.connect(lambda tool=tool: increment(tool, "deactivated"), Qt.DirectConnection)
-            tool.reactivated.connect(lambda tool=tool: increment(tool, "reactivated"), Qt.DirectConnection)
+            tool.activated.connect(lambda tool=tool: increment(tool, "activated"), Qt.ConnectionType.DirectConnection)
+            tool.deactivated.connect(lambda tool=tool: increment(tool, "deactivated"), Qt.ConnectionType.DirectConnection)
+            tool.reactivated.connect(lambda tool=tool: increment(tool, "reactivated"), Qt.ConnectionType.DirectConnection)
 
         canvas.setMapTool(moveTool)
         canvas.setMapTool(zoomTool)

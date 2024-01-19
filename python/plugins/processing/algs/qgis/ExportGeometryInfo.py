@@ -102,10 +102,10 @@ class ExportGeometryInfo(QgisAlgorithm):
         fields = source.fields()
 
         new_fields = QgsFields()
-        if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.PolygonGeometry:
+        if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.PolygonGeometry:
             new_fields.append(QgsField('area', QVariant.Double))
             new_fields.append(QgsField('perimeter', QVariant.Double))
-        elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.LineGeometry:
+        elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.LineGeometry:
             new_fields.append(QgsField('length', QVariant.Double))
             if not QgsWkbTypes.isMultiType(source.wkbType()):
                 new_fields.append(QgsField('straightdis', QVariant.Double))
@@ -165,9 +165,9 @@ class ExportGeometryInfo(QgisAlgorithm):
                 if coordTransform is not None:
                     inGeom.transform(coordTransform)
 
-                if inGeom.type() == QgsWkbTypes.PointGeometry:
+                if inGeom.type() == QgsWkbTypes.GeometryType.PointGeometry:
                     attrs.extend(self.point_attributes(inGeom))
-                elif inGeom.type() == QgsWkbTypes.PolygonGeometry:
+                elif inGeom.type() == QgsWkbTypes.GeometryType.PolygonGeometry:
                     attrs.extend(self.polygon_attributes(inGeom))
                 else:
                     attrs.extend(self.line_attributes(inGeom))
@@ -179,7 +179,7 @@ class ExportGeometryInfo(QgisAlgorithm):
                 attrs += [NULL] * (len(fields) - len(attrs))
 
             outFeat.setAttributes(attrs)
-            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            sink.addFeature(outFeat, QgsFeatureSink.Flag.FastInsert)
 
             feedback.setProgress(int(current * total))
 

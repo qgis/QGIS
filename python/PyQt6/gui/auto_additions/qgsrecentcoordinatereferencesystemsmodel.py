@@ -1,0 +1,2 @@
+# The following has been generated automatically from src/gui/proj/qgsrecentcoordinatereferencesystemsmodel.h
+QgsRecentCoordinateReferenceSystemsModel.RoleCrs = QgsRecentCoordinateReferenceSystemsModel.Roles.RoleCrs

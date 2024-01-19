@@ -28,10 +28,11 @@ namespace Qt3DRender
 
 namespace Qt3DExtras
 {
-  class Qt3DWindow;
   class QForwardRenderer;
 }
 
+
+class Qgs3DWindow;
 class QWindow;
 
 
@@ -79,7 +80,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     void setSize( QSize s ) override;
   private:
     //! 3D window with all the 3D magic inside
-    Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
+    Qgs3DWindow *mWindow3D = nullptr;
     //! Frame graph node for render capture
     bool mShadowRenderingEnabled = false;
     Qt3DCore::QEntity *mRoot = nullptr;

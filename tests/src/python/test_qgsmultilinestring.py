@@ -18,7 +18,7 @@ from qgis.testing import start_app, QgisTestCase
 start_app()
 
 
-class TestQgsLineString(QgisTestCase):
+class TestQgsMultiLineString(QgisTestCase):
 
     def testConstruct(self):
         # With list
@@ -57,6 +57,111 @@ class TestQgsLineString(QgisTestCase):
         m_line = multiline.measuredLine(10, 20)
         self.assertEqual(m_line.numGeometries(), 2)
         self.assertEqual(m_line.asWkt(0), "MultiLineStringM ((1 0 nan, 1 0 nan, 1 0 nan),(2 2 nan, 2 2 nan, 2 2 nan))")
+
+    def testFuzzyComparisons(self):
+        ######
+        # 2D #
+        ######
+        epsilon = 0.001
+        geom1 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(5.0, 6.0), QgsPoint(8.0, 7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0), QgsPoint(0.001, 0.001))
+        geom1.addGeometry(line1)
+        geom1.addGeometry(line2)
+
+        geom2 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(5.0, 6.0), QgsPoint(8.0, 7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0), QgsPoint(0.002, 0.002))
+        geom2.addGeometry(line1)
+        geom2.addGeometry(line2)
+
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
+
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        # OK for both
+        epsilon *= 10
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        #######
+        # 3DZ #
+        #######
+        epsilon = 0.001
+        geom1 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(4.0, 5.0, 6.0), QgsPoint(9.0, 8.0, 7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001))
+        geom1.addGeometry(line1)
+        geom1.addGeometry(line2)
+
+        geom2 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(4.0, 5.0, 6.0), QgsPoint(9.0, 8.0, 7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.002))
+        geom2.addGeometry(line1)
+        geom2.addGeometry(line2)
+
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
+
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        # OK for both
+        epsilon *= 10
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        #######
+        # 3DM #
+        #######
+        epsilon = 0.001
+        geom1 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(4.0, 5.0, m=6.0), QgsPoint(9.0, 8.0, m=7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0, m=0.0), QgsPoint(0.001, 0.001, m=0.001))
+        geom1.addGeometry(line1)
+        geom1.addGeometry(line2)
+
+        geom2 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(4.0, 5.0, m=6.0), QgsPoint(9.0, 8.0, m=7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0, m=0.0), QgsPoint(0.001, 0.001, m=0.002))
+        geom2.addGeometry(line1)
+        geom2.addGeometry(line2)
+
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
+
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        # OK for both
+        epsilon *= 10
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        ######
+        # 4D #
+        ######
+        epsilon = 0.001
+        geom1 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(3.0, 4.0, 5.0, 6.0), QgsPoint(10.0, 9.0, 8.0, 7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001, 0.001))
+        geom1.addGeometry(line1)
+        geom1.addGeometry(line2)
+
+        geom2 = QgsMultiLineString()
+        line1 = QgsLineString(QgsPoint(3.0, 4.0, 5.0, 6.0), QgsPoint(10.0, 9.0, 8.0, 7.0))
+        line2 = QgsLineString(QgsPoint(0.0, 0.0, 0.0, 0.0), QgsPoint(0.001, 0.001, 0.001, 0.002))
+        geom2.addGeometry(line1)
+        geom2.addGeometry(line2)
+
+        self.assertNotEqual(geom1, geom2)  # epsilon = 1e-8 here
+
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertFalse(geom1.fuzzyDistanceEqual(geom2, epsilon))
+
+        # OK for both
+        epsilon *= 10
+        self.assertTrue(geom1.fuzzyEqual(geom2, epsilon))
+        self.assertTrue(geom1.fuzzyDistanceEqual(geom2, epsilon))
 
 
 if __name__ == '__main__':

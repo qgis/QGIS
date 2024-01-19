@@ -282,7 +282,7 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
 
     // QgsAABB is normalized in its constructor, so that min values are always smaller than max.
     // If all child bboxes were empty, we can end up with min > max, so let's have an empty bbox instead.
-    const QgsAABB currentNodeBbox = xMin < xMax && yMin < yMax && zMin < zMax ? QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax ) : QgsAABB();
+    const QgsAABB currentNodeBbox = xMin > xMax || yMin > yMax || zMin > zMax ? QgsAABB() : QgsAABB( xMin, yMin, zMin, xMax, yMax, zMax );
 
     currentNode->setExactBbox( currentNodeBbox );
     currentNode = currentNode->parent();

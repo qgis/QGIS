@@ -1086,6 +1086,26 @@ The development version
       YX,
     };
 
+    enum class CrsIdentifierType /BaseType=IntFlag/
+      {
+      ShortString,
+      MediumString,
+      FullString,
+    };
+
+    enum class CrsWktVariant /BaseType=IntFlag/
+      {
+      Wkt1Gdal,
+      Wkt1Esri,
+      Wkt2_2015,
+      Wkt2_2015Simplified,
+      Wkt2_2019,
+      Wkt2_2019Simplified,
+      Preferred,
+      PreferredSimplified,
+      PreferredGdal,
+    };
+
     enum class Axis /BaseType=IntFlag/
     {
       X,
@@ -1668,6 +1688,20 @@ The development version
     };
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
+
+
+    enum class Point3DShape /BaseType=IntFlag/
+    {
+      Cylinder,
+      Sphere,
+      Cone,
+      Cube,
+      Torus,
+      Plane,
+      ExtrudedText,
+      Model,
+      Billboard,
+    };
 
     enum class LightSourceType /BaseType=IntFlag/
     {
@@ -2554,6 +2588,7 @@ Compare two doubles, treating nan values as equal
 
 .. versionadded:: 3.20
 %End
+
 
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
 %Docstring

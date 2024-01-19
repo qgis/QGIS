@@ -91,8 +91,8 @@ class TestSelectiveMasking(QgisTestCase):
         self.map_settings.setBackgroundColor(QColor(152, 219, 249))
         self.map_settings.setOutputSize(QSize(420, 280))
         self.map_settings.setOutputDpi(72)
-        self.map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        self.map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        self.map_settings.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        self.map_settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
         self.map_settings.setDestinationCrs(crs)
         self.map_settings.setExtent(extent)
 
@@ -123,10 +123,10 @@ class TestSelectiveMasking(QgisTestCase):
                 fmt.setFont(font)
                 fmt.setNamedStyle('Roman')
                 fmt.setSize(32)
-                fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+                fmt.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
                 settings.setFormat(fmt)
-                if (layer.geometryType == QgsWkbTypes.PolygonGeometry):
-                    settings.placement = QgsPalLayerSettings.OverPoint
+                if (layer.geometryType == QgsWkbTypes.GeometryType.PolygonGeometry):
+                    settings.placement = QgsPalLayerSettings.Placement.OverPoint
                 layer.labeling().setSettings(settings, provider)
 
         # order layers for rendering
@@ -489,9 +489,9 @@ class TestSelectiveMasking(QgisTestCase):
             self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         # overwrite with data-defined properties
-        fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskEnabled, QgsProperty.fromExpression('1'))
-        fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskBufferSize, QgsProperty.fromExpression('4.0'))
-        fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskOpacity, QgsProperty.fromExpression('100.0'))
+        fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.MaskEnabled, QgsProperty.fromExpression('1'))
+        fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.MaskBufferSize, QgsProperty.fromExpression('4.0'))
+        fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.MaskOpacity, QgsProperty.fromExpression('100.0'))
 
         context = QgsRenderContext()
         fmt.updateDataDefinedProperties(context)
@@ -726,7 +726,7 @@ class TestSelectiveMasking(QgisTestCase):
                 ("as_big_preview", lambda: p.bigSymbolPreviewImage().save(tmp)),
                 ("sl_preview", lambda:
                  QgsSymbolLayerUtils.symbolLayerPreviewIcon(mask_layer,
-                                                            QgsUnitTypes.RenderPixels,
+                                                            QgsUnitTypes.RenderUnit.RenderPixels,
                                                             QSize(64, 64)).pixmap(QSize(64, 64)).save(tmp))
         ]:
             with tempfile.TemporaryDirectory() as temp_dir:
@@ -1080,7 +1080,7 @@ class TestSelectiveMasking(QgisTestCase):
         image.setDevicePixelRatio(self.map_settings.devicePixelRatio())
         image.setDotsPerMeterX(int(1000 * self.map_settings.outputDpi() / 25.4))
         image.setDotsPerMeterY(int(1000 * self.map_settings.outputDpi() / 25.4))
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
         pImg = QPainter()
         pImg.begin(image)
         job = QgsMapRendererCustomPainterJob(self.map_settings, pImg)
@@ -1105,7 +1105,7 @@ class TestSelectiveMasking(QgisTestCase):
         image.setDevicePixelRatio(self.map_settings.devicePixelRatio())
         image.setDotsPerMeterX(int(1000 * self.map_settings.outputDpi() / 25.4))
         image.setDotsPerMeterY(int(1000 * self.map_settings.outputDpi() / 25.4))
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
         pImg = QPainter()
         pImg.begin(image)
         job = QgsMapRendererCustomPainterJob(self.map_settings, pImg)
@@ -1171,7 +1171,7 @@ class TestSelectiveMasking(QgisTestCase):
         fmt = settings.format()
         fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         fmt.setSize(30)
-        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+        fmt.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         settings.setFormat(fmt)
         layer.labeling().setSettings(settings)
 
@@ -1181,8 +1181,8 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
-        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
         map_settings.setExtent(extent)
 
@@ -1204,7 +1204,7 @@ class TestSelectiveMasking(QgisTestCase):
         fmt = settings.format()
         fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         fmt.setSize(9)
-        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+        fmt.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         settings.setFormat(fmt)
         layer.labeling().setSettings(settings)
 
@@ -1214,8 +1214,8 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
-        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
 
         map_settings.setLayers([layer])
@@ -1236,7 +1236,7 @@ class TestSelectiveMasking(QgisTestCase):
         fmt = settings.format()
         fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         fmt.setSize(9)
-        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+        fmt.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         settings.setFormat(fmt)
         layer.labeling().setSettings(settings)
 
@@ -1246,8 +1246,8 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
-        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
         map_settings.setExtent(extent)
 
@@ -1269,7 +1269,7 @@ class TestSelectiveMasking(QgisTestCase):
         fmt = settings.format()
         fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         fmt.setSize(9)
-        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+        fmt.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         settings.setFormat(fmt)
         layer.labeling().setSettings(settings)
 
@@ -1279,8 +1279,8 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
-        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
 
         map_settings.setLayers([layer])
@@ -1301,7 +1301,7 @@ class TestSelectiveMasking(QgisTestCase):
         fmt = settings.format()
         fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         fmt.setSize(9)
-        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+        fmt.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         settings.setFormat(fmt)
         layer.labeling().setSettings(settings)
 
@@ -1311,8 +1311,8 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setBackgroundColor(QColor(152, 219, 249))
         map_settings.setOutputSize(QSize(420, 280))
         map_settings.setOutputDpi(72)
-        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        map_settings.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        map_settings.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
         map_settings.setDestinationCrs(crs)
 
         map_settings.setLayers([layer])

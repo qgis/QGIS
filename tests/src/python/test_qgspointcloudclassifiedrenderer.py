@@ -59,16 +59,16 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         self.assertEqual(renderer.categories()[1].label(), 'cat 7')
 
         renderer.setMaximumScreenError(18)
-        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderInches)
+        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderInches)
         renderer.setPointSize(13)
-        renderer.setPointSizeUnit(QgsUnitTypes.RenderPoints)
+        renderer.setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         renderer.setPointSizeMapUnitScale(QgsMapUnitScale(1000, 2000))
 
         rr = renderer.clone()
         self.assertEqual(rr.maximumScreenError(), 18)
-        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         self.assertEqual(rr.pointSize(), 13)
-        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(rr.pointSizeMapUnitScale().minScale, 1000)
         self.assertEqual(rr.pointSizeMapUnitScale().maxScale, 2000)
 
@@ -82,9 +82,9 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
 
         r2 = QgsPointCloudClassifiedRenderer.create(elem, QgsReadWriteContext())
         self.assertEqual(r2.maximumScreenError(), 18)
-        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         self.assertEqual(r2.pointSize(), 13)
-        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(r2.pointSizeMapUnitScale().minScale, 1000)
         self.assertEqual(r2.pointSizeMapUnitScale().maxScale, 2000)
         self.assertEqual(r2.attribute(), 'attr')
@@ -111,10 +111,10 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
         nodes = renderer.createLegendNodes(layer_tree_layer)
         self.assertEqual(len(nodes), 2)
-        self.assertEqual(nodes[0].data(Qt.DisplayRole), 'cat 3')
-        self.assertEqual(nodes[0].data(QgsLayerTreeModelLegendNode.RuleKeyRole), '3')
-        self.assertEqual(nodes[1].data(Qt.DisplayRole), 'cat 7')
-        self.assertEqual(nodes[1].data(QgsLayerTreeModelLegendNode.RuleKeyRole), '7')
+        self.assertEqual(nodes[0].data(Qt.ItemDataRole.DisplayRole), 'cat 3')
+        self.assertEqual(nodes[0].data(QgsLayerTreeModelLegendNode.LegendNodeRoles.RuleKeyRole), '3')
+        self.assertEqual(nodes[1].data(Qt.ItemDataRole.DisplayRole), 'cat 7')
+        self.assertEqual(nodes[1].data(QgsLayerTreeModelLegendNode.LegendNodeRoles.RuleKeyRole), '7')
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testRender(self):
@@ -126,7 +126,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -149,7 +149,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -172,7 +172,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(.15)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -199,7 +199,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(.15)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -222,7 +222,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -246,7 +246,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.TopToBottom)
 
         mapsettings = QgsMapSettings()
@@ -270,7 +270,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
 
         mapsettings = QgsMapSettings()
@@ -294,7 +294,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.setSubsetString('NumberOfReturns > 1')
 
         mapsettings = QgsMapSettings()
@@ -325,7 +325,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))

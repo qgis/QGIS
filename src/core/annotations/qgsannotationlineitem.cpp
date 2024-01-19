@@ -195,7 +195,7 @@ QgsRectangle QgsAnnotationLineItem::boundingBox() const
   return mCurve->boundingBox();
 }
 
-QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
+QgsAnnotationLineItem *QgsAnnotationLineItem::clone() const
 {
   std::unique_ptr< QgsAnnotationLineItem > item = std::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
   item->setSymbol( mSymbol->clone() );

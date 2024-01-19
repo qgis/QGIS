@@ -54,7 +54,7 @@ class TestQgsServerAccessControlFixFilters(TestQgsServerAccessControl):
         # Execute a restricted WMS request
         # That will store the filter expression in cache
         response, headers = self._get_restricted(wms_query_string)
-        self.assertTrue(headers.get("Content-Type") == "image/png")
+        self.assertEqual(headers.get("Content-Type"), "image/png")
 
         # Execute an unrestricted wfs request again
         # We must have same result as the first time

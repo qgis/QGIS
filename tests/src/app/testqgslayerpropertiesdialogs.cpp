@@ -34,6 +34,31 @@
 #include "qgstiledscenelayerproperties.h"
 #include "qgsannotationlayer.h"
 #include "annotations/qgsannotationlayerproperties.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsprovidersourcewidget.h"
+
+class DummySourceWidget : public QgsProviderSourceWidget
+{
+    Q_OBJECT
+  public:
+
+    DummySourceWidget( QWidget *parent ) : QgsProviderSourceWidget( parent )
+    {
+
+    }
+
+    void setSourceUri( const QString &uri ) override { Q_UNUSED( uri ); }
+
+    QString sourceUri() const override
+    {
+      return newSource;
+    }
+
+    QString newSource;
+
+};
 
 class TestQgsLayerPropertiesDialogs : public QgsTest
 {
@@ -95,6 +120,49 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
       dialog.show();
       dialog.accept();
+    }
+
+
+    void testChangeVectorDataSource()
+    {
+      // start with a point layer
+      const QString pointFileName = mTestDataDir + "points.shp";
+      const QFileInfo pointFileInfo( pointFileName );
+      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( pointFileInfo.filePath(),
+                                             pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      QVERIFY( vl->isValid() );
+      // point layer should have a marker symbol
+      vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol() ) );
+      QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Marker );
+
+      // no change to data source
+      QgsMapCanvas canvas;
+      QgsMessageBar messageBar;
+      {
+        QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
+        dialog.show();
+        dialog.accept();
+      }
+
+      // renderer should still be a marker type
+      QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Marker );
+
+      // change the data source to a line layer:
+      {
+        QgsVectorLayerProperties dialog( &canvas, &messageBar, vl.get() );
+        DummySourceWidget *sourceWidget = new DummySourceWidget( &dialog );
+        sourceWidget->newSource = mTestDataDir + "lines_touching.shp";
+        dialog.mSourceWidget = sourceWidget;
+        dialog.show();
+        dialog.accept();
+      }
+
+      QCOMPARE( vl->source(), mTestDataDir + "lines_touching.shp" );
+      QCOMPARE( vl->geometryType(), Qgis::GeometryType::Line );
+      // single symbol renderer with marker symbol would be nonsense now, we expected a line symbol
+      // ie the settings for the renderer which were present in the dialog MUST be ignored and overwritten
+      // by the logic which triggers when the geometry type is changed via a data source change
+      QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Line );
     }
 
     void testValidRasterProperties()

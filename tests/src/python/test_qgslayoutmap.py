@@ -161,12 +161,12 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
                             page_item.rect().width(),
                             page_item.rect().height())
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         spy = QSignalSpy(map.previewRefreshed)
 
@@ -178,9 +178,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         # background thread
         spy.wait()
 
-        im.fill(Qt.transparent)
+        im.fill(Qt.GlobalColor.transparent)
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         l.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
 
@@ -199,12 +199,12 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         item1 = QgsLayoutItemShape(layout)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 50))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
         layout.addLayoutItem(item1)
 
@@ -215,7 +215,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setLayers([self.vector_layer])
         layout.addLayoutItem(map)
 
-        map.setBlendMode(QPainter.CompositionMode_Darken)
+        map.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         self.assertTrue(
             map.requiresRasterization()
@@ -237,12 +237,12 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         item1 = QgsLayoutItemShape(layout)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
         simple_fill.setColor(QColor(0, 100, 50))
-        simple_fill.setStrokeColor(Qt.black)
+        simple_fill.setStrokeColor(Qt.GlobalColor.black)
         item1.setSymbol(fill_symbol)
         layout.addLayoutItem(item1)
 
@@ -253,7 +253,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setLayers([self.vector_layer])
         layout.addLayoutItem(map)
 
-        map.setBlendMode(QPainter.CompositionMode_Darken)
+        map.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
 
         page_item = layout.pageCollection().page(0)
         paper_rect = QRectF(page_item.pos().x(),
@@ -261,12 +261,12 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
                             page_item.rect().width(),
                             page_item.rect().height())
 
-        im = QImage(1122, 794, QImage.Format_ARGB32)
-        im.fill(Qt.transparent)
+        im = QImage(1122, 794, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.transparent)
         im.setDotsPerMeterX(int(300 / 25.4 * 1000))
         im.setDotsPerMeterY(int(300 / 25.4 * 1000))
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
 
         spy = QSignalSpy(map.previewRefreshed)
 
@@ -278,9 +278,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         # background thread
         spy.wait()
 
-        im.fill(Qt.transparent)
+        im.fill(Qt.GlobalColor.transparent)
         painter = QPainter(im)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         layout.render(painter, QRectF(0, 0, painter.device().width(), painter.device().height()), paper_rect)
         painter.end()
 
@@ -339,9 +339,9 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
 
         self.assertFalse(map.containsAdvancedEffects())
-        self.vector_layer.setBlendMode(QPainter.CompositionMode_Darken)
+        self.vector_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         result = map.containsAdvancedEffects()
-        self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.vector_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         self.assertTrue(result)
 
     def testRasterization(self):
@@ -351,7 +351,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
 
         self.assertFalse(map.requiresRasterization())
-        self.vector_layer.setBlendMode(QPainter.CompositionMode_Darken)
+        self.vector_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Darken)
         self.assertFalse(map.requiresRasterization())
         self.assertTrue(map.containsAdvancedEffects())
 
@@ -361,7 +361,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setBackgroundColor(QColor(1, 1, 1, 1))
         self.assertTrue(map.requiresRasterization())
 
-        self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.vector_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
     def testLabelMargin(self):
         """
@@ -376,7 +376,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'X'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
         vl.setRenderer(QgsNullSymbolRenderer())
@@ -392,8 +392,8 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         p = QgsProject()
 
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
-        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates, False)
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.DrawLabelRectOnly, True)
         p.setLabelingEngineSettings(engine_settings)
 
         p.addMapLayer(vl)
@@ -411,12 +411,12 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
             self.render_layout_check('composermap_label_nomargin', layout)
         )
 
-        map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
+        map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         self.assertTrue(
             self.render_layout_check('composermap_label_margin', layout)
         )
 
-        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
+        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutUnit.LayoutCentimeters))
         self.assertTrue(
             self.render_layout_check('composermap_label_cm_margin', layout)
         )
@@ -424,7 +424,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setMapRotation(45)
         map.zoomToExtent(vl.extent())
         map.setScale(map.scale() * 1.2)
-        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
+        map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutUnit.LayoutCentimeters))
         self.assertTrue(
             self.render_layout_check('composermap_rotated_label_margin', layout)
         )
@@ -432,7 +432,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         # data defined
         map.setMapRotation(0)
         map.zoomToExtent(vl.extent())
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapLabelMargin, QgsProperty.fromExpression('1+3'))
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.MapLabelMargin, QgsProperty.fromExpression('1+3'))
         map.refresh()
         self.assertTrue(
             self.render_layout_check('composermap_dd_label_margin', layout)
@@ -451,7 +451,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'X'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
         vl.setRenderer(QgsNullSymbolRenderer())
@@ -467,8 +467,8 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         p = QgsProject()
 
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
-        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates, False)
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.DrawLabelRectOnly, True)
         p.setLabelingEngineSettings(engine_settings)
 
         p.addMapLayer(vl)
@@ -483,7 +483,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         layout.addLayoutItem(map)
 
         # default should always be to hide partial labels
-        self.assertFalse(map.mapFlags() & QgsLayoutItemMap.ShowPartialLabels)
+        self.assertFalse(map.mapFlags() & QgsLayoutItemMap.MapItemFlag.ShowPartialLabels)
 
         # hiding partial labels (the default)
         map.setMapFlags(QgsLayoutItemMap.MapItemFlags())
@@ -492,7 +492,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         )
 
         # showing partial labels
-        map.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
+        map.setMapFlags(QgsLayoutItemMap.MapItemFlag.ShowPartialLabels)
         self.assertTrue(
             self.render_layout_check('composermap_show_partial_labels', layout)
         )
@@ -510,7 +510,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'X'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
         vl.setRenderer(QgsNullSymbolRenderer())
@@ -526,7 +526,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         p = QgsProject()
 
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly, True)
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.DrawLabelRectOnly, True)
         p.setLabelingEngineSettings(engine_settings)
 
         p.addMapLayer(vl)
@@ -619,13 +619,13 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertEqual(len(spy), 4)
 
         # data defined theme
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapStylePreset, QgsProperty.fromValue('theme4'))
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.MapStylePreset, QgsProperty.fromValue('theme4'))
         map.refresh()
         self.assertEqual(len(spy), 5)
         self.assertEqual(spy[-1][0], 'theme4')
         map.refresh()
         self.assertEqual(len(spy), 5)
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapStylePreset, QgsProperty.fromValue('theme6'))
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.MapStylePreset, QgsProperty.fromValue('theme6'))
         map.refresh()
         self.assertEqual(len(spy), 6)
         self.assertEqual(spy[-1][0], 'theme6')
@@ -640,7 +640,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'XXXX'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
 
@@ -673,7 +673,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         shape = QgsLayoutItemShape(layout)
         layout.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
         shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
         props = {"color": "0,0,0,0", 'outline_style': 'no'}
         fillSymbol = QgsFillSymbol.createSimple(props)
@@ -698,7 +698,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'XXXX'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
 
@@ -731,7 +731,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         shape = QgsLayoutItemShape(layout)
         layout.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
         shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
         props = {"color": "0,0,0,0", 'outline_style': 'no'}
         fillSymbol = QgsFillSymbol.createSimple(props)
@@ -756,7 +756,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'XXXX'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
 
@@ -809,7 +809,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         shape = QgsLayoutItemShape(layout)
         layout.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
         shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
         props = {"color": "0,0,0,0", 'outline_style': 'no'}
         fillSymbol = QgsFillSymbol.createSimple(props)
@@ -837,7 +837,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         settings.setFormat(format)
         settings.fieldName = "'XXXX'"
         settings.isExpression = True
-        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.placement = QgsPalLayerSettings.Placement.OverPoint
 
         vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
 
@@ -870,7 +870,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         shape = QgsLayoutItemShape(layout)
         layout.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
         shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
 
         map.itemClippingSettings().setEnabled(True)
@@ -908,7 +908,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
         map.setFrameEnabled(True)
-        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutMillimeters))
+        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         map.setBackgroundEnabled(True)
         map.setBackgroundColor(QColor(200, 255, 200))
         map.zoomToExtent(vl.extent())
@@ -917,7 +917,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
 
         shape = QgsLayoutItemShape(layout)
         layout.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
         shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
 
         map.itemClippingSettings().setEnabled(True)
@@ -946,7 +946,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
         map.setFrameEnabled(True)
-        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutMillimeters))
+        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         map.setBackgroundEnabled(True)
         map.setBackgroundColor(QColor(200, 255, 200))
         map.zoomToExtent(QgsRectangle(10, 30, 20, 35))
@@ -1009,7 +1009,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setCrs(QgsCoordinateReferenceSystem('EPSG:28355'))
         self.assertEqual(len(spy), 6)
         # data defined crs
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapCrs, QgsProperty.fromValue('EPSG:4283'))
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.MapCrs, QgsProperty.fromValue('EPSG:4283'))
         self.assertEqual(len(spy), 6)
         map.refresh()
         self.assertEqual(len(spy), 7)

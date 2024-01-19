@@ -183,7 +183,7 @@ class TestQgsPathResolver(QgisTestCase):
         self.assertTrue(p.write(temp_project_path))
 
         with open(temp_project_path) as f:
-            self.assertTrue("@TEST_DATA_DIR@" in f.read())
+            self.assertIn("@TEST_DATA_DIR@", f.read())
 
         p2 = QgsProject()
         self.assertTrue(p2.read(temp_project_path))

@@ -102,20 +102,20 @@ class TestQgsFeatureSource(QgisTestCase):
         self.assertEqual(new_layer.fields(), layer.fields())
         self.assertEqual(new_layer.crs(), layer.crs())
         self.assertEqual(new_layer.featureCount(), 5)
-        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Type.Point)
         new_features = {f[0]: f for f in new_layer.getFeatures()}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
             self.assertEqual(new_features[id].geometry().asWkt(), f.geometry().asWkt())
 
         # materialize with no geometry
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
         self.assertFalse(new_layer.crs().isValid())
         self.assertFalse(new_layer.isSpatial())
         self.assertEqual(new_layer.featureCount(), 5)
-        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Type.NoGeometry)
         new_features = {f[0]: f for f in new_layer.getFeatures()}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
@@ -126,7 +126,7 @@ class TestQgsFeatureSource(QgisTestCase):
         self.assertEqual(new_layer.fields(), layer.fields())
         self.assertEqual(new_layer.crs().authid(), 'EPSG:3785')
         self.assertEqual(new_layer.featureCount(), 5)
-        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Type.Point)
         new_features = {f[0]: f for f in new_layer.getFeatures()}
 
         expected_geometry = {1: 'Point (111319 222684)',
@@ -146,7 +146,7 @@ class TestQgsFeatureSource(QgisTestCase):
         self.assertEqual(new_layer.fields().at(1), layer.fields().at(2))
         self.assertEqual(new_layer.crs(), layer.crs())
         self.assertEqual(new_layer.featureCount(), 5)
-        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Type.Point)
         new_features = {f.attributes()[0]: f for f in new_layer.getFeatures()}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes()[0], f.attributes()[0])

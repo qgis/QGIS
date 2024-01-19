@@ -1244,7 +1244,7 @@ OGRSpatialReferenceH QgsOgrUtils::crsToOGRSpatialReference( const QgsCoordinateR
     // help a few drivers to get the datum code, that would be missing in WKT-2.
     // See https://github.com/OSGeo/gdal/pull/5218
     const QString authId = crs.authid();
-    const QString srsWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+    const QString srsWkt = crs.toWkt( Qgis::CrsWktVariant::PreferredGdal );
     if ( !authId.isEmpty() )
     {
       ogrSrs = OSRNewSpatialReference( nullptr );

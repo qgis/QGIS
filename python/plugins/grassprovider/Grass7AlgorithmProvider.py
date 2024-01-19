@@ -102,10 +102,10 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                         if alg.name().strip() != '':
                             algs.append(alg)
                         else:
-                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(algorithm_json.get('name')), self.tr('Processing'), Qgis.Critical)
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(algorithm_json.get('name')), self.tr('Processing'), Qgis.MessageLevel.Critical)
                     except Exception as e:
                         QgsMessageLog.logMessage(
-                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(algorithm_json.get('name'), e), self.tr('Processing'), Qgis.Critical)
+                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(algorithm_json.get('name'), e), self.tr('Processing'), Qgis.MessageLevel.Critical)
             else:
                 # slow approach - pass txt files one by one
                 for descriptionFile in folder.glob('*.txt'):
@@ -115,17 +115,17 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                         if alg.name().strip() != '':
                             algs.append(alg)
                         else:
-                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
+                            QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.MessageLevel.Critical)
                     except Exception as e:
                         QgsMessageLog.logMessage(
-                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.Critical)
+                            self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, e), self.tr('Processing'), Qgis.MessageLevel.Critical)
         return algs
 
     def loadAlgorithms(self):
         version = Grass7Utils.installedVersion(True)
         if version is None:
             QgsMessageLog.logMessage(self.tr('Problem with GRASS installation: GRASS was not found or is not correctly installed'),
-                                     self.tr('Processing'), Qgis.Critical)
+                                     self.tr('Processing'), Qgis.MessageLevel.Critical)
             return
 
         for a in self.parse_algorithms():

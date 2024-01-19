@@ -69,7 +69,7 @@ class LayerSelectionDialog(QDialog):
         vl.addWidget(self.combo)
 
         self.button_box = QDialogButtonBox()
-        self.button_box.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.button_box.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -93,7 +93,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.param = param
         self.crs = QgsProject.instance().crs()
 
-        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+        if self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
@@ -144,7 +144,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
         useCanvasExtentAction.triggered.connect(self.useCanvasExtent)
 
-        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+        if self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
             useMincoveringExtentAction = QAction(
                 self.tr('Use Min Covering Extent from Input Layers'),
                 self.btnSelect)

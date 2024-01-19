@@ -42,23 +42,23 @@ class TestQgsLayoutShape(QgisTestCase, LayoutItemTestCase):
         l = QgsLayout(pr)
         shape = QgsLayoutItemShape(l)
 
-        shape.setShapeType(QgsLayoutItemShape.Rectangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         shape.attemptSetSceneRect(QRectF(30, 10, 100, 200))
 
         # must be a closed polygon, in scene coordinates!
         self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((30 10, 130 10, 130 210, 30 210, 30 10))')
-        self.assertTrue(int(shape.itemFlags() & QgsLayoutItem.FlagProvidesClipPath))
+        self.assertTrue(int(shape.itemFlags() & QgsLayoutItem.Flag.FlagProvidesClipPath))
 
         spy = QSignalSpy(shape.clipPathChanged)
-        shape.setCornerRadius(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
+        shape.setCornerRadius(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         self.assertTrue(shape.clipPath().asWkt(0).startswith('Polygon ((30 20, 30 20, 30 19, 30 19, 30 19, 30 19'))
         self.assertEqual(len(spy), 1)
 
-        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Ellipse)
         self.assertEqual(len(spy), 2)
         self.assertTrue(shape.clipPath().asWkt(0).startswith('Polygon ((130 110, 130 111, 130 113, 130 114'))
 
-        shape.setShapeType(QgsLayoutItemShape.Triangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Triangle)
         self.assertEqual(len(spy), 3)
         self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((30 210, 130 210, 80 10, 30 210))')
 
@@ -74,7 +74,7 @@ class TestQgsLayoutShape(QgisTestCase, LayoutItemTestCase):
         l = QgsLayout(pr)
         shape = QgsLayoutItemShape(l)
 
-        shape.setShapeType(QgsLayoutItemShape.Rectangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         shape.attemptSetSceneRect(QRectF(30, 10, 100, 200))
         self.assertEqual(shape.boundingRect(), QRectF(-0.15, -0.15, 100.3, 200.3))
 

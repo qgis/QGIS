@@ -92,11 +92,11 @@ class BasicStatisticsForField(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer'),
-                                                              types=[QgsProcessing.TypeVector]))
+                                                              types=[QgsProcessing.SourceType.TypeVector]))
 
         self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
                                                       self.tr('Field to calculate statistics on'),
-                                                      None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
+                                                      None, self.INPUT_LAYER, QgsProcessingParameterField.DataType.Any))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'),
                                                                 self.tr('HTML files (*.html)'), None, True))
@@ -138,9 +138,9 @@ class BasicStatisticsForField(QgisAlgorithm):
 
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name],
-                                                                                                   source.fields())
-        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry).setSubsetOfAttributes([field_name],
+                                                                                                        source.fields())
+        features = source.getFeatures(request, QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 
         data = [self.tr('Analyzed field: {}').format(field_name)]
@@ -257,15 +257,15 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.UNIQUE: stat.countDistinct(),
                    self.EMPTY: stat.countMissing(),
                    self.FILLED: stat.count() - stat.countMissing(),
-                   self.MIN: stat.statistic(QgsDateTimeStatisticalSummary.Min),
-                   self.MAX: stat.statistic(QgsDateTimeStatisticalSummary.Max)}
+                   self.MIN: stat.statistic(QgsDateTimeStatisticalSummary.Statistic.Min),
+                   self.MAX: stat.statistic(QgsDateTimeStatisticalSummary.Statistic.Max)}
 
         data = [
             self.tr('Count: {}').format(count),
             self.tr('Unique values: {}').format(stat.countDistinct()),
             self.tr('NULL (missing) values: {}').format(stat.countMissing()),
-            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))),
-            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max)))
+            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Statistic.Min))),
+            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Statistic.Max)))
         ]
 
         return data, results

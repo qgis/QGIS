@@ -58,8 +58,8 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
         self.loaded = False
 
         def check_reply():
-            self.assertEqual(content.status(), QgsFetchedContent.Failed)
-            self.assertNotEqual(content.error(), QNetworkReply.NoError)
+            self.assertEqual(content.status(), QgsFetchedContent.ContentStatus.Failed)
+            self.assertNotEqual(content.error(), QNetworkReply.NetworkError.NoError)
             self.assertEqual(content.filePath(), '')
             self.loaded = True
 
@@ -76,8 +76,8 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
         def check_reply():
             self.loaded = True
-            self.assertEqual(content.status(), QgsFetchedContent.Finished)
-            self.assertEqual(content.error(), QNetworkReply.NoError)
+            self.assertEqual(content.status(), QgsFetchedContent.ContentStatus.Finished)
+            self.assertEqual(content.error(), QNetworkReply.NetworkError.NoError)
             self.assertNotEqual(content.filePath(), '')
 
         content.fetched.connect(check_reply)
@@ -89,7 +89,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
         # create new content with same URL
         contentV2 = registry.fetch(url)
-        self.assertEqual(contentV2.status(), QgsFetchedContent.Finished)
+        self.assertEqual(contentV2.status(), QgsFetchedContent.ContentStatus.Finished)
 
     def testFetchReloadUrl(self):
         def writeSimpleFile(content):
@@ -104,8 +104,8 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
         def check_reply():
             self.loaded = True
-            self.assertEqual(content.status(), QgsFetchedContent.Finished)
-            self.assertEqual(content.error(), QNetworkReply.NoError)
+            self.assertEqual(content.status(), QgsFetchedContent.ContentStatus.Finished)
+            self.assertEqual(content.error(), QNetworkReply.NetworkError.NoError)
             self.assertNotEqual(content.filePath(), '')
             with open(content.filePath(), encoding="utf-8") as file:
                 self.assertEqual(file.readline().rstrip(), self.file_content)

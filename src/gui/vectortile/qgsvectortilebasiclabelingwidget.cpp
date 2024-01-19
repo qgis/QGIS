@@ -22,6 +22,7 @@
 #include "qgslabelinggui.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectortileutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QMenu>
 

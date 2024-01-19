@@ -46,13 +46,13 @@ class PointsAlongLines(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
+                                                              [QgsProcessing.SourceType.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
                                                        self.tr('Distance from line start represented as fraction of line length'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        minValue=0,
                                                        maxValue=1,
                                                        defaultValue=0.5))
@@ -61,12 +61,12 @@ class PointsAlongLines(GdalAlgorithm):
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('Points along lines'),
-                                                                  QgsProcessing.TypeVectorPoint))
+                                                                  QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'pointsalonglines'
