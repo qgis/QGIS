@@ -726,7 +726,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         fields = QgsFields()
         fields.append(QgsField('fid', QVariant.Int))
         vl1 = QgsMemoryProviderUtils.createMemoryLayer(
-            'vl1', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
+            'vl1', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
 
         f1 = QgsFeature(vl1.fields())
         f1['fid'] = 1
@@ -738,7 +738,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         vl1.dataProvider().addFeatures([f1, f2])
 
         vl2 = QgsMemoryProviderUtils.createMemoryLayer(
-            'vl2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
+            'vl2', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:4326'))
         vl2.dataProvider().addFeatures([f1, f2])
 
         project.addMapLayers([vl1, vl2])
@@ -769,7 +769,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 2)
 
-        vl1.setFlags(vl1.flags() & ~ QgsMapLayer.Identifiable)
+        vl1.setFlags(vl1.flags() & ~ QgsMapLayer.LayerFlag.Identifiable)
 
         req = QgsBufferServerRequest('?' + '&'.join([f"{k}={v}" for k, v in req_params.items()]))
         res = QgsBufferServerResponse()

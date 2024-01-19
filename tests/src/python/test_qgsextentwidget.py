@@ -67,17 +67,17 @@ class TestQgsExtentWidget(QgisTestCase):
 
         w.setOutputExtentFromOriginal()
         self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
-        self.assertEqual(w.extentState(), QgsExtentWidget.OriginalExtent)
+        self.assertEqual(w.extentState(), QgsExtentWidget.ExtentState.OriginalExtent)
         self.assertEqual(len(spy), 1)
 
         w.setOutputExtentFromCurrent()
         self.assertEqual(w.outputExtent(), QgsRectangle(11, 12, 13, 14))
-        self.assertEqual(w.extentState(), QgsExtentWidget.CurrentExtent)
+        self.assertEqual(w.extentState(), QgsExtentWidget.ExtentState.CurrentExtent)
         self.assertEqual(len(spy), 2)
 
         w.setOutputExtentFromUser(QgsRectangle(21, 22, 23, 24), QgsCoordinateReferenceSystem('epsg:3111'))
         self.assertEqual(w.outputExtent(), QgsRectangle(21, 22, 23, 24))
-        self.assertEqual(w.extentState(), QgsExtentWidget.UserExtent)
+        self.assertEqual(w.extentState(), QgsExtentWidget.ExtentState.UserExtent)
         self.assertEqual(len(spy), 3)
 
         shapefile = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -88,12 +88,12 @@ class TestQgsExtentWidget(QgisTestCase):
         # no layer - should be unchanged
         self.assertEqual(len(spy), 3)
         self.assertEqual(w.outputExtent(), QgsRectangle(21, 22, 23, 24))
-        self.assertEqual(w.extentState(), QgsExtentWidget.UserExtent)
+        self.assertEqual(w.extentState(), QgsExtentWidget.ExtentState.UserExtent)
         self.assertEqual(len(spy), 3)
 
         w.setOutputExtentFromLayer(layer)
         self.assertEqual(w.outputExtent().toString(4), QgsRectangle(-118.9229, 24.5079, -83.7900, 46.7262).toString(4))
-        self.assertEqual(w.extentState(), QgsExtentWidget.ProjectLayerExtent)
+        self.assertEqual(w.extentState(), QgsExtentWidget.ExtentState.ProjectLayerExtent)
         self.assertEqual(len(spy), 4)
 
         QgsProject.instance().removeAllMapLayers()

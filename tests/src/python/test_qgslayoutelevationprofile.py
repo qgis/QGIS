@@ -220,7 +220,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         item1 = QgsLayoutItemShape(layout)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
@@ -285,7 +285,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         item1 = QgsLayoutItemShape(layout)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)

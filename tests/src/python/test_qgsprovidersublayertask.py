@@ -50,7 +50,7 @@ class TestQgsProviderSublayerTask(QgisTestCase):
         self.assertEqual(completed.results[0].providerKey(), "ogr")
         self.assertEqual(completed.results[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(completed.results[0].featureCount(), 4)
-        self.assertEqual(completed.results[0].wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(completed.results[0].wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(completed.results[0].geometryColumnName(), '')
 
         self.assertEqual(completed.results[1].layerNumber(), 0)
@@ -60,7 +60,7 @@ class TestQgsProviderSublayerTask(QgisTestCase):
         self.assertEqual(completed.results[1].providerKey(), "ogr")
         self.assertEqual(completed.results[1].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(completed.results[1].featureCount(), 4)
-        self.assertEqual(completed.results[1].wkbType(), QgsWkbTypes.LineString)
+        self.assertEqual(completed.results[1].wkbType(), QgsWkbTypes.Type.LineString)
         self.assertEqual(completed.results[1].geometryColumnName(), '')
 
         self.assertEqual(completed.results[2].layerNumber(), 0)
@@ -70,7 +70,7 @@ class TestQgsProviderSublayerTask(QgisTestCase):
         self.assertEqual(completed.results[2].providerKey(), "ogr")
         self.assertEqual(completed.results[2].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(completed.results[2].featureCount(), 3)
-        self.assertEqual(completed.results[2].wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(completed.results[2].wkbType(), QgsWkbTypes.Type.Polygon)
         self.assertEqual(completed.results[2].geometryColumnName(), '')
 
 

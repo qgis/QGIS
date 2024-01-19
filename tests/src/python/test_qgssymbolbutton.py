@@ -31,33 +31,33 @@ class TestQgsSymbolButton(QgisTestCase):
         button.setMapCanvas(canvas)
         self.assertEqual(button.mapCanvas(), canvas)
 
-        button.setSymbolType(QgsSymbol.Line)
-        self.assertEqual(button.symbolType(), QgsSymbol.Line)
+        button.setSymbolType(QgsSymbol.SymbolType.Line)
+        self.assertEqual(button.symbolType(), QgsSymbol.SymbolType.Line)
 
     def testSettingSymbolType(self):
         button = QgsSymbolButton()
-        button.setSymbolType(QgsSymbol.Marker)
+        button.setSymbolType(QgsSymbol.SymbolType.Marker)
         symbol = QgsMarkerSymbol.createSimple({})
         symbol.setColor(QColor(255, 0, 0))
         button.setSymbol(symbol)
 
         # if same symbol type, existing symbol should be kept
-        button.setSymbolType(QgsSymbol.Marker)
+        button.setSymbolType(QgsSymbol.SymbolType.Marker)
         self.assertEqual(button.symbol(), symbol)
 
         # if setting different symbol type, symbol should be reset to new type
-        button.setSymbolType(QgsSymbol.Fill)
+        button.setSymbolType(QgsSymbol.SymbolType.Fill)
         self.assertTrue(isinstance(button.symbol(), QgsFillSymbol))
 
     def testPasteSymbol(self):
         button = QgsSymbolButton()
-        button.setSymbolType(QgsSymbol.Marker)
+        button.setSymbolType(QgsSymbol.SymbolType.Marker)
         symbol = QgsMarkerSymbol.createSimple({})
         symbol.setColor(QColor(255, 0, 0))
         button.setSymbol(symbol)
 
         button2 = QgsSymbolButton()
-        button2.setSymbolType(QgsSymbol.Marker)
+        button2.setSymbolType(QgsSymbol.SymbolType.Marker)
         symbol2 = QgsMarkerSymbol.createSimple({})
         symbol2.setColor(QColor(0, 255, 0))
         button2.setSymbol(symbol2)
@@ -67,7 +67,7 @@ class TestQgsSymbolButton(QgisTestCase):
         self.assertEqual(button2.symbol().color(), QColor(255, 0, 0))
 
         # try pasting incompatible symbol
-        button2.setSymbolType(QgsSymbol.Fill)
+        button2.setSymbolType(QgsSymbol.SymbolType.Fill)
         fill_symbol = QgsFillSymbol.createSimple({})
         fill_symbol.setColor(QColor(0, 0, 255))
         button2.setSymbol(fill_symbol)

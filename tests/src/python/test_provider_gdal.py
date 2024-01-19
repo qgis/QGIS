@@ -189,7 +189,7 @@ class PyQgsGdalProvider(QgisTestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Float64)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Float64)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)
@@ -227,7 +227,7 @@ class PyQgsGdalProvider(QgisTestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Float64)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Float64)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)
@@ -285,7 +285,7 @@ class PyQgsGdalProvider(QgisTestCase):
 
         raster_layer = QgsRasterLayer(tmpfile, 'test')
         self.assertTrue(raster_layer.isValid())
-        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Int8)
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Int8)
 
         extent = raster_layer.extent()
         block = raster_layer.dataProvider().block(1, extent, 2, 2)

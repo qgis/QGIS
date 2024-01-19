@@ -58,7 +58,7 @@ class tri(GdalAlgorithm):
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})

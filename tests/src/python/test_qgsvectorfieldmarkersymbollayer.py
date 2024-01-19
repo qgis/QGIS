@@ -111,7 +111,7 @@ class TestQgsVectorFieldMarkerSymbolLayer(QgisTestCase):
         field_marker.setXAttribute('x')
         field_marker.setYAttribute('y')
         field_marker.setScale(4)
-        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.Height)
+        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.VectorFieldType.Height)
 
         field_marker.setSubSymbol(QgsLineSymbol.createSimple({'color': '#ff0000', 'width': '2'}))
 
@@ -136,7 +136,7 @@ class TestQgsVectorFieldMarkerSymbolLayer(QgisTestCase):
         field_marker = QgsVectorFieldSymbolLayer()
         field_marker.setXAttribute('x')
         field_marker.setYAttribute('y')
-        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.Polar)
+        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.VectorFieldType.Polar)
         field_marker.setScale(1)
 
         field_marker.setSubSymbol(QgsLineSymbol.createSimple({'color': '#ff0000', 'width': '2'}))
@@ -162,8 +162,8 @@ class TestQgsVectorFieldMarkerSymbolLayer(QgisTestCase):
         field_marker = QgsVectorFieldSymbolLayer()
         field_marker.setXAttribute('x')
         field_marker.setYAttribute('y')
-        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.Polar)
-        field_marker.setAngleOrientation(QgsVectorFieldSymbolLayer.CounterclockwiseFromEast)
+        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.VectorFieldType.Polar)
+        field_marker.setAngleOrientation(QgsVectorFieldSymbolLayer.AngleOrientation.CounterclockwiseFromEast)
         field_marker.setScale(1)
 
         field_marker.setSubSymbol(QgsLineSymbol.createSimple({'color': '#ff0000', 'width': '2'}))
@@ -189,9 +189,9 @@ class TestQgsVectorFieldMarkerSymbolLayer(QgisTestCase):
         field_marker = QgsVectorFieldSymbolLayer()
         field_marker.setXAttribute('x')
         field_marker.setYAttribute('y')
-        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.Polar)
+        field_marker.setVectorFieldType(QgsVectorFieldSymbolLayer.VectorFieldType.Polar)
         field_marker.setScale(1)
-        field_marker.setAngleUnits(QgsVectorFieldSymbolLayer.Radians)
+        field_marker.setAngleUnits(QgsVectorFieldSymbolLayer.AngleUnits.Radians)
 
         field_marker.setSubSymbol(QgsLineSymbol.createSimple({'color': '#ff0000', 'width': '2'}))
 

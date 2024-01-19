@@ -91,7 +91,7 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
 
         fields = QgsFields()
         fields.append(QgsField('test', QVariant.String))
-        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
 
         text2 = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
         # tables are not automatically refreshed
@@ -167,7 +167,7 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
 
         fields = QgsFields()
         fields.append(QgsField('test', QVariant.String))
-        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
 
         text2 = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
         # tables are not automatically refreshed
@@ -261,7 +261,7 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
 
         fields = QgsFields()
         fields.append(QgsField('test', QVariant.String))
-        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
 
         text2 = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
         # tables are not automatically refreshed

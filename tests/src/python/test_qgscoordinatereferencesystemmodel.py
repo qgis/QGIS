@@ -56,7 +56,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         # check group ids
         top_level_item_group_ids = [
-            model.data(model.index(row, 0, QModelIndex()), QgsCoordinateReferenceSystemModel.RoleGroupId) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('Projected', top_level_item_group_ids)
         self.assertIn('Geographic2d', top_level_item_group_ids)
@@ -69,7 +69,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic2d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic2d'
         ][0]
 
         # for proj 9, there's > 1300 crs in this group
@@ -79,19 +79,19 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, geographic_2d_index)
             for row in range(model.rowCount(geographic_2d_index))
             if model.data(model.index(row, 0, geographic_2d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4326'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4326'
         ][0]
         # test model roles
         self.assertEqual(model.data(wgs84_index, Qt.ItemDataRole.DisplayRole), 'WGS 84')
         self.assertEqual(model.data(model.index(wgs84_index.row(), 1, wgs84_index.parent()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326')
-        self.assertEqual(model.data(wgs84_index, QgsCoordinateReferenceSystemModel.RoleName), 'WGS 84')
+        self.assertEqual(model.data(wgs84_index, QgsCoordinateReferenceSystemModel.Roles.RoleName), 'WGS 84')
         self.assertFalse(model.data(wgs84_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertFalse(model.data(wgs84_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt))
         self.assertFalse(model.data(wgs84_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj))
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex('EPSG:4326'), wgs84_index)
@@ -101,7 +101,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic3d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic3d'
         ][0]
 
         # for proj 9, there's > 200 crs in this group
@@ -111,7 +111,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4329'
         ][0]
         # test model roles
         self.assertEqual(model.data(epsg_4329_index, Qt.ItemDataRole.DisplayRole), 'WGS 84 (3D)')
@@ -119,15 +119,15 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(epsg_4329_index.row(), 1, epsg_4329_index.parent()),
                        Qt.ItemDataRole.DisplayRole), 'EPSG:4329')
         self.assertEqual(model.data(epsg_4329_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName),
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName),
                          'WGS 84 (3D)')
         self.assertTrue(model.data(epsg_4329_index,
-                                   QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                   QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertFalse(model.data(epsg_4329_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt))
         self.assertFalse(model.data(epsg_4329_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj))
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex('EPSG:4329'), epsg_4329_index)
@@ -137,7 +137,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Vertical'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Vertical'
         ][0]
 
         # for proj 9, there's > 400 crs in this group
@@ -147,7 +147,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, vertical_index)
             for row in range(model.rowCount(vertical_index))
             if model.data(model.index(row, 0, vertical_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:5711'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:5711'
         ][0]
         # test model roles
         self.assertEqual(model.data(ahd_index, Qt.ItemDataRole.DisplayRole), 'AHD height')
@@ -155,15 +155,15 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(ahd_index.row(), 1, ahd_index.parent()),
                        Qt.ItemDataRole.DisplayRole), 'EPSG:5711')
         self.assertEqual(model.data(ahd_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName),
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName),
                          'AHD height')
         self.assertFalse(model.data(ahd_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertFalse(model.data(ahd_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt))
         self.assertFalse(model.data(ahd_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj))
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex('EPSG:5711'), ahd_index)
@@ -173,7 +173,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Projected'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Projected'
         ][0]
         # for proj 9, there's > 50 projection methods in this group
         self.assertGreaterEqual(model.rowCount(projected_index), 50)
@@ -183,7 +183,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, projected_index)
             for row in range(model.rowCount(projected_index))
             if model.data(model.index(row, 0, projected_index),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'aea'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'aea'
         ][0]
         # for proj 9, there's > 100 crs in this group
         self.assertGreaterEqual(model.rowCount(aea_group_index), 100)
@@ -193,7 +193,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, aea_group_index)
             for row in range(model.rowCount(aea_group_index))
             if model.data(model.index(row, 0, aea_group_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:3577'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:3577'
         ][0]
         # test model roles
         self.assertEqual(model.data(epsg_3577_index, Qt.ItemDataRole.DisplayRole), 'GDA94 / Australian Albers')
@@ -201,15 +201,15 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(epsg_3577_index.row(), 1, epsg_3577_index.parent()),
                        Qt.ItemDataRole.DisplayRole), 'EPSG:3577')
         self.assertEqual(model.data(epsg_3577_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName),
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName),
                          'GDA94 / Australian Albers')
         self.assertFalse(model.data(epsg_3577_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertFalse(model.data(epsg_3577_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt))
         self.assertFalse(model.data(epsg_3577_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj))
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex('EPSG:3577'), epsg_3577_index)
@@ -230,7 +230,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         # check group ids
         top_level_item_group_ids = [
-            model.data(model.index(row, 0, QModelIndex()), QgsCoordinateReferenceSystemModel.RoleGroupId) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('USER', top_level_item_group_ids)
 
@@ -239,7 +239,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'USER'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'USER'
         ][0]
         self.assertEqual(model.rowCount(user_index), 1)
 
@@ -250,15 +250,15 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(user_crs_index.row(), 1, user_crs_index.parent()),
                        Qt.ItemDataRole.DisplayRole), 'USER:100000')
         self.assertEqual(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName),
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName),
                          'my custom crs')
         self.assertFalse(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertEqual(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt)[:8], 'PROJCRS[')
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt)[:8], 'PROJCRS[')
         self.assertEqual(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj), "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs")
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj), "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs")
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex('USER:100000'), user_crs_index)
@@ -270,7 +270,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'USER'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'USER'
         ][0]
         self.assertEqual(model.rowCount(user_index), 1)
 
@@ -281,15 +281,15 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(user_crs_index.row(), 1, user_crs_index.parent()),
                        Qt.ItemDataRole.DisplayRole), 'USER:100000')
         self.assertEqual(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName),
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName),
                          'my custom crs rev 2')
         self.assertFalse(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertEqual(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt)[:8], 'PROJCRS[')
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt)[:8], 'PROJCRS[')
         self.assertEqual(model.data(user_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj), "+proj=aea +lat_1=21 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs")
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj), "+proj=aea +lat_1=21 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs")
 
         # remove
         registry.removeUserCrs(100000)
@@ -309,14 +309,14 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
 
         # check group ids
         top_level_item_group_ids = [
-            model.data(model.index(row, 0, QModelIndex()), QgsCoordinateReferenceSystemModel.RoleGroupId) for row in range(model.rowCount(QModelIndex()))
+            model.data(model.index(row, 0, QModelIndex()), QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) for row in range(model.rowCount(QModelIndex()))
         ]
         self.assertIn('CUSTOM', top_level_item_group_ids)
         custom_index = [
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'CUSTOM'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'CUSTOM'
         ][0]
         self.assertEqual(model.rowCount(custom_index), 1)
 
@@ -327,16 +327,16 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(custom_crs_index.row(), 1, custom_crs_index.parent()),
                        Qt.ItemDataRole.DisplayRole))
         self.assertEqual(model.data(custom_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName), 'Custom CRS')
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName), 'Custom CRS')
         self.assertFalse(model.data(custom_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleAuthId))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleAuthId))
         self.assertFalse(model.data(custom_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertEqual(model.data(custom_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt)[:8], 'PROJCRS[')
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt)[:8], 'PROJCRS[')
         self.assertEqual(model.data(custom_crs_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj), "+proj=aea +lat_1=1.5 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs")
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj), "+proj=aea +lat_1=1.5 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs")
 
     def test_proxy_model(self):
         model = QgsCoordinateReferenceSystemProxyModel()
@@ -353,7 +353,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertIn('Vertical', top_level_items)
 
         # filter by type
-        model.setFilters(QgsCoordinateReferenceSystemProxyModel.FilterHorizontal)
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterHorizontal)
         top_level_items = [
             model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
@@ -364,7 +364,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertNotIn('Compound', top_level_items)
         self.assertNotIn('Vertical', top_level_items)
 
-        model.setFilters(QgsCoordinateReferenceSystemProxyModel.FilterVertical)
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterVertical)
         top_level_items = [
             model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
@@ -375,7 +375,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertNotIn('Compound', top_level_items)
         self.assertIn('Vertical', top_level_items)
 
-        model.setFilters(QgsCoordinateReferenceSystemProxyModel.FilterCompound)
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterCompound)
         top_level_items = [
             model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
@@ -386,8 +386,8 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertIn('Compound', top_level_items)
         self.assertNotIn('Vertical', top_level_items)
 
-        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filters(QgsCoordinateReferenceSystemProxyModel.FilterCompound
-                                                                        | QgsCoordinateReferenceSystemProxyModel.FilterVertical))
+        model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterCompound
+                                                                        | QgsCoordinateReferenceSystemProxyModel.Filter.FilterVertical))
         top_level_items = [
             model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for
             row in range(model.rowCount(QModelIndex()))
@@ -405,40 +405,40 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic2d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic2d'
         ][0]
 
         wgs84_index = [
             model.index(row, 0, geographic_2d_index)
             for row in range(model.rowCount(geographic_2d_index))
             if model.data(model.index(row, 0, geographic_2d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4326'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4326'
         ][0]
         # test model roles
         self.assertEqual(model.data(wgs84_index, Qt.ItemDataRole.DisplayRole), 'WGS 84')
         self.assertEqual(model.data(model.index(wgs84_index.row(), 1, wgs84_index.parent()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326')
-        self.assertEqual(model.data(wgs84_index, QgsCoordinateReferenceSystemModel.RoleName), 'WGS 84')
+        self.assertEqual(model.data(wgs84_index, QgsCoordinateReferenceSystemModel.Roles.RoleName), 'WGS 84')
         self.assertFalse(model.data(wgs84_index,
-                                    QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertFalse(model.data(wgs84_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt))
         self.assertFalse(model.data(wgs84_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj))
 
         # find EPSG:4329 in Geographic3d group (also tests a deprecated CRS)
         geographic_3d_index = [
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic3d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic3d'
         ][0]
 
         epsg_4329_index = [
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4329'
         ][0]
         # test model roles
         self.assertEqual(model.data(epsg_4329_index, Qt.ItemDataRole.DisplayRole), 'WGS 84 (3D)')
@@ -446,41 +446,41 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.data(model.index(epsg_4329_index.row(), 1, epsg_4329_index.parent()),
                        Qt.ItemDataRole.DisplayRole), 'EPSG:4329')
         self.assertEqual(model.data(epsg_4329_index,
-                                    QgsCoordinateReferenceSystemModel.RoleName),
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleName),
                          'WGS 84 (3D)')
         self.assertTrue(model.data(epsg_4329_index,
-                                   QgsCoordinateReferenceSystemModel.RoleDeprecated))
+                                   QgsCoordinateReferenceSystemModel.Roles.RoleDeprecated))
         # the proj and wkt roles are only available for non-standard CRS
         self.assertFalse(model.data(epsg_4329_index,
-                                    QgsCoordinateReferenceSystemModel.RoleWkt))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleWkt))
         self.assertFalse(model.data(epsg_4329_index,
-                                    QgsCoordinateReferenceSystemModel.RoleProj))
+                                    QgsCoordinateReferenceSystemModel.Roles.RoleProj))
 
         model.setFilterDeprecated(True)
         geographic_3d_index = [
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic3d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic3d'
         ][0]
         self.assertFalse([
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4329'
         ])
         model.setFilterDeprecated(False)
         geographic_3d_index = [
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic3d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic3d'
         ][0]
         epsg_4329_index = [
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4329'
         ][0]
         self.assertTrue(epsg_4329_index.isValid())
 
@@ -490,26 +490,26 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic3d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic3d'
         ][0]
         self.assertFalse([
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4329'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4329'
         ])
         epsg_4939_index = [
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4939'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4939'
         ][0]
         self.assertTrue(epsg_4939_index.isValid())
         epsg_4347_index = [
             model.index(row, 0, geographic_3d_index)
             for row in range(model.rowCount(geographic_3d_index))
             if model.data(model.index(row, 0, geographic_3d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4347'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4347'
         ][0]
         self.assertTrue(epsg_4347_index.isValid())
 
@@ -521,26 +521,26 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             model.index(row, 0, QModelIndex())
             for row in range(model.rowCount(QModelIndex()))
             if model.data(model.index(row, 0, QModelIndex()),
-                          QgsCoordinateReferenceSystemModel.RoleGroupId) == 'Geographic2d'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleGroupId) == 'Geographic2d'
         ][0]
         self.assertFalse([
             model.index(row, 0, geographic_2d_index)
             for row in range(model.rowCount(geographic_2d_index))
             if model.data(model.index(row, 0, geographic_2d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4169'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4169'
         ])
         epsg_4289_index = [
             model.index(row, 0, geographic_2d_index)
             for row in range(model.rowCount(geographic_2d_index))
             if model.data(model.index(row, 0, geographic_2d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4289'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4289'
         ][0]
         self.assertTrue(epsg_4289_index.isValid())
         epsg_4196_index = [
             model.index(row, 0, geographic_2d_index)
             for row in range(model.rowCount(geographic_2d_index))
             if model.data(model.index(row, 0, geographic_2d_index),
-                          QgsCoordinateReferenceSystemModel.RoleAuthId) == 'EPSG:4196'
+                          QgsCoordinateReferenceSystemModel.Roles.RoleAuthId) == 'EPSG:4196'
         ][0]
         self.assertTrue(epsg_4196_index.isValid())
 

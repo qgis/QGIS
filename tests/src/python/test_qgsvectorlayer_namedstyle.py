@@ -27,7 +27,7 @@ class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
         style = QDomDocument()
         style.setContent("<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'><qgis></qgis>")
         node = style.firstChild()
-        self.assertTrue(vl.writeStyle(node, style, "Error writing style", QgsReadWriteContext(), QgsMapLayer.Rendering))
+        self.assertTrue(vl.writeStyle(node, style, "Error writing style", QgsReadWriteContext(), QgsMapLayer.StyleCategory.Rendering))
 
         style_content = style.toString()
         del vl
@@ -37,7 +37,7 @@ class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
         self.assertFalse(vl2.hasScaleBasedVisibility())
         style2 = QDomDocument()
         style2.setContent(style_content)
-        self.assertTrue(vl2.readStyle(style.namedItem('qgis'), "Error reading style", QgsReadWriteContext(), QgsMapLayer.Rendering))
+        self.assertTrue(vl2.readStyle(style.namedItem('qgis'), "Error reading style", QgsReadWriteContext(), QgsMapLayer.StyleCategory.Rendering))
         self.assertTrue(vl2.hasScaleBasedVisibility())
         self.assertEqual(vl2.minimumScale(), 125.0)
         self.assertEqual(vl2.maximumScale(), 1.25)

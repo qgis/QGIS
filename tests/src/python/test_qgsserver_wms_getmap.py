@@ -2000,7 +2000,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertFalse(props_date.isActive())
         self.assertEqual(props_date.startField(), 'event_date')
         self.assertFalse(props_date.endField())
-        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
 
         # sample table with likely dual fields
         layer_range = QgsVectorLayer("Point?srid=EPSG:4326&field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test_range", "memory")
@@ -2024,7 +2024,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertFalse(props_range.isActive())
         self.assertEqual(props_range.startField(), 'start_date')
         self.assertEqual(props_range.endField(), 'end_date')
-        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromFields)
 
         project = QgsProject()
         project.addMapLayers([layer_date, layer_range])

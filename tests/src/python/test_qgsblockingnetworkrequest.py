@@ -39,7 +39,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         spy = QSignalSpy(request.finished)
         err = request.get(QNetworkRequest(QUrl()))
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.ServerExceptionError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError)
         self.assertEqual(request.errorMessage(), 'Protocol "" is unknown')
         reply = request.reply()
         self.assertFalse(reply.content())
@@ -49,7 +49,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         spy = QSignalSpy(request.finished)
         err = request.get(QNetworkRequest(QUrl('http://x')))
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.ServerExceptionError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError)
         self.assertEqual(request.errorMessage(), 'Host x not found')
         reply = request.reply()
         self.assertFalse(reply.content())
@@ -63,7 +63,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         with mockedwebserver.install_http_handler(handler):
             err = request.get(QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/ffff')))
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.ServerExceptionError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.ServerExceptionError)
         self.assertIn('Not Found', request.errorMessage())
         reply = request.reply()
         self.assertEqual(reply.error(), QNetworkReply.NetworkError.ContentNotFoundError)
@@ -77,7 +77,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         with mockedwebserver.install_http_handler(handler):
             err = request.get(QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html')), True)
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.NoError)
         self.assertEqual(request.errorMessage(), '')
         reply = request.reply()
         self.assertEqual(reply.error(), QNetworkReply.NetworkError.NoError)
@@ -100,7 +100,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         with mockedwebserver.install_http_handler(handler):
             err = request.head(QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html')), True)
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.NoError)
         self.assertEqual(request.errorMessage(), '')
 
     def testPost(self):
@@ -112,7 +112,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
             req = QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html'))
             req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, 'text/plain')
             err = request.post(req, b"foo")
-        self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.NoError)
         self.assertEqual(request.errorMessage(), '')
 
     def testPut(self):
@@ -125,7 +125,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
             req.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, 'text/plain')
             err = request.put(req, b"foo")
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.NoError)
         self.assertEqual(request.errorMessage(), '')
 
     def testDelete(self):
@@ -136,7 +136,7 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         with mockedwebserver.install_http_handler(handler):
             err = request.deleteResource(QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html')))
         self.assertEqual(len(spy), 1)
-        self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
+        self.assertEqual(err, QgsBlockingNetworkRequest.ErrorCode.NoError)
         self.assertEqual(request.errorMessage(), '')
 
 

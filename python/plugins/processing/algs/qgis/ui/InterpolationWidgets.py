@@ -107,7 +107,7 @@ class InterpolationDataWidget(BASE, WIDGET):
 
         self.cmbLayers.layerChanged.connect(self.layerChanged)
         self.cmbLayers.setFilters(Qgis.LayerFilter.VectorLayer)
-        self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
+        self.cmbFields.setFilters(QgsFieldProxyModel.Filter.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
 
     def addLayer(self):
@@ -194,9 +194,9 @@ class InterpolationDataWidget(BASE, WIDGET):
                     continue
 
                 interpolationAttribute = item.text(1)
-                interpolationSource = QgsInterpolator.ValueAttribute
+                interpolationSource = QgsInterpolator.ValueSource.ValueAttribute
                 if interpolationAttribute == 'Z_COORD':
-                    interpolationSource = QgsInterpolator.ValueZ
+                    interpolationSource = QgsInterpolator.ValueSource.ValueZ
                     fieldIndex = -1
                 else:
                     fieldIndex = layer.fields().indexFromName(interpolationAttribute)
@@ -204,11 +204,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                 comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
                 inputTypeName = comboBox.currentText()
                 if inputTypeName == self.tr('Points'):
-                    inputType = QgsInterpolator.SourcePoints
+                    inputType = QgsInterpolator.SourceType.SourcePoints
                 elif inputTypeName == self.tr('Structure lines'):
-                    inputType = QgsInterpolator.SourceStructureLines
+                    inputType = QgsInterpolator.SourceType.SourceStructureLines
                 else:
-                    inputType = QgsInterpolator.SourceBreakLines
+                    inputType = QgsInterpolator.SourceType.SourceBreakLines
 
                 layers += '{}::~::{:d}::~::{:d}::~::{:d}::|::'.format(layer.source(),
                                                                       interpolationSource,
@@ -234,7 +234,7 @@ class InterpolationDataWidgetWrapper(WidgetWrapper):
 class ParameterPixelSize(QgsProcessingParameterNumber):
 
     def __init__(self, name='', description='', layersData=None, extent=None, minValue=None, default=None, optional=False):
-        QgsProcessingParameterNumber.__init__(self, name, description, QgsProcessingParameterNumber.Double, default, optional, minValue)
+        QgsProcessingParameterNumber.__init__(self, name, description, QgsProcessingParameterNumber.Type.Double, default, optional, minValue)
         self.setMetadata({
             'widget_wrapper': 'processing.algs.qgis.ui.InterpolationWidgets.PixelSizeWidgetWrapper'
         })
@@ -244,7 +244,7 @@ class ParameterPixelSize(QgsProcessingParameterNumber):
         self.layers = []
 
     def clone(self):
-        copy = ParameterPixelSize(self.name(), self.description(), self.layersData, self.extent, self.minimum(), self.defaultValue(), self.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        copy = ParameterPixelSize(self.name(), self.description(), self.layersData, self.extent, self.minimum(), self.defaultValue(), self.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional)
         return copy
 
 

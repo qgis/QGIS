@@ -39,7 +39,7 @@ class TestQgsProcessingParameters(QgisTestCase):
 
     def test_qgsprocessinggometry(self):  # spellok
         """ Test QgsProcessingParameterGeometry initialization """
-        geomtypes = [QgsWkbTypes.PointGeometry, QgsWkbTypes.PolygonGeometry]
+        geomtypes = [QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.GeometryType.PolygonGeometry]
         param = QgsProcessingParameterGeometry(name='test', geometryTypes=geomtypes)
 
         types = param.geometryTypes()

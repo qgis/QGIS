@@ -24,134 +24,134 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         Test setting available flags
         """
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.EqualTo |
-                            QgsSearchWidgetWrapper.NotEqualTo |
-                            QgsSearchWidgetWrapper.CaseInsensitive)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         flags = w.availableFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.Between)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
 
         # setting available flags should update active flags
-        w.setActiveFlags(QgsSearchWidgetWrapper.NotEqualTo | QgsSearchWidgetWrapper.CaseInsensitive)
-        w.setAvailableFlags(QgsSearchWidgetWrapper.EqualTo |
-                            QgsSearchWidgetWrapper.NotEqualTo)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
         flags = w.activeFlags()
-        self.assertFalse(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
     def testActiveFlags(self):
         """
         Test setting/retrieving active flag logic
         """
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.EqualTo |
-                            QgsSearchWidgetWrapper.NotEqualTo |
-                            QgsSearchWidgetWrapper.CaseInsensitive)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
-        w.setActiveFlags(QgsSearchWidgetWrapper.EqualTo)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
 
-        w.setActiveFlags(QgsSearchWidgetWrapper.EqualTo | QgsSearchWidgetWrapper.CaseInsensitive)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         # setting a non-available flag as active
-        w.setAvailableFlags(QgsSearchWidgetWrapper.EqualTo |
-                            QgsSearchWidgetWrapper.NotEqualTo)
-        w.setActiveFlags(QgsSearchWidgetWrapper.EqualTo | QgsSearchWidgetWrapper.CaseInsensitive)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         # setting conflicting flags
-        w.setActiveFlags(QgsSearchWidgetWrapper.EqualTo | QgsSearchWidgetWrapper.NotEqualTo)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
 
     def testToggleFlag(self):
         """ Test toggling flags """
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.EqualTo |
-                            QgsSearchWidgetWrapper.NotEqualTo |
-                            QgsSearchWidgetWrapper.CaseInsensitive)
-        w.setActiveFlags(QgsSearchWidgetWrapper.EqualTo)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         # should set flag
-        w.toggleFlag(QgsSearchWidgetWrapper.CaseInsensitive)
+        w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         # should clear flag
-        w.toggleFlag(QgsSearchWidgetWrapper.CaseInsensitive)
+        w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         # toggling non-available flag should be ignored
-        w.setAvailableFlags(QgsSearchWidgetWrapper.Between |
-                            QgsSearchWidgetWrapper.NotEqualTo)
-        w.setActiveFlags(QgsSearchWidgetWrapper.Between)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.Between |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.Between)
         # should be ignored
-        w.toggleFlag(QgsSearchWidgetWrapper.CaseInsensitive)
-        w.toggleFlag(QgsSearchWidgetWrapper.LessThan)
+        w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.LessThan)
         flags = w.activeFlags()
-        self.assertFalse(flags & QgsSearchWidgetWrapper.CaseInsensitive)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.LessThan)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.Between)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.LessThan)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
 
         # toggling exclusive flag should result in other exclusive flags being cleared
-        w.setAvailableFlags(QgsSearchWidgetWrapper.Between |
-                            QgsSearchWidgetWrapper.NotEqualTo |
-                            QgsSearchWidgetWrapper.CaseInsensitive)
-        w.setActiveFlags(QgsSearchWidgetWrapper.Between | QgsSearchWidgetWrapper.CaseInsensitive)
-        w.toggleFlag(QgsSearchWidgetWrapper.Between)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.Between |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.Between | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.Between)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.Between)
-        w.toggleFlag(QgsSearchWidgetWrapper.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
+        w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertFalse(flags & QgsSearchWidgetWrapper.Between)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
 
     def testSetInactive(self):
         """ Test setting the search as inactive """
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.EqualTo |
-                            QgsSearchWidgetWrapper.NotEqualTo |
-                            QgsSearchWidgetWrapper.CaseInsensitive)
-        w.setActiveFlags(QgsSearchWidgetWrapper.EqualTo |
-                         QgsSearchWidgetWrapper.CaseInsensitive)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
+                         QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         self.assertTrue(w.isActive())
         w.setInactive()
         flags = w.activeFlags()
-        self.assertFalse(flags & QgsSearchWidgetWrapper.EqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         self.assertFalse(w.isActive())
 
     def testSetActive(self):
         """ Test setting the search as active should adopt default flags"""
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.Between |
-                            QgsSearchWidgetWrapper.NotEqualTo |
-                            QgsSearchWidgetWrapper.CaseInsensitive)
-        w.setActiveFlags(QgsSearchWidgetWrapper.CaseInsensitive)
-        w.setDefaultFlags(QgsSearchWidgetWrapper.NotEqualTo)
+        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.Between |
+                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
+                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setDefaultFlags(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
         self.assertFalse(w.isActive())
         w.setActive()
         flags = w.activeFlags()
-        self.assertTrue(flags & QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         self.assertTrue(w.isActive())
 
 

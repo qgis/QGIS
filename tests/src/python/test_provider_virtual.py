@@ -419,7 +419,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
     def test_no_geometry(self):
         df = QgsVirtualLayerDefinition()
         df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr")
-        df.setGeometryWkbType(QgsWkbTypes.NoGeometry)
+        df.setGeometryWkbType(QgsWkbTypes.Type.NoGeometry)
         l2 = QgsVectorLayer(df.toString(), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 100)  # NoGeometry
@@ -580,7 +580,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
         # test attribute subset
         r = QgsFeatureRequest()
-        r.setFlags(QgsFeatureRequest.SubsetOfAttributes)
+        r.setFlags(QgsFeatureRequest.Flag.SubsetOfAttributes)
         r.setSubsetOfAttributes([1])
         s = [(f.id(), f.attributes()[1]) for f in l5.getFeatures(r)]
         self.assertEqual(sum([x[0] for x in s]), 10659)
@@ -589,7 +589,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         # test NoGeometry
         # by request flag
         r = QgsFeatureRequest()
-        r.setFlags(QgsFeatureRequest.NoGeometry)
+        r.setFlags(QgsFeatureRequest.Flag.NoGeometry)
         self.assertEqual(all([not f.hasGeometry() for f in l5.getFeatures(r)]), True)
 
         # test subset
@@ -1220,7 +1220,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
         options = QgsVectorFileWriter.SaveVectorOptions()
         options.driverName = 'GPKG'
-        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+        options.actionOnExistingFile = QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteFile
         options.layerName = 'data'
 
         _, _ = QgsVectorFileWriter.writeAsVectorFormatV2(
@@ -1237,7 +1237,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(join_layer.dataProvider().addFeature(f))
 
         options.layerName = 'join'
-        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        options.actionOnExistingFile = QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteLayer
 
         _, _ = QgsVectorFileWriter.writeAsVectorFormatV2(
             join_layer,

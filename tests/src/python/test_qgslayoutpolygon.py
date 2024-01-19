@@ -100,7 +100,7 @@ class TestQgsLayoutPolygon(QgisTestCase, LayoutItemTestCase):
         """Test if type is valid"""
 
         self.assertEqual(
-            self.polygon.type(), QgsLayoutItemRegistry.LayoutPolygon)
+            self.polygon.type(), QgsLayoutItemRegistry.ItemType.LayoutPolygon)
 
     def testDefaultStyle(self):
         """Test polygon rendering with default style."""
@@ -332,7 +332,7 @@ class TestQgsLayoutPolygon(QgisTestCase, LayoutItemTestCase):
 
         # must be a closed polygon, in scene coordinates!
         self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((50 30, 100 10, 200 100, 50 30))')
-        self.assertTrue(int(shape.itemFlags() & QgsLayoutItem.FlagProvidesClipPath))
+        self.assertTrue(int(shape.itemFlags() & QgsLayoutItem.Flag.FlagProvidesClipPath))
 
         spy = QSignalSpy(shape.clipPathChanged)
         self.assertTrue(shape.addNode(QPointF(150, 110), False))

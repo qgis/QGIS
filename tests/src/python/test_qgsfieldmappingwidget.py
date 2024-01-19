@@ -264,10 +264,10 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         # Test constraints
         f = QgsField('constraint_field', QVariant.Int)
         constraints = QgsFieldConstraints()
-        constraints.setConstraint(QgsFieldConstraints.ConstraintNotNull, QgsFieldConstraints.ConstraintOriginProvider)
-        constraints.setConstraint(QgsFieldConstraints.ConstraintExpression,
-                                  QgsFieldConstraints.ConstraintOriginProvider)
-        constraints.setConstraint(QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintNotNull, QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintExpression,
+                                  QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintUnique, QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         f.setConstraints(constraints)
         fields = QgsFields()
         fields.append(f)

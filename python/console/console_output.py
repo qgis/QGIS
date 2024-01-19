@@ -296,4 +296,4 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, Qgis.Info, timeout)
+        self.infoBar.pushMessage(text, Qgis.MessageLevel.Info, timeout)

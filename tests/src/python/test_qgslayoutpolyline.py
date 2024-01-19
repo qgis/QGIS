@@ -94,7 +94,7 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         """Test if type is valid"""
 
         self.assertEqual(
-            self.polyline.type(), QgsLayoutItemRegistry.LayoutPolyline)
+            self.polyline.type(), QgsLayoutItemRegistry.ItemType.LayoutPolyline)
 
     def testDefaultStyle(self):
         """Test polygon rendering with default style."""
@@ -144,7 +144,7 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         assert myTestResult, myMessage
 
     def testEndArrow(self):
-        self.polyline.setEndMarker(QgsLayoutItemPolyline.ArrowHead)
+        self.polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
         self.polyline.setArrowHeadWidth(30.0)
 
         checker = QgsLayoutChecker('composerpolyline_endArrow', self.layout)
@@ -152,7 +152,7 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         myTestResult, myMessage = checker.testLayout()
         assert myTestResult, myMessage
 
-        self.polyline.setEndMarker(QgsLayoutItemPolyline.NoMarker)
+        self.polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.NoMarker)
 
     def testRemoveNode(self):
         """Test removeNode method"""

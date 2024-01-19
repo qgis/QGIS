@@ -73,7 +73,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s[0].setPenCapStyle(Qt.PenCapStyle.FlatCap)
         s[0].setCustomDashVector([3, 4, 5, 6])
 
-        s[0].dataDefinedProperties().setProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('3'))
+        s[0].dataDefinedProperties().setProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('3'))
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
@@ -83,19 +83,19 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
 
         s.symbolLayer(0).setTrimDistanceStart(1.2)
-        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         s.symbolLayer(0).setTrimDistanceStartMapUnitScale(QgsMapUnitScale(5, 10))
         s.symbolLayer(0).setTrimDistanceEnd(3.2)
-        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         s.symbolLayer(0).setTrimDistanceEndMapUnitScale(QgsMapUnitScale(15, 20))
 
         s2 = s.clone()
         self.assertEqual(s2.symbolLayer(0).trimDistanceStart(), 1.2)
-        self.assertEqual(s2.symbolLayer(0).trimDistanceStartUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().minScale, 5)
         self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().maxScale, 10)
         self.assertEqual(s2.symbolLayer(0).trimDistanceEnd(), 3.2)
-        self.assertEqual(s2.symbolLayer(0).trimDistanceEndUnit(), QgsUnitTypes.RenderPercentage)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndUnit(), QgsUnitTypes.RenderUnit.RenderPercentage)
         self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().minScale, 15)
         self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().maxScale, 20)
 
@@ -105,11 +105,11 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
         self.assertEqual(s2.symbolLayer(0).trimDistanceStart(), 1.2)
-        self.assertEqual(s2.symbolLayer(0).trimDistanceStartUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceStartUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().minScale, 5)
         self.assertEqual(s2.symbolLayer(0).trimDistanceStartMapUnitScale().maxScale, 10)
         self.assertEqual(s2.symbolLayer(0).trimDistanceEnd(), 3.2)
-        self.assertEqual(s2.symbolLayer(0).trimDistanceEndUnit(), QgsUnitTypes.RenderPercentage)
+        self.assertEqual(s2.symbolLayer(0).trimDistanceEndUnit(), QgsUnitTypes.RenderUnit.RenderPercentage)
         self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().minScale, 15)
         self.assertEqual(s2.symbolLayer(0).trimDistanceEndMapUnitScale().maxScale, 20)
 
@@ -120,9 +120,9 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
         s.symbolLayer(0).setTrimDistanceStart(150)
-        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         s.symbolLayer(0).setTrimDistanceEnd(9)
-        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderMillimeters)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
@@ -135,9 +135,9 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
         s.symbolLayer(0).setTrimDistanceStart(10)
-        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         s.symbolLayer(0).setTrimDistanceEnd(50)
-        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
@@ -150,12 +150,12 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
 
         s.symbolLayer(0).setTrimDistanceStart(1)
-        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceStartUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         s.symbolLayer(0).setTrimDistanceEnd(5)
-        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderPercentage)
+        s.symbolLayer(0).setTrimDistanceEndUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
 
-        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyTrimStart, QgsProperty.fromExpression('5*2'))
-        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyTrimEnd, QgsProperty.fromExpression('60-10'))
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyTrimStart, QgsProperty.fromExpression('5*2'))
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyTrimEnd, QgsProperty.fromExpression('60-10'))
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
@@ -166,12 +166,12 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.6'})
 
         s.symbolLayer(0).setDashPatternOffset(1.2)
-        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         s.symbolLayer(0).setDashPatternOffsetMapUnitScale(QgsMapUnitScale(5, 10))
 
         s2 = s.clone()
         self.assertEqual(s2.symbolLayer(0).dashPatternOffset(), 1.2)
-        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().minScale, 5)
         self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().maxScale, 10)
 
@@ -181,7 +181,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
         self.assertEqual(s2.symbolLayer(0).dashPatternOffset(), 1.2)
-        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s2.symbolLayer(0).dashPatternOffsetUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().minScale, 5)
         self.assertEqual(s2.symbolLayer(0).dashPatternOffsetMapUnitScale().maxScale, 10)
 
@@ -191,7 +191,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setDashPatternOffset(10)
-        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderUnit.RenderPoints)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
@@ -203,7 +203,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setDashPatternOffset(-10)
-        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderPoints)
+        s.symbolLayer(0).setDashPatternOffsetUnit(QgsUnitTypes.RenderUnit.RenderPoints)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
         rendered_image = self.renderGeometry(s, g)
@@ -273,7 +273,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(
             QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=2))
-        s3.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor,
+        s3.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor,
                                                  QgsProperty.fromExpression('case when @geometry_ring_num=0 then \'green\' when @geometry_ring_num=1 then \'blue\' when @geometry_ring_num=2 then \'red\' end'))
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
@@ -287,32 +287,32 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
         s.appendSymbolLayer(
             QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=2))
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.AllRings)
-        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.AllRings)
+        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         s2 = s.clone()
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         doc = QDomDocument()
         context = QgsReadWriteContext()
         element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
 
         s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         # rendering test
         s3 = QgsFillSymbol()
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(
             QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=2))
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('simpleline_exterioronly', 'simpleline_exterioronly', rendered_image)
 
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.InteriorRingsOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly)
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('simpleline_interioronly', 'simpleline_interioronly', rendered_image)
@@ -323,7 +323,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         self.assertTrue(line_layer.isValid())
 
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
-        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
 
         s.setOpacity(0.5)
@@ -351,10 +351,10 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         self.assertTrue(line_layer.isValid())
 
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
-        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
 
-        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+        s.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
 
         line_layer.setRenderer(QgsSingleSymbolRenderer(s))
 

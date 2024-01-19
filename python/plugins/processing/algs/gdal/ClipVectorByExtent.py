@@ -50,7 +50,7 @@ class ClipVectorByExtent(GdalAlgorithm):
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,

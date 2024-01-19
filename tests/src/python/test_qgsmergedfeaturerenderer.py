@@ -118,7 +118,7 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
         symbol = QgsLineSymbol([layer])
 
         layer2 = QgsMarkerLineSymbolLayer()
-        layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
         marker = QgsMarkerSymbol.createSimple({'size': '4', 'color': '255,0,0', 'outline_style': 'no'})
         layer2.setSubSymbol(marker)
         symbol.appendSymbolLayer(layer2)
@@ -143,7 +143,7 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
         symbol1.changeSymbolLayer(0, layer.clone())
 
         layer2 = QgsMarkerLineSymbolLayer()
-        layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
         marker = QgsMarkerSymbol.createSimple({'size': '4', 'color': '255,0,0', 'outline_style': 'no'})
         layer2.setSubSymbol(marker)
         symbol1.appendSymbolLayer(layer2)
@@ -151,7 +151,7 @@ class TestQgsMergedFeatureRenderer(unittest.TestCase):
         symbol2 = QgsLineSymbol()
         symbol2.changeSymbolLayer(0, layer.clone())
         layer2 = QgsMarkerLineSymbolLayer()
-        layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
         marker = QgsMarkerSymbol.createSimple({'size': '4', 'color': '0,255,0', 'outline_style': 'no'})
         layer2.setSubSymbol(marker)
         symbol2.appendSymbolLayer(layer2)

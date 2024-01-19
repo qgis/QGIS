@@ -1033,7 +1033,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         attributes = [feat.attributes() for feat in vl.getFeatures()]
         self.assertEqual(attributes, [[1, 'qgis'], [2, 'test']])
 
-        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+        vl.dataProvider().setProviderProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, True)
 
         # feature with already evaluated default value
         feat1 = QgsFeature(vl.fields())
@@ -1054,7 +1054,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         self.execSQLCommand("DELETE FROM user_sdo_geom_metadata  where TABLE_NAME='EMPTY_LAYER'", ignore_errors=True)
 
         uri = self.dbconn + "srid=4326 type=POINT table=\"EMPTY_LAYER\" (GEOM)"
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem('EPSG:4326'), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=QgsFields(), geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem('EPSG:4326'), overwrite=True)
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
 
@@ -1117,7 +1117,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         fields.append(QgsField("INTEGER_T", QVariant.Int))
 
         uri = self.dbconn + "table=\"ASPATIAL_LAYER\""
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.NoGeometry, crs=QgsCoordinateReferenceSystem(), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Type.NoGeometry, crs=QgsCoordinateReferenceSystem(), overwrite=True)
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
 
@@ -1138,8 +1138,8 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         fields = QgsFields()
 
         uri = self.dbconn + "table=\"INVALID_LAYER\""
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.NoGeometry, crs=QgsCoordinateReferenceSystem(), overwrite=True)
-        self.assertEqual(exporter.errorCode(), QgsVectorLayerExporter.ErrCreateDataSource)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Type.NoGeometry, crs=QgsCoordinateReferenceSystem(), overwrite=True)
+        self.assertEqual(exporter.errorCode(), QgsVectorLayerExporter.ExportError.ErrCreateDataSource)
 
     def testAddEmptyFeature(self):
         """
@@ -1198,7 +1198,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         fields.append(QgsField(long_name, QVariant.Int))
 
         uri = self.dbconn + "table=\"LONGFIELD_LAYER\""
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
 
@@ -1220,7 +1220,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         fields.append(QgsField("test", QVariant.Int))
 
         uri = self.dbconn + "table=\"lowercase_layer\" (GEOM)"
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
         self.assertEqual(exporter.errorCode(), 2)
 
         # geom column is lower case -> fails
@@ -1230,7 +1230,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         fields.append(QgsField("test", QVariant.Int))
 
         uri = self.dbconn + "table=\"LOWERCASEGEOM\" (geom)"
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
         self.assertEqual(exporter.errorCode(), 2)
 
         # table and geom column are uppercase -> success
@@ -1242,7 +1242,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
 
         uri = self.dbconn + "table=\"UPPERCASEGEOM_LAYER\" (GEOM)"
 
-        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
+        exporter = QgsVectorLayerExporter(uri=uri, provider='oracle', fields=fields, geometryType=QgsWkbTypes.Type.Point, crs=QgsCoordinateReferenceSystem("EPSG:4326"), overwrite=True)
         print(exporter.errorMessage())
         self.assertEqual(exporter.errorCount(), 0)
         self.assertEqual(exporter.errorCode(), 0)
@@ -1253,27 +1253,27 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         """
 
         testdata = [
-            ("POINT", 2, "SDO_GEOMETRY( 2001,5698,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL)", QgsWkbTypes.Point),
-            ("POINTZ", 3, "SDO_GEOMETRY( 3001,5698,SDO_POINT_TYPE(1, 2, 3), NULL, NULL)", QgsWkbTypes.PointZ),
+            ("POINT", 2, "SDO_GEOMETRY( 2001,5698,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL)", QgsWkbTypes.Type.Point),
+            ("POINTZ", 3, "SDO_GEOMETRY( 3001,5698,SDO_POINT_TYPE(1, 2, 3), NULL, NULL)", QgsWkbTypes.Type.PointZ),
             # there is difference between line and curve so everything is a compoundcurve to cover both
             # https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm
-            ("LINE", 2, "SDO_GEOMETRY( 2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6))", QgsWkbTypes.CompoundCurve),
-            ("LINEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6,7,8,9))", QgsWkbTypes.CompoundCurveZ),
-            ("CURVE", 2, "SDO_GEOMETRY(2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4))", QgsWkbTypes.CompoundCurve),
-            ("CURVEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, 0.1, 4, 13, 4, 5))", QgsWkbTypes.CompoundCurveZ),
-            ("POLYGON", 2, "SDO_GEOMETRY(2003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2))", QgsWkbTypes.Polygon),
-            ("POLYGONZ", 3, "SDO_GEOMETRY(3003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3))", QgsWkbTypes.PolygonZ),
+            ("LINE", 2, "SDO_GEOMETRY( 2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6))", QgsWkbTypes.Type.CompoundCurve),
+            ("LINEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(1,2,3,4,5,6,7,8,9))", QgsWkbTypes.Type.CompoundCurveZ),
+            ("CURVE", 2, "SDO_GEOMETRY(2002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4))", QgsWkbTypes.Type.CompoundCurve),
+            ("CURVEZ", 3, "SDO_GEOMETRY(3002,5698,NULL, SDO_ELEM_INFO_ARRAY(1, 2, 2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, 0.1, 4, 13, 4, 5))", QgsWkbTypes.Type.CompoundCurveZ),
+            ("POLYGON", 2, "SDO_GEOMETRY(2003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2))", QgsWkbTypes.Type.Polygon),
+            ("POLYGONZ", 3, "SDO_GEOMETRY(3003,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3))", QgsWkbTypes.Type.PolygonZ),
 
-            ("MULTIPOINT", 2, "SDO_GEOMETRY( 2005,5698,NULL, sdo_elem_info_array (1,1,1, 3,1,1), sdo_ordinate_array (1,2, 3,4))", QgsWkbTypes.MultiPoint),
-            ("MULTIPOINTZ", 3, "SDO_GEOMETRY( 3005,5698,NULL, sdo_elem_info_array (1,1,2), sdo_ordinate_array (1,2,3, 4,5,6))", QgsWkbTypes.MultiPointZ),
+            ("MULTIPOINT", 2, "SDO_GEOMETRY( 2005,5698,NULL, sdo_elem_info_array (1,1,1, 3,1,1), sdo_ordinate_array (1,2, 3,4))", QgsWkbTypes.Type.MultiPoint),
+            ("MULTIPOINTZ", 3, "SDO_GEOMETRY( 3005,5698,NULL, sdo_elem_info_array (1,1,2), sdo_ordinate_array (1,2,3, 4,5,6))", QgsWkbTypes.Type.MultiPointZ),
             # there is difference between line and curve so everything is a compoundcurve to cover both
             # https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm
-            ("MULTILINE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 5,2,1), SDO_ORDINATE_ARRAY(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))", QgsWkbTypes.MultiCurve),
-            ("MULTILINEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 7,2,1), SDO_ORDINATE_ARRAY(1, 2, 11, 3, 4, -11, 5, 6, 9, 7, 8, 1, 9, 10, -3))", QgsWkbTypes.MultiCurveZ),
-            ("MULTICURVE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 11,2,2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4, -11, -3, 5, 7, 10, -1))", QgsWkbTypes.MultiCurve),
-            ("MULTICURVEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 16,2,2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, .1, 4, 13, 4, 5, -11, -3, 6, 5, 7, 8, 10, -1, 9))", QgsWkbTypes.MultiCurveZ),
-            ("MULTIPOLYGON", 2, "SDO_GEOMETRY(2007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 11,1003,1, 21,2003,1, 29,2003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 5, 6, 8, 9, 8, 6, 5, 6, 3, 4, 5, 6, 3, 6, 3, 4))", QgsWkbTypes.MultiPolygon),
-            ("MULTIPOLYGONZ", 3, "SDO_GEOMETRY(3007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 16,1003,1, 31,2003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 5, 6, 1, 8, 9, -1, 8, 6, 2, 5, 6, 1))", QgsWkbTypes.MultiPolygonZ)
+            ("MULTILINE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 5,2,1), SDO_ORDINATE_ARRAY(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))", QgsWkbTypes.Type.MultiCurve),
+            ("MULTILINEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,1, 7,2,1), SDO_ORDINATE_ARRAY(1, 2, 11, 3, 4, -11, 5, 6, 9, 7, 8, 1, 9, 10, -3))", QgsWkbTypes.Type.MultiCurveZ),
+            ("MULTICURVE", 2, "SDO_GEOMETRY(2006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 11,2,2), SDO_ORDINATE_ARRAY(1, 2, 5, 4, 7, 2.2, 10, .1, 13, 4, -11, -3, 5, 7, 10, -1))", QgsWkbTypes.Type.MultiCurve),
+            ("MULTICURVEZ", 3, "SDO_GEOMETRY(3006,5698,NULL, SDO_ELEM_INFO_ARRAY(1,2,2, 16,2,2), SDO_ORDINATE_ARRAY(1, 2, 1, 5, 4, 2, 7, 2.2, 3, 10, .1, 4, 13, 4, 5, -11, -3, 6, 5, 7, 8, 10, -1, 9))", QgsWkbTypes.Type.MultiCurveZ),
+            ("MULTIPOLYGON", 2, "SDO_GEOMETRY(2007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 11,1003,1, 21,2003,1, 29,2003,1), SDO_ORDINATE_ARRAY(1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 1, 2, 11, 2, 11, 22, 1, 22, 1, 2, 5, 6, 8, 9, 8, 6, 5, 6, 3, 4, 5, 6, 3, 6, 3, 4))", QgsWkbTypes.Type.MultiPolygon),
+            ("MULTIPOLYGONZ", 3, "SDO_GEOMETRY(3007,5698,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1, 16,1003,1, 31,2003,1), SDO_ORDINATE_ARRAY(1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 1, 2, 3, 11, 2, 13, 11, 22, 15, 1, 22, 7, 1, 2, 3, 5, 6, 1, 8, 9, -1, 8, 6, 2, 5, 6, 1))", QgsWkbTypes.Type.MultiPolygonZ)
         ]
 
         for name, dim, geom, wkb_type in testdata:

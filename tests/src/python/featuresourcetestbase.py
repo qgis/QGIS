@@ -53,7 +53,7 @@ class FeatureSourceTestCase:
         self.assertEqual(self.source.sourceCrs().authid(), 'EPSG:4326')
 
     def testWkbType(self):
-        self.assertEqual(self.source.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(self.source.wkbType(), QgsWkbTypes.Type.Point)
 
     def testFeatureCount(self):
         self.assertEqual(self.source.featureCount(), 5)
@@ -137,7 +137,7 @@ class FeatureSourceTestCase:
                 self.assertFalse(geometries[pk], f'Expected null geometry for {pk}')
 
     def assert_query(self, source, expression, expected):
-        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.Flag.NoGeometry | QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         result = {f['pk'] for f in source.getFeatures(request)}
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected),
                                                                                                      result, expression)
@@ -145,13 +145,13 @@ class FeatureSourceTestCase:
 
         # Also check that filter works when referenced fields are not being retrieved by request
         result = {f['pk'] for f in source.getFeatures(
-            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))}
+            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation))}
         assert set(
             expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(
             set(expected), result, expression)
 
         # test that results match QgsFeatureRequest.acceptFeature
-        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         for f in source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
@@ -587,7 +587,7 @@ class FeatureSourceTestCase:
 
         # ExactIntersection flag set, but no filter rect set. Should be ignored.
         request = QgsFeatureRequest()
-        request.setFlags(QgsFeatureRequest.ExactIntersect)
+        request.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
@@ -601,7 +601,7 @@ class FeatureSourceTestCase:
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest()
         request.setFilterRect(extent)
-        request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setFlags(QgsFeatureRequest.Flag.NoGeometry)
 
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
@@ -614,7 +614,7 @@ class FeatureSourceTestCase:
 
         # test with an empty rectangle
         extent = QgsRectangle()
-        request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.NoGeometry)
+        request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.Flag.NoGeometry)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
@@ -622,7 +622,7 @@ class FeatureSourceTestCase:
 
         # ExactIntersection flag set, but no filter rect set. Should be ignored.
         request = QgsFeatureRequest()
-        request.setFlags(QgsFeatureRequest.ExactIntersect | QgsFeatureRequest.NoGeometry)
+        request.setFlags(QgsFeatureRequest.Flag.ExactIntersect | QgsFeatureRequest.Flag.NoGeometry)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
@@ -741,14 +741,14 @@ class FeatureSourceTestCase:
         """
         request = QgsFeatureRequest().setFilterExpression(
             'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setSubsetOfAttributes([]).setFlags(
-            QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+            QgsFeatureRequest.Flag.NoGeometry | QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
         self.assertTrue(all_valid)
 
         request = QgsFeatureRequest().setFilterExpression(
-            'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+            'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setFlags(QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
@@ -926,7 +926,7 @@ class FeatureSourceTestCase:
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
 
-        for f in self.source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
+        for f in self.source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)):
             self.assertFalse(f.hasGeometry(), 'Expected no geometry, got one')
             self.assertTrue(f.isValid())
 

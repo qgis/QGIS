@@ -58,7 +58,7 @@ class TestQgsAttributeForm(QgisTestCase):
         """Creates a form with two identical widgets for the same field"""
 
         config = vl.editFormConfig()
-        config.setLayout(QgsEditFormConfig.TabLayout)
+        config.setLayout(QgsEditFormConfig.EditorLayout.TabLayout)
         element = config.tabs()[0]
         element2 = element.clone(element)
         config.addTab(element2)
@@ -144,7 +144,7 @@ class TestQgsAttributeForm(QgisTestCase):
         for feature in vl.getFeatures():
             fids.append(feature.id())
 
-        form.setMode(QgsAttributeEditorContext.MultiEditMode)
+        form.setMode(QgsAttributeEditorContext.Mode.MultiEditMode)
         form.setMultiEditFeatureIds(fids)
 
         for children in form.findChildren(QgsFilterLineEdit):
@@ -173,7 +173,7 @@ class TestQgsAttributeForm(QgisTestCase):
         form = QgsAttributeForm(layer)
         feature = QgsFeature(layer.fields())
         form.setFeature(feature)
-        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
         form.changeAttribute('numbers', [12])
         form.changeAttribute('age', 1)
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
@@ -198,7 +198,7 @@ class TestQgsAttributeForm(QgisTestCase):
         feature.setAttribute('age', 15)
 
         form = QgsAttributeForm(layer)
-        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
         form.setFeature(feature)
 
         QGISAPP.processEvents()

@@ -39,20 +39,20 @@ class ClipVectorByMask(GdalAlgorithm):
         super().__init__()
 
     def flags(self):
-        return QgsProcessingAlgorithm.FlagSupportsBatch | QgsProcessingAlgorithm.FlagRequiresMatchingCrs  # cannot cancel!
+        return QgsProcessingAlgorithm.Flag.FlagSupportsBatch | QgsProcessingAlgorithm.Flag.FlagRequiresMatchingCrs  # cannot cancel!
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
                                                               self.tr('Mask layer'),
-                                                              [QgsProcessing.TypeVectorPolygon]))
+                                                              [QgsProcessing.SourceType.TypeVectorPolygon]))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,

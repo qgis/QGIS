@@ -372,7 +372,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
             QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
 
         self.atlas_map.setAtlasDriven(True)
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
         self.atlas_map.setAtlasMargin(0.10)
 
         self.atlas.beginRender()
@@ -390,13 +390,13 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas.endRender()
 
         self.atlas_map.setAtlasDriven(False)
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas_map.setAtlasMargin(0)
 
     def fixedscale_render_test(self):
         self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasDriven(True)
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
 
         self.atlas.beginRender()
 
@@ -415,7 +415,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
     def predefinedscales_render_test(self):
         self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasDriven(True)
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Predefined)
 
         scales = [1800000, 5000000]
         self.layout.renderContext().setPredefinedScales(scales)
@@ -438,7 +438,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
     def hidden_render_test(self):
         self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas.setHideCoverage(True)
 
         self.atlas.beginRender()
@@ -459,7 +459,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
     def sorting_render_test(self):
         self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas.setHideCoverage(False)
 
         self.atlas.setSortFeatures(True)
@@ -482,7 +482,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
     def filtering_render_test(self):
         self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas.setHideCoverage(False)
 
         self.atlas.setSortFeatures(False)
@@ -542,7 +542,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
             QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
 
         atlas_map.setAtlasDriven(True)
-        atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
         atlas_map.setAtlasMargin(0.10)
 
         atlas_map.atlasClippingSettings().setEnabled(True)
@@ -562,7 +562,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
     def legend_test(self):
         self.atlas_map.setAtlasDriven(True)
-        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
         self.atlas_map.setAtlasMargin(0.10)
 
         # add a point layer
@@ -596,10 +596,10 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
-        legend.rstyle(QgsLegendStyle.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
-        legend.rstyle(QgsLegendStyle.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        legend.rstyle(QgsLegendStyle.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        legend.rstyle(QgsLegendStyle.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
+        legend.rstyle(QgsLegendStyle.Style.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.rstyle(QgsLegendStyle.Style.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Style.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Style.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
 
         legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
@@ -655,7 +655,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas.setEnabled(True)
 
         atlasMap.setAtlasDriven(True)
-        atlasMap.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        atlasMap.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
         atlasMap.setAtlasMargin(0.0)
 
         # Testing
@@ -703,9 +703,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas.setEnabled(True)
 
         map.setAtlasDriven(True)
-        map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
         map.setAtlasMargin(77.0)
-        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapAtlasMargin, QgsProperty.fromExpression('margin/2'))
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.MapAtlasMargin, QgsProperty.fromExpression('margin/2'))
 
         atlas.beginRender()
         atlas.first()

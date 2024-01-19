@@ -63,7 +63,7 @@ class TestQgsFieldComboBox(QgisTestCase):
         l = create_layer()
         w = QgsFieldComboBox()
         w.setLayer(l)
-        w.setFilters(QgsFieldProxyModel.Int)
+        w.setFilters(QgsFieldProxyModel.Filter.Int)
         self.assertEqual(w.layer(), l)
 
         w.setField('fldint')

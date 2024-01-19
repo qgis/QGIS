@@ -57,8 +57,8 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
     def test_settings(self):
         settings = QgsColorRampLegendNodeSettings()
-        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
-        self.assertEqual(settings.direction(), QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        settings.setDirection(QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
+        self.assertEqual(settings.direction(), QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
         settings.setMinimumLabel('min')
         self.assertEqual(settings.minimumLabel(), 'min')
         settings.setMaximumLabel('max')
@@ -86,7 +86,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         self.assertIsInstance(settings.numericFormat(), QgsBearingNumericFormat)
 
         settings2 = QgsColorRampLegendNodeSettings(settings)
-        self.assertEqual(settings2.direction(), QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        self.assertEqual(settings2.direction(), QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
         self.assertEqual(settings2.minimumLabel(), 'min')
         self.assertEqual(settings2.maximumLabel(), 'max')
         self.assertIsInstance(settings2.numericFormat(), QgsBearingNumericFormat)
@@ -105,7 +105,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         settings3 = QgsColorRampLegendNodeSettings()
         settings3.readXml(elem, QgsReadWriteContext())
-        self.assertEqual(settings3.direction(), QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        self.assertEqual(settings3.direction(), QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
         self.assertEqual(settings3.minimumLabel(), 'min')
         self.assertEqual(settings3.maximumLabel(), 'max')
         self.assertIsInstance(settings3.numericFormat(), QgsBearingNumericFormat)
@@ -137,8 +137,8 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node.setIconSize(QSize(11, 12))
         self.assertEqual(node.iconSize(), QSize(11, 12))
 
-        self.assertEqual(node.data(QgsLayerTreeModelLegendNode.NodeTypeRole),
-                         QgsLayerTreeModelLegendNode.ColorRampLegend)
+        self.assertEqual(node.data(QgsLayerTreeModelLegendNode.LegendNodeRoles.NodeTypeRole),
+                         QgsLayerTreeModelLegendNode.NodeTypes.ColorRampLegend)
 
     def test_icon(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -171,7 +171,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         format.setShowTrailingZeros(True)
         format.setNumberDecimalPlaces(3)
         settings.setNumericFormat(format)
-        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        settings.setDirection(QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
 
         node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
 
@@ -238,7 +238,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         layer_tree_layer = QgsLayerTreeLayer(layer)
 
         settings = QgsColorRampLegendNodeSettings()
-        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        settings.setDirection(QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
         settings.setOrientation(Qt.Orientation.Horizontal)
 
         node = TestColorRampLegend(layer_tree_layer, r, settings, 5, 10)
@@ -263,9 +263,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node = QgsColorRampLegendNode(layer_tree_layer, r, 'min_label', 'max_label')
 
         ls = QgsLegendSettings()
-        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style = ls.style(QgsLegendStyle.Style.SymbolLabel)
         item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+        ls.setStyle(QgsLegendStyle.Style.SymbolLabel, item_style)
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
@@ -308,14 +308,14 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         format.setShowTrailingZeros(True)
         format.setNumberDecimalPlaces(3)
         settings.setNumericFormat(format)
-        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        settings.setDirection(QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
 
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
         ls = QgsLegendSettings()
-        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style = ls.style(QgsLegendStyle.Style.SymbolLabel)
         item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+        ls.setStyle(QgsLegendStyle.Style.SymbolLabel, item_style)
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
@@ -359,9 +359,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
         ls = QgsLegendSettings()
-        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style = ls.style(QgsLegendStyle.Style.SymbolLabel)
         item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+        ls.setStyle(QgsLegendStyle.Style.SymbolLabel, item_style)
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
@@ -408,9 +408,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
         ls = QgsLegendSettings()
-        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style = ls.style(QgsLegendStyle.Style.SymbolLabel)
         item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+        ls.setStyle(QgsLegendStyle.Style.SymbolLabel, item_style)
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
@@ -453,9 +453,9 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
         ls = QgsLegendSettings()
-        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style = ls.style(QgsLegendStyle.Style.SymbolLabel)
         item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+        ls.setStyle(QgsLegendStyle.Style.SymbolLabel, item_style)
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 
@@ -495,13 +495,13 @@ class TestQgsColorRampLegendNode(QgisTestCase):
 
         settings = QgsColorRampLegendNodeSettings()
         settings.setOrientation(Qt.Orientation.Horizontal)
-        settings.setDirection(QgsColorRampLegendNodeSettings.MaximumToMinimum)
+        settings.setDirection(QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum)
         node = QgsColorRampLegendNode(layer_tree_layer, r, settings, 5, 10)
 
         ls = QgsLegendSettings()
-        item_style = ls.style(QgsLegendStyle.SymbolLabel)
+        item_style = ls.style(QgsLegendStyle.Style.SymbolLabel)
         item_style.setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
-        ls.setStyle(QgsLegendStyle.SymbolLabel, item_style)
+        ls.setStyle(QgsLegendStyle.Style.SymbolLabel, item_style)
 
         item_context = QgsLayerTreeModelLegendNode.ItemContext()
 

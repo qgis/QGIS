@@ -443,7 +443,7 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             options.layerName = 'layer_a'
             err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'transaction_test.gpkg'), QgsCoordinateTransformContext(), options)
 
-            self.assertEqual(err, QgsVectorFileWriter.NoError)
+            self.assertEqual(err, QgsVectorFileWriter.WriterError.NoError)
             self.assertTrue(os.path.isfile(newFileName))
 
             layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')

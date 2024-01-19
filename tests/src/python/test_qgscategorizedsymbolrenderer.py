@@ -465,7 +465,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         symbol_c.setColor(QColor(0, 0, 255))
         renderer.addCategory(QgsRendererCategory('c ', symbol_c, 'c'))
 
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(None, QgsSymbol.Marker)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(None, QgsSymbol.SymbolType.Marker)
         self.assertEqual(matched, 0)
 
         style = QgsStyle()
@@ -486,13 +486,13 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         self.assertTrue(style.addSymbol(' ----c/- ', symbol_C))
 
         # non-matching symbol type
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Line)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.SymbolType.Line)
         self.assertEqual(matched, 0)
         self.assertEqual(unmatched_cats, ['a', 'b', 'c '])
         self.assertEqual(unmatched_symbols, [' ----c/- ', 'B ', 'C', 'a', 'b'])
 
         # exact match
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.SymbolType.Marker)
         self.assertEqual(matched, 1)
         self.assertEqual(unmatched_cats, ['b', 'c '])
         self.assertEqual(unmatched_symbols, [' ----c/- ', 'B ', 'C', 'b'])
@@ -506,7 +506,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         renderer.stopRender(context)
 
         # case insensitive match
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, False)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.SymbolType.Marker, False)
         self.assertEqual(matched, 2)
         self.assertEqual(unmatched_cats, ['c '])
         self.assertEqual(unmatched_symbols, [' ----c/- ', 'C', 'b'])
@@ -523,7 +523,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         renderer.stopRender(context)
 
         # case insensitive match
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, False)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.SymbolType.Marker, False)
         self.assertEqual(matched, 2)
         self.assertEqual(unmatched_cats, ['c '])
         self.assertEqual(unmatched_symbols, [' ----c/- ', 'C', 'b'])
@@ -540,7 +540,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         renderer.stopRender(context)
 
         # tolerant match
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, True, True)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.SymbolType.Marker, True, True)
         self.assertEqual(matched, 2)
         self.assertEqual(unmatched_cats, ['b'])
         self.assertEqual(unmatched_symbols, ['B ', 'C', 'b'])
@@ -557,7 +557,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         renderer.stopRender(context)
 
         # tolerant match, case insensitive
-        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, False, True)
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.SymbolType.Marker, False, True)
         self.assertEqual(matched, 3)
         self.assertFalse(unmatched_cats)
         self.assertEqual(unmatched_symbols, ['C', 'b'])
@@ -601,21 +601,21 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         l1 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
         l1.setColor(QColor(255, 0, 0))
         l1.setStrokeStyle(Qt.PenStyle.NoPen)
-        l1.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        l1.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyAngle, QgsProperty.fromField("Heading"))
         sym1.changeSymbolLayer(0, l1)
         cats.append(QgsRendererCategory("B52", sym1, "B52"))
         sym2 = QgsMarkerSymbol()
         l2 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
         l2.setColor(QColor(0, 255, 0))
         l2.setStrokeStyle(Qt.PenStyle.NoPen)
-        l2.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        l2.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyAngle, QgsProperty.fromField("Heading"))
         sym2.changeSymbolLayer(0, l2)
         cats.append(QgsRendererCategory("Biplane", sym2, "Biplane"))
         sym3 = QgsMarkerSymbol()
         l3 = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 5)
         l3.setColor(QColor(0, 0, 255))
         l3.setStrokeStyle(Qt.PenStyle.NoPen)
-        l3.setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromField("Heading"))
+        l3.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyAngle, QgsProperty.fromField("Heading"))
         sym3.changeSymbolLayer(0, l3)
         cats.append(QgsRendererCategory("Jet", sym3, "Jet"))
 
@@ -737,7 +737,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         # Default locale for tests is EN
         original_locale = QLocale()
         locale = QLocale(QLocale.Language.English)
-        locale.setNumberOptions(QLocale.DefaultNumberOptions)
+        locale.setNumberOptions(QLocale.NumberOption.DefaultNumberOptions)
         QLocale().setDefault(locale)
 
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56), "1,234.56")
@@ -759,7 +759,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
 
         # Test a non-dot locale
         locale = QLocale(QLocale.Language.Italian)
-        locale.setNumberOptions(QLocale.DefaultNumberOptions)
+        locale.setNumberOptions(QLocale.NumberOption.DefaultNumberOptions)
         QLocale().setDefault(locale)
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56), "1.234,56")
         self.assertEqual(QgsCategorizedSymbolRenderer.displayString(1234.56, 4), "1.234,5600")
@@ -784,7 +784,7 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         # Default locale for tests is EN
         original_locale = QLocale()
         locale = QLocale(QLocale.Language.English)
-        locale.setNumberOptions(QLocale.DefaultNumberOptions)
+        locale.setNumberOptions(QLocale.NumberOption.DefaultNumberOptions)
         QLocale().setDefault(locale)
 
         layer = QgsVectorLayer("Point?field=flddbl:double&field=fldint:integer", "addfeat", "memory")

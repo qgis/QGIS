@@ -116,7 +116,7 @@ def writeShape(theMemoryLayer, theFileName):
         myOptions,
         myLayerOptions,
         mySkipAttributesFlag)
-    assert myResult == QgsVectorFileWriter.NoError, f'Writing shape failed, Error {myResult} ({myErrorMessage})'
+    assert myResult == QgsVectorFileWriter.WriterError.NoError, f'Writing shape failed, Error {myResult} ({myErrorMessage})'
 
     return myFileName
 
@@ -249,15 +249,15 @@ def mapSettingsString(ms):
     s += '  destinationCrs(): {}\n'.format(
         ms.destinationCrs().authid())
     s += '  flag.Antialiasing: {}\n'.format(
-        ms.testFlag(QgsMapSettings.Antialiasing))
+        ms.testFlag(QgsMapSettings.Flag.Antialiasing))
     s += '  flag.UseAdvancedEffects: {}\n'.format(
-        ms.testFlag(QgsMapSettings.UseAdvancedEffects))
+        ms.testFlag(QgsMapSettings.Flag.UseAdvancedEffects))
     s += '  flag.ForceVectorOutput: {}\n'.format(
-        ms.testFlag(QgsMapSettings.ForceVectorOutput))
+        ms.testFlag(QgsMapSettings.Flag.ForceVectorOutput))
     s += '  flag.DrawLabeling: {}\n'.format(
-        ms.testFlag(QgsMapSettings.DrawLabeling))
+        ms.testFlag(QgsMapSettings.Flag.DrawLabeling))
     s += '  flag.DrawEditingInfo: {}\n'.format(
-        ms.testFlag(QgsMapSettings.DrawEditingInfo))
+        ms.testFlag(QgsMapSettings.Flag.DrawEditingInfo))
     s += f'  outputImageFormat(): {ms.outputImageFormat()}\n'
     return s
 

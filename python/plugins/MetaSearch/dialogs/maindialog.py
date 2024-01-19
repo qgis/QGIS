@@ -774,7 +774,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # open provider window
         ows_provider = QgsGui.sourceSelectProviderRegistry().\
             createSelectionWidget(
-                provider_name, self, Qt.Widget,
+                provider_name, self, Qt.WindowType.Widget,
                 QgsProviderRegistry.WidgetMode.Embedded)
 
         # connect dialog signals to iface slots

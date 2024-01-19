@@ -74,9 +74,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
                                        QgsGui.instance().processingRecentAlgorithmLog())
-        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.Filter.FilterToolbox)
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
         self.algorithmTree.setFilters(filters)
 
         self.searchBox.setShowSearchIcon(True)
@@ -113,19 +113,19 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     def set_filter_string(self, string):
         filters = self.algorithmTree.filters()
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
         else:
-            filters &= ~QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters &= ~QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
         self.algorithmTree.setFilters(filters)
         self.algorithmTree.setFilterString(string)
 
     def set_in_place_edit_mode(self, enabled):
-        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.Filter.FilterToolbox)
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
 
         if enabled:
-            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.FilterInPlace)
+            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.Filter.FilterInPlace)
         else:
             self.algorithmTree.setFilters(filters)
         self.in_place_mode = enabled
@@ -182,7 +182,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), popupmenu)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+            if alg.flags() & QgsProcessingAlgorithm.Flag.FlagSupportsBatch:
                 executeBatchAction = QAction(
                     QCoreApplication.translate('ProcessingToolbox', 'Execute as Batch Process…'),
                     popupmenu)

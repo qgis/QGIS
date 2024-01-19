@@ -156,9 +156,9 @@ class MultipleInputDialog(BASE, WIDGET):
         :param param:
         :return:
         """
-        if datatype == QgsProcessing.TypeRaster:
+        if datatype == QgsProcessing.SourceType.TypeRaster:
             return QgsProviderRegistry.instance().fileRasterFilters()
-        elif datatype == QgsProcessing.TypeFile:
+        elif datatype == QgsProcessing.SourceType.TypeFile:
             return self.tr('All files (*.*)')
         else:
             exts = QgsVectorFileWriter.supportedFormatExtensions()
@@ -194,9 +194,9 @@ class MultipleInputDialog(BASE, WIDGET):
         if ret:
             exts = []
 
-            if self.datatype == QgsProcessing.TypeVector:
+            if self.datatype == QgsProcessing.SourceType.TypeVector:
                 exts = QgsVectorFileWriter.supportedFormatExtensions()
-            elif self.datatype == QgsProcessing.TypeRaster:
+            elif self.datatype == QgsProcessing.SourceType.TypeRaster:
                 for t in QgsProviderRegistry.instance().fileRasterFilters().split(';;')[1:]:
                     for e in t[t.index('(') + 1:-1].split(' '):
                         if e != "*.*" and e.startswith("*."):

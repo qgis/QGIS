@@ -103,7 +103,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
                 self.tr('Input layer'),
-                [QgsProcessing.TypeVectorAnyGeometry]
+                [QgsProcessing.SourceType.TypeVectorAnyGeometry]
             )
         )
 
@@ -168,7 +168,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
                 break
 
             # Add a feature in the sink
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
 
             # Update the progress bar
             feedback.setProgress(int(current * total))

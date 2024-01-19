@@ -103,7 +103,7 @@ class BatchInputSelectionPanel(QWidget):
         layers = []
         if (isinstance(self.param, QgsProcessingParameterRasterLayer)
             or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.layerType() == QgsProcessing.TypeRaster)):
+                self.param.layerType() == QgsProcessing.SourceType.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
@@ -111,20 +111,20 @@ class BatchInputSelectionPanel(QWidget):
             layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         elif (isinstance(self.param, QgsProcessingParameterMeshLayer)
               or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                  self.param.layerType() == QgsProcessing.TypeMesh)):
+                  self.param.layerType() == QgsProcessing.SourceType.TypeMesh)):
             layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
         elif (isinstance(self.param, QgsProcessingParameterPointCloudLayer)
               or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                  self.param.layerType() == QgsProcessing.TypePointCloud)):
+                  self.param.layerType() == QgsProcessing.SourceType.TypePointCloud)):
             layers = QgsProcessingUtils.compatiblePointCloudLayers(QgsProject.instance())
         else:
-            datatypes = [QgsProcessing.TypeVectorAnyGeometry]
+            datatypes = [QgsProcessing.SourceType.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
                 datatypes = self.param.dataTypes()
             elif isinstance(self.param, QgsProcessingParameterMultipleLayers):
                 datatypes = [self.param.layerType()]
 
-            if QgsProcessing.TypeVectorAnyGeometry not in datatypes:
+            if QgsProcessing.SourceType.TypeVectorAnyGeometry not in datatypes:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
             else:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
@@ -192,7 +192,7 @@ class BatchInputSelectionPanel(QWidget):
                     p = pp.as_posix()
 
                     if ((isinstance(self.param, QgsProcessingParameterRasterLayer)
-                         or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster)) and
+                         or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.SourceType.TypeRaster)) and
                             not QgsRasterLayer.isValidRasterFileName(p)):
                         continue
 

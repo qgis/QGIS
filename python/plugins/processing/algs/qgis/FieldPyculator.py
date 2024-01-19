@@ -60,7 +60,7 @@ class FieldsPyculator(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
-                                                              types=[QgsProcessing.TypeVector]))
+                                                              types=[QgsProcessing.SourceType.TypeVector]))
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Result field name'), defaultValue='NewField'))
 
@@ -226,7 +226,7 @@ class FieldsPyculator(QgisAlgorithm):
             # Write feature
             attrs.append(new_ns[self.RESULT_VAR_NAME])
             feat.setAttributes(attrs)
-            sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
 
         return {self.OUTPUT: dest_id}
 

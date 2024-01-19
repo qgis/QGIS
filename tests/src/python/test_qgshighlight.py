@@ -178,7 +178,7 @@ class TestQgsHighlight(QgisTestCase):
         buffer_layer = QgsGeometryGeneratorSymbolLayer.create(
             {"geometryModifier": "buffer($geometry, -0.4)"}
         )
-        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setSymbolType(QgsSymbol.SymbolType.Fill)
         buffer_layer.setSubSymbol(sub_symbol)
         sym.changeSymbolLayer(0, buffer_layer)
         layer.setRenderer(QgsSingleSymbolRenderer(sym))

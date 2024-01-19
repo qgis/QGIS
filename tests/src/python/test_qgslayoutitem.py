@@ -85,7 +85,7 @@ class TestQgsLayoutItem(QgisTestCase):
         self.assertEqual(item.frameStrokeColor(), QColor(255, 0, 0))
         self.assertEqual(item.pen().color().name(), QColor(255, 0, 0).name())
 
-        item.dataDefinedProperties().setProperty(QgsLayoutObject.FrameColor, QgsProperty.fromExpression("'blue'"))
+        item.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.FrameColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
         self.assertEqual(item.frameStrokeColor(), QColor(255, 0, 0))  # should not change
         self.assertEqual(item.pen().color().name(), QColor(0, 0, 255).name())
@@ -96,12 +96,12 @@ class TestQgsLayoutItem(QgisTestCase):
         item = QgsLayoutItemMap(layout)
         item.setFrameEnabled(True)
 
-        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
-        self.assertEqual(item.frameStrokeWidth(), QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        self.assertEqual(item.frameStrokeWidth(), QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         self.assertEqual(item.pen().width(), 10.0)
 
-        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
-        self.assertEqual(item.frameStrokeWidth(), QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutCentimeters))
+        self.assertEqual(item.frameStrokeWidth(), QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutCentimeters))
         self.assertEqual(item.pen().width(), 100.0)
 
     def testDataDefinedBackgroundColor(self):
@@ -113,7 +113,7 @@ class TestQgsLayoutItem(QgisTestCase):
         self.assertEqual(item.backgroundColor(), QColor(255, 0, 0))
         self.assertEqual(item.brush().color().name(), QColor(255, 0, 0).name())
 
-        item.dataDefinedProperties().setProperty(QgsLayoutObject.BackgroundColor, QgsProperty.fromExpression("'blue'"))
+        item.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.BackgroundColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
         self.assertEqual(item.backgroundColor(False), QColor(255, 0, 0))  # should not change
         self.assertEqual(item.backgroundColor(True).name(), item.brush().color().name())
@@ -153,29 +153,29 @@ class TestQgsLayoutItem(QgisTestCase):
         item.setFrameEnabled(False)
         self.assertEqual(item.estimatedFrameBleed(), 0)
 
-        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         item.setFrameEnabled(False)
         self.assertEqual(item.estimatedFrameBleed(), 0)
         item.setFrameEnabled(True)
         self.assertEqual(item.estimatedFrameBleed(), 5)  # only half bleeds out!
 
-        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutCentimeters))
         self.assertEqual(item.estimatedFrameBleed(), 50)  # only half bleeds out!
 
     def testRectWithFrame(self):
         layout = QgsLayout(QgsProject.instance())
         item = QgsLayoutItemMap(layout)
-        item.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
-        item.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        item.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        item.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
 
         item.setFrameEnabled(False)
         self.assertEqual(item.rectWithFrame(), QRectF(0, 0, 18, 12))
-        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         item.setFrameEnabled(False)
         self.assertEqual(item.rectWithFrame(), QRectF(0, 0, 18, 12))
         item.setFrameEnabled(True)
         self.assertEqual(item.rectWithFrame(), QRectF(-5.0, -5.0, 28.0, 22.0))
-        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutUnit.LayoutCentimeters))
         self.assertEqual(item.rectWithFrame(), QRectF(-50.0, -50.0, 118.0, 112.0))
 
     def testDisplayName(self):
@@ -224,11 +224,11 @@ class TestQgsLayoutItem(QgisTestCase):
         self.assertTrue(item.containsAdvancedEffects())
         # but not the WHOLE layout
         self.assertFalse(item.requiresRasterization())
-        item.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty.fromExpression('100'))
+        item.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.Opacity, QgsProperty.fromExpression('100'))
         item.refresh()
         self.assertFalse(item.containsAdvancedEffects())
         self.assertFalse(item.requiresRasterization())
-        item.dataDefinedProperties().setProperty(QgsLayoutObject.Opacity, QgsProperty())
+        item.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.Opacity, QgsProperty())
         item.refresh()
         self.assertTrue(item.containsAdvancedEffects())
         self.assertFalse(item.requiresRasterization())
@@ -252,7 +252,7 @@ class TestQgsLayoutItem(QgisTestCase):
         l.initializeDefaults()
         item1 = QgsLayoutItemShape(l)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
@@ -263,7 +263,7 @@ class TestQgsLayoutItem(QgisTestCase):
         l.addLayoutItem(item1)
         item2 = QgsLayoutItemShape(l)
         item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
-        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        item2.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         l.addLayoutItem(item2)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
@@ -304,7 +304,7 @@ class TestQgsLayoutItem(QgisTestCase):
         l.initializeDefaults()
         item1 = QgsLayoutItemShape(l)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
@@ -315,7 +315,7 @@ class TestQgsLayoutItem(QgisTestCase):
         l.addLayoutItem(item1)
         item2 = QgsLayoutItemShape(l)
         item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
-        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        item2.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         l.addLayoutItem(item2)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
@@ -342,12 +342,12 @@ class TestQgsLayoutItem(QgisTestCase):
         """
         p = QgsProject()
         l = QgsLayout(p)
-        l.renderContext().setFlag(QgsLayoutRenderContext.FlagUseAdvancedEffects, False)
+        l.renderContext().setFlag(QgsLayoutRenderContext.Flag.FlagUseAdvancedEffects, False)
 
         l.initializeDefaults()
         item1 = QgsLayoutItemShape(l)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
@@ -358,7 +358,7 @@ class TestQgsLayoutItem(QgisTestCase):
         l.addLayoutItem(item1)
         item2 = QgsLayoutItemShape(l)
         item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
-        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        item2.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         l.addLayoutItem(item2)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
@@ -385,12 +385,12 @@ class TestQgsLayoutItem(QgisTestCase):
         """
         p = QgsProject()
         l = QgsLayout(p)
-        l.renderContext().setFlag(QgsLayoutRenderContext.FlagForceVectorOutput, True)
+        l.renderContext().setFlag(QgsLayoutRenderContext.Flag.FlagForceVectorOutput, True)
 
         l.initializeDefaults()
         item1 = QgsLayoutItemShape(l)
         item1.attemptSetSceneRect(QRectF(20, 20, 150, 100))
-        item1.setShapeType(QgsLayoutItemShape.Rectangle)
+        item1.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()
         fill_symbol.changeSymbolLayer(0, simple_fill)
@@ -401,7 +401,7 @@ class TestQgsLayoutItem(QgisTestCase):
         l.addLayoutItem(item1)
         item2 = QgsLayoutItemShape(l)
         item2.attemptSetSceneRect(QRectF(50, 50, 150, 100))
-        item2.setShapeType(QgsLayoutItemShape.Rectangle)
+        item2.setShapeType(QgsLayoutItemShape.Shape.Rectangle)
         l.addLayoutItem(item2)
         simple_fill = QgsSimpleFillSymbolLayer()
         fill_symbol = QgsFillSymbol()

@@ -50,36 +50,36 @@ class TestQgsPointXY(QgisTestCase):
 
     def test_issue_32443(self):
         p = QgsPoint()
-        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() != p.x() and p.y() != p.y())
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() != p.x() and p.y() != p.y())
 
         # ctor from QgsPointXY should be available
         p = QgsPoint(QgsPointXY(1, 2))
-        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2)
 
         # ctor from QPointF should be available
         p = QgsPoint(QPointF(1, 2))
-        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2)
 
         p = QgsPoint(1, 2)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.Point and p.x() == 1 and p.y() == 2)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2)
 
         p = QgsPoint(1, 2, 3)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
 
         p = QgsPoint(1, 2, z=3)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
 
         p = QgsPoint(1, 2, m=3)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.PointM and p.x() == 1 and p.y() == 2 and p.m() == 3)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointM and p.x() == 1 and p.y() == 2 and p.m() == 3)
 
-        p = QgsPoint(1, 2, wkbType=QgsWkbTypes.PointM)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.PointM and p.x() == 1 and p.y() == 2 and p.m() != p.m())
+        p = QgsPoint(1, 2, wkbType=QgsWkbTypes.Type.PointM)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointM and p.x() == 1 and p.y() == 2 and p.m() != p.m())
 
         p = QgsPoint(1, 2, 3, 4)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
 
         p = QgsPoint(1, 2, m=4, z=3)
-        self.assertTrue(p.wkbType() == QgsWkbTypes.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
 
     def test_empty_QgsPointXY(self):
         p = QgsPoint(QgsPointXY())

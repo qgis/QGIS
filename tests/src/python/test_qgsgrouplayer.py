@@ -283,7 +283,7 @@ class TestQgsGroupLayer(QgisTestCase):
         group_layer.setChildLayers([rl1, vl1])
 
         color_effect = QgsColorEffect()
-        color_effect.setGrayscaleMode(QgsImageOperation.GrayscaleAverage)
+        color_effect.setGrayscaleMode(QgsImageOperation.GrayscaleMode.GrayscaleAverage)
 
         effect_stack = QgsEffectStack()
         effect_stack.appendEffect(color_effect)

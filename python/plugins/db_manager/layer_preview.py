@@ -101,7 +101,7 @@ class LayerPreview(QgsMapCanvas):
                         self.parent.tabs.setCurrentWidget(self.parent.info)
                         self.parent.infoBar.pushMessage(
                             QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
-                            Qgis.Warning, self.parent.iface.messageTimeout())
+                            Qgis.MessageLevel.Warning, self.parent.iface.messageTimeout())
                         return
 
                     uri = table.database().uri()

@@ -65,7 +65,7 @@ class TestQgsLayoutSnapper(QgisTestCase):
         l.pageCollection().addPage(page)
         s = QgsLayoutSnapper(l)
 
-        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
 
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
@@ -134,7 +134,7 @@ class TestQgsLayoutSnapper(QgisTestCase):
         l.pageCollection().addPage(page)
         s = QgsLayoutSnapper(l)
 
-        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
 
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
@@ -306,8 +306,8 @@ class TestQgsLayoutSnapper(QgisTestCase):
 
         # add an item
         item1 = QgsLayoutItemMap(l)
-        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
-        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         l.addItem(item1)
 
         point, snapped = s.snapPointToItems(3.5, Qt.Orientation.Horizontal, 1, [], line)
@@ -398,8 +398,8 @@ class TestQgsLayoutSnapper(QgisTestCase):
 
         # add an item
         item1 = QgsLayoutItemMap(l)
-        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
-        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         l.addItem(item1)
 
         point, snapped = s.snapPointsToItems([3.5], Qt.Orientation.Horizontal, 1, [], line)
@@ -481,7 +481,7 @@ class TestQgsLayoutSnapper(QgisTestCase):
         guides = l.guides()
 
         # first test snapping to grid
-        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
 
@@ -505,7 +505,7 @@ class TestQgsLayoutSnapper(QgisTestCase):
 
         # add an item
         item1 = QgsLayoutItemMap(l)
-        item1.attemptMove(QgsLayoutPoint(121, 1.1, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptMove(QgsLayoutPoint(121, 1.1, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         l.addItem(item1)
 
         # test that guide takes precedence over item
@@ -536,7 +536,7 @@ class TestQgsLayoutSnapper(QgisTestCase):
         guides = l.guides()
 
         # first test snapping to grid
-        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutMillimeters))
+        l.gridSettings().setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         s.setSnapToItems(False)
         s.setSnapToGrid(True)
         s.setSnapTolerance(1)
@@ -564,7 +564,7 @@ class TestQgsLayoutSnapper(QgisTestCase):
 
         # add an item
         item1 = QgsLayoutItemMap(l)
-        item1.attemptMove(QgsLayoutPoint(121, 1.1, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptMove(QgsLayoutPoint(121, 1.1, QgsUnitTypes.LayoutUnit.LayoutMillimeters))
         l.addItem(item1)
 
         # test that guide takes precedence over item

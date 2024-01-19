@@ -216,7 +216,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
         settings.setOutputSize(QSize(600, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -250,7 +250,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
         settings.setOutputSize(QSize(600, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -284,7 +284,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
         settings.setOutputSize(QSize(600, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -316,7 +316,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
         settings.setOutputSize(QSize(600, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -348,7 +348,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(11.9, 11.9, 14.5, 14))
         settings.setOutputSize(QSize(600, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -381,7 +381,7 @@ class TestQgsAnnotationLineTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(1291958, 1386945, 1420709, 1532518))
         settings.setOutputSize(QSize(600, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI

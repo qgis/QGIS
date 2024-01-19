@@ -32,7 +32,7 @@ class TestProvider(QgsDataItemProvider):
         return self._name
 
     def capabilities(self):
-        return QgsDataProvider.File
+        return QgsDataProvider.DataCapability.File
 
     def createDataItem(self, path, parent):
         return None

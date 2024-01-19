@@ -31,10 +31,10 @@ start_app()
 class TestGeocoder(QgsGeocoderInterface):
 
     def flags(self):
-        return QgsGeocoderInterface.GeocodesStrings
+        return QgsGeocoderInterface.Flag.GeocodesStrings
 
     def wkbType(self):
-        return QgsWkbTypes.Point
+        return QgsWkbTypes.Type.Point
 
     def geocodeString(self, string, context, feedback):
         if string == 'a':

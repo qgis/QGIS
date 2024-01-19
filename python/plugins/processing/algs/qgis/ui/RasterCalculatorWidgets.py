@@ -302,6 +302,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
                 raise InvalidParameterValue()
             return values

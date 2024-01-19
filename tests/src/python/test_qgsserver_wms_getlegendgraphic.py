@@ -1292,7 +1292,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         # Rule with symbol
         high_scale_rule = QgsRuleBasedRenderer.Rule(
-            QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry),
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry),
             minimumScale=25000, maximumScale=1000, label='high-scale')
         root_rule.appendChild(high_scale_rule)
 
@@ -1301,7 +1301,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         # Sub-rule with a symbol
         sub_rule = QgsRuleBasedRenderer.Rule(
-            QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry), label='low-scale-sub')
+            QgsSymbol.defaultSymbol(QgsWkbTypes.GeometryType.PointGeometry), label='low-scale-sub')
 
         low_scale_rule.appendChild(sub_rule)
         root_rule.appendChild(low_scale_rule)

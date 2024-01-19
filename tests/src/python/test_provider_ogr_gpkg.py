@@ -910,7 +910,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options = {}
         options['driverName'] = 'GPKG'
         err = QgsVectorLayerExporter.exportLayer(mem_lyr, tmpfile, "ogr", mem_lyr.crs(), False, options)
-        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
                          f'unexpected import error {err}')
         lyr = QgsVectorLayer(tmpfile, "y", "ogr")
         self.assertTrue(lyr.isValid())
@@ -937,7 +937,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options['driverName'] = 'GPKG'
         options['layerName'] = 'my_out_table'
         err = QgsVectorLayerExporter.exportLayer(mem_lyr, tmpfile, "ogr", mem_lyr.crs(), False, options)
-        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
                          f'unexpected import error {err}')
         lyr = QgsVectorLayer(tmpfile + "|layername=my_out_table", "y", "ogr")
         self.assertTrue(lyr.isValid())
@@ -950,7 +950,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         # Test overwriting without overwrite option
         err = QgsVectorLayerExporter.exportLayer(mem_lyr, tmpfile, "ogr", mem_lyr.crs(), False, options)
-        self.assertEqual(err[0], QgsVectorLayerExporter.ErrCreateDataSource)
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.ErrCreateDataSource)
 
         # Test overwriting, without specifying a layer name
         mem_lyr = QgsVectorLayer(uri, "x", "memory")
@@ -964,7 +964,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options['driverName'] = 'GPKG'
         options['overwrite'] = True
         err = QgsVectorLayerExporter.exportLayer(mem_lyr, tmpfile, "ogr", mem_lyr.crs(), False, options)
-        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
                          f'unexpected import error {err}')
         lyr = QgsVectorLayer(tmpfile, "y", "ogr")
         self.assertTrue(lyr.isValid())
@@ -982,13 +982,13 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon,
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Type.Polygon,
                                           QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          f'unexpected export error {exporter.errorCode()}: {exporter.errorMessage()}')
         del exporter
         options['layerName'] = 'table2'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3113'),
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3113'),
                                           False, options)
         self.assertFalse(exporter.errorCode(),
                          f'unexpected export error {exporter.errorCode()} : {exporter.errorMessage()}')
@@ -997,11 +997,11 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         lyr = QgsVectorLayer(f'{tmpfile}|layername=table1', "lyr1", "ogr")
         self.assertTrue(lyr.isValid())
         self.assertEqual(lyr.crs().authid(), 'EPSG:3111')
-        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Type.Polygon)
         lyr2 = QgsVectorLayer(f'{tmpfile}|layername=table2', "lyr2", "ogr")
         self.assertTrue(lyr2.isValid())
         self.assertEqual(lyr2.crs().authid(), 'EPSG:3113')
-        self.assertEqual(lyr2.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(lyr2.wkbType(), QgsWkbTypes.Type.Point)
 
     def testGeopackageTwoLayerEdition(self):
         ''' test https://github.com/qgis/QGIS/issues/24933 '''
@@ -1114,7 +1114,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(len(pks), 1)
         self.assertEqual(pks[0], 0)
         self.assertEqual(pkfield.name(), 'customfid')
-        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintUnique)
 
     def testSublayerWithComplexLayerName(self):
         ''' Test reading a gpkg with a sublayer name containing : '''
@@ -1280,7 +1280,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         # Check that pk field has unique constraint
         fields = layer.fields()
         pkfield = fields.at(0)
-        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintUnique)
 
         # Test add feature with default Fid (NULL)
         layer.startEditing()
@@ -1396,7 +1396,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         vl = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.Capability.CreateAttributeIndex)
         self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
         self.assertFalse(vl.dataProvider().createAttributeIndex(100))
 
@@ -1443,7 +1443,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         vl = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.Capability.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
 
     def testSubSetStringEditable_bug17795_but_with_modified_behavior(self):
@@ -1452,7 +1452,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         tmpfile = os.path.join(self.basetestpath, 'testSubSetStringEditable_bug17795.gpkg')
         shutil.copy(TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg', tmpfile)
 
-        isEditable = QgsVectorDataProvider.ChangeAttributeValues
+        isEditable = QgsVectorDataProvider.Capability.ChangeAttributeValues
         testPath = tmpfile + '|layername=bug_17795'
 
         vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
@@ -1533,7 +1533,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         vl = QgsVectorLayer(f'{tmpfile}' + "|geometrytype=Point|layername=" + "test", 'test', 'ogr')
         self.assertTrue(vl.isValid())
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
         features = [f for f in vl.getFeatures(request)]
         self.assertEqual(len(features), 1)
 
@@ -1602,9 +1602,9 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon,
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Type.Polygon,
                                           QgsCoordinateReferenceSystem('EPSG:3111'), False, options,
-                                          QgsFeatureSink.RegeneratePrimaryKey)
+                                          QgsFeatureSink.SinkFlag.RegeneratePrimaryKey)
         self.assertFalse(exporter.errorCode(),
                          f'unexpected export error {exporter.errorCode()}: {exporter.errorMessage()}')
 
@@ -1631,7 +1631,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         lyr = QgsVectorLayer(f'{tmpfile}|layername=table1', "lyr1", "ogr")
         self.assertTrue(lyr.isValid())
         self.assertEqual(lyr.crs().authid(), 'EPSG:3111')
-        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Type.Polygon)
 
         values = {f['f1'] for f in lyr.getFeatures()}
         self.assertEqual(values, {10, 20, 30, 40})
@@ -1653,8 +1653,8 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'output'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'),
-                                          False, options, QgsFeatureSink.RegeneratePrimaryKey)
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:4326'),
+                                          False, options, QgsFeatureSink.SinkFlag.RegeneratePrimaryKey)
         self.assertFalse(exporter.errorCode(),
                          f'unexpected export error {exporter.errorCode()}: {exporter.errorMessage()}')
 
@@ -1670,7 +1670,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         lyr = QgsVectorLayer(f'{tmpfile}|layername=output', "lyr1", "ogr")
         self.assertTrue(lyr.isValid())
         self.assertEqual(lyr.crs().authid(), 'EPSG:4326')
-        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Type.Point)
         feat_out = next(lyr.getFeatures())
         self.assertEqual(feat_out.attribute('two'), 200)
         self.assertEqual(feat_out.attribute('one'), 100)
@@ -2132,7 +2132,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(err, 0)
         lyr = QgsVectorLayer(tmpfile, "y", "ogr")
         self.assertTrue(lyr.isValid())
-        self.assertEqual(lyr.wkbType(), QgsWkbTypes.MultiPoint)
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Type.MultiPoint)
         features = lyr.getFeatures()
         f = next(features)
         self.assertEqual(f.geometry().asWkt().upper(), 'MULTIPOINT ((0 0))')
@@ -2149,7 +2149,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertEqual(err, 0)
         lyr = QgsVectorLayer(tmpfile, "y", "ogr")
         self.assertTrue(lyr.isValid())
-        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Type.Point)
         features = lyr.getFeatures()
         f = next(features)
         self.assertEqual(f.geometry().asWkt().upper(), 'POINT (0 0)')
@@ -2197,7 +2197,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
 
         dest_file_name = tempfile.mktemp('.gpkg')
         err = QgsVectorLayerExporter.exportLayer(vl, dest_file_name, "ogr", vl.crs(), False)
-        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
                          f'unexpected import error {err}')
 
         # Open result and check
@@ -2328,7 +2328,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         options['layerName'] = 'table1'
         if layerOptions:
             options['layerOptions'] = layerOptions
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", QgsFields(), QgsWkbTypes.Polygon,
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", QgsFields(), QgsWkbTypes.Type.Polygon,
                                           QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          f'unexpected export error {exporter.errorCode()}: {exporter.errorMessage()}')

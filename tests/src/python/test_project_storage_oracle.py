@@ -87,7 +87,7 @@ class TestPyQgsProjectStorageOracle(QgisTestCase, TestPyQgsProjectStorageBase):
             urlQuery.addQueryItem("service", ds_uri.service())
         if ds_uri.authConfigId() != '':
             urlQuery.addQueryItem("authcfg", ds_uri.authConfigId())
-        if ds_uri.sslMode() != QgsDataSourceUri.SslPrefer:
+        if ds_uri.sslMode() != QgsDataSourceUri.SslMode.SslPrefer:
             urlQuery.addQueryItem("sslmode", QgsDataSourceUri.encodeSslMode(ds_uri.sslMode()))
 
         urlQuery.addQueryItem("dbname", ds_uri.database())

@@ -459,29 +459,29 @@ class TestQgsPlot(QgisTestCase):
         plot.setChartBorderSymbol(sym2)
 
         sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1, 'capstyle': 'flat'})
-        sym3[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 10 then 3 else 1 end'))
+        sym3[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 10 then 3 else 1 end'))
         plot.xAxis().setGridMajorSymbol(sym3)
 
         sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5, 'capstyle': 'flat'})
-        sym4[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 6 then 3 else 0.5 end'))
+        sym4[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 6 then 3 else 0.5 end'))
         plot.xAxis().setGridMinorSymbol(sym4)
 
         sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1, 'capstyle': 'flat'})
-        sym3[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 5 then 3 else 0.5 end'))
+        sym3[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 5 then 3 else 0.5 end'))
         plot.yAxis().setGridMajorSymbol(sym3)
 
         sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5, 'capstyle': 'flat'})
-        sym4[0].setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 9 then 3 else 0.5 end'))
+        sym4[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 9 then 3 else 0.5 end'))
         plot.yAxis().setGridMinorSymbol(sym4)
 
         font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
-        x_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression('case when @plot_axis_value %3 = 0 then \'#ff0000\' else \'#000000\' end'))
+        x_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Color, QgsProperty.fromExpression('case when @plot_axis_value %3 = 0 then \'#ff0000\' else \'#000000\' end'))
         plot.xAxis().setTextFormat(x_axis_format)
 
         font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
-        y_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression('case when @plot_axis_value %4 = 0 then \'#0000ff\' else \'#000000\' end'))
+        y_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Color, QgsProperty.fromExpression('case when @plot_axis_value %4 = 0 then \'#0000ff\' else \'#000000\' end'))
         plot.yAxis().setTextFormat(y_axis_format)
 
         plot.setXMinimum(3)

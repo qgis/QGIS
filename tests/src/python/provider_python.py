@@ -72,8 +72,8 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         if self._filter_rect is not None and self._source._provider._spatialindex is not None:
             self._feature_id_list = self._source._provider._spatialindex.intersects(self._filter_rect)
 
-        if self._request.filterType() == QgsFeatureRequest.FilterFid or self._request.filterType() == QgsFeatureRequest.FilterFids:
-            fids = [self._request.filterFid()] if self._request.filterType() == QgsFeatureRequest.FilterFid else self._request.filterFids()
+        if self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid or self._request.filterType() == QgsFeatureRequest.FilterType.FilterFids:
+            fids = [self._request.filterFid()] if self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid else self._request.filterFids()
             self._feature_id_list = list(set(self._feature_id_list).intersection(set(fids))) if self._feature_id_list else fids
 
     def fetchFeature(self, f):
@@ -94,7 +94,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
                 if not self._filter_rect.isNull():
                     if not _f.hasGeometry():
                         continue
-                    if self._request.flags() & QgsFeatureRequest.ExactIntersect:
+                    if self._request.flags() & QgsFeatureRequest.Flag.ExactIntersect:
                         # do exact check in case we're doing intersection
                         if not self._select_rect_engine.intersects(_f.geometry().constGet()):
                             continue
@@ -103,16 +103,16 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
                             continue
 
                 self._source._expression_context.setFeature(_f)
-                if self._request.filterType() == QgsFeatureRequest.FilterExpression:
+                if self._request.filterType() == QgsFeatureRequest.FilterType.FilterExpression:
                     if not self._request.filterExpression().evaluate(self._source._expression_context):
                         continue
                 if self._source._subset_expression:
                     if not self._source._subset_expression.evaluate(self._source._expression_context):
                         continue
-                elif self._request.filterType() == QgsFeatureRequest.FilterFids:
+                elif self._request.filterType() == QgsFeatureRequest.FilterType.FilterFids:
                     if not _f.id() in self._request.filterFids():
                         continue
-                elif self._request.filterType() == QgsFeatureRequest.FilterFid:
+                elif self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid:
                     if _f.id() != self._request.filterFid():
                         continue
                 f.setGeometry(_f.geometry())
@@ -234,7 +234,7 @@ class PyProvider(QgsVectorDataProvider):
         results = set()
         if fieldIndex >= 0 and fieldIndex < self.fields().count():
             req = QgsFeatureRequest()
-            req.setFlags(QgsFeatureRequest.NoGeometry)
+            req.setFlags(QgsFeatureRequest.Flag.NoGeometry)
             req.setSubsetOfAttributes([fieldIndex])
             for f in self.getFeatures(req):
                 results.add(f.attributes()[fieldIndex])
@@ -248,7 +248,7 @@ class PyProvider(QgsVectorDataProvider):
             return len(self._features)
         else:
             req = QgsFeatureRequest()
-            req.setFlags(QgsFeatureRequest.NoGeometry)
+            req.setFlags(QgsFeatureRequest.Flag.NoGeometry)
             req.setSubsetOfAttributes([])
             return len([f for f in self.getFeatures(req)])
 
@@ -393,7 +393,7 @@ class PyProvider(QgsVectorDataProvider):
         return True
 
     def capabilities(self):
-        return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.CreateSpatialIndex | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
+        return QgsVectorDataProvider.Capability.AddFeatures | QgsVectorDataProvider.Capability.DeleteFeatures | QgsVectorDataProvider.Capability.CreateSpatialIndex | QgsVectorDataProvider.Capability.ChangeGeometries | QgsVectorDataProvider.Capability.ChangeAttributeValues | QgsVectorDataProvider.Capability.AddAttributes | QgsVectorDataProvider.Capability.DeleteAttributes | QgsVectorDataProvider.Capability.RenameAttributes | QgsVectorDataProvider.Capability.SelectAtId | QgsVectorDataProvider.Capability. CircularGeometries
 
     # /* Implementation of functions from QgsDataProvider */
 

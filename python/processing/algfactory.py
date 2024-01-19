@@ -213,7 +213,7 @@ class AlgWrapper(QgsProcessingAlgorithm):
                     raise ProcessingAlgFactoryException("{} is a invalid input type".format(type))
             parm = make_func(**kwargs)
             if advanced:
-                parm.setFlags(parm.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+                parm.setFlags(parm.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             if not output:
                 parm.setHelp(help_str)
             return parm
@@ -249,10 +249,10 @@ class AlgWrapper(QgsProcessingAlgorithm):
             value = self.parameterAsString(parameters, name, context)
             return value
         elif isinstance(parm, QgsProcessingParameterNumber):
-            if parm.dataType() == QgsProcessingParameterNumber.Integer:
+            if parm.dataType() == QgsProcessingParameterNumber.Type.Integer:
                 value = self.parameterAsInt(parameters, name, context)
                 return value
-            if parm.dataType() == QgsProcessingParameterNumber.Double:
+            if parm.dataType() == QgsProcessingParameterNumber.Type.Double:
                 value = self.parameterAsDouble(parameters, name, context)
                 return value
 
@@ -512,11 +512,11 @@ class ProcessingAlgFactory():
 
 input_type_mapping = {
     str: QgsProcessingParameterString,
-    int: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Integer),
-    float: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Double),
+    int: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Type.Integer),
+    float: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Type.Double),
     bool: QgsProcessingParameterBoolean,
-    ProcessingAlgFactory.NUMBER: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Double),
-    ProcessingAlgFactory.INT: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Integer),
+    ProcessingAlgFactory.NUMBER: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Type.Double),
+    ProcessingAlgFactory.INT: partial(QgsProcessingParameterNumber, type=QgsProcessingParameterNumber.Type.Integer),
     ProcessingAlgFactory.STRING: QgsProcessingParameterString,
     ProcessingAlgFactory.DISTANCE: QgsProcessingParameterDistance,
     ProcessingAlgFactory.SINK: QgsProcessingParameterFeatureSink,

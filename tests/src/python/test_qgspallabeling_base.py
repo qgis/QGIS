@@ -123,7 +123,7 @@ class TestQgsPalLabeling(QgisTestCase):
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labeling"""
         settings = QgsLabelingEngineSettings()
-        settings.setPlacementVersion(QgsLabelingEngineSettings.PlacementEngineVersion2)
+        settings.setPlacementVersion(QgsLabelingEngineSettings.PlacementEngineVersion.PlacementEngineVersion2)
         cls._MapSettings.setLabelingEngineSettings(settings)
 
     @classmethod
@@ -186,9 +186,9 @@ class TestQgsPalLabeling(QgisTestCase):
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
-        ms.setFlag(QgsMapSettings.Antialiasing, True)
-        ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
-        ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
+        ms.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
+        ms.setFlag(QgsMapSettings.Flag.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
         ms.setExtent(cls.aoiExtent())
         return ms
@@ -237,7 +237,7 @@ class TestQgsPalLabeling(QgisTestCase):
         format.setColor(QColor(0, 0, 0))
         format.setNamedStyle('Roman')
         format.setSize(32)
-        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         format.buffer().setJoinStyle(Qt.PenJoinStyle.BevelJoin)
         lyr.setFormat(format)
         return lyr
@@ -402,7 +402,7 @@ class TestPALConfig(TestQgsPalLabeling):
         st.setStyleName("st1")
         st.setLayerName("place")
         st.setFilterExpression("rank = 1 AND class = 'country'")
-        st.setGeometryType(QgsWkbTypes.PointGeometry)
+        st.setGeometryType(QgsWkbTypes.GeometryType.PointGeometry)
         labeling = QgsVectorTileBasicLabeling()
         labeling.setStyles([st])
         tile_layer.setLabeling(labeling)
@@ -427,19 +427,19 @@ class TestPALConfig(TestQgsPalLabeling):
     def test_default_partials_labels_enabled(self):
         # Verify ShowingPartialsLabels is enabled for PAL by default
         engine_settings = QgsLabelingEngineSettings()
-        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
+        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates))
 
     def test_partials_labels_activate(self):
         engine_settings = QgsLabelingEngineSettings()
         # Enable partials labels
-        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates)
-        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates)
+        self.assertTrue(engine_settings.testFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates))
 
     def test_partials_labels_deactivate(self):
         engine_settings = QgsLabelingEngineSettings()
         # Disable partials labels
-        engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
-        self.assertFalse(engine_settings.testFlag(QgsLabelingEngineSettings.UsePartialCandidates))
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates, False)
+        self.assertFalse(engine_settings.testFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates))
 
 
 # noinspection PyPep8Naming,PyShadowingNames
