@@ -366,6 +366,13 @@ void TestQgsGeometryChecks::testCurveCheck()
   QVERIFY( searchCheckErrors( checkErrors, layers["curved_polygon.gpkg"], 3, QgsPointXY( -1.10633, -1.01106 ), QgsVertexId() ).size() == 1 );
 
   // Test fixes
+  // NoAction
+  QVERIFY( ! fixCheckError( testContext.second,  errs1[0],
+                            QgsGeometryCurveCheck::NoChange, QgsGeometryCheckError::StatusFixed,
+  {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeChanged, QgsVertexId()}} ) );
+  QgsFeature f0;
+  const bool valid0 = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f0 );
+  QVERIFY( valid0 );
   // Delete
   QVERIFY( fixCheckError( testContext.second,  errs1[0],
                           QgsGeometryCurveCheck::Delete, QgsGeometryCheckError::StatusFixed,
