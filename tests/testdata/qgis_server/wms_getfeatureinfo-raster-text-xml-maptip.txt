@@ -13,6 +13,6 @@ Content-Type: text/xml; charset=utf-8
   <Attribute value="165" name="Band 7"/>
   <Attribute value="217" name="Band 8"/>
   <Attribute value="175" name="Band 9"/>
-  <Attribute value="Value Band 5: 90" name="maptip"/>
+  <Attribute value="&lt;title>Maptip&lt;/title>&#xa;Value Band 5: 90" name="maptip"/>
  </Layer>
 </GetFeatureInfoResponse>

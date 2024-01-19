@@ -541,8 +541,7 @@ namespace QgsWms
     save( pWithGeometry );
 
     const QgsWmsParameter pWithMapTip( QgsWmsParameter::WITH_MAPTIP,
-                                       QVariant::Bool,
-                                       QVariant( false ) );
+                                       QVariant::String );
     save( pWithMapTip );
 
     const QgsWmsParameter pWithDisplayName( QgsWmsParameter::WITH_DISPLAY_NAME,
@@ -2105,9 +2104,32 @@ namespace QgsWms
     return mWmsParameters.value( QgsWmsParameter::WITH_GEOMETRY ).toBool();
   }
 
+  QString QgsWmsParameters::withMapTipAsString() const
+  {
+    return mWmsParameters.value( QgsWmsParameter::WITH_MAPTIP ).toString();
+  }
+
   bool QgsWmsParameters::withMapTip() const
   {
-    return mWmsParameters.value( QgsWmsParameter::WITH_MAPTIP ).toBool();
+    const QString mStr = withMapTipAsString();
+
+    if ( mStr.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) ||
+         mStr.startsWith( QLatin1String( "on" ), Qt::CaseInsensitive ) ||
+         mStr.startsWith( QLatin1String( "yes" ), Qt::CaseInsensitive ) ||
+         mStr.startsWith( QLatin1String( "1" ) ) )
+      return true;
+    else
+      return false;
+  }
+
+  bool QgsWmsParameters::htmlInfoOnlyMapTip() const
+  {
+    const QString mStr = withMapTipAsString();
+
+    if ( mStr.startsWith( QLatin1String( "html_fi_only_maptip" ), Qt::CaseInsensitive ) )
+      return true;
+    else
+      return false;
   }
 
   bool QgsWmsParameters::withDisplayName() const

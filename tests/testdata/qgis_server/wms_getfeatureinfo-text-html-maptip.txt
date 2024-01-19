@@ -3,58 +3,59 @@ Content-Type: text/html; charset=utf-8
 
 <!DOCTYPE html>
 
-<head>
-  <title>Information</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <style>
-    body {
-      font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
-    }
+    <head>
+      <title>Information</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <style>
+        body {
+          font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
+        }
 
-    table,
-    th,
-    td {
-      width: 100%;
-      border: 1px solid black;
-      border-collapse: collapse;
-      text-align: left;
-      padding: 2px;
-    }
+        table,
+        th,
+        td {
+          width: 100%;
+          border: 1px solid black;
+          border-collapse: collapse;
+          text-align: left;
+          padding: 2px;
+        }
 
-    th {
-      width: 25%;
-      font-weight: bold;
-    }
+        th {
+          width: 25%;
+          font-weight: bold;
+        }
 
-    .layer-title {
-      font-weight: bold;
-      padding: 2px;
-    }
-  </style>
-</head>
+        .layer-title {
+          font-weight: bold;
+          padding: 2px;
+        }
+      </style>
+    </head>
 
-<body>
-  <div class='layer-title'>A test vector layer</div>
-  <table>
-    <tr>
-      <th>id</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>name</th>
-      <td>three</td>
-    </tr>
-    <tr>
-      <th>utf8nameè</th>
-      <td>three èé↓</td>
-    </tr>
-    <tr>
-      <th>maptip</th>
-      <td>Name: three</td>
-    </tr>
-    <tr>
-      <th>displayName</th>
-      <td>three</td>
-    </tr>
-  </table>
-</body>
+    <body>
+      <div class='layer-title'>A test vector layer</div>
+      <table>
+        <tr>
+          <th>id</th>
+          <td>3</td>
+        </tr>
+        <tr>
+          <th>name</th>
+          <td>three</td>
+        </tr>
+        <tr>
+          <th>utf8nameè</th>
+          <td>three èé↓</td>
+        </tr>
+        <tr>
+          <th>maptip</th>
+          <td><title>Maptip</title>
+Name: three</td>
+        </tr>
+        <tr>
+          <th>displayName</th>
+          <td>three</td>
+        </tr>
+      </table>
+    </body>
