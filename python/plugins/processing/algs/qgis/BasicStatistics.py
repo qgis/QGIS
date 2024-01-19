@@ -139,7 +139,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry).setSubsetOfAttributes([field_name],
-                                                                                                   source.fields())
+                                                                                                        source.fields())
         features = source.getFeatures(request, QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 

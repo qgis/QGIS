@@ -1196,13 +1196,13 @@ class TestQgsUnitTypes(unittest.TestCase):
                     QgsUnitTypes.AngleUnit.AngleTurn: {QgsUnitTypes.AngleUnit.AngleDegrees: 360.0, QgsUnitTypes.AngleUnit.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleUnit.AngleGon: 400.0, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleUnit.AngleTurn: 1, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 6283.185307179586, QgsUnitTypes.AngleUnit.AngleMilNATO: 6400},
                     QgsUnitTypes.AngleUnit.AngleMilliradiansSI: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.057295779513082325, QgsUnitTypes.AngleUnit.AngleRadians: 0.001, QgsUnitTypes.AngleUnit.AngleGon: 0.06366197723675814, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.4377467707849396, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 206.26480624709637, QgsUnitTypes.AngleUnit.AngleTurn: 0.0015707963267948967, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 1.0, QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0185916357881302},
                     QgsUnitTypes.AngleUnit.AngleMilNATO: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.05625,
-                                                QgsUnitTypes.AngleUnit.AngleRadians: 0.0009817477042468104,
-                                                QgsUnitTypes.AngleUnit.AngleGon: 0.0625,
-                                                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.375,
-                                                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 202.5,
-                                                QgsUnitTypes.AngleUnit.AngleTurn: 0.000015625,
-                                                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.9817477042468102,
-                                                QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0}
+                                                          QgsUnitTypes.AngleUnit.AngleRadians: 0.0009817477042468104,
+                                                          QgsUnitTypes.AngleUnit.AngleGon: 0.0625,
+                                                          QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.375,
+                                                          QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 202.5,
+                                                          QgsUnitTypes.AngleUnit.AngleTurn: 0.000015625,
+                                                          QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.9817477042468102,
+                                                          QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0}
                     }
 
         for from_unit in list(expected.keys()):
