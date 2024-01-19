@@ -65,14 +65,14 @@ from PyQt6.QtPrintSupport import *
 from PyQt6.Qsci import *
 
 try:
-    import qgis.core as qgis_core
-    import qgis.gui as qgis_gui
-    import qgis.analysis as qgis_analysis
-    import qgis._3d as qgis_3d
-    from qgis.core import *
-    from qgis.gui import *
-    from qgis.analysis import *
-    from qgis._3d import *
+    import qgis.core as qgis_core  # noqa: F403
+    import qgis.gui as qgis_gui  # noqa: F403
+    import qgis.analysis as qgis_analysis  # noqa: F403
+    import qgis._3d as qgis_3d  # noqa: F403
+    from qgis.core import *  # noqa: F403
+    from qgis.gui import *  # noqa: F403
+    from qgis.analysis import *  # noqa: F403
+    from qgis._3d import *  # noqa: F403
 except ImportError:
     qgis_core = None
     qgis_gui = None
