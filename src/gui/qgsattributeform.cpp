@@ -549,7 +549,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   QgsFeature updatedFeature = getUpdatedFeature();
 
   // go through depending fields and the ones with functions and update the fields with defaultexpression
-  QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx ) + mWidgetsWithDefaultValueFunctionDependencies;
+  QList<QgsWidgetWrapper *> relevantWidgets = qgis::setToList( qgis::listToSet( mDefaultValueDependencies.values( originIdx ) ) + qgis::listToSet( mWidgetsWithDefaultValueFunctionDependencies ) );
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
@@ -567,8 +567,9 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
 
       //do not update when this widget is already updating (avoid recursions)
       if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
+      {
         continue;
-
+      }
       QgsExpressionContext context = createExpressionContext( updatedFeature );
       const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
       eww->setValue( value );
@@ -3153,7 +3154,7 @@ void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapp
   if ( exp.needsGeometry() )
     mNeedsGeometry = true;
 
-  if ( !exp.referencedFunctions().isEmpty() )
+  if ( !exp.referencedFunctions().isEmpty() && exp.referencedFunctions().contains( QStringLiteral( "now" ) ) )
     mWidgetsWithDefaultValueFunctionDependencies.append( eww );
 
   const QSet<QString> referencedColumns = exp.referencedColumns();
