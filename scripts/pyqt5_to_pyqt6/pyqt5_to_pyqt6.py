@@ -54,15 +54,15 @@ from tokenize_rt import Offset, src_to_tokens, tokens_to_src, reversed_enumerate
 from typing import Sequence
 
 from PyQt6 import QtCore, QtGui, QtWidgets, QtTest, QtSql, QtSvg, QtXml, QtNetwork, QtPrintSupport, Qsci
-from PyQt6.QtCore import *
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
-from PyQt6.QtTest import *
-from PyQt6.QtSql import *
-from PyQt6.QtXml import *
-from PyQt6.QtNetwork import *
-from PyQt6.QtPrintSupport import *
-from PyQt6.Qsci import *
+from PyQt6.QtCore import *  # noqa: F403
+from PyQt6.QtGui import *  # noqa: F403
+from PyQt6.QtWidgets import *  # noqa: F403
+from PyQt6.QtTest import *  # noqa: F403
+from PyQt6.QtSql import *  # noqa: F403
+from PyQt6.QtXml import *  # noqa: F403
+from PyQt6.QtNetwork import *  # noqa: F403
+from PyQt6.QtPrintSupport import *  # noqa: F403
+from PyQt6.Qsci import *  # noqa: F403
 
 try:
     import qgis.core as qgis_core  # noqa: F403
