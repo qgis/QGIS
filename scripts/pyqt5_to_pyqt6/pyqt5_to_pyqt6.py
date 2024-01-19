@@ -288,6 +288,17 @@ def get_class_enums(item):
         if inspect.isclass(value) and type(value).__name__ == 'EnumType':
             for ekey, evalue in value.__dict__.items():
                 if isinstance(evalue, value):
+                    try:
+                        test_value = getattr(item, str(ekey))
+                        if not issubclass(type(test_value), Enum):
+                            # There's a naming clash between an enum value (Eg QgsAggregateMappingModel.ColumnDataIndex.Aggregate)
+                            # and a class (QgsAggregateMappingModel.Aggregate)
+                            # So don't do any upgrades for these values, as current code will always be referring
+                            # to the CLASS
+                            continue
+                    except AttributeError:
+                        pass
+
                     if (item.__name__, ekey) in ambiguous_enums:
                         if value.__name__ not in ambiguous_enums[(item.__name__, ekey)]:
                             ambiguous_enums[(item.__name__, ekey)].add(value.__name__)
