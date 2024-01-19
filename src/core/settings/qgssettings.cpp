@@ -26,7 +26,7 @@
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 
-thread_local QgsSettings *QgsSettings::sThreadSettings;
+thread_local QgsSettings *sQgsSettingsThreadSettings = nullptr;
 
 bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
@@ -337,19 +337,19 @@ void QgsSettings::clear()
 
 void QgsSettings::holdFlush()
 {
-  if ( sThreadSettings )
+  if ( sQgsSettingsThreadSettings )
     return;
 
-  sThreadSettings = new QgsSettings();
+  sQgsSettingsThreadSettings = new QgsSettings();
 }
 
 void QgsSettings::releaseFlush()
 {
-  delete sThreadSettings;
-  sThreadSettings = nullptr;
+  delete sQgsSettingsThreadSettings;
+  sQgsSettingsThreadSettings = nullptr;
 }
 
 QgsSettingsProxy QgsSettings::get()
 {
-  return QgsSettingsProxy( sThreadSettings );
+  return QgsSettingsProxy( sQgsSettingsThreadSettings );
 }
