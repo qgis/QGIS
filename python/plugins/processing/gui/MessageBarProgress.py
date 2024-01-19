@@ -40,7 +40,7 @@ class MessageBarProgress(QgsProcessingFeedback):
         self.progress.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
         self.message_bar_item = iface.messageBar().pushWidget(self.progressMessageBar,
-                                                              Qgis.Info)
+                                                              Qgis.MessageLevel.Info)
 
     def set_progress_bar_value(self, progress: float):
         """

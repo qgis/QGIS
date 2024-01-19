@@ -742,34 +742,34 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             1001), QgsFieldConstraints.Constraints())
 
         self.assertTrue(vl.dataProvider().fieldConstraints(0) &
-                        QgsFieldConstraints.ConstraintNotNull)
+                        QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertTrue(vl.dataProvider().fieldConstraints(1) &
-                        QgsFieldConstraints.ConstraintNotNull)
+                        QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertFalse(vl.dataProvider().fieldConstraints(2)
-                         & QgsFieldConstraints.ConstraintNotNull)
+                         & QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertFalse(vl.dataProvider().fieldConstraints(3)
-                         & QgsFieldConstraints.ConstraintNotNull)
+                         & QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertTrue(vl.dataProvider().fieldConstraints(4) &
-                        QgsFieldConstraints.ConstraintNotNull)
+                        QgsFieldConstraints.Constraint.ConstraintNotNull)
 
         # test that constraints have been saved to fields correctly
         fields = vl.fields()
         self.assertTrue(fields.at(0).constraints().constraints()
-                        & QgsFieldConstraints.ConstraintNotNull)
-        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOriginProvider)
+                        & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertTrue(fields.at(1).constraints().constraints()
-                        & QgsFieldConstraints.ConstraintNotNull)
-        self.assertEqual(fields.at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOriginProvider)
+                        & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(fields.at(1).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertFalse(fields.at(2).constraints().constraints()
-                         & QgsFieldConstraints.ConstraintNotNull)
+                         & QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertFalse(fields.at(3).constraints().constraints()
-                         & QgsFieldConstraints.ConstraintNotNull)
+                         & QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertTrue(fields.at(4).constraints().constraints()
-                        & QgsFieldConstraints.ConstraintNotNull)
-        self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
-                         QgsFieldConstraints.ConstraintOriginProvider)
+                        & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
 
     def testUniqueConstraint(self):
         vl = QgsVectorLayer(f"dbname={self.dbname} table=test_constraints key='id'", "test_constraints",
@@ -784,34 +784,34 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             1001), QgsFieldConstraints.Constraints())
 
         self.assertTrue(vl.dataProvider().fieldConstraints(0)
-                        & QgsFieldConstraints.ConstraintUnique)
+                        & QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertFalse(vl.dataProvider().fieldConstraints(1)
-                         & QgsFieldConstraints.ConstraintUnique)
+                         & QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertTrue(vl.dataProvider().fieldConstraints(2)
-                        & QgsFieldConstraints.ConstraintUnique)
+                        & QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertFalse(vl.dataProvider().fieldConstraints(3)
-                         & QgsFieldConstraints.ConstraintUnique)
+                         & QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertTrue(vl.dataProvider().fieldConstraints(4)
-                        & QgsFieldConstraints.ConstraintUnique)
+                        & QgsFieldConstraints.Constraint.ConstraintUnique)
 
         # test that constraints have been saved to fields correctly
         fields = vl.fields()
         self.assertTrue(fields.at(0).constraints().constraints()
-                        & QgsFieldConstraints.ConstraintUnique)
-        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintOriginProvider)
+                        & QgsFieldConstraints.Constraint.ConstraintUnique)
+        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertFalse(fields.at(1).constraints().constraints()
-                         & QgsFieldConstraints.ConstraintUnique)
+                         & QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertTrue(fields.at(2).constraints().constraints()
-                        & QgsFieldConstraints.ConstraintUnique)
-        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintOriginProvider)
+                        & QgsFieldConstraints.Constraint.ConstraintUnique)
+        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertFalse(fields.at(3).constraints().constraints()
-                         & QgsFieldConstraints.ConstraintUnique)
+                         & QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertTrue(fields.at(4).constraints().constraints()
-                        & QgsFieldConstraints.ConstraintUnique)
-        self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
-                         QgsFieldConstraints.ConstraintOriginProvider)
+                        & QgsFieldConstraints.Constraint.ConstraintUnique)
+        self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
 
     def testSkipConstraintCheck(self):
         vl = QgsVectorLayer(f"dbname={self.dbname} table=test_autoincrement", "test_autoincrement",
@@ -819,9 +819,9 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertTrue(
-            vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, "Autogenerate"))
+            vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.Constraint.ConstraintUnique, "Autogenerate"))
         self.assertFalse(vl.dataProvider().skipConstraintCheck(
-            0, QgsFieldConstraints.ConstraintUnique, 123))
+            0, QgsFieldConstraints.Constraint.ConstraintUnique, 123))
 
     # This test would fail. It would require turning on WAL
     def XXXXXtestLocking(self):
@@ -880,7 +880,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("dbname=%s table='test_defaults' key='id'" %
                             self.dbname, "test_defaults", "spatialite")
         self.assertTrue(vl.dataProvider().capabilities() &
-                        QgsVectorDataProvider.CreateAttributeIndex)
+                        QgsVectorDataProvider.Capability.CreateAttributeIndex)
         self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
         self.assertFalse(vl.dataProvider().createAttributeIndex(100))
         self.assertTrue(vl.dataProvider().createAttributeIndex(1))
@@ -1444,36 +1444,36 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         cur.execute("COMMIT")
         con.close()
 
-        tests = [('Point', 'Point (0 0)', QgsWkbTypes.Point),
-                 ('PointZ', 'PointZ (0 0 10)', QgsWkbTypes.PointZ),
-                 ('Point25D', 'PointZ (0 0 10)', QgsWkbTypes.PointZ),
-                 ('MultiPoint', 'MultiPoint (0 0, 0 1)', QgsWkbTypes.MultiPoint),
+        tests = [('Point', 'Point (0 0)', QgsWkbTypes.Type.Point),
+                 ('PointZ', 'PointZ (0 0 10)', QgsWkbTypes.Type.PointZ),
+                 ('Point25D', 'PointZ (0 0 10)', QgsWkbTypes.Type.PointZ),
+                 ('MultiPoint', 'MultiPoint (0 0, 0 1)', QgsWkbTypes.Type.MultiPoint),
                  ('MultiPointZ', 'MultiPointZ ((0 0 10, 0 1 10))',
-                  QgsWkbTypes.MultiPointZ),
+                  QgsWkbTypes.Type.MultiPointZ),
                  ('MultiPoint25D', 'MultiPointZ ((0 0 10, 0 1 10))',
-                  QgsWkbTypes.MultiPointZ),
-                 ('LineString', 'LineString (0 0, 0 1)', QgsWkbTypes.LineString),
+                  QgsWkbTypes.Type.MultiPointZ),
+                 ('LineString', 'LineString (0 0, 0 1)', QgsWkbTypes.Type.LineString),
                  ('LineStringZ', 'LineStringZ (0 0 10, 0 1 10)',
-                  QgsWkbTypes.LineStringZ),
+                  QgsWkbTypes.Type.LineStringZ),
                  ('LineString25D', 'LineStringZ (0 0 10, 0 1 10)',
-                  QgsWkbTypes.LineStringZ),
+                  QgsWkbTypes.Type.LineStringZ),
                  ('MultiLineString', 'MultiLineString (0 0, 0 1)',
-                  QgsWkbTypes.MultiLineString),
+                  QgsWkbTypes.Type.MultiLineString),
                  ('MultiLineStringZ', 'MultiLineStringZ ((0 0 10, 0 1 10))',
-                  QgsWkbTypes.MultiLineStringZ),
+                  QgsWkbTypes.Type.MultiLineStringZ),
                  ('MultiLineString25D', 'MultiLineStringZ ((0 0 10, 0 1 10))',
-                  QgsWkbTypes.MultiLineStringZ),
-                 ('Polygon', 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))', QgsWkbTypes.Polygon),
+                  QgsWkbTypes.Type.MultiLineStringZ),
+                 ('Polygon', 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))', QgsWkbTypes.Type.Polygon),
                  ('PolygonZ', 'PolygonZ ((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10))',
-                  QgsWkbTypes.PolygonZ),
+                  QgsWkbTypes.Type.PolygonZ),
                  ('Polygon25D', 'PolygonZ ((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10))',
-                  QgsWkbTypes.PolygonZ),
+                  QgsWkbTypes.Type.PolygonZ),
                  ('MultiPolygon', 'MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)))',
-                  QgsWkbTypes.MultiPolygon),
+                  QgsWkbTypes.Type.MultiPolygon),
                  ('MultiPolygonZ', 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10)))',
-                  QgsWkbTypes.MultiPolygonZ),
+                  QgsWkbTypes.Type.MultiPolygonZ),
                  ('MultiPolygon25D', 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10)))',
-                  QgsWkbTypes.MultiPolygonZ)
+                  QgsWkbTypes.Type.MultiPolygonZ)
                  ]
         for typeStr, wkt, qgisType in tests:
             ml = QgsVectorLayer(
@@ -1496,7 +1496,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
                                                                              {},
                                                                              )
             self.assertEqual(
-                write_result, QgsVectorLayerExporter.NoError, error_message)
+                write_result, QgsVectorLayerExporter.ExportError.NoError, error_message)
 
             vl = QgsVectorLayer(uri, typeStr, 'spatialite')
             self.assertTrue(vl.isValid())
@@ -1847,7 +1847,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
         # Check NOT NULL constraint on atttext
         field = layer.fields().at(1)
-        self.assertTrue(bool(field.constraints().constraints() & QgsFieldConstraints.ConstraintNotNull))
+        self.assertTrue(bool(field.constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull))
 
         self.assertTrue(layer.startEditing())
 

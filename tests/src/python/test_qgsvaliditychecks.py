@@ -54,15 +54,15 @@ class TestContext(QgsValidityCheckContext):
 
 
 # register some checks using the decorator syntax
-@check.register(type=QgsAbstractValidityCheck.TypeLayoutCheck)
+@check.register(type=QgsAbstractValidityCheck.Type.TypeLayoutCheck)
 def my_check(context, feedback):
     assert context
 
 
-@check.register(type=QgsAbstractValidityCheck.TypeLayoutCheck)
+@check.register(type=QgsAbstractValidityCheck.Type.TypeLayoutCheck)
 def my_check2(context, feedback):
     res = QgsValidityCheckResult()
-    res.type = QgsValidityCheckResult.Warning
+    res.type = QgsValidityCheckResult.Type.Warning
     res.title = 'test'
     res.detailedDescription = 'blah blah'
     return [res]
@@ -80,7 +80,7 @@ class TestQgsValidityChecks(QgisTestCase):
 
         context = TestContext()
         feedback = QgsFeedback()
-        res = QgsApplication.validityCheckRegistry().runChecks(QgsAbstractValidityCheck.TypeLayoutCheck, context, feedback)
+        res = QgsApplication.validityCheckRegistry().runChecks(QgsAbstractValidityCheck.Type.TypeLayoutCheck, context, feedback)
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].title, 'test')
 
@@ -124,7 +124,7 @@ class TestQgsValidityChecks(QgisTestCase):
     def testRunChecks(self):
         registry = QgsValidityCheckRegistry()
         res1 = QgsValidityCheckResult()
-        res1.type = QgsValidityCheckResult.Warning
+        res1.type = QgsValidityCheckResult.Type.Warning
         res1.title = 'test'
         res1.detailedDescription = 'blah blah'
 
@@ -132,18 +132,18 @@ class TestQgsValidityChecks(QgisTestCase):
         registry.addCheck(c1)
 
         res2 = QgsValidityCheckResult()
-        res2.type = QgsValidityCheckResult.Critical
+        res2.type = QgsValidityCheckResult.Type.Critical
         res2.title = 'test2'
         res2.detailedDescription = 'blah blah2'
         c2 = TestCheck('c2', 'my check2', 2, [res2])
         registry.addCheck(c2)
 
         res3 = QgsValidityCheckResult()
-        res3.type = QgsValidityCheckResult.Warning
+        res3.type = QgsValidityCheckResult.Type.Warning
         res3.title = 'test3'
         res3.detailedDescription = 'blah blah3'
         res4 = QgsValidityCheckResult()
-        res4.type = QgsValidityCheckResult.Warning
+        res4.type = QgsValidityCheckResult.Type.Warning
         res4.title = 'test4'
         res4.detailedDescription = 'blah blah4'
         c3 = TestCheck('c3', 'my check3', 1, [res3, res4])
@@ -154,13 +154,13 @@ class TestQgsValidityChecks(QgisTestCase):
         self.assertFalse(registry.runChecks(0, context, feedback))
 
         self.assertEqual([r.type for r in registry.runChecks(1, context, feedback)],
-                         [QgsValidityCheckResult.Warning, QgsValidityCheckResult.Warning,
-                          QgsValidityCheckResult.Warning])
+                         [QgsValidityCheckResult.Type.Warning, QgsValidityCheckResult.Type.Warning,
+                          QgsValidityCheckResult.Type.Warning])
         self.assertEqual([r.title for r in registry.runChecks(1, context, feedback)], ['test', 'test3', 'test4'])
         self.assertEqual([r.detailedDescription for r in registry.runChecks(1, context, feedback)],
                          ['blah blah', 'blah blah3', 'blah blah4'])
 
-        self.assertEqual([r.type for r in registry.runChecks(2, context, feedback)], [QgsValidityCheckResult.Critical])
+        self.assertEqual([r.type for r in registry.runChecks(2, context, feedback)], [QgsValidityCheckResult.Type.Critical])
         self.assertEqual([r.title for r in registry.runChecks(2, context, feedback)], ['test2'])
         self.assertEqual([r.detailedDescription for r in registry.runChecks(2, context, feedback)], ['blah blah2'])
 

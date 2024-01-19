@@ -264,15 +264,15 @@ class TestPython__repr__(QgisTestCase):
         self.assertEqual(b.__repr__(), "<QgsBookmark: 'test bookmark' (1 2, 3 4 - EPSG:3111)>")
 
     def testQgsLayoutPoint(self):
-        b = QgsLayoutPoint(1, 2, QgsUnitTypes.LayoutInches)
+        b = QgsLayoutPoint(1, 2, QgsUnitTypes.LayoutUnit.LayoutInches)
         self.assertEqual(b.__repr__(), "<QgsLayoutPoint: 1, 2 in >")
 
     def testQgsLayoutMeasurement(self):
-        b = QgsLayoutMeasurement(3, QgsUnitTypes.LayoutPoints)
+        b = QgsLayoutMeasurement(3, QgsUnitTypes.LayoutUnit.LayoutPoints)
         self.assertEqual(b.__repr__(), "<QgsLayoutMeasurement: 3 pt >")
 
     def testQgsLayoutSize(self):
-        b = QgsLayoutSize(10, 20, QgsUnitTypes.LayoutInches)
+        b = QgsLayoutSize(10, 20, QgsUnitTypes.LayoutUnit.LayoutInches)
         self.assertEqual(b.__repr__(), "<QgsLayoutSize: 10 x 20 in >")
 
     def testQgsConditionalStyle(self):
@@ -308,7 +308,7 @@ class TestPython__repr__(QgisTestCase):
         self.assertEqual(v.__repr__(), '<QgsVertexId: -1,-1,-1 Segment>')
         v = QgsVertexId(1, 2, 3)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 Segment>')
-        v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
+        v = QgsVertexId(1, 2, 3, _type=QgsVertexId.VertexType.CurveVertex)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 Curve>')
 
     def testProviderMetadata(self):

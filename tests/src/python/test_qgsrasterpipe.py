@@ -44,8 +44,8 @@ class TestQgsRasterPipe(QgisTestCase):
     def test_data_defined_properties(self):
         pipe = QgsRasterPipe()
 
-        pipe.dataDefinedProperties().setProperty(QgsRasterPipe.RendererOpacity, QgsProperty.fromExpression('100/2'))
-        self.assertEqual(pipe.dataDefinedProperties().property(QgsRasterPipe.RendererOpacity),
+        pipe.dataDefinedProperties().setProperty(QgsRasterPipe.Property.RendererOpacity, QgsProperty.fromExpression('100/2'))
+        self.assertEqual(pipe.dataDefinedProperties().property(QgsRasterPipe.Property.RendererOpacity),
                          QgsProperty.fromExpression('100/2'))
 
         pipe.set(QgsSingleBandPseudoColorRenderer(None))

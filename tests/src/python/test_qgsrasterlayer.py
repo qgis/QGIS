@@ -87,7 +87,7 @@ class TestQgsRasterLayer(QgisTestCase):
         # print 'Extents: %s' % myRasterLayer.extent().toString()
         # myResult, myRasterValues = myRasterLayer.identify(myPoint)
         # assert myResult
-        myRasterValues = myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormatValue).results()
+        myRasterValues = myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormat.IdentifyFormatValue).results()
 
         assert len(myRasterValues) > 0
 
@@ -125,9 +125,9 @@ class TestQgsRasterLayer(QgisTestCase):
             for y in [5022000.5, 5022001.5]:
                 pos = QgsPointXY(x, y)
                 value_sample = rlayer.dataProvider().sample(pos, 1)[0]
-                value_identify = rlayer.dataProvider().identify(pos, QgsRaster.IdentifyFormatValue).results()[1]
+                value_identify = rlayer.dataProvider().identify(pos, QgsRaster.IdentifyFormat.IdentifyFormatValue).results()[1]
                 # Check values for UInt32
-                if qgis_data_type == Qgis.UInt32:
+                if qgis_data_type == Qgis.DataType.UInt32:
                     if y == 5022000.5:
                         self.assertEqual(value_sample, 4294967000.0)
                     else:
@@ -147,7 +147,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.UInt32)
+        _test(Qgis.DataType.UInt32)
 
         # Test GDT_Int32
         driver = gdal.GetDriverByName('GTiff')
@@ -161,7 +161,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.Int32)
+        _test(Qgis.DataType.Int32)
 
         # Test GDT_Float32
         driver = gdal.GetDriverByName('GTiff')
@@ -175,7 +175,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.Float32)
+        _test(Qgis.DataType.Float32)
 
         # Test GDT_Float64
         driver = gdal.GetDriverByName('GTiff')
@@ -189,7 +189,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.Float64)
+        _test(Qgis.DataType.Float64)
 
         # Test GDT_Uint16
         driver = gdal.GetDriverByName('GTiff')
@@ -203,7 +203,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.UInt16)
+        _test(Qgis.DataType.UInt16)
 
         # Test GDT_Int16
         driver = gdal.GetDriverByName('GTiff')
@@ -217,7 +217,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.Int16)
+        _test(Qgis.DataType.Int16)
 
         # Test GDT_Int32
         driver = gdal.GetDriverByName('GTiff')
@@ -231,7 +231,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.Int32)
+        _test(Qgis.DataType.Int32)
 
         # Test GDT_Byte
         driver = gdal.GetDriverByName('GTiff')
@@ -245,7 +245,7 @@ class TestQgsRasterLayer(QgisTestCase):
         outRaster.FlushCache()
         del outRaster
 
-        _test(Qgis.Byte)
+        _test(Qgis.DataType.Byte)
 
     def testTransparency(self):
         myPath = os.path.join(unitTestDataPath('raster'),
@@ -259,8 +259,8 @@ class TestQgsRasterLayer(QgisTestCase):
         renderer = QgsSingleBandGrayRenderer(myRasterLayer.dataProvider(), 1)
         myRasterLayer.setRenderer(renderer)
         myRasterLayer.setContrastEnhancement(
-            QgsContrastEnhancement.StretchToMinimumMaximum,
-            QgsRasterMinMaxOrigin.MinMax)
+            QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum,
+            QgsRasterMinMaxOrigin.Limits.MinMax)
 
         myContrastEnhancement = myRasterLayer.renderer().contrastEnhancement()
         # print ("myContrastEnhancement.minimumValue = %.17g" %
@@ -340,7 +340,7 @@ class TestQgsRasterLayer(QgisTestCase):
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
-        myColorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
+        myColorRampShader.setColorRampType(QgsColorRampShader.Type.Interpolated)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(
             10, QColor('#ffff00'), 'foo')
@@ -362,7 +362,7 @@ class TestQgsRasterLayer(QgisTestCase):
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
-        myColorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
+        myColorRampShader.setColorRampType(QgsColorRampShader.Type.Interpolated)
         myItems = []
         myItem = QgsColorRampShader.ColorRampItem(10,
                                                   QColor('#ffff00'), 'foo')
@@ -415,21 +415,21 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertEqual(mmo, mmo_default)
 
         mmo = QgsRasterMinMaxOrigin()
-        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.None_)
-        mmo.setLimits(QgsRasterMinMaxOrigin.CumulativeCut)
-        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.CumulativeCut)
+        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.Limits.None_)
+        mmo.setLimits(QgsRasterMinMaxOrigin.Limits.CumulativeCut)
+        self.assertEqual(mmo.limits(), QgsRasterMinMaxOrigin.Limits.CumulativeCut)
         self.assertNotEqual(mmo, mmo_default)
 
         mmo = QgsRasterMinMaxOrigin()
-        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.WholeRaster)
-        mmo.setExtent(QgsRasterMinMaxOrigin.UpdatedCanvas)
-        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.UpdatedCanvas)
+        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.Extent.WholeRaster)
+        mmo.setExtent(QgsRasterMinMaxOrigin.Extent.UpdatedCanvas)
+        self.assertEqual(mmo.extent(), QgsRasterMinMaxOrigin.Extent.UpdatedCanvas)
         self.assertNotEqual(mmo, mmo_default)
 
         mmo = QgsRasterMinMaxOrigin()
-        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.Estimated)
-        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.Exact)
-        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.Exact)
+        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.StatAccuracy.Estimated)
+        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.StatAccuracy.Exact)
+        self.assertEqual(mmo.statAccuracy(), QgsRasterMinMaxOrigin.StatAccuracy.Exact)
         self.assertNotEqual(mmo, mmo_default)
 
         mmo = QgsRasterMinMaxOrigin()
@@ -451,9 +451,9 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertNotEqual(mmo, mmo_default)
 
         mmo = QgsRasterMinMaxOrigin()
-        mmo.setLimits(QgsRasterMinMaxOrigin.CumulativeCut)
-        mmo.setExtent(QgsRasterMinMaxOrigin.UpdatedCanvas)
-        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.Exact)
+        mmo.setLimits(QgsRasterMinMaxOrigin.Limits.CumulativeCut)
+        mmo.setExtent(QgsRasterMinMaxOrigin.Extent.UpdatedCanvas)
+        mmo.setStatAccuracy(QgsRasterMinMaxOrigin.StatAccuracy.Exact)
         mmo.setCumulativeCutLower(0.1)
         mmo.setCumulativeCutUpper(0.9)
         mmo.setStdDevFactor(2.5)
@@ -1025,7 +1025,7 @@ class TestQgsRasterLayer(QgisTestCase):
 
         layer = QgsRasterLayer(temppath, 'paletted')
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.dataProvider().dataType(1), Qgis.Float32)
+        self.assertEqual(layer.dataProvider().dataType(1), Qgis.DataType.Float32)
         classes = QgsPalettedRasterRenderer.classDataFromRaster(layer.dataProvider(), 1)
         # Check max classes count, hardcoded in QGIS renderer
         self.assertEqual(len(classes), 65536)
@@ -1215,7 +1215,7 @@ class TestQgsRasterLayer(QgisTestCase):
 
         # check non default hueSaturationFilter values
         hue = myRasterLayer.hueSaturationFilter()
-        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleLightness)
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleMode.GrayscaleLightness)
         dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
         self.assertEqual(len(elements), 1)
@@ -1224,7 +1224,7 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertVendorOption(element, 'grayScale', 'lightness')
 
         hue = myRasterLayer.hueSaturationFilter()
-        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleLuminosity)
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleMode.GrayscaleLuminosity)
         dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
         self.assertEqual(len(elements), 1)
@@ -1233,7 +1233,7 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertVendorOption(element, 'grayScale', 'luminosity')
 
         hue = myRasterLayer.hueSaturationFilter()
-        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleAverage)
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleMode.GrayscaleAverage)
         dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
         self.assertEqual(len(elements), 1)
@@ -1242,7 +1242,7 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertVendorOption(element, 'grayScale', 'average')
 
         hue = myRasterLayer.hueSaturationFilter()
-        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleOff)
+        hue.setGrayscaleMode(QgsHueSaturationFilter.GrayscaleMode.GrayscaleOff)
         dom, root, errorMessage = self.layerToSld(myRasterLayer)
         elements = dom.elementsByTagName('sld:RasterSymbolizer')
         self.assertEqual(len(elements), 1)
@@ -1604,18 +1604,18 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
         Test that raster pipe data defined settings are correctly saved/restored along with the layer
         """
         rl = QgsRasterLayer(self.rpath, 'raster')
-        rl.pipe().dataDefinedProperties().setProperty(QgsRasterPipe.RendererOpacity, QgsProperty.fromExpression('100/2'))
+        rl.pipe().dataDefinedProperties().setProperty(QgsRasterPipe.Property.RendererOpacity, QgsProperty.fromExpression('100/2'))
 
         doc = QDomDocument()
         layer_elem = doc.createElement("maplayer")
         self.assertTrue(rl.writeLayerXml(layer_elem, doc, QgsReadWriteContext()))
 
         rl2 = QgsRasterLayer(self.rpath, 'raster')
-        self.assertEqual(rl2.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity),
+        self.assertEqual(rl2.pipe().dataDefinedProperties().property(QgsRasterPipe.Property.RendererOpacity),
                          QgsProperty())
 
         self.assertTrue(rl2.readXml(layer_elem, QgsReadWriteContext()))
-        self.assertEqual(rl2.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity),
+        self.assertEqual(rl2.pipe().dataDefinedProperties().property(QgsRasterPipe.Property.RendererOpacity),
                          QgsProperty.fromExpression('100/2'))
 
     def test_render_data_defined_opacity(self):
@@ -1627,10 +1627,10 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
         renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
         raster_layer.setRenderer(renderer)
         raster_layer.setContrastEnhancement(
-            QgsContrastEnhancement.StretchToMinimumMaximum,
-            QgsRasterMinMaxOrigin.MinMax)
+            QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum,
+            QgsRasterMinMaxOrigin.Limits.MinMax)
 
-        raster_layer.pipe().dataDefinedProperties().setProperty(QgsRasterPipe.RendererOpacity, QgsProperty.fromExpression('@layer_opacity'))
+        raster_layer.pipe().dataDefinedProperties().setProperty(QgsRasterPipe.Property.RendererOpacity, QgsProperty.fromExpression('@layer_opacity'))
 
         ce = raster_layer.renderer().contrastEnhancement()
         ce.setMinimumValue(-3.3319999287625854e+38)

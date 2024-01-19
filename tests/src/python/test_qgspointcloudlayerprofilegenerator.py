@@ -56,7 +56,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
-        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -247,7 +247,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
-        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -291,7 +291,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
-        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -426,11 +426,11 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
             os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'lone-star-laszip', 'ept.json'), 'test', 'ept')
         self.assertTrue(pcl.isValid())
         pcl.elevationProperties().setMaximumScreenError(30)
-        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderMillimeters)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         pcl.elevationProperties().setPointSymbol(Qgis.PointCloudSymbol.Square)
         pcl.elevationProperties().setPointColor(QColor(255, 0, 255))
         pcl.elevationProperties().setPointSize(3)
-        pcl.elevationProperties().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        pcl.elevationProperties().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         pcl.elevationProperties().setRespectLayerColors(False)
 
         curve = QgsLineString()

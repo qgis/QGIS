@@ -77,8 +77,8 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression("'orange'"))
-        line.setDataDefinedProperty(QgsSymbolLayer.PropertySecondaryColor, QgsProperty.fromExpression("'purple'"))
+        line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression("'orange'"))
+        line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertySecondaryColor, QgsProperty.fromExpression("'purple'"))
 
         s.appendSymbolLayer(line.clone())
 

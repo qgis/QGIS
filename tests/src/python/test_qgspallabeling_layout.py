@@ -117,8 +117,8 @@ class TestLayoutBase(TestQgsPalLabeling):
         """:type: QgsLayoutItemMap"""
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
-        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.UsePartialCandidates:
-            self._cmap.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
+        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.Flag.UsePartialCandidates:
+            self._cmap.setMapFlags(QgsLayoutItemMap.MapItemFlag.ShowPartialLabels)
         self._c.addLayoutItem(self._cmap)
         # now expand map to fill page and set its extent
         self._cmap.attemptSetSceneRect(QRectF(0, 0, paperw, paperw))
@@ -138,7 +138,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         p = QPainter(image)
         p.setRenderHint(
             QPainter.RenderHint.Antialiasing,
-            self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
+            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing)
         )
         exporter = QgsLayoutExporter(self._c)
         exporter.renderPage(p, 0)
@@ -187,7 +187,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         p = QPainter(image)
         p.setRenderHint(
             QPainter.RenderHint.Antialiasing,
-            self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
+            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing)
         )
         p.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         svgr.render(p)

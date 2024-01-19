@@ -79,7 +79,7 @@ class OgrToPostGis(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              types=[QgsProcessing.TypeVector]))
+                                                              types=[QgsProcessing.SourceType.TypeVector]))
         self.addParameter(QgsProcessingParameterString(self.SHAPE_ENCODING,
                                                        self.tr('Shape encoding'), "", optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.GTYPE,

@@ -46,7 +46,7 @@ class TestQgsZonalStatistics(QgisTestCase):
 
         myVector = QgsVectorLayer(myTempPath + "polys.shp", "poly", "ogr")
         myRaster = QgsRasterLayer(myTempPath + "edge_problem.asc", "raster", "gdal")
-        zs = QgsZonalStatistics(myVector, myRaster, "", 1, QgsZonalStatistics.All)
+        zs = QgsZonalStatistics(myVector, myRaster, "", 1, QgsZonalStatistics.Statistic.All)
         zs.calculateStatistics(None)
 
         feat = QgsFeature()

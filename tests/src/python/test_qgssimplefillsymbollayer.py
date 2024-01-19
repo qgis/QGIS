@@ -88,7 +88,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         symbol.changeSymbolLayer(0, layer)
 
         layer = QgsSimpleFillSymbolLayer()
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyOffset, QgsProperty.fromExpression("array(-(x_min($geometry)+100)/5, (y_min($geometry)-35)/5)"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyOffset, QgsProperty.fromExpression("array(-(x_min($geometry)+100)/5, (y_min($geometry)-35)/5)"))
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
@@ -115,9 +115,9 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         layer = QgsSimpleFillSymbolLayer()
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'red', 'green')"))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'magenta', 'blue')"))
 
         symbol = QgsFillSymbol()
@@ -146,15 +146,15 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         layer = QgsSimpleFillSymbolLayer()
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'red', 'green')"))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Dam', 'magenta', 'blue')"))
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        symbol.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
+        symbol.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
 
         poly_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
 

@@ -124,7 +124,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.messageBar().clearWidgets()
         self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(
             message),
-            level=Qgis.Warning, duration=5)
+            level=Qgis.MessageLevel.Warning, duration=5)
 
     def flag_invalid_output_extension(self, message: str, widget):
         """
@@ -140,7 +140,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             pass
         self.messageBar().clearWidgets()
         self.messageBar().pushMessage("", message,
-                                      level=Qgis.Warning, duration=5)
+                                      level=Qgis.MessageLevel.Warning, duration=5)
 
     def createProcessingParameters(self, flags=QgsProcessingParametersGenerator.Flags()):
         if self.mainWidget() is None:
@@ -197,7 +197,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             for param in self.algorithm().parameterDefinitions():
                 if isinstance(parameters.get(param.name(), None), QgsProcessingFeatureSourceDefinition) and parameters[
-                        param.name()].flags & QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature:
+                        param.name()].flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature:
                     self.iterateParam = param.name()
                     break
 
@@ -255,7 +255,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 except:
                     pass
 
-                self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
+                self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.Flag.FlagCanCancel)
                 if executeIterating(self.algorithm(), parameters, self.iterateParam, self.context, self.feedback):
                     self.feedback.pushInfo(
                         self.tr(elapsed_time(start_time, 'Execution completed in')))
@@ -276,7 +276,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.history_log_id, _ = QgsGui.historyProviderRegistry().addEntry('processing', self.history_details)
 
                 QgsGui.instance().processingRecentAlgorithmLog().push(self.algorithm().id())
-                self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
+                self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.Flag.FlagCanCancel)
 
                 def on_complete(ok, results):
                     if ok:
@@ -307,7 +307,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     self.feedback = None
                     self.context = None
 
-                if not self.in_place and not (self.algorithm().flags() & QgsProcessingAlgorithm.FlagNoThreading):
+                if not self.in_place and not (self.algorithm().flags() & QgsProcessingAlgorithm.Flag.FlagNoThreading):
                     # Make sure the Log tab is visible before executing the algorithm
                     self.showLog()
 

@@ -205,7 +205,7 @@ class TestQgsRelation(QgisTestCase):
         self.assertEqual(len(referencedLayer.editFormConfig().tabs()[0].children()), 7)
         for tab in referencedLayer.editFormConfig().tabs():
             for t in tab.children():
-                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                if (t.type() == QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation):
                     valid = t.relation().isValid()
         self.assertTrue(valid)
 
@@ -232,7 +232,7 @@ class TestQgsRelation(QgisTestCase):
         valid = False
         for tab in referencedLayer.editFormConfig().tabs():
             for t in tab.children():
-                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                if (t.type() == QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation):
                     valid = t.relation().isValid()
         self.assertTrue(valid)
 

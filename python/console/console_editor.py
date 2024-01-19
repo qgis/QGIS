@@ -243,7 +243,7 @@ class Editor(QgsCodeEditorPython):
         if not ACCESS_TOKEN:
             msg_text = QCoreApplication.translate(
                 'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
-            self.parent.showMessage(msg_text, Qgis.Warning, 5)
+            self.parent.showMessage(msg_text, Qgis.MessageLevel.Warning, 5)
             return
 
         URL = "https://api.github.com/gists"
@@ -273,7 +273,7 @@ class Editor(QgsCodeEditorPython):
             self.parent.showMessage(msg)
         else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.showMessage(msg + request.erroMessage(), Qgis.Warning, 5)
+            self.parent.showMessage(msg + request.erroMessage(), Qgis.MessageLevel.Warning, 5)
 
     def hideEditor(self):
         self.pythonconsole.splitterObj.hide()
@@ -376,7 +376,7 @@ class Editor(QgsCodeEditorPython):
             if not QFileInfo(self.path).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>"{0}"</b> has been deleted or is not accessible').format(self.path)
-                self.parent.showMessage(msgText, Qgis.Critical)
+                self.parent.showMessage(msgText, Qgis.MessageLevel.Critical)
                 return
         if self.path and self.lastModified != QFileInfo(self.path).lastModified():
             self.beginUndoAction()
@@ -394,7 +394,7 @@ class Editor(QgsCodeEditorPython):
         tabWidget = self.tabwidget.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
                                              'The file <b>"{0}"</b> is read only, please save to different file first.').format(tabWidget.path)
-        self.parent.showMessage(msgText, Qgis.Warning)
+        self.parent.showMessage(msgText, Qgis.MessageLevel.Warning)
 
     def loadFile(self, filename, readOnly=False):
         self.lastModified = QFileInfo(filename).lastModified()
@@ -543,7 +543,7 @@ class EditorTab(QWidget):
         except AttributeError:
             return setattr(self._editor, name, value)
 
-    def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
+    def showMessage(self, text, level=Qgis.MessageLevel.Info, timeout=-1, title=""):
         self.infoBar.pushMessage(title, text, level, timeout)
 
 
@@ -928,6 +928,6 @@ class EditorTabWidget(QTabWidget):
         if tabWidget and tabWidget.path:
             self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
-    def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
+    def showMessage(self, text, level=Qgis.MessageLevel.Info, timeout=-1, title=""):
         currWidget = self.currentWidget()
         currWidget.showMessage(text, level, timeout, title)

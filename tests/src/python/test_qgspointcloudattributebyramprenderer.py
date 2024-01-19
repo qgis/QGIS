@@ -74,16 +74,16 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         self.assertEqual(renderer.colorRampShader().maximumValue(), 30)
 
         renderer.setMaximumScreenError(18)
-        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderInches)
+        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderInches)
         renderer.setPointSize(13)
-        renderer.setPointSizeUnit(QgsUnitTypes.RenderPoints)
+        renderer.setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         renderer.setPointSizeMapUnitScale(QgsMapUnitScale(1000, 2000))
 
         rr = renderer.clone()
         self.assertEqual(rr.maximumScreenError(), 18)
-        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         self.assertEqual(rr.pointSize(), 13)
-        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(rr.pointSizeMapUnitScale().minScale, 1000)
         self.assertEqual(rr.pointSizeMapUnitScale().maxScale, 2000)
 
@@ -104,9 +104,9 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
         r2 = QgsPointCloudAttributeByRampRenderer.create(elem, QgsReadWriteContext())
         self.assertEqual(r2.maximumScreenError(), 18)
-        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         self.assertEqual(r2.pointSize(), 13)
-        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(r2.pointSizeMapUnitScale().minScale, 1000)
         self.assertEqual(r2.pointSizeMapUnitScale().maxScale, 2000)
         self.assertEqual(r2.attribute(), 'attr')
@@ -136,7 +136,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         renderer.setMaximum(800)
         ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
         shader = QgsColorRampShader(200, 800, ramp.clone())
-        shader.setClassificationMode(QgsColorRampShader.EqualInterval)
+        shader.setClassificationMode(QgsColorRampShader.ClassificationMode.EqualInterval)
         shader.classifyColorRamp(classes=4)
         renderer.setColorRampShader(shader)
 
@@ -151,8 +151,8 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         self.assertEqual(nodes[1].ramp().color2().name(), '#fde725')
 
         shader = QgsColorRampShader(200, 600, ramp.clone())
-        shader.setClassificationMode(QgsColorRampShader.EqualInterval)
-        shader.setColorRampType(QgsColorRampShader.Exact)
+        shader.setClassificationMode(QgsColorRampShader.ClassificationMode.EqualInterval)
+        shader.setColorRampType(QgsColorRampShader.Type.Exact)
         shader.classifyColorRamp(classes=2)
         renderer.setColorRampShader(shader)
         nodes = renderer.createLegendNodes(layer_tree_layer)
@@ -178,7 +178,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -208,7 +208,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -238,7 +238,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -268,7 +268,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -297,7 +297,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
         layer.setRenderer(renderer)
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -326,7 +326,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
         layer.setRenderer(renderer)
         layer.renderer().setPointSize(.15)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -355,7 +355,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
 
         layer.setRenderer(renderer)
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -386,7 +386,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.TopToBottom)
 
         mapsettings = QgsMapSettings()
@@ -417,7 +417,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
 
         mapsettings = QgsMapSettings()
@@ -449,7 +449,7 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
         layer.setRenderer(renderer)
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))

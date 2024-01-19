@@ -55,11 +55,11 @@ class BoxPlot(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
                                                       self.tr('Category name field'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Any))
+                                                      type=QgsProcessingParameterField.DataType.Any))
         self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
                                                       self.tr('Value field'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric))
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
         msd = [self.tr('Show Mean'),
                self.tr('Show Standard Deviation'),
                self.tr('Don\'t show Mean and Standard Deviation')
@@ -100,7 +100,7 @@ class BoxPlot(QgisAlgorithm):
         values = vector.values(source, valuefieldname)
 
         x_index = source.fields().lookupField(namefieldname)
-        x_var = vector.convert_nulls([i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([x_index]))], '<NULL>')
+        x_var = vector.convert_nulls([i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry).setSubsetOfAttributes([x_index]))], '<NULL>')
 
         msdIndex = self.parameterAsEnum(parameters, self.MSD, context)
         msd = True

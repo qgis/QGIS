@@ -29,7 +29,7 @@ class TestQgsPropertyOverrideButton(QgisTestCase):
         scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
         scheme.setColors([])
 
-        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.ColorWithAlpha)
+        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.StandardPropertyTemplate.ColorWithAlpha)
         button = QgsPropertyOverrideButton()
         button.init(0, QgsProperty(), definition)
 
@@ -64,7 +64,7 @@ class TestQgsPropertyOverrideButton(QgisTestCase):
         self.assertEqual([a.isChecked() for a in color_action.menu().actions()], [False, True])
 
         # should also see color menu for ColorNoAlpha properties
-        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.ColorNoAlpha)
+        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.StandardPropertyTemplate.ColorNoAlpha)
         button = QgsPropertyOverrideButton()
         button.init(0, QgsProperty(), definition)
 
@@ -73,7 +73,7 @@ class TestQgsPropertyOverrideButton(QgisTestCase):
         self.assertIn('Color', [a.text() for a in button.menu().actions()])
 
         # but no color menu for other types
-        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.Double)
+        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.StandardPropertyTemplate.Double)
         button = QgsPropertyOverrideButton()
         button.init(0, QgsProperty(), definition)
 
@@ -82,7 +82,7 @@ class TestQgsPropertyOverrideButton(QgisTestCase):
         self.assertNotIn('Color', [a.text() for a in button.menu().actions()])
 
     def testLinkedColorButton(self):
-        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.ColorWithAlpha)
+        definition = QgsPropertyDefinition('test', 'test', QgsPropertyDefinition.StandardPropertyTemplate.ColorWithAlpha)
         button = QgsPropertyOverrideButton()
         button.init(0, QgsProperty(), definition)
         cb = QgsColorButton()

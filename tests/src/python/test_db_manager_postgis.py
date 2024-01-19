@@ -169,7 +169,7 @@ class TestPyQgsDBManagerPostgis(QgisTestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         uri = QgsDataSourceUri()
-        uri.setConnection("localhost", cls.port, cls.dbname, "", "", QgsDataSourceUri.SslVerifyFull, authId)
+        uri.setConnection("localhost", cls.port, cls.dbname, "", "", QgsDataSourceUri.SslMode.SslVerifyFull, authId)
         uri.setKeyColumn('pk')
         uri.setSrid('EPSG:4326')
         uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")

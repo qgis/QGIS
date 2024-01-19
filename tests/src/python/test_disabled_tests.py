@@ -38,12 +38,12 @@ class PyQgsDataConnectionItem(QgsDataCollectionItem):
         children = []
 
         # Add a Python object as child
-        pyQgsLayerItem = PyQgsLayerItem(None, "name", "", "uri", QgsLayerItem.Vector, "my_provider")
+        pyQgsLayerItem = PyQgsLayerItem(None, "name", "", "uri", QgsLayerItem.LayerType.Vector, "my_provider")
         pyQgsLayerItem.tabSetDestroyedFlag = self.tabSetDestroyedFlag
         children.append(pyQgsLayerItem)
 
         # Add a C++ object as child
-        children.append(QgsLayerItem(None, "name2", "", "uri", QgsLayerItem.Vector, "my_provider"))
+        children.append(QgsLayerItem(None, "name2", "", "uri", QgsLayerItem.LayerType.Vector, "my_provider"))
 
         return children
 

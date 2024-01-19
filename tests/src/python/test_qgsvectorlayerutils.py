@@ -276,7 +276,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         print(errors)
         # checking only for provider constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
-                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
+                                                            origin=QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -296,7 +296,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertEqual(len(errors), 0)
 
         self.assertFalse(QgsVectorLayerUtils.attributeHasConstraints(layer, 1))
-        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintNotNull)
         self.assertTrue(QgsVectorLayerUtils.attributeHasConstraints(layer, 1))
 
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
@@ -306,19 +306,19 @@ class TestQgsVectorLayerUtils(QgisTestCase):
 
         # checking only for provider constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
-                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
+                                                            origin=QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
         # unique constraint
         f.setAttributes(["test123", 123])
-        layer.removeFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.removeFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintNotNull)
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
         self.assertFalse(QgsVectorLayerUtils.attributeHasConstraints(layer, 1))
-        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
+        layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
         self.assertTrue(QgsVectorLayerUtils.attributeHasConstraints(layer, 1))
 
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
@@ -328,19 +328,19 @@ class TestQgsVectorLayerUtils(QgisTestCase):
 
         # checking only for provider constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
-                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
+                                                            origin=QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
         # checking only for soft constraints
-        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintStrengthHard)
+        layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique, QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
-                                                            strength=QgsFieldConstraints.ConstraintStrengthSoft)
+                                                            strength=QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
         # checking for hard constraints
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
-                                                            strength=QgsFieldConstraints.ConstraintStrengthHard)
+                                                            strength=QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard)
         self.assertFalse(res)
         self.assertEqual(len(errors), 1)
 
@@ -353,8 +353,8 @@ class TestQgsVectorLayerUtils(QgisTestCase):
 
         # test double constraint failure
         layer.setConstraintExpression(1, 'fldint>5')
-        layer.removeFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
-        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintNotNull)
+        layer.removeFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
+        layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintNotNull)
         f.setAttributes(["test123", NULL])
         res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1)
         self.assertFalse(res)
@@ -450,11 +450,11 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
         # test with violated unique constraints
-        layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
+        layer.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         # since field 1 has Unique Constraint, it ignores value 123 that already has been set and sets to 128
         self.assertEqual(f.attributes(), ['test_1', 128, NULL])
-        layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
+        layer.setFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintUnique)
         # since field 0 and 1 already have values test_1 and 123, the output must be a new unique value
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         self.assertEqual(f.attributes(), ['test_4', 128, NULL])
@@ -536,7 +536,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         rel.setReferencingLayer(layer2.id())
         rel.setReferencedLayer(layer1.id())
         rel.addFieldPair('foreign_key', 'pkid')
-        rel.setStrength(QgsRelation.Composition)
+        rel.setStrength(QgsRelation.RelationStrength.Composition)
         # > check relation
         self.assertTrue(rel.isValid())
         # - add relation
@@ -716,7 +716,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         """Test create multiple features with unique constraint"""
 
         vl = createLayerWithOnePoint()
-        vl.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
+        vl.setFieldConstraint(1, QgsFieldConstraints.Constraint.ConstraintUnique)
 
         features_data = []
         context = vl.createExpressionContext()

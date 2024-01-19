@@ -147,7 +147,7 @@ class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
         self.assertEqual(len(layers), 1)
         layer = layers[list(layers.keys())[0]]
         self.assertEqual(layer.name(), 'test')
-        self.assertEqual(layer.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(layer.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         QgsProject.instance().removeAllMapLayers()
 
         ds = ogr.Open(dbname)

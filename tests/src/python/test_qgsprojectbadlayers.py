@@ -51,9 +51,9 @@ class TestQgsProjectBadLayers(QgisTestCase):
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
-        ms.setFlag(QgsMapSettings.Antialiasing, True)
-        ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
-        ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
+        ms.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
+        ms.setFlag(QgsMapSettings.Flag.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
         return ms
 

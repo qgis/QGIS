@@ -550,7 +550,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
@@ -607,7 +607,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         self.assertEqual(vl.featureCount(), 1)
 
-        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.SelectAtId)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.Capability.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -963,12 +963,12 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         self.assertEqual(vl.dataProvider().capabilities(),
-                         QgsVectorDataProvider.AddFeatures
-                         | QgsVectorDataProvider.ChangeAttributeValues
-                         | QgsVectorDataProvider.ChangeGeometries
-                         | QgsVectorDataProvider.DeleteFeatures
-                         | QgsVectorDataProvider.SelectAtId
-                         | QgsVectorDataProvider.ReloadData)
+                         QgsVectorDataProvider.Capability.AddFeatures
+                         | QgsVectorDataProvider.Capability.ChangeAttributeValues
+                         | QgsVectorDataProvider.Capability.ChangeGeometries
+                         | QgsVectorDataProvider.Capability.DeleteFeatures
+                         | QgsVectorDataProvider.Capability.SelectAtId
+                         | QgsVectorDataProvider.Capability.ReloadData)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -1232,7 +1232,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         # Create test layer
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         with open(sanitize(endpoint,
                            '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=1&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
@@ -1355,7 +1355,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' maxNumFeatures='3' pageSize='2' skipInitialGetFeature='true'",
                             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         with open(sanitize(endpoint,
                            '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=2&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
@@ -1405,7 +1405,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' maxNumFeatures='1' pageSize='2' skipInitialGetFeature='true'",
                             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         with open(sanitize(endpoint,
                            '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
@@ -1432,7 +1432,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         # user user pageSize > server pagesize
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' pageSize='100' skipInitialGetFeature='true'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         with open(sanitize(endpoint,
                            '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=10&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
@@ -1460,7 +1460,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:typename' pagingEnabled='false' maxNumFeatures='3' skipInitialGetFeature='true'", 'test',
             'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         with open(sanitize(endpoint,
                            '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=3&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
@@ -1543,7 +1543,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' restrictToRequestBBOX=1 skipInitialGetFeature='true'", 'test',
                             'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         return
 
         last_url = sanitize(endpoint,
@@ -1912,7 +1912,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         # Failed download: test that error is propagated to the data provider, so as to get application notification
@@ -2014,7 +2014,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         source = vl.dataProvider().featureSource()
@@ -2133,21 +2133,21 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:uniquename' version='2.0.0' skipInitialGetFeature='true'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         # excluding namespace for unique layer name
         vl = QgsVectorLayer(
             "url='http://" + endpoint + "' typename='uniquename' version='2.0.0' skipInitialGetFeature='true'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         # Explicitly stating namespace for otherwise ambiguous name
         vl = QgsVectorLayer(
             "url='http://" + endpoint + "' typename='my:ambiguousname' version='2.0.0' skipInitialGetFeature='true'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         # excluding namespace for ambiguous name -- is not permitted
         vl = QgsVectorLayer(
@@ -2290,7 +2290,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true' sql=SELECT * FROM \"my:typename\" JOIN \"my:othertypename\" o ON \"my:typename\".id = o.main_id WHERE \"my:typename\".id > 0 ORDER BY \"my:typename\".id DESC",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'typename.id')
@@ -2305,7 +2305,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename JOIN othertypename o ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'typename.id')
@@ -2326,7 +2326,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true' sql=SELECT * FROM othertypename o, typename WHERE typename.id = o.main_id AND typename.id > 0 ORDER BY typename.id DESC",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'o.main_id')
@@ -2338,7 +2338,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true' sql=SELECT * FROM othertypename o JOIN typename ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         fields = vl.fields()
         self.assertEqual(len(fields), 3, fields)
         self.assertEqual(fields[0].name(), 'o.main_id')
@@ -3002,7 +3002,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.MultiPolygon)
 
         # Extent before downloading features
         reference = QgsGeometry.fromRect(
@@ -3272,7 +3272,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities,
                          vl.dataProvider().NoCapabilities)
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
     def testWFS20TransactionsEnabled(self):
         """Test WFS 2.0 Transaction enabled"""
@@ -3356,7 +3356,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities,
                             vl.dataProvider().NoCapabilities)
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
     def testDeprecatedGML2GeometryDeclaration(self):
         """Test ref="gml:pointProperty" """
@@ -3399,7 +3399,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(len(vl.fields()), 1)
 
         with open(
@@ -3689,7 +3689,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' skipInitialGetFeature='true' version='2.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         # Simple test
         with open(sanitize(endpoint,
@@ -3715,7 +3715,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' skipInitialGetFeature='true' version='2.0.0'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         parent_feature = QgsFeature()
         parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((-20 -20, -20 20, 20 20, 20 -20, -20 -20))'))
@@ -3762,7 +3762,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' skipInitialGetFeature='true' version='2.0.0' sql=SELECT * FROM \"my:typename\" WHERE intfield = 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         parent_feature = QgsFeature()
         parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((-20 -20, -20 20, 20 20, 20 -20, -20 -20))'))
@@ -3816,7 +3816,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true' restrictToRequestBBOX=1 sql=SELECT * FROM \"my:typename\" WHERE intfield = 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
         extent = QgsRectangle(-80, -70, 60, 50)
         request = QgsFeatureRequest().setFilterRect(extent)
@@ -3946,7 +3946,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
             "url='http://" + endpoint + "?FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0" + "' typename='my:typename' version='1.0.0'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
@@ -4003,7 +4003,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         self.assertEqual(vl.featureCount(), 1)
 
-        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.SelectAtId)
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.Capability.SelectAtId)
 
         (ret, _) = vl.dataProvider().addFeatures([QgsFeature()])
         self.assertFalse(ret)
@@ -5009,7 +5009,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' skipInitialGetFeature='true'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         # Initial request: exception
@@ -5127,7 +5127,7 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
         vl = QgsVectorLayer(f"url='http://localhost:{port}' typename='my:typename' version='1.0.0'", 'test',
                             'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
 
         res = [f['INTFIELD'] for f in vl.getFeatures()]
@@ -5222,7 +5222,7 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
             "url='http://" + endpoint + "?Parameter1=Value1&Parameter2=Value2&FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0" + "' typename='my:typename' version='1.0.0'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(len(vl.fields()), 5)
         self.assertEqual(vl.featureCount(), 0)
         reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
@@ -5295,12 +5295,12 @@ Can't recognize service requested.
         self.assertEqual(vl.featureCount(), 0)
 
         self.assertEqual(vl.dataProvider().capabilities(),
-                         QgsVectorDataProvider.AddFeatures
-                         | QgsVectorDataProvider.ChangeAttributeValues
-                         | QgsVectorDataProvider.ChangeGeometries
-                         | QgsVectorDataProvider.DeleteFeatures
-                         | QgsVectorDataProvider.SelectAtId
-                         | QgsVectorDataProvider.ReloadData)
+                         QgsVectorDataProvider.Capability.AddFeatures
+                         | QgsVectorDataProvider.Capability.ChangeAttributeValues
+                         | QgsVectorDataProvider.Capability.ChangeGeometries
+                         | QgsVectorDataProvider.Capability.DeleteFeatures
+                         | QgsVectorDataProvider.Capability.SelectAtId
+                         | QgsVectorDataProvider.Capability.ReloadData)
 
         # Transaction response failure (no modifications)
         shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_empty.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Insert xmlns="http:__www.opengis.net_wfs"><polygons xmlns="ws1"_><_Insert><_Transaction>'))
@@ -5422,7 +5422,7 @@ Can't recognize service requested.
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" WHERE intfield = -1",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
     def testLayerWithGeometryFieldButNoGeom(self):
         """ https://github.com/qgis/QGIS/pull/50237#pullrequestreview-1111702042 """
@@ -5495,7 +5495,7 @@ Can't recognize service requested.
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.NoGeometry)
 
     def testWFS20LayerWithGeometryFieldButInitialFeatureHasNoGeom(self):
         """ https://github.com/qgis/QGIS/pull/50237 """
@@ -5574,7 +5574,7 @@ Can't recognize service requested.
             "url='http://" + endpoint + "' typename='my:typename' version='2.0.0'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
     def testWFS10LayerWithGeometryFieldButInitialFeatureHasNoGeom(self):
         """ https://github.com/qgis/QGIS/issues/50935 """
@@ -5655,7 +5655,7 @@ Can't recognize service requested.
             "url='http://" + endpoint + "' typename='my:typename' version='1.0.0'",
             'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
     def testLayerWithFieldsInGMLNamespace(self):
         """ https://github.com/qgis/QGIS/issues/42660 """
@@ -6015,33 +6015,33 @@ Can't recognize service requested.
 
         self.assertEqual(sublayers[0].uri(), uri + " geometryTypeFilter='NoGeometry'")
         self.assertEqual(sublayers[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertEqual(sublayers[0].name(), "my:typename " + QgsWkbTypes.translatedDisplayString(QgsWkbTypes.NoGeometry))
+        self.assertEqual(sublayers[0].name(), "my:typename " + QgsWkbTypes.translatedDisplayString(QgsWkbTypes.Type.NoGeometry))
         self.assertEqual(sublayers[0].providerKey(), "WFS")
-        self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(sublayers[0].featureCount(), 2)
 
         self.assertEqual(sublayers[1].uri(), uri + " geometryTypeFilter='MultiPoint'")
         self.assertEqual(sublayers[1].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(sublayers[1].providerKey(), "WFS")
-        self.assertEqual(sublayers[1].wkbType(), QgsWkbTypes.MultiPoint)
+        self.assertEqual(sublayers[1].wkbType(), QgsWkbTypes.Type.MultiPoint)
         self.assertEqual(sublayers[1].featureCount(), 3)
 
         self.assertEqual(sublayers[2].uri(), uri + " geometryTypeFilter='MultiCurve'")
         self.assertEqual(sublayers[2].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(sublayers[2].providerKey(), "WFS")
-        self.assertEqual(sublayers[2].wkbType(), QgsWkbTypes.MultiCurve)
+        self.assertEqual(sublayers[2].wkbType(), QgsWkbTypes.Type.MultiCurve)
         self.assertEqual(sublayers[2].featureCount(), 4)
 
         self.assertEqual(sublayers[3].uri(), uri + " geometryTypeFilter='MultiSurface'")
         self.assertEqual(sublayers[3].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(sublayers[3].providerKey(), "WFS")
-        self.assertEqual(sublayers[3].wkbType(), QgsWkbTypes.MultiSurface)
+        self.assertEqual(sublayers[3].wkbType(), QgsWkbTypes.Type.MultiSurface)
         self.assertEqual(sublayers[3].featureCount(), 5)
 
         self.assertEqual(sublayers[4].uri(), uri + " geometryTypeFilter='GeometryCollection'")
         self.assertEqual(sublayers[4].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(sublayers[4].providerKey(), "WFS")
-        self.assertEqual(sublayers[4].wkbType(), QgsWkbTypes.GeometryCollection)
+        self.assertEqual(sublayers[4].wkbType(), QgsWkbTypes.Type.GeometryCollection)
         self.assertEqual(sublayers[4].featureCount(), 20 - (2 + 3 + 4 + 5))
 
         with open(sanitize(endpoint,
@@ -6070,7 +6070,7 @@ Can't recognize service requested.
         # Test NoGeometry layer
         vl = QgsVectorLayer(sublayers[0].uri(), 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.NoGeometry)
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
@@ -6100,7 +6100,7 @@ Can't recognize service requested.
         # Test MultiPoint layer
         vl = QgsVectorLayer(sublayers[1].uri(), 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPoint)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.MultiPoint)
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
@@ -6134,7 +6134,7 @@ Can't recognize service requested.
         # Test GeometryCollection layer
         vl = QgsVectorLayer(sublayers[4].uri(), 'test', 'WFS')
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.wkbType(), QgsWkbTypes.GeometryCollection)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.GeometryCollection)
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
@@ -6310,7 +6310,7 @@ Can't recognize service requested.
         self.assertEqual(sublayers[0].uri(), uri + " geometryTypeFilter='MultiCurve'")
         self.assertEqual(sublayers[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(sublayers[0].providerKey(), "WFS")
-        self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.MultiCurve)
+        self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.Type.MultiCurve)
         self.assertEqual(sublayers[0].featureCount(), 20)
 
     def testDeegreeServerWithUnknownGeometryTypeErrorSituation(self):

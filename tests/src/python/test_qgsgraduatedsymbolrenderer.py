@@ -287,12 +287,12 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         self.assertEqual(attr, renderer.classAttribute(), "Get/set renderer class attribute")
 
         for m in (
-            QgsGraduatedSymbolRenderer.Custom,
-            QgsGraduatedSymbolRenderer.EqualInterval,
-            QgsGraduatedSymbolRenderer.Quantile,
-            QgsGraduatedSymbolRenderer.Jenks,
-            QgsGraduatedSymbolRenderer.Pretty,
-            QgsGraduatedSymbolRenderer.StdDev,
+            QgsGraduatedSymbolRenderer.Mode.Custom,
+            QgsGraduatedSymbolRenderer.Mode.EqualInterval,
+            QgsGraduatedSymbolRenderer.Mode.Quantile,
+            QgsGraduatedSymbolRenderer.Mode.Jenks,
+            QgsGraduatedSymbolRenderer.Mode.Pretty,
+            QgsGraduatedSymbolRenderer.Mode.StdDev,
         ):
             renderer.setMode(m)
             self.assertEqual(m, renderer.mode(), "Get/set renderer mode")
@@ -318,7 +318,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
             "Get/set renderer color ramp")
 
         # test for classificatio with varying size
-        renderer.setGraduatedMethod(QgsGraduatedSymbolRenderer.GraduatedSize)
+        renderer.setGraduatedMethod(QgsGraduatedSymbolRenderer.GraduatedMethod.GraduatedSize)
         renderer.setSourceColorRamp(None)
         renderer.addClassLowerUpper(0, 2)
         renderer.addClassLowerUpper(2, 4)

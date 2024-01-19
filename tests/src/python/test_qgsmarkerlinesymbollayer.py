@@ -99,7 +99,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         self.assertAlmostEqual(marker_line.width(context), 37.795275590551185, 3)
         self.assertAlmostEqual(marker_line.width(context2), 118.11023622047244, 3)
 
-        marker_line.subSymbol().setSizeUnit(QgsUnitTypes.RenderPixels)
+        marker_line.subSymbol().setSizeUnit(QgsUnitTypes.RenderUnit.RenderPixels)
         self.assertAlmostEqual(marker_line.width(context), 10.0, 3)
         self.assertAlmostEqual(marker_line.width(context2), 10.0, 3)
 
@@ -286,33 +286,33 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line.setSubSymbol(marker_symbol)
 
         s.appendSymbolLayer(marker_line.clone())
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.AllRings)
-        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.AllRings)
+        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         s2 = s.clone()
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         doc = QDomDocument()
         context = QgsReadWriteContext()
         element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
 
         s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         # rendering test
         s3 = QgsFillSymbol()
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(
             QgsMarkerLineSymbolLayer())
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
         s3.symbolLayer(0).setAverageAngleLength(0)
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('markerline_exterioronly', 'markerline_exterioronly', rendered_image)
 
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.InteriorRingsOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly)
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('markerline_interioronly', 'markerline_interioronly', rendered_image)
@@ -323,7 +323,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(
             QgsMarkerLineSymbolLayer())
-        s3.symbolLayer(0).subSymbol()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor,
+        s3.symbolLayer(0).subSymbol()[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor,
                                                                 QgsProperty.fromExpression('case when @geometry_ring_num=0 then \'green\' when @geometry_ring_num=1 then \'blue\' when @geometry_ring_num=2 then \'red\' end'))
         s3.symbolLayer(0).setAverageAngleLength(0)
 
@@ -337,14 +337,14 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'segments_to_lines($geometry)'})
-        sym_layer.setSymbolType(QgsSymbol.Line)
+        sym_layer.setSymbolType(QgsSymbol.SymbolType.Line)
         s.appendSymbolLayer(sym_layer)
 
         marker_line = QgsMarkerLineSymbolLayer(False)
         marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
         f = QgsFontUtils.getStandardTestFont('Bold', 24)
         marker = QgsFontMarkerSymbolLayer(f.family(), 'x', 24, QColor(255, 255, 0))
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         marker_line.setSubSymbol(marker_symbol)
@@ -358,7 +358,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g, buffer=4)
         assert self.imageCheck('part_num_variable', 'part_num_variable', rendered_image)
 
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter,
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyCharacter,
                                       QgsProperty.fromExpression('@geometry_part_count'))
 
         # rendering test
@@ -374,7 +374,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
         f = QgsFontUtils.getStandardTestFont('Bold', 24)
         marker = QgsFontMarkerSymbolLayer(f.family(), 'x', 24, QColor(255, 255, 0))
-        marker.setDataDefinedProperty(QgsSymbolLayer.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
+        marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyCharacter, QgsProperty.fromExpression('@geometry_part_num'))
         marker_symbol = QgsMarkerSymbol()
         marker_symbol.changeSymbolLayer(0, marker)
         marker_line.setSubSymbol(marker_symbol)
@@ -578,7 +578,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         marker_line.setInterval(6)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
@@ -601,7 +601,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         marker_line.setInterval(6)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
@@ -624,7 +624,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -646,9 +646,9 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         marker_line.setInterval(10)
-        marker_line.setIntervalUnit(QgsUnitTypes.RenderMapUnits)
+        marker_line.setIntervalUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -669,9 +669,9 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         marker_line.setInterval(1000)
-        marker_line.setIntervalUnit(QgsUnitTypes.RenderMapUnits)
+        marker_line.setIntervalUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -692,9 +692,9 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         marker_line.setOffsetAlongLine(1000)
-        marker_line.setIntervalUnit(QgsUnitTypes.RenderMapUnits)
+        marker_line.setIntervalUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -717,7 +717,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line = QgsMarkerLineSymbolLayer(True)
         marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
         marker_line.setOffsetAlongLine(10)
-        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -743,7 +743,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line = QgsMarkerLineSymbolLayer(True)
         marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
         marker_line.setOffsetAlongLine(110)
-        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -769,7 +769,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line = QgsMarkerLineSymbolLayer(True)
         marker_line.setPlacements(Qgis.MarkerLinePlacement.FirstVertex)
         marker_line.setOffsetAlongLine(-20)
-        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -793,7 +793,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
         marker_line.setInterval(6)
         marker_line.setOffsetAlongLine(50)
-        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -820,7 +820,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
         marker_line.setInterval(6)
         marker_line.setOffsetAlongLine(150)
-        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -847,7 +847,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line.setPlacements(Qgis.MarkerLinePlacement.Interval)
         marker_line.setInterval(6)
         marker_line.setOffsetAlongLine(-50)
-        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderPercentage)
+        marker_line.setOffsetAlongLineUnit(QgsUnitTypes.RenderUnit.RenderPercentage)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 4)
         marker.setColor(QColor(255, 0, 0, 100))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -868,7 +868,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.SegmentCenter)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.SegmentCenter)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -892,7 +892,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         marker_line = QgsMarkerLineSymbolLayer(True)
         marker_line.setRotateSymbols(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Arrow, 10)
         marker.setAngle(90)
         marker.setColor(QColor(255, 0, 0))
@@ -916,7 +916,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
 
         marker_line = QgsMarkerLineSymbolLayer(True)
         marker_line.setRotateSymbols(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Arrow, 10)
         # Note: set this to a different value than the reference test (90)
         marker.setAngle(30)
@@ -986,14 +986,14 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         simple_marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 10)
         simple_marker.setColor(QColor(0, 255, 0))
         simple_marker.setStrokeColor(QColor(255, 0, 0))
         simple_marker.setStrokeWidth(1)
-        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
-        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'magenta', 'blue')"))
 
         marker_symbol = QgsMarkerSymbol()
@@ -1030,14 +1030,14 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         simple_marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Circle, 10)
         simple_marker.setColor(QColor(0, 255, 0))
         simple_marker.setStrokeColor(QColor(255, 0, 0))
         simple_marker.setStrokeWidth(1)
-        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression(
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
-        simple_marker.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        simple_marker.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'magenta', 'blue')"))
 
         marker_symbol = QgsMarkerSymbol()
@@ -1046,7 +1046,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         marker_line.setSubSymbol(marker_symbol)
         s.appendSymbolLayer(marker_line.clone())
 
-        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+        s.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
 
         line_layer.setRenderer(QgsSingleSymbolRenderer(s))
 

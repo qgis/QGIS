@@ -392,7 +392,7 @@ class DBModel(QAbstractItemModel):
         global isImportVectorAvail
 
         if not index.isValid():
-            return Qt.NoItemFlags
+            return Qt.ItemFlag.NoItemFlags
 
         flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
 
@@ -538,7 +538,7 @@ class DBModel(QAbstractItemModel):
     def dropMimeData(self, data, action, row, column, parent):
         global isImportVectorAvail
 
-        if action == Qt.IgnoreAction:
+        if action == Qt.DropAction.IgnoreAction:
             return True
 
         # vectors/tables to be imported must be dropped on connected db, schema or table

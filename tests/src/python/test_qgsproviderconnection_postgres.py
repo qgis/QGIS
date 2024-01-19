@@ -85,7 +85,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/my_sslmode_test')
         self.assertEqual(settings.value("sslmode"), 'SslVerifyCa')
-        self.assertEqual(settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer), QgsDataSourceUri.SslVerifyCa)
+        self.assertEqual(settings.enumValue("sslmode", QgsDataSourceUri.SslMode.SslPrefer), QgsDataSourceUri.SslMode.SslVerifyCa)
 
     def test_postgis_geometry_filter(self):
         """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
@@ -112,33 +112,33 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # Retrieve capabilities
         capabilities = conn.capabilities()
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameRasterTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Tables))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.DropVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
 
         # Check filters and special cases
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Raster))
         self.assertIn('Raster1', table_names)
         self.assertNotIn('geometryless_table', table_names)
         self.assertNotIn('geometries_table', table_names)
         self.assertNotIn('geometries_view', table_names)
 
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.View))
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.View))
         self.assertNotIn('Raster1', table_names)
         self.assertNotIn('geometryless_table', table_names)
         self.assertNotIn('geometries_table', table_names)
         self.assertIn('geometries_view', table_names)
 
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial))
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial))
         self.assertNotIn('Raster1', table_names)
         self.assertIn('geometryless_table', table_names)
         self.assertNotIn('geometries_table', table_names)
         self.assertNotIn('geometries_view', table_names)
 
-        tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Aspatial | QgsAbstractDatabaseProviderConnection.View)
+        tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial | QgsAbstractDatabaseProviderConnection.TableFlag.View)
         table_names = self._table_names(tables)
         b32523_view = self._table_by_name(tables, 'b32523')
         self.assertTrue(b32523_view)
@@ -154,7 +154,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
                          [[0, 1], [0, 2], [0, 3], [0, 7], [3857, 1], [4326, 1]])
 
         # Check TopoGeometry and Pointcloud layers are found in vector table names
-        tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)
+        tables = conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
         table_names = self._table_names(tables)
         self.assertIn('TopoLayer1', table_names)
         self.assertIn('PointCloudPointLayer', table_names)
@@ -177,7 +177,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         newconn = md.createConnection(newuri, {})
 
         # Check TopoGeometry and Pointcloud layers are not found in vector table names
-        tableTypes = QgsAbstractDatabaseProviderConnection.Vector | QgsAbstractDatabaseProviderConnection.Raster
+        tableTypes = QgsAbstractDatabaseProviderConnection.TableFlag.Vector | QgsAbstractDatabaseProviderConnection.TableFlag.Raster
         tables = newconn.tables('qgis_test', tableTypes)
         table_names = self._table_names(tables)
         self.assertNotIn('TopoLayer1', table_names)
@@ -217,16 +217,16 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn = md.createConnection(self.uri, {})
         md.saveConnection(conn, 'qgis_test1')
 
-        table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster1')
+        table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Raster), 'Raster1')
         self.assertTrue(QgsRasterLayer(f"PG: {conn.uri()} dbname='qgis_test' schema='qgis_test' column='{table.geometryColumn()}' table='{table.tableName()}'", 'r1', 'gdal').isValid())
         conn.renameRasterTable('qgis_test', table.tableName(), 'Raster2')
-        table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster2')
+        table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Raster), 'Raster2')
         self.assertTrue(QgsRasterLayer(f"PG: {conn.uri()} dbname='qgis_test' schema='qgis_test' column='{table.geometryColumn()}' table='{table.tableName()}'", 'r1', 'gdal').isValid())
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Raster))
         self.assertNotIn('Raster1', table_names)
         self.assertIn('Raster2', table_names)
         conn.renameRasterTable('qgis_test', table.tableName(), 'Raster1')
-        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
+        table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.TableFlag.Raster))
         self.assertNotIn('Raster2', table_names)
         self.assertIn('Raster1', table_names)
 
@@ -293,7 +293,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         conn.executeSql(foreign_table_definition)
 
-        self.assertNotEqual(conn.tables('public', QgsAbstractDatabaseProviderConnection.Foreign | QgsAbstractDatabaseProviderConnection.Aspatial), [])
+        self.assertNotEqual(conn.tables('public', QgsAbstractDatabaseProviderConnection.TableFlag.Foreign | QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial), [])
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Disabled on Travis')
     def test_foreign_table_server(self):
@@ -321,7 +321,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         INTO foreign_schema;
         """.format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
         conn.executeSql(foreign_table_definition)
-        self.assertEqual(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
+        self.assertEqual(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.TableFlag.Foreign)[0].tableName(), 'someData')
 
     def test_fields(self):
         """Test fields"""
@@ -441,13 +441,13 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         uri.setSchema('qgis_test')
         uri.setTable('geometry_table_with_multiple_types')
         uri.setGeometryColumn('geom')
-        uri.setWkbType(QgsWkbTypes.Point)
+        uri.setWkbType(QgsWkbTypes.Type.Point)
         vl = QgsVectorLayer(uri.uri(), 'points', 'postgres')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 110)
 
         uri.setGeometryColumn('geom')
-        uri.setWkbType(QgsWkbTypes.LineString)
+        uri.setWkbType(QgsWkbTypes.Type.LineString)
         vl = QgsVectorLayer(uri.uri(), 'lines', 'postgres')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 10)
@@ -479,7 +479,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertTrue(vl.isSqlQuery())
         # Test flags
         self.assertTrue(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 0)
 
@@ -487,7 +487,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSqlQuery())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
 
@@ -495,7 +495,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSqlQuery())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
 
@@ -504,7 +504,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSqlQuery())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
 
@@ -537,7 +537,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSqlQuery())
-        self.assertNotEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertNotEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
 
@@ -566,7 +566,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         # Test flags
         self.assertTrue(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
 
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
 
@@ -576,7 +576,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isSqlQuery())
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
 

@@ -244,10 +244,10 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         overviewMap = QgsLayoutItemMap(l)
         overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
         l.addLayoutItem(overviewMap)
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMap)
-        self.assertEqual(overviewMap.overview().stackingPosition(), QgsLayoutItemMapItem.StackBelowMap)
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLayer)
-        self.assertEqual(overviewMap.overview().stackingPosition(), QgsLayoutItemMapItem.StackBelowMapLayer)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMap)
+        self.assertEqual(overviewMap.overview().stackingPosition(), QgsLayoutItemMapItem.StackingPosition.StackBelowMap)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMapLayer)
+        self.assertEqual(overviewMap.overview().stackingPosition(), QgsLayoutItemMapItem.StackingPosition.StackBelowMapLayer)
 
         overviewMap.overview().setStackingLayer(self.raster_layer)
         self.assertEqual(overviewMap.overview().stackingLayer(), self.raster_layer)
@@ -270,10 +270,10 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         self.assertFalse(overviewMap.overviews().modifyMapLayerList([]))
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]), [self.raster_layer, self.vector_layer])
         overviewMap.overview().setLinkedMap(map)
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMap)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMap)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLayer)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMapLayer)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [self.raster_layer, self.vector_layer])
         overviewMap.overview().setStackingLayer(self.raster_layer)
@@ -282,7 +282,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         overviewMap.overview().setStackingLayer(self.vector_layer)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackAboveMapLayer)
         overviewMap.overview().setStackingLayer(None)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [self.raster_layer, self.vector_layer])
@@ -292,18 +292,18 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         overviewMap.overview().setStackingLayer(self.vector_layer)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [self.raster_layer, overviewMap.overview().asMapLayer(), self.vector_layer])
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLabels)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMapLabels)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [overviewMap.overview().asMapLayer(), self.raster_layer, self.vector_layer])
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLabels)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackAboveMapLabels)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [self.raster_layer, self.vector_layer])
 
         # two overviews
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMap)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMap)
         overviewMap.overviews().addOverview(QgsLayoutItemMapOverview('x', overviewMap))
         overviewMap.overviews().overview(1).setLinkedMap(map)
-        overviewMap.overviews().overview(1).setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLabels)
+        overviewMap.overviews().overview(1).setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMapLabels)
         self.assertEqual(overviewMap.overviews().modifyMapLayerList([self.raster_layer, self.vector_layer]),
                          [overviewMap.overviews().overview(1).asMapLayer(), self.raster_layer, self.vector_layer, overviewMap.overview().asMapLayer()])
 
@@ -328,13 +328,13 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         overviewMap.setExtent(myRectangle2)
         overviewMap.overview().setLinkedMap(map)
         overviewMap.overview().setInverted(True)
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackBelowMapLayer)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackBelowMapLayer)
         overviewMap.overview().setStackingLayer(self.raster_layer)
 
         self.assertTrue(self.render_layout_check("composermap_overview_belowmap",
                                                  l, color_tolerance=6))
 
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackAboveMapLayer)
         overviewMap.overview().setStackingLayer(self.raster_layer)
 
         self.assertTrue(self.render_layout_check("composermap_overview_abovemap",
@@ -371,11 +371,11 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         myRectangle2 = QgsRectangle(-20, -276, 276, 20)
         overviewMap.setExtent(myRectangle2)
         overviewMap.overview().setLinkedMap(map)
-        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackingPosition.StackAboveMapLayer)
         overviewMap.overview().setStackingLayer(atlas_layer)
 
         fill_symbol = QgsFillSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no'})
-        fill_symbol[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('case when label=\'a\' then \'red\' else \'green\' end'))
+        fill_symbol[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression('case when label=\'a\' then \'red\' else \'green\' end'))
 
         overviewMap.overview().setFrameSymbol(fill_symbol)
 

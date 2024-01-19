@@ -691,7 +691,7 @@ class TestQgsLayerTreeView(QgisTestCase):
 
         self.assertFalse(view.selectedLegendNodes())
 
-        view.selectionModel().select(view.proxyModel().mapFromSource(index), QItemSelectionModel.ClearAndSelect)
+        view.selectionModel().select(view.proxyModel().mapFromSource(index), QItemSelectionModel.SelectionFlag.ClearAndSelect)
         view.selectionModel().select(view.proxyModel().mapFromSource(index2), QItemSelectionModel.SelectionFlag.Select)
 
         self.assertCountEqual(view.selectedLegendNodes(), [legend_nodes[0], legend_nodes[2]])

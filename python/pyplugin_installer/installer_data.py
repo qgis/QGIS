@@ -122,14 +122,14 @@ def removeDir(path):
     elif QFile(path).remove():  # if it is only link, just remove it without resolving.
         pass
     else:
-        fltr = QDir.Dirs | QDir.Files | QDir.Hidden
-        iterator = QDirIterator(path, fltr, QDirIterator.Subdirectories)
+        fltr = QDir.Filter.Dirs | QDir.Filter.Files | QDir.Filter.Hidden
+        iterator = QDirIterator(path, fltr, QDirIterator.IteratorFlag.Subdirectories)
         while iterator.hasNext():
             item = iterator.next()
             if QFile(item).remove():
                 pass
-        fltr = QDir.Dirs | QDir.Hidden
-        iterator = QDirIterator(path, fltr, QDirIterator.Subdirectories)
+        fltr = QDir.Filter.Dirs | QDir.Filter.Hidden
+        iterator = QDirIterator(path, fltr, QDirIterator.IteratorFlag.Subdirectories)
         while iterator.hasNext():
             item = iterator.next()
             if QDir().rmpath(item):
@@ -291,10 +291,10 @@ class Repositories(QObject):
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
-        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "Relay")
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute.RedirectPolicyAttribute, QNetworkRequest.RedirectPolicy.NoLessSafeRedirectPolicy)
         if force_reload:
-            self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.AlwaysNetwork)
+            self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute.CacheLoadControlAttribute, QNetworkRequest.CacheLoadControl.AlwaysNetwork)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
@@ -303,10 +303,10 @@ class Repositories(QObject):
                     "QgsPluginInstaller",
                     "Update of network request with authentication "
                     "credentials FAILED for configuration '{0}'").format(authcfg)
-                iface.pluginManagerInterface().pushMessage(msg, Qgis.Warning)
+                iface.pluginManagerInterface().pushMessage(msg, Qgis.MessageLevel.Warning)
                 self.mRepositories[key]["QRequest"] = None
                 return
-        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.User, key)
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute.User, key)
         self.mRepositories[key]["xmlData"] = QgsNetworkAccessManager.instance().get(self.mRepositories[key]["QRequest"])
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
         self.mRepositories[key]["xmlData"].setProperty('redirectionCounter', redirectionCounter)
@@ -327,13 +327,13 @@ class Repositories(QObject):
         """ populate the plugins object with the fetched data """
         reply = self.sender()
         reposName = reply.property('reposName')
-        if reply.error() != QNetworkReply.NoError:  # fetching failed
+        if reply.error() != QNetworkReply.NetworkError.NoError:  # fetching failed
             self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
             self.mRepositories[reposName]["error"] = reply.errorString()
-            if reply.error() == QNetworkReply.OperationCanceledError:
+            if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
                 self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
-        elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 301:
-            redirectionUrl = reply.attribute(QNetworkRequest.RedirectionTargetAttribute)
+        elif reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) == 301:
+            redirectionUrl = reply.attribute(QNetworkRequest.Attribute.RedirectionTargetAttribute)
             if redirectionUrl.isRelative():
                 redirectionUrl = reply.url().resolved(redirectionUrl)
             redirectionCounter = reply.property('redirectionCounter') + 1
@@ -447,12 +447,12 @@ class Repositories(QObject):
             else:
                 # no plugin metadata found
                 self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
-                if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
+                if reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) == 200:
                     self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metadata. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
                 else:
                     self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " {} {}".format(
-                        reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
-                        reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
+                        reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute),
+                        reply.attribute(QNetworkRequest.Attribute.HttpReasonPhraseAttribute)
                     )
 
         self.repositoryFetched.emit(reposName)
@@ -690,7 +690,7 @@ class Plugins(QObject):
                 sys.path = [pluginsPath] + sys.path
             try:
                 pluginDir = QDir(pluginsPath)
-                pluginDir.setFilter(QDir.AllDirs)
+                pluginDir.setFilter(QDir.Filter.AllDirs)
                 for key in pluginDir.entryList():
                     if key not in [".", ".."]:
                         path = QDir.toNativeSeparators(pluginsPath + "/" + key)

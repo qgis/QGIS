@@ -143,7 +143,7 @@ class VLayerConnector(DBConnector):
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]
-        if p.geometryType() != QgsWkbTypes.NullGeometry:
+        if p.geometryType() != QgsWkbTypes.GeometryType.NullGeometry:
             gn = getQueryGeometryName(tmp)
             if gn:
                 f += [gn]

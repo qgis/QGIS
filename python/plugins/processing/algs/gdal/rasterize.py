@@ -75,11 +75,11 @@ class rasterize(GdalAlgorithm):
                                                       self.tr('Field to use for a burn-in value'),
                                                       None,
                                                       self.INPUT,
-                                                      QgsProcessingParameterField.Numeric,
+                                                      QgsProcessingParameterField.DataType.Numeric,
                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.BURN,
                                                        self.tr('A fixed value to burn'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        defaultValue=0.0,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.USE_Z,
@@ -91,12 +91,12 @@ class rasterize(GdalAlgorithm):
                                                      self.units))
         self.addParameter(QgsProcessingParameterNumber(self.WIDTH,
                                                        self.tr('Width/Horizontal resolution'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        minValue=0.0,
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.HEIGHT,
                                                        self.tr('Height/Vertical resolution'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        minValue=0.0,
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
@@ -104,7 +104,7 @@ class rasterize(GdalAlgorithm):
                                                        optional=True))
         nodataParam = QgsProcessingParameterNumber(self.NODATA,
                                                    self.tr('Assign a specified NoData value to output bands'),
-                                                   type=QgsProcessingParameterNumber.Double,
+                                                   type=QgsProcessingParameterNumber.Type.Double,
                                                    optional=True)
         nodataParam.setGuiDefaultValueOverride(QVariant(QVariant.Double))
         self.addParameter(nodataParam)
@@ -113,7 +113,7 @@ class rasterize(GdalAlgorithm):
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
@@ -124,27 +124,27 @@ class rasterize(GdalAlgorithm):
                                                     self.TYPES,
                                                     allowMultiple=False,
                                                     defaultValue=5)
-        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(dataType_param)
 
         init_param = QgsProcessingParameterNumber(self.INIT,
                                                   self.tr('Pre-initialize the output image with value'),
-                                                  type=QgsProcessingParameterNumber.Double,
+                                                  type=QgsProcessingParameterNumber.Type.Double,
                                                   optional=True)
-        init_param.setFlags(init_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        init_param.setFlags(init_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(init_param)
 
         invert_param = QgsProcessingParameterBoolean(self.INVERT,
                                                      self.tr('Invert rasterization'),
                                                      defaultValue=False)
-        invert_param.setFlags(invert_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        invert_param.setFlags(invert_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(invert_param)
 
         extra_param = QgsProcessingParameterString(self.EXTRA,
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
                                                    optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,

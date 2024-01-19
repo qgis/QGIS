@@ -53,7 +53,7 @@ class TestQgsBlendModes(unittest.TestCase):
         self.point_layer = QgsVectorLayer(shp_file, 'Points', 'ogr')
 
         simplify_method = QgsVectorSimplifyMethod()
-        simplify_method.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification)
+        simplify_method.setSimplifyHints(QgsVectorSimplifyMethod.SimplifyHint.NoSimplification)
 
         # create polygon layer
         shp_file = os.path.join(TEST_DATA_DIR, 'polys.shp')

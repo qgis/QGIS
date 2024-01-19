@@ -191,7 +191,7 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
         self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, delta=5)
 
-        wheel_event = QWheelEvent(QPointF(300, 200), QPointF(300, 200), QPoint(1, 2), QPoint(3, 4), Qt.NoButton, Qt.NoModifier, Qt.ScrollPhase.ScrollBegin, False)
+        wheel_event = QWheelEvent(QPointF(300, 200), QPointF(300, 200), QPoint(1, 2), QPoint(3, 4), Qt.MouseButton.NoButton, Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.ScrollBegin, False)
         canvas.wheelEvent(wheel_event)
         self.assertEqual(tool.events[-1].type(), QEvent.Type.Wheel)
 

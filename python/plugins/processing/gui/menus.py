@@ -203,9 +203,9 @@ def removeMenus():
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
     if actionText is None:
-        if (QgsGui.higFlags() & QgsGui.HigMenuTextIsTitleCase) and not (
-                alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
-            alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        if (QgsGui.higFlags() & QgsGui.HigFlag.HigMenuTextIsTitleCase) and not (
+                alg.flags() & QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral):
+            alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.Capitalization.TitleCase)
         else:
             alg_title = alg.displayName()
         actionText = alg_title + QCoreApplication.translate('Processing', '…')
@@ -317,9 +317,9 @@ def addToolBarButton(index, algId, icon=None, tooltip=None):
         assert False, algId
 
     if tooltip is None:
-        if (QgsGui.higFlags() & QgsGui.HigMenuTextIsTitleCase) and not (
-                alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
-            tooltip = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        if (QgsGui.higFlags() & QgsGui.HigFlag.HigMenuTextIsTitleCase) and not (
+                alg.flags() & QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral):
+            tooltip = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.Capitalization.TitleCase)
         else:
             tooltip = alg.displayName()
 

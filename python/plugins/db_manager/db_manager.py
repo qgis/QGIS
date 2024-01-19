@@ -154,7 +154,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     Qgis.Info, self.iface.messageTimeout())
+                                     Qgis.MessageLevel.Info, self.iface.messageTimeout())
             return
 
         outUri = db.uri()
@@ -170,7 +170,7 @@ class DBManager(QMainWindow):
     def exportActionSlot(self):
         table = self.tree.currentTable()
         if table is None:
-            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), Qgis.Info,
+            self.infoBar.pushMessage(self.tr("Select the table you want export to file."), Qgis.MessageLevel.Info,
                                      self.iface.messageTimeout())
             return
 
@@ -178,7 +178,7 @@ class DBManager(QMainWindow):
         if inLayer.type() != QgsMapLayerType.VectorLayer:
             self.infoBar.pushMessage(
                 self.tr("Select a vector or a tabular layer you want export."),
-                Qgis.Warning, self.iface.messageTimeout())
+                Qgis.MessageLevel.Warning, self.iface.messageTimeout())
             return
 
         from .dlg_export_vector import DlgExportVector
@@ -192,7 +192,7 @@ class DBManager(QMainWindow):
         db = self.tree.currentDatabase()
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                     Qgis.Info, self.iface.messageTimeout())
+                                     Qgis.MessageLevel.Info, self.iface.messageTimeout())
             # force displaying of the message, it appears on the first tab (i.e. Info)
             self.tabs.setCurrentIndex(0)
             return

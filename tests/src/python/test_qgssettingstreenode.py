@@ -158,7 +158,7 @@ class TestQgsSettingsEntry(QgisTestCase):
 
     def test_python_implementation(self):
         proot = QgsSettingsTree.createPluginTreeNode(self.pluginName)
-        self.setting = QgsSettingsEntryEnumFlag("python-implemented-setting", proot, QgsUnitTypes.LayoutMeters)
+        self.setting = QgsSettingsEntryEnumFlag("python-implemented-setting", proot, QgsUnitTypes.LayoutUnit.LayoutMeters)
         self.assertEqual(type(self.setting), QgsSettingsEntryEnumFlag)
         self.assertEqual(type(proot.childSetting("python-implemented-setting")), QgsSettingsEntryEnumFlag)
 

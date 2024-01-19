@@ -42,10 +42,10 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
                      interpolated_width: QgsInterpolatedLineWidth,
                      interpolated_color: QgsInterpolatedLineColor) -> QImage:
         layer = QgsInterpolatedLineSymbolLayer()
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
         layer.setInterpolatedWidth(interpolated_width)
         layer.setInterpolatedColor(interpolated_color)
 
@@ -92,7 +92,7 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setIsVariableWidth(False)
         interpolated_width.setFixedStrokeWidth(5)
         interpolated_color.setColor(QColor(255, 0, 0))
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.SingleColor)
 
         rendered_image = self.render_image(
             interpolated_width,
@@ -121,13 +121,13 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setIsVariableWidth(False)
         interpolated_width.setFixedStrokeWidth(5)
         interpolated_color.setColor(QColor(255, 0, 0))
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.SingleColor)
 
         layer = QgsInterpolatedLineSymbolLayer()
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineStartWidthValue, QgsProperty.fromExpression('5'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineEndWidthValue, QgsProperty.fromExpression('1'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineStartColorValue, QgsProperty.fromExpression('2'))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineEndColorValue, QgsProperty.fromExpression('6'))
         layer.setInterpolatedWidth(interpolated_width)
         layer.setInterpolatedColor(interpolated_color)
 
@@ -170,10 +170,10 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setIsVariableWidth(False)
         interpolated_width.setFixedStrokeWidth(5)
         color_ramp = QgsColorRampShader(0, 7, QgsStyle.defaultStyle().colorRamp('Viridis'),
-                                        QgsColorRampShader.Interpolated)
+                                        QgsColorRampShader.Type.Interpolated)
         color_ramp.classifyColorRamp(10)
         interpolated_color.setColor(color_ramp)
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.ColorRamp)
 
         rendered_image = self.render_image(
             interpolated_width,
@@ -206,7 +206,7 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setMinimumWidth(1)
         interpolated_width.setMaximumWidth(10)
         interpolated_color.setColor(QColor(0, 255, 0))
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.SingleColor)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.SingleColor)
 
         rendered_image = self.render_image(
             interpolated_width,
@@ -239,10 +239,10 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setMinimumWidth(1)
         interpolated_width.setMaximumWidth(10)
         color_ramp = QgsColorRampShader(0, 7, QgsStyle.defaultStyle().colorRamp('Viridis'),
-                                        QgsColorRampShader.Interpolated)
+                                        QgsColorRampShader.Type.Interpolated)
         color_ramp.classifyColorRamp(10)
         interpolated_color.setColor(color_ramp)
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.ColorRamp)
 
         rendered_image = self.render_image(
             interpolated_width,
@@ -275,10 +275,10 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setMinimumWidth(1)
         interpolated_width.setMaximumWidth(10)
         color_ramp = QgsColorRampShader(2, 7, QgsStyle.defaultStyle().colorRamp('RdGy'),
-                                        QgsColorRampShader.Discrete)
+                                        QgsColorRampShader.Type.Discrete)
         color_ramp.classifyColorRamp(5)
         interpolated_color.setColor(color_ramp)
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.ColorRamp)
 
         rendered_image = self.render_image(
             interpolated_width,
@@ -311,10 +311,10 @@ class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
         interpolated_width.setMinimumWidth(1)
         interpolated_width.setMaximumWidth(10)
         color_ramp = QgsColorRampShader(0, 10, QgsStyle.defaultStyle().colorRamp('Viridis'),
-                                        QgsColorRampShader.Exact)
+                                        QgsColorRampShader.Type.Exact)
         color_ramp.classifyColorRamp(10)
         interpolated_color.setColor(color_ramp)
-        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColorRamp)
+        interpolated_color.setColoringMethod(QgsInterpolatedLineColor.ColoringMethod.ColorRamp)
 
         rendered_image = self.render_image(
             interpolated_width,

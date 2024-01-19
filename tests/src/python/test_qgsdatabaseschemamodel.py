@@ -118,8 +118,8 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertIn('CamelCaseSchema', schemas)
         self.assertIn('qgis_test', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
         self.assertIsNone(model.data(model.index(model.rowCount(), 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
 
         model.refresh()
@@ -135,18 +135,18 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertIn('qgis_test', schemas)
         self.assertIn('myNewSchema', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
 
         model.setAllowEmptySchema(False)
         self.assertEqual(model.rowCount(), old_count + 1)
         self.assertTrue(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
         model.setAllowEmptySchema(True)
         self.assertEqual(model.rowCount(), old_count + 2)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
 
         conn.createSchema('myNewSchema2')
         conn.createSchema('myNewSchema3')
@@ -160,8 +160,8 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertIn('myNewSchema2', schemas)
         self.assertIn('myNewSchema3', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
 
         conn.createSchema('myNewSchema4')
         conn.dropSchema('myNewSchema2')
@@ -177,8 +177,8 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertIn('myNewSchema3', schemas)
         self.assertIn('myNewSchema4', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
 
         conn.dropSchema('myNewSchema3')
         conn.dropSchema('myNewSchema4')
@@ -191,13 +191,13 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertNotIn('myNewSchema3', schemas)
         self.assertNotIn('myNewSchema4', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
 
         model.setAllowEmptySchema(False)
         self.assertEqual(model.rowCount(), old_count)
         self.assertTrue(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
+        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.Role.RoleEmpty))
 
 
 if __name__ == '__main__':

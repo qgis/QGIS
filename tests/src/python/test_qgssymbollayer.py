@@ -390,7 +390,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         QgsProject.instance().addMapLayer(polys_layer)
 
         layer = QgsSimpleFillSymbolLayer()
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
@@ -479,7 +479,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         QgsProject.instance().addMapLayer(lines_layer)
 
         layer = QgsSimpleLineSymbolLayer()
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Highway'"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Highway'"))
         layer.setColor(QColor(100, 150, 150))
         layer.setWidth(5)
 
@@ -567,7 +567,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         QgsProject.instance().addMapLayer(points_layer)
 
         layer = QgsSimpleMarkerSymbolLayer()
-        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
         layer.setColor(QColor(100, 150, 150))
         layer.setSize(5)
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
@@ -656,13 +656,13 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsGradientFillSymbolLayer.Radial
+        mExpectedValue = QgsGradientFillSymbolLayer.GradientType.Radial
         mGradientLayer.setGradientType(mExpectedValue)
         mValue = mGradientLayer.gradientType()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsGradientFillSymbolLayer.ColorRamp
+        mExpectedValue = QgsGradientFillSymbolLayer.GradientColorType.ColorRamp
         mGradientLayer.setGradientColorType(mExpectedValue)
         mValue = mGradientLayer.gradientColorType()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
@@ -674,13 +674,13 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsGradientFillSymbolLayer.Viewport
+        mExpectedValue = QgsGradientFillSymbolLayer.GradientCoordinateMode.Viewport
         mGradientLayer.setCoordinateMode(mExpectedValue)
         mValue = mGradientLayer.coordinateMode()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsGradientFillSymbolLayer.Reflect
+        mExpectedValue = QgsGradientFillSymbolLayer.GradientSpread.Reflect
         mGradientLayer.setGradientSpread(mExpectedValue)
         mValue = mGradientLayer.gradientSpread()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
@@ -722,7 +722,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsUnitTypes.RenderMapUnits
+        mExpectedValue = QgsUnitTypes.RenderUnit.RenderMapUnits
         mGradientLayer.setOffsetUnit(mExpectedValue)
         mValue = mGradientLayer.offsetUnit()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
@@ -751,7 +751,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Star
+        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Shape.Star
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).shape()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
@@ -855,7 +855,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Triangle
+        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Shape.Triangle
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).shape()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
@@ -958,7 +958,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Circle
+        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Shape.Circle
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).shape()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage

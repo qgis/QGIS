@@ -73,7 +73,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         html_frame.attemptSetSceneRect(QRectF(10, 10, 100, 50))
         layout_html.addFrame(html_frame)
         layout_html.setResizeMode(
-            QgsLayoutMultiFrame.RepeatUntilFinished)
+            QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
         layout_html.setUseSmartBreaks(False)
         layout_html.setUrl(self.htmlUrl())
         layout_html.frame(0).setFrameEnabled(True)
@@ -104,7 +104,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         html_frame.attemptSetSceneRect(QRectF(10, 10, 100, 52))
         layout_html.addFrame(html_frame)
         layout_html.setResizeMode(
-            QgsLayoutMultiFrame.RepeatUntilFinished)
+            QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
         layout_html.setUseSmartBreaks(True)
         layout_html.setUrl(self.htmlUrl())
         layout_html.frame(0).setFrameEnabled(True)

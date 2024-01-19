@@ -146,16 +146,16 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsFieldConstraints.Constraints())
         self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsFieldConstraints.Constraints())
 
-        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsFieldConstraints.ConstraintNotNull)
-        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsFieldConstraints.ConstraintNotNull)
-        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsFieldConstraints.Constraint.ConstraintNotNull)
 
         # test that constraints have been saved to fields correctly
         fields = vl.fields()
-        self.assertTrue(fields.at(0).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
-        self.assertFalse(fields.at(1).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
-        self.assertTrue(fields.at(2).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
-        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull), QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertTrue(fields.at(0).constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertFalse(fields.at(1).constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull), QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
 
     def testDefaultValues(self):
         """ test detection of defaults on OGR layer """
@@ -362,7 +362,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         # Check that pk field has unique constraint
         fields = layer.fields()
         pkfield = fields.at(0)
-        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintUnique)
 
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
@@ -457,7 +457,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
 
         vl = QgsVectorLayer(f'{tmpfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
-        self.assertFalse(caps & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertFalse(caps & QgsVectorDataProvider.Capability.CreateSpatialIndex)
 
     def testSpatialIndexCapabilitySpatialite(self):
         """ Test https://github.com/qgis/QGIS/issues/44513 """
@@ -469,7 +469,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
 
         vl = QgsVectorLayer(f'{tmpfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
-        self.assertTrue(caps & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertTrue(caps & QgsVectorDataProvider.Capability.CreateSpatialIndex)
 
 
 if __name__ == '__main__':

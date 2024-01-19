@@ -43,7 +43,7 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
 
     def testTwoClassesDiscrete(self):
         # test for #47759
-        shader = QgsColorRampShader(0, 50, None, QgsColorRampShader.Discrete)
+        shader = QgsColorRampShader(0, 50, None, QgsColorRampShader.Type.Discrete)
 
         item1 = QgsColorRampShader.ColorRampItem(50, QColor(0, 0, 0))
         item2 = QgsColorRampShader.ColorRampItem(float("inf"), QColor(255, 255, 255))

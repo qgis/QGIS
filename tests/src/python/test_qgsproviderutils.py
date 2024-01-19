@@ -36,7 +36,7 @@ class TestQgsProviderUtils(QgisTestCase):
         # surface scan only
         sublayers = QgsProviderRegistry.instance().querySublayers(uri)
         self.assertEqual(len(sublayers), 1)
-        self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.Type.Unknown)
 
         # need to resolve geometry types for complete details about this uri!
         self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
@@ -115,7 +115,7 @@ class TestQgsProviderUtils(QgisTestCase):
         sl1 = QgsProviderSublayerDetails()
         sl1.setProviderKey('ogr')
         sl1.setType(QgsMapLayerType.VectorLayer)
-        sl1.setWkbType(QgsWkbTypes.Point)
+        sl1.setWkbType(QgsWkbTypes.Type.Point)
         sl1.setFeatureCount(1)
         sl1.setSkippedContainerScan(False)
         self.assertFalse(
@@ -125,7 +125,7 @@ class TestQgsProviderUtils(QgisTestCase):
         sl2 = QgsProviderSublayerDetails()
         sl2.setProviderKey('ogr')
         sl2.setType(QgsMapLayerType.VectorLayer)
-        sl2.setWkbType(QgsWkbTypes.Point)
+        sl2.setWkbType(QgsWkbTypes.Type.Point)
         sl2.setFeatureCount(1)
         sl2.setSkippedContainerScan(True)
         self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], QgsProviderUtils.SublayerCompletenessFlags(

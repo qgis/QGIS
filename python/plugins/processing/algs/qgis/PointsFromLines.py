@@ -57,8 +57,8 @@ class PointsFromLines(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER,
                                                             self.tr('Raster layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_VECTOR,
-                                                              self.tr('Vector layer'), [QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
+                                                              self.tr('Vector layer'), [QgsProcessing.SourceType.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'generatepointspixelcentroidsalongline'
@@ -84,7 +84,7 @@ class PointsFromLines(QgisAlgorithm):
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, raster_layer.crs())
+                                               fields, QgsWkbTypes.Type.Point, raster_layer.crs())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -202,4 +202,4 @@ class PointsFromLines(QgisAlgorithm):
         self.fid += 1
         self.pointId += 1
 
-        writer.addFeature(feature, QgsFeatureSink.FastInsert)
+        writer.addFeature(feature, QgsFeatureSink.Flag.FastInsert)

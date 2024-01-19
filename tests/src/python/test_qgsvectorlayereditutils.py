@@ -532,7 +532,7 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         QgsVectorFileWriter.create(
             fileName=tempgpkg,
             fields=fields,
-            geometryType=QgsWkbTypes.Polygon,
+            geometryType=QgsWkbTypes.Type.Polygon,
             srs=crs,
             transformContext=QgsCoordinateTransformContext(),
             options=options)

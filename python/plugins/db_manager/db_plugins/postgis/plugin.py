@@ -79,9 +79,9 @@ class PostGisDBPlugin(DBPlugin):
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         try:
-            sslmode = settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer)
+            sslmode = settings.enumValue("sslmode", QgsDataSourceUri.SslMode.SslPrefer)
         except TypeError:
-            sslmode = QgsDataSourceUri.SslPrefer
+            sslmode = QgsDataSourceUri.SslMode.SslPrefer
 
         settings.endGroup()
 
@@ -153,7 +153,7 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.Info,
+                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.MessageLevel.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
@@ -165,7 +165,7 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, PGTable) or item._relationType != 'm':
-                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.Info,
+                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.MessageLevel.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
@@ -394,7 +394,7 @@ class PGRasterTable(PGTable, RasterTable):
                         break
 
         if rl.isValid():
-            rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
+            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         return rl
 
 

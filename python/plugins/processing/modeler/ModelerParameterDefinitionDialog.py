@@ -116,14 +116,14 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.requiredCheck.setText(self.tr('Mandatory'))
         self.requiredCheck.setChecked(True)
         if self.param is not None:
-            self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+            self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional)
         self.verticalLayout.addWidget(self.requiredCheck)
 
         self.advancedCheck = QCheckBox()
         self.advancedCheck.setText(self.tr('Advanced'))
         self.advancedCheck.setChecked(False)
         if self.param is not None:
-            self.advancedCheck.setChecked(self.param.flags() & QgsProcessingParameterDefinition.FlagAdvanced)
+            self.advancedCheck.setChecked(self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.verticalLayout.addWidget(self.advancedCheck)
 
         # If child algorithm output is mandatory, disable checkbox
@@ -131,7 +131,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             child = self.alg.childAlgorithms()[self.param.metadata()['_modelChildId']]
             model_output = child.modelOutput(self.param.metadata()['_modelChildOutputName'])
             param_def = child.algorithm().parameterDefinition(model_output.childOutputName())
-            if not (param_def.flags() & QgsProcessingParameterDefinition.FlagOptional):
+            if not (param_def.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional):
                 self.requiredCheck.setEnabled(False)
                 self.requiredCheck.setChecked(True)
 
@@ -245,14 +245,14 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param.setMetadata(paramTypeDef.metadata())
 
         if not self.requiredCheck.isChecked():
-            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
+            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.Flag.FlagOptional)
         else:
-            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagOptional)
+            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.Flag.FlagOptional)
 
         if self.advancedCheck.isChecked():
-            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         else:
-            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.FlagAdvanced)
+            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.Flag.FlagAdvanced)
 
         settings = QgsSettings()
         settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())

@@ -70,7 +70,7 @@ class TestQgsProviderSublayerModel(QgisTestCase):
         layer2.setProviderKey('ogr')
         layer2.setUri('uri 2')
         layer2.setFeatureCount(-1)
-        layer2.setWkbType(QgsWkbTypes.LineString)
+        layer2.setWkbType(QgsWkbTypes.Type.LineString)
         layer2.setFlags(Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
 
         model.setSublayerDetails([layer1, layer2])
@@ -104,7 +104,7 @@ class TestQgsProviderSublayerModel(QgisTestCase):
         layer3.setProviderKey('ogr')
         layer3.setUri('uri 3')
         layer3.setFeatureCount(1001)
-        layer3.setWkbType(QgsWkbTypes.Polygon)
+        layer3.setWkbType(QgsWkbTypes.Type.Polygon)
 
         model.setSublayerDetails([layer1, layer2, layer3])
         self.assertEqual(model.rowCount(QModelIndex()), 3)
@@ -338,7 +338,7 @@ class TestQgsProviderSublayerModel(QgisTestCase):
         layer2.setProviderKey('ogr')
         layer2.setUri('uri 2')
         layer2.setFeatureCount(-1)
-        layer2.setWkbType(QgsWkbTypes.LineString)
+        layer2.setWkbType(QgsWkbTypes.Type.LineString)
         layer2.setFlags(Qgis.SublayerFlags(Qgis.SublayerFlag.SystemTable))
         layer2.setPath(['my'])
 
@@ -376,7 +376,7 @@ class TestQgsProviderSublayerModel(QgisTestCase):
         layer3.setProviderKey('ogr')
         layer3.setUri('uri 3')
         layer3.setFeatureCount(1001)
-        layer3.setWkbType(QgsWkbTypes.Polygon)
+        layer3.setWkbType(QgsWkbTypes.Type.Polygon)
 
         model.setSublayerDetails([layer1, layer2, layer3])
 
@@ -495,7 +495,7 @@ class TestQgsProviderSublayerModel(QgisTestCase):
         layer2.setProviderKey('ogr')
         layer2.setUri('uri 2')
         layer2.setFeatureCount(-1)
-        layer2.setWkbType(QgsWkbTypes.LineString)
+        layer2.setWkbType(QgsWkbTypes.Type.LineString)
 
         layer3 = QgsProviderSublayerDetails()
         layer3.setType(QgsMapLayerType.VectorLayer)
@@ -504,7 +504,7 @@ class TestQgsProviderSublayerModel(QgisTestCase):
         layer3.setProviderKey('ogr')
         layer3.setUri('uri 3')
         layer3.setFeatureCount(0)
-        layer3.setWkbType(QgsWkbTypes.Polygon)
+        layer3.setWkbType(QgsWkbTypes.Type.Polygon)
 
         model.setSublayerDetails([layer1, layer2, layer3])
 

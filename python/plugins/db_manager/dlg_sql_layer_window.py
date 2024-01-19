@@ -182,12 +182,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.executeSql()
 
         # Then the columns
-        self.geomCombo.setCurrentIndex(self.geomCombo.findText(uri.geometryColumn(), Qt.MatchExactly))
+        self.geomCombo.setCurrentIndex(self.geomCombo.findText(uri.geometryColumn(), Qt.MatchFlag.MatchExactly))
         if uri.keyColumn() != '_uid_':
             self.uniqueColumnCheck.setCheckState(Qt.CheckState.Checked)
             if self.allowMultiColumnPk:
                 # Unchecked default values
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
+                for item in self.uniqueModel.findItems("*", Qt.MatchFlag.MatchWildcard):
                     if item.checkState() == Qt.CheckState.Checked:
                         item.setCheckState(Qt.CheckState.Unchecked)
                 # Get key columns
@@ -199,7 +199,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             else:
                 keyColumn = uri.keyColumn()
                 if self.uniqueModel.findItems(keyColumn):
-                    self.uniqueCombo.setCurrentIndex(self.uniqueCombo.findText(keyColumn, Qt.MatchExactly))
+                    self.uniqueCombo.setCurrentIndex(self.uniqueCombo.findText(keyColumn, Qt.MatchFlag.MatchExactly))
 
         # Finally layer name, filter and selectAtId
         self.layerNameEdit.setText(layer.name())
@@ -298,7 +298,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if hasUniqueField and self.allowMultiColumnPk:
             checkedCols = [
                 item.data()
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+                for item in self.uniqueModel.findItems("*", Qt.MatchFlag.MatchWildcard)
                 if item.checkState() == Qt.CheckState.Checked
             ]
 
@@ -467,7 +467,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         oldGeometryColumn = self.geomCombo.currentText()
         self.geomCombo.clear()
         self.geomCombo.addItems(cols)
-        self.geomCombo.setCurrentIndex(self.geomCombo.findText(oldGeometryColumn, Qt.MatchExactly))
+        self.geomCombo.setCurrentIndex(self.geomCombo.findText(oldGeometryColumn, Qt.MatchFlag.MatchExactly))
 
         # set sensible default columns if the columns are not already set
         try:
@@ -538,7 +538,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
         checkedItems = [
             item.text()
-            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+            for item in self.uniqueModel.findItems("*", Qt.MatchFlag.MatchWildcard)
             if item.checkState() == Qt.CheckState.Checked
         ]
 

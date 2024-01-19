@@ -702,7 +702,7 @@ class PythonConsoleWidget(QWidget):
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                               error.strerror)
-            self.callWidgetMessageBarEditor(msgText, Qgis.Critical)
+            self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
 
     def saveAsScriptFile(self, index=None):
         tabWidget = self.tabEditorWidget.currentWidget()
@@ -729,7 +729,7 @@ class PythonConsoleWidget(QWidget):
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                                   error.strerror)
-                self.callWidgetMessageBarEditor(msgText, Qgis.Critical)
+                self.callWidgetMessageBarEditor(msgText, Qgis.MessageLevel.Critical)
                 if fileNone:
                     tabWidget.path = None
                 else:

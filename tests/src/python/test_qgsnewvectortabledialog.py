@@ -84,20 +84,20 @@ class TestPyQgsNewVectorTableDialog(QgisTestCase):
         self.assertTrue(has_z_chk.isEnabled())
         self.assertTrue(has_m_chk.isEnabled())
 
-        self.assertEqual(dialog.geometryType(), QgsWkbTypes.LineString)
+        self.assertEqual(dialog.geometryType(), QgsWkbTypes.Type.LineString)
 
         # Set Z and check the type
         has_z_chk.setChecked(True)
-        self.assertEqual(dialog.geometryType(), QgsWkbTypes.LineStringZ)
+        self.assertEqual(dialog.geometryType(), QgsWkbTypes.Type.LineStringZ)
         has_z_chk.setChecked(False)
 
         # Set M and check the type
         has_m_chk.setChecked(True)
-        self.assertEqual(dialog.geometryType(), QgsWkbTypes.LineStringM)
+        self.assertEqual(dialog.geometryType(), QgsWkbTypes.Type.LineStringM)
 
         # Set both
         has_z_chk.setChecked(True)
-        self.assertEqual(dialog.geometryType(), QgsWkbTypes.LineStringZM)
+        self.assertEqual(dialog.geometryType(), QgsWkbTypes.Type.LineStringZM)
 
         # Test validation (ok button enabled)
         buttons = dialog.findChildren(QDialogButtonBox, 'mButtonBox')[0]

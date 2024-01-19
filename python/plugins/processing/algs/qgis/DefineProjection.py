@@ -50,7 +50,7 @@ class DefineProjection(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Input Shapefile'), types=[QgsProcessing.TypeVectorAnyGeometry]))
+                                                            self.tr('Input Shapefile'), types=[QgsProcessing.SourceType.TypeVectorAnyGeometry]))
         self.addParameter(QgsProcessingParameterCrs(self.CRS, 'CRS', 'EPSG:4326'))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
                                                       self.tr('Layer with projection')))
@@ -68,7 +68,7 @@ class DefineProjection(QgisAlgorithm):
         return self.tr('Changes a Shapefile\'s projection to a new CRS without reprojecting features')
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
@@ -82,7 +82,7 @@ class DefineProjection(QgisAlgorithm):
         if dsPath.lower().endswith('.shp'):
             dsPath = dsPath[:-4]
 
-            wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT1_ESRI)
+            wkt = crs.toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT1_ESRI)
             with open(dsPath + '.prj', 'w', encoding='utf-8') as f:
                 f.write(wkt)
 

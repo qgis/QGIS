@@ -126,7 +126,7 @@ class AlgorithmsTest:
         context.setProject(QgsProject.instance())
 
         if 'skipInvalid' in defs and defs['skipInvalid']:
-            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+            context.setInvalidGeometryCheck(QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid)
 
         feedback = QgsProcessingFeedback()
 

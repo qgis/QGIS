@@ -175,15 +175,15 @@ class TestQgsProject(QgisTestCase):
         prj = QgsProject.instance()
         prj.clear()
 
-        prj.setDistanceUnits(QgsUnitTypes.DistanceFeet)
-        self.assertEqual(prj.distanceUnits(), QgsUnitTypes.DistanceFeet)
+        prj.setDistanceUnits(QgsUnitTypes.DistanceUnit.DistanceFeet)
+        self.assertEqual(prj.distanceUnits(), QgsUnitTypes.DistanceUnit.DistanceFeet)
 
     def testAreaUnits(self):
         prj = QgsProject.instance()
         prj.clear()
 
-        prj.setAreaUnits(QgsUnitTypes.AreaSquareFeet)
-        self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaSquareFeet)
+        prj.setAreaUnits(QgsUnitTypes.AreaUnit.AreaSquareFeet)
+        self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaUnit.AreaSquareFeet)
 
     def testReadEntry(self):
         prj = QgsProject.instance()
@@ -1588,13 +1588,13 @@ class TestQgsProject(QgisTestCase):
 
         project.addMapLayers([layer])
 
-        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), False)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), False)
         project.setFlags(project.flags() | Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertTrue(project.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
-        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
 
         project.addMapLayers([layer2])
-        self.assertEqual(layer2.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layer2.dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
 
         tmp_dir = QTemporaryDir()
         tmp_project_file = f"{tmp_dir.path()}/project.qgs"
@@ -1607,8 +1607,8 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layers), 2)
 
         self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
-        self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
-        self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
+        self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
 
 
 if __name__ == '__main__':

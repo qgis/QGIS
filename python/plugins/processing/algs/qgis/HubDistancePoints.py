@@ -46,10 +46,10 @@ class HubDistancePoints(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     LAYER_UNITS = 'LAYER_UNITS'
 
-    UNITS = [QgsUnitTypes.DistanceMeters,
-             QgsUnitTypes.DistanceFeet,
-             QgsUnitTypes.DistanceMiles,
-             QgsUnitTypes.DistanceKilometers,
+    UNITS = [QgsUnitTypes.DistanceUnit.DistanceMeters,
+             QgsUnitTypes.DistanceUnit.DistanceFeet,
+             QgsUnitTypes.DistanceUnit.DistanceMiles,
+             QgsUnitTypes.DistanceUnit.DistanceKilometers,
              LAYER_UNITS
              ]
 
@@ -78,7 +78,7 @@ class HubDistancePoints(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.UNIT,
                                                      self.tr('Measurement unit'), self.units))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Hub distance'), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Hub distance'), QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'distancetonearesthubpoints'
@@ -108,7 +108,7 @@ class HubDistancePoints(QgisAlgorithm):
         fields.append(QgsField('HubDist', QVariant.Double))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, point_source.sourceCrs())
+                                               fields, QgsWkbTypes.Type.Point, point_source.sourceCrs())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -126,7 +126,7 @@ class HubDistancePoints(QgisAlgorithm):
                 break
 
             if not f.hasGeometry():
-                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
                 continue
 
             src = f.geometry().boundingBox().center()
@@ -153,7 +153,7 @@ class HubDistancePoints(QgisAlgorithm):
 
             feat.setGeometry(QgsGeometry.fromPointXY(src))
 
-            sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

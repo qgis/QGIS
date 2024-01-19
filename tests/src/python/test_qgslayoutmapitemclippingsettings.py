@@ -158,7 +158,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         map.attemptSetSceneRect(QRectF(10, 20, 100, 80))
         map.zoomToExtent(QgsRectangle(50, 40, 100, 200))
         l.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Triangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Triangle)
         shape.attemptSetSceneRect(QRectF(20, 30, 70, 50))
 
         settings = map.itemClippingSettings()
@@ -182,7 +182,7 @@ class TestQgsLayoutItemMapItemClipPathSettings(QgisTestCase):
         map.attemptSetSceneRect(QRectF(10, 20, 100, 80))
         map.zoomToExtent(QgsRectangle(50, 40, 100, 200))
         l.addLayoutItem(shape)
-        shape.setShapeType(QgsLayoutItemShape.Triangle)
+        shape.setShapeType(QgsLayoutItemShape.Shape.Triangle)
         shape.attemptSetSceneRect(QRectF(20, 30, 70, 50))
 
         settings = map.itemClippingSettings()

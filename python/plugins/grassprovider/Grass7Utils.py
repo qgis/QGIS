@@ -100,7 +100,7 @@ class Grass7Utils:
         Exports a crs as a WKT definition to a text file, and returns the path
         to this file
         """
-        wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+        wkt = crs.toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED)
         wkt_file = QgsProcessingUtils.generateTempFilename('crs.prj', context)
         with open(wkt_file, 'w', encoding='utf-8') as f:
             f.write(wkt)
@@ -525,7 +525,7 @@ class Grass7Utils:
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing',
-                                     Qgis.Info)
+                                     Qgis.MessageLevel.Info)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.

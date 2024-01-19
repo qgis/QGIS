@@ -76,7 +76,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
         simple_line = QgsSimpleLineSymbolLayer()
         line_symbol = QgsLineSymbol()
         line_symbol.changeSymbolLayer(0, simple_line)
@@ -87,7 +87,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         self.assertAlmostEqual(hash_line.width(context), 37.795275590551185, 3)
         self.assertAlmostEqual(hash_line.width(context2), 118.11023622047244, 3)
 
-        hash_line.setHashLengthUnit(QgsUnitTypes.RenderPixels)
+        hash_line.setHashLengthUnit(QgsUnitTypes.RenderUnit.RenderPixels)
         self.assertAlmostEqual(hash_line.width(context), 10.0, 3)
         self.assertAlmostEqual(hash_line.width(context2), 10.0, 3)
 
@@ -96,7 +96,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -139,7 +139,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -169,7 +169,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
         simple_line.setWidth(1)
@@ -198,7 +198,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -228,7 +228,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Vertex)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Vertex)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -252,7 +252,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
                 allowed_mismatch=20)
         )
 
-        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
@@ -265,7 +265,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
                 allowed_mismatch=20)
         )
 
-        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.LastVertex)
+        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.LastVertex)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
@@ -284,7 +284,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -296,26 +296,26 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.AllRings)
-        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.AllRings)
+        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         s2 = s.clone()
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         doc = QDomDocument()
         context = QgsReadWriteContext()
         element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
 
         s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         # rendering test
         s3 = QgsFillSymbol()
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(
             hash_line.clone())
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
@@ -328,7 +328,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
                 allowed_mismatch=20)
         )
 
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.InteriorRingsOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly)
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         self.assertTrue(
@@ -345,7 +345,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -387,7 +387,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -400,7 +400,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(hash_line.clone())
 
-        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyLineDistance, QgsProperty.fromExpression(
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineDistance, QgsProperty.fromExpression(
             "@geometry_point_num * 2"))
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
@@ -419,7 +419,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.SegmentCenter)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.SegmentCenter)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
         simple_line.setWidth(1)
@@ -452,7 +452,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line = QgsHashedLineSymbolLayer(True)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
-        simple_line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        simple_line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
 
         simple_line.setWidth(1)
@@ -494,7 +494,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line = QgsHashedLineSymbolLayer(True)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
-        simple_line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        simple_line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
 
         simple_line.setWidth(1)
@@ -506,7 +506,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line.setAverageAngleLength(0)
         s.appendSymbolLayer(hash_line.clone())
 
-        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+        s.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
 
         line_layer.setRenderer(QgsSingleSymbolRenderer(s))
 

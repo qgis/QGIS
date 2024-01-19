@@ -265,7 +265,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
         }
 
         err = QgsVectorLayerExporter.exportLayer(vl, tmpfile, "ogr", vl.crs(), False, options)
-        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
                          f'unexpected import error {err}')
 
         vl = QgsVectorLayer(

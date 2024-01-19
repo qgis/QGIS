@@ -746,7 +746,7 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.Animated)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.Animated)
         self.assertEqual(canvas.mapSettings().frameRate(), 30)
         self.assertEqual(canvas.mapSettings().currentFrame(), 6)
 
@@ -755,15 +755,15 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(canvas.mapSettings().currentFrame(), 6)
 
         # switch off animation mode
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.FixedRange)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.FixedRange)
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.Animated)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.Animated)
         self.assertEqual(canvas.mapSettings().frameRate(), 30)
         self.assertEqual(canvas.mapSettings().currentFrame(), 7)
 
-        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationOff)
+        temporal_no.setNavigationMode(QgsTemporalNavigationObject.NavigationMode.NavigationOff)
         self.assertEqual(canvas.mapSettings().frameRate(), -1)
         self.assertEqual(canvas.mapSettings().currentFrame(), -1)
 

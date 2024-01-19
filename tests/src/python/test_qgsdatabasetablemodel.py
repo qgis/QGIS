@@ -57,21 +57,21 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertIn('qgis_test.some_poly_data', tables)
         self.assertIn('information_schema.attributes', tables)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableName), 'someData')
+                                    QgsDatabaseTableModel.Role.RoleTableName), 'someData')
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleSchema), 'qgis_test')
+                                    QgsDatabaseTableModel.Role.RoleSchema), 'qgis_test')
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleComment), 'QGIS Test Table')
+                                    QgsDatabaseTableModel.Role.RoleComment), 'QGIS Test Table')
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleCrs), QgsCoordinateReferenceSystem('EPSG:4326'))
+                                    QgsDatabaseTableModel.Role.RoleCrs), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleCustomInfo), {})
+                                    QgsDatabaseTableModel.Role.RoleCustomInfo), {})
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableFlags), 4)
+                                    QgsDatabaseTableModel.Role.RoleTableFlags), 4)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Point)
+                                    QgsDatabaseTableModel.Role.RoleWkbType), QgsWkbTypes.Type.Point)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.some_poly_data'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Polygon)
+                                    QgsDatabaseTableModel.Role.RoleWkbType), QgsWkbTypes.Type.Polygon)
         self.assertIsNone(model.data(model.index(model.rowCount(), 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
 
         model.refresh()
@@ -79,7 +79,7 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
 
         fields = QgsFields()
         fields.append(QgsField('test', QVariant.String))
-        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
         self.assertEqual(model.rowCount(), old_count)
         model.refresh()
         self.assertEqual(model.rowCount(), old_count + 1)
@@ -89,8 +89,8 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertIn('information_schema.attributes', tables)
         self.assertIn('qgis_test.myNewTable', tables)
 
-        conn.createVectorTable('qgis_test', 'myNewTable2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
-        conn.createVectorTable('qgis_test', 'myNewTable3', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable2', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable3', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
         model.refresh()
         self.assertEqual(model.rowCount(), old_count + 3)
         tables = [model.data(model.index(r, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for r in range(model.rowCount())]
@@ -101,7 +101,7 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertIn('qgis_test.myNewTable2', tables)
         self.assertIn('qgis_test.myNewTable3', tables)
 
-        conn.createVectorTable('qgis_test', 'myNewTable4', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable4', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
         conn.dropVectorTable('qgis_test', 'myNewTable2')
         conn.dropVectorTable('qgis_test', 'myNewTable')
         model.refresh()
@@ -140,21 +140,21 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertIn('some_poly_data', tables)
         self.assertNotIn('attributes', tables)
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableName), 'someData')
+                                    QgsDatabaseTableModel.Role.RoleTableName), 'someData')
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleSchema), 'qgis_test')
+                                    QgsDatabaseTableModel.Role.RoleSchema), 'qgis_test')
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleComment), 'QGIS Test Table')
+                                    QgsDatabaseTableModel.Role.RoleComment), 'QGIS Test Table')
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleCrs), QgsCoordinateReferenceSystem('EPSG:4326'))
+                                    QgsDatabaseTableModel.Role.RoleCrs), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleCustomInfo), {})
+                                    QgsDatabaseTableModel.Role.RoleCustomInfo), {})
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableFlags), 4)
+                                    QgsDatabaseTableModel.Role.RoleTableFlags), 4)
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Point)
+                                    QgsDatabaseTableModel.Role.RoleWkbType), QgsWkbTypes.Type.Point)
         self.assertEqual(model.data(model.index(tables.index('some_poly_data'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Polygon)
+                                    QgsDatabaseTableModel.Role.RoleWkbType), QgsWkbTypes.Type.Polygon)
         self.assertIsNone(model.data(model.index(model.rowCount(), 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
 
     def test_model_allow_empty(self):
@@ -175,25 +175,25 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertIn('information_schema.attributes', tables)
 
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableName), 'someData')
+                                    QgsDatabaseTableModel.Role.RoleTableName), 'someData')
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleSchema), 'qgis_test')
+                                    QgsDatabaseTableModel.Role.RoleSchema), 'qgis_test')
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleComment), 'QGIS Test Table')
+                                    QgsDatabaseTableModel.Role.RoleComment), 'QGIS Test Table')
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleCrs), QgsCoordinateReferenceSystem('EPSG:4326'))
+                                    QgsDatabaseTableModel.Role.RoleCrs), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleCustomInfo), {})
+                                    QgsDatabaseTableModel.Role.RoleCustomInfo), {})
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableFlags), 4)
+                                    QgsDatabaseTableModel.Role.RoleTableFlags), 4)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Point)
+                                    QgsDatabaseTableModel.Role.RoleWkbType), QgsWkbTypes.Type.Point)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.some_poly_data'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Polygon)
+                                    QgsDatabaseTableModel.Role.RoleWkbType), QgsWkbTypes.Type.Polygon)
         self.assertIsNone(model.data(model.index(model.rowCount(), 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
 
         model.refresh()
@@ -201,14 +201,14 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
 
         fields = QgsFields()
         fields.append(QgsField('test', QVariant.String))
-        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
         self.assertEqual(model.rowCount(), old_count + 1)
 
         model.refresh()
         self.assertEqual(model.rowCount(), old_count + 2)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
         tables = [model.data(model.index(r, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('qgis_test.someData', tables)
@@ -219,18 +219,18 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         model.setAllowEmptyTable(False)
         self.assertEqual(model.rowCount(), old_count + 1)
         self.assertTrue(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
         model.setAllowEmptyTable(True)
         self.assertEqual(model.rowCount(), old_count + 2)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
-        conn.createVectorTable('qgis_test', 'myNewTable2', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
-        conn.createVectorTable('qgis_test', 'myNewTable3', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable2', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable3', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
         model.refresh()
         self.assertEqual(model.rowCount(), old_count + 4)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
         tables = [model.data(model.index(r, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('qgis_test.someData', tables)
         self.assertIn('qgis_test.some_poly_data', tables)
@@ -238,15 +238,15 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertIn('qgis_test.myNewTable', tables)
         self.assertIn('qgis_test.myNewTable2', tables)
         self.assertIn('qgis_test.myNewTable3', tables)
-        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
-        conn.createVectorTable('qgis_test', 'myNewTable4', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+        conn.createVectorTable('qgis_test', 'myNewTable4', fields, QgsWkbTypes.Type.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
         conn.dropVectorTable('qgis_test', 'myNewTable2')
         conn.dropVectorTable('qgis_test', 'myNewTable')
         model.refresh()
         self.assertEqual(model.rowCount(), old_count + 3)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
         tables = [model.data(model.index(r, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('qgis_test.someData', tables)
@@ -256,7 +256,7 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertNotIn('qgis_test.myNewTable2', tables)
         self.assertIn('qgis_test.myNewTable3', tables)
         self.assertIn('qgis_test.myNewTable4', tables)
-        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
         conn.dropVectorTable('qgis_test', 'myNewTable3')
         conn.dropVectorTable('qgis_test', 'myNewTable4')
@@ -271,13 +271,13 @@ class TestPyQgsDatabaseTableModel(QgisTestCase):
         self.assertNotIn('qgis_test.myNewTable3', tables)
         self.assertNotIn('qgis_test.myNewTable4', tables)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
-        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
+        self.assertFalse(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
         model.setAllowEmptyTable(False)
         self.assertEqual(model.rowCount(), old_count)
         self.assertTrue(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.RoleEmpty))
+        self.assertFalse(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseTableModel.Role.RoleEmpty))
 
 
 if __name__ == '__main__':

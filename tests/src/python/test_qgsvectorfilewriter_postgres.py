@@ -53,7 +53,7 @@ class TestQgsVectorFileWriterPG(QgisTestCase):
                                                              crs,
                                                              'GPKG')
 
-        self.assertEqual(rc, QgsVectorFileWriter.NoError)
+        self.assertEqual(rc, QgsVectorFileWriter.WriterError.NoError)
 
         # open the resulting geopackage
         vl = QgsVectorLayer(filename + '.gpkg', '', 'ogr')
