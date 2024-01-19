@@ -27,6 +27,7 @@ def processInputs(alg, parameters, context, feedback):
 def convertToHtml(alg, fileName, outputs):
     # don't copy this for something that will have lots of data like r.stats
     # it will be very slow
-    outputs['GRASS_VERSIONINFO'] = open(fileName, 'r').read()
+    with open(fileName, 'r') as f:
+        outputs['GRASS_VERSIONINFO'] = f.read()
     # this will read the file a second time, but calling it saves us duplicating the code here
     alg.convertToHtml(fileName)
