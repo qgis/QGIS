@@ -1669,6 +1669,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     bool &geometryMaybeMissing,
     QString &errorMsg )
 {
+  geomType = Qgis::WkbType::NoGeometry;
   geometryMaybeMissing = false;
 
   QUrl url( mShared->mURI.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
