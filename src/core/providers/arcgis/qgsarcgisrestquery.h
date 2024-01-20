@@ -131,7 +131,7 @@ class CORE_EXPORT QgsArcGisAsyncQuery : public QObject
     QgsArcGisAsyncQuery( QObject *parent = nullptr );
     ~QgsArcGisAsyncQuery() override;
 
-    void start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache = false, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &urlPrefix = QString() );
+    void start( const QUrl &url, const QString &authCfg, QByteArray *result, bool allowCache = false, const QgsHttpHeaders &headers = QgsHttpHeaders(), const QString &urlPrefix = QString());
   signals:
     void finished();
     void failed( QString errorTitle, QString errorName );

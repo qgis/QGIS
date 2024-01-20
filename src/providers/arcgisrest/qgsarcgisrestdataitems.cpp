@@ -134,7 +134,7 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
     {
       if ( !layerItems.value( id ) )
       {
-        std::unique_ptr< QgsArcGisRestParentLayerItem > layerItem = std::make_unique< QgsArcGisRestParentLayerItem >( parent, name, url, authcfg, headers, urlPrefix );
+        std::unique_ptr< QgsArcGisRestParentLayerItem > layerItem = std::make_unique< QgsArcGisRestParentLayerItem >( parent, name, url, authcfg, headers, urlPrefix);
         layerItems.insert( id, layerItem.release() );
       }
     }
@@ -247,7 +247,7 @@ QString QgsArcGisRestConnectionItem::url() const
 // QgsArcGisPortalGroupsItem
 //
 
-QgsArcGisPortalGroupsItem::QgsArcGisPortalGroupsItem( QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint )
+QgsArcGisPortalGroupsItem::QgsArcGisPortalGroupsItem(QgsDataItem *parent, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint )
   : QgsDataCollectionItem( parent, tr( "Groups" ), path, QStringLiteral( "AFS" ) )
   , mAuthCfg( authcfg )
   , mHeaders( headers )
@@ -302,7 +302,7 @@ bool QgsArcGisPortalGroupsItem::equal( const QgsDataItem *other )
 //
 // QgsArcGisPortalGroupItem
 //
-QgsArcGisPortalGroupItem::QgsArcGisPortalGroupItem( QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint )
+QgsArcGisPortalGroupItem::QgsArcGisPortalGroupItem(QgsDataItem *parent, const QString &groupId, const QString &name, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, const QString &communityEndpoint, const QString &contentEndpoint )
   : QgsDataCollectionItem( parent, name, groupId, QStringLiteral( "AFS" ) )
   , mId( groupId )
   , mAuthCfg( authcfg )
@@ -370,7 +370,7 @@ bool QgsArcGisPortalGroupItem::equal( const QgsDataItem *other )
 // QgsArcGisRestServicesItem
 //
 
-QgsArcGisRestServicesItem::QgsArcGisRestServicesItem( QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix )
+QgsArcGisRestServicesItem::QgsArcGisRestServicesItem(QgsDataItem *parent, const QString &url, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers , const QString urlPrefix)
   : QgsDataCollectionItem( parent, tr( "Services" ), path, QStringLiteral( "AFS" ) )
   , mUrl( url )
   , mAuthCfg( authcfg )
@@ -415,7 +415,7 @@ bool QgsArcGisRestServicesItem::equal( const QgsDataItem *other )
 //
 // QgsArcGisRestFolderItem
 //
-QgsArcGisRestFolderItem::QgsArcGisRestFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
+QgsArcGisRestFolderItem::QgsArcGisRestFolderItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers , const QString &urlPrefix)
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
   , mBaseUrl( baseUrl )
   , mAuthCfg( authcfg )
@@ -467,7 +467,7 @@ bool QgsArcGisRestFolderItem::equal( const QgsDataItem *other )
 //
 // QgsArcGisFeatureServiceItem
 //
-QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
+QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers , const QString &urlPrefix)
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
   , mBaseUrl( baseUrl )
   , mAuthCfg( authcfg )
@@ -520,7 +520,7 @@ bool QgsArcGisFeatureServiceItem::equal( const QgsDataItem *other )
 // QgsArcGisMapServiceItem
 //
 
-QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, Qgis::ArcGisRestServiceType serviceType )
+QgsArcGisMapServiceItem::QgsArcGisMapServiceItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix, Qgis::ArcGisRestServiceType serviceType )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AMS" ) )
   , mBaseUrl( baseUrl )
   , mAuthCfg( authcfg )
@@ -573,15 +573,15 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
 // QgsArcGisFeatureServiceLayerItem
 //
 
-QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType )
+QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem(QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix, Qgis::BrowserLayerType geometryType )
   : QgsLayerItem( parent, title, url, QString(), geometryType, QStringLiteral( "arcgisfeatureserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
 
-  if ( !urlPrefix.isEmpty() )
-    mUri += QStringLiteral( " urlprefix='%1'" ).arg( urlPrefix );
+  if (!urlPrefix.isEmpty())
+      mUri += QStringLiteral( " urlprefix='%1'" ).arg( urlPrefix );
 
   mUri += headers.toSpacedString();
 
@@ -614,7 +614,7 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent,
 // QgsArcGisRestParentLayerItem
 //
 
-QgsArcGisRestParentLayerItem::QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
+QgsArcGisRestParentLayerItem::QgsArcGisRestParentLayerItem(QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsHttpHeaders &headers , const QString &urlPrefix)
   : QgsDataItem( Qgis::BrowserItemType::Collection, parent, name, path )
   , mAuthCfg( authcfg )
   , mHeaders( headers )
