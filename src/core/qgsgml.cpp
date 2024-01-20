@@ -1116,18 +1116,14 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
 
     if ( mAttributeValIsNested )
     {
-      //find index with attribute name
-      const QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( mAttributeName );
-      Q_ASSERT( mCurrentFeature );
-      const int attrIndex = att_it.value().first;
-      auto attrVal = mCurrentFeature->attribute( attrIndex );
-      if ( attrVal.isNull() )
+      auto iter = mMapFieldNameToJSONContent.find( mAttributeName );
+      if ( iter == mMapFieldNameToJSONContent.end() )
       {
-        mCurrentFeature->setAttribute( attrIndex, QString::fromStdString( mAttributeJson.dump() ) );
+        mMapFieldNameToJSONContent[mAttributeName] = QString::fromStdString( mAttributeJson.dump() );
       }
       else
       {
-        QString str = attrVal.toString();
+        QString &str = iter.value();
         if ( str[0] == '[' && str.back() == ']' )
         {
           str.back() = ',';
@@ -1139,7 +1135,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
         }
         str.append( QString::fromStdString( mAttributeJson.dump() ) );
         str.append( ']' );
-        mCurrentFeature->setAttribute( attrIndex, str );
       }
     }
     else
@@ -1248,6 +1243,14 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
     }
     mCurrentFeature->setValid( true );
+
+    for ( auto iter = mMapFieldNameToJSONContent.constBegin(); iter != mMapFieldNameToJSONContent.constEnd(); ++iter )
+    {
+      const QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( iter.key() );
+      const int attrIndex = att_it.value().first;
+      mCurrentFeature->setAttribute( attrIndex, iter.value() );
+    }
+    mMapFieldNameToJSONContent.clear();
 
     mFeatureList.push_back( QgsGmlFeaturePtrGmlIdPair( mCurrentFeature, mCurrentFeatureId ) );
 

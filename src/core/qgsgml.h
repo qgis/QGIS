@@ -334,6 +334,8 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString mAttributeName;
     int mAttributeDepth = -1;
     bool mAttributeValIsNested = false;
+    //! Map from field name to JSON content.
+    QMap< QString, QString > mMapFieldNameToJSONContent;
     nlohmann::json mAttributeJson;
     QStack<nlohmann::json *> mAttributeJsonCurrentStack;
     char mEndian;
