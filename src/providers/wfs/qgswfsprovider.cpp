@@ -1649,6 +1649,18 @@ static QVariant::Type getVariantTypeFromXML( const QString &xmlType )
   return attributeType;
 }
 
+static void CPL_STDCALL QgsWFSProviderGMLASErrorHandler( CPLErr eErr, CPLErrorNum /*eErrorNum*/, const char *pszErrorMsg )
+{
+  // Silence harmless warnings like "GeographicalName_pronunciation_PronunciationOfName_pronunciationSoundLink_nilReason identifier truncated to geographicalname_pronunciation_pronunciationofname_pronunciatio"
+  if ( !( eErr == CE_Warning && strstr( pszErrorMsg, " truncated to " ) ) )
+  {
+    if ( eErr == CE_Failure )
+      QgsMessageLog::logMessage( QObject::tr( "GMLAS error: %1" ).arg( pszErrorMsg ), QObject::tr( "WFS" ) );
+    else
+      QgsDebugMsgLevel( QStringLiteral( "GMLAS eErr=%1, msg=%2" ).arg( eErr ).arg( pszErrorMsg ), 4 );
+  }
+}
+
 bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &response,
     const QString &prefixedTypename,
     QString &geometryAttribute,
@@ -1756,7 +1768,9 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     CPLFree( pszEscaped );
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "CONFIG_FILE", config.toStdString().c_str() );
 
+    CPLPushErrorHandler( QgsWFSProviderGMLASErrorHandler );
     hDS = GDALOpenEx( "GMLAS:", GDAL_OF_VECTOR, nullptr, papszOpenOptions, nullptr );
+    CPLPopErrorHandler();
     CSLDestroy( papszOpenOptions );
   };
 
