@@ -124,6 +124,8 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
 
     QAction *mCopyValueAction;
     QAction *mCopyKeyAction;
+
+    bool mEnableUrlHighlighting = true;
 };
 
 #endif // QGSJSONEDITWIDGET_H
