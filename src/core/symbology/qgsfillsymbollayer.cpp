@@ -41,6 +41,7 @@
 #include "qgscolorutils.h"
 
 #include <QPainter>
+#include <QPagedPaintDevice>
 #include <QFile>
 #include <QSvgRenderer>
 #include <QDomDocument>
@@ -48,9 +49,6 @@
 #include <QtMath>
 #include <random>
 
-#ifndef QT_NO_PRINTER
-#include <QPrinter>
-#endif
 
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
@@ -328,15 +326,12 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
 
-#ifndef QT_NO_PRINTER
-  if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPrinter *>( p->device() ) )
-#endif
+  if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPagedPaintDevice *>( p->device() ) )
   {
     p->setPen( useSelectedColor ? mSelPen : mPen );
     p->setBrush( useSelectedColor ? mSelBrush : mBrush );
     _renderPolygon( p, points, rings, context );
   }
-#ifndef QT_NO_PRINTER
   else
   {
     // workaround upstream issue https://github.com/qgis/QGIS/issues/36580
@@ -350,7 +345,6 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
     p->setBrush( Qt::NoBrush );
     _renderPolygon( p, points, rings, context );
   }
-#endif
 
   if ( !offset.isNull() )
   {

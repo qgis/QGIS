@@ -33,11 +33,12 @@
 #include "qgsxmlutils.h"
 #include "qgssymbollayerreference.h"
 #include "qgssymbollayerutils.h"
+#include "qgsconfig.h"
 
 #include <QTextStream>
 #include <QDomDocument>
 #include <QRegularExpression>
-#ifndef QT_NO_PRINTER
+#if defined( HAVE_QTPRINTER )
 #include <QPrinter> //to find out screen resolution
 #endif
 #include <cstdlib>
@@ -304,7 +305,7 @@ void transform0100to0110( QgsProjectFileTransform *pft )
 {
   if ( ! pft->dom().isNull() )
   {
-#ifndef QT_NO_PRINTER
+#if defined( HAVE_QTPRINTER )
     //Change 'outlinewidth' in QgsSymbol
     const QPrinter myPrinter( QPrinter::ScreenResolution );
     const int screenDpi = myPrinter.resolution();
