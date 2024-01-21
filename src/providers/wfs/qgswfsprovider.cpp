@@ -2270,6 +2270,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaD
   if ( attributeNodeList.size() < 1 )
   {
     errorMsg = tr( "Cannot find attribute elements" );
+    mayTryWithGMLAS = true;
     return false;
   }
 
