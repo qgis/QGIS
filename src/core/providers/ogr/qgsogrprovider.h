@@ -78,6 +78,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
+    QString dataComment() const override;
+
     /**
      * Gets the number of sublayer in the OGR datasource.
      * layer_styles is not counted.

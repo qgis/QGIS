@@ -3239,6 +3239,14 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   return srs;
 }
 
+QString QgsOgrProvider::dataComment() const
+{
+  if ( !mOgrLayer )
+    return QString();
+  // Potentially set on File Geodatabase
+  return mOgrLayer->GetMetadataItem( QStringLiteral( "ALIAS_NAME" ) );
+}
+
 QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 {
   QSet<QVariant> uniqueValues;
