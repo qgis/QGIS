@@ -12,6 +12,10 @@ jobs:
   backport:
     runs-on: ubuntu-22.04
     name: Backport
+
+    permissions:
+      pull-requests: write
+
     steps:
       - name: Backport Bot
         id: backport
