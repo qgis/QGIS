@@ -62,6 +62,6 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
         buttonBox.rejected.connect(dlg.reject)
         layout.addWidget(buttonBox)
         dlg.setLayout(layout)
-        if dlg.exec_():
+        if dlg.exec():
             self.editAuthCfg.setText(selector.configId())
         del dlg

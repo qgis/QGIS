@@ -57,7 +57,7 @@ class MessageBarProgress(QgsProcessingFeedback):
             dlg = MessageDialog()
             dlg.setTitle(QCoreApplication.translate('MessageBarProgress', 'Problem executing algorithm'))
             dlg.setMessage("<br>".join(self.msg))
-            dlg.exec_()
+            dlg.exec()
         iface.messageBar().popWidget(self.message_bar_item)
 
     def tr(self, string, context=''):

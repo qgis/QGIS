@@ -52,7 +52,7 @@ class TestQgsFileDownloader(QgisTestCase):
         if cancel:
             downloader.downloadProgress.connect(downloader.cancelDownload)
 
-        loop.exec_()
+        loop.exec()
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Test with http://www.qgis.org unstable. Needs local server.')

@@ -56,7 +56,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         from processing.gui.AlgorithmDialog import AlgorithmDialog
         dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
         dlg.show()
-        dlg.exec_()
+        dlg.exec()
 
     def processingContext(self):
         if self.context is None:

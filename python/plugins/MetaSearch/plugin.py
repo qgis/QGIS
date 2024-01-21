@@ -90,7 +90,7 @@ class MetaSearchPlugin:
     def run(self):
         """open MetaSearch"""
 
-        self.dialog.exec_()
+        self.dialog.exec()
 
     def help(self):
         """open help in user's default web browser"""

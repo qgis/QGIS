@@ -300,7 +300,7 @@ def createTest(text):
 
     definition['results'] = results
     dlg = ShowTestDialog(yaml.dump([definition], default_flow_style=False))
-    dlg.exec_()
+    dlg.exec()
 
 
 def tr(string):

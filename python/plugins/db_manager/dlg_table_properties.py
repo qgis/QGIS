@@ -123,7 +123,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
     def addColumn(self):
         """ open dialog to set column info and add column to table """
         dlg = DlgFieldProperties(self, None, self.table)
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         fld = dlg.getField()
 
@@ -139,7 +139,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
     def addGeometryColumn(self):
         """ open dialog to add geometry column """
         dlg = DlgAddGeometryColumn(self, self.table)
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         self.refresh()
 
@@ -155,7 +155,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         fld = m.getObject(index)
 
         dlg = DlgFieldProperties(self, fld, self.table)
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         new_fld = dlg.getField(True)
 
@@ -214,7 +214,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         """Adds primary key or unique constraint """
 
         dlg = DlgCreateConstraint(self, self.table)
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         self.refresh()
 
@@ -274,7 +274,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
     def createIndex(self):
         """Creates an index """
         dlg = DlgCreateIndex(self, self.table)
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         self.refresh()
 

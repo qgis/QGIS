@@ -97,7 +97,7 @@ class BatchInputSelectionPanel(QWidget):
         selectDirectoryAction.triggered.connect(self.showDirectorySelectionDialog)
         popupmenu.addAction(selectDirectoryAction)
 
-        popupmenu.exec_(QCursor.pos())
+        popupmenu.exec(QCursor.pos())
 
     def showLayerSelectionDialog(self):
         layers = []
@@ -130,7 +130,7 @@ class BatchInputSelectionPanel(QWidget):
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
-        dlg.exec_()
+        dlg.exec()
 
         def generate_layer_id(layer):
             # prefer layer name if unique

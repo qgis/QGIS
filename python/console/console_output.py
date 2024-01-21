@@ -254,7 +254,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
             clearAction.setEnabled(True)
         if self.parent.tabEditorWidget.isVisible():
             showEditorAction.setEnabled(False)
-        menu.exec_(self.mapToGlobal(e.pos()))
+        menu.exec(self.mapToGlobal(e.pos()))
 
     def hideToolBar(self):
         tB = self.parent.toolBar

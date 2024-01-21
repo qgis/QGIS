@@ -520,7 +520,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
     def displayQueryBuilder(self):
         dlg = QueryBuilderDlg(self.iface, self.db, self, reset=self.queryBuilderFirst)
         self.queryBuilderFirst = False
-        r = dlg.exec_()
+        r = dlg.exec()
         if r == QDialog.DialogCode.Accepted:
             self.editSql.setText(dlg.query)
 
@@ -554,7 +554,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
         dlg = QgsQueryBuilder(layer)
         dlg.setSql(self.filter)
-        if dlg.exec_():
+        if dlg.exec():
             self.filter = dlg.sql()
         layer.deleteLater()
 

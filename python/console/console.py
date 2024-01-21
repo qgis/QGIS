@@ -798,4 +798,4 @@ if __name__ == '__main__':
     a = QApplication(sys.argv)
     console = PythonConsoleWidget()
     console.show()
-    a.exec_()
+    a.exec()

@@ -62,7 +62,7 @@ class TestPyQgsProjectStorageOracle(QgisTestCase, TestPyQgsProjectStorageBase):
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.con)
         query = QSqlQuery(self.con)
-        res = query.exec_(sql)
+        res = query.exec(sql)
         if not ignore_errors:
             self.assertTrue(res, sql + ': ' + query.lastError().text())
         query.finish()

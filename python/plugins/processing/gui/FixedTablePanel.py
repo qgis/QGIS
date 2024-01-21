@@ -65,7 +65,7 @@ class FixedTablePanel(BASE, WIDGET):
 
     def showFixedTableDialog(self):
         dlg = FixedTableDialog(self.param, self.table)
-        dlg.exec_()
+        dlg.exec()
         if dlg.rettable is not None:
             self.setValue(dlg.rettable)
         dlg.deleteLater()

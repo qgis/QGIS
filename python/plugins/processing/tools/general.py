@@ -198,7 +198,7 @@ def execAlgorithmDialog(algOrName, parameters={}):
     canvas = iface.mapCanvas()
     prevMapTool = canvas.mapTool()
     dlg.show()
-    dlg.exec_()
+    dlg.exec()
     if canvas.mapTool() != prevMapTool:
         try:
             canvas.mapTool().reset()

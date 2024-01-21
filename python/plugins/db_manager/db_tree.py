@@ -139,7 +139,7 @@ class DBTree(QTreeView):
             menu.addAction(QCoreApplication.translate("DBTree", "New Connection…"), self.newConnection)
 
         if not menu.isEmpty():
-            menu.exec_(ev.globalPos())
+            menu.exec(ev.globalPos())
 
         menu.deleteLater()
 
