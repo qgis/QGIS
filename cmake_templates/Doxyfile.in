@@ -241,7 +241,7 @@ QT_AUTOBRIEF           = NO
 
 MULTILINE_CPP_IS_BRIEF = NO
 
-# By default Python docstrings are displayed as preformatted text and doxygen's
+# By default Python docstrings are displayed as pre-formatted text and doxygen's
 # special commands cannot be used. By setting PYTHON_DOCSTRING to NO the
 # doxygen's special commands can be used and the contents of the docstring
 # documentation blocks is shown as doxygen documentation.
@@ -1369,7 +1369,7 @@ HTML_EXTRA_FILES       =
 # generate dark mode output, AUTO_LIGHT automatically set the mode according to
 # the user preference, use light mode if no preference is set (the default),
 # AUTO_DARK automatically set the mode according to the user preference, use
-# dark mode if no preference is set and TOGGLE allow to user to switch between
+# dark mode if no preference is set and TOGGLE allow user to switch between
 # light and dark mode via a button.
 # The default value is: AUTO_LIGHT.
 # This tag requires that the tag GENERATE_HTML is set to YES.
