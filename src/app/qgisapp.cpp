@@ -44,7 +44,6 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
-#include <QPrinter>
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
