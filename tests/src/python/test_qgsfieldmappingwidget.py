@@ -276,7 +276,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
                          "Constraints active")
         self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ItemDataRole.ToolTipRole),
                          "Unique<br>Not null<br>Expression")
-        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.BackgroundColorRole),
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ItemDataRole.BackgroundRole),
                          QColor(255, 224, 178))
 
         # self._showDialog(widget)
