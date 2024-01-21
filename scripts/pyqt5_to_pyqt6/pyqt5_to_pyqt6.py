@@ -158,6 +158,14 @@ deprecated_renamed_enums = {
     ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
 }
 
+rename_function_attributes = {
+    'exec_': 'exec'
+}
+
+rename_function_definitions = {
+    'exec_': 'exec'
+}
+
 # { (class, enum_value) : enum_name }
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
@@ -171,6 +179,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX
     fix_qt_enums = {}  # Unscoping of enums
+    member_renames = {}
+    function_def_renames = {}
     rename_qt_enums = []  # Renaming deprecated removed enums
 
     tree = ast.parse(contents, filename=filename)
@@ -180,6 +190,16 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
                 fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
+
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+                if node.func.attr in rename_function_attributes:
+                    attr_node = node.func
+                    member_renames[
+                        Offset(node.func.lineno, attr_node.end_col_offset - len(node.func.attr) - 1)] = rename_function_attributes[node.func.attr]
+
+            if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
+                function_def_renames[
+                    Offset(node.lineno, node.col_offset)] = rename_function_definitions[node.name]
 
             if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and (node.value.id, node.attr) in ambiguous_enums):
@@ -218,7 +238,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
-    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums:
+    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums and not member_renames and not function_def_renames:
         return 0
 
     tokens = src_to_tokens(contents)
@@ -234,6 +254,15 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         if token.offset in fix_pyqt_import:
             assert tokens[i + 2].src == "PyQt5"
             tokens[i + 2] = tokens[i + 2]._replace(src="qgis.PyQt")
+
+        if token.offset in function_def_renames and tokens[i].src == "def":
+            tokens[i + 2] = tokens[i + 2]._replace(src=function_def_renames[token.offset])
+
+        if token.offset in member_renames:
+            counter = i
+            while tokens[counter].src != '.':
+                counter += 1
+            tokens[counter + 1] = tokens[counter + 1]._replace(src=member_renames[token.offset])
 
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
