@@ -607,7 +607,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mGeometryString.append( ">", 1 );
   }
 
-  if ( isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
+  if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "coordinates" ) )
   {
     mParseModeStack.push( Coordinate );
     mCoorMode = QgsGmlStreamingParser::Coordinate;
@@ -623,7 +623,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
       mTupleSeparator = ' ';
     }
   }
-  else if ( isGMLNS &&
+  else if ( !mAttributeValIsNested && isGMLNS &&
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::PosList );
@@ -650,7 +650,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mGeometryString.clear();
   }
   //else if ( mParseModeStack.size() == 0 && elementName == mGMLNameSpaceURI + NS_SEPARATOR + "boundedBy" )
-  else if ( isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
+  else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::BoundingBox );
     mCurrentExtent = QgsRectangle();
@@ -778,35 +778,35 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   {
     isGeom = true;
   }
-  else if ( isGMLNS && LOCALNAME_EQUALS( "Point" ) )
+  else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "Point" ) )
   {
     isGeom = true;
   }
-  else if ( isGMLNS && LOCALNAME_EQUALS( "LineString" ) )
+  else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "LineString" ) )
   {
     isGeom = true;
   }
-  else if ( isGMLNS &&
+  else if ( !mAttributeValIsNested && isGMLNS &&
             localNameLen == static_cast<int>( strlen( "Polygon" ) ) && memcmp( pszLocalName, "Polygon", localNameLen ) == 0 )
   {
     isGeom = true;
     mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
   }
-  else if ( isGMLNS && LOCALNAME_EQUALS( "MultiPoint" ) )
+  else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "MultiPoint" ) )
   {
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::MultiPoint );
     //we need one nested list for intermediate WKB
     mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
   }
-  else if ( isGMLNS && ( LOCALNAME_EQUALS( "MultiLineString" ) || LOCALNAME_EQUALS( "MultiCurve" ) ) )
+  else if ( !mAttributeValIsNested && isGMLNS && ( LOCALNAME_EQUALS( "MultiLineString" ) || LOCALNAME_EQUALS( "MultiCurve" ) ) )
   {
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::MultiLine );
     //we need one nested list for intermediate WKB
     mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
   }
-  else if ( isGMLNS && ( LOCALNAME_EQUALS( "MultiPolygon" ) || LOCALNAME_EQUALS( "MultiSurface" ) ) )
+  else if ( !mAttributeValIsNested && isGMLNS && ( LOCALNAME_EQUALS( "MultiPolygon" ) || LOCALNAME_EQUALS( "MultiSurface" ) ) )
   {
     isGeom = true;
     mParseModeStack.push( QgsGmlStreamingParser::MultiPolygon );
@@ -1116,6 +1116,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
 
     if ( mAttributeValIsNested )
     {
+      mAttributeValIsNested = false;
       auto iter = mMapFieldNameToJSONContent.find( mAttributeName );
       if ( iter == mMapFieldNameToJSONContent.end() )
       {
@@ -1258,7 +1259,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     ++mFeatureCount;
     mParseModeStack.pop();
   }
-  else if ( isGMLNS && LOCALNAME_EQUALS( "Point" ) )
+  else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "Point" ) )
   {
     QList<QgsPointXY> pointList;
     if ( pointsFromString( pointList, mStringCash ) != 0 )
@@ -1300,7 +1301,8 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
     }
   }
-  else if ( isGMLNS && ( LOCALNAME_EQUALS( "LineString" ) || LOCALNAME_EQUALS( "LineStringSegment" ) ) )
+  else if ( !mAttributeValIsNested &&
+            isGMLNS && ( LOCALNAME_EQUALS( "LineString" ) || LOCALNAME_EQUALS( "LineStringSegment" ) ) )
   {
     //add WKB point to the feature
 
