@@ -142,7 +142,6 @@ PyQgsPointCloudAttributeComboBox
 PyQgsPointCloudAttributeModel
 PyQgsPointCloudClassifiedRenderer
 PyQgsPointCloudLayerProfileGenerator
-PyQgsPointCloudRgbRenderer
 PyQgsPointDisplacementRenderer
 PyQgsProcessExecutablePt1
 PyQgsProcessExecutablePt2
@@ -213,7 +212,6 @@ PyQgsWFSProvider
 PyQgsOapifProvider
 PyQgsDBManagerGpkg
 PyQgsDBManagerSpatialite
-PyQgsFileDownloader
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsSettingsTreeNode
@@ -283,7 +281,6 @@ ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTestPt1
 ProcessingGrass7AlgorithmsRasterTestPt2
 ProcessingGrass7AlgorithmsVectorTest
-ProcessingOtbAlgorithmsTest
 PyPythonRepr
 TestQgsRandomMarkerSymbolLayer
 ProcessingToolsTest
