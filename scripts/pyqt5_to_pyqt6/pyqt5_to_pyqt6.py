@@ -155,7 +155,9 @@ qmetatype_mapping = {
 }
 
 deprecated_renamed_enums = {
-    ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
+    ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton'),
+    ('Qt', 'TextColorRole'): ('ItemDataRole', 'ForegroundRole'),
+    ('Qt', 'BackgroundColorRole'): ('ItemDataRole', 'BackgroundRole'),
 }
 
 rename_function_attributes = {

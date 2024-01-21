@@ -215,7 +215,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         for f in self.layer.getFeatures():
             model_index = self.am.idToIndex(f.id())
-            text_color = self.am.data(model_index, Qt.TextColorRole)
+            text_color = self.am.data(model_index, Qt.ItemDataRole.ForegroundRole)
 
             if f['fldint'] <= style_threshold:
                 self.assertEqual(text_color, color)
@@ -235,7 +235,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         for f in self.layer.getFeatures():
             model_index = self.am.idToIndex(f.id())
-            text_color = self.am.data(model_index, Qt.TextColorRole)
+            text_color = self.am.data(model_index, Qt.ItemDataRole.ForegroundRole)
 
             if f['fldint'] <= style_threshold:
                 self.assertEqual(color, text_color, f'Feature {f.id()} should have color')
