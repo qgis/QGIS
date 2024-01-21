@@ -21,6 +21,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   mingw64-build:
     name: MinGW64 Windows Build

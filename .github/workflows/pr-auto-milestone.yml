@@ -5,6 +5,9 @@ on:
     types:
       - opened
 
+permissions:
+  contents: read
+
 env:
   QGIS_MAJOR_VERSION: 3
 

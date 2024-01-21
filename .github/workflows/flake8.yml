@@ -8,6 +8,9 @@ on:
     paths:
       - '**.py'
 
+permissions:
+  contents: read
+
 jobs:
   flake8_py3:
     name: Python Lint
