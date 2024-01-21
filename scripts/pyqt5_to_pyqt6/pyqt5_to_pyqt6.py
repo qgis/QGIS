@@ -315,34 +315,44 @@ def get_class_enums(item):
     if not inspect.isclass(item):
         return
 
+    # enums might be referenced using a subclass instead of their
+    # parent class, so we need to loop through all those too...
+    def all_subclasses(cls):
+        if cls is object:
+            return set()
+        return {cls}.union(
+            s for c in cls.__subclasses__() for s in all_subclasses(c))
+    matched_classes = {item}.union(all_subclasses(item))
+
     for key, value in item.__dict__.items():
         if inspect.isclass(value) and type(value).__name__ == 'EnumType':
             for ekey, evalue in value.__dict__.items():
-                if isinstance(evalue, value):
-                    try:
-                        test_value = getattr(item, str(ekey))
-                        if not issubclass(type(test_value), Enum):
-                            # There's a naming clash between an enum value (Eg QgsAggregateMappingModel.ColumnDataIndex.Aggregate)
-                            # and a class (QgsAggregateMappingModel.Aggregate)
-                            # So don't do any upgrades for these values, as current code will always be referring
-                            # to the CLASS
+                for matched_class in matched_classes:
+                    if isinstance(evalue, value):
+                        try:
+                            test_value = getattr(item, str(ekey))
+                            if not issubclass(type(test_value), Enum):
+                                # There's a naming clash between an enum value (Eg QgsAggregateMappingModel.ColumnDataIndex.Aggregate)
+                                # and a class (QgsAggregateMappingModel.Aggregate)
+                                # So don't do any upgrades for these values, as current code will always be referring
+                                # to the CLASS
+                                continue
+                        except AttributeError:
+                            pass
+
+                        if (matched_class.__name__, ekey) in ambiguous_enums:
+                            if value.__name__ not in ambiguous_enums[(matched_class.__name__, ekey)]:
+                                ambiguous_enums[(matched_class.__name__, ekey)].add(value.__name__)
                             continue
-                    except AttributeError:
-                        pass
 
-                    if (item.__name__, ekey) in ambiguous_enums:
-                        if value.__name__ not in ambiguous_enums[(item.__name__, ekey)]:
-                            ambiguous_enums[(item.__name__, ekey)].add(value.__name__)
-                        continue
-
-                    existing_entry = qt_enums.get((item.__name__, ekey))
-                    if existing_entry != value.__name__ and existing_entry:
-                        ambiguous_enums[(item.__name__, ekey)].add(existing_entry)
-                        ambiguous_enums[(item.__name__, ekey)].add(
-                            value.__name__)
-                        del qt_enums[(item.__name__, ekey)]
-                    else:
-                        qt_enums[(item.__name__, ekey)] = f"{value.__name__}"
+                        existing_entry = qt_enums.get((matched_class.__name__, ekey))
+                        if existing_entry != value.__name__ and existing_entry:
+                            ambiguous_enums[(matched_class.__name__, ekey)].add(existing_entry)
+                            ambiguous_enums[(matched_class.__name__, ekey)].add(
+                                value.__name__)
+                            del qt_enums[(matched_class.__name__, ekey)]
+                        else:
+                            qt_enums[(matched_class.__name__, ekey)] = f"{value.__name__}"
 
         elif inspect.isclass(value):
             get_class_enums(value)
