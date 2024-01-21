@@ -21,7 +21,6 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPlainTextEdit>
-#include <QPrinter>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QTextStream>
