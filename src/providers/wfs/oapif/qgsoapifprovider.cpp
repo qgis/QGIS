@@ -109,7 +109,8 @@ bool QgsOapifProvider::init()
 
   mShared->mServerMaxFeatures = apiRequest.maxLimit();
 
-  if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mServerMaxFeatures > 0 && !mShared->mURI.pagingEnabled() )
+  const bool pagingEnabled = mShared->mURI.pagingStatus() != QgsWFSDataSourceURI::PagingStatus::DISABLED;
+  if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mServerMaxFeatures > 0 && !pagingEnabled )
   {
     mShared->mMaxFeatures = std::min( mShared->mURI.maxNumFeatures(), mShared->mServerMaxFeatures );
   }
@@ -117,12 +118,12 @@ bool QgsOapifProvider::init()
   {
     mShared->mMaxFeatures = mShared->mURI.maxNumFeatures();
   }
-  else if ( mShared->mServerMaxFeatures > 0 && !mShared->mURI.pagingEnabled() )
+  else if ( mShared->mServerMaxFeatures > 0 && !pagingEnabled )
   {
     mShared->mMaxFeatures = mShared->mServerMaxFeatures;
   }
 
-  if ( mShared->mURI.pagingEnabled() && mShared->mURI.pageSize() > 0 )
+  if ( pagingEnabled && mShared->mURI.pageSize() > 0 )
   {
     if ( mShared->mServerMaxFeatures > 0 )
     {
@@ -133,7 +134,7 @@ bool QgsOapifProvider::init()
       mShared->mPageSize = mShared->mURI.pageSize();
     }
   }
-  else if ( mShared->mURI.pagingEnabled() )
+  else if ( pagingEnabled )
   {
     if ( apiRequest.defaultLimit() > 0 && apiRequest.maxLimit() > 0 )
     {

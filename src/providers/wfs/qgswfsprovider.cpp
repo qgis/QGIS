@@ -2582,7 +2582,19 @@ bool QgsWFSProvider::getCapabilities()
   mShared->mURI.setPostEndpoints( mShared->mCaps.operationPostEndpoints );
 
   mShared->mWFSVersion = mShared->mCaps.version;
-  if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mCaps.maxFeatures > 0 && !( mShared->mCaps.supportsPaging && mShared->mURI.pagingEnabled() ) )
+
+  bool pagingEnabled = false;
+  if ( mShared->mURI.pagingStatus() == QgsWFSDataSourceURI::PagingStatus::ENABLED )
+  {
+    pagingEnabled = true;
+  }
+  else if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  {
+    if ( mShared->mCaps.supportsPaging && mShared->mURI.pagingStatus() == QgsWFSDataSourceURI::PagingStatus::DEFAULT )
+      pagingEnabled = true;
+  }
+
+  if ( mShared->mURI.maxNumFeatures() > 0 && mShared->mCaps.maxFeatures > 0 && !pagingEnabled )
   {
     mShared->mMaxFeatures = std::min( mShared->mURI.maxNumFeatures(), mShared->mCaps.maxFeatures );
   }
@@ -2590,7 +2602,7 @@ bool QgsWFSProvider::getCapabilities()
   {
     mShared->mMaxFeatures = mShared->mURI.maxNumFeatures();
   }
-  else if ( mShared->mCaps.maxFeatures > 0 && !( mShared->mCaps.supportsPaging && mShared->mURI.pagingEnabled() ) )
+  else if ( mShared->mCaps.maxFeatures > 0 && !pagingEnabled )
   {
     mShared->mMaxFeatures = mShared->mCaps.maxFeatures;
   }
@@ -2599,7 +2611,7 @@ bool QgsWFSProvider::getCapabilities()
     mShared->mMaxFeatures = 0;
   }
 
-  if ( mShared->mCaps.supportsPaging && mShared->mURI.pagingEnabled() )
+  if ( pagingEnabled )
   {
     if ( mShared->mURI.pageSize() > 0 )
     {

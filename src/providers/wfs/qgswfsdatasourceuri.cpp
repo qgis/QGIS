@@ -334,11 +334,17 @@ long long QgsWFSDataSourceURI::pageSize() const
   return mURI.param( QgsWFSConstants::URI_PARAM_PAGE_SIZE ).toLongLong();
 }
 
-bool QgsWFSDataSourceURI::pagingEnabled() const
+QgsWFSDataSourceURI::PagingStatus QgsWFSDataSourceURI::pagingStatus() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) )
-    return true;
-  return mURI.param( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) == QLatin1String( "true" );
+    return PagingStatus::DEFAULT;
+  const QString val = mURI.param( QgsWFSConstants::URI_PARAM_PAGING_ENABLED );
+  if ( val == QLatin1String( "true" ) || val == QLatin1String( "enabled" ) )
+    return PagingStatus::ENABLED;
+  else if ( val == QLatin1String( "false" ) || val ==  QLatin1String( "disabled" ) )
+    return PagingStatus::DISABLED;
+  else
+    return PagingStatus::DEFAULT;
 }
 
 void QgsWFSDataSourceURI::setTypeName( const QString &typeName )
