@@ -17,6 +17,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   mingw-w64-msys2-build:
     name: MSYS2 MinGW-w64 Windows Build

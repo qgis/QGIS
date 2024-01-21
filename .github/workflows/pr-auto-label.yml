@@ -4,6 +4,9 @@ on:
   pull_request_target:
     types: [ opened, synchronize, reopened ]
 
+permissions:
+  contents: read
+
 jobs:
   triage:
     name: "Set on PR"

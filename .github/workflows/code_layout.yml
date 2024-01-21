@@ -8,6 +8,9 @@ on:
       - queued_ltr_backports
   pull_request:
 
+permissions:
+  contents: read
+
 env:
   DOXYGEN_VERSION: 1.9.6
 

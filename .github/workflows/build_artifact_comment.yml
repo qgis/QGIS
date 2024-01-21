@@ -9,6 +9,9 @@ on:
       - 'master'
       - 'release*'
 
+permissions:
+  contents: read
+
 jobs:
   on-success:
 

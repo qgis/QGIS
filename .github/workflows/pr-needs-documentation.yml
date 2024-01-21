@@ -11,6 +11,9 @@ on:
       - closed
       - labeled
 
+permissions:
+  contents: read
+
 jobs:
   ping-author-message:
     permissions:
