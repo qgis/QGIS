@@ -3497,6 +3497,18 @@ class PyQgsOGRProvider(QgisTestCase):
         f = vl.getFeature(1)
         self.assertEqual(f.attributes()[0], {'style': {'color': 'yellow'}})
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 8, 0), "GDAL 3.8 required")
+    def testDataCommentFileGeodatabase(self):
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = os.path.join(temp_dir, 'testDataCommentFileGeodatabase.gdb')
+            ds = ogr.GetDriverByName("OpenFileGDB").CreateDataSource(dest_file_name)
+            ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["LAYER_ALIAS=my_alias"])
+            ds = None
+
+            vl = QgsVectorLayer(dest_file_name, 'vl')
+            self.assertEqual(vl.dataComment(), "my_alias")
+
 
 if __name__ == '__main__':
     unittest.main()
