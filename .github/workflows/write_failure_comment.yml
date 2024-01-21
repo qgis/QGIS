@@ -22,6 +22,9 @@ jobs:
       matrix:
         qt-version: [ 5, 6 ]
 
+    permissions:
+      pull-requests: write
+
     runs-on: ubuntu-latest
     steps:
       - name: 'Download artifact'
