@@ -96,7 +96,7 @@ ENV LANG=C.UTF-8
 
 FROM binary-for-oracle as binary-only
 
-RUN dnf -y --refresh install \
+RUN dnf -y install \
     python3-gdal \
     python3-nose2 \
     python3-psycopg2 \
