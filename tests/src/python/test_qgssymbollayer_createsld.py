@@ -192,7 +192,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsEllipseSymbolLayer.createFromSld(
@@ -1192,7 +1192,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         status = layer.loadNamedStyle(path)
         doc = QDomDocument()
         file = QFile(path)
-        file.open(QIODevice.ReadOnly)
+        file.open(QIODevice.OpenModeFlag.ReadOnly)
         doc.setContent(file, True)
         file.close()
         flag = layer.readCustomProperties(doc.documentElement())

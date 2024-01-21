@@ -1249,8 +1249,8 @@ class TestQgsFillSymbol(QgisTestCase):
         s3.appendSymbolLayer(
             QgsSimpleFillSymbolLayer(color=QColor(255, 200, 200), strokeColor=QColor(0, 255, 0), strokeWidth=2))
         marker_line = QgsMarkerLineSymbolLayer(True)
-        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
-        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.Placement.FirstVertex)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Shape.Triangle, 4)
         marker.setColor(QColor(255, 0, 0))
         marker.setStrokeStyle(Qt.PenStyle.NoPen)
         marker_symbol = QgsMarkerSymbol()

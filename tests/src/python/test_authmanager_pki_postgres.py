@@ -139,7 +139,7 @@ class TestAuthManager(QgisTestCase):
             pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
             for fn in pkies:
                 f = QFile(fn)
-                f.setPermissions(QFile.WriteOwner)
+                f.setPermissions(QFile.Permission.WriteOwner)
                 f.remove()
 
         # remove any temppki in temporary path to check that no

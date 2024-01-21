@@ -611,7 +611,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSimpleFillSymbolLayer.createFromSld(
@@ -740,7 +740,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsCentroidFillSymbolLayer.createFromSld(
@@ -791,7 +791,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsLinePatternFillSymbolLayer.createFromSld(
@@ -844,7 +844,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsPointPatternFillSymbolLayer.createFromSld(
@@ -909,7 +909,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSVGFillSymbolLayer.createFromSld(
@@ -942,7 +942,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsMarkerLineSymbolLayer.createFromSld(
@@ -953,7 +953,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = QgsMarkerLineSymbolLayer.CentralPoint
+        mExpectedValue = QgsMarkerLineSymbolLayer.Placement.CentralPoint
         mValue = mSymbolLayer.placement()
         mMessage = f'Expected "{mExpectedValue}" got "{mValue}"'
         assert mExpectedValue == mValue, mMessage
@@ -993,7 +993,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSimpleLineSymbolLayer.createFromSld(
@@ -1046,7 +1046,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsEllipseSymbolLayer.createFromSld(
@@ -1094,7 +1094,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsFontMarkerSymbolLayer.createFromSld(
@@ -1137,7 +1137,7 @@ class TestQgsSymbolLayer(QgisTestCase):
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
-        mFile.open(QIODevice.ReadOnly)
+        mFile.open(QIODevice.OpenModeFlag.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsSvgMarkerSymbolLayer.createFromSld(mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())

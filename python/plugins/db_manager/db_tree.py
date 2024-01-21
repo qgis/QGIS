@@ -38,7 +38,7 @@ class DBTree(QTreeView):
 
         self.setModel(DBModel(self))
         self.setHeaderHidden(True)
-        self.setEditTriggers(QTreeView.EditKeyPressed | QTreeView.SelectedClicked)
+        self.setEditTriggers(QTreeView.EditTrigger.EditKeyPressed | QTreeView.EditTrigger.SelectedClicked)
 
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
