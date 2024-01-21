@@ -161,7 +161,7 @@ class TestQgsAttributeForm(QgisTestCase):
     def test_on_update(self):
         """Test live update, when:
         - dependency changed
-        - expression contains a function
+        - expression contains a now() function
         This means:
         - changing age -> update number, birthday, pos / not update year
         - changing year -> update birthday and pos / not update number, age
@@ -210,14 +210,15 @@ class TestQgsAttributeForm(QgisTestCase):
 
         # changing age
         form.changeAttribute('age', 10)
-
         self.assertEqual(form.currentFormFeature()['age'], 10)
         # no change
         self.assertEqual(form.currentFormFeature()['year'], 2023)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['birthday'], 2013)
-        # change because now-function and dependency: old value 100 + new value 10
-        self.assertEqual(form.currentFormFeature()['pos'], 110)
+        # 2 changes because now-function (and dependency)
+        # because change of age: old value 100 + age value 10
+        # and change of birthday (what changed because of age): old value 110 + age value 10
+        self.assertEqual(form.currentFormFeature()['pos'], 120)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
@@ -229,27 +230,28 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(form.currentFormFeature()['age'], 10)
         # change because dependency
         self.assertEqual(form.currentFormFeature()['birthday'], 2014)
-        # change because now-function: old value 110 + new value 10
-        self.assertEqual(form.currentFormFeature()['pos'], 120)
+        # 2 changes because now-function (and dependency)
+        # because change of year: old value 120 + age value 10
+        # and change of birthday (what changed because of year): old value 130 + age value 10
+        self.assertEqual(form.currentFormFeature()['pos'], 140)
         # no change
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
         # changing mode
         form.save()
-        form.setMode(QgsAttributeEditorContext.SingleEditMode)
 
+        form.setMode(QgsAttributeEditorContext.Mode.SingleEditMode)
         # changing birthday
         form.changeAttribute('birthday', 2200)
 
         self.assertEqual(form.currentFormFeature()['birthday'], 2200)
         # no change
         self.assertEqual(form.currentFormFeature()['age'], 10)
-        # change because dependency
-        self.assertEqual(form.currentFormFeature()['year'], 2024)
-        # change because now-function: old value 120 + new value 10
-        self.assertEqual(form.currentFormFeature()['pos'], 130)
         # no change
-        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # 1 changes because now-function
+        # because change of birthday: old value 140 + age value 10
+        self.assertEqual(form.currentFormFeature()['pos'], 150)
 
 
 if __name__ == '__main__':
