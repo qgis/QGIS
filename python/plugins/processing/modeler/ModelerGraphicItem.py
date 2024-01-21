@@ -93,7 +93,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             dlg.setCommentColor(comment_color)
             if edit_comment:
                 dlg.switchToCommentTab()
-            if dlg.exec_():
+            if dlg.exec():
                 new_param = dlg.param
                 comment = dlg.comments()
                 comment_color = dlg.commentColor()
@@ -113,7 +113,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             if edit_comment:
                 dlg.switchToCommentTab()
 
-            if dlg.exec_():
+            if dlg.exec():
                 new_param = dlg.createParameter(existing_param.name())
                 comment = dlg.comments()
                 comment_color = dlg.commentColor()
@@ -175,7 +175,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         dlg.setCommentColor(self.component().comment().color())
         if edit_comment:
             dlg.switchToCommentTab()
-        if dlg.exec_():
+        if dlg.exec():
             alg = dlg.createAlgorithm()
             alg.setChildId(self.component().childId())
             alg.copyNonDefinitionPropertiesFromModel(self.model())
@@ -222,7 +222,7 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
         if edit_comment:
             dlg.switchToCommentTab()
 
-        if dlg.exec_():
+        if dlg.exec():
             model_outputs = child_alg.modelOutputs()
 
             model_output = QgsProcessingModelOutput(model_outputs[self.component().name()])

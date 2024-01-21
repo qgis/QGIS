@@ -138,7 +138,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 error_string += f'• {e}\n'
 
             message_box.setDetailedText(error_string)
-            if message_box.exec_() == QMessageBox.StandardButton.Cancel:
+            if message_box.exec() == QMessageBox.StandardButton.Cancel:
                 return
 
         def on_finished(successful, results):
@@ -149,7 +149,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         dlg.setLogLevel(QgsProcessingContext.LogLevel.ModelDebug)
         dlg.setParameters(self.model().designerParameterValues())
         dlg.algorithmFinished.connect(on_finished)
-        dlg.exec_()
+        dlg.exec()
 
         if dlg.wasExecuted():
             self.model().setDesignerParameterValues(dlg.createProcessingParameters(flags=QgsProcessingParametersGenerator.Flags(QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters)))
@@ -287,7 +287,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         comment = None
         if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
             dlg = ModelerParameterDefinitionDialog(self.model(), paramType)
-            if dlg.exec_():
+            if dlg.exec():
                 new_param = dlg.param
                 comment = dlg.comments()
         else:
@@ -299,7 +299,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                                                          widgetContext=widget_context,
                                                          algorithm=self.model())
             dlg.registerProcessingContextGenerator(self.context_generator)
-            if dlg.exec_():
+            if dlg.exec():
                 new_param = dlg.createParameter()
                 self.autogenerate_parameter_name(new_param)
                 comment = dlg.comments()
@@ -341,7 +341,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             return
 
         dlg = ModelerParametersDialog(alg, self.model())
-        if dlg.exec_():
+        if dlg.exec():
             alg = dlg.createAlgorithm()
             if pos is None or not pos:
                 alg.setPosition(self.getPositionForAlgorithmItem())

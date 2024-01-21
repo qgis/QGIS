@@ -65,7 +65,7 @@ class MultipleInputPanel(BASE, WIDGET):
             dlg = MultipleFileInputDialog(self.selectedoptions)
         else:
             dlg = MultipleInputDialog(self.options, self.selectedoptions, datatype=self.datatype)
-        dlg.exec_()
+        dlg.exec()
         if dlg.selectedoptions is not None:
             self.selectedoptions = dlg.selectedoptions
             self.leText.setText(

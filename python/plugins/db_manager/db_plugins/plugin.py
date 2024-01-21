@@ -466,7 +466,7 @@ class Database(DbItemObject):
             return
         from ..dlg_create_table import DlgCreateTable
 
-        DlgCreateTable(item, parent).exec_()
+        DlgCreateTable(item, parent).exec()
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
     def editTableActionSlot(self, item, action, parent):
@@ -484,7 +484,7 @@ class Database(DbItemObject):
 
             from ..dlg_table_properties import DlgTableProperties
 
-            DlgTableProperties(item, parent).exec_()
+            DlgTableProperties(item, parent).exec()
         finally:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
@@ -1182,7 +1182,7 @@ class VectorTable(Table):
         btns.accepted.connect(dlg.accept)
         btns.rejected.connect(dlg.reject)
 
-        dlg.exec_()
+        dlg.exec()
 
         settings = QgsSettings()
         settings.setValue("/DB_Manager/advancedAddDialog/geometry", dlg.saveGeometry())

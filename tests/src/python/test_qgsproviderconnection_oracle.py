@@ -51,7 +51,7 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.conn)
         query = QSqlQuery(self.conn)
-        res = query.exec_(sql)
+        res = query.exec(sql)
         if not ignore_errors:
             self.assertTrue(res, sql + ': ' + query.lastError().text())
         query.finish()

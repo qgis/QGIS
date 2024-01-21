@@ -85,7 +85,7 @@ class BatchOutputSelectionPanel(QWidget):
                     filename += ext.group(1)
             settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
-            dlg.exec_()
+            dlg.exec()
             if dlg.mode is not None:
                 if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
                     self.table.cellWidget(self.row,

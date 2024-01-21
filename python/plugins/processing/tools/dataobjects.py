@@ -194,7 +194,7 @@ def getRasterSublayer(path, param):
             chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.ProviderType.Gdal, "gdal")
             chooseSublayersDialog.populateLayerTable(layers)
 
-            if chooseSublayersDialog.exec_():
+            if chooseSublayersDialog.exec():
                 return layer.subLayers()[chooseSublayersDialog.selectionIndexes()[0]]
             else:
                 # If user pressed cancel then just return the input path

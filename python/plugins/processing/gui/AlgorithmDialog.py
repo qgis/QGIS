@@ -96,7 +96,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.close()
         dlg = BatchAlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
         dlg.show()
-        dlg.exec_()
+        dlg.exec()
 
     def resetAdditionalGui(self):
         if not self.in_place:

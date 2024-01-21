@@ -229,7 +229,7 @@ class TestAuthManager(QgisTestCase):
 
         downloader.downloadExited.connect(loop.quit)
 
-        loop.exec_()
+        loop.exec()
 
         self.assertTrue(self.error_was_called)
         self.assertIn("Download failed: Host requires authentication", str(self.error_args))
@@ -265,7 +265,7 @@ class TestAuthManager(QgisTestCase):
 
         downloader.downloadExited.connect(loop.quit)
 
-        loop.exec_()
+        loop.exec()
 
         # Check the we've got a likely PNG image
         self.assertTrue(self.completed_was_called)

@@ -72,7 +72,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.conn)
         query = QSqlQuery(self.conn)
-        res = query.exec_(sql)
+        res = query.exec(sql)
         if not ignore_errors:
             self.assertTrue(res, sql + ': ' + query.lastError().text())
         query.finish()
@@ -448,7 +448,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             self.assertTrue(self.conn)
             query = QSqlQuery(self.conn)
             sql = f"""select p.GEOM.st_isvalid() from QGIS.{table} p where "pk" = {pk}"""
-            res = query.exec_(sql)
+            res = query.exec(sql)
             self.assertTrue(res, sql + ': ' + query.lastError().text())
             query.next()
             valid = query.value(0)
@@ -1063,7 +1063,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
 
         # check that metadata table has been correctly populated
         query = QSqlQuery(self.conn)
-        self.assertTrue(query.exec_("SELECT column_name, srid FROM user_sdo_geom_metadata WHERE table_name = 'EMPTY_LAYER'"))
+        self.assertTrue(query.exec("SELECT column_name, srid FROM user_sdo_geom_metadata WHERE table_name = 'EMPTY_LAYER'"))
         self.assertTrue(query.next())
         self.assertEqual(query.value(0), "GEOM")
         # Cannot work with proj version < 7 because it cannot identify properly EPSG:4326
@@ -1089,7 +1089,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         vl.dataProvider().addFeatures([f])
 
         query = QSqlQuery(self.conn)
-        self.assertTrue(query.exec_('SELECT "l"."GEOM"."SDO_SRID" from "QGIS"."EMPTY_LAYER" "l"'))
+        self.assertTrue(query.exec('SELECT "l"."GEOM"."SDO_SRID" from "QGIS"."EMPTY_LAYER" "l"'))
         self.assertTrue(query.next())
         # Cannot work with proj version < 7 because it cannot identify properly EPSG:4326
         # TODO remove this when PROJ will be >= 7
@@ -1149,7 +1149,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         def countFeature(table_name):
             self.assertTrue(self.conn)
             query = QSqlQuery(self.conn)
-            res = query.exec_(f'SELECT count(*) FROM "QGIS"."{table_name}"')
+            res = query.exec(f'SELECT count(*) FROM "QGIS"."{table_name}"')
             self.assertTrue(query.next())
             count = query.value(0)
             query.finish()

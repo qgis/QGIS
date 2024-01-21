@@ -111,7 +111,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg = MessageDialog()
                 dlg.setTitle(self.tr('Missing dependency'))
                 dlg.setMessage(message)
-                dlg.exec_()
+                dlg.exec()
                 return
             dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
             if not dlg:
@@ -119,7 +119,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             canvas = iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
-            dlg.exec_()
+            dlg.exec()
             if canvas.mapTool() != prevMapTool:
                 try:
                     canvas.mapTool().reset()
@@ -210,7 +210,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg = MessageDialog()
                 dlg.setTitle(self.tr('Missing dependency'))
                 dlg.setMessage(message)
-                dlg.exec_()
+                dlg.exec()
                 return
 
             in_place_input_parameter_name = 'INPUT'
@@ -225,7 +225,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 canvas = iface.mapCanvas()
                 prevMapTool = canvas.mapTool()
                 dlg.show()
-                dlg.exec_()
+                dlg.exec()
                 if canvas.mapTool() != prevMapTool:
                     try:
                         canvas.mapTool().reset()

@@ -654,7 +654,7 @@ class DBModel(QAbstractItemModel):
 
             dlg = DlgImportVector(inLayer, outDb, outUri)
             QApplication.restoreOverrideCursor()
-            if dlg.exec_():
+            if dlg.exec():
                 self._refreshIndex(parent)
         finally:
             inLayer.deleteLater()

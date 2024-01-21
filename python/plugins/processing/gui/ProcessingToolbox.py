@@ -210,13 +210,13 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
-            popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
+            popupmenu.exec(self.algorithmTree.mapToGlobal(point))
 
     def editRenderingStyles(self):
         alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             dlg = EditRenderingStylesDialog(alg)
-            dlg.exec_()
+            dlg.exec()
 
     def activateCurrent(self):
         self.executeAlgorithm()

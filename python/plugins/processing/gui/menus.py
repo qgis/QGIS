@@ -259,7 +259,7 @@ def _executeAlgorithm(alg_id):
         dlg.setMessage(
             Processing.tr('The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)').format(
                 alg_id))
-        dlg.exec_()
+        dlg.exec()
         return
 
     ok, message = alg.canExecute()
@@ -269,7 +269,7 @@ def _executeAlgorithm(alg_id):
         dlg.setMessage(
             Processing.tr('<h3>Missing dependency. This algorithm cannot '
                           'be run :-( </h3>\n{0}').format(message))
-        dlg.exec_()
+        dlg.exec()
         return
 
     if (alg.countVisibleParameters()) > 0:
@@ -279,7 +279,7 @@ def _executeAlgorithm(alg_id):
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
-        dlg.exec_()
+        dlg.exec()
         if canvas.mapTool() != prevMapTool:
             try:
                 canvas.mapTool().reset()

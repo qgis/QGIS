@@ -79,11 +79,11 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
             self.stateChanged(4)
 
-    def exec_(self):
+    def exec(self):
         if self.request is None:
             return QDialog.DialogCode.Rejected
 
-        QDialog.exec_(self)
+        QDialog.exec(self)
 
     # ----------------------------------------- #
     def result(self):
