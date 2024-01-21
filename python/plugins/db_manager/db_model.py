@@ -522,7 +522,7 @@ class DBModel(QAbstractItemModel):
         mimeData = QMimeData()
         encodedData = QByteArray()
 
-        stream = QDataStream(encodedData, QIODevice.WriteOnly)
+        stream = QDataStream(encodedData, QIODevice.OpenModeFlag.WriteOnly)
 
         for index in indexes:
             if not index.isValid():

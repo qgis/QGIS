@@ -35,7 +35,7 @@ class GpsReplay(QgsNmeaConnection):
 
     def __init__(self):
         self.buffer = QBuffer()
-        self.buffer.open(QBuffer.ReadWrite)
+        self.buffer.open(QBuffer.OpenModeFlag.ReadWrite)
 
         super().__init__(self.buffer)
         assert self.connect()

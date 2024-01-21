@@ -2630,7 +2630,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' srid=4326 table="qgis_test"."gh_50168" () sql=', 'gh_50168', 'postgres')
         self.assertTrue(vl.isValid())
-        vl.dataProvider().setProviderProperty(QgsVectorDataProvider.EvaluateDefaultValues, True)
+        vl.dataProvider().setProviderProperty(QgsVectorDataProvider.ProviderProperty.EvaluateDefaultValues, True)
 
         f = QgsFeature(vl.fields())
         f.setAttribute('test_string', 'QGIS Rocks')

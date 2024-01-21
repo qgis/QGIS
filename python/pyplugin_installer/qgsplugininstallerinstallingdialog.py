@@ -137,7 +137,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
                 reply.deleteLater()
                 return
 
-        self.file.open(QFile.WriteOnly)
+        self.file.open(QFile.OpenModeFlag.WriteOnly)
         self.file.write(reply.readAll())
         self.file.close()
         self.stateChanged(0)

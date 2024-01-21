@@ -49,7 +49,7 @@ class TestSensor(QgsIODeviceSensor):
         return "test_sensor"
 
     def handleConnect(self):
-        self.buffer.open(QIODevice.ReadWrite)
+        self.buffer.open(QIODevice.OpenModeFlag.ReadWrite)
         self.setStatus(Qgis.DeviceConnectionStatus.Connected)
 
     def handleDisconnect(self):
