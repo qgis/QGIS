@@ -2046,13 +2046,39 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     QgsDebugMsgLevel(
       QStringLiteral( "field %1: xpath=%2 is_list=%3 type=%4 category=%5" ).
       arg( fieldName ).arg( fieldXPath ).arg( fieldIsList ).arg( fieldType ).arg( fieldCategory ), 5 );
-    if ( EQUAL( fieldCategory, "REGULAR" ) && EQUAL( fieldType, "geometry" ) )
+    if ( EQUAL( fieldCategory, "REGULAR" ) && ( EQUAL( fieldType, "geometry" ) || fieldName.endsWith( QLatin1String( "_abstractgeometricprimitive" ) ) ) )
     {
       if ( geometryAttribute.isEmpty() )
       {
+        geomType = QgsWkbTypes::multiType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
+                                             OGR_L_GetGeomType( hLayer ) ) );
+
+        QString qFieldXPath = QString::fromUtf8( fieldXPath );
+        if ( fieldName.endsWith( QLatin1String( "_abstractgeometricprimitive" ) ) && strstr( fieldXPath, "/gml:Point" ) )
+        {
+          // Note: this particular case will not be needed in GDAL >= 3.8.4
+          // The _abstractgeometricprimitive case is for a layer like
+          //  "https://www.wfs.nrw.de/geobasis/wfs_nw_inspire-gewaesser-physisch_atkis-basis-dlm?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=hy-p:Embankment&NAMESPACES=xmlns(hy-p,http://inspire.ec.europa.eu/schemas/hy-p/4.0)&TYPENAME=hy-p:Embankment&NAMESPACE=xmlns(hy-p,http://inspire.ec.europa.eu/schemas/hy-p/4.0)"
+          // which has a geometry element as:
+          //   layer_name (String) = embankment
+          //   field_index (Integer) = 30
+          //   field_name (String) = geometry_abstractgeometricprimitive
+          //   field_xpath (String) = hy-p:Embankment/hy-p:geometry/gml:Point,hy-p:Embankment/hy-p:geometry/gml:LineString,hy-p:Embankment/hy-p:geometry/gml:LinearRing,hy-p:Embankment/hy-p:geometry/gml:Ring,hy-p:Embankment/hy-p:geometry/gml:Curve,hy-p:Embankment/hy-p:geometry/gml:OrientableCurve,hy-p:Embankment/hy-p:geometry/gml:CompositeCurve,hy-p:Embankment/hy-p:geometry/gml:Polygon,hy-p:Embankment/hy-p:geometry/gml:Surface,hy-p:Embankment/hy-p:geometry/gml:PolyhedralSurface,hy-p:Embankment/hy-p:geometry/gml:TriangulatedSurface,hy-p:Embankment/hy-p:geometry/gml:Tin,hy-p:Embankment/hy-p:geometry/gml:OrientableSurface,hy-p:Embankment/hy-p:geometry/gml:Shell,hy-p:Embankment/hy-p:geometry/gml:CompositeSurface,hy-p:Embankment/hy-p:geometry/gml:Solid,hy-p:Embankment/hy-p:geometry/gml:CompositeSolid
+          //   field_type (String) = anyType
+          //   field_is_list (Integer(Boolean)) = 0
+          //   field_min_occurs (Integer) = 0
+          //   field_max_occurs (Integer) = 1
+          //   field_category (String) = REGULAR
+
+          const auto pos_gmlPoint = qFieldXPath.indexOf( QStringLiteral( "/gml:Point," ) );
+          qFieldXPath.resize( pos_gmlPoint );
+          geomType = Qgis::WkbType::Unknown;
+        }
+
         mShared->mFieldNameToXPathAndIsNestedContentMap[fieldName] =
-          QPair<QString, bool>( fieldXPath, false );
-        geometryAttribute = fieldXPath;
+          QPair<QString, bool>( qFieldXPath, false );
+        geometryAttribute = qFieldXPath;
+
         {
           const auto parts = geometryAttribute.split( '/' );
           if ( parts.size() > 1 )
@@ -2063,13 +2089,12 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
           if ( parts.size() == 2 )
             geometryAttribute = parts[1];
         }
-        geomType = QgsWkbTypes::multiType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
-                                             OGR_L_GetGeomType( hLayer ) ) );
         if ( geomType == Qgis::WkbType::MultiPolygon )
           geomType = Qgis::WkbType::MultiSurface;
         else if ( geomType == Qgis::WkbType::MultiLineString )
           geomType = Qgis::WkbType::MultiCurve;
 
+        QgsDebugMsgLevel( QStringLiteral( "geometry field: %1, xpath: %2" ).arg( geometryAttribute ).arg( qFieldXPath ), 4 );
         geometryMaybeMissing = OGR_F_GetFieldAsInteger( hFeatureFieldsMD.get(), fieldMinOccursIdx ) == 0;
       }
     }
