@@ -1568,11 +1568,13 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
        mayTryWithGMLAS &&
        GDALGetDriverByName( "GMLAS" ) )
   {
+    QString geometryAttributeGMLAS;
     QgsFields fieldsGMLAS;
     Qgis::WkbType geomTypeGMLAS;
     QString errorMsgGMLAS;
-    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttribute, fieldsGMLAS, geomTypeGMLAS, geometryMaybeMissing, errorMsgGMLAS ) )
+    if ( readAttributesFromSchemaWithGMLAS( response, prefixedTypename, geometryAttributeGMLAS, fieldsGMLAS, geomTypeGMLAS, geometryMaybeMissing, errorMsgGMLAS ) )
     {
+      geometryAttribute = geometryAttributeGMLAS;
       fields = fieldsGMLAS;
       geomType = geomTypeGMLAS;
       ret = true;
