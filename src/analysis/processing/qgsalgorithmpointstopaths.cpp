@@ -277,7 +277,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     {
       break;
     }
-    auto pairs = hit.value();
+    QVector< QPair< QVariant, QgsPoint > > pairs = hit.value();
 
     if ( naturalSort )
     {
@@ -324,8 +324,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     QgsAttributes attrs;
     if ( ! groupExpressionString.isEmpty() )
       attrs.append( hit.key() );
-    attrs.append( hit.value().first().first );
-    attrs.append( hit.value().last().first );
+    attrs.append( pairs.first().first );
+    attrs.append( pairs.last().first );
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
