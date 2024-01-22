@@ -33,8 +33,19 @@ from pathlib import Path
 from typing import Optional, Tuple
 from warnings import warn
 
-from qgis.PyQt.QtCore import QVariant, QDateTime, QDate, QDir, QUrl, QSize
-from qgis.PyQt.QtGui import QImage, QDesktopServices
+from qgis.PyQt.QtCore import (
+    QVariant,
+    QDateTime,
+    QDate,
+    QDir,
+    QUrl,
+    QSize
+)
+from qgis.PyQt.QtGui import (
+    QImage,
+    QDesktopServices,
+    QPainter
+)
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
@@ -172,7 +183,17 @@ class QgisTestCase(unittest.TestCase):
         allowed_mismatch: int = 20,
         size_tolerance: Optional[int] = None,
         expect_fail: bool = False,
+        control_path_prefix: Optional[str] = None,
+        use_checkerboard_background: bool = False
     ) -> bool:
+        if use_checkerboard_background:
+            output_image = QImage(image.size(), QImage.Format.Format_RGB32)
+            QgsMultiRenderChecker.drawBackground(output_image)
+            painter = QPainter(output_image)
+            painter.drawImage(0, 0, image)
+            painter.end()
+            image = output_image
+
         temp_dir = QDir.tempPath() + "/"
         file_name = temp_dir + name + ".png"
         image.save(file_name, "PNG")
@@ -182,7 +203,9 @@ class QgisTestCase(unittest.TestCase):
         if caller_file:
             checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
 
-        if cls.control_path_prefix():
+        if control_path_prefix:
+            checker.setControlPathPrefix(control_path_prefix)
+        elif cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
 
         checker.setControlName(control_name or "expected_" + reference_image)
@@ -212,6 +235,7 @@ class QgisTestCase(unittest.TestCase):
         map_settings: QgsMapSettings,
         color_tolerance: Optional[int] = None,
         allowed_mismatch: Optional[int] = None,
+        control_path_prefix: Optional[str] = None
     ) -> bool:
         checker = QgsMultiRenderChecker()
         checker.setMapSettings(map_settings)
@@ -220,7 +244,9 @@ class QgisTestCase(unittest.TestCase):
         if caller_file:
             checker.setFileFunctionLine(caller_file, caller_function, caller_line_no)
 
-        if cls.control_path_prefix():
+        if control_path_prefix:
+            checker.setControlPathPrefix(control_path_prefix)
+        elif cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
         checker.setControlName("expected_" + reference_image)
         if color_tolerance:

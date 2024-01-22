@@ -9,7 +9,7 @@ __author__ = 'Nyall Dawson'
 __date__ = '28/3/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.PyQt.QtCore import QDir, QEvent, QPoint, QPointF, Qt
+from qgis.PyQt.QtCore import QEvent, QPoint, QPointF, Qt
 from qgis.PyQt.QtGui import QKeyEvent, QMouseEvent, QWheelEvent
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -54,14 +54,6 @@ class TestTool(QgsPlotTool):
 
 
 class TestQgsElevationProfileCanvas(QgisTestCase):
-
-    def setUp(self):
-        self.report = "<h1>Python QgsElevationProfileCanvas Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def testGettersSetters(self):
         canvas = QgsElevationProfileCanvas()
