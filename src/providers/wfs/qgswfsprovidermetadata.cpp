@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgsogcutils.h"
 #include "qgsoapifprovider.h"
 #include "qgswfsdataitems.h"
@@ -394,6 +395,23 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
 
     if ( countsAllValid )
     {
+      // Some servers are buggy and actually ignore the geometry type filter
+      // So if the Point, Curve and Surface filters return the same number of
+      // features than the No filter request, consider that the geometry type
+      // is unknown and try sampling one feature to guess the type
+      // e.g with https://geodienste.komm.one/ows/services/org.273.561ba9e8-9b66-45a2-98db-17920e10c53d_wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=xplan:BP_Plan&FILTER=%3Cfes:Filter%20xmlns:fes%3D%22http://www.opengis.net/fes/2.0%22%3E%0A%20%3Cfes:PropertyIsEqualTo%3E%0A%20%20%3Cfes:Function%20name%3D%22IsCurve%22%3E%0A%20%20%20%3Cfes:ValueReference%3EraeumlicherGeltungsbereich%3C/fes:ValueReference%3E%0A%20%20%3C/fes:Function%3E%0A%20%20%3Cfes:Literal%3Etrue%3C/fes:Literal%3E%0A%20%3C/fes:PropertyIsEqualTo%3E%0A%3C/fes:Filter%3E%0A&RESULTTYPE=hits
+      if ( featureCounts[INDEX_ALL] > 0 &&
+           featureCounts[INDEX_POINT] == featureCounts[INDEX_ALL] &&
+           featureCounts[INDEX_CURVE] == featureCounts[INDEX_ALL] &&
+           featureCounts[INDEX_SURFACE] == featureCounts[INDEX_ALL] )
+      {
+        QgsDebugMsgLevel( QString( "%1 declares geometry filters, but they are not working. Guessing the geometry type from one sample" ).arg( uri ), 2 );
+        provider.issueInitialGetFeature();
+        details.setWkbType( provider.wkbType() );
+        details.setFeatureCount( featureCounts[INDEX_ALL] );
+        return res;
+      }
+
       // Deduce numbers of geometry collections from other types
       featureCounts[INDEX_GEOMETRYCOLLECTION] = featureCounts[INDEX_ALL] -
           ( featureCounts[INDEX_NULL] + featureCounts[INDEX_POINT] + featureCounts[INDEX_CURVE] + featureCounts[INDEX_SURFACE] );
