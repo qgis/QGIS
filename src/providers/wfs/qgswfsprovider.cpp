@@ -1542,6 +1542,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
     QgsDebugMsgLevel( response, 4 );
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
+    pushError( errorMsg );
     return false;
   }
 
@@ -1582,6 +1583,10 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     else if ( !ret )
     {
       errorMsg = errorMsgGMLAS;
+    }
+    else
+    {
+      pushError( errorMsgGMLAS );
     }
   }
   return ret;
@@ -1657,9 +1662,21 @@ static void CPL_STDCALL QgsWFSProviderGMLASErrorHandler( CPLErr eErr, CPLErrorNu
   if ( !( eErr == CE_Warning && strstr( pszErrorMsg, " truncated to " ) ) )
   {
     if ( eErr == CE_Failure )
+    {
+      void *pUserData = CPLGetErrorHandlerUserData();
+      QString *pString = static_cast<QString *>( pUserData );
+      if ( pString->isEmpty() )
+        *pString = QObject::tr( "Error while analyzing schema: %1" ).arg( pszErrorMsg );
       QgsMessageLog::logMessage( QObject::tr( "GMLAS error: %1" ).arg( pszErrorMsg ), QObject::tr( "WFS" ) );
+    }
+    else if ( eErr == CE_Debug )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "GMLAS debug msg: %1" ).arg( pszErrorMsg ), 5 );
+    }
     else
-      QgsDebugMsgLevel( QStringLiteral( "GMLAS eErr=%1, msg=%2" ).arg( eErr ).arg( pszErrorMsg ), 4 );
+    {
+      QgsDebugMsgLevel( QStringLiteral( "GMLAS eErr=%1, msg=%2" ).arg( eErr ).arg( pszErrorMsg ), 2 );
+    }
   }
 }
 
@@ -1714,7 +1731,8 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
 
   // Analyze the DescribeFeatureType response schema with the OGR GMLAS driver
   // in a thread, so it can get interrupted (with GDAL 3.9: https://github.com/OSGeo/gdal/pull/9019)
-  const auto downloaderLambda = [pszSchemaTempFilename, &feedback, &hDS]()
+
+  const auto downloaderLambda = [pszSchemaTempFilename, &feedback, &hDS, &errorMsg]()
   {
     QgsCPLHTTPFetchOverrider cplHTTPFetchOverrider( QString(), &feedback );
     QgsSetCPLHTTPFetchOverriderInitiatorClass( cplHTTPFetchOverrider, QStringLiteral( "WFSProviderDownloadSchema" ) )
@@ -1771,7 +1789,7 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
     CPLFree( pszEscaped );
     papszOpenOptions = CSLSetNameValue( papszOpenOptions, "CONFIG_FILE", config.toStdString().c_str() );
 
-    CPLPushErrorHandler( QgsWFSProviderGMLASErrorHandler );
+    CPLPushErrorHandlerEx( QgsWFSProviderGMLASErrorHandler, &errorMsg );
     hDS = GDALOpenEx( "GMLAS:", GDAL_OF_VECTOR, nullptr, papszOpenOptions, nullptr );
     CPLPopErrorHandler();
     CSLDestroy( papszOpenOptions );
@@ -1845,6 +1863,9 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
   VSIUnlink( pszSchemaTempFilename );
   VSIFree( pszSchemaTempFilename );
 
+  if ( !errorMsg.isEmpty() )
+    return false;
+
   bool ret = hDS != nullptr;
   if ( feedback.isCanceled() && !ret )
   {
@@ -1857,7 +1878,8 @@ bool QgsWFSProvider::readAttributesFromSchemaWithGMLAS( const QByteArray &respon
   }
   if ( !ret )
   {
-    errorMsg = tr( "Cannot analyze schema indicated in DescribeFeatureType response." );
+    if ( errorMsg.isEmpty() )
+      errorMsg = tr( "Cannot analyze schema indicated in DescribeFeatureType response." );
     return false;
   }
 
