@@ -46,13 +46,14 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   QString errorTitle, errorMessage;
 
   mRequestHeaders = mSharedData->mDataSource.httpHeaders();
+  const QString &urlPrefix = mSharedData->mDataSource.param( QStringLiteral( "urlprefix" ) );
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
 
   const QVariantMap layerData = QgsArcGisRestQueryUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
-                                authcfg, errorTitle, errorMessage, mRequestHeaders );
+                                authcfg, errorTitle, errorMessage, mRequestHeaders, urlPrefix );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -75,7 +76,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     {
       adminUrl.replace( QLatin1String( "/rest/services/" ), QLatin1String( "/rest/admin/services/" ) );
       const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
-                                    authcfg, errorTitle, errorMessage, mRequestHeaders );
+                                    authcfg, errorTitle, errorMessage, mRequestHeaders, urlPrefix );
       if ( !adminData.isEmpty() )
       {
         mAdminUrl = adminUrl;
