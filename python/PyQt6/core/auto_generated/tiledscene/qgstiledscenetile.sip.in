@@ -105,14 +105,14 @@ in order to transform them to the dataset's coordinate reference system.
 .. seealso:: :py:func:`transform`
 %End
 
-    QVariantMap resources() const;
+    QMap<QString, QVariant> resources() const;
 %Docstring
 Returns the resources attached to the tile.
 
 .. seealso:: :py:func:`setResources`
 %End
 
-    void setResources( const QVariantMap &resources );
+    void setResources( const QMap<QString, QVariant> &resources );
 %Docstring
 Sets the ``resources`` ``attached`` to the tile.
 
@@ -151,14 +151,14 @@ get resolved against this URL.
 .. seealso:: :py:func:`baseUrl`
 %End
 
-    QVariantMap metadata() const;
+    QMap<QString, QVariant> metadata() const;
 %Docstring
 Returns additional metadata attached to the tile.
 
 .. seealso:: :py:func:`setMetadata`
 %End
 
-    void setMetadata( const QVariantMap &metadata );
+    void setMetadata( const QMap<QString, QVariant> &metadata );
 %Docstring
 Sets additional ``metadata`` attached to the tile.
 

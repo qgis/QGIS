@@ -38,9 +38,9 @@ Constructor for QgsProcessingParameterFieldMapping.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
-    virtual QVariantMap toVariantMap() const;
+    virtual QMap<QString, QVariant> toVariantMap() const;
 
-    virtual bool fromVariantMap( const QVariantMap &map );
+    virtual bool fromVariantMap( const QMap<QString, QVariant> &map );
 
     virtual QStringList dependsOnOtherParameters() const;
 
