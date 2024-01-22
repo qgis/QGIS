@@ -582,7 +582,7 @@ namespace QgsWfs
       //transform the layers native CRS into WGS84
       const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
       const int wgs84precision = 6;
-      QgsRectangle wgs84BoundingRect;
+      QgsRectangle wgs84BoundingRect( 0, 0, 0, 0 );
       if ( !layerExtent.isNull() )
       {
         const QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84, project );
@@ -592,7 +592,7 @@ namespace QgsWfs
         }
         catch ( const QgsCsException & )
         {
-          wgs84BoundingRect = QgsRectangle();
+          wgs84BoundingRect = QgsRectangle( 0, 0, 0, 0 );
         }
       }
 
