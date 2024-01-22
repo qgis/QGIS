@@ -736,6 +736,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   }
   else if ( parseMode == None &&
             localNameLen == static_cast<int>( mTypeNameUTF8Len ) &&
+            mTypeNamePtr &&
             memcmp( pszLocalName, mTypeNamePtr, mTypeNameUTF8Len ) == 0 )
   {
     Q_ASSERT( !mCurrentFeature );
