@@ -15,4 +15,5 @@ QgsProviderMetadata.ProviderMetadataCapabilities = lambda flags=0: QgsProviderMe
 QgsProviderMetadata.FileBasedUris = QgsProviderMetadata.ProviderCapability.FileBasedUris
 QgsProviderMetadata.SaveLayerMetadata = QgsProviderMetadata.ProviderCapability.SaveLayerMetadata
 QgsProviderMetadata.ParallelCreateProvider = QgsProviderMetadata.ProviderCapability.ParallelCreateProvider
+QgsProviderMetadata.LoadLayerMetadata = QgsProviderMetadata.ProviderCapability.LoadLayerMetadata
 QgsProviderMetadata.ProviderCapabilities = lambda flags=0: QgsProviderMetadata.ProviderCapability(flags)

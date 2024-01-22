@@ -135,3 +135,12 @@ class LayerMetadataProviderTestBase():
         self.assertEqual(len(results.metadata()), 1)
         results = md_provider.search(QgsMetadataSearchContext(), 'cat2')
         self.assertEqual(len(results.metadata()), 1)
+
+        # Test load from DB (used by restore from default)
+        self.test_layer = self.getLayer()
+        self.assertTrue(self.test_layer.isValid())
+
+        self.assertTrue(bool(md.providerCapabilities() & QgsProviderMetadata.ProviderCapability.LoadLayerMetadata))
+        m2, found = md.loadLayerMetadata(layer_uri)
+        self.assertTrue(found)
+        self.assertEqual(m2, m)
