@@ -144,14 +144,17 @@ QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCo
     return QString();
 
   d->mLock.lockForRead();
-  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
-  if ( res.operation.isEmpty() )
+
+  auto it = d->mSourceDestDatumTransforms.constFind( qMakePair( source, destination ) );
+  if ( it == d->mSourceDestDatumTransforms.constEnd() )
   {
     // try to reverse
-    res = d->mSourceDestDatumTransforms.value( qMakePair( destination, source ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+    it = d->mSourceDestDatumTransforms.constFind( qMakePair( destination, source ) );
   }
+
+  const QString result = it == d->mSourceDestDatumTransforms.constEnd() ? QString() : it.value().operation;
   d->mLock.unlock();
-  return res.operation;
+  return result;
 }
 
 bool QgsCoordinateTransformContext::allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
