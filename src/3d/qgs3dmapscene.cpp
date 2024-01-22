@@ -698,6 +698,8 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         connect( sceneNewEntity, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
         {
           finalizeNewEntity( entity );
+          // this ensures to update the near/far planes with the exact bounding box of the new entity.
+          updateCameraNearFarPlanes();
         } );
 
         connect( sceneNewEntity, &Qgs3DMapSceneEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
