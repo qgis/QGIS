@@ -405,7 +405,7 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
 
   // Export to PNG
   bool exportOk { false };
-  if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) && mBrush.style() != Qt::NoBrush )
+  if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) )
   {
     const QImage image { toTiledPatternImage( ) };
     if ( ! image.isNull() )
@@ -2649,14 +2649,42 @@ void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRe
 QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
 {
 
-  double lineAngleRads { qDegreesToRadians( mLineAngle ) };
+  double lineAngleRad { qDegreesToRadians( mLineAngle ) };
+
+  const int quadrant { static_cast<int>( lineAngleRad / M_PI_2 ) };
+  Q_ASSERT( quadrant >= 0 && quadrant <= 3 );
+
+  switch ( quadrant )
+  {
+    case 0:
+    {
+      break;
+    }
+    case 1:
+    {
+      lineAngleRad -= M_PI / 2;
+      break;
+    }
+    case 2:
+    {
+      lineAngleRad -= M_PI;
+      break;
+    }
+    case 3:
+    {
+      lineAngleRad -= M_PI + M_PI_2;
+      break;
+    }
+  }
+
+
   double distancePx { QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit, {} ) };
 
   QSize size { static_cast<int>( distancePx ), static_cast<int>( distancePx ) };
 
   if ( static_cast<int>( mLineAngle ) % 90 != 0 )
   {
-    size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRads ) ), static_cast<int>( distancePx / std::cos( lineAngleRads ) ) );
+    size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRad ) ), static_cast<int>( distancePx / std::cos( lineAngleRad ) ) );
   }
 
   QPixmap pixmap( size );
