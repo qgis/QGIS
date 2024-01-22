@@ -584,6 +584,11 @@ sub replace_macros {
     $line =~ s/\bTRUE\b/``True``/g;
     $line =~ s/\bFALSE\b/``False``/g;
     $line =~ s/\bNULLPTR\b/``None``/g;
+    if ( $is_qt6 )
+    {
+        # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
+        $line =~ s/(\s|QList<\s*|QVector<\s*)QVariantMap/$1QMap<QString, QVariant>/g;
+    }
     return $line;
 }
 
