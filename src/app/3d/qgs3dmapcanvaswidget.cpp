@@ -393,7 +393,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
   connect( mCanvas->scene(), &Qgs3DMapScene::gpuMemoryLimitReached, this, &Qgs3DMapCanvasWidget::onGpuMemoryLimitReached );
 
-  mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
+  mAnimationWidget->setCameraController( mCanvas->cameraController() );
   mAnimationWidget->setMap( map );
 
   // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
