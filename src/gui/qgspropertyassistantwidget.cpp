@@ -135,6 +135,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
+  connect( mTransformCurveCheckBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mCurveEditor, &QgsCurveEditorWidget::changed, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( this, &QgsPropertyAssistantWidget::widgetChanged, this, &QgsPropertyAssistantWidget::updatePreview );
   updatePreview();
