@@ -4178,54 +4178,114 @@ template<_TYPE_>
 %End
 };
 
-%MappedType QVector<QVariantMap>
+%MappedType QVector<QMap<QString, QVariant>>
+    /TypeHintIn="Iterable[Dict[str, Any]]",
+    TypeHintOut="Iterable[Dict[str, Any]]", TypeHintValue="[]"/
 {
 %TypeHeaderCode
-#include <qlist.h>
+#include <qvector.h>
 %End
 
 %ConvertFromTypeCode
-    // TODO
-    return 0;
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        QVariantMap *t = new QVariantMap(sipCpp->at(i));
+        PyObject *tobj = sipConvertFromNewType(t, qvariantmap_type,
+                                               sipTransferObj);
+
+        if (!tobj)
+        {
+            delete t;
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, tobj);
+    }
+
+    return l;
 %End
 
 %ConvertToTypeCode
-    // TODO
-    return 0;
-%End
-};
+    PyObject *iter = PyObject_GetIter(sipPy);
 
-%MappedType QVariantMap /TypeHint="Dict[str, Any]", TypeHintValue="{}"/
-{
-%TypeHeaderCode
-#include <qvariant.h>
-%End
-
-%ConvertFromTypeCode
-    // todo FIX this
-    return 0; //qpycore_fromQVariantMap(*sipCpp);
-%End
-
-%ConvertToTypeCode
     if (!sipIsErr)
-        return PyDict_Check(sipPy);
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
 
-    QVariantMap *qvm = new QVariantMap;
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
 
-    // todo FIX this
-    // if (!qpycore_toQVariantMap(sipPy, *qvm))
-    // {
-    //    delete qvm;
-    //    return 0;
-    //}
+    if (!iter)
+    {
+        *sipIsErr = 1;
 
-    *sipCppPtr = qvm;
+        return 0;
+    }
+
+    QVector<QVariantMap> *ql = new QVector<QVariantMap>;
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int state;
+        QVariantMap *t = reinterpret_cast<QVariantMap *>(
+            sipForceConvertToType(itm, qvariantmap_type, sipTransferObj,
+                                  SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                         "index %zd has type '%s' but 'Dict[str, Any]' is expected", i,
+                         sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(*t);
+
+        sipReleaseType(t, qvariantmap_type, state);
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
 
     return sipGetState(sipTransferObj);
 %End
 };
 
-%MappedType QList<QVariantMap>
+%MappedType QList<QMap<QString, QVariant>>
         /TypeHintIn="Iterable[Dict[str, Any]]",
         TypeHintOut="Iterable[Dict[str, Any]]", TypeHintValue="[]"/
 {
@@ -4234,13 +4294,101 @@ template<_TYPE_>
 %End
 
 %ConvertFromTypeCode
-    // TODO
-    return 0;
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        QVariantMap *t = new QVariantMap(sipCpp->at(i));
+        PyObject *tobj = sipConvertFromNewType(t, qvariantmap_type,
+                                               sipTransferObj);
+
+        if (!tobj)
+        {
+            delete t;
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, tobj);
+    }
+
+    return l;
 %End
 
 %ConvertToTypeCode
-    // TODO
-    return 0;
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<QVariantMap> *ql = new QList<QVariantMap>;
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int state;
+        QVariantMap *t = reinterpret_cast<QVariantMap *>(
+            sipForceConvertToType(itm, qvariantmap_type, sipTransferObj,
+                                  SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                         "index %zd has type '%s' but 'Dict[str, Any]' is expected", i,
+                         sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(*t);
+
+        sipReleaseType(t, qvariantmap_type, state);
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
 %End
 };
 
