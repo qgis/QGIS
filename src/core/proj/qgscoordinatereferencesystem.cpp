@@ -3230,18 +3230,16 @@ bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   if ( !c1IsUser && c2IsUser )
     return false;
 
-  if ( !c1IsUser && !c2IsUser )
+  if ( !c1IsUser && !c2IsUser && !c1.d->mAuthId.isEmpty() && !c2.d->mAuthId.isEmpty() )
   {
     if ( c1.d->mAuthId != c2.d->mAuthId )
       return c1.d->mAuthId > c2.d->mAuthId;
   }
-  else
-  {
-    const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    if ( wkt1 != wkt2 )
-      return wkt1 > wkt2;
-  }
+
+  const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  if ( wkt1 != wkt2 )
+    return wkt1 > wkt2;
 
   if ( c1.d->mCoordinateEpoch == c2.d->mCoordinateEpoch )
     return false;
@@ -3281,18 +3279,16 @@ bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   if ( c1IsUser && !c2IsUser )
     return false;
 
-  if ( !c1IsUser && !c2IsUser )
+  if ( !c1IsUser && !c2IsUser && !c1.d->mAuthId.isEmpty() && !c2.d->mAuthId.isEmpty() )
   {
     if ( c1.d->mAuthId != c2.d->mAuthId )
       return c1.d->mAuthId < c2.d->mAuthId;
   }
-  else
-  {
-    const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    if ( wkt1 != wkt2 )
-      return wkt1 < wkt2;
-  }
+
+  const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  if ( wkt1 != wkt2 )
+    return wkt1 < wkt2;
 
   if ( c1.d->mCoordinateEpoch == c2.d->mCoordinateEpoch )
     return false;
