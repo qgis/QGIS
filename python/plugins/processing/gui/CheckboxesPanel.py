@@ -79,7 +79,7 @@ class CheckboxesPanel(QWidget):
         clear_all_action.triggered.connect(self.deselectAll)
         popup_menu.addAction(select_all_action)
         popup_menu.addAction(clear_all_action)
-        popup_menu.exec_(QCursor.pos())
+        popup_menu.exec(QCursor.pos())
 
     def selectAll(self):
         for (v, button) in self._buttons:

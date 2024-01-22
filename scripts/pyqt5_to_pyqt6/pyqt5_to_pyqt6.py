@@ -155,7 +155,17 @@ qmetatype_mapping = {
 }
 
 deprecated_renamed_enums = {
-    ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton')
+    ('Qt', 'MidButton'): ('MouseButton', 'MiddleButton'),
+    ('Qt', 'TextColorRole'): ('ItemDataRole', 'ForegroundRole'),
+    ('Qt', 'BackgroundColorRole'): ('ItemDataRole', 'BackgroundRole'),
+}
+
+rename_function_attributes = {
+    'exec_': 'exec'
+}
+
+rename_function_definitions = {
+    'exec_': 'exec'
 }
 
 # { (class, enum_value) : enum_name }
@@ -171,6 +181,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     fix_qvariant_type = []  # QVariant.Int, QVariant.Double ...
     fix_pyqt_import = []  # from PyQt5.QtXXX
     fix_qt_enums = {}  # Unscoping of enums
+    member_renames = {}
+    function_def_renames = {}
     rename_qt_enums = []  # Renaming deprecated removed enums
 
     tree = ast.parse(contents, filename=filename)
@@ -180,6 +192,16 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
                 fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
+
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+                if node.func.attr in rename_function_attributes:
+                    attr_node = node.func
+                    member_renames[
+                        Offset(node.func.lineno, attr_node.end_col_offset - len(node.func.attr) - 1)] = rename_function_attributes[node.func.attr]
+
+            if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
+                function_def_renames[
+                    Offset(node.lineno, node.col_offset)] = rename_function_definitions[node.name]
 
             if (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and (node.value.id, node.attr) in ambiguous_enums):
@@ -218,7 +240,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
-    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums:
+    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums and not member_renames and not function_def_renames:
         return 0
 
     tokens = src_to_tokens(contents)
@@ -234,6 +256,15 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         if token.offset in fix_pyqt_import:
             assert tokens[i + 2].src == "PyQt5"
             tokens[i + 2] = tokens[i + 2]._replace(src="qgis.PyQt")
+
+        if token.offset in function_def_renames and tokens[i].src == "def":
+            tokens[i + 2] = tokens[i + 2]._replace(src=function_def_renames[token.offset])
+
+        if token.offset in member_renames:
+            counter = i
+            while tokens[counter].src != '.':
+                counter += 1
+            tokens[counter + 1] = tokens[counter + 1]._replace(src=member_renames[token.offset])
 
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
@@ -284,34 +315,44 @@ def get_class_enums(item):
     if not inspect.isclass(item):
         return
 
+    # enums might be referenced using a subclass instead of their
+    # parent class, so we need to loop through all those too...
+    def all_subclasses(cls):
+        if cls is object:
+            return set()
+        return {cls}.union(
+            s for c in cls.__subclasses__() for s in all_subclasses(c))
+    matched_classes = {item}.union(all_subclasses(item))
+
     for key, value in item.__dict__.items():
         if inspect.isclass(value) and type(value).__name__ == 'EnumType':
             for ekey, evalue in value.__dict__.items():
-                if isinstance(evalue, value):
-                    try:
-                        test_value = getattr(item, str(ekey))
-                        if not issubclass(type(test_value), Enum):
-                            # There's a naming clash between an enum value (Eg QgsAggregateMappingModel.ColumnDataIndex.Aggregate)
-                            # and a class (QgsAggregateMappingModel.Aggregate)
-                            # So don't do any upgrades for these values, as current code will always be referring
-                            # to the CLASS
+                for matched_class in matched_classes:
+                    if isinstance(evalue, value):
+                        try:
+                            test_value = getattr(item, str(ekey))
+                            if not issubclass(type(test_value), Enum):
+                                # There's a naming clash between an enum value (Eg QgsAggregateMappingModel.ColumnDataIndex.Aggregate)
+                                # and a class (QgsAggregateMappingModel.Aggregate)
+                                # So don't do any upgrades for these values, as current code will always be referring
+                                # to the CLASS
+                                continue
+                        except AttributeError:
+                            pass
+
+                        if (matched_class.__name__, ekey) in ambiguous_enums:
+                            if value.__name__ not in ambiguous_enums[(matched_class.__name__, ekey)]:
+                                ambiguous_enums[(matched_class.__name__, ekey)].add(value.__name__)
                             continue
-                    except AttributeError:
-                        pass
 
-                    if (item.__name__, ekey) in ambiguous_enums:
-                        if value.__name__ not in ambiguous_enums[(item.__name__, ekey)]:
-                            ambiguous_enums[(item.__name__, ekey)].add(value.__name__)
-                        continue
-
-                    existing_entry = qt_enums.get((item.__name__, ekey))
-                    if existing_entry != value.__name__ and existing_entry:
-                        ambiguous_enums[(item.__name__, ekey)].add(existing_entry)
-                        ambiguous_enums[(item.__name__, ekey)].add(
-                            value.__name__)
-                        del qt_enums[(item.__name__, ekey)]
-                    else:
-                        qt_enums[(item.__name__, ekey)] = f"{value.__name__}"
+                        existing_entry = qt_enums.get((matched_class.__name__, ekey))
+                        if existing_entry != value.__name__ and existing_entry:
+                            ambiguous_enums[(matched_class.__name__, ekey)].add(existing_entry)
+                            ambiguous_enums[(matched_class.__name__, ekey)].add(
+                                value.__name__)
+                            del qt_enums[(matched_class.__name__, ekey)]
+                        else:
+                            qt_enums[(matched_class.__name__, ekey)] = f"{value.__name__}"
 
         elif inspect.isclass(value):
             get_class_enums(value)

@@ -522,7 +522,7 @@ class DBModel(QAbstractItemModel):
         mimeData = QMimeData()
         encodedData = QByteArray()
 
-        stream = QDataStream(encodedData, QIODevice.WriteOnly)
+        stream = QDataStream(encodedData, QIODevice.OpenModeFlag.WriteOnly)
 
         for index in indexes:
             if not index.isValid():
@@ -654,7 +654,7 @@ class DBModel(QAbstractItemModel):
 
             dlg = DlgImportVector(inLayer, outDb, outUri)
             QApplication.restoreOverrideCursor()
-            if dlg.exec_():
+            if dlg.exec():
                 self._refreshIndex(parent)
         finally:
             inLayer.deleteLater()

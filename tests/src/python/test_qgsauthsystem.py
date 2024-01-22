@@ -87,7 +87,7 @@ class TestQgsAuthManager(QgisTestCase):
     def show_editors_widget(self):
         editors = QgsAuthEditorWidgets()
         dlg = self.widget_dialog(editors)
-        dlg.exec_()
+        dlg.exec()
 
     def set_master_password(self):
         msg = 'Failed to store and verify master password in auth db'

@@ -150,7 +150,7 @@ class TestPyQgsQgsQueryResultModel(QgisTestCase):
 
         model.rowsInserted.connect(_set_row_count)
 
-        d.exec_()
+        d.exec()
 
         # Because exit handler will exit QGIS and clear the connections pool before
         # the model is deleted (and it will in turn clear the connection)

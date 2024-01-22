@@ -573,7 +573,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         line = QgsSimpleLineSymbolLayer()
-        line.setRingFilter(QgsSimpleLineSymbolLayer.ExteriorRingOnly)
+        line.setRingFilter(QgsSimpleLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
         self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         line = QgsSimpleLineSymbolLayer()

@@ -375,7 +375,7 @@ class CrsWidgetWrapper(WidgetWrapper):
         if current_crs.isValid():
             dialog.setCrs(current_crs)
 
-        if dialog.exec_():
+        if dialog.exec():
             self.setValue(dialog.crs().authid())
 
     def setValue(self, value):
@@ -1325,7 +1325,7 @@ class StringWidgetWrapper(WidgetWrapper):
             value = ''
         dlg = QgsExpressionBuilderDialog(None, value, self.widget, 'generic', context)
         dlg.setWindowTitle(self.tr('Expression based input'))
-        if dlg.exec_() == QDialog.DialogCode.Accepted:
+        if dlg.exec() == QDialog.DialogCode.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
                 if self.dialogType == DIALOG_STANDARD:

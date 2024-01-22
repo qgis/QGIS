@@ -79,11 +79,11 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
             self.stateChanged(4)
 
-    def exec_(self):
+    def exec(self):
         if self.request is None:
             return QDialog.DialogCode.Rejected
 
-        QDialog.exec_(self)
+        QDialog.exec(self)
 
     # ----------------------------------------- #
     def result(self):
@@ -137,7 +137,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
                 reply.deleteLater()
                 return
 
-        self.file.open(QFile.WriteOnly)
+        self.file.open(QFile.OpenModeFlag.WriteOnly)
         self.file.write(reply.readAll())
         self.file.close()
         self.stateChanged(0)

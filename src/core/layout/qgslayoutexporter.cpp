@@ -868,7 +868,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
   return Success;
 }
 
-#ifndef QT_NO_PRINTER
+#if defined( HAVE_QTPRINTER )
 QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &s )
 {
   if ( !mLayout )
@@ -988,7 +988,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
   iterator->endRender();
   return Success;
 }
-#endif // QT_NO_PRINTER
+#endif // HAVE_QTPRINTER
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &s )
 {
@@ -1255,7 +1255,7 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *devi
   {
     pdf->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
   }
-#ifndef QT_NO_PRINTER
+#if defined( HAVE_QTPRINTER )
   else if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     printer->setFullPage( true );
@@ -1295,7 +1295,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPagedPaintDevi
   int fromPage = 0;
   int toPage = mLayout->pageCollection()->pageCount() - 1;
 
-#ifndef QT_NO_PRINTER
+#if defined( HAVE_QTPRINTER )
   if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     if ( printer->fromPage() >= 1 )
@@ -1368,7 +1368,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPagedPaintDev
   device->setPageLayout( pageLayout );
   device->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 
-#ifndef QT_NO_PRINTER
+#if defined( HAVE_QTPRINTER )
   if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
   {
     printer->setFullPage( true );

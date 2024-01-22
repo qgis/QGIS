@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
+
 #include <QCloseEvent>
 #include <QLabel>
 #include <QAction>
@@ -25,8 +27,6 @@
 #include <QClipboard>
 #include <QMenuBar>
 #include <QPushButton>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QComboBox>
@@ -40,6 +40,11 @@
 #include <QFont>
 #include <QActionGroup>
 #include <QToolButton>
+
+#if defined( HAVE_QTPRINTER )
+#include <QPrinter>
+#include <QPrintDialog>
+#endif
 
 //graph
 #include <qwt_plot.h>
@@ -166,12 +171,14 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
 
 void QgsIdentifyResultsWebView::print()
 {
+#if defined( HAVE_QTPRINTER )
   QPrinter printer;
   QPrintDialog *dialog = new QPrintDialog( &printer );
   if ( dialog->exec() == QDialog::Accepted )
   {
     QgsWebView::print( &printer );
   }
+#endif
 }
 
 void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
@@ -180,9 +187,12 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
   if ( !menu )
     return;
 
+#if defined( HAVE_QTPRINTER )
   QAction *action = new QAction( tr( "Print" ), this );
   connect( action, &QAction::triggered, this, &QgsIdentifyResultsWebView::print );
   menu->addAction( action );
+#endif
+
   menu->exec( e->globalPos() );
   delete menu;
 }
@@ -433,7 +443,11 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( lstResults, &QTreeWidget::itemClicked,
            this, &QgsIdentifyResultsDialog::itemClicked );
 
+#if defined( HAVE_QTPRINTER )
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
+#else
+  mActionPrint->setVisible( false );
+#endif
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
   connect( mHelpToolAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::showHelp );

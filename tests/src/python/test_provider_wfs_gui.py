@@ -85,7 +85,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         loop = QEventLoop()
         name = my_object.objectName()
         my_object.destroyed.connect(loop.quit)
-        loop.exec_()
+        loop.exec()
         self.assertIsNone(find_window(name))
         return None
 

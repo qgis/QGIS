@@ -509,7 +509,7 @@ class MultipleDirectorySelector(QWidget):
             items = []
 
         dlg = DirectorySelectorDialog(None, items)
-        if dlg.exec_():
+        if dlg.exec():
             text = dlg.value()
             self.lineEdit.setText(text)
 

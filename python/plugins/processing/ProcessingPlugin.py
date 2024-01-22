@@ -112,7 +112,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
         dlg.show()
         # do NOT remove!!!! if you do then sip forgets the python subclass of AlgorithmDialog and you get a broken
         # dialog
-        dlg.exec_()
+        dlg.exec()
         return True
 
     def customUriProviderKey(self):
@@ -402,13 +402,13 @@ class ProcessingPlugin(QObject):
                 dlg.setMessage(
                     self.tr('<h3>This algorithm cannot '
                             'be run :-( </h3>\n{0}').format(message))
-                dlg.exec_()
+                dlg.exec()
                 return
 
             if as_batch:
                 dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
                 dlg.show()
-                dlg.exec_()
+                dlg.exec()
             else:
                 in_place_input_parameter_name = 'INPUT'
                 if hasattr(alg, 'inputParameterName'):
@@ -432,7 +432,7 @@ class ProcessingPlugin(QObject):
                     canvas = iface.mapCanvas()
                     prevMapTool = canvas.mapTool()
                     dlg.show()
-                    dlg.exec_()
+                    dlg.exec()
                     if canvas.mapTool() != prevMapTool:
                         try:
                             canvas.mapTool().reset()

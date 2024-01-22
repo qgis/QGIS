@@ -110,7 +110,7 @@ class QgsPluginInstaller(QObject):
             msg.addButton(self.tr("Uninstall (recommended)"), QMessageBox.ButtonRole.AcceptRole)
             msg.addButton(self.tr("I will uninstall it later"), QMessageBox.ButtonRole.RejectRole)
             msg.setText("%s <b>%s</b><br/><br/>%s" % (self.tr("Obsolete plugin:"), plugin["name"], self.tr("QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?")))
-            msg.exec_()
+            msg.exec()
             if not msg.result():
                 settings = QgsSettings()
                 plugin_is_active = settings.value("/PythonPlugins/" + key, False, type=bool)
@@ -140,7 +140,7 @@ class QgsPluginInstaller(QObject):
 
         if repositories.fetchingInProgress():
             fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())
-            fetchDlg.exec_()
+            fetchDlg.exec()
             del fetchDlg
             for key in repositories.all():
                 repositories.killConnection(key)
@@ -330,7 +330,7 @@ class QgsPluginInstaller(QObject):
             unloadPlugin(plugin["id"])
 
         dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
-        dlg.exec_()
+        dlg.exec()
 
         plugin_path = HOME_PLUGIN_PATH + "/" + key
         if dlg.result():
@@ -393,7 +393,7 @@ class QgsPluginInstaller(QObject):
                     message = self.tr("The plugin is broken. Python said:")
                     message += "<br><b>" + plugin["error_details"] + "</b>"
                 dlg = QgsPluginInstallerPluginErrorDialog(iface.mainWindow(), message)
-                dlg.exec_()
+                dlg.exec()
                 if dlg.result():
                     # revert installation
                     pluginDir = HOME_PLUGIN_PATH + "/" + plugin["id"]
@@ -486,7 +486,7 @@ class QgsPluginInstaller(QObject):
         dlg = QgsPluginInstallerRepositoryDialog(iface.mainWindow())
         dlg.editParams.setText(repositories.urlParams())
         dlg.checkBoxEnabled.setCheckState(Qt.CheckState.Checked)
-        if not dlg.exec_():
+        if not dlg.exec():
             return
         for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"]:
@@ -525,7 +525,7 @@ class QgsPluginInstaller(QObject):
             dlg.checkBoxEnabled.setEnabled(False)
             dlg.labelInfo.setText(self.tr("This repository is blocked due to incompatibility with your QGIS version"))
             dlg.labelInfo.setFrameShape(QFrame.Shape.Box)
-        if not dlg.exec_():
+        if not dlg.exec():
             return  # nothing to do if canceled
         for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"] and dlg.editURL.text().strip() != repositories.all()[reposName]["url"]:
@@ -670,7 +670,7 @@ class QgsPluginInstaller(QObject):
                     layout.addWidget(lePass)
                     layout.addWidget(buttonBox)
                     dlg.setLayout(layout)
-                    keepTrying = dlg.exec_()
+                    keepTrying = dlg.exec()
                     password = lePass.text()
                 else:
                     infoString = self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath))
@@ -713,7 +713,7 @@ class QgsPluginInstaller(QObject):
         to_install, to_upgrade, not_found = find_dependencies(plugin_id)
         if to_install or to_upgrade or not_found:
             dlg = QgsPluginDependenciesDialog(plugin_id, to_install, to_upgrade, not_found)
-            if dlg.exec_() == QgsPluginDependenciesDialog.Accepted:
+            if dlg.exec() == QgsPluginDependenciesDialog.Accepted:
                 actions = dlg.actions()
                 for dependency_plugin_id, action_data in actions.items():
                     try:

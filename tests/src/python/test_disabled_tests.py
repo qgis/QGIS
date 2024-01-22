@@ -117,7 +117,7 @@ class TestQgsDisabledTests(QgisTestCase):
 
             # wait for populate() to have done its job
             item.stateChanged.connect(loop.quit)
-            loop.exec_()
+            loop.exec()
 
             # Python object PyQgsLayerItem should still be alive
             self.assertFalse(tabSetDestroyedFlag[0])
@@ -132,7 +132,7 @@ class TestQgsDisabledTests(QgisTestCase):
             # Delete the object and make sure all deferred deletions are processed
             item.destroyed.connect(loop.quit)
             item.deleteLater()
-            loop.exec_()
+            loop.exec()
 
             # Check that the PyQgsLayerItem Python object is now destroyed
             self.assertTrue(tabSetDestroyedFlag[0])

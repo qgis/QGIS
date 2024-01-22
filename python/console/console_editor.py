@@ -189,7 +189,7 @@ class Editor(QgsCodeEditorPython):
         if self.settings.value("pythonConsole/enableObjectInsp",
                                False, type=bool):
             showCodeInspection.setEnabled(True)
-        menu.exec_(self.mapToGlobal(e.pos()))
+        menu.exec(self.mapToGlobal(e.pos()))
 
     def findText(self, forward, showMessage=True, findFirst=False):
         lineFrom, indexFrom, lineTo, indexTo = self.getSelection()
@@ -684,7 +684,7 @@ class EditorTabWidget(QTabWidget):
                 closeOthersTabAction.setEnabled(True)
             if self.widget(self.idx).isModified():
                 saveAction.setEnabled(True)
-            menu.exec_(self.mapToGlobal(e.pos()))
+            menu.exec(self.mapToGlobal(e.pos()))
 
     def closeOthers(self):
         idx = self.idx

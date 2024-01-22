@@ -226,7 +226,7 @@ class BatchPanelFillWidget(QToolButton):
         """
         dlg = QgsFindFilesByPatternDialog()
         dlg.setWindowTitle(self.tr("Add Files by Pattern"))
-        if dlg.exec_():
+        if dlg.exec():
             files = dlg.files()
             context = dataobjects.createContext()
 
@@ -334,7 +334,7 @@ class BatchPanelFillWidget(QToolButton):
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
-        dlg.exec_()
+        dlg.exec()
 
         if not dlg.selectedoptions:
             return
@@ -390,7 +390,7 @@ class BatchPanelFillWidget(QToolButton):
         if adding:
             dlg.setExpectedOutputFormat(self.tr('An array of values corresponding to each new row to add'))
 
-        if not dlg.exec_():
+        if not dlg.exec():
             return
 
         if adding:

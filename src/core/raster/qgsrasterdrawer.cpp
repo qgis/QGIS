@@ -25,9 +25,7 @@
 #include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
-#ifndef QT_NO_PRINTER
-#include <QPrinter>
-#endif
+#include <QPdfWriter>
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget )
   : mIterator( iterator )
@@ -94,11 +92,10 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
     QImage img = block->image();
 
-#ifndef QT_NO_PRINTER
     // Because of bug in Acrobat Reader we must use "white" transparent color instead
     // of "black" for PDF. See #9101.
-    QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
-    if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
+    QPdfWriter *pdfWriter = dynamic_cast<QPdfWriter *>( p->device() );
+    if ( pdfWriter )
     {
       QgsDebugMsgLevel( QStringLiteral( "PdfFormat" ), 4 );
 
@@ -116,7 +113,6 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
         }
       }
     }
-#endif
 
     if ( feedback && feedback->renderPartialOutput() )
     {

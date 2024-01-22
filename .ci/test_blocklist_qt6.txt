@@ -92,7 +92,6 @@ PyQgsFloatingWidget
 PyQgsGdalProvider
 PyQgsGeometryGeneratorSymbolLayer
 PyQgsGeometryTest
-PyQgsGpsLogger
 PyQgsHighlight
 PyQgsJsonUtils
 PyQgsLabelObstacleSettings
@@ -102,7 +101,6 @@ PyQgsLayerMetadata
 PyQgsLayerMetadataProviderPython
 PyQgsLayerMetadataProviderOgr
 PyQgsLayerMetadataResultsModel
-PyQgsLayerTreeView
 PyQgsLayoutAtlas
 PyQgsLayoutElevationProfile
 PyQgsLayoutExporter
@@ -142,7 +140,6 @@ PyQgsPointCloudAttributeComboBox
 PyQgsPointCloudAttributeModel
 PyQgsPointCloudClassifiedRenderer
 PyQgsPointCloudLayerProfileGenerator
-PyQgsPointCloudRgbRenderer
 PyQgsPointDisplacementRenderer
 PyQgsProcessExecutablePt1
 PyQgsProcessExecutablePt2
@@ -155,7 +152,6 @@ PyQgsProjectUtils
 PyQgsProviderConnectionModel
 PyQgsProviderConnectionGpkg
 PyQgsProviderConnectionSpatialite
-PyQgsSensorManager
 PyQgsSensorModel
 PyQgsStyleStorageSpatialite
 PyQgsStyleStorageGpkg
@@ -164,7 +160,6 @@ PyQgsProviderSublayerModel
 PyQgsRangeWidgets
 PyQgsRasterAttributeTable
 PyQgsRasterAttributeTableModel
-PyQgsRasterFileWriter
 PyQgsRasterLayer
 PyQgsRasterLayerProfileGenerator
 PyQgsRasterLayerRenderer
@@ -213,7 +208,6 @@ PyQgsWFSProvider
 PyQgsOapifProvider
 PyQgsDBManagerGpkg
 PyQgsDBManagerSpatialite
-PyQgsFileDownloader
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsSettingsTreeNode
@@ -234,11 +228,8 @@ PyQgsServerWMSDimension
 PyQgsServerSettings
 PyQgsServerAccessControlWMSGetlegendgraphic
 PyQgsServerAccessControlWFSTransactional
-PyQgsServerCacheManager
 PyQgsServerWFS
 PyQgsServerWFST
-PyQgsAuthManagerPasswordOWSTest
-PyQgsServerServices
 PyQgsArcGisPortalUtils
 PyQgsBinaryWidget
 PyQgsClassificationMethod
@@ -283,7 +274,6 @@ ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTestPt1
 ProcessingGrass7AlgorithmsRasterTestPt2
 ProcessingGrass7AlgorithmsVectorTest
-ProcessingOtbAlgorithmsTest
 PyPythonRepr
 TestQgsRandomMarkerSymbolLayer
 ProcessingToolsTest

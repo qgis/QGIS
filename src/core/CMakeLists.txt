@@ -2242,7 +2242,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
@@ -2425,12 +2424,13 @@ target_link_libraries(qgis_core
   PROJ::proj
 )
 
-if (WITH_DRACO)
-  target_link_libraries(qgis_core ${DRACO_LIBRARY})
+if (WITH_QTPRINTER)
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+  target_include_directories(qgis_core SYSTEM PUBLIC ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS})
 endif()
 
-if (NOT IOS)
-  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+if (WITH_DRACO)
+  target_link_libraries(qgis_core ${DRACO_LIBRARY})
 endif()
 
 if (WITH_SPATIALITE)

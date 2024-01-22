@@ -165,7 +165,7 @@ class DBManager(QMainWindow):
         from .dlg_import_vector import DlgImportVector
 
         dlg = DlgImportVector(None, db, outUri, self)
-        dlg.exec_()
+        dlg.exec()
 
     def exportActionSlot(self):
         table = self.tree.currentTable()
@@ -184,7 +184,7 @@ class DBManager(QMainWindow):
         from .dlg_export_vector import DlgExportVector
 
         dlg = DlgExportVector(inLayer, table.database(), self)
-        dlg.exec_()
+        dlg.exec()
 
         inLayer.deleteLater()
 

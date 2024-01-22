@@ -9,8 +9,14 @@ on:
       - 'master'
       - 'release*'
 
+permissions:
+  contents: read
+
 jobs:
   on-success:
+
+    permissions:
+      pull-requests: write
 
     runs-on: ubuntu-latest
     steps:
