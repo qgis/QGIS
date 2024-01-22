@@ -567,9 +567,8 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
 
       //do not update when this widget is already updating (avoid recursions)
       if ( mAlreadyUpdatedFields.contains( eww->fieldIdx() ) )
-      {
         continue;
-      }
+
       QgsExpressionContext context = createExpressionContext( updatedFeature );
       const QVariant value = mLayer->defaultValue( eww->fieldIdx(), updatedFeature, &context );
       eww->setValue( value );

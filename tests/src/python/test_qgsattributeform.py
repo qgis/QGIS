@@ -159,6 +159,61 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(next(featuresIterator).attribute(0), 456)
 
     def test_on_update(self):
+        """Test live update"""
+
+        layer = QgsVectorLayer("Point?field=age:int", "vl", "memory")
+        # set default value for numbers to [1, {age}], it will depend on the field age and should update
+        field = QgsField('numbers', QVariant.List, 'array')
+        field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
+        layer.dataProvider().addAttributes([field])
+        layer.updateFields()
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('array(1, age)', True))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('List', {}))
+        layer.startEditing()
+        form = QgsAttributeForm(layer)
+        feature = QgsFeature(layer.fields())
+        form.setFeature(feature)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+        form.changeAttribute('numbers', [12])
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
+
+    def test_default_value_always_updated(self):
+        """Test that default values are not updated on every edit operation
+        when containing an 'attribute' expression"""
+
+        layer = QgsVectorLayer("Point?field=age:int&field=number:int", "vl", "memory")
+
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for numbers to attribute("age"), it will depend on the field age and should not update
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("attribute(@feature, 'age')", False))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
+
+        layer.startEditing()
+
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute('age', 15)
+
+        form = QgsAttributeForm(layer)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+        form.setFeature(feature)
+
+        QGISAPP.processEvents()
+
+        self.assertEqual(form.currentFormFeature()['age'], 15)
+        # not yet update it on init
+        self.assertEqual(form.currentFormFeature()['number'], None)
+        # return
+        form.changeAttribute('number', 12)
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
+
+    def test_default_value_always_updated_live_edit(self):
         """Test live update, when:
         - dependency changed
         - expression contains a now() function
