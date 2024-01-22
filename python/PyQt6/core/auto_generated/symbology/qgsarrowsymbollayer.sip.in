@@ -29,7 +29,7 @@ Simple constructor
 %End
     ~QgsArrowSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
 %Docstring
 Create a new QgsArrowSymbolLayer
 
@@ -203,7 +203,7 @@ Gets the current arrow type
 Sets the arrow type
 %End
 
-    virtual QVariantMap properties() const;
+    virtual QMap<QString, QVariant> properties() const;
 
     virtual QString layerType() const;
 

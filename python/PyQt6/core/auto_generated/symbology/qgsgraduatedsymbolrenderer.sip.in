@@ -36,7 +36,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     virtual QgsGraduatedSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;

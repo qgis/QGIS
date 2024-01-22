@@ -95,7 +95,7 @@ of columns in the tree widget.
 .. seealso:: :py:func:`setSettingGroup`
 %End
 
-    QVariantMap variablesInActiveScope() const;
+    QMap<QString, QVariant> variablesInActiveScope() const;
 %Docstring
 Returns a map variables set within the editable scope. Read only variables are not
 returned. This method can be used to retrieve the variables edited an added by

@@ -143,16 +143,16 @@ Copies are protected to avoid slicing
 %End
 
 
-    void saveCommonProperties( QVariantMap &map ) const;
+    void saveCommonProperties( QMap<QString, QVariant> &map ) const;
 %Docstring
-Saves the component properties to a QVariantMap.
+Saves the component properties to a QMap<QString, QVariant>.
 
 .. seealso:: :py:func:`restoreCommonProperties`
 %End
 
-    void restoreCommonProperties( const QVariantMap &map );
+    void restoreCommonProperties( const QMap<QString, QVariant> &map );
 %Docstring
-Restores the component properties from a QVariantMap.
+Restores the component properties from a QMap<QString, QVariant>.
 
 .. seealso:: :py:func:`saveCommonProperties`
 %End

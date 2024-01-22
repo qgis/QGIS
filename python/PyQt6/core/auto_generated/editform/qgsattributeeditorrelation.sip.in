@@ -147,14 +147,14 @@ Sets the relation widget type
 .. versionadded:: 3.18
 %End
 
-    QVariantMap relationEditorConfiguration() const;
+    QMap<QString, QVariant> relationEditorConfiguration() const;
 %Docstring
 Returns the relation editor widget configuration
 
 .. versionadded:: 3.18
 %End
 
-    void setRelationEditorConfiguration( const QVariantMap &config );
+    void setRelationEditorConfiguration( const QMap<QString, QVariant> &config );
 %Docstring
 Sets the relation editor configuration
 
