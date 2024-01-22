@@ -15,12 +15,9 @@ import socketserver
 import threading
 import time
 
-from qgis.PyQt.QtCore import QCoreApplication, QDir, QSize
-from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtCore import QCoreApplication, QSize
 from qgis.core import (
-    QgsApplication,
-    QgsMultiRenderChecker,
-    QgsRenderChecker,
+    QgsApplication
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -41,6 +38,10 @@ class SlowHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 class TestQgsImageCache(QgisTestCase):
 
     @classmethod
+    def control_path_prefix(cls):
+        return "image_cache"
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
@@ -56,15 +57,8 @@ class TestQgsImageCache(QgisTestCase):
         cls.httpd_thread.start()
 
     def setUp(self):
-        self.report = "<h1>Python QgsImageCache Tests</h1>\n"
-
         self.fetched = False
         QgsApplication.imageCache().remoteImageFetched.connect(self.imageFetched)
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def imageFetched(self):
         self.fetched = True
@@ -80,14 +74,15 @@ class TestQgsImageCache(QgisTestCase):
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0)
 
         # first should be waiting image
-        self.assertTrue(self.imageCheck('Remote Image', 'waiting_image', image))
+        self.assertTrue(self.image_check('Remote Image', 'waiting_image', image, use_checkerboard_background=True))
         self.assertFalse(QgsApplication.imageCache().originalSize(url).isValid())
         self.waitForFetch()
 
         # second should be correct image
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0)
 
-        self.assertTrue(self.imageCheck('Remote Image', 'remote_image', image))
+        self.assertTrue(
+            self.image_check('Remote Image', 'remote_image', image, use_checkerboard_background=True))
         self.assertEqual(QgsApplication.imageCache().originalSize(url), QSize(511, 800), 1.0)
 
     def testRemoteImageMissing(self):
@@ -95,7 +90,7 @@ class TestQgsImageCache(QgisTestCase):
         url = f'http://localhost:{str(TestQgsImageCache.port)}/qgis_local_server/xxx.png'  # oooo naughty
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0)
 
-        self.assertTrue(self.imageCheck('Remote image missing', 'waiting_image', image))
+        self.assertTrue(self.image_check('Remote image missing', 'waiting_image', image, use_checkerboard_background=True))
 
     def testRemoteImageBlocking(self):
         """Test fetching remote image."""
@@ -104,41 +99,19 @@ class TestQgsImageCache(QgisTestCase):
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0, blocking=1)
 
         # first should be correct image
-        self.assertTrue(self.imageCheck('Remote image sync', 'remote_image_blocking', image))
+        self.assertTrue(self.image_check('Remote image sync', 'remote_image_blocking', image, use_checkerboard_background=True))
 
         # remote probably in cache
         url = f'http://localhost:{str(TestQgsImageCache.port)}/qgis_local_server/sample_image.png'
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0, blocking=1)
 
-        self.assertTrue(self.imageCheck('Remote Image', 'remote_image', image))
+        self.assertTrue(self.image_check('Remote Image', 'remote_image', image, use_checkerboard_background=True))
 
         # remote probably in cache
         url = f'http://localhost:{str(TestQgsImageCache.port)}/qgis_local_server/xxx.png'  # oooo naughty
         image, in_cache = QgsApplication.imageCache().pathAsImage(url, QSize(100, 100), True, 1.0, blocking=1)
 
-        self.assertTrue(self.imageCheck('Remote image missing', 'waiting_image', image))
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'image_' + name + ".png"
-
-        output_image = QImage(image.size(), QImage.Format.Format_RGB32)
-        QgsMultiRenderChecker.drawBackground(output_image)
-        painter = QPainter(output_image)
-        painter.drawImage(0, 0, image)
-        painter.end()
-
-        output_image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("image_cache")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+        self.assertTrue(self.image_check('Remote image missing', 'waiting_image', image, use_checkerboard_background=True))
 
 
 if __name__ == '__main__':

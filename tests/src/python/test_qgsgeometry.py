@@ -49,7 +49,6 @@ from qgis.core import (
     QgsPolygon,
     QgsProject,
     QgsRectangle,
-    QgsRenderChecker,
     QgsTriangle,
     QgsVectorLayer,
     QgsVertexId,
@@ -69,7 +68,6 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsGeometry(QgisTestCase):
 
     def setUp(self):
-        self.report = "<h1>Python QgsGeometry Tests</h1>\n"
         self.geos309 = 30900
         self.geos310_4 = 31040
         self.geos311 = 31100
@@ -7104,16 +7102,24 @@ class TestQgsGeometry(QgisTestCase):
             geom = QgsGeometry.fromWkt(test['wkt'])
             self.assertTrue(geom and not geom.isNull(), f"Could not create geometry {test['wkt']}")
             rendered_image = self.renderGeometry(geom, test['use_pen'])
-            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image), test['name'])
+            self.assertTrue(
+                self.image_check(test['name'], test['reference_image'], rendered_image,
+                                 control_path_prefix="geometry"), test['name'])
 
             if hasattr(geom.constGet(), 'addToPainterPath'):
                 # also check using painter path
                 rendered_image = self.renderGeometry(geom, test['use_pen'], as_painter_path=True)
-                assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+                self.assertTrue(
+                    self.image_check(test['name'], test['reference_image'], rendered_image,
+                                     control_path_prefix="geometry")
+                )
 
             if 'as_polygon_reference_image' in test:
                 rendered_image = self.renderGeometry(geom, False, True)
-                self.assertTrue(self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image), test['name'] + '_aspolygon')
+                self.assertTrue(
+                    self.image_check(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image,
+                                     control_path_prefix="geometry")
+                )
 
     def testGeometryAsQPainterPath(self):
         '''Tests conversion of different geometries to QPainterPath, including bad/odd geometries.'''
@@ -7209,7 +7215,7 @@ class TestQgsGeometry(QgisTestCase):
             geom = get_geom()
             rendered_image = self.renderGeometryUsingPath(geom)
             self.assertTrue(
-                self.imageCheck(test['name'], test['reference_image'], rendered_image, control_path="geometry_path"),
+                self.image_check(test['name'], test['reference_image'], rendered_image, control_path_prefix="geometry_path"),
                 test['name'])
 
             # Note - each test is repeated with the same geometry and reference image, but with added
@@ -7219,21 +7225,21 @@ class TestQgsGeometry(QgisTestCase):
             geom_z = get_geom()
             geom_z.get().addZValue(5)
             rendered_image = self.renderGeometryUsingPath(geom_z)
-            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image,
-                                   control_path="geometry_path")
+            self.assertTrue(self.image_check(test['name'] + 'Z', test['reference_image'], rendered_image,
+                                             control_path_prefix="geometry_path"))
 
             # test with ZM
             geom_z.get().addMValue(15)
             rendered_image = self.renderGeometryUsingPath(geom_z)
-            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image,
-                                   control_path="geometry_path")
+            self.assertTrue(self.image_check(test['name'] + 'ZM', test['reference_image'], rendered_image,
+                                             control_path_prefix="geometry_path"))
 
             # test with M
             geom_m = get_geom()
             geom_m.get().addMValue(15)
             rendered_image = self.renderGeometryUsingPath(geom_m)
-            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image,
-                                   control_path="geometry_path")
+            self.assertTrue(self.image_check(test['name'] + 'M', test['reference_image'], rendered_image,
+                                             control_path_prefix="geometry_path"))
 
     def renderGeometryUsingPath(self, geom):
         image = QImage(200, 200, QImage.Format.Format_RGB32)
@@ -7268,21 +7274,6 @@ class TestQgsGeometry(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image, control_path="geometry"):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'geometry_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix(control_path)
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
     def testFixedPrecision(self):
         a = QgsGeometry.fromWkt('LINESTRING(0 0, 9 0)')
