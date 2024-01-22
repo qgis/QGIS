@@ -952,6 +952,8 @@ void TestQgsCoordinateReferenceSystem::comparison_data()
   QgsCoordinateReferenceSystem noAuthId;
   noAuthId.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.1996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
 
+  QgsCoordinateReferenceSystem noAuthId2;
+  noAuthId2.createFromProj( QStringLiteral( "+proj=ortho +lat_0=47.686 +lon_0=16.548 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +type=crs" ) );
 
   const QgsCoordinateReferenceSystem epsg4326( QStringLiteral( "EPSG:4326" ) );
   const QgsCoordinateReferenceSystem epsg3111( QStringLiteral( "EPSG:3111" ) );
@@ -971,6 +973,8 @@ void TestQgsCoordinateReferenceSystem::comparison_data()
   QTest::newRow( "epsg4326 == epsg4326" ) << epsg4326 << epsg4326 << true;
   QTest::newRow( "user == user" ) << userCrs1 << userCrs1 << true;
   QTest::newRow( "noAuthId == noAuthId" ) << noAuthId << noAuthId << true;
+  QTest::newRow( "noAuthId == noAuthId" ) << noAuthId2 << noAuthId2 << true;
+  QTest::newRow( "noAuthId2 < noAuthId" ) << noAuthId2 << noAuthId << false;
 
   QTest::newRow( "invalid < epsg4326" ) << QgsCoordinateReferenceSystem() << epsg4326 << false;
   QTest::newRow( "invalid < user" ) << QgsCoordinateReferenceSystem() << userCrs1 << false;
