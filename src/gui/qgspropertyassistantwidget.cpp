@@ -27,6 +27,7 @@
 #include "qgsstyle.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsstringutils.h"
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
     const QgsPropertyDefinition &definition, const QgsProperty &initialState,
@@ -39,7 +40,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  setPanelTitle( mDefinition.description() );
+  setPanelTitle( QgsStringUtils::capitalize( mDefinition.description(), Qgis::Capitalization::TitleCase ) );
 
   mLegendPreview->hide();
 
