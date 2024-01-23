@@ -975,6 +975,14 @@ Returns an empty string on failure.
 .. versionadded:: 3.30
 %End
 
+    QString toOgcUrn() const;
+%Docstring
+Returns the crs as OGC URN (format: urn:ogc:def:crs:OGC:1.3:CRS84)
+Returns an empty string on failure.
+
+.. versionadded:: 3.30
+%End
+
 
     void updateDefinition();
 %Docstring
