@@ -647,17 +647,15 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   layer->addFeature( newFeature );
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+  referencedLayersBranch << layer;
 
   const int effectiveMaxDepth = maxDepth > 0 ? maxDepth : 100;
 
   for ( const QgsRelation &relation : relations )
   {
     //check if composition (and not association)
-    if ( relation.strength() == Qgis::RelationshipStrength::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
+    if ( relation.strength() == Qgis::RelationshipStrength::Composition && !referencedLayersBranch.contains( relation.referencingLayer() ) && depth < effectiveMaxDepth )
     {
-      depth++;
-      referencedLayersBranch << layer;
-
       //get features connected over this relation
       QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( feature );
       QgsFeatureIds childFeatureIds;
@@ -673,7 +671,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
         //call the function for the child
-        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, duplicateFeatureContext, maxDepth, depth, referencedLayersBranch ).id() );
+        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, duplicateFeatureContext, maxDepth, depth + 1, referencedLayersBranch ).id() );
       }
 
       //store for feedback
