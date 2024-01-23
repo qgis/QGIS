@@ -438,11 +438,9 @@ class Repositories(QObject):
                     qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().strip()
                     if not qgisMaximumVersion:
                         qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
-                    supports_qt6 = pluginNodes.item(i).firstChildElement("supports_qt6").text().strip().upper() in ("TRUE", "YES")
-                    qt_version = int(QT_VERSION_STR.split('.')[0])
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
-                        if isCompatible(pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion) and (qt_version != 6 or supports_qt6):
+                        if isCompatible(pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion):
                             # add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = Repositories.STATE_LOADED
