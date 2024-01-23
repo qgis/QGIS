@@ -790,8 +790,6 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     }
   }
 
-
-
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
     QString str = QLocale().toString( static_cast<const QgsGeometryCollection *>( feature.geometry().constGet() )->numGeometries() );
