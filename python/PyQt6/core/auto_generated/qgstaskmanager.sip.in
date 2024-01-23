@@ -524,6 +524,48 @@ reports or re-open a related dialog.
 
 };
 
+class QgsTaskWithSerialSubTasks : QgsTask
+{
+%Docstring(signature="appended")
+Task that is composed of sub-tasks to be executed in a serial way,
+which may be useful for example to add several layers in a single target
+dataset which does not support concurrent updates.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgstaskmanager.h"
+%End
+  public:
+    QgsTaskWithSerialSubTasks( const QString &desc = QString() );
+%Docstring
+Constructor
+%End
+
+    ~QgsTaskWithSerialSubTasks();
+
+    void addSubTask( QgsTask *subTask /Transfer/ );
+%Docstring
+Add a subtask and transfer its ownership
+
+The parent task must be added to a :py:class:`QgsTaskManager` for subtasks to be utilized.
+Subtasks should not be added manually to a :py:class:`QgsTaskManager`, rather, only the parent
+task should be added to the manager.
+
+For now, subtasks can *NOT* be nested.
+%End
+
+    virtual void cancel();
+
+
+  protected:
+
+
+    virtual bool run();
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
