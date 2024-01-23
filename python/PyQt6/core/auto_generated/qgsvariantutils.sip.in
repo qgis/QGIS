@@ -39,6 +39,8 @@ This method is more rigorous vs QVariant.isNull(), which will return
 .. versionadded:: 3.28
 %End
 
+
+
 };
 
 /************************************************************************
