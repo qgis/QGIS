@@ -19,6 +19,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerlistutils_p.h"
 #include <mutex>
+#include <QStack>
 #include <QtConcurrentRun>
 
 
@@ -452,6 +453,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
 
   mTaskMutex->lock();
   mTasks.insert( taskId, TaskInfo( task, priority ) );
+  mMapTaskPtrToId[task] = taskId;
   if ( isSubTask )
   {
     mSubTasks << task;
@@ -535,14 +537,9 @@ long QgsTaskManager::taskId( QgsTask *task ) const
     return -1;
 
   QMutexLocker ml( mTaskMutex );
-  QMap< long, TaskInfo >::const_iterator it = mTasks.constBegin();
-  for ( ; it != mTasks.constEnd(); ++it )
-  {
-    if ( it.value().task == task )
-    {
-      return it.key();
-    }
-  }
+  const auto iter = mMapTaskPtrToId.constFind( task );
+  if ( iter != mMapTaskPtrToId.constEnd() )
+    return *iter;
   return -1;
 }
 
@@ -583,46 +580,52 @@ bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
 QSet<long> QgsTaskManager::dependencies( long taskId ) const
 {
   QSet<long> results;
-  if ( resolveDependencies( taskId, taskId, results ) )
+  if ( resolveDependencies( taskId, results ) )
     return results;
   else
     return QSet<long>();
 }
 
-bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, QSet<long> &results ) const
+bool QgsTaskManager::resolveDependencies( long thisTaskId, QSet<long> &results ) const
 {
   mTaskMutex->lock();
   QMap< long, QgsTaskList > dependencies = mTaskDependencies;
   dependencies.detach();
   mTaskMutex->unlock();
 
-  if ( !dependencies.contains( currentTaskId ) )
-    return true;
-
-  const auto constValue = dependencies.value( currentTaskId );
-  for ( QgsTask *task : constValue )
+  QSet<long> alreadyExploredTaskIds;
+  QStack<long> stackTaskIds;
+  stackTaskIds.push( thisTaskId );
+  while ( !stackTaskIds.isEmpty() )
   {
-    long dependentTaskId = taskId( task );
-    if ( dependentTaskId >= 0 )
+    const long currentTaskId = stackTaskIds.pop();
+    alreadyExploredTaskIds.insert( currentTaskId );
+
+    auto iter = dependencies.constFind( currentTaskId );
+    if ( iter == dependencies.constEnd() )
+      continue;
+
+    const auto &constValue = *iter;
+    for ( QgsTask *task : constValue )
     {
-      if ( dependentTaskId == firstTaskId )
-        // circular
-        return false;
-
-      //add task as dependent
-      results.insert( dependentTaskId );
-      //plus all its other dependencies
-      QSet< long > newTaskDeps;
-      if ( !resolveDependencies( firstTaskId, dependentTaskId, newTaskDeps ) )
-        return false;
-
-      if ( newTaskDeps.contains( firstTaskId ) )
+      const long dependentTaskId = taskId( task );
+      if ( dependentTaskId >= 0 )
       {
-        // circular
-        return false;
-      }
+        if ( thisTaskId == dependentTaskId )
+        {
+          // circular dependencies
+          return false;
+        }
 
-      results.unite( newTaskDeps );
+        //add task as dependent
+        results.insert( dependentTaskId );
+
+        // and add it to the stack of tasks whose dependencies must be resolved
+        if ( !alreadyExploredTaskIds.contains( dependentTaskId ) )
+        {
+          stackTaskIds.push( dependentTaskId );
+        }
+      }
     }
   }
 
@@ -632,7 +635,7 @@ bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, 
 bool QgsTaskManager::hasCircularDependencies( long taskId ) const
 {
   QSet< long > d;
-  return !resolveDependencies( taskId, taskId, d );
+  return !resolveDependencies( taskId, d );
 }
 
 QList<QgsMapLayer *> QgsTaskManager::dependentLayers( long taskId ) const
@@ -817,6 +820,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   mParentTasks.remove( task );
   mSubTasks.remove( task );
   mTasks.remove( id );
+  mMapTaskPtrToId.remove( task );
   mLayerDependencies.remove( id );
 
   if ( task->status() != QgsTask::Complete && task->status() != QgsTask::Terminated )
