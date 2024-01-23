@@ -81,8 +81,8 @@ class TestQgsSingleSymbolRenderer(QgisTestCase):
         self.renderer.setOrderByEnabled(False)
         self.assertTrue(
             self.render_map_settings_check(
-                'single',
-                'single',
+                'singlesymbol_noorderby',
+                'singlesymbol_noorderby',
                 self.mapsettings)
         )
 
