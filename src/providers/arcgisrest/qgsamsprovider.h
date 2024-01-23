@@ -154,7 +154,6 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
     QgsHttpHeaders mRequestHeaders;
-    QString mUrlPrefix;
     int mTileReqNo = 0;
     bool mTiled = false;
     bool mImageServer = false;
@@ -162,6 +161,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     int mMaxImageHeight = 4096;
     QgsLayerMetadata mLayerMetadata;
     QList< double > mResolutions;
+    QString mUrlPrefix;
 
     /**
      * Resets cached image
@@ -207,7 +207,6 @@ class QgsAmsTiledImageDownloadHandler : public QObject
 
     QString mAuth;
     QgsHttpHeaders mRequestHeaders;
-    QString mUrlPrefix;
 
     QImage *mImage = nullptr;
     QgsRectangle mViewExtent;
@@ -220,6 +219,7 @@ class QgsAmsTiledImageDownloadHandler : public QObject
     QList<QNetworkReply *> mReplies;
 
     QgsRasterBlockFeedback *mFeedback = nullptr;
+    QString mUrlPrefix;
 };
 
 class QgsAmsProviderMetadata: public QgsProviderMetadata

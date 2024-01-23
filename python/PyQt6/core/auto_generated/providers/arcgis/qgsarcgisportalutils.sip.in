@@ -66,7 +66,7 @@ If ``user`` is blank then the user associated with the current logon details wil
   use the version with :py:class:`QgsHttpHeaders` instead
 %End
 
-    static QVariantList retrieveUserGroups(const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString() );
+    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString() );
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name is a member of.
 
