@@ -519,7 +519,7 @@ void QgsValueRelationWidgetWrapper::populate( )
 
   if ( mComboBox )
   {
-    mComboBox->clear();
+    whileBlocking( mComboBox )->clear();
     if ( config( QStringLiteral( "AllowNull" ) ).toBool( ) )
     {
       whileBlocking( mComboBox )->addItem( tr( "(no selection)" ), QVariant( field().type( ) ) );
