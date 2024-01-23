@@ -11,7 +11,6 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
 
-from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
@@ -25,7 +24,6 @@ from qgis.core import (
     QgsProfileRequest,
     QgsProfileSnapContext,
     QgsProviderRegistry,
-    QgsRenderChecker,
     QgsUnitTypes,
 )
 import unittest
@@ -38,17 +36,13 @@ start_app()
 
 class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
 
+    @classmethod
+    def control_path_prefix(cls):
+        return "profile_chart"
+
     @staticmethod
     def round_dict(val, places):
         return {round(k, places): round(val[k], places) for k in sorted(val.keys())}
-
-    def setUp(self):
-        self.report = "<h1>Python QgsPointCloudLayerProfileGenerator Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
     def testProfileGeneration(self):
@@ -444,22 +438,11 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         plot_renderer.waitForFinished()
 
         res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 2320, 2330)
-        self.assertTrue(self.imageCheck('point_cloud_layer_fixed_color', 'point_cloud_layer_fixed_color', res))
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'profile_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("profile_chart")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+        self.assertTrue(
+            self.image_check('point_cloud_layer_fixed_color', 'point_cloud_layer_fixed_color', res,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
 
 if __name__ == '__main__':

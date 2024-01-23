@@ -51,7 +51,6 @@ from qgis.core import (
     QgsRasterShader,
     QgsRasterTransparency,
     QgsReadWriteContext,
-    QgsRenderChecker,
     QgsSingleBandGrayRenderer,
     QgsSingleBandPseudoColorRenderer,
 )
@@ -81,23 +80,19 @@ class TestQgsRasterLayer(QgisTestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = f'Raster not loaded: {myPath}'
-        assert myRasterLayer.isValid(), myMessage
+        self.assertTrue(myRasterLayer.isValid())
         myPoint = QgsPointXY(786690, 3345803)
         # print 'Extents: %s' % myRasterLayer.extent().toString()
         # myResult, myRasterValues = myRasterLayer.identify(myPoint)
         # assert myResult
         myRasterValues = myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormat.IdentifyFormatValue).results()
 
-        assert len(myRasterValues) > 0
+        self.assertGreater(len(myRasterValues), 0)
 
         # Get the name of the first band
         myBand = list(myRasterValues.keys())[0]
         # myExpectedName = 'Band 1
-        myExpectedBand = 1
-        myMessage = 'Expected "{}" got "{}" for first raster band name'.format(
-            myExpectedBand, myBand)
-        assert myExpectedBand == myBand, myMessage
+        self.assertEqual(1, myBand)
 
         # Convert each band value to a list of ints then to a string
 
@@ -253,8 +248,7 @@ class TestQgsRasterLayer(QgisTestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = f'Raster not loaded: {myPath}'
-        assert myRasterLayer.isValid(), myMessage
+        self.assertTrue(myRasterLayer.isValid())
 
         renderer = QgsSingleBandGrayRenderer(myRasterLayer.dataProvider(), 1)
         myRasterLayer.setRenderer(renderer)
@@ -299,7 +293,7 @@ class TestQgsRasterLayer(QgisTestCase):
             myTransparentSingleValuePixelList)
 
         rasterRenderer = myRasterLayer.renderer()
-        assert rasterRenderer
+        self.assertTrue(rasterRenderer)
 
         rasterRenderer.setRasterTransparency(rasterTransparency)
 
@@ -309,12 +303,12 @@ class TestQgsRasterLayer(QgisTestCase):
         myMapSettings.setLayers([myRasterLayer])
         myMapSettings.setExtent(myRasterLayer.extent())
 
-        myChecker = QgsRenderChecker()
-        myChecker.setControlName("expected_raster_transparency")
-        myChecker.setMapSettings(myMapSettings)
-
-        myResultFlag = myChecker.runTest("raster_transparency_python")
-        assert myResultFlag, "Raster transparency rendering test failed"
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_transparency',
+                'raster_transparency',
+                myMapSettings)
+        )
 
     def testIssue7023(self):
         """Check if converting a raster from 1.8 to 2 works."""
@@ -323,8 +317,7 @@ class TestQgsRasterLayer(QgisTestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = f'Raster not loaded: {myPath}'
-        assert myRasterLayer.isValid(), myMessage
+        self.assertTrue(myRasterLayer.isValid())
         # crash on next line
         QgsProject.instance().addMapLayers([myRasterLayer])
 
@@ -335,8 +328,7 @@ class TestQgsRasterLayer(QgisTestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = f'Raster not loaded: {myPath}'
-        assert myRasterLayer.isValid(), myMessage
+        self.assertTrue(myRasterLayer.isValid())
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
@@ -397,8 +389,8 @@ class TestQgsRasterLayer(QgisTestCase):
         r = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rShader)
 
         layer.setRenderer(r)
-        assert self.rendererChanged
-        assert layer.renderer() == r
+        self.assertTrue(self.rendererChanged)
+        self.assertEqual(layer.renderer(), r)
 
     def test_server_properties(self):
         """ Test server properties. """
@@ -549,11 +541,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_paletted_renderer")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_paletted_renderer"), "Paletted rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'paletted_renderer',
+                'paletted_renderer',
+                ms)
+        )
 
     def testPalettedBand(self):
         """ test paletted raster render band"""
@@ -574,11 +567,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_paletted_renderer_band2")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_paletted_renderer_band2"), "Paletted rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'paletted_renderer_band2',
+                'paletted_renderer_band2',
+                ms)
+        )
 
         renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 3,
                                              [QgsPalettedRasterRenderer.Class(120, QColor(0, 255, 0), 'class 2'),
@@ -590,11 +584,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_paletted_renderer_band3")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_paletted_renderer_band3"), "Paletted rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'paletted_renderer_band3',
+                'paletted_renderer_band3',
+                ms)
+        )
 
     def testBrightnessContrastGamma(self):
         """ test raster brightness/contrast/gamma filter"""
@@ -611,11 +606,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_contrast100")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_contrast100"), "Contrast (c = 100) rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_contrast100',
+                'raster_contrast100',
+                ms)
+        )
 
         layer.brightnessFilter().setContrast(-30)
 
@@ -623,11 +619,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_contrast30")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_contrast30"), "Contrast (c = -30) rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_contrast30',
+                'raster_contrast30',
+                ms)
+        )
 
         layer.brightnessFilter().setContrast(0)
         layer.brightnessFilter().setBrightness(50)
@@ -636,11 +633,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_brightness50")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_brightness50"), "Brightness (b = 50) rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_brightness50',
+                'raster_brightness50',
+                ms)
+        )
 
         layer.brightnessFilter().setBrightness(-20)
 
@@ -648,11 +646,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_brightness20")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_brightness20"), "Brightness (b = -20) rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_brightness20',
+                'raster_brightness20',
+                ms)
+        )
 
         path = os.path.join(unitTestDataPath(),
                             'landsat-int16-b1.tif')
@@ -667,11 +666,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_gamma022")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_gamma022"), "Gamma correction (gamma = 0.22) rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_gamma022',
+                'raster_gamma022',
+                ms)
+        )
 
         layer.brightnessFilter().setGamma(2.22)
 
@@ -679,11 +679,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_gamma222")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_gamma222"), "Gamma correction (gamma = 2.22) rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_gamma222',
+                'raster_gamma222',
+                ms)
+        )
 
     def testInvertColors(self):
         """ test raster invert colors filter"""
@@ -700,11 +701,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_invertcolors")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_invertcolors"), "Invert colors rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_invertcolors',
+                'raster_invertcolors',
+                ms)
+        )
 
     def testInvertSemiOpaqueColors(self):
         """ test raster invert colors filter"""
@@ -722,11 +724,12 @@ class TestQgsRasterLayer(QgisTestCase):
         ms.setLayers([layer])
         ms.setExtent(layer.extent())
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_invertsemiopaquecolors")
-        checker.setMapSettings(ms)
-
-        self.assertTrue(checker.runTest("expected_raster_invertsemiopaquecolors"), "Invert colors rendering test failed")
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_invertsemiopaquecolors',
+                'raster_invertsemiopaquecolors',
+                ms)
+        )
 
     def testPalettedColorTableToClassData(self):
         entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
@@ -1110,8 +1113,7 @@ class TestQgsRasterLayer(QgisTestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
-        myMessage = f'Raster not loaded: {myPath}'
-        assert myRasterLayer.isValid(), myMessage
+        self.assertTrue(myRasterLayer.isValid())
 
         # do generic export with default layer values
         dom, root, errorMessage = self.layerToSld(myRasterLayer)
@@ -1646,11 +1648,12 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
         context.appendScope(scope)
         map_settings.setExpressionContext(context)
 
-        checker = QgsRenderChecker()
-        checker.setControlName("expected_raster_data_defined_opacity")
-        checker.setMapSettings(map_settings)
-
-        self.assertTrue(checker.runTest("raster_data_defined_opacity"))
+        self.assertTrue(
+            self.render_map_settings_check(
+                'raster_data_defined_opacity',
+                'raster_data_defined_opacity',
+                map_settings)
+        )
 
     def test_read_xml_crash(self):
         """Check if converting a raster from 1.8 to 2 works."""

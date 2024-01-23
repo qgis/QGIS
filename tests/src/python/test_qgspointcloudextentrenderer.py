@@ -17,7 +17,6 @@ from qgis.core import (
     QgsFillSymbol,
     QgsLayerTreeLayer,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsPointCloudExtentRenderer,
     QgsPointCloudLayer,
     QgsProviderRegistry,

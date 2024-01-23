@@ -23,8 +23,7 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsUnitTypes,
-    QgsLayoutChecker
+    QgsUnitTypes
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -37,6 +36,10 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutMarker(QgisTestCase, LayoutItemTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return "layout_marker"
 
     @classmethod
     def setUpClass(cls):
@@ -90,11 +93,13 @@ class TestQgsLayoutMarker(QgisTestCase, LayoutItemTestCase):
         style = QgsMarkerSymbol.createSimple(props)
         marker.setSymbol(style)
         layout.addLayoutItem(marker)
-        checker = QgsLayoutChecker(
-            'layout_marker_render', layout)
-        checker.setControlPathPrefix("layout_marker")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+
+        self.assertTrue(
+            self.render_layout_check(
+                'layout_marker_render',
+                layout
+            )
+        )
 
     def testReadWriteXml(self):
         pr = QgsProject()
@@ -274,11 +279,13 @@ class TestQgsLayoutMarker(QgisTestCase, LayoutItemTestCase):
         style = QgsMarkerSymbol.createSimple(props)
         marker.setSymbol(style)
         layout.addLayoutItem(marker)
-        checker = QgsLayoutChecker(
-            'layout_marker_render_north', layout)
-        checker.setControlPathPrefix("layout_marker")
-        myTestResult, myMessage = checker.testLayout()
-        assert myTestResult, myMessage
+
+        self.assertTrue(
+            self.render_layout_check(
+                'layout_marker_render_north',
+                layout
+            )
+        )
 
 
 if __name__ == '__main__':

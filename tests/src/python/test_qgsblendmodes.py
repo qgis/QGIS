@@ -20,6 +20,7 @@ __date__ = 'May 2013'
 __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 
 import os
+import unittest
 
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor, QPainter
@@ -27,26 +28,25 @@ from qgis.core import (
     Qgis,
     QgsMapSettings,
     QgsMultiBandColorRenderer,
-    QgsMultiRenderChecker,
     QgsPainting,
-    QgsProject,
     QgsRasterLayer,
     QgsRectangle,
     QgsVectorLayer,
     QgsVectorSimplifyMethod,
 )
-from qgis.testing import unittest
+from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
+start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsBlendModes(unittest.TestCase):
+class TestQgsBlendModes(QgisTestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
-        unittest.TestCase.__init__(self, methodName)
+        QgisTestCase.__init__(self, methodName)
 
         # create point layer
         shp_file = os.path.join(TEST_DATA_DIR, 'points.shp')
@@ -97,12 +97,13 @@ class TestQgsBlendModes(unittest.TestCase):
         self.line_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
         self.polygon_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
 
-        checker = QgsMultiRenderChecker()
-        checker.setControlName("expected_vector_blendmodes")
-        checker.setMapSettings(self.map_settings)
-        checker.setColorTolerance(1)
-
-        result = checker.runTest("vector_blendmodes", 20)
+        result = self.render_map_settings_check(
+            'vector_blendmodes',
+            'vector_blendmodes',
+            self.map_settings,
+            allowed_mismatch=20,
+            color_tolerance=1
+        )
 
         # Reset layers
         self.line_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
@@ -120,12 +121,13 @@ class TestQgsBlendModes(unittest.TestCase):
         # Set feature blending for line layer
         self.line_layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Plus)
 
-        checker = QgsMultiRenderChecker()
-        checker.setControlName("expected_vector_featureblendmodes")
-        checker.setMapSettings(self.map_settings)
-        checker.setColorTolerance(1)
-
-        result = checker.runTest("vector_featureblendmodes", 20)
+        result = self.render_map_settings_check(
+            'vector_featureblendmodes',
+            'vector_featureblendmodes',
+            self.map_settings,
+            allowed_mismatch=20,
+            color_tolerance=1
+        )
 
         # Reset layers
         self.line_layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
@@ -142,12 +144,14 @@ class TestQgsBlendModes(unittest.TestCase):
         # Set feature blending for line layer
         self.line_layer.setOpacity(0.5)
 
-        checker = QgsMultiRenderChecker()
-        checker.setControlName("expected_vector_layertransparency")
-        checker.setMapSettings(self.map_settings)
-        checker.setColorTolerance(1)
+        result = self.render_map_settings_check(
+            'vector_layertransparency',
+            'vector_layertransparency',
+            self.map_settings,
+            allowed_mismatch=20,
+            color_tolerance=1
+        )
 
-        result = checker.runTest("vector_layertransparency", 20)
         self.line_layer.setOpacity(1)
         self.assertTrue(result)
 
@@ -159,13 +163,14 @@ class TestQgsBlendModes(unittest.TestCase):
 
         # Set blending mode for top layer
         self.raster_layer1.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
-        checker = QgsMultiRenderChecker()
-        checker.setControlName("expected_raster_blendmodes")
-        checker.setMapSettings(self.map_settings)
-        checker.setColorTolerance(1)
-        checker.setColorTolerance(1)
 
-        result = checker.runTest("raster_blendmodes", 20)
+        result = self.render_map_settings_check(
+            'raster_blendmodes',
+            'raster_blendmodes',
+            self.map_settings,
+            allowed_mismatch=20,
+            color_tolerance=1
+        )
 
         self.raster_layer1.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
