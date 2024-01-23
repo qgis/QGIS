@@ -933,3 +933,53 @@ void QgsTaskManager::TaskInfo::createRunnable()
   Q_ASSERT( !runnable );
   runnable = new QgsTaskRunnableWrapper( task ); // auto deleted
 }
+
+
+QgsTaskWithSerialSubTasks::~QgsTaskWithSerialSubTasks()
+{
+  for ( QgsTask *subTask : mSubTasksSerial )
+  {
+    delete subTask;
+  }
+}
+
+void QgsTaskWithSerialSubTasks::addSubTask( QgsTask *subTask )
+{
+  mSubTasksSerial << subTask;
+}
+
+bool QgsTaskWithSerialSubTasks::run()
+{
+  size_t i = 0;
+  for ( QgsTask *subTask : mSubTasksSerial )
+  {
+    if ( mShouldTerminate )
+      return false;
+    connect( subTask, &QgsTask::progressChanged, this,
+             [this, i]( double subTaskProgress )
+    {
+      mProgress = 100.0 * ( double( i ) + subTaskProgress / 100.0 ) / double( mSubTasksSerial.size() );
+      setProgress( mProgress );
+    } );
+    if ( !subTask->run() )
+      return false;
+    subTask->completed();
+    mProgress = 100.0 * double( i + 1 ) / double( mSubTasksSerial.size() );
+    setProgress( mProgress );
+    ++i;
+  }
+  return true;
+}
+
+void QgsTaskWithSerialSubTasks::cancel()
+{
+  if ( mOverallStatus == Complete || mOverallStatus == Terminated )
+    return;
+
+  QgsTask::cancel();
+
+  for ( QgsTask *subTask : mSubTasksSerial )
+  {
+    subTask->cancel();
+  }
+}

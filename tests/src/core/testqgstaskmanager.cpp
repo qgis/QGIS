@@ -362,6 +362,7 @@ class TestQgsTaskManager : public QObject
     void proxyTask2();
     void scopedProxyTask();
     void hiddenTask();
+    void testQgsTaskWithSerialSubTasks();
 };
 
 void TestQgsTaskManager::initTestCase()
@@ -1782,6 +1783,20 @@ void TestQgsTaskManager::hiddenTask()
     QCoreApplication::processEvents();
   }
   flushEvents();
+}
+
+void TestQgsTaskManager::testQgsTaskWithSerialSubTasks()
+{
+  QgsTaskWithSerialSubTasks *taskWithSerialSubTasks = new QgsTaskWithSerialSubTasks();
+  QPointer< QgsTask > p( taskWithSerialSubTasks );
+
+  auto task = new TestTask();
+  taskWithSerialSubTasks->addSubTask( task );
+  taskWithSerialSubTasks->start();
+
+  QVERIFY( task->runCalled );
+
+  taskWithSerialSubTasks->cancel();
 }
 
 QGSTEST_MAIN( TestQgsTaskManager )
