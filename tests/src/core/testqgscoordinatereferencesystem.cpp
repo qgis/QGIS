@@ -966,7 +966,7 @@ void TestQgsCoordinateReferenceSystem::comparison_data()
   QTest::newRow( "epsg4326 == epsg4326" ) << epsg4326 << epsg4326 << true;
   QTest::newRow( "user == user" ) << userCrs1 << userCrs1 << true;
   QTest::newRow( "noAuthId == noAuthId" ) << noAuthId << noAuthId << true;
-  QTest::newRow( "noAuthId == noAuthId" ) << noAuthId2 << noAuthId2 << true;
+  QTest::newRow( "noAuthId2 == noAuthId2" ) << noAuthId2 << noAuthId2 << true;
   QTest::newRow( "noAuthId2 < noAuthId" ) << noAuthId2 << noAuthId << false;
 
   QTest::newRow( "invalid < epsg4326" ) << QgsCoordinateReferenceSystem() << epsg4326 << false;
