@@ -4392,15 +4392,37 @@ template<_TYPE_>
 %End
 };
 
-// TODO QVariant::Type is obsolete, migrate to QMetaType
+// QVariant::Type is obsolete, migrate to QMetaType
 %MappedType QVariant::Type
 {
-
+%TypeHeaderCode
+#include "qgsvariantutils.h"
+%End
 %ConvertFromTypeCode
-    return 0;
+    const QMetaType::Type metaType = QgsVariantUtils::variantTypeToMetaType( *sipCpp );
+    const sipTypeDef *qmetatype_type = sipFindType( "QMetaType::Type" );
+    PyObject *eobj = sipConvertFromEnum(metaType, qmetatype_type);
+    if (!eobj)
+    {
+        return 0;
+    }
+    return eobj;
 %End
 
 %ConvertToTypeCode
-    return 0;
+    const sipTypeDef *qmetatype_type = sipFindType( "QMetaType::Type" );
+    const QMetaType::Type metaType = static_cast<QMetaType::Type>( sipConvertToEnum( sipPy, qmetatype_type ) );
+    if (sipIsErr == NULL)
+    {
+        return PyErr_Occurred() ? 0 : 1;
+    }
+    else if (PyErr_Occurred())
+    {
+        *sipIsErr = 1;
+        return 0;
+    }
+    const QVariant::Type variantType = QgsVariantUtils::metaTypeToVariantType( metaType );
+    *sipCppPtr = new QVariant::Type( variantType );
+    return 1;
 %End
 };
