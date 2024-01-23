@@ -635,7 +635,8 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
 
   vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
 
-  QgsProject::instance()->setDirty( true );
+  if ( QgsProject* project = vlayer->project() )
+     project->setDirty( true );
 
   emit dataChanged();
   vlayer->emitStyleChanged();
