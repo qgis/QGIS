@@ -9,7 +9,7 @@ __author__ = '(C) 2020 by Nyall Dawson'
 __date__ = '05/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.QtCore import QDir, QSize, QSizeF
+from qgis.PyQt.QtCore import QSize, QSizeF
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -19,7 +19,6 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMarkerSymbol,
     QgsReadWriteContext,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsStyle,
     QgsSymbol,
@@ -35,17 +34,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsLegendPatchShape(QgisTestCase):
 
+    @classmethod
+    def control_path_prefix(cls):
+        return "legend_patch"
+
     def setUp(self):
         # Create some simple symbols
         self.fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': 'black'})
         self.line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
         self.marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'black'})
-        self.report = "<h1>Python QgsLegendPatchShape Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def testBasic(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), False)
@@ -199,37 +196,65 @@ class TestQgsLegendPatchShape(QgisTestCase):
     def testRenderMarker(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Marker, QgsGeometry.fromWkt('MultiPoint((5 5), (3 4), (1 2))'), False)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('Marker', 'marker_multipoint', rendered_image))
+        self.assertTrue(
+            self.image_check('Marker', 'marker_multipoint', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderMarkerPreserve(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Marker, QgsGeometry.fromWkt('MultiPoint((5 5), (3 4), (1 2))'), True)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('Marker Preserve', 'marker_multipoint_preserve', rendered_image))
+        self.assertTrue(
+            self.image_check('Marker Preserve', 'marker_multipoint_preserve', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderLine(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString(5 5, 3 4, 1 2)'), False)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('Line', 'line', rendered_image))
+        self.assertTrue(
+            self.image_check('Line', 'line', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderLinePreserve(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString(5 5, 3 4, 1 2)'), True)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('Line Preserve', 'line_preserve', rendered_image))
+        self.assertTrue(
+            self.image_check('Line Preserve', 'line_preserve', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderMultiLine(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('MultiLineString((5 5, 3 4, 1 2), ( 6 6, 6 0))'), True)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('Multiline', 'multiline', rendered_image))
+        self.assertTrue(
+            self.image_check('Multiline', 'multiline', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderPolygon(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Fill, QgsGeometry.fromWkt('Polygon((1 1 , 6 1, 6 6, 1 1),(4 2, 5 3, 4 3, 4 2))'), False)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('Polygon', 'polygon', rendered_image))
+        self.assertTrue(
+            self.image_check('Polygon', 'polygon', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderMultiPolygon(self):
         shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Fill, QgsGeometry.fromWkt('MultiPolygon(((1 1 , 6 1, 6 6, 1 1),(4 2, 5 3, 4 3, 4 2)),((1 5, 2 5, 1 6, 1 5)))'), False)
         rendered_image = self.renderPatch(shape)
-        self.assertTrue(self.imageCheck('MultiPolygon', 'multipolygon', rendered_image))
+        self.assertTrue(
+            self.image_check('MultiPolygon', 'multipolygon', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
@@ -271,21 +296,6 @@ class TestQgsLegendPatchShape(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'patch_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("legend_patch")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

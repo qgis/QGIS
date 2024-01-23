@@ -34,7 +34,6 @@ from qgis.core import (
     QgsProperty,
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
-    QgsRenderChecker,
     QgsRendererCategory,
     QgsSymbolLayer,
     QgsVectorLayer,

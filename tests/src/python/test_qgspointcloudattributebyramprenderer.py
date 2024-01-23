@@ -19,7 +19,6 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsMapSettings,
     QgsMapUnitScale,
-    QgsMultiRenderChecker,
     QgsPointCloudAttributeByRampRenderer,
     QgsPointCloudLayer,
     QgsPointCloudRenderContext,

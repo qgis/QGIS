@@ -11,13 +11,12 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
-from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsGeometry,
     QgsMapClippingRegion,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsRasterLayer,
     QgsRectangle,
 )
@@ -34,13 +33,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsRasterLayerRenderer(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsRasterLayerRenderer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return 'rasterlayerrenderer'
 
     def testRenderWithPainterClipRegions(self):
         raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, 'rgb256x256.png'))
@@ -61,13 +56,12 @@ class TestQgsRasterLayerRenderer(QgisTestCase):
         mapsettings.addClippingRegion(region)
         mapsettings.addClippingRegion(region2)
 
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(mapsettings)
-        renderchecker.setControlPathPrefix('rasterlayerrenderer')
-        renderchecker.setControlName('expected_painterclip_region')
-        result = renderchecker.runTest('expected_painterclip_region')
-        self.report += renderchecker.report()
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'painterclip_region',
+                'painterclip_region',
+                mapsettings)
+        )
 
 
 if __name__ == '__main__':

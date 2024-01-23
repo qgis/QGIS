@@ -21,7 +21,6 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsProperty,
     QgsReadWriteContext,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSymbolLayer,
     QgsTextFormat,

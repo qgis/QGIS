@@ -19,6 +19,7 @@ __author__ = 'Nyall Dawson'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
 
+
 from qgis.PyQt.QtCore import QDir, QSize, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
@@ -45,7 +46,6 @@ from qgis.core import (
     QgsRasterFillSymbolLayer,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
@@ -68,17 +68,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsSymbol(QgisTestCase):
 
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol"
+
     def setUp(self):
         # Create some simple symbols
         self.fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': 'black'})
         self.line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
         self.marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'black'})
-        self.report = "<h1>Python QgsSymbol Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def testPythonAdditions(self):
         """
@@ -293,7 +291,15 @@ class TestQgsSymbol(QgisTestCase):
 
             geom = get_geom()
             rendered_image = self.renderGeometry(geom)
-            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image), test['name'])
+            self.assertTrue(
+                self.image_check(
+                    test['name'],
+                    test['reference_image'],
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # Note - each test is repeated with the same geometry and reference image, but with added
             # z and m dimensions. This tests that presence of the dimensions does not affect rendering
@@ -302,41 +308,97 @@ class TestQgsSymbol(QgisTestCase):
             geom_z = get_geom()
             geom_z.get().addZValue(5)
             rendered_image = self.renderGeometry(geom_z)
-            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image)
+            self.assertTrue(
+                self.image_check(
+                    test['name'] + 'Z',
+                    test['reference_image'],
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # test with ZM
             geom_z.get().addMValue(15)
             rendered_image = self.renderGeometry(geom_z)
-            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image)
+            self.assertTrue(
+                self.image_check(
+                    test['name'] + 'ZM',
+                    test['reference_image'],
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # test with M
             geom_m = get_geom()
             geom_m.get().addMValue(15)
             rendered_image = self.renderGeometry(geom_m)
-            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image)
+            self.assertTrue(
+                self.image_check(
+                    test['name'] + 'M',
+                    test['reference_image'],
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # test with clipping
 
             geom = get_geom()
             rendered_image = self.renderGeometry(geom, clipped_geometry=True, clip_size=test.get('clip_size', 10))
-            self.assertTrue(self.imageCheck(test['name'], test['reference_image'] + '_clipped', rendered_image), test['name'])
+            self.assertTrue(
+                self.image_check(
+                    test['name'],
+                    test['reference_image'] + '_clipped',
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # test with Z
             geom_z = get_geom()
             geom_z.get().addZValue(5)
             rendered_image = self.renderGeometry(geom_z, clipped_geometry=True, clip_size=test.get('clip_size', 10))
-            assert self.imageCheck(test['name'] + 'Z', test['reference_image'] + '_clipped', rendered_image)
+            self.assertTrue(
+                self.image_check(
+                    test['name'] + 'Z',
+                    test['reference_image'] + '_clipped',
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # test with ZM
             geom_z.get().addMValue(15)
             rendered_image = self.renderGeometry(geom_z, clipped_geometry=True, clip_size=test.get('clip_size', 10))
-            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'] + '_clipped', rendered_image)
+            self.assertTrue(
+                self.image_check(
+                    test['name'] + 'ZM',
+                    test['reference_image'] + '_clipped',
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
             # test with M
             geom_m = get_geom()
             geom_m.get().addMValue(15)
             rendered_image = self.renderGeometry(geom_m, clipped_geometry=True, clip_size=test.get('clip_size', 10))
-            assert self.imageCheck(test['name'] + 'M', test['reference_image'] + '_clipped', rendered_image)
+            self.assertTrue(
+                self.image_check(
+                    test['name'] + 'M',
+                    test['reference_image'] + '_clipped',
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
     def renderGeometry(self, geom, clipped_geometry=False, clip_size=10):
         f = QgsFeature()
@@ -643,7 +705,15 @@ class TestQgsSymbol(QgisTestCase):
         finally:
             painter.end()
 
-        assert self.imageCheck('Reprojection errors polygon', 'reprojection_errors_polygon', image)
+        self.assertTrue(
+            self.image_check(
+                'Reprojection errors polygon',
+                'reprojection_errors_polygon',
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
         # also test linestring
         linestring = QgsGeometry(geom.constGet().boundary())
@@ -660,7 +730,15 @@ class TestQgsSymbol(QgisTestCase):
         finally:
             painter.end()
 
-        assert self.imageCheck('Reprojection errors linestring', 'reprojection_errors_linestring', image)
+        self.assertTrue(
+            self.image_check(
+                'Reprojection errors linestring',
+                'reprojection_errors_linestring',
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def test_animation_settings(self):
         s = QgsFillSymbol()
@@ -751,7 +829,15 @@ class TestQgsSymbol(QgisTestCase):
         finally:
             painter.end()
 
-        assert self.imageCheck('Linestring with nan z', 'linestring_nan_z', image)
+        self.assertTrue(
+            self.image_check(
+                'Linestring with nan z',
+                'linestring_nan_z',
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def test_render_polygon_nan_z(self):
         geom = QgsGeometry(QgsPolygon(QgsLineString([
@@ -789,7 +875,15 @@ class TestQgsSymbol(QgisTestCase):
         finally:
             painter.end()
 
-        assert self.imageCheck('Polygon with nan z', 'polygon_nan_z', image)
+        self.assertTrue(
+            self.image_check(
+                'Polygon with nan z',
+                'polygon_nan_z',
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def testGeometryCollectionRender(self):
         tests = [{'name': 'Marker',
@@ -849,33 +943,22 @@ class TestQgsSymbol(QgisTestCase):
         for test in tests:
             geom = QgsGeometry.fromWkt(test['wkt'])
             rendered_image = self.renderCollection(geom, test['symbol'])
-            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image, '_collection'), test['name'])
-
-    def imageCheck(self, name, reference_image, image, extra=''):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + extra + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+            self.assertTrue(
+                self.image_check(
+                    test['name'],
+                    test['reference_image'],
+                    rendered_image,
+                    color_tolerance=2,
+                    allowed_mismatch=20
+                )
+            )
 
 
 class TestQgsMarkerSymbol(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsMarkerSymbol Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol"
 
     def testSize(self):
         # test size and setSize
@@ -1069,13 +1152,29 @@ class TestQgsMarkerSymbol(QgisTestCase):
 
         g = QgsGeometry.fromWkt('Point(1 1)')
         rendered_image = self.renderGeometry(s, g, QgsMapSettings.Flag.DrawSymbolBounds)
-        self.assertTrue(self.imageCheck('marker_bounds_layer_disabled', 'marker_bounds_layer_disabled', rendered_image))
+        self.assertTrue(
+            self.image_check(
+                'marker_bounds_layer_disabled',
+                'marker_bounds_layer_disabled',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
         # with data defined visibility
         s[1].setEnabled(True)
         s[1].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLayerEnabled, QgsProperty.fromExpression('false'))
         rendered_image = self.renderGeometry(s, g, QgsMapSettings.Flag.DrawSymbolBounds)
-        self.assertTrue(self.imageCheck('marker_bounds_layer_disabled', 'marker_bounds_layer_disabled', rendered_image))
+        self.assertTrue(
+            self.image_check(
+                'marker_bounds_layer_disabled',
+                'marker_bounds_layer_disabled',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def test_animation(self):
         markerSymbol = QgsMarkerSymbol()
@@ -1090,9 +1189,26 @@ class TestQgsMarkerSymbol(QgisTestCase):
         markerSymbol[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyAngle, QgsProperty.fromExpression('@symbol_frame * 90'))
         g = QgsGeometry.fromWkt('Point(1 1)')
         rendered_image = self.renderGeometry(markerSymbol, g, frame=0)
-        self.assertTrue(self.imageCheck('animated_frame1', 'animated_frame1', rendered_image))
+        self.assertTrue(
+            self.image_check(
+                'animated_frame1',
+                'animated_frame1',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
+
         rendered_image = self.renderGeometry(markerSymbol, g, frame=1)
-        self.assertTrue(self.imageCheck('animated_frame2', 'animated_frame2', rendered_image))
+        self.assertTrue(
+            self.image_check(
+                'animated_frame2',
+                'animated_frame2',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def renderGeometry(self, symbol, geom, flags=QgsMapSettings.Flags(), frame=None):
         f = QgsFeature()
@@ -1131,31 +1247,8 @@ class TestQgsMarkerSymbol(QgisTestCase):
 
         return image
 
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
-
 
 class TestQgsLineSymbol(QgisTestCase):
-
-    def setUp(self):
-        self.report = "<h1>Python QgsLineSymbol Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
 
     def testWidth(self):
         # test width and setWidth
@@ -1214,13 +1307,9 @@ class TestQgsLineSymbol(QgisTestCase):
 
 class TestQgsFillSymbol(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsFillSymbol Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol"
 
     def testForceRHR(self):
         # test forcing right hand rule during rendering
@@ -1261,11 +1350,27 @@ class TestQgsFillSymbol(QgisTestCase):
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('force_rhr_off', 'polygon_forcerhr_off', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'polygon_forcerhr_off',
+                'polygon_forcerhr_off',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
         s3.setForceRHR(True)
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('force_rhr_on', 'polygon_forcerhr_on', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'polygon_forcerhr_on',
+                'polygon_forcerhr_on',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20
+            )
+        )
 
     def renderGeometry(self, symbol, geom):
         f = QgsFeature()
@@ -1298,21 +1403,6 @@ class TestQgsFillSymbol(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

@@ -24,7 +24,6 @@ import os
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFillSymbol,
-    QgsMultiRenderChecker,
     QgsProject,
     QgsProperty,
     QgsRectangle,
@@ -70,12 +69,13 @@ class TestQgsSymbolExpressionVariables(QgisTestCase):
         self.layer.setRenderer(renderer)
 
         # Setup rendering check
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlName('expected_geometry_part_num')
-        result = renderchecker.runTest('part_geometry_part_num')
-
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'part_geometry_part_num',
+                'geometry_part_num',
+                self.mapsettings
+            )
+        )
 
     def testPartCount(self):
         # Create rulebased style
@@ -85,13 +85,13 @@ class TestQgsSymbolExpressionVariables(QgisTestCase):
         renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )'))
         self.layer.setRenderer(renderer)
 
-        # Setup rendering check
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlName('expected_geometry_part_count')
-        result = renderchecker.runTest('part_geometry_part_count')
-
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'part_geometry_part_count',
+                'geometry_part_count',
+                self.mapsettings
+            )
+        )
 
     def testSymbolColor(self):
         # Create rulebased style
@@ -101,13 +101,14 @@ class TestQgsSymbolExpressionVariables(QgisTestCase):
         renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression('set_color_part( @symbol_color, \'value\', "Value" * 4)'))
         self.layer.setRenderer(renderer)
 
-        # Setup rendering check
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlName('expected_symbol_color_variable')
-        result = renderchecker.runTest('symbol_color_variable', 50)
-
-        self.assertTrue(result)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'symbol_color_variable',
+                'symbol_color_variable',
+                self.mapsettings,
+                allowed_mismatch=50
+            )
+        )
 
 
 if __name__ == '__main__':

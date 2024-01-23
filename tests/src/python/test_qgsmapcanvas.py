@@ -10,8 +10,11 @@ __date__ = '24/1/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
 import time
+import os
+import tempfile
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, Qt
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, Qt
+from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsAnnotationLayer,
@@ -26,7 +29,6 @@ from qgis.core import (
     QgsInterval,
     QgsLineString,
     QgsMapThemeCollection,
-    QgsMultiRenderChecker,
     QgsPoint,
     QgsPointXY,
     QgsPolygon,
@@ -46,13 +48,9 @@ app = start_app()
 
 class TestQgsMapCanvas(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "mapcanvas"
 
     def testGettersSetters(self):
         canvas = QgsMapCanvas()
@@ -81,7 +79,12 @@ class TestQgsMapCanvas(QgisTestCase):
         while not canvas.isDrawing():
             app.processEvents()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('empty_canvas', 'empty_canvas', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # add polygon to layer
         f = QgsFeature()
@@ -95,14 +98,25 @@ class TestQgsMapCanvas(QgisTestCase):
             # messy, but only way to check that canvas redraw doesn't occur
             self.assertFalse(canvas.isDrawing())
         # canvas should still be empty
-        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('empty_canvas', 'empty_canvas', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # refresh canvas
         canvas.refresh()
         canvas.waitWhileRendering()
 
         # now we expect the canvas check to fail (since they'll be a new polygon rendered over it)
-        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertFalse(
+            self.image_check('empty_canvas', 'empty_canvas', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             expect_fail=True)
+        )
 
     def testRefreshOnTimer(self):
         """ test that map canvas refreshes with auto refreshing layers """
@@ -124,7 +138,12 @@ class TestQgsMapCanvas(QgisTestCase):
         while not canvas.isDrawing():
             app.processEvents()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('empty_canvas', 'empty_canvas', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # add polygon to layer
         f = QgsFeature()
@@ -157,7 +176,13 @@ class TestQgsMapCanvas(QgisTestCase):
             self.assertLess(time.time(), timeout)
 
         # now canvas should look different...
-        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertFalse(
+            self.image_check('empty_canvas', 'empty_canvas', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             expect_fail=True)
+        )
 
         # switch off auto refresh
         layer.setAutoRefreshEnabled(False)
@@ -222,7 +247,12 @@ class TestQgsMapCanvas(QgisTestCase):
         while not canvas.isDrawing():
             app.processEvents()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme1', 'theme1', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # add some styles
         layer.styleManager().addStyleFromLayer('style1')
@@ -233,12 +263,22 @@ class TestQgsMapCanvas(QgisTestCase):
 
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme2', 'theme2', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme2', 'theme2', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         layer.styleManager().setCurrentStyle('style1')
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme1', 'theme1', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # OK, so all good with setting/rendering map styles
         # try setting canvas to a particular theme
@@ -262,12 +302,22 @@ class TestQgsMapCanvas(QgisTestCase):
         canvas.setTheme('theme2')
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme2', 'theme2', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme2', 'theme2', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         canvas.setTheme('theme1')
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme1', 'theme1', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # add another layer
         layer2 = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
@@ -284,11 +334,21 @@ class TestQgsMapCanvas(QgisTestCase):
         # rerender canvas - should NOT show new layer
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme1', 'theme1', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
         # test again - this time refresh all layers
         canvas.refreshAllLayers()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme1', 'theme1', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # add layer 2 to theme1
         record3 = QgsMapThemeCollection.MapThemeLayerRecord(layer2)
@@ -297,7 +357,12 @@ class TestQgsMapCanvas(QgisTestCase):
 
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme3', 'theme3', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme3', 'theme3', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # change the appearance of an active style
         layer2.styleManager().addStyleFromLayer('original')
@@ -309,14 +374,24 @@ class TestQgsMapCanvas(QgisTestCase):
 
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme3', 'theme3', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme3', 'theme3', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         layer2.styleManager().setCurrentStyle('style4')
         sym3 = QgsFillSymbol.createSimple({'color': '#b200b2'})
         layer2.renderer().setSymbol(sym3)
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme4', 'theme4', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme4', 'theme4', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # try setting layers while a theme is in place
         canvas.setLayers([layer])
@@ -324,21 +399,37 @@ class TestQgsMapCanvas(QgisTestCase):
 
         # should be no change... setLayers should be ignored if canvas is following a theme!
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme4', 'theme4', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme4', 'theme4', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # setLayerStyleOverrides while theme is in place
         canvas.setLayerStyleOverrides({layer2.id(): 'original'})
         # should be no change... setLayerStyleOverrides should be ignored if canvas is following a theme!
         canvas.refresh()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('theme4', 'theme4', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('theme4', 'theme4', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # clear theme
         canvas.setTheme('')
         canvas.refresh()
         canvas.waitWhileRendering()
         # should be different - we should now render project layers
-        self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas, expect_fail=True))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertFalse(
+            self.image_check('theme4', 'theme4', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             expect_fail=True)
+        )
 
         # set canvas to theme1
         canvas.setTheme('theme1')
@@ -379,7 +470,12 @@ class TestQgsMapCanvas(QgisTestCase):
         while not canvas.isDrawing():
             app.processEvents()
         canvas.waitWhileRendering()
-        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('empty_canvas', 'empty_canvas', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
         # add polygon to layer
         f = QgsFeature()
@@ -391,7 +487,13 @@ class TestQgsMapCanvas(QgisTestCase):
         canvas.waitWhileRendering()
 
         # no annotation yet...
-        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas, expect_fail=True))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertFalse(
+            self.image_check('main_annotation_layer', 'main_annotation_layer', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             expect_fail=True)
+        )
 
         annotation_layer = QgsProject.instance().mainAnnotationLayer()
         annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -406,25 +508,23 @@ class TestQgsMapCanvas(QgisTestCase):
         canvas.waitWhileRendering()
 
         # annotation must be rendered over other layers
-        self.assertTrue(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+        rendered_image = self.canvas_to_image(canvas)
+        self.assertTrue(
+            self.image_check('main_annotation_layer', 'main_annotation_layer', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
         annotation_layer.clear()
 
-    def canvasImageCheck(self, name, reference_image, canvas, expect_fail=False):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'mapcanvas_' + name + ".png"
-        print(file_name)
-        canvas.saveAsImage(file_name)
-        checker = QgsMultiRenderChecker()
-        checker.setControlPathPrefix("mapcanvas")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        checker.setExpectFail(expect_fail)
-        result = checker.runTest(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
+    def canvas_to_image(self, canvas: QgsMapCanvas) -> QImage:
+        """
+        Returns a QImage from a canvas
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, 'test_image.png')
+            canvas.saveAsImage(tmpfile)
+            im = QImage(tmpfile)
+        return im
 
     def testSaveCanvasVariablesToProject(self):
         """

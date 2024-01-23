@@ -14,7 +14,7 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
+from qgis.PyQt.QtCore import QFileInfo, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -26,7 +26,6 @@ from qgis.core import (
     QgsGeometry,
     QgsLayoutItemLabel,
     QgsLayoutItemLegend,
-    QgsLayoutChecker,
     QgsLayoutItemMap,
     QgsLayoutObject,
     QgsLayoutPoint,
@@ -53,13 +52,9 @@ start_app()
 
 class TestQgsLayoutAtlas(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsLayoutAtlas Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "atlas"
 
     def testCase(self):
         self.TEST_DATA_DIR = unitTestDataPath()
@@ -381,12 +376,13 @@ class TestQgsLayoutAtlas(QgisTestCase):
             self.atlas.seekTo(i)
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsLayoutChecker('atlas_autoscale%d' % (i + 1), self.layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
-
-            self.assertTrue(myTestResult, myMessage)
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_autoscale%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
+                )
+            )
         self.atlas.endRender()
 
         self.atlas_map.setAtlasDriven(False)
@@ -404,12 +400,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
             self.atlas.seekTo(i)
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsLayoutChecker('atlas_fixedscale%d' % (i + 1), self.layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_fixedscale%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
+                )
+            )
 
-            self.assertTrue(myTestResult, myMessage)
         self.atlas.endRender()
 
     def predefinedscales_render_test(self):
@@ -428,12 +426,13 @@ class TestQgsLayoutAtlas(QgisTestCase):
             self.atlas.seekTo(i)
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsLayoutChecker('atlas_predefinedscales%d' % (i + 1), self.layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
-
-            self.assertTrue(myTestResult, myMessage)
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_predefinedscales%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
+                )
+            )
         self.atlas.endRender()
 
     def hidden_render_test(self):
@@ -447,12 +446,13 @@ class TestQgsLayoutAtlas(QgisTestCase):
             self.atlas.seekTo(i)
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsLayoutChecker('atlas_hiding%d' % (i + 1), self.layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
-
-            self.assertTrue(myTestResult, myMessage)
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_hiding%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
+                )
+            )
         self.atlas.endRender()
 
         self.atlas.setHideCoverage(False)
@@ -472,12 +472,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
             self.atlas.seekTo(i)
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsLayoutChecker('atlas_sorting%d' % (i + 1), self.layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_sorting%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
+                )
+            )
 
-            self.assertTrue(myTestResult, myMessage)
         self.atlas.endRender()
 
     def filtering_render_test(self):
@@ -496,12 +498,13 @@ class TestQgsLayoutAtlas(QgisTestCase):
             self.atlas.seekTo(i)
             self.mLabel1.adjustSizeToText()
 
-            checker = QgsLayoutChecker('atlas_filtering%d' % (i + 1), self.layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
-
-            self.assertTrue(myTestResult, myMessage)
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_filtering%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
+                )
+            )
         self.atlas.endRender()
 
     def test_clipping(self):
@@ -552,12 +555,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
         for i in range(0, 2):
             atlas.seekTo(i)
 
-            checker = QgsLayoutChecker('atlas_clipping%d' % (i + 1), layout)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testLayout(0, 200)
-            self.report += checker.report()
+            self.assertTrue(
+                self.render_layout_check(
+                    'atlas_clipping%d' % (i + 1),
+                    layout,
+                    allowed_mismatch=200
+                )
+            )
 
-            self.assertTrue(myTestResult, myMessage)
         atlas.endRender()
 
     def legend_test(self):
@@ -613,10 +618,12 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas.seekTo(0)
         self.mLabel1.adjustSizeToText()
 
-        checker = QgsLayoutChecker('atlas_legend', self.layout)
-        myTestResult, myMessage = checker.testLayout()
-        self.report += checker.report()
-        self.assertTrue(myTestResult, myMessage)
+        self.assertTrue(
+            self.render_layout_check(
+                'atlas_legend',
+                self.layout
+            )
+        )
 
         self.atlas.endRender()
 

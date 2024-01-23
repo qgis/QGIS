@@ -270,6 +270,7 @@ class QgisTestCase(unittest.TestCase):
         size: Optional[QSize] = None,
         color_tolerance: Optional[int] = None,
         allowed_mismatch: Optional[int] = None,
+        page: Optional[int] = 0
     ) -> bool:
         checker = QgsLayoutChecker(name, layout)
 
@@ -284,7 +285,8 @@ class QgisTestCase(unittest.TestCase):
 
         if cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
-        result, message = checker.testLayout(pixelDiff=allowed_mismatch or 0)
+        result, message = checker.testLayout(page=page,
+                                             pixelDiff=allowed_mismatch or 0)
         if not result:
             cls.report += f"<h2>Render {name}</h2>\n"
             cls.report += checker.report()
