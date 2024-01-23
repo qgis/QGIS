@@ -1905,8 +1905,8 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   bool hasError = false;
 
   // Main task
-  std::unique_ptr< QgsConcurrentFileWriterImportTask > mainTask( new QgsConcurrentFileWriterImportTask( tr( "Layer import" ) ) );
-  QgsTaskList importTasks;
+  std::unique_ptr< QgsTaskWithSerialSubTasks > mainTask( new QgsTaskWithSerialSubTasks( tr( "Layer import" ) ) );
+  bool hasSubTasks = false;
 
   const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   for ( const QgsMimeDataUtils::Uri &dropUri : lst )
@@ -1966,8 +1966,8 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
           options.insert( QStringLiteral( "overwrite" ), true );
           options.insert( QStringLiteral( "layerName" ), dropUri.name );
           QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
-          mainTask->addSubTask( exportTask, importTasks );
-          importTasks << exportTask;
+          mainTask->addSubTask( exportTask );
+          hasSubTasks = true;
           // when export is successful:
           connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [ = ]()
           {
@@ -2003,7 +2003,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
-  if ( ! importTasks.isEmpty() )
+  if ( hasSubTasks )
   {
     QgsApplication::taskManager()->addTask( mainTask.release() );
   }
