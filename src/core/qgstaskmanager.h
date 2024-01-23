@@ -614,6 +614,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     mutable QRecursiveMutex *mTaskMutex;
 
     QMap< long, TaskInfo > mTasks;
+    QMap< QgsTask *, long> mMapTaskPtrToId;
     QMap< long, QgsTaskList > mTaskDependencies;
     QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
 
@@ -649,7 +650,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     void cancelDependentTasks( long taskId );
 
-    bool resolveDependencies( long firstTaskId, long currentTaskId, QSet< long > &results ) const;
+    bool resolveDependencies( long taskId, QSet< long > &results ) const;
 
     //! Will return TRUE if the specified task has circular dependencies
     bool hasCircularDependencies( long taskId ) const;
