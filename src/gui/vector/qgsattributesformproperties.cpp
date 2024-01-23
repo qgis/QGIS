@@ -83,6 +83,8 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
+
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsAttributesFormProperties::updatedFields );
 }
 
 void QgsAttributesFormProperties::init()
@@ -1944,4 +1946,9 @@ QgsAttributesFormProperties::TextElementEditorConfiguration QgsAttributesFormPro
 void QgsAttributesFormProperties::DnDTreeItemData::setTextElementEditorConfiguration( const QgsAttributesFormProperties::TextElementEditorConfiguration &textElementEditorConfiguration )
 {
   mTextElementEditorConfiguration = textElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::updatedFields()
+{
+  initAvailableWidgetsTree();
 }

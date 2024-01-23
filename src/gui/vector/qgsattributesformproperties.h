@@ -379,11 +379,18 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QLabel *mInfoTextWidget = nullptr;
 
   private slots:
+    void addContainer();
+    void removeTabOrGroupButton();
+    void mEditorLayoutComboBox_currentIndexChanged( int index );
+    void pbnSelectEditForm_clicked();
+    void mTbInitCode_clicked();
 
     void onInvertSelectionButtonClicked( bool checked );
     void loadAttributeSpecificEditor( QgsAttributesDnDTree *emitter, QgsAttributesDnDTree *receiver );
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
+
+    void updatedFields();
 
   private:
     //! this will clean the right panel
@@ -407,12 +414,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitFilePath;
     QString mInitCode;
 
-  private slots:
-    void addContainer();
-    void removeTabOrGroupButton();
-    void mEditorLayoutComboBox_currentIndexChanged( int index );
-    void pbnSelectEditForm_clicked();
-    void mTbInitCode_clicked();
 };
 
 
