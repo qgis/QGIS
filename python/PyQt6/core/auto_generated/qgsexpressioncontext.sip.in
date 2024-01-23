@@ -557,7 +557,7 @@ variable set.
 .. seealso:: :py:func:`variableNames`
 %End
 
-    QVariantMap variablesToMap() const;
+    QMap<QString, QVariant> variablesToMap() const;
 %Docstring
 Returns a map of variable name to value representing all the expression variables
 contained by the context.

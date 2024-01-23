@@ -124,12 +124,12 @@ not correctly emit signals to allow the scene's model to update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
-    void setChildAlgorithmResults( const QVariantMap &results );
+    void setChildAlgorithmResults( const QMap<QString, QVariant> &results );
 %Docstring
 Sets the results for child algorithms for the last model execution.
 %End
 
-    void setChildAlgorithmInputs( const QVariantMap &inputs );
+    void setChildAlgorithmInputs( const QMap<QString, QVariant> &inputs );
 %Docstring
 Sets the inputs for child algorithms for the last model execution.
 %End

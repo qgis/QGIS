@@ -413,7 +413,7 @@ Returns a deep copy of this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QMap<QString, QVariant> props ) const;
 %Docstring
 Converts the symbol to a SLD representation.
 %End

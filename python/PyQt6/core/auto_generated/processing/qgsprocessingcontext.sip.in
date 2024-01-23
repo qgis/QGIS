@@ -652,7 +652,7 @@ setting will be ignored.
 .. versionadded:: 3.32
 %End
 
-    QVariantMap exportToMap() const /HoldGIL/;
+    QMap<QString, QVariant> exportToMap() const /HoldGIL/;
 %Docstring
 Exports the context's settings to a variant map.
 
