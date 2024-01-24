@@ -674,7 +674,17 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     if ( index.isValid() )
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
-      const QgsMimeDataUtils::UriList uris = ptr->mimeUris();
+      QgsMimeDataUtils::UriList uris = ptr->mimeUris();
+      if ( uris.isEmpty() )
+      {
+        Q_NOWARN_DEPRECATED_PUSH
+        QgsMimeDataUtils::Uri uri = ptr->mimeUri();
+        Q_NOWARN_DEPRECATED_POP
+        if ( uri.isValid() )
+        {
+          uris << uri;
+        }
+      }
       for ( QgsMimeDataUtils::Uri uri : std::as_const( uris ) )
       {
         if ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
