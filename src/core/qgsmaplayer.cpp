@@ -426,7 +426,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   // set data source
   mnl = layerElement.namedItem( QStringLiteral( "datasource" ) );
   mne = mnl.toElement();
-  mDataSource = context.pathResolver().readPath( mne.text() );
+  const QString dataSourceRaw = mne.text();
+  mDataSource = provider.isEmpty() ? dataSourceRaw : QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, dataSourceRaw, context );
 
   // if the layer needs authentication, ensure the master password is set
   const thread_local QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
@@ -643,7 +644,10 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-  const QString src = context.pathResolver().writePath( encodedSource( source(), context ) );
+  const QgsDataProvider *provider = dataProvider();
+  const QString providerKey = provider ? provider->name() : QString();
+  const QString srcRaw = encodedSource( source(), context );
+  const QString src = providerKey.isEmpty() ? srcRaw : QgsProviderRegistry::instance()->absoluteToRelativeUri( providerKey, srcRaw, context );
   const QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
   layerElement.appendChild( dataSource );

@@ -18,8 +18,8 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
-
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   : QgsLayerTreeNode( NodeLayer, true )
@@ -110,7 +110,8 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
   const QString layerName = element.attribute( QStringLiteral( "name" ) );
 
   const QString providerKey = element.attribute( QStringLiteral( "providerKey" ) );
-  const QString source = context.pathResolver().readPath( element.attribute( QStringLiteral( "source" ) ) );
+  const QString sourceRaw = element.attribute( QStringLiteral( "source" ) );
+  const QString source = providerKey.isEmpty() ? sourceRaw : QgsProviderRegistry::instance()->relativeToAbsoluteUri( providerKey, sourceRaw, context );
 
   const Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
   const bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
@@ -157,8 +158,10 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
 
   if ( mRef )
   {
-    elem.setAttribute( QStringLiteral( "source" ), context.pathResolver().writePath( mRef->publicSource() ) );
-    elem.setAttribute( QStringLiteral( "providerKey" ), mRef->dataProvider() ? mRef->dataProvider()->name() : QString() );
+    const QString providerKey = mRef->dataProvider() ? mRef->dataProvider()->name() : QString();
+    const QString source = providerKey.isEmpty() ? mRef->publicSource() : QgsProviderRegistry::instance()->absoluteToRelativeUri( providerKey, mRef->publicSource(), context );
+    elem.setAttribute( QStringLiteral( "source" ), source );
+    elem.setAttribute( QStringLiteral( "providerKey" ), providerKey );
   }
 
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
