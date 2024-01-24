@@ -34,7 +34,6 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
 {
   setupUi( this );
   connect( lePkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged );
-  connect( chkPkcs12PassShow, &QCheckBox::stateChanged, this, &QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged );
   connect( btnPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked );
   connect( cbAddCas, &QCheckBox::stateChanged, this, [ = ]( int state ) {  cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
@@ -122,8 +121,6 @@ bool QgsAuthPkcs12Edit::validateConfig()
   return validityChange( bundlevalid );
 }
 
-
-
 QgsStringMap QgsAuthPkcs12Edit::configMap() const
 {
   QgsStringMap config;
@@ -201,18 +198,12 @@ void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
   lePkcs12KeyPass->clear();
   lePkcs12KeyPass->setStyleSheet( QString() );
   lePkcs12KeyPass->setPlaceholderText( QStringLiteral( "Optional passphrase" ) );
-  chkPkcs12PassShow->setChecked( false );
 }
 
 void QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged( const QString &pass )
 {
   Q_UNUSED( pass )
   validateConfig();
-}
-
-void QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged( int state )
-{
-  lePkcs12KeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked()

@@ -23,24 +23,17 @@
    <property name="bottomMargin">
     <number>6</number>
    </property>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="leRegion">
-     <property name="placeholderText">
-      <string>Required</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="leUsername">
+   <item row="1" column="0">
+    <widget class="QLabel" name="lblPassword">
      <property name="toolTip">
-      <string>AWS AccessKeyId</string>
+      <string>AWS SecretAccessKey</string>
      </property>
-     <property name="placeholderText">
-      <string>Required</string>
+     <property name="text">
+      <string>Password</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="lblRegion">
      <property name="text">
       <string>Region</string>
@@ -48,6 +41,23 @@
     </widget>
    </item>
    <item row="3" column="1">
+    <widget class="QLineEdit" name="leRegion">
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lblUsername">
+     <property name="toolTip">
+      <string>AWS AccessKeyId</string>
+     </property>
+     <property name="text">
+      <string>Username</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -60,69 +70,44 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QLineEdit" name="lePassword">
-       <property name="toolTip">
-        <string>AWS SecretAccessKey</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-       <property name="placeholderText">
-        <string>Required</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkPasswordShow">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Show</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblUsername">
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="leUsername">
      <property name="toolTip">
       <string>AWS AccessKeyId</string>
      </property>
-     <property name="text">
-      <string>Username</string>
+     <property name="placeholderText">
+      <string>Required</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lblPassword">
+   <item row="1" column="1">
+    <widget class="QgsPasswordLineEdit" name="lePassword">
      <property name="toolTip">
       <string>AWS SecretAccessKey</string>
      </property>
      <property name="text">
-      <string>Password</string>
+      <string/>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Required</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>leUsername</tabstop>
-  <tabstop>lePassword</tabstop>
   <tabstop>leRegion</tabstop>
-  <tabstop>chkPasswordShow</tabstop>
  </tabstops>
  <resources/>
  <connections/>

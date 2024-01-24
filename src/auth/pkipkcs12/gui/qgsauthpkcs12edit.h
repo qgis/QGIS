@@ -57,7 +57,6 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
     void clearPkcs12BundlePass();
 
     void lePkcs12KeyPass_textChanged( const QString &pass );
-    void chkPkcs12PassShow_stateChanged( int state );
 
     void btnPkcs12Bundle_clicked();
 

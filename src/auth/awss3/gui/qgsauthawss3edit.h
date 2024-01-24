@@ -49,8 +49,6 @@ class QgsAuthAwsS3Edit : public QgsAuthMethodEdit, private Ui::QgsAuthAwsS3Edit
 
     void leRegion_textChanged( const QString &txt );
 
-    void chkPasswordShow_stateChanged( int state );
-
   private:
     QgsStringMap mConfigMap;
     bool mValid = false;
