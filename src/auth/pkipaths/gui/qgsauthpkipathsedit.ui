@@ -99,7 +99,7 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QLineEdit" name="lePkiPathsKeyPass">
+    <widget class="QgsPasswordLineEdit" name="lePkiPathsKeyPass">
      <property name="echoMode">
       <enum>QLineEdit::Password</enum>
      </property>
@@ -138,19 +138,6 @@
      </property>
      <property name="popupMode">
       <enum>QToolButton::InstantPopup</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2">
-    <widget class="QCheckBox" name="chkPkiPathsPassShow">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Show</string>
      </property>
     </widget>
    </item>
@@ -193,6 +180,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>lePkiPathsCert</tabstop>
   <tabstop>btnPkiPathsCert</tabstop>
@@ -202,7 +196,6 @@
   <tabstop>lePkiPathsKey</tabstop>
   <tabstop>btnPkiPathsKey</tabstop>
   <tabstop>lePkiPathsKeyPass</tabstop>
-  <tabstop>chkPkiPathsPassShow</tabstop>
   <tabstop>lePkiPathsMsg</tabstop>
  </tabstops>
  <resources/>
