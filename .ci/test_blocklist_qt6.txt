@@ -44,6 +44,7 @@ PyQgsAggregateMappingWidget
 PyQgsPythonProvider
 PyQgsAggregateCalculator
 PyQgsAnnotation
+PyQgsAttributeFormEditorWidget
 PyQgsAuthenticationSystem
 PyQgsBatchGeocodeAlgorithm
 PyQgsBlockingProcess
