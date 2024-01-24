@@ -330,7 +330,8 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
     {
       connect( filterLineEdit, &QgsFilterLineEdit::valueChanged, this, [ = ]( const QString & )
       {
-        emitValueChanged();
+        if ( mSubWidgetSignalBlocking == 0 )
+          emitValueChanged();
       } );
     }
     else
@@ -398,6 +399,7 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
   }
   else if ( mLineEdit )
   {
+    mSubWidgetSignalBlocking ++;
     mLineEdit->clear();
     bool wasFound { false };
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : std::as_const( mCache ) )
@@ -414,6 +416,7 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
     {
       mLineEdit->setText( tr( "(no selection)" ) );
     }
+    mSubWidgetSignalBlocking --;
   }
 }
 
