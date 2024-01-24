@@ -81,6 +81,18 @@ QString QgsPathResolver::readPath( const QString &f ) const
     return src;
   }
 
+  // If this looks like a OGR connection string, remove everything after the
+  // path to avoid messing with '/' characters that may be in the subset filter,
+  // and re-add it in a final stage.
+  // cf https://github.com/qgis/QGIS/issues/55975
+  QString srcSuffix;
+  const auto posLayername = src.indexOf( "|layername=" );
+  if ( posLayername > 0 )
+  {
+    srcSuffix = src.mid( posLayername );
+    src.resize( posLayername );
+  }
+
   // if this is a VSIFILE, remove the VSI prefix and append to final result
   QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( src );
   if ( ! vsiPrefix.isEmpty() )
@@ -102,13 +114,13 @@ QString QgsPathResolver::readPath( const QString &f ) const
          ( src[0].isLetter() && src[1] == ':' ) )
     {
       // UNC or absolute path
-      return vsiPrefix + src;
+      return vsiPrefix + src + srcSuffix;
     }
 #else
     if ( src[0] == '/' )
     {
       // absolute path
-      return vsiPrefix + src;
+      return vsiPrefix + src + srcSuffix;
     }
 #endif
 
@@ -120,17 +132,17 @@ QString QgsPathResolver::readPath( const QString &f ) const
     const QFileInfo pfi( mBaseFileName );
     const QString home = pfi.absolutePath();
     if ( home.isEmpty() )
-      return vsiPrefix + src;
+      return vsiPrefix + src + srcSuffix;
 
     const QFileInfo fi( home + '/' + src );
 
     if ( !fi.exists() )
     {
-      return vsiPrefix + src;
+      return vsiPrefix + src + srcSuffix;
     }
     else
     {
-      return vsiPrefix + fi.canonicalFilePath();
+      return vsiPrefix + fi.canonicalFilePath() + srcSuffix;
     }
   }
 
@@ -139,7 +151,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
 
   if ( projPath.isEmpty() )
   {
-    return vsiPrefix + src;
+    return vsiPrefix + src + srcSuffix;
   }
 
 #if defined(Q_OS_WIN)
@@ -194,7 +206,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   projElems.prepend( QString() );
 #endif
 
-  return vsiPrefix + projElems.join( QLatin1Char( '/' ) );
+  return vsiPrefix + projElems.join( QLatin1Char( '/' ) ) + srcSuffix;
 }
 
 QString QgsPathResolver::setPathPreprocessor( const std::function<QString( const QString & )> &processor )
@@ -278,6 +290,18 @@ QString QgsPathResolver::writePath( const QString &s ) const
     return src;
   }
 
+  // If this looks like a OGR connection string, remove everything after the
+  // path to avoid messing with '/' characters that may be in the subset filter,
+  // and re-add it in a final stage.
+  // cf https://github.com/qgis/QGIS/issues/55975
+  QString srcSuffix;
+  const auto posLayername = src.indexOf( "|layername=" );
+  if ( posLayername > 0 )
+  {
+    srcSuffix = src.mid( posLayername );
+    src.resize( posLayername );
+  }
+
   // Check if it is a publicSource uri and clean it
   const QUrl url { src };
   QString srcPath { src };
@@ -341,7 +365,7 @@ QString QgsPathResolver::writePath( const QString &s ) const
   if ( n == 0 )
   {
     // no common parts; might not even be a file
-    return src;
+    return src + srcSuffix;
   }
 
   if ( !projElems.isEmpty() )
@@ -366,5 +390,5 @@ QString QgsPathResolver::writePath( const QString &s ) const
     returnPath.append( '?' );
     returnPath.append( urlQuery );
   }
-  return returnPath;
+  return returnPath + srcSuffix;
 }
