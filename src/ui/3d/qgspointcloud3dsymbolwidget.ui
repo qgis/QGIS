@@ -192,7 +192,7 @@
     </widget>
    </item>
    <item row="2" column="0" colspan="3">
-    <widget class="QStackedWidget" name="mStackedWidget">
+    <widget class="QgsStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -636,6 +636,12 @@ enhancement</string>
    <class>QgsPointCloudAttributeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspointcloudattributecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
