@@ -66,6 +66,12 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
+    /**
+     * \brief Set placeholder \a text for the line edit.
+     * \since QGIS 3.36
+     */
+    void setPlaceholderText( const QString  &text );
+
   public slots:
 
     /**
