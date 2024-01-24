@@ -40,7 +40,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  setPanelTitle( QgsStringUtils::capitalize( mDefinition.description(), Qgis::Capitalization::TitleCase ) );
+  setPanelTitle( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( mDefinition.description(), Qgis::Capitalization::TitleCase ) : mDefinition.description() );
 
   mLegendPreview->hide();
 
