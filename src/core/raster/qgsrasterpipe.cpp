@@ -192,15 +192,12 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface *interface )
   mRoleMap.remove( role );
 
   // Decrease all indexes greater than the removed one
-  const auto roleMapValues {mRoleMap.values()};
-  if ( roleIdx < *std::max_element( roleMapValues.begin(), roleMapValues.end() ) )
+  const QMap<Qgis::RasterPipeInterfaceRole, int> currentRoles = mRoleMap;
+  for ( auto it = currentRoles.cbegin(); it != currentRoles.cend(); ++it )
   {
-    for ( auto it = mRoleMap.cbegin(); it != mRoleMap.cend(); ++it )
+    if ( it.value() > roleIdx )
     {
-      if ( it.value() > roleIdx )
-      {
-        mRoleMap[it.key()] = it.value() - 1;
-      }
+      mRoleMap[it.key()] = it.value() - 1;
     }
   }
 }
