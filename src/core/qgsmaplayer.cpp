@@ -1315,10 +1315,9 @@ QString QgsMapLayer::loadDefaultMetadata( bool &resultFlag )
           return tr( "Successfully loaded default layer metadata" );
         }
       }
-      catch ( QgsNotSupportedException &e )
+      catch ( QgsNotSupportedException & )
       {
-        resultFlag = false;
-        return e.what();
+        // fallback to loadNamedMetadata
       }
     }
   }
