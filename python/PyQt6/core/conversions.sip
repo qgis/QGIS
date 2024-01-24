@@ -3144,7 +3144,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   // maps NULL values)
   // If there are more cases like QByteArray, we should consider using a allowlist
   // instead of a blocklist.
-  if ( varp->isNull()
+  if ( QgsVariantUtils::isNull( *varp )
        && varp->type() != QVariant::ByteArray
        && varp->type() != QMetaType::VoidStar
        && varp->type() != QMetaType::Nullptr
@@ -3157,15 +3157,8 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
     }
 
     sWatchDog = true;
-
-    // TODO fix this
-    // PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QMetaType_Type );
-    PyObject *vartype = 0;
-    PyObject *args = PyTuple_Pack( 1, vartype );
-    PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-    *objp = PyObject_Call(( PyObject * )typeObj, args, nullptr );
-    Py_DECREF(args);
-    Py_DECREF(vartype);
+    Py_INCREF(Py_None);
+    *objp = Py_None;
     sWatchDog = false;
     return true;
   }
@@ -3178,6 +3171,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 
 %ModuleHeaderCode
 #define SIP_PYQT_FROM_QVARIANT_BY_TYPE "pyqt6_from_qvariant_by_type"
+#include "qgsvariantutils.h"
 %End
 
 // In Qt6 QVector is just an alias to QList but doesn't appear in pyqt
@@ -4256,3 +4250,12 @@ template<_TYPE_>
     return 0;
 %End
 };
+
+%PostInitialisationCode  //#spellok
+
+// Import the Chimera helper registration functions.
+typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
+void (*register_from_qvariant_converter)(FromQVariantConverterFn);
+register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt6_register_from_qvariant_convertor");  //#spellok
+register_from_qvariant_converter(null_from_qvariant_converter);
+%End
