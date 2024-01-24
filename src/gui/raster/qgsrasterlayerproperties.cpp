@@ -659,6 +659,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
   int alphaBand = -1;
   double opacity = 1;
   QColor nodataColor;
+  const QList<int> oldBands = oldRenderer ? oldRenderer->usesBands() : QList<int>();
   if ( oldRenderer )
   {
     // Retain alpha band and opacity when switching renderer
@@ -697,11 +698,8 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       if ( oldWidget )
       {
         //compare used bands in new and old renderer and reset transparency dialog if different
-        std::unique_ptr<QgsRasterRenderer> oldRenderer;
-        oldRenderer.reset( oldWidget->renderer() );
         std::unique_ptr<QgsRasterRenderer> newRenderer;
         newRenderer.reset( mRendererWidget->renderer() );
-        const QList<int> oldBands = oldRenderer->usesBands();
         const QList<int> newBands = newRenderer->usesBands();
         if ( oldBands != newBands )
         {
