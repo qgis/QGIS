@@ -472,8 +472,10 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::ULongLong;
 
     case QMetaType::Char:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::Char16:
     case QMetaType::Char32:
+#endif
     case QMetaType::Short:
     case QMetaType::SChar:
       return QVariant::Type::Int;
@@ -483,7 +485,9 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::UInt;
 
     case QMetaType::Float:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::Float16:
+#endif
       return QVariant::Type::Double;
 
     // no mapping possible:
@@ -500,7 +504,9 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
     case QMetaType::QCborArray:
     case QMetaType::QCborMap:
     case QMetaType::QObjectStar:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     case QMetaType::QVariantPair:
+#endif
     case QMetaType::QByteArrayList:
     case QMetaType::QColorSpace:
       break;
