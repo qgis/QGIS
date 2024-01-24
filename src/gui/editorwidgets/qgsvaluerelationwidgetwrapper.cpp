@@ -307,8 +307,7 @@ QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 {
-
-  mComboBox = qobject_cast<QgsToolTipComboBox *>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
   mTableWidget = qobject_cast<QgsFilteredTableWidget *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
@@ -497,7 +496,7 @@ QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
   return QVariant::Type::Invalid;
 }
 
-void QgsValueRelationWidgetWrapper::populate( )
+void QgsValueRelationWidgetWrapper::populate()
 {
   // Initialize, note that signals are blocked, to avoid double signals on new features
   if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) ||
