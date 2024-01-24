@@ -276,7 +276,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('simpleline_aligndashpattern_small_width', 'simpleline_aligndashpattern_small_width', rendered_image)
+        self.assertTrue(self.image_check('simpleline_aligndashpattern_small_width', 'simpleline_aligndashpattern_small_width', rendered_image))
 
     def testRingNumberVariable(self):
         # test test geometry_ring_num variable
