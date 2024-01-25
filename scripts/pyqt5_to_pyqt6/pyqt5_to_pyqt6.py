@@ -184,20 +184,60 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     member_renames = {}
     function_def_renames = {}
     rename_qt_enums = []  # Renaming deprecated removed enums
+    custom_updates = {}
+    extra_imports = defaultdict(set)
+    import_offsets = {}
+
+    def visit_call(_node: ast.Call, _parent):
+        if isinstance(_node.func, ast.Attribute):
+            if _node.func.attr in rename_function_attributes:
+                attr_node = _node.func
+                member_renames[
+                    Offset(_node.func.lineno, attr_node.end_col_offset - len(
+                        _node.func.attr) - 1)] = rename_function_attributes[
+                    _node.func.attr]
+
+        if isinstance(_node.func, ast.Name) and _node.func.id == 'QDateTime':
+            if len(_node.args) == 8:
+                # QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts) doesn't work anymore,
+                # so port to more reliable QDateTime(QDate, QTime, ts) form
+
+                extra_imports['qgis.PyQt.QtCore'].update({'QDate', 'QTime'})
+
+                def _fix_qdatetime_construct(start_index: int, tokens):
+                    i = start_index + 1
+                    assert tokens[i].src == '('
+                    tokens[i] = tokens[i]._replace(src='(QDate(')
+                    while tokens[i].offset < Offset(_node.args[2].lineno, _node.args[2].col_offset):
+                        i += 1
+                    assert tokens[i + 1].src == ','
+                    i += 1
+                    tokens[i] = tokens[i]._replace(src='), QTime(')
+                    i += 1
+                    while not tokens[i].src.strip():
+                        tokens[i] = tokens[i]._replace(src='')
+                        i += 1
+                    while tokens[i].offset < Offset(_node.args[6].lineno, _node.args[6].col_offset):
+                        i += 1
+                    i += 1
+                    assert tokens[i].src == ','
+                    tokens[i] = tokens[i]._replace(src='),')
+
+                custom_updates[Offset(node.lineno, node.col_offset)] = _fix_qdatetime_construct
 
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
 
         for node in ast.iter_child_nodes(parent):
+            if isinstance(node, ast.ImportFrom):
+                import_offsets[Offset(node.lineno, node.col_offset)] = (node.module, set(name.name for name in node.names), node.end_lineno, node.end_col_offset)
+
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
                 fix_qvariant_type.append(Offset(node.lineno, node.col_offset))
 
-            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-                if node.func.attr in rename_function_attributes:
-                    attr_node = node.func
-                    member_renames[
-                        Offset(node.func.lineno, attr_node.end_col_offset - len(node.func.attr) - 1)] = rename_function_attributes[node.func.attr]
+            if isinstance(node, ast.Call):
+                visit_call(node, parent)
 
             if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
                 function_def_renames[
@@ -240,11 +280,47 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
-    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums and not member_renames and not function_def_renames:
+    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums and not member_renames and not function_def_renames and not custom_updates and not extra_imports:
         return 0
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
+        if token.offset in import_offsets:
+            end_import_offset = Offset(*import_offsets[token.offset][-2:])
+            assert tokens[i].src == 'from'
+            token_index = i + 1
+            while not tokens[token_index].src.strip():
+                token_index += 1
+
+            module = ''
+            while tokens[token_index].src.strip():
+                module += tokens[token_index].src
+                token_index += 1
+
+            if extra_imports.get(module):
+                current_imports = set()
+                while True:
+                    token_index += 1
+                    if tokens[token_index].offset == end_import_offset:
+                        break
+                    if tokens[token_index].src.strip() in ('', ',', 'import'):
+                        continue
+
+                    current_imports.add(tokens[token_index].src)
+
+                imports_to_add = extra_imports[module] - current_imports
+                if imports_to_add:
+                    additional_import_string = ', '.join(imports_to_add)
+                    if tokens[token_index - 1].src == ')':
+                        token_index -= 1
+                        while tokens[token_index].src.strip() in ('', ',', ')'):
+                            tokens[token_index] = tokens[token_index]._replace(
+                                src='')
+                            token_index -= 1
+                        tokens[token_index + 1] = tokens[token_index + 1]._replace(src=f", {additional_import_string})")
+                    else:
+                        tokens[token_index] = tokens[token_index]._replace(src=f", {additional_import_string}\n")
+
         if token.offset in fix_qvariant_type:
             assert tokens[i].src == "QVariant"
             assert tokens[i + 1].src == "."
@@ -252,6 +328,9 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             attr = tokens[i + 2].src
             if attr in qmetatype_mapping:
                 tokens[i + 2] = tokens[i + 2]._replace(src=qmetatype_mapping[attr])
+
+        if token.offset in custom_updates:
+            custom_updates[token.offset](i, tokens)
 
         if token.offset in fix_pyqt_import:
             assert tokens[i + 2].src == "PyQt5"
