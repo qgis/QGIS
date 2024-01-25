@@ -285,10 +285,10 @@ class TestQgsTemporalUtils(QgisTestCase):
 
         vals, ok, exceeded = QgsTemporalUtils.calculateDateTimesFromISO8601(
             '2021-03-23T00:00:00Z/2021-03-24T12:00:00Z/PT12H')
-        self.assertEqual(vals, [QDateTime(2021, 3, 23, 0, 0, 0, 0, Qt.TimeSpec(1)),
-                                QDateTime(2021, 3, 23, 12, 0, 0, 0, Qt.TimeSpec(1)),
-                                QDateTime(2021, 3, 24, 0, 0, 0, 0, Qt.TimeSpec(1)),
-                                QDateTime(2021, 3, 24, 12, 0, 0, 0, Qt.TimeSpec(1))])
+        self.assertEqual(vals, [QDateTime(QDate(2021, 3, 23), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                                QDateTime(QDate(2021, 3, 23), QTime(12, 0, 0, 0), Qt.TimeSpec(1)),
+                                QDateTime(QDate(2021, 3, 24), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                                QDateTime(QDate(2021, 3, 24), QTime(12, 0, 0, 0), Qt.TimeSpec(1))])
         self.assertTrue(ok)
         self.assertFalse(exceeded)
 
