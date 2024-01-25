@@ -58,7 +58,6 @@ PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
-PyQgsExifTools
 PyQgsFeature
 PyQgsFieldComboBoxTest
 PyQgsFieldFormattersTest
@@ -148,7 +147,6 @@ PyQgsSymbolLayerReadSld
 PyQgsStringUtils
 PyQgsStyleModel
 PyQgsSubsetStringEditorProviderRegistry
-PyQgsTemporalUtils
 PyQgsTextDocument
 PyQgsValidityChecks
 PyQgsValidityResultsWidget
