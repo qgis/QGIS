@@ -98,6 +98,7 @@ done:
 %Import QtPrintSupport/QtPrintSupportmod.sip
 %Import QtWidgets/QtWidgetsmod.sip
 %Import QtPositioning/QtPositioningmod.sip
+%Import QtSerialPort/QtSerialPortmod.sip
 
 %Feature HAVE_GUI
 %Feature HAVE_QTSERIALPORT
