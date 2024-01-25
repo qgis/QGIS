@@ -870,9 +870,6 @@ void QgsTextFormatWidget::registerDataDefinedButton( QgsPropertyOverrideButton *
 {
   QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer );
 
-  if ( !vLayer )
-    return;
-
   button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), vLayer, true );
   if ( !mButtons.contains( key ) )
   {
