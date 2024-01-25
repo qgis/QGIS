@@ -347,6 +347,8 @@ Static function that returns a set of names of volatile expression functions
 to determine whether a widget should be updated "realtime" or not.*
 
 :return: QSet<QString> of volatile expression functions
+
+.. versionadded:: 3.34.4
 %End
 
 };
