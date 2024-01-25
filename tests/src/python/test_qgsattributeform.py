@@ -173,7 +173,7 @@ class TestQgsAttributeForm(QgisTestCase):
         form = QgsAttributeForm(layer)
         feature = QgsFeature(layer.fields())
         form.setFeature(feature)
-        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
         form.changeAttribute('numbers', [12])
         form.changeAttribute('age', 1)
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
@@ -198,7 +198,7 @@ class TestQgsAttributeForm(QgisTestCase):
         feature.setAttribute('age', 15)
 
         form = QgsAttributeForm(layer)
-        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
         form.setFeature(feature)
 
         QGISAPP.processEvents()
@@ -313,7 +313,7 @@ class TestQgsAttributeForm(QgisTestCase):
         # changing mode
         form.save()
 
-        form.setMode(QgsAttributeEditorContext.Mode.SingleEditMode)
+        form.setMode(QgsAttributeEditorContext.SingleEditMode)
         # changing birthday
         form.changeAttribute('birthday', 2200)
 
