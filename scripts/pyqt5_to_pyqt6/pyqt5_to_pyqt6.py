@@ -185,6 +185,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     function_def_renames = {}
     rename_qt_enums = []  # Renaming deprecated removed enums
     custom_updates = {}
+    imported_modules = set()
     extra_imports = defaultdict(set)
     import_offsets = {}
 
@@ -231,6 +232,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
         for node in ast.iter_child_nodes(parent):
             if isinstance(node, ast.ImportFrom):
                 import_offsets[Offset(node.lineno, node.col_offset)] = (node.module, set(name.name for name in node.names), node.end_lineno, node.end_col_offset)
+                imported_modules.add(node.module)
 
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
@@ -279,6 +281,12 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
             elif (isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5.")):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
+
+    for module, classes in extra_imports.items():
+        if module not in imported_modules:
+            class_import = ', '.join(classes)
+            import_statement = f'from {module} import {class_import}'
+            print(f'{filename}: Missing import, manually add \n\t{import_statement}')
 
     if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums and not member_renames and not function_def_renames and not custom_updates and not extra_imports:
         return 0
