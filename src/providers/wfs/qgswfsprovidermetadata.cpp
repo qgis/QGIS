@@ -67,13 +67,20 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
     const QString &function )
 {
   /* Generate something like:
-   <fes:Filter xmlns="http://www.opengis.net/fes/2.0">
-    <fes:PropertyIsEqualTo>
-      <fes:Function name="IsPoint">
-        <fes:ValueReference>xplan:geltungsbereich</fes:ValueReference>
-      </fes:Function>
-      <fes:Literal>false</fes:Literal>
-    </fes:PropertyIsEqualTo>
+  <fes:Filter xmlns="http://www.opengis.net/fes/2.0">
+    <fes:And>
+      <fes:Not>
+        <fes:PropertyIsNull>
+          <fes:ValueReference>xplan:geltungsbereich</fes:ValueReference>
+        </fes:PropertyIsNull>
+      </fes:Not>
+      <fes:PropertyIsEqualTo>
+        <fes:Function name="IsPoint">
+          <fes:ValueReference>xplan:geltungsbereich</fes:ValueReference>
+        </fes:Function>
+        <fes:Literal>false</fes:Literal>
+      </fes:PropertyIsEqualTo>
+    </fes:And>
   </fes:Filter>
   */
 
@@ -84,20 +91,45 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
     doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
   doc.appendChild( filterElem );
   QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
-  QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsEqualTo" ) );
-  filterElem.appendChild( propertyIsEqualToElem );
-  QDomElement functionElem = doc.createElement( filterPrefix + QStringLiteral( ":Function" ) );
-  propertyIsEqualToElem.appendChild( functionElem );
-  QDomAttr attrFunctionName = doc.createAttribute( QStringLiteral( "name" ) );
-  attrFunctionName.setValue( function );
-  functionElem.setAttributeNode( attrFunctionName );
-  QDomElement valueReferenceElem = doc.createElement(
-                                     ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
-  functionElem.appendChild( valueReferenceElem );
-  valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
-  QDomElement literalElem = doc.createElement( filterPrefix + QStringLiteral( ":Literal" ) );
-  propertyIsEqualToElem.appendChild( literalElem );
-  literalElem.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
+
+  QDomElement andElem = doc.createElement( filterPrefix + QStringLiteral( ":And" ) );
+  filterElem.appendChild( andElem );
+  {
+    QDomElement notElem = doc.createElement( filterPrefix + QStringLiteral( ":Not" ) );
+    andElem.appendChild( notElem );
+    {
+      QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
+      notElem.appendChild( propertyIsNullElem );
+      QDomElement valueReferenceElem = doc.createElement(
+                                         ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+      propertyIsNullElem.appendChild( valueReferenceElem );
+      valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
+    }
+  }
+  {
+    QDomElement propertyIsEqualToElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsEqualTo" ) );
+    andElem.appendChild( propertyIsEqualToElem );
+    {
+      QDomElement functionElem = doc.createElement( filterPrefix + QStringLiteral( ":Function" ) );
+      propertyIsEqualToElem.appendChild( functionElem );
+      {
+        QDomAttr attrFunctionName = doc.createAttribute( QStringLiteral( "name" ) );
+        attrFunctionName.setValue( function );
+        functionElem.setAttributeNode( attrFunctionName );
+      }
+      {
+        QDomElement valueReferenceElem = doc.createElement(
+                                           ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+        functionElem.appendChild( valueReferenceElem );
+        valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
+      }
+    }
+    {
+      QDomElement literalElem = doc.createElement( filterPrefix + QStringLiteral( ":Literal" ) );
+      propertyIsEqualToElem.appendChild( literalElem );
+      literalElem.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
+    }
+  }
 
   return doc.toString();
 }

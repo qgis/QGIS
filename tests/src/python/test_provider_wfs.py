@@ -5954,12 +5954,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsPoint">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsPoint">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write(b"""<wfs:FeatureCollection
@@ -5971,12 +5978,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsCurve">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsCurve">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write(b"""<wfs:FeatureCollection
@@ -5988,12 +6002,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsSurface">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsSurface">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write(b"""<wfs:FeatureCollection
@@ -6046,12 +6067,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsPoint">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsPoint">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 """), 'wb') as f:
             f.write(b"""
@@ -6104,12 +6132,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsPoint">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsPoint">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 """), 'wb') as f:
             f.write(b"""
@@ -6252,12 +6287,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsPoint">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsPoint">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write(b"""<wfs:FeatureCollection
@@ -6269,12 +6311,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsCurve">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsCurve">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write(b"""<wfs:FeatureCollection
@@ -6286,12 +6335,19 @@ Can't recognize service requested.
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
- <fes:PropertyIsEqualTo>
-  <fes:Function name="IsSurface">
-   <fes:ValueReference>geometry</fes:ValueReference>
-  </fes:Function>
-  <fes:Literal>true</fes:Literal>
- </fes:PropertyIsEqualTo>
+ <fes:And>
+  <fes:Not>
+   <fes:PropertyIsNull>
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:PropertyIsNull>
+  </fes:Not>
+  <fes:PropertyIsEqualTo>
+   <fes:Function name="IsSurface">
+    <fes:ValueReference>geometry</fes:ValueReference>
+   </fes:Function>
+   <fes:Literal>true</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
 </fes:Filter>
 &RESULTTYPE=hits"""), 'wb') as f:
             f.write(b"""<wfs:FeatureCollection
