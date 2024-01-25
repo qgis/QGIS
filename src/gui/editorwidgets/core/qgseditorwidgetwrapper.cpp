@@ -224,7 +224,6 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
     }
 
     hardConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer, ft, index, errors, QgsFieldConstraints::ConstraintStrengthHard, constraintOrigin );
-
     softConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer, ft, index, softErrors, QgsFieldConstraints::ConstraintStrengthSoft, constraintOrigin );
     errors << softErrors;
   }

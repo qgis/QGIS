@@ -86,10 +86,19 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual QVariant value() const = 0;
 
     /**
+     * Returns a raw value that better reflect the feature value passed onto
+     * the editor widget. For example, while a checkbox has a binary return value(),
+     * the raw will also reflect an unset/null state. This function is used
+     * when updating constraints validity.
+     * \since QGIS 3.36
+     */
+    virtual QVariant rawValue() const { return value(); }
+
+    /**
      * Returns the list of additional fields which the editor handles
      * \since QGIS 3.10
      */
-    virtual QStringList additionalFields() const {return QStringList();}
+    virtual QStringList additionalFields() const { return QStringList(); }
 
     /**
      * Will be used to access the widget's values for potential additional fields handled by the widget

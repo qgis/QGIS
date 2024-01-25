@@ -1117,7 +1117,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 {
   // get the current feature set in the form
   QgsFeature ft;
-  if ( currentFormValuesFeature( ft ) )
+  if ( currentFormValuesFeature( ft, true ) )
   {
     // if the layer is NOT being edited then we only check layer based constraints, and not
     // any constraints enforced by the provider. Because:
@@ -1256,7 +1256,7 @@ void QgsAttributeForm::updateEditableState()
   }
 }
 
-bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
+bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature, bool rawValue )
 {
   bool rc = true;
   feature = QgsFeature( mFeature );
@@ -1272,7 +1272,7 @@ bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
     if ( dst.count() > eww->fieldIdx() )
     {
       QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
-      QVariantList srcVars = QVariantList() << eww->value();
+      QVariantList srcVars = QVariantList() << ( rawValue ? eww->rawValue() : eww->value() );
       QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
 
       // append additional fields

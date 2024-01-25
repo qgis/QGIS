@@ -60,6 +60,16 @@ Be sure to return a NULL QVariant if it should be set to NULL.
 :return: The current value the widget represents
 %End
 
+    virtual QVariant rawValue() const;
+%Docstring
+Returns a raw value that better reflect the feature value passed onto
+the editor widget. For example, while a checkbox has a binary return :py:func:`~QgsEditorWidgetWrapper.value`,
+the raw will also reflect an unset/null state. This function is used
+when updating constraints validity.
+
+.. versionadded:: 3.36
+%End
+
     virtual QStringList additionalFields() const;
 %Docstring
 Returns the list of additional fields which the editor handles

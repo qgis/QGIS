@@ -57,6 +57,7 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
+    QVariant rawValue() const override;
 
     void showIndeterminateState() override;
 
@@ -70,6 +71,8 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 
     QCheckBox *mCheckBox = nullptr;
     QGroupBox *mGroupBox = nullptr;
+
+    bool mUnsetState = true;
 };
 
 #endif // QGSCHECKBOXWIDGETWRAPPER_H

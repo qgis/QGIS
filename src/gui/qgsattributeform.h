@@ -450,7 +450,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     void updateLabels();
     void updateEditableState();
-    bool currentFormValuesFeature( QgsFeature &feature );
+    bool currentFormValuesFeature( QgsFeature &feature, bool rawValue = false );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
     bool currentFormValidHardConstraints( QStringList &invalidFields, QStringList &descriptions ) const;
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );

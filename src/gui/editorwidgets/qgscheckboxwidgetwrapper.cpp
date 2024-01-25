@@ -45,6 +45,14 @@ QVariant QgsCheckboxWidgetWrapper::value() const
   return v;
 }
 
+QVariant QgsCheckboxWidgetWrapper::rawValue() const
+{
+  if ( mUnsetState )
+    return QVariant();
+
+  return value();
+}
+
 void QgsCheckboxWidgetWrapper::showIndeterminateState()
 {
   if ( mCheckBox )
@@ -66,6 +74,7 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   if ( mCheckBox )
     connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state )
   {
+    mUnsetState = false;
     Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( state );
     Q_NOWARN_DEPRECATED_POP
@@ -74,6 +83,7 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   if ( mGroupBox )
     connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state )
   {
+    mUnsetState = false;
     Q_NOWARN_DEPRECATED_PUSH
     emit valueChanged( state );
     Q_NOWARN_DEPRECATED_POP
@@ -89,14 +99,17 @@ bool QgsCheckboxWidgetWrapper::valid() const
 void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   bool state = false;
+  bool unsetState =  false;
 
   if ( field().type() == QVariant::Bool )
   {
-    state = value.toBool();
+    unsetState = value.isNull();
+    state = unsetState ? false : value.toBool();
   }
   else
   {
-    state = ( value == config( QStringLiteral( "CheckedState" ) ) );
+    unsetState = value.isNull() || ( value != config( QStringLiteral( "CheckedState" ) ) && value != config( QStringLiteral( "UncheckedState" ) ) );
+    state = unsetState ? false : ( value == config( QStringLiteral( "CheckedState" ) ) );
   }
   if ( mGroupBox )
   {
@@ -106,5 +119,14 @@ void QgsCheckboxWidgetWrapper::updateValues( const QVariant &value, const QVaria
   if ( mCheckBox )
   {
     mCheckBox->setChecked( state );
+  }
+
+  if ( unsetState != mUnsetState )
+  {
+    mUnsetState = unsetState;
+    Q_NOWARN_DEPRECATED_PUSH
+    emit valueChanged( state );
+    Q_NOWARN_DEPRECATED_POP
+    emit valuesChanged( state );
   }
 }
