@@ -336,7 +336,7 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         # rendering test
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '0.1'})
 
-        s.symbolLayer(0).setPenStyle(Qt.DashDotDotLine)
+        s.symbolLayer(0).setPenStyle(Qt.PenStyle.DashDotDotLine)
         s.symbolLayer(0).setAlignDashPattern(True)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 9.2 0, 9.2 10, 1.3 10)')
