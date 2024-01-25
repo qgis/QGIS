@@ -333,7 +333,10 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   }
 
   QgsFeatureRequest request = mMasterModel->request();
-  const bool needsGeometry = filterMode == QgsAttributeTableFilterModel::ShowVisible;
+
+  // create an empty form to find out if it needs geometry or not
+  const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
+  const bool needsGeometry = ( filterMode == QgsAttributeTableFilterModel::ShowVisible ) || emptyForm.needsGeometry();
 
   const bool requiresTableReload = ( request.filterType() != QgsFeatureRequest::FilterNone || request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter ) // previous request was subset
                                    || ( needsGeometry && request.flags() & QgsFeatureRequest::NoGeometry ) // no geometry for last request
