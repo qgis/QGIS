@@ -21,6 +21,7 @@ env:
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +47,7 @@ jobs:
 
   license_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,6 +62,7 @@ jobs:
 
   shell_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,6 +76,7 @@ jobs:
 
   banned_keywords_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -81,6 +85,7 @@ jobs:
 
   class_name_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,6 +94,7 @@ jobs:
 
   def_window_title_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -97,6 +103,7 @@ jobs:
 
   qgsscrollarea_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -105,6 +112,7 @@ jobs:
 
   qvariant_no_brace_init:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -113,6 +121,7 @@ jobs:
 
   qt_module_wide_imports:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -121,6 +130,7 @@ jobs:
 
   doxygen_layout_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -133,7 +143,7 @@ jobs:
         run: ./tests/code_layout/test_doxygen_layout.sh
 
   indentation_check:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -151,6 +161,7 @@ jobs:
 
   spell_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -168,6 +179,7 @@ jobs:
 
   sip_check:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Set up Python 3.7
         uses: actions/setup-python@v5
@@ -204,6 +216,7 @@ jobs:
 
   cppcheck:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4

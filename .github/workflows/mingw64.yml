@@ -28,6 +28,7 @@ jobs:
   mingw64-build:
     name: MinGW64 Windows Build
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     container:
       image: fedora:rawhide
       options: --security-opt seccomp=unconfined

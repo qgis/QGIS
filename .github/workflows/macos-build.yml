@@ -30,7 +30,7 @@ env:
 
 jobs:
   mac_os_build:
-    if: github.repository == 'qgis/QGIS'
+    if: "github.repository == 'qgis/QGIS' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
