@@ -66,6 +66,10 @@ class TestQgsSimpleLineSymbolLayer(QgisTestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_simpleline"
+
     def testDashPatternWithDataDefinedWidth(self):
         # rendering test
         s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
