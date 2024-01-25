@@ -82,19 +82,21 @@ int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, Qgis::
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &format, bool, Qgis::TextVerticalAlignment vAlignment, Qgis::TextRendererFlags flags,
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &text, QgsRenderContext &context, const QgsTextFormat &_format, bool, Qgis::TextVerticalAlignment vAlignment, Qgis::TextRendererFlags flags,
                                 Qgis::TextLayoutMode mode )
 {
-  QgsTextFormat tmpFormat = format;
-  if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
-    tmpFormat.updateDataDefinedProperties( context );
+  QgsTextFormat lFormat = _format;
+  if ( _format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
+    lFormat.updateDataDefinedProperties( context );
+
+  // DO NOT USE _format in the following code, always use lFormat!!
 
   QStringList textLines;
   for ( const QString &line : text )
   {
-    if ( flags & Qgis::TextRendererFlag::WrapLines && textRequiresWrapping( context, line, rect.width(), format ) )
+    if ( flags & Qgis::TextRendererFlag::WrapLines && textRequiresWrapping( context, line, rect.width(), lFormat ) )
     {
-      textLines.append( wrappedText( context, line, rect.width(), format ) );
+      textLines.append( wrappedText( context, line, rect.width(), lFormat ) );
     }
     else
     {
@@ -102,13 +104,13 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
     }
   }
 
-  QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
-  document.applyCapitalization( format.capitalization() );
+  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  document.applyCapitalization( lFormat.capitalization() );
 
-  const double fontScale = calculateScaleFactorForFormat( context, format );
-  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
+  const double fontScale = calculateScaleFactorForFormat( context, lFormat );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale );
 
-  drawDocument( rect, tmpFormat, document, metrics, context, alignment, vAlignment, rotation, mode, flags );
+  drawDocument( rect, lFormat, document, metrics, context, alignment, vAlignment, rotation, mode, flags );
 }
 
 void QgsTextRenderer::drawDocument( const QRectF &rect, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment horizontalAlignment, Qgis::TextVerticalAlignment verticalAlignment, double rotation, Qgis::TextLayoutMode mode, Qgis::TextRendererFlags )
@@ -128,43 +130,46 @@ void QgsTextRenderer::drawDocument( const QRectF &rect, const QgsTextFormat &for
   drawPart( rect, rotation, horizontalAlignment, verticalAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, mode );
 }
 
-void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
+void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &_format, bool )
 {
-  QgsTextFormat tmpFormat = format;
-  if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
-    tmpFormat.updateDataDefinedProperties( context );
-  tmpFormat = updateShadowPosition( tmpFormat );
+  QgsTextFormat lFormat = _format;
+  if ( _format.dataDefinedProperties().hasActiveProperties() ) // note, we use _format instead of tmpFormat here, it's const and potentially avoids a detach
+    lFormat.updateDataDefinedProperties( context );
+  lFormat = updateShadowPosition( lFormat );
 
-  QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
-  document.applyCapitalization( format.capitalization() );
-  const double fontScale = calculateScaleFactorForFormat( context, format );
-  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
+  // DO NOT USE _format in the following code, always use lFormat!!
+  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  document.applyCapitalization( lFormat.capitalization() );
+  const double fontScale = calculateScaleFactorForFormat( context, lFormat );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, lFormat, context, fontScale );
 
-  if ( tmpFormat.background().enabled() )
+  if ( lFormat.background().enabled() )
   {
-    drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, Qgis::TextLayoutMode::Point );
+    drawPart( point, rotation, alignment, document, metrics, context, lFormat, Qgis::TextComponent::Background, Qgis::TextLayoutMode::Point );
   }
 
-  if ( tmpFormat.buffer().enabled() )
+  if ( lFormat.buffer().enabled() )
   {
-    drawPart( point, rotation, alignment, document, metrics,  context, tmpFormat, Qgis::TextComponent::Buffer, Qgis::TextLayoutMode::Point );
+    drawPart( point, rotation, alignment, document, metrics,  context, lFormat, Qgis::TextComponent::Buffer, Qgis::TextLayoutMode::Point );
   }
 
-  drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Point );
+  drawPart( point, rotation, alignment, document, metrics, context, lFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Point );
 }
 
-void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, double offsetAlongLine, double offsetFromLine )
+void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine )
 {
-  QgsTextFormat tmpFormat = format;
-  if ( format.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
-    tmpFormat.updateDataDefinedProperties( context );
-  tmpFormat = updateShadowPosition( tmpFormat );
+  QgsTextFormat lFormat = _format;
+  if ( _format.dataDefinedProperties().hasActiveProperties() ) // note, we use _format instead of tmpFormat here, it's const and potentially avoids a detach
+    lFormat.updateDataDefinedProperties( context );
+  lFormat = updateShadowPosition( lFormat );
+
+  // DO NOT USE _format in the following code, always use lFormat!!
 
   // todo handle newlines??
-  QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( { text  } ) : QgsTextDocument::fromPlainText( { text  } );
-  document.applyCapitalization( format.capitalization() );
+  QgsTextDocument document = lFormat.allowHtmlFormatting() ? QgsTextDocument::fromHtml( { text  } ) : QgsTextDocument::fromPlainText( { text  } );
+  document.applyCapitalization( lFormat.capitalization() );
 
-  drawDocumentOnLine( line, tmpFormat, document, context, offsetAlongLine, offsetFromLine );
+  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine );
 }
 
 void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine )
