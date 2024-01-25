@@ -351,8 +351,17 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel = false );
 
     void init();
+
+    /**
+     * Applies the attribute from properties to the vector layer.
+     */
     void apply();
 
+    /**
+     * Stores currently opened widget configuration.
+     * \since QGIS 3.34.3
+     */
+    void store();
 
     void loadRelations();
 

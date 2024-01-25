@@ -939,6 +939,13 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
   mEditFormLineEdit->setText( uifilename );
 }
 
+void QgsAttributesFormProperties::store()
+{
+  storeAttributeWidgetEdit();
+  storeAttributeContainerEdit();
+  storeAttributeTypeDialog();
+}
+
 void QgsAttributesFormProperties::apply()
 {
   storeAttributeWidgetEdit();
@@ -1950,5 +1957,27 @@ void QgsAttributesFormProperties::DnDTreeItemData::setTextElementEditorConfigura
 
 void QgsAttributesFormProperties::updatedFields()
 {
+  // Store configuration to insure changes made are kept after refreshing the list
+  QMap<QString, FieldConfig> fieldConfigs;
+  QTreeWidgetItem *fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
+  for ( int i = 0; i < fieldContainer->childCount(); i++ )
+  {
+    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
+    const QString fieldName = fieldItem->data( 0, FieldNameRole ).toString();
+    const FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<FieldConfig>();
+    fieldConfigs[fieldName] = cfg;
+  }
+
   initAvailableWidgetsTree();
+
+  fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
+  for ( int i = 0; i < fieldContainer->childCount(); i++ )
+  {
+    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
+    const QString fieldName = fieldItem->data( 0, FieldNameRole ).toString();
+    if ( fieldConfigs.contains( fieldName ) )
+    {
+      fieldItem->setData( 0, FieldConfigRole, fieldConfigs[fieldName] );
+    }
+  }
 }
