@@ -138,7 +138,12 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 
   layer->setName( name() );
   layer->setShortName( shortName() );
-  layer->setExtent3D( extent3D() );
+
+  if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
+    layer->setExtent3D( extent3D() );
+  else
+    layer->setExtent( extent() );
+
   layer->setMaximumScale( maximumScale() );
   layer->setMinimumScale( minimumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );

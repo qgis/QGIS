@@ -1018,12 +1018,6 @@ QgsRectangle QgsVectorLayer::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  // if data is 3D, redirect to 3D extend computation, and save it as 3D extent
-  if ( mDataProvider && mDataProvider->elevationProperties() && mDataProvider->elevationProperties()->containsElevationData() )
-  {
-    return extent3D().toRectangle();
-  }
-
   QgsRectangle rect;
   rect.setNull();
 

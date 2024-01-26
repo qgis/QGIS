@@ -214,7 +214,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable std::unique_ptr< OGREnvelope3D > mExtent;
+    mutable std::unique_ptr< OGREnvelope3D > mExtent2D;
+    mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
 
     QList<int> mPrimaryKeyAttrs;
