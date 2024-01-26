@@ -395,6 +395,21 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
   while ( it.hasNext() )
   {
     const QString fullPath = it.next();
+    if ( fullPath.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
+    {
+      if ( QFileInfo::exists( QStringLiteral( "%1.shp" ).arg( fullPath.chopped( 4 ) ) ) ||
+           QFileInfo::exists( QStringLiteral( "%1.SHP" ).arg( fullPath.chopped( 4 ) ) ) )
+      {
+        // Skip DBFs that are sidecar files to a Shapefile
+        continue;
+      }
+    }
+    else if ( fullPath.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) ||
+              fullPath.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) )
+    {
+      // Skip XMLs that are sidecar files  to datasets
+      continue;
+    }
     addOption( fullPath, fullPath, true );
   }
   emit selectionChanged();
