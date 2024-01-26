@@ -83,6 +83,9 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
     //! Sets the current layout
     void setCurrentLayout( QgsLayout *layout );
 
+  protected:
+    void keyPressEvent( QKeyEvent *event ) override;
+
   private slots:
 
     void showContextMenu( QPoint point );
