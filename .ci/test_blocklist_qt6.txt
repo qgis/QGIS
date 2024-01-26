@@ -135,7 +135,6 @@ PyQgsSymbolLayerCreateSld
 PyQgsSymbolLayerReadSld
 PyQgsStringUtils
 PyQgsStyleModel
-PyQgsSubsetStringEditorProviderRegistry
 PyQgsTextDocument
 PyQgsValidityChecks
 PyQgsValidityResultsWidget
