@@ -53,7 +53,7 @@ class Dissolve(GdalAlgorithm):
                                                       self.tr('Dissolve field'),
                                                       None,
                                                       self.INPUT,
-                                                      QgsProcessingParameterField.Any, optional=True))
+                                                      QgsProcessingParameterField.DataType.Any, optional=True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
@@ -77,7 +77,7 @@ class Dissolve(GdalAlgorithm):
                                         self.tr('Numeric attribute to calculate statistics on'),
                                         None,
                                         self.INPUT,
-                                        QgsProcessingParameterField.Numeric,
+                                        QgsProcessingParameterField.DataType.Numeric,
                                         optional=True),
             QgsProcessingParameterString(self.OPTIONS,
                                          self.tr('Additional creation options'),
@@ -85,7 +85,7 @@ class Dissolve(GdalAlgorithm):
                                          optional=True)
         ]
         for param in params:
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.addParameter(param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,

@@ -102,6 +102,7 @@ done:
 
 %Feature HAVE_GUI
 %Feature HAVE_QTSERIALPORT
+%Feature HAVE_QTPRINTER
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
 

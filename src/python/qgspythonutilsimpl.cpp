@@ -111,7 +111,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   }
 
   // import Qt bindings
-  if ( !runString( QStringLiteral( "from PyQt5 import QtCore, QtGui" ),
+  if ( !runString( QStringLiteral( "from qgis.PyQt import QtCore, QtGui" ),
                    QObject::tr( "Couldn't load PyQt." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
   {
     return false;

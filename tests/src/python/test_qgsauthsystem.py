@@ -87,7 +87,7 @@ class TestQgsAuthManager(QgisTestCase):
     def show_editors_widget(self):
         editors = QgsAuthEditorWidgets()
         dlg = self.widget_dialog(editors)
-        dlg.exec_()
+        dlg.exec()
 
     def set_master_password(self):
         msg = 'Failed to store and verify master password in auth db'
@@ -711,7 +711,7 @@ class TestQgsAuthManager(QgisTestCase):
         # Untrust this root
         root2 = QgsAuthCertUtils.certFromFile(PKIDATA + '/' + 'root2_ca_cert.pem')
         QgsApplication.authManager().storeCertAuthority(root2)
-        self.assertTrue(QgsApplication.authManager().storeCertTrustPolicy(root2, QgsAuthCertUtils.Untrusted))
+        self.assertTrue(QgsApplication.authManager().storeCertTrustPolicy(root2, QgsAuthCertUtils.CertTrustPolicy.Untrusted))
         QgsApplication.authManager().rebuildCaCertsCache()
         # Test valid with intermediates and untrusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The issuer certificate of a locally looked up certificate could not be found'])

@@ -23,7 +23,6 @@ import os
 
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
-    QgsMultiRenderChecker,
     QgsNullSymbolRenderer,
     QgsProject,
     QgsRectangle,
@@ -42,6 +41,10 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsNullSymbolRenderer(QgisTestCase):
+
+    @classmethod
+    def control_path_prefix(cls):
+        return 'null_renderer'
 
     def setUp(self):
         self.iface = get_iface()
@@ -64,22 +67,16 @@ class TestQgsNullSymbolRenderer(QgisTestCase):
 
     def testRender(self):
         # test no features are rendered
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlPathPrefix('null_renderer')
-        renderchecker.setControlName('expected_nullrenderer_render')
-        result = renderchecker.runTest('nullrenderer_render')
-        assert result
+        self.assertTrue(
+            self.render_map_settings_check('nullrenderer_render', 'nullrenderer_render', self.mapsettings)
+        )
 
     def testSelected(self):
         # select a feature and render
         self.layer.select([1, 2, 3])
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(self.mapsettings)
-        renderchecker.setControlPathPrefix('null_renderer')
-        renderchecker.setControlName('expected_nullrenderer_selected')
-        result = renderchecker.runTest('nullrenderer_selected')
-        assert result
+        self.assertTrue(
+            self.render_map_settings_check('nullrenderer_selected', 'nullrenderer_selected', self.mapsettings)
+        )
 
 
 if __name__ == '__main__':

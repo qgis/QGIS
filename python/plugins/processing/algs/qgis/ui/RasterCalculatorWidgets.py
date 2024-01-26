@@ -177,7 +177,7 @@ class ExpressionWidget(BASE, WIDGET):
     def addPredefined(self):
         expression = self.expressions[self.comboPredefined.currentText()]
         dlg = PredefinedExpressionDialog(expression, self.options)
-        dlg.exec_()
+        dlg.exec()
         if dlg.filledExpression:
             self.text.setPlainText(dlg.filledExpression)
 
@@ -189,7 +189,7 @@ class ExpressionWidget(BASE, WIDGET):
             exp = exp.replace(v, f'[{chr(97 + i)}]')
 
         dlg = AddNewExpressionDialog(exp)
-        dlg.exec_()
+        dlg.exec()
         if dlg.name:
             self.expressions[dlg.name] = dlg.expression
 
@@ -302,6 +302,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
                 raise InvalidParameterValue()
             return values

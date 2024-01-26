@@ -48,7 +48,7 @@ class TestQgsAction(QgisTestCase):
         temp_path = temp_dir.path()
         temp_file = os.path.join(temp_path, 'urlencoded.txt')
 
-        action = QgsAction(QgsAction.SubmitUrlEncoded, 'url_encoded', "http://fake_qgis_http_endpoint" + temp_file + r"?[% url_encode(map('a&+b', 'a and plus b', 'a=b', 'a equals b')) %]")
+        action = QgsAction(QgsAction.ActionType.SubmitUrlEncoded, 'url_encoded', "http://fake_qgis_http_endpoint" + temp_file + r"?[% url_encode(map('a&+b', 'a and plus b', 'a=b', 'a equals b')) %]")
         ctx = QgsExpressionContext()
         action.run(ctx)
 

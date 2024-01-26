@@ -34,7 +34,6 @@ from qgis.core import (
     QgsProperty,
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
-    QgsRenderChecker,
     QgsRendererCategory,
     QgsSymbolLayer,
     QgsVectorLayer,
@@ -921,8 +920,8 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
                                'MultiPolygonZ (((321922.9 129921.5 37, 321927.8 129922.4 37, 321927.8 129922.4 54, 321922.9 129921.5 54, 321922.9 129921.5 37)),((321927.8 129922.4 37, 321929.5 129922.7 37, 321929.5 129922.7 54, 321927.8 129922.4 54, 321927.8 129922.4 37)))'])
 
         # with data defined extrusion and offset
-        vl.elevationProperties().dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.ExtrusionHeight, QgsProperty.fromField('extrusion'))
-        vl.elevationProperties().dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.ZOffset,
+        vl.elevationProperties().dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.Property.ExtrusionHeight, QgsProperty.fromField('extrusion'))
+        vl.elevationProperties().dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.Property.ZOffset,
                                                                      QgsProperty.fromField('offset'))
 
         generator = vl.createProfileGenerator(req)
@@ -1496,7 +1495,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         vl.elevationProperties().setExtrusionEnabled(True)
         vl.elevationProperties().setExtrusionHeight(7)
         fill_symbol = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_style': 'no'})
-        fill_symbol[0].dataDefinedProperties().setProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromField('color'))
+        fill_symbol[0].dataDefinedProperties().setProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromField('color'))
 
         vl.elevationProperties().setRespectLayerSymbology(False)
         vl.elevationProperties().setProfileFillSymbol(fill_symbol)

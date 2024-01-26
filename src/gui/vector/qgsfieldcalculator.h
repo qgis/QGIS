@@ -36,7 +36,7 @@ class QgsVectorLayer;
  *     layer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
  *     layer.startEditing()
  *     dialog = QgsFieldCalculator(layer)
- *     dialog.exec_()
+ *     dialog.exec()
  * \endcode
  */
 class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase

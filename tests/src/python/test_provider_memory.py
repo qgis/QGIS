@@ -138,37 +138,37 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
             self.assertTrue(layer.isValid(), f"Failed to create valid {v} memory layer")
 
     def testLayerGeometry(self):
-        testVectors = [("Point", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point),
-                       ("LineString", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineString),
-                       ("Polygon", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.Polygon),
-                       ("MultiPoint", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPoint),
-                       ("MultiLineString", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineString),
-                       ("MultiPolygon", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygon),
-                       ("PointZ", QgsWkbTypes.PointGeometry, QgsWkbTypes.PointZ),
-                       ("LineStringZ", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineStringZ),
-                       ("PolygonZ", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.PolygonZ),
-                       ("MultiPointZ", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPointZ),
-                       ("MultiLineStringZ", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineStringZ),
-                       ("MultiPolygonZ", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygonZ),
-                       ("PointM", QgsWkbTypes.PointGeometry, QgsWkbTypes.PointM),
-                       ("LineStringM", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineStringM),
-                       ("PolygonM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.PolygonM),
-                       ("MultiPointM", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPointM),
-                       ("MultiLineStringM", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineStringM),
-                       ("MultiPolygonM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygonM),
-                       ("PointZM", QgsWkbTypes.PointGeometry, QgsWkbTypes.PointZM),
-                       ("LineStringZM", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineStringZM),
-                       ("PolygonZM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.PolygonZM),
-                       ("MultiPointZM", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPointZM),
-                       ("MultiLineStringZM", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineStringZM),
-                       ("MultiPolygonZM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygonZM),
-                       ("Point25D", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point25D),
-                       ("LineString25D", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineString25D),
-                       ("Polygon25D", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.Polygon25D),
-                       ("MultiPoint25D", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPoint25D),
-                       ("MultiLineString25D", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineString25D),
-                       ("MultiPolygon25D", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygon25D),
-                       ("None", QgsWkbTypes.NullGeometry, QgsWkbTypes.NoGeometry)]
+        testVectors = [("Point", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.Point),
+                       ("LineString", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.LineString),
+                       ("Polygon", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.Polygon),
+                       ("MultiPoint", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.MultiPoint),
+                       ("MultiLineString", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.MultiLineString),
+                       ("MultiPolygon", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.MultiPolygon),
+                       ("PointZ", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.PointZ),
+                       ("LineStringZ", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.LineStringZ),
+                       ("PolygonZ", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.PolygonZ),
+                       ("MultiPointZ", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.MultiPointZ),
+                       ("MultiLineStringZ", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.MultiLineStringZ),
+                       ("MultiPolygonZ", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.MultiPolygonZ),
+                       ("PointM", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.PointM),
+                       ("LineStringM", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.LineStringM),
+                       ("PolygonM", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.PolygonM),
+                       ("MultiPointM", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.MultiPointM),
+                       ("MultiLineStringM", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.MultiLineStringM),
+                       ("MultiPolygonM", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.MultiPolygonM),
+                       ("PointZM", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.PointZM),
+                       ("LineStringZM", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.LineStringZM),
+                       ("PolygonZM", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.PolygonZM),
+                       ("MultiPointZM", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.MultiPointZM),
+                       ("MultiLineStringZM", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.MultiLineStringZM),
+                       ("MultiPolygonZM", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.MultiPolygonZM),
+                       ("Point25D", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.Point25D),
+                       ("LineString25D", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.LineString25D),
+                       ("Polygon25D", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.Polygon25D),
+                       ("MultiPoint25D", QgsWkbTypes.GeometryType.PointGeometry, QgsWkbTypes.Type.MultiPoint25D),
+                       ("MultiLineString25D", QgsWkbTypes.GeometryType.LineGeometry, QgsWkbTypes.Type.MultiLineString25D),
+                       ("MultiPolygon25D", QgsWkbTypes.GeometryType.PolygonGeometry, QgsWkbTypes.Type.MultiPolygon25D),
+                       ("None", QgsWkbTypes.GeometryType.NullGeometry, QgsWkbTypes.Type.NoGeometry)]
         for v in testVectors:
             layer = QgsVectorLayer(v[0], "test", "memory")
 
@@ -544,25 +544,25 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         self.assertNotEqual(layer.source(), layer2.source())
 
         # geometry type
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Point)
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Type.Point)
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM)
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.Point)
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Type.PolygonZM)
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.PolygonZM)
 
         # crs
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM,
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Type.PolygonZM,
                                                          QgsCoordinateReferenceSystem.fromEpsgId(3111))
         self.assertTrue(layer.isValid())
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Type.PolygonZM)
         self.assertTrue(layer.crs().isValid())
         self.assertEqual(layer.crs().authid(), 'EPSG:3111')
 
         # custom CRS
         crs = QgsCoordinateReferenceSystem.fromProj(
             '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs')
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, crs)
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Type.PolygonZM, crs)
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.crs().isValid())
         self.assertEqual(layer.crs().toProj(),
@@ -847,9 +847,9 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=f1:integer&field=f2:bool',
             'test', 'memory')
-        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresence.SpatialIndexNotPresent)
         vl.dataProvider().createSpatialIndex()
-        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresence.SpatialIndexPresent)
 
     def testTypeValidation(self):
         """Test that incompatible types in attributes raise errors"""
@@ -954,7 +954,7 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
             'Point?crs=epsg:4326&field=int:integer',
             'test', 'memory')
         dp = vl.dataProvider()
-        self.assertFalse(dp.addFeatures([valid, invalid], QgsFeatureSink.RollBackOnErrors)[0])
+        self.assertFalse(dp.addFeatures([valid, invalid], QgsFeatureSink.Flag.RollBackOnErrors)[0])
         self.assertFalse(dp.hasFeatures())
 
         # Expected behavior for changeAttributeValues is to always roll back

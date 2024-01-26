@@ -65,7 +65,7 @@ bool QgsBookmarkItem::hasDragEnabled() const
   return true;
 }
 
-QgsMimeDataUtils::Uri QgsBookmarkItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsBookmarkItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
   u.layerType = QStringLiteral( "custom" );
@@ -76,7 +76,7 @@ QgsMimeDataUtils::Uri QgsBookmarkItem::mimeUri() const
   doc.appendChild( mBookmark.writeXml( doc ) );
   u.uri = doc.toString();
 
-  return u;
+  return { u };
 }
 
 //

@@ -26,9 +26,10 @@ A model for display of recently used coordinate reference systems.
     enum Roles
     {
       RoleCrs,
+      RoleAuthId,
     };
 
-    QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0 );
+    QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0);
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsModel, with the specified ``parent`` object.
 %End
@@ -69,7 +70,7 @@ A sort/filter proxy model for recent coordinate reference systems.
 %End
   public:
 
-    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
+    explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0);
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.
 %End
@@ -83,8 +84,17 @@ Returns the underlying source model.
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how CRS are filtered.
+%End
 
-.. seealso:: :py:func:`filters`
+    void setFilterDeprecated( bool filter );
+%Docstring
+Sets whether deprecated CRS should be filtered from the results.
+%End
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only coordinate reference systems matching the
+specified string will be shown.
 %End
 
     QgsCoordinateReferenceSystemProxyModel::Filters filters() const;

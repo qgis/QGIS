@@ -1,5 +1,9 @@
 name: MSYS2 MinGW-w64 Windows 64bit Build
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -16,6 +20,9 @@ on:
     - '.github/workflows/mingw-w64-msys2.yml'
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   mingw-w64-msys2-build:

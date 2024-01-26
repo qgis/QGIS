@@ -1,5 +1,9 @@
 name: ❄ Flake8
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     paths:
@@ -7,6 +11,9 @@ on:
   pull_request:
     paths:
       - '**.py'
+
+permissions:
+  contents: read
 
 jobs:
   flake8_py3:

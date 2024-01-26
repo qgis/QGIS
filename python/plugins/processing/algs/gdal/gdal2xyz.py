@@ -84,7 +84,7 @@ class gdal2xyz(GdalAlgorithm):
         return 'gdal2xyz'
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = [

@@ -744,8 +744,8 @@ class TestQgsReport(QgisTestCase):
         self.assertTrue(r.beginRender())
         self.assertFalse(r.next())
 
-        child1.setHeaderVisibility(QgsReportSectionFieldGroup.AlwaysInclude)
-        child1.setFooterVisibility(QgsReportSectionFieldGroup.AlwaysInclude)
+        child1.setHeaderVisibility(QgsReportSectionFieldGroup.SectionVisibility.AlwaysInclude)
+        child1.setFooterVisibility(QgsReportSectionFieldGroup.SectionVisibility.AlwaysInclude)
 
         # check that the header is included when no features are found
         self.assertTrue(r.beginRender())
@@ -1002,29 +1002,29 @@ class TestQgsReport(QgisTestCase):
         # add a header
         r.setHeaderEnabled(True)
         report_header = QgsLayout(p)
-        report_header.setUnits(QgsUnitTypes.LayoutInches)
+        report_header.setUnits(QgsUnitTypes.LayoutUnit.LayoutInches)
         r.setHeader(report_header)
         # add a footer
         r.setFooterEnabled(True)
         report_footer = QgsLayout(p)
-        report_footer.setUnits(QgsUnitTypes.LayoutMeters)
+        report_footer.setUnits(QgsUnitTypes.LayoutUnit.LayoutMeters)
         r.setFooter(report_footer)
 
         # add some subsections
         child1 = QgsReportSectionLayout()
         child1_body = QgsLayout(p)
-        child1_body.setUnits(QgsUnitTypes.LayoutPoints)
+        child1_body.setUnits(QgsUnitTypes.LayoutUnit.LayoutPoints)
         child1.setBody(child1_body)
 
         child2 = QgsReportSectionLayout()
         child2_body = QgsLayout(p)
-        child2_body.setUnits(QgsUnitTypes.LayoutPixels)
+        child2_body.setUnits(QgsUnitTypes.LayoutUnit.LayoutPixels)
         child2.setBody(child2_body)
         child1.appendChild(child2)
 
         child2a = QgsReportSectionFieldGroup()
         child2a_body = QgsLayout(p)
-        child2a_body.setUnits(QgsUnitTypes.LayoutInches)
+        child2a_body.setUnits(QgsUnitTypes.LayoutUnit.LayoutInches)
         child2a.setBody(child2a_body)
         child2a.setField('my field')
         child2a.setLayer(ptLayer)
@@ -1039,15 +1039,15 @@ class TestQgsReport(QgisTestCase):
         self.assertTrue(r2.readLayoutXml(elem, doc, QgsReadWriteContext()))
         self.assertEqual(r2.name(), 'my report')
         self.assertTrue(r2.headerEnabled())
-        self.assertEqual(r2.header().units(), QgsUnitTypes.LayoutInches)
+        self.assertEqual(r2.header().units(), QgsUnitTypes.LayoutUnit.LayoutInches)
         self.assertTrue(r2.footerEnabled())
-        self.assertEqual(r2.footer().units(), QgsUnitTypes.LayoutMeters)
+        self.assertEqual(r2.footer().units(), QgsUnitTypes.LayoutUnit.LayoutMeters)
 
         self.assertEqual(r2.childCount(), 1)
-        self.assertEqual(r2.childSection(0).body().units(), QgsUnitTypes.LayoutPoints)
+        self.assertEqual(r2.childSection(0).body().units(), QgsUnitTypes.LayoutUnit.LayoutPoints)
         self.assertEqual(r2.childSection(0).childCount(), 2)
-        self.assertEqual(r2.childSection(0).childSection(0).body().units(), QgsUnitTypes.LayoutPixels)
-        self.assertEqual(r2.childSection(0).childSection(1).body().units(), QgsUnitTypes.LayoutInches)
+        self.assertEqual(r2.childSection(0).childSection(0).body().units(), QgsUnitTypes.LayoutUnit.LayoutPixels)
+        self.assertEqual(r2.childSection(0).childSection(1).body().units(), QgsUnitTypes.LayoutUnit.LayoutInches)
         self.assertEqual(r2.childSection(0).childSection(1).field(), 'my field')
         self.assertEqual(r2.childSection(0).childSection(1).layer(), ptLayer)
 

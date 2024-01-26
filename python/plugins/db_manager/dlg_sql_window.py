@@ -154,7 +154,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.progressBar.setRange(0, 100)
         self.progressBar.setValue(0)
         self.progressBar.setFormat("")
-        self.progressBar.setAlignment(Qt.AlignCenter)
+        self.progressBar.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # allow copying results
         copyAction = QAction("copy", self)
@@ -384,7 +384,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.updateUiWhileSqlExecution(False)
 
         with OverrideCursor(Qt.CursorShape.WaitCursor):
-            if self.modelAsync.task.status() == QgsTask.Complete:
+            if self.modelAsync.task.status() == QgsTask.TaskStatus.Complete:
                 model = self.modelAsync.model
                 self.showError(None)
                 self.viewResult.setModel(model)
@@ -435,7 +435,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.viewResult.setVisible(False)
             self.errorText.setVisible(True)
             self.errorText.setText(error.msg)
-            self.errorText.setWrapMode(QsciScintilla.WrapWord)
+            self.errorText.setWrapMode(QsciScintilla.WrapMode.WrapWord)
         else:
             self.viewResult.setVisible(True)
             self.errorText.setVisible(False)
@@ -445,7 +445,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if hasUniqueField and self.allowMultiColumnPk:
             uniqueFieldName = ",".join(
                 item.data()
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+                for item in self.uniqueModel.findItems("*", Qt.MatchFlag.MatchWildcard)
                 if item.checkState() == Qt.CheckState.Checked
             )
         elif (
@@ -594,7 +594,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         oldGeometryColumn = self.geomCombo.currentText()
         self.geomCombo.clear()
         self.geomCombo.addItems(cols)
-        self.geomCombo.setCurrentIndex(self.geomCombo.findText(oldGeometryColumn, Qt.MatchExactly))
+        self.geomCombo.setCurrentIndex(self.geomCombo.findText(oldGeometryColumn, Qt.MatchFlag.MatchExactly))
 
         # set sensible default columns if the columns are not already set
         try:
@@ -647,7 +647,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def displayQueryBuilder(self):
         dlg = QueryBuilderDlg(self.iface, self.db, self, reset=self.queryBuilderFirst)
         self.queryBuilderFirst = False
-        r = dlg.exec_()
+        r = dlg.exec()
         if r == QDialog.DialogCode.Accepted:
             self.editSql.setText(dlg.query)
 
@@ -680,7 +680,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
         label = ", ".join(
             item.text()
-            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+            for item in self.uniqueModel.findItems("*", Qt.MatchFlag.MatchWildcard)
             if item.checkState() == Qt.CheckState.Checked
         )
         if text != label:
@@ -694,7 +694,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         dlg = QgsQueryBuilder(layer)
         dlg.setSql(self.filter)
-        if dlg.exec_():
+        if dlg.exec():
             self.filter = dlg.sql()
         layer.deleteLater()
 

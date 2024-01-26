@@ -112,7 +112,7 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         error = ''
         self.assertTrue(
             layer.writeSymbology(
-                elem, doc, error, context, QgsMapLayer.Rendering
+                elem, doc, error, context, QgsMapLayer.StyleCategory.Rendering
             )
         )
 
@@ -131,13 +131,13 @@ class TestQgsTiledSceneLayer(unittest.TestCase):
         self.assertFalse(QgsLayerNotesUtils.layerNotes(layer2))
 
         # try restoring layer notes when these were not writing originally
-        layer2.readSymbology(elem, error, context, QgsMapLayer.Notes)
+        layer2.readSymbology(elem, error, context, QgsMapLayer.StyleCategory.Notes)
         self.assertFalse(QgsLayerNotesUtils.layerNotes(layer2))
 
         # write layer notes and restore
         self.assertTrue(
-            layer.writeSymbology(elem, doc, error, context, QgsMapLayer.Notes))
-        layer2.readSymbology(elem, error, context, QgsMapLayer.Notes)
+            layer.writeSymbology(elem, doc, error, context, QgsMapLayer.StyleCategory.Notes))
+        layer2.readSymbology(elem, error, context, QgsMapLayer.StyleCategory.Notes)
         self.assertEqual(QgsLayerNotesUtils.layerNotes(layer2), 'my notes')
 
     def test_cesium_provider_metadata(self):

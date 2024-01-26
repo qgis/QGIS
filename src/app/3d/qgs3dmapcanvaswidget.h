@@ -35,6 +35,7 @@ class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
+class Qgs3DNavigationWidget;
 class QgsMapTool;
 class QgsMapToolExtent;
 class QgsMapCanvas;
@@ -129,6 +130,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QPointer<QDialog> mConfigureDialog;
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
+
+    //! Container QWidget that encapsulates 3D QWindow
+    QWidget *mContainer = nullptr;
+    //! On-Screen Navigation widget.
+    Qgs3DNavigationWidget *mNavigationWidget = nullptr;
+
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

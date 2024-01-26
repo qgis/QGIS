@@ -74,7 +74,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     bool mDone = true;
 
     //! Dialog
-    Qgs3DMeasureDialog *mDialog = nullptr;
+    std::unique_ptr<Qgs3DMeasureDialog> mDialog;
 
     std::unique_ptr<QgsRubberBand3D> mRubberBand;
 

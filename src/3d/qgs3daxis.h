@@ -17,7 +17,7 @@
 #define QGS3DAXIS_H
 
 #include "qgis_3d.h"
-#include "qgs3dwindow.h"
+#include "qgs3dmapcanvas.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include <Qt3DCore/QEntity>
@@ -64,13 +64,13 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     /**
      * \brief Default Qgs3DAxis constructor
-     * \param parentWindow qt3d windows
+     * \param canvas parent Qgs3DMapCanvas
      * @param parent3DScene root entity to set as parent
      * @param mapScene 3d map scene to retrieve terrain and 3d engine data
      * @param camera camera controller used to track camera movements
      * @param map 3D map settings
      */
-    Qgs3DAxis( Qgs3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene,
+    Qgs3DAxis( Qgs3DMapCanvas *canvas,  Qt3DCore::QEntity *parent3DScene,
                Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings *map );
     ~Qgs3DAxis() override;
 
@@ -143,7 +143,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void displayMenuAt( const QPoint &position );
 
     Qgs3DMapSettings *mMapSettings = nullptr;
-    Qgs3DWindow *mParentWindow = nullptr;
+    Qgs3DMapCanvas *mCanvas = nullptr;
     Qgs3DMapScene *mMapScene = nullptr;
     QgsCameraController *mCameraController = nullptr;
 

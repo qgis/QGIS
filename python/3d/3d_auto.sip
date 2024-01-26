@@ -4,7 +4,7 @@
 %Include auto_generated/qgs3dmapscene.sip
 %Include auto_generated/qgs3dmapsettings.sip
 %Include auto_generated/qgs3dtypes.sip
-%Include auto_generated/qgs3dwindow.sip
+%Include auto_generated/qgs3dmapcanvas.sip
 %Include auto_generated/qgsabstractvectorlayer3drenderer.sip
 %Include auto_generated/qgscameracontroller.sip
 %Include auto_generated/qgscamerapose.sip

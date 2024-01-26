@@ -85,14 +85,14 @@ class TestQgsLayoutComboBox(QgisTestCase):
         combo.setCurrentLayout(None)
         self.assertEqual(combo.currentIndex(), 0)
 
-        combo.setFilters(QgsLayoutManagerProxyModel.FilterPrintLayouts)
+        combo.setFilters(QgsLayoutManagerProxyModel.Filter.FilterPrintLayouts)
         self.assertEqual(combo.count(), 3)
         self.assertEqual(combo.itemText(0), '')
         self.assertEqual(combo.itemText(1), 'bbb')
         self.assertEqual(combo.itemText(2), 'ccc')
 
-        combo.setFilters(QgsLayoutManagerProxyModel.FilterReports)
-        self.assertEqual(combo.filters(), QgsLayoutManagerProxyModel.FilterReports)
+        combo.setFilters(QgsLayoutManagerProxyModel.Filter.FilterReports)
+        self.assertEqual(combo.filters(), QgsLayoutManagerProxyModel.Filter.FilterReports)
         self.assertEqual(combo.count(), 2)
         self.assertEqual(combo.itemText(0), '')
         self.assertEqual(combo.itemText(1), 'ddd')

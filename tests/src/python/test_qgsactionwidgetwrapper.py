@@ -34,9 +34,9 @@ class TestQgsActionWidgetWrapper(QgisTestCase):
         cls.action_id1 = QUuid.createUuid()
         cls.action_id2 = QUuid.createUuid()
         cls.action_id3 = QUuid.createUuid()
-        cls.action1 = QgsAction(cls.action_id1, QgsAction.GenericPython, 'Test Action 1 Desc', 'i=1', '', False, 'Test Action 1 Short Title')
-        cls.action2 = QgsAction(cls.action_id2, QgsAction.GenericPython, 'Test Action 2 Desc', 'i=2', QGISAPP.appIconPath(), False, 'Test Action 2 Short Title')
-        cls.action3 = QgsAction(cls.action_id3, QgsAction.GenericPython, 'Test Action 3 Desc', 'i=3', '', False)
+        cls.action1 = QgsAction(cls.action_id1, QgsAction.ActionType.GenericPython, 'Test Action 1 Desc', 'i=1', '', False, 'Test Action 1 Short Title')
+        cls.action2 = QgsAction(cls.action_id2, QgsAction.ActionType.GenericPython, 'Test Action 2 Desc', 'i=2', QGISAPP.appIconPath(), False, 'Test Action 2 Short Title')
+        cls.action3 = QgsAction(cls.action_id3, QgsAction.ActionType.GenericPython, 'Test Action 3 Desc', 'i=3', '', False)
 
     @classmethod
     def tearDownClass(cls):

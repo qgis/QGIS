@@ -193,7 +193,7 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(10, 10, 16, 16))
         settings.setOutputSize(QSize(300, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -229,7 +229,7 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         settings.setOutputSize(QSize(300, 300))
         settings.setRotation(90)
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -267,7 +267,7 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         settings.setOutputSize(QSize(300, 300))
         settings.setRotation(90)
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -302,7 +302,7 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(10, 10, 16, 16))
         settings.setOutputSize(QSize(300, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI
@@ -337,7 +337,7 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
         settings.setExtent(QgsRectangle(1250958, 1386945, 1420709, 1532518))
         settings.setOutputSize(QSize(300, 300))
 
-        settings.setFlag(QgsMapSettings.Antialiasing, False)
+        settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setScaleFactor(96 / 25.4)  # 96 DPI

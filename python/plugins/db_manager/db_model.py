@@ -392,7 +392,7 @@ class DBModel(QAbstractItemModel):
         global isImportVectorAvail
 
         if not index.isValid():
-            return Qt.NoItemFlags
+            return Qt.ItemFlag.NoItemFlags
 
         flags = Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
 
@@ -522,7 +522,7 @@ class DBModel(QAbstractItemModel):
         mimeData = QMimeData()
         encodedData = QByteArray()
 
-        stream = QDataStream(encodedData, QIODevice.WriteOnly)
+        stream = QDataStream(encodedData, QIODevice.OpenModeFlag.WriteOnly)
 
         for index in indexes:
             if not index.isValid():
@@ -538,7 +538,7 @@ class DBModel(QAbstractItemModel):
     def dropMimeData(self, data, action, row, column, parent):
         global isImportVectorAvail
 
-        if action == Qt.IgnoreAction:
+        if action == Qt.DropAction.IgnoreAction:
             return True
 
         # vectors/tables to be imported must be dropped on connected db, schema or table
@@ -654,7 +654,7 @@ class DBModel(QAbstractItemModel):
 
             dlg = DlgImportVector(inLayer, outDb, outUri)
             QApplication.restoreOverrideCursor()
-            if dlg.exec_():
+            if dlg.exec():
                 self._refreshIndex(parent)
         finally:
             inLayer.deleteLater()

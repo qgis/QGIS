@@ -23,21 +23,21 @@ class TestQgsValidityResultsWidget(QgisTestCase):
 
     def testModel(self):
         res1 = QgsValidityCheckResult()
-        res1.type = QgsValidityCheckResult.Warning
+        res1.type = QgsValidityCheckResult.Type.Warning
         res1.title = 'test'
         res1.detailedDescription = 'blah blah'
 
         res2 = QgsValidityCheckResult()
-        res2.type = QgsValidityCheckResult.Critical
+        res2.type = QgsValidityCheckResult.Type.Critical
         res2.title = 'test2'
         res2.detailedDescription = 'blah blah2'
 
         res3 = QgsValidityCheckResult()
-        res3.type = QgsValidityCheckResult.Warning
+        res3.type = QgsValidityCheckResult.Type.Warning
         res3.title = 'test3'
         res3.detailedDescription = 'blah blah3'
         res4 = QgsValidityCheckResult()
-        res4.type = QgsValidityCheckResult.Warning
+        res4.type = QgsValidityCheckResult.Type.Warning
         res4.title = 'test4'
         res4.detailedDescription = 'blah blah4'
 
@@ -55,10 +55,10 @@ class TestQgsValidityResultsWidget(QgisTestCase):
         self.assertEqual(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'test3')
         self.assertEqual(model.data(model.index(3, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'test4')
         self.assertFalse(model.data(model.index(4, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
-        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsValidityCheckResultsModel.DescriptionRole), 'blah blah')
-        self.assertEqual(model.data(model.index(1, 0, QModelIndex()), QgsValidityCheckResultsModel.DescriptionRole), 'blah blah2')
-        self.assertEqual(model.data(model.index(2, 0, QModelIndex()), QgsValidityCheckResultsModel.DescriptionRole), 'blah blah3')
-        self.assertEqual(model.data(model.index(3, 0, QModelIndex()), QgsValidityCheckResultsModel.DescriptionRole), 'blah blah4')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsValidityCheckResultsModel.Roles.DescriptionRole), 'blah blah')
+        self.assertEqual(model.data(model.index(1, 0, QModelIndex()), QgsValidityCheckResultsModel.Roles.DescriptionRole), 'blah blah2')
+        self.assertEqual(model.data(model.index(2, 0, QModelIndex()), QgsValidityCheckResultsModel.Roles.DescriptionRole), 'blah blah3')
+        self.assertEqual(model.data(model.index(3, 0, QModelIndex()), QgsValidityCheckResultsModel.Roles.DescriptionRole), 'blah blah4')
 
 
 if __name__ == '__main__':

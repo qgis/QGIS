@@ -120,13 +120,16 @@ Returns the 3D map settings.
 .. versionadded:: 3.30
 %End
 
-    static QMap< QString, Qgs3DMapScene * > openScenes();
+ static QMap< QString, Qgs3DMapScene * > openScenes() /Deprecated/;
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.
 
 .. note::
 
    Only available from the QGIS desktop application.
+
+.. deprecated:: QGIS 3.36
+  use QgisAppInterface.mapCanvases3D() instead.
 
 .. versionadded:: 3.30
 %End

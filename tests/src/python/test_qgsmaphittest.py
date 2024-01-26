@@ -10,34 +10,22 @@ __date__ = '08/03/2023'
 __copyright__ = 'Copyright 2023, The QGIS Project'
 
 import os
-from time import sleep
 
-from qgis.PyQt.QtCore import QDir, QRectF, QSize
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsMapHitTest,
-    QgsLineSymbol,
-    QgsMapLayerLegendUtils,
     QgsMapSettings,
-    QgsMapThemeCollection,
     QgsMarkerSymbol,
-    QgsPrintLayout,
-    QgsProject,
-    QgsProperty,
     QgsRectangle,
-    QgsRendererCategory,
     QgsRuleBasedRenderer,
     QgsApplication,
     QgsVectorLayer,
     QgsMapHitTestTask,
-    QgsLayerTreeFilterSettings,
-    QgsLayoutChecker
+    QgsLayerTreeFilterSettings
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
-from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
 start_app()

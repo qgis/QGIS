@@ -132,7 +132,7 @@ void TestQgsMeshContours::testQuadAndTriangleVertexScalarLine()
 
   QgsMeshContours contours( mpMeshLayer.get() );
 
-  const QgsGeometry res = contours.exportLines( datasetIndex, value, QgsMeshRendererScalarSettings::None );
+  const QgsGeometry res = contours.exportLines( datasetIndex, value, QgsMeshRendererScalarSettings::NoResampling );
   equals( res, expected );
 }
 
@@ -190,7 +190,7 @@ void TestQgsMeshContours::testQuadAndTriangleVertexScalarPoly()
 
   QgsMeshContours contours( mpMeshLayer.get() );
 
-  const QgsGeometry res = contours.exportPolygons( datasetIndex, min_value, max_value, QgsMeshRendererScalarSettings::None );
+  const QgsGeometry res = contours.exportPolygons( datasetIndex, min_value, max_value, QgsMeshRendererScalarSettings::NoResampling );
   equals( res, expected );
 }
 

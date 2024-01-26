@@ -147,7 +147,7 @@ class GPKGDatabase(Database):
         try:
             if not isinstance(item, (DBPlugin, Table)) or item.database() is None:
                 parent.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                           Qgis.Info, parent.iface.messageTimeout())
+                                           Qgis.MessageLevel.Info, parent.iface.messageTimeout())
                 return
         finally:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -312,7 +312,7 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         uri = self.gpkgGdalUri()
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
-            rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
+            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         return rl
 
 

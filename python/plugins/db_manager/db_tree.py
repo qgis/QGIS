@@ -38,7 +38,7 @@ class DBTree(QTreeView):
 
         self.setModel(DBModel(self))
         self.setHeaderHidden(True)
-        self.setEditTriggers(QTreeView.EditKeyPressed | QTreeView.SelectedClicked)
+        self.setEditTriggers(QTreeView.EditTrigger.EditKeyPressed | QTreeView.EditTrigger.SelectedClicked)
 
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
@@ -139,7 +139,7 @@ class DBTree(QTreeView):
             menu.addAction(QCoreApplication.translate("DBTree", "New Connection…"), self.newConnection)
 
         if not menu.isEmpty():
-            menu.exec_(ev.globalPos())
+            menu.exec(ev.globalPos())
 
         menu.deleteLater()
 
@@ -169,7 +169,7 @@ class DBTree(QTreeView):
                 msgLabel.setWordWrap(True)
                 msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog").show)
                 msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().raise_)
-                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, Qgis.Warning))
+                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, Qgis.MessageLevel.Warning))
 
     def reconnect(self):
         db = self.currentDatabase()

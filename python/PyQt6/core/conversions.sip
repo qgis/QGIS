@@ -3144,7 +3144,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   // maps NULL values)
   // If there are more cases like QByteArray, we should consider using a allowlist
   // instead of a blocklist.
-  if ( varp->isNull()
+  if ( QgsVariantUtils::isNull( *varp )
        && varp->type() != QVariant::ByteArray
        && varp->type() != QMetaType::VoidStar
        && varp->type() != QMetaType::Nullptr
@@ -3157,15 +3157,8 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
     }
 
     sWatchDog = true;
-
-    // TODO fix this
-    // PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QMetaType_Type );
-    PyObject *vartype = 0;
-    PyObject *args = PyTuple_Pack( 1, vartype );
-    PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-    *objp = PyObject_Call(( PyObject * )typeObj, args, nullptr );
-    Py_DECREF(args);
-    Py_DECREF(vartype);
+    Py_INCREF(Py_None);
+    *objp = Py_None;
     sWatchDog = false;
     return true;
   }
@@ -3178,6 +3171,7 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 
 %ModuleHeaderCode
 #define SIP_PYQT_FROM_QVARIANT_BY_TYPE "pyqt6_from_qvariant_by_type"
+#include "qgsvariantutils.h"
 %End
 
 // In Qt6 QVector is just an alias to QList but doesn't appear in pyqt
@@ -4178,54 +4172,114 @@ template<_TYPE_>
 %End
 };
 
-%MappedType QVector<QVariantMap>
+%MappedType QVector<QMap<QString, QVariant>>
+    /TypeHintIn="Iterable[Dict[str, Any]]",
+    TypeHintOut="Iterable[Dict[str, Any]]", TypeHintValue="[]"/
 {
 %TypeHeaderCode
-#include <qlist.h>
+#include <qvector.h>
 %End
 
 %ConvertFromTypeCode
-    // TODO
-    return 0;
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        QVariantMap *t = new QVariantMap(sipCpp->at(i));
+        PyObject *tobj = sipConvertFromNewType(t, qvariantmap_type,
+                                               sipTransferObj);
+
+        if (!tobj)
+        {
+            delete t;
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, tobj);
+    }
+
+    return l;
 %End
 
 %ConvertToTypeCode
-    // TODO
-    return 0;
-%End
-};
+    PyObject *iter = PyObject_GetIter(sipPy);
 
-%MappedType QVariantMap /TypeHint="Dict[str, Any]", TypeHintValue="{}"/
-{
-%TypeHeaderCode
-#include <qvariant.h>
-%End
-
-%ConvertFromTypeCode
-    // todo FIX this
-    return 0; //qpycore_fromQVariantMap(*sipCpp);
-%End
-
-%ConvertToTypeCode
     if (!sipIsErr)
-        return PyDict_Check(sipPy);
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
 
-    QVariantMap *qvm = new QVariantMap;
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
 
-    // todo FIX this
-    // if (!qpycore_toQVariantMap(sipPy, *qvm))
-    // {
-    //    delete qvm;
-    //    return 0;
-    //}
+    if (!iter)
+    {
+        *sipIsErr = 1;
 
-    *sipCppPtr = qvm;
+        return 0;
+    }
+
+    QVector<QVariantMap> *ql = new QVector<QVariantMap>;
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int state;
+        QVariantMap *t = reinterpret_cast<QVariantMap *>(
+            sipForceConvertToType(itm, qvariantmap_type, sipTransferObj,
+                                  SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                         "index %zd has type '%s' but 'Dict[str, Any]' is expected", i,
+                         sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(*t);
+
+        sipReleaseType(t, qvariantmap_type, state);
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
 
     return sipGetState(sipTransferObj);
 %End
 };
 
-%MappedType QList<QVariantMap>
+%MappedType QList<QMap<QString, QVariant>>
         /TypeHintIn="Iterable[Dict[str, Any]]",
         TypeHintOut="Iterable[Dict[str, Any]]", TypeHintValue="[]"/
 {
@@ -4234,25 +4288,144 @@ template<_TYPE_>
 %End
 
 %ConvertFromTypeCode
-    // TODO
-    return 0;
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        QVariantMap *t = new QVariantMap(sipCpp->at(i));
+        PyObject *tobj = sipConvertFromNewType(t, qvariantmap_type,
+                                               sipTransferObj);
+
+        if (!tobj)
+        {
+            delete t;
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, tobj);
+    }
+
+    return l;
 %End
 
 %ConvertToTypeCode
-    // TODO
-    return 0;
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<QVariantMap> *ql = new QList<QVariantMap>;
+    const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int state;
+        QVariantMap *t = reinterpret_cast<QVariantMap *>(
+            sipForceConvertToType(itm, qvariantmap_type, sipTransferObj,
+                                  SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            PyErr_Format(PyExc_TypeError,
+                         "index %zd has type '%s' but 'Dict[str, Any]' is expected", i,
+                         sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+
+            return 0;
+        }
+
+        ql->append(*t);
+
+        sipReleaseType(t, qvariantmap_type, state);
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
 %End
 };
 
-// TODO QVariant::Type is obsolete, migrate to QMetaType
+// QVariant::Type is obsolete, migrate to QMetaType
 %MappedType QVariant::Type
 {
-
+%TypeHeaderCode
+#include "qgsvariantutils.h"
+%End
 %ConvertFromTypeCode
-    return 0;
+    const QMetaType::Type metaType = QgsVariantUtils::variantTypeToMetaType( *sipCpp );
+    const sipTypeDef *qmetatype_type = sipFindType( "QMetaType::Type" );
+    PyObject *eobj = sipConvertFromEnum(metaType, qmetatype_type);
+    if (!eobj)
+    {
+        return 0;
+    }
+    return eobj;
 %End
 
 %ConvertToTypeCode
-    return 0;
+    const sipTypeDef *qmetatype_type = sipFindType( "QMetaType::Type" );
+    const QMetaType::Type metaType = static_cast<QMetaType::Type>( sipConvertToEnum( sipPy, qmetatype_type ) );
+    if (sipIsErr == NULL)
+    {
+        return PyErr_Occurred() ? 0 : 1;
+    }
+    else if (PyErr_Occurred())
+    {
+        *sipIsErr = 1;
+        return 0;
+    }
+    const QVariant::Type variantType = QgsVariantUtils::metaTypeToVariantType( metaType );
+    *sipCppPtr = new QVariant::Type( variantType );
+    return 1;
 %End
 };
+
+%PostInitialisationCode  //#spellok
+
+// Import the Chimera helper registration functions.
+typedef bool ( *FromQVariantConverterFn )( const QVariant *, PyObject ** );
+void (*register_from_qvariant_converter)(FromQVariantConverterFn);
+register_from_qvariant_converter = (void (*)(FromQVariantConverterFn))sipImportSymbol("pyqt6_register_from_qvariant_convertor");  //#spellok
+register_from_qvariant_converter(null_from_qvariant_converter);
+%End

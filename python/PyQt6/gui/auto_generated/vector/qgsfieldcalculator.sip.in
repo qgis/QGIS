@@ -23,7 +23,7 @@ Sample usage of the :py:class:`QgsFieldCalculator` class:
          layer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
          layer.startEditing()
          dialog = QgsFieldCalculator(layer)
-         dialog.exec_()
+         dialog.exec()
 %End
 
 %TypeHeaderCode

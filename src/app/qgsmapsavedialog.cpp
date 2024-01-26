@@ -22,7 +22,6 @@
 #include <QImage>
 #include <QList>
 #include <QPainter>
-#include <QPrinter>
 #include <QSpinBox>
 #include <QUrl>
 

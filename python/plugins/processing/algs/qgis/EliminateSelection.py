@@ -66,7 +66,7 @@ class EliminateSelection(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
 
     def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest Area'),
@@ -74,12 +74,12 @@ class EliminateSelection(QgisAlgorithm):
                       self.tr('Largest Common Boundary')]
 
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
+                                                            self.tr('Input layer'), [QgsProcessing.SourceType.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterEnum(self.MODE,
                                                      self.tr('Merge selection with the neighbouring polygon with the'),
                                                      options=self.modes))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Eliminated'), QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Eliminated'), QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'eliminateselectedpolygons'
@@ -112,7 +112,7 @@ class EliminateSelection(QgisAlgorithm):
                 featToEliminate.append(aFeat)
             else:
                 # write the others to output
-                sink.addFeature(aFeat, QgsFeatureSink.FastInsert)
+                sink.addFeature(aFeat, QgsFeatureSink.Flag.FastInsert)
 
         del sink
 
@@ -229,6 +229,6 @@ class EliminateSelection(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            processLayer.dataProvider().addFeature(feature, QgsFeatureSink.FastInsert)
+            processLayer.dataProvider().addFeature(feature, QgsFeatureSink.Flag.FastInsert)
 
         return {self.OUTPUT: dest_id}

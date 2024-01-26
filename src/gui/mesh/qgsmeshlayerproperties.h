@@ -25,6 +25,7 @@
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRendererMeshPropertiesWidget;
+class QgsMeshLabelingWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
 class QgsMetadataWidget;
@@ -101,6 +102,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
 
     //! Pointer to mesh 3d styling widget
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
+
+    //! Labeling dialog. If apply is pressed, options are applied to mesh layer
+    QgsMeshLabelingWidget *mLabelingDialog = nullptr;
 
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;

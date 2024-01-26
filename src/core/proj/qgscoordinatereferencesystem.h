@@ -702,6 +702,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     Qgis::CrsType type() const;
 
     /**
+     * Returns TRUE if the CRS is considered deprecated.
+     *
+     * \since QGIS 3.36
+     */
+    bool isDeprecated() const;
+
+    /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */
@@ -1060,9 +1067,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Cleans the list of recently used CRS.
-     * \since QGIS 3.32
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->clearRecent() instead.
      */
-    static void clearRecentCoordinateReferenceSystems();
+    Q_DECL_DEPRECATED static void clearRecentCoordinateReferenceSystems() SIP_DEPRECATED;
 
 #ifndef SIP_RUN
 

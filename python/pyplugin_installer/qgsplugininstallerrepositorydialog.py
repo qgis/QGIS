@@ -47,21 +47,21 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
     # ----------------------------------------- #
     def textChanged(self, string):
         enable = (len(self.editName.text()) > 0 and len(self.editURL.text()) > 0)
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(enable)
 
     def editAuthCfgId(self):
         dlg = QDialog(self)
-        dlg.setWindowModality(Qt.WindowModal)
+        dlg.setWindowModality(Qt.WindowModality.WindowModal)
         layout = QVBoxLayout()
         selector = QgsAuthConfigSelect(self)
         if self.editAuthCfg.text():
             selector.setConfigId(self.editAuthCfg.text())
         layout.addWidget(selector)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Close)
+        buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Close)
         buttonBox.accepted.connect(dlg.accept)
         buttonBox.rejected.connect(dlg.reject)
         layout.addWidget(buttonBox)
         dlg.setLayout(layout)
-        if dlg.exec_():
+        if dlg.exec():
             self.editAuthCfg.setText(selector.configId())
         del dlg

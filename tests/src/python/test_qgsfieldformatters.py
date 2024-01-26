@@ -437,7 +437,7 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
 
         # displaying stored values
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), '1')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), '0')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
@@ -448,7 +448,7 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), 'false')
 
         # displaying stored values
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 1), '1')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 0), '0')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 10), "(10)")
@@ -460,13 +460,13 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         self.assertEqual(field_formatter.representValue(layer, 1, config, None, 'oops'), "(oops)")
 
         # displaying stored values
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowStoredValues
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'yeah'), 'yeah')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'nooh'), 'nooh')
         self.assertEqual(field_formatter.representValue(layer, 0, config, None, 'oops'), "(oops)")
 
         # bool
-        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.ShowTrueFalse
+        config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowTrueFalse
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, True), 'true')
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, False), 'false')
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Type.Bool)), 'NULL')

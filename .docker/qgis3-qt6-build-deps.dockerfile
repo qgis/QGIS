@@ -37,6 +37,8 @@ RUN dnf -y --refresh install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
+    python3-mock \
+    python3-OWSLib \
     python3-pyqt6 \
     python3-pyqt6-devel \
     python3-qscintilla-qt6 \
@@ -94,7 +96,7 @@ ENV LANG=C.UTF-8
 
 FROM binary-for-oracle as binary-only
 
-RUN dnf -y --refresh install \
+RUN dnf -y install \
     python3-gdal \
     python3-nose2 \
     python3-psycopg2 \

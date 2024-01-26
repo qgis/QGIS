@@ -78,7 +78,7 @@ class QtSqlDBCursor:
 
     def execute(self, operation, parameters=[]):
         if len(parameters) == 0:
-            if not self.qry.exec_(operation):
+            if not self.qry.exec(operation):
                 raise ExecError(self.qry.lastError().databaseText())
         else:
             if not self.qry.prepare(operation):
@@ -87,7 +87,7 @@ class QtSqlDBCursor:
             for i in range(len(parameters)):
                 self.qry.bindValue(i, parameters[i])
 
-            if not self.qry.exec_():
+            if not self.qry.exec():
                 raise ExecError(self.qry.lastError().databaseText())
 
         self.rowcount = self.qry.size()
@@ -133,7 +133,7 @@ class QtSqlDBCursor:
             for i in range(len(r)):
                 self.qry.bindValue(i, r[i])
 
-            if not self.qry.exec_():
+            if not self.qry.exec():
                 raise ExecError(self.qry.lastError().databaseText())
 
     def scroll(self, row):

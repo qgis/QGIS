@@ -492,14 +492,6 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     static QgsSettingsProxy get() SIP_SKIP;
 
-    /**
-     * Thread local QgsSettings storage.
-     *
-     * \note Not available in Python bindings
-     * \since QGIS 3.36
-     */
-    static thread_local QgsSettings *sThreadSettings SIP_SKIP;
-
   private:
     void init();
     QString sanitizeKey( const QString &key ) const;
@@ -509,5 +501,8 @@ class CORE_EXPORT QgsSettings : public QObject
     Q_DISABLE_COPY( QgsSettings )
 
 };
+
+// as static members cannot be CORE_EXPORTed
+extern thread_local QgsSettings *sQgsSettingsThreadSettings SIP_SKIP;
 
 #endif // QGSSETTINGS_H

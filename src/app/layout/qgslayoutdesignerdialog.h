@@ -18,6 +18,7 @@
 #define QGSLAYOUTDESIGNERDIALOG_H
 
 #include "ui_qgslayoutdesignerbase.h"
+#include "qgsconfig.h"
 #include "qgslayoutdesignerinterface.h"
 #include <QToolButton>
 
@@ -512,8 +513,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     QComboBox *mAtlasPageComboBox = nullptr;
 
+#if defined( HAVE_QTPRINTER )
     //! Page & Printer Setup
     std::unique_ptr< QPrinter > mPrinter;
+    QPrinter *printer();
+    void setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation );
+#endif
     bool mSetPageOrientation = false;
 
     QString mTitle;
@@ -552,7 +557,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     void showSvgExportWarning();
 
-    //! Displays a warning because of incompatibility between blend modes and QPrinter
+    //! Displays a warning because of incompatibility between blend modes and QPagedPaintDevice
     void showRasterizationWarning();
     void showForceVectorWarning();
 
@@ -583,8 +588,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     void toggleActions( bool layoutAvailable );
 
-    void setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation );
-    QPrinter *printer();
     QString reportTypeString();
     void updateActionNames( QgsMasterLayoutInterface::Type type );
 

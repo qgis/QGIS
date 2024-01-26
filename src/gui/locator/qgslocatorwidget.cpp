@@ -150,6 +150,11 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
   }
 }
 
+void QgsLocatorWidget::setPlaceholderText( const QString &text )
+{
+  mLineEdit->setPlaceholderText( text );
+}
+
 void QgsLocatorWidget::search( const QString &string )
 {
   window()->activateWindow(); // window must also be active - otherwise floating docks can steal keystrokes

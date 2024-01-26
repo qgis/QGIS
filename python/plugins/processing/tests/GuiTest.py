@@ -233,7 +233,7 @@ class WrappersTest(QgisTestCase):
         param = QgsProcessingParameterRange(
             name='test',
             description='test',
-            type=QgsProcessingParameterNumber.Double,
+            type=QgsProcessingParameterNumber.Type.Double,
             defaultValue="0.0,100.0")
 
         wrapper = RangeWidgetWrapper(param, dlg)
@@ -258,7 +258,7 @@ class WrappersTest(QgisTestCase):
         param = QgsProcessingParameterRange(
             name='test',
             description='test',
-            type=QgsProcessingParameterNumber.Integer,
+            type=QgsProcessingParameterNumber.Type.Integer,
             defaultValue="0.1,100.1")
 
         wrapper = RangeWidgetWrapper(param, dlg)
@@ -308,7 +308,7 @@ class WrappersTest(QgisTestCase):
         self.assertFalse(widget.warning_label.isVisible())
         self.assertTrue(widget.units_combo.isVisible())
         self.assertFalse(widget.label.isVisible())
-        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceUnit.DistanceMeters)
 
         widget.setUnitParameterValue('EPSG:4326')
         self.assertEqual(widget.label.text(), 'degrees')
@@ -321,7 +321,7 @@ class WrappersTest(QgisTestCase):
         self.assertFalse(widget.warning_label.isVisible())
         self.assertTrue(widget.units_combo.isVisible())
         self.assertFalse(widget.label.isVisible())
-        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceUnit.DistanceMeters)
 
         widget.setUnitParameterValue(QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(widget.label.text(), 'degrees')
@@ -336,7 +336,7 @@ class WrappersTest(QgisTestCase):
         self.assertFalse(widget.warning_label.isVisible())
         self.assertTrue(widget.units_combo.isVisible())
         self.assertFalse(widget.label.isVisible())
-        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceUnit.DistanceMeters)
 
         vl2 = QgsVectorLayer("Polygon?crs=epsg:4326&field=pk:int", "vl", "memory")
         widget.setUnitParameterValue(vl2)
@@ -359,11 +359,11 @@ class WrappersTest(QgisTestCase):
         self.assertFalse(widget.warning_label.isVisible())
         self.assertTrue(widget.units_combo.isVisible())
         self.assertFalse(widget.label.isVisible())
-        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceUnit.DistanceMeters)
 
         widget.setValue(5)
         self.assertEqual(widget.getValue(), 5)
-        widget.units_combo.setCurrentIndex(widget.units_combo.findData(QgsUnitTypes.DistanceKilometers))
+        widget.units_combo.setCurrentIndex(widget.units_combo.findData(QgsUnitTypes.DistanceUnit.DistanceKilometers))
         self.assertEqual(widget.getValue(), 5000)
         widget.setValue(2)
         self.assertEqual(widget.getValue(), 2000)

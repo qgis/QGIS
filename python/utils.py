@@ -27,7 +27,7 @@ QGIS utilities module
 """
 from typing import List, Dict, Optional
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread, qDebug, QUrl
+from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication, QLocale, QThread, qDebug, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
@@ -74,7 +74,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     )
 
 
-def showException(type, value, tb, msg, messagebar=False, level=Qgis.Warning):
+def showException(type, value, tb, msg, messagebar=False, level=Qgis.MessageLevel.Warning):
     if msg is None:
         msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
 
@@ -117,7 +117,7 @@ def showException(type, value, tb, msg, messagebar=False, level=Qgis.Warning):
     button = QPushButton(QCoreApplication.translate("Python", "View message log"), pressed=show_message_log)
     widget.layout().addWidget(stackbutton)
     widget.layout().addWidget(button)
-    bar.pushWidget(widget, Qgis.Warning)
+    bar.pushWidget(widget, Qgis.MessageLevel.Warning)
 
 
 def show_message_log(pop_error=True):
@@ -178,7 +178,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
     dlg = QgsMessageOutput.createMessageOutput()
     dlg.setTitle(msg)
-    dlg.setMessage(txt, QgsMessageOutput.MessageHtml)
+    dlg.setMessage(txt, QgsMessageOutput.MessageType.MessageHtml)
     dlg.showMessage()
 
 
@@ -213,7 +213,7 @@ iface = None
 
 def initInterface(pointer):
     from qgis.gui import QgisInterface
-    from sip import wrapinstance
+    from qgis.PyQt.sip import wrapinstance
 
     global iface
     iface = wrapinstance(pointer, QgisInterface)
@@ -405,7 +405,7 @@ def loadPlugin(packageName: str) -> bool:
         return True
     except:
         msg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.MessageLevel.Critical)
         return False
 
 
@@ -428,7 +428,7 @@ def _startPlugin(packageName: str) -> bool:
         _unloadPluginModules(packageName)
         errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.MessageLevel.Critical)
         return False
     return True
 
@@ -454,7 +454,7 @@ def startPlugin(packageName: str) -> bool:
         _unloadPluginModules(packageName)
         errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.MessageLevel.Critical)
         return False
 
     end = time.process_time()
@@ -474,7 +474,7 @@ def startProcessingPlugin(packageName: str) -> bool:
         del plugins[packageName]
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "{0} - plugin has no initProcessing() method").format(errMsg)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.MessageLevel.Critical)
         return False
 
     # initProcessing
@@ -882,7 +882,16 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
 
     if 'PyQt4' in name:
         msg = 'PyQt4 classes cannot be imported in QGIS 3.x.\n' \
-              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
+              'Use {} or preferably the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
+        raise ImportError(msg)
+    qt_version = int(QT_VERSION_STR.split('.')[0])
+    if qt_version == 5 and 'PyQt6' in name:
+        msg = 'PyQt6 classes cannot be imported in a QGIS build based on Qt5.\n' \
+              'Use {} or preferably the version independent {} import instead (where available).'.format(name.replace('PyQt6', 'PyQt5'), name.replace('PyQt6', 'qgis.PyQt'))
+        raise ImportError(msg)
+    elif qt_version == 6 and 'PyQt5' in name:
+        msg = 'PyQt5 classes cannot be imported in a QGIS build based on Qt6.\n' \
+              'Use {} or preferably the version independent {} import instead (where available).'.format(name.replace('PyQt5', 'PyQt6'), name.replace('PyQt5', 'qgis.PyQt'))
         raise ImportError(msg)
 
     if os.name == 'nt' and sys.version_info < (3, 8):

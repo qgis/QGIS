@@ -98,6 +98,8 @@
 
 #cmakedefine HAVE_QTGAMEPAD
 
+#cmakedefine HAVE_QTPRINTER
+
 #cmakedefine HAVE_STATIC_PROVIDERS
 
 #cmakedefine HAVE_EPT

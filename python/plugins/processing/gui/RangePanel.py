@@ -45,7 +45,7 @@ class RangePanel(BASE, WIDGET):
 
         self.param = param
         # Integer or Double range
-        if self.param.dataType() == QgsProcessingParameterNumber.Integer:
+        if self.param.dataType() == QgsProcessingParameterNumber.Type.Integer:
             self.spnMin.setDecimals(0)
             self.spnMax.setDecimals(0)
 

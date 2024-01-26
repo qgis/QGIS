@@ -1048,7 +1048,7 @@ in a widget or sending it to a web browser.
 \copydoc :py:func:`~QgsApplication.nullRepresentation`
 %End
 
-    static QVariantMap customVariables();
+    static QMap<QString, QVariant> customVariables();
 %Docstring
 Custom expression variables for this application.
 This does not include generated variables (like system name, user name etc.)
@@ -1058,7 +1058,7 @@ This does not include generated variables (like system name, user name etc.)
 .. versionadded:: 3.0
 %End
 
-    static void setCustomVariables( const QVariantMap &customVariables );
+    static void setCustomVariables( const QMap<QString, QVariant> &customVariables );
 %Docstring
 Custom expression variables for this application.
 Do not include generated variables (like system name, user name etc.)

@@ -94,13 +94,13 @@ class CheckValidity(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.IGNORE_RING_SELF_INTERSECTION,
                                                         self.tr('Ignore ring self intersections'), defaultValue=False))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAnyGeometry, None, True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.SourceType.TypeVectorAnyGeometry, None, True))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessing.TypeVectorAnyGeometry, None, True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessing.SourceType.TypeVectorAnyGeometry, None, True))
         self.addOutput(QgsProcessingOutputNumber(self.INVALID_COUNT, self.tr('Count of invalid features')))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessing.TypeVectorAnyGeometry, None, True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessing.SourceType.TypeVectorAnyGeometry, None, True))
         self.addOutput(QgsProcessingOutputNumber(self.ERROR_COUNT, self.tr('Count of errors')))
 
     def name(self):
@@ -124,7 +124,7 @@ class CheckValidity(QgisAlgorithm):
         )
 
     def doCheck(self, method, parameters, context, feedback, ignore_ring_self_intersection):
-        flags = QgsGeometry.FlagAllowSelfTouchingHoles if ignore_ring_self_intersection else QgsGeometry.ValidityFlags()
+        flags = QgsGeometry.ValidityFlag.FlagAllowSelfTouchingHoles if ignore_ring_self_intersection else QgsGeometry.ValidityFlags()
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
@@ -142,10 +142,10 @@ class CheckValidity(QgisAlgorithm):
         error_fields = QgsFields()
         error_fields.append(QgsField('message', QVariant.String, 'string', 255))
         (error_output_sink, error_output_dest_id) = self.parameterAsSink(parameters, self.ERROR_OUTPUT, context,
-                                                                         error_fields, QgsWkbTypes.Point, source.sourceCrs())
+                                                                         error_fields, QgsWkbTypes.Type.Point, source.sourceCrs())
         error_count = 0
 
-        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
             if feedback.isCanceled():
@@ -165,7 +165,7 @@ class CheckValidity(QgisAlgorithm):
                         errFeat.setGeometry(error_geom)
                         errFeat.setAttributes([error.what()])
                         if error_output_sink:
-                            error_output_sink.addFeature(errFeat, QgsFeatureSink.FastInsert)
+                            error_output_sink.addFeature(errFeat, QgsFeatureSink.Flag.FastInsert)
                         error_count += 1
 
                         reasons.append(error.what())
@@ -181,12 +181,12 @@ class CheckValidity(QgisAlgorithm):
 
             if valid:
                 if valid_output_sink:
-                    valid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                    valid_output_sink.addFeature(outFeat, QgsFeatureSink.Flag.FastInsert)
                 valid_count += 1
 
             else:
                 if invalid_output_sink:
-                    invalid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                    invalid_output_sink.addFeature(outFeat, QgsFeatureSink.Flag.FastInsert)
                 invalid_count += 1
 
             feedback.setProgress(int(current * total))

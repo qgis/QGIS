@@ -92,8 +92,4 @@ if __name__ == '__main__':
     prepap = PrepareAPIs(api_lexer, api_files, pap_file)
     prepap.prepareAPI()
 
-    # TODO QGIS 4.0: remove
-    if (@QT_VERSION_MAJOR@ < 6):
-        sys.exit(app.exec_())
-    else:
-        sys.exit(app.exec())
+    sys.exit(app.exec())

@@ -38,12 +38,12 @@ class PyQgsDataConnectionItem(QgsDataCollectionItem):
         children = []
 
         # Add a Python object as child
-        pyQgsLayerItem = PyQgsLayerItem(None, "name", "", "uri", QgsLayerItem.Vector, "my_provider")
+        pyQgsLayerItem = PyQgsLayerItem(None, "name", "", "uri", QgsLayerItem.LayerType.Vector, "my_provider")
         pyQgsLayerItem.tabSetDestroyedFlag = self.tabSetDestroyedFlag
         children.append(pyQgsLayerItem)
 
         # Add a C++ object as child
-        children.append(QgsLayerItem(None, "name2", "", "uri", QgsLayerItem.Vector, "my_provider"))
+        children.append(QgsLayerItem(None, "name2", "", "uri", QgsLayerItem.LayerType.Vector, "my_provider"))
 
         return children
 
@@ -117,7 +117,7 @@ class TestQgsDisabledTests(QgisTestCase):
 
             # wait for populate() to have done its job
             item.stateChanged.connect(loop.quit)
-            loop.exec_()
+            loop.exec()
 
             # Python object PyQgsLayerItem should still be alive
             self.assertFalse(tabSetDestroyedFlag[0])
@@ -132,7 +132,7 @@ class TestQgsDisabledTests(QgisTestCase):
             # Delete the object and make sure all deferred deletions are processed
             item.destroyed.connect(loop.quit)
             item.deleteLater()
-            loop.exec_()
+            loop.exec()
 
             # Check that the PyQgsLayerItem Python object is now destroyed
             self.assertTrue(tabSetDestroyedFlag[0])

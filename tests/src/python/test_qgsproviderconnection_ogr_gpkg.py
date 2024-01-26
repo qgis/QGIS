@@ -118,30 +118,30 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         # Retrieve capabilities
         capabilities = conn.capabilities()
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameRasterTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Tables))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.DropVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameVectorTable))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
 
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
-        typ = QgsWkbTypes.LineString
-        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.NoGeometry, crs, True, {})
+        typ = QgsWkbTypes.Type.LineString
+        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.Type.NoGeometry, crs, True, {})
         conn.createVectorTable('', 'myNewTable', QgsFields(), typ, crs, True, {})
 
         # Check filters and special cases
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Raster))
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Raster))
         self.assertIn('osm', table_names)
         self.assertNotIn('myNewTable', table_names)
         self.assertNotIn('myNewAspatialTable', table_names)
 
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.View))
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.View))
         self.assertNotIn('osm', table_names)
         self.assertNotIn('myNewTable', table_names)
         self.assertNotIn('myNewAspatialTable', table_names)
 
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Aspatial))
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial))
         self.assertNotIn('osm', table_names)
         self.assertNotIn('myNewTable', table_names)
         self.assertIn('myNewAspatialTable', table_names)
@@ -300,7 +300,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         options.sql = 'SELECT fid, name, geom FROM cdb_lines WHERE name LIKE \'S%\' LIMIT 2'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
         self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])

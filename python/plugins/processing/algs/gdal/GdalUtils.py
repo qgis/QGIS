@@ -94,7 +94,7 @@ class GdalUtils:
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
+        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.MessageLevel.Info)
         feedback.pushInfo(GdalUtils.tr('GDAL command:'))
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo(GdalUtils.tr('GDAL command output:'))
@@ -484,7 +484,7 @@ class GdalUtils:
         if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
-        return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
+        return crs.toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_GDAL)
 
     @classmethod
     def tr(cls, string, context=''):

@@ -190,7 +190,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
         # selects the new row
         sel = self.fields.selectionModel()
-        sel.select(indexName, QItemSelectionModel.SelectionFlag.Rows | QItemSelectionModel.ClearAndSelect)
+        sel.select(indexName, QItemSelectionModel.SelectionFlag.Rows | QItemSelectionModel.SelectionFlag.ClearAndSelect)
 
         # starts editing
         self.fields.edit(indexName)
@@ -229,7 +229,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
         # set selection again
         index = self.fields.model().index(row - 1, 0, QModelIndex())
-        self.fields.selectionModel().select(index, QItemSelectionModel.SelectionFlag.Rows | QItemSelectionModel.ClearAndSelect)
+        self.fields.selectionModel().select(index, QItemSelectionModel.SelectionFlag.Rows | QItemSelectionModel.SelectionFlag.ClearAndSelect)
 
         self.updatePkeyCombo()
 
@@ -249,7 +249,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
         # set selection again
         index = self.fields.model().index(row + 1, 0, QModelIndex())
-        self.fields.selectionModel().select(index, QItemSelectionModel.SelectionFlag.Rows | QItemSelectionModel.ClearAndSelect)
+        self.fields.selectionModel().select(index, QItemSelectionModel.SelectionFlag.Rows | QItemSelectionModel.SelectionFlag.ClearAndSelect)
 
         self.updatePkeyCombo()
 

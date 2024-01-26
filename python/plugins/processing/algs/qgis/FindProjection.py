@@ -70,7 +70,7 @@ class FindProjection(QgisAlgorithm):
 
         # deprecated
         crs_param = QgsProcessingParameterCrs(self.TARGET_AREA_CRS, 'Target area CRS', optional=True)
-        crs_param.setFlags(crs_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        crs_param.setFlags(crs_param.flags() | QgsProcessingParameterDefinition.Flag.FlagHidden)
         self.addParameter(crs_param)
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
@@ -100,7 +100,7 @@ class FindProjection(QgisAlgorithm):
         fields.append(QgsField('auth_id', QVariant.String, '', 20))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+                                               fields, QgsWkbTypes.Type.NoGeometry, QgsCoordinateReferenceSystem())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -139,7 +139,7 @@ class FindProjection(QgisAlgorithm):
                     feedback.pushInfo(self.tr('Found candidate CRS: {}').format(candidate_crs.authid()))
                     f = QgsFeature(fields)
                     f.setAttributes([candidate_crs.authid()])
-                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                    sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
                     found_results += 1
             except:
                 continue

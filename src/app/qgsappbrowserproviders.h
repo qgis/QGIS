@@ -385,7 +385,7 @@ class APP_EXPORT QgsBookmarkItem : public QgsDataItem
     //! Icon for bookmark item
     static QIcon iconBookmark();
     bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
   private:
 

@@ -150,7 +150,7 @@ class TestPythonLayerMetadataProvider(QgisTestCase):
         self.assertEqual(result.title(), 'QGIS Test Title')
         self.assertEqual(result.layerType(), QgsMapLayerType.VectorLayer)
         self.assertEqual(result.authid(), 'EPSG:4326')
-        self.assertEqual(result.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(result.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         self.assertEqual(result.dataProviderName(), 'ogr')
         self.assertEqual(result.standardUri(), 'http://mrcc.com/qgis.dtd')
 

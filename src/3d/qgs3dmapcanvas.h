@@ -16,48 +16,124 @@
 #ifndef QGS3DMAPCANVAS_H
 #define QGS3DMAPCANVAS_H
 
-#include <QWidget>
-#include <Qt3DRender/QRenderCapture>
-#include <QSplitter>
+#include "qgis_3d.h"
 
-#include "qgis_app.h"
-
+#include "qgis.h"
 #include "qgsrange.h"
-#include "qgscameracontroller.h"
-#include "qgsrectangle.h"
+
+#include <QtGui/QWindow>
+
+#ifndef SIP_RUN
+namespace Qt3DCore
+{
+  class QAspectEngine;
+  class QAbstractAspect;
+  class QEntity;
+}
+
+namespace Qt3DRender
+{
+  class QCamera;
+  class QFrameGraphNode;
+  class QRenderAspect;
+  class QRenderSettings;
+}
+
+namespace Qt3DExtras
+{
+  class QForwardRenderer;
+}
+
+namespace Qt3DInput
+{
+  class QInputAspect;
+  class QInputSettings;
+}
 
 namespace Qt3DLogic
 {
-  class QFrameAction;
+  class QLogicAspect;
 }
+#endif
 
-class Qgs3DMapSettings;
-class Qgs3DMapScene;
-class Qgs3DMapTool;
+class QgsRectangle;
 class QgsWindow3DEngine;
+class Qgs3DMapTool;
 class QgsPointXY;
-class Qgs3DNavigationWidget;
+class QgsCameraController;
 class QgsTemporalController;
-class QgsRubberBand;
+class Qgs3DMapScene;
+class Qgs3DMapSettings;
 
-class APP_EXPORT Qgs3DMapCanvas : public QWidget
+
+/**
+ * \ingroup 3d
+ * \brief Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window ready to be used with QGIS.
+ *
+ * \note This is a port of qtwindow3d which does not set the default surface when initialized.
+ * \note The default surface must be set before the construction of the QApplication when using shared OpenGL context.
+ * \note This is required in order to use QT3d and QtWebEngine at the same time.
+ *
+ * \since QGIS 3.36
+ */
+class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 {
     Q_OBJECT
   public:
-    Qgs3DMapCanvas( QWidget *parent = nullptr );
-    ~Qgs3DMapCanvas() override;
 
-    //! Configure map scene being displayed. Takes ownership.
-    void setMap( Qgs3DMapSettings *map );
+    /**
+     * Constructor for Qgs3DMapCanvas.
+     */
+    Qgs3DMapCanvas();
+
+    /**
+     * Destructor for Qgs3DMapCanvas.
+     */
+    ~Qgs3DMapCanvas();
 
     //! Returns access to the 3D scene configuration
-    Qgs3DMapSettings *map() { return mMap; }
+    Qgs3DMapSettings *mapSettings() { return mMapSettings; }
 
     //! Returns access to the 3D scene (root 3D entity)
     Qgs3DMapScene *scene() { return mScene; }
 
-    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMap()
+    //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
     QgsCameraController *cameraController();
+
+#ifndef SIP_RUN
+
+    /**
+     * Sets the specified root entity of the scene.
+     */
+    void setRootEntity( Qt3DCore::QEntity *root );
+
+    /**
+     * Activates the specified activeFrameGraph.
+     */
+    void setActiveFrameGraph( Qt3DRender::QFrameGraphNode *activeFrameGraph );
+
+    /**
+     * Returns the node of the active frame graph.
+     */
+    Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
+
+    /**
+     * Returns the node of the default framegraph
+     */
+    Qt3DExtras::QForwardRenderer *defaultFrameGraph() const;
+
+    /**
+     * Returns the default camera of the 3D Window.
+     */
+    Qt3DRender::QCamera *camera() const;
+
+    /**
+     * Returns the render settings of the 3D Window.
+     */
+    Qt3DRender::QRenderSettings *renderSettings() const;
+
+    //! Configure map scene being displayed. Takes ownership.
+    void setMapSettings( Qgs3DMapSettings *mapSettings );
 
     //! Resets camera position to the default: looking down at the origin of world coordinates
     void resetView();
@@ -69,7 +145,7 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
     void saveAsImage( const QString &fileName, const QString &fileFormat );
 
     /**
-     * Sets the active map tool that will receive events from the 3D canvas. Does not transfer ownership.
+     * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
      * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     void setMapTool( Qgs3DMapTool *tool );
@@ -86,33 +162,17 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
     QgsWindow3DEngine *engine() const { return mEngine; }
 
     /**
-     * Sets the visibility of on-screen navigation widget.
-     */
-    void setOnScreenNavigationVisibility( bool visibility );
-
-    /**
      * Sets the temporal controller
      */
     void setTemporalController( QgsTemporalController *temporalController );
 
     /**
-     * Returns the size of the 3D canvas window
-     *
-     * \since QGIS 3.18
-     */
-    QSize windowSize() const;
-
-    /**
-     * Resets camera view to show the extent \a extent (top view)
-     *
-     * \since QGIS 3.26
+     * Resets camera view to show the \a extent (top view)
      */
     void setViewFrom2DExtent( const QgsRectangle &extent );
 
     /**
      * Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
-     *
-     * \since QGIS 3.26
      */
     QVector<QgsPointXY> viewFrustum2DExtent();
 
@@ -125,40 +185,64 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
 
     //! Emitted when the FPS count changes (at most every frame)
     void fpsCountChanged( float fpsCount );
+
     //! Emitted when the FPS counter is enabled or disabeld
     void fpsCounterEnabledChanged( bool enabled );
 
-    /**
-     * Emitted when the viewed 2D extent seen by the 3D camera has changed
-     *
-     * \since QGIS 3.26
-     */
+    //! Emitted when the viewed 2D extent seen by the 3D camera has changed
     void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
 
-    /**
-     * Emitted when the camera navigation \a speed is changed.
-     *
-     * \since QGIS 3.18
-     */
+    //! Emitted when the camera navigation \a speed is changed.
     void cameraNavigationSpeedChanged( double speed );
-  public slots:
-    void captureDepthBuffer();
+
+#endif
 
   private slots:
+    void captureDepthBuffer();
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
     void onNavigationModeChanged( Qgis::NavigationMode mode );
 
   protected:
-    void resizeEvent( QResizeEvent *ev ) override;
+
+    /**
+     * Manages the display events specified in e.
+     */
+    void showEvent( QShowEvent *e ) override;
+
+    /**
+     * Resets the aspect ratio of the 3D window.
+     */
+    void resizeEvent( QResizeEvent * ) override;
+
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
+
+    Qt3DCore::QAspectEngine *m_aspectEngine;
+
+    // Aspects
+    Qt3DRender::QRenderAspect *m_renderAspect;
+    Qt3DInput::QInputAspect *m_inputAspect;
+    Qt3DLogic::QLogicAspect *m_logicAspect;
+
+    // Renderer configuration
+    Qt3DRender::QRenderSettings *m_renderSettings;
+    Qt3DExtras::QForwardRenderer *m_forwardRenderer;
+    Qt3DRender::QCamera *m_defaultCamera;
+
+    // Input configuration
+    Qt3DInput::QInputSettings *m_inputSettings;
+
+    // Scene
+    Qt3DCore::QEntity *m_root;
+    Qt3DCore::QEntity *m_userRoot;
+
+    bool m_initialized;
+
     QgsWindow3DEngine *mEngine = nullptr;
 
-    //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
-    QWidget *mContainer = nullptr;
     //! Description of the 3D scene
-    Qgs3DMapSettings *mMap = nullptr;
+    Qgs3DMapSettings *mMapSettings = nullptr;
     //! Root entity of the 3D scene
     Qgs3DMapScene *mScene = nullptr;
 
@@ -168,12 +252,7 @@ class APP_EXPORT Qgs3DMapCanvas : public QWidget
     QString mCaptureFileName;
     QString mCaptureFileFormat;
 
-    //! On-Screen Navigation widget.
-    Qgs3DNavigationWidget *mNavigationWidget = nullptr;
-
     QgsTemporalController *mTemporalController = nullptr;
-
-    QSplitter *mSplitter = nullptr;
 };
 
-#endif // QGS3DMAPCANVAS_H
+#endif //QGS3DMAPCANVAS_H

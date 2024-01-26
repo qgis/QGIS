@@ -451,7 +451,7 @@ class FileDirectorySelector(QWidget):
         self.canFocusOut = False
         self.selectFile = selectFile
 
-        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.btnSelect.clicked.connect(self.select)
 
     def select(self):
@@ -498,7 +498,7 @@ class MultipleDirectorySelector(QWidget):
 
         self.canFocusOut = False
 
-        self.setFocusPolicy(Qt.StrongFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.btnSelect.clicked.connect(self.select)
 
     def select(self):
@@ -509,7 +509,7 @@ class MultipleDirectorySelector(QWidget):
             items = []
 
         dlg = DirectorySelectorDialog(None, items)
-        if dlg.exec_():
+        if dlg.exec():
             text = dlg.value()
             self.lineEdit.setText(text)
 

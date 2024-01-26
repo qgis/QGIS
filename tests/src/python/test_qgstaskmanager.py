@@ -74,29 +74,29 @@ class TestQgsTaskManager(QgisTestCase):
 
         task = QgsTask.fromFunction('test task', run, 20)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 20)
         self.assertFalse(task.exception)
-        self.assertEqual(task.status(), QgsTask.Complete)
+        self.assertEqual(task.status(), QgsTask.TaskStatus.Complete)
 
         # try a task which cancels itself
         bad_task = QgsTask.fromFunction('test task2', run, None)
         QgsApplication.taskManager().addTask(bad_task)
-        while bad_task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while bad_task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
 
         self.assertFalse(bad_task.returned_values)
         self.assertTrue(bad_task.exception)
-        self.assertEqual(bad_task.status(), QgsTask.Terminated)
+        self.assertEqual(bad_task.status(), QgsTask.TaskStatus.Terminated)
 
     def testTaskFromFunctionWithFlags(self):
         """ test creating task from function with flags"""
 
         task = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.Flags())
         self.assertFalse(task.canCancel())
-        task2 = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.CanCancel)
+        task2 = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.Flag.CanCancel)
         self.assertTrue(task2.canCancel())
 
     def testTaskFromFunctionWithKwargs(self):
@@ -104,34 +104,34 @@ class TestQgsTaskManager(QgisTestCase):
 
         task = QgsTask.fromFunction('test task3', run_with_kwargs, result=5, password=1)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 5)
         self.assertFalse(task.exception)
-        self.assertEqual(task.status(), QgsTask.Complete)
+        self.assertEqual(task.status(), QgsTask.TaskStatus.Complete)
 
     def testTaskFromFunctionIsCancelable(self):
         """ test that task from function can check canceled status """
         bad_task = QgsTask.fromFunction('test task4', cancelable)
         QgsApplication.taskManager().addTask(bad_task)
-        while bad_task.status() != QgsTask.Running:
+        while bad_task.status() != QgsTask.TaskStatus.Running:
             QCoreApplication.processEvents()
 
         bad_task.cancel()
-        while bad_task.status() == QgsTask.Running:
+        while bad_task.status() == QgsTask.TaskStatus.Running:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
-        self.assertEqual(bad_task.status(), QgsTask.Terminated)
+        self.assertEqual(bad_task.status(), QgsTask.TaskStatus.Terminated)
         self.assertTrue(bad_task.exception)
 
     def testTaskFromFunctionCanSetProgress(self):
         """ test that task from function can set progress """
         task = QgsTask.fromFunction('test task5', progress_function)
         QgsApplication.taskManager().addTask(task)
-        while task.status() != QgsTask.Running:
+        while task.status() != QgsTask.TaskStatus.Running:
             QCoreApplication.processEvents()
 
         # wait a fraction so that setProgress gets a chance to be called
@@ -140,7 +140,7 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertFalse(task.exception)
 
         task.cancel()
-        while task.status() == QgsTask.Running:
+        while task.status() == QgsTask.TaskStatus.Running:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -157,7 +157,7 @@ class TestQgsTaskManager(QgisTestCase):
 
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_no_val)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -178,7 +178,7 @@ class TestQgsTaskManager(QgisTestCase):
 
         task = QgsTask.fromFunction('test task', run_fail, on_finished=finished_fail)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -201,7 +201,7 @@ class TestQgsTaskManager(QgisTestCase):
         task.hold()
         QgsApplication.taskManager().addTask(task)
         task.cancel()
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -223,7 +223,7 @@ class TestQgsTaskManager(QgisTestCase):
 
         task = QgsTask.fromFunction('test task', run_single_val_result, on_finished=finished_single_value_result)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -247,7 +247,7 @@ class TestQgsTaskManager(QgisTestCase):
 
         task = QgsTask.fromFunction('test task', run_multiple_val_result, on_finished=finished_multiple_value_result)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -276,11 +276,11 @@ class TestQgsTaskManager(QgisTestCase):
         spy = QSignalSpy(task.taskCompleted)
         sub_task_1 = QgsTask.fromFunction('test subtask 1', run_no_result, on_finished=_on_finished)
         sub_task_2 = QgsTask.fromFunction('test subtask 2', run_no_result, on_finished=_on_finished)
-        task.addSubTask(sub_task_1, [], QgsTask.ParentDependsOnSubTask)
-        task.addSubTask(sub_task_2, [], QgsTask.ParentDependsOnSubTask)
+        task.addSubTask(sub_task_1, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask)
+        task.addSubTask(sub_task_2, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask)
 
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()

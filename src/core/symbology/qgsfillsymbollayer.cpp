@@ -41,6 +41,7 @@
 #include "qgscolorutils.h"
 
 #include <QPainter>
+#include <QPagedPaintDevice>
 #include <QFile>
 #include <QSvgRenderer>
 #include <QDomDocument>
@@ -48,9 +49,6 @@
 #include <QtMath>
 #include <random>
 
-#ifndef QT_NO_PRINTER
-#include <QPrinter>
-#endif
 
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
@@ -328,15 +326,12 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
 
-#ifndef QT_NO_PRINTER
-  if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPrinter *>( p->device() ) )
-#endif
+  if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPagedPaintDevice *>( p->device() ) )
   {
     p->setPen( useSelectedColor ? mSelPen : mPen );
     p->setBrush( useSelectedColor ? mSelBrush : mBrush );
     _renderPolygon( p, points, rings, context );
   }
-#ifndef QT_NO_PRINTER
   else
   {
     // workaround upstream issue https://github.com/qgis/QGIS/issues/36580
@@ -350,7 +345,6 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
     p->setBrush( Qt::NoBrush );
     _renderPolygon( p, points, rings, context );
   }
-#endif
 
   if ( !offset.isNull() )
   {
@@ -406,7 +400,7 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
 
   // Export to PNG
   bool exportOk { false };
-  if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) && mBrush.style() != Qt::NoBrush )
+  if ( ! context.exportFilePath().isEmpty() && context.exportOptions().testFlag( Qgis::SldExportOption::Png ) )
   {
     const QImage image { toTiledPatternImage( ) };
     if ( ! image.isNull() )
@@ -2642,14 +2636,42 @@ void QgsLinePatternFillSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRe
 QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
 {
 
-  double lineAngleRads { qDegreesToRadians( mLineAngle ) };
+  double lineAngleRad { qDegreesToRadians( mLineAngle ) };
+
+  const int quadrant { static_cast<int>( lineAngleRad / M_PI_2 ) };
+  Q_ASSERT( quadrant >= 0 && quadrant <= 3 );
+
+  switch ( quadrant )
+  {
+    case 0:
+    {
+      break;
+    }
+    case 1:
+    {
+      lineAngleRad -= M_PI / 2;
+      break;
+    }
+    case 2:
+    {
+      lineAngleRad -= M_PI;
+      break;
+    }
+    case 3:
+    {
+      lineAngleRad -= M_PI + M_PI_2;
+      break;
+    }
+  }
+
+
   double distancePx { QgsSymbolLayerUtils::rescaleUom( mDistance, mDistanceUnit, {} ) };
 
   QSize size { static_cast<int>( distancePx ), static_cast<int>( distancePx ) };
 
   if ( static_cast<int>( mLineAngle ) % 90 != 0 )
   {
-    size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRads ) ), static_cast<int>( distancePx / std::cos( lineAngleRads ) ) );
+    size = QSize( static_cast<int>( distancePx / std::sin( lineAngleRad ) ), static_cast<int>( distancePx / std::cos( lineAngleRad ) ) );
   }
 
   QPixmap pixmap( size );

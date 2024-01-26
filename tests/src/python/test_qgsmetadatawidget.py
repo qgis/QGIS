@@ -118,7 +118,7 @@ class TestQgsMetadataWidget(QgisTestCase):
 
         # set widget metadata
         w.setMetadata(m)
-        self.assertEqual(w.mode(), QgsMetadataWidget.LayerMetadata)
+        self.assertEqual(w.mode(), QgsMetadataWidget.Mode.LayerMetadata)
 
         m = w.metadata()
         self.assertIsInstance(m, QgsLayerMetadata)
@@ -325,7 +325,7 @@ class TestQgsMetadataWidget(QgisTestCase):
 
         # set widget metadata
         w.setMetadata(m)
-        self.assertEqual(w.mode(), QgsMetadataWidget.ProjectMetadata)
+        self.assertEqual(w.mode(), QgsMetadataWidget.Mode.ProjectMetadata)
 
         m = w.metadata()
         self.assertIsInstance(m, QgsProjectMetadata)

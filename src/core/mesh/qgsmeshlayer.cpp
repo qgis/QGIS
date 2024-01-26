@@ -231,7 +231,7 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
         scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
         break;
       case QgsMeshDatasetGroupMetadata::DataOnVertices:
-        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NoResampling );
         break;
       case QgsMeshDatasetGroupMetadata::DataOnEdges:
         break;
@@ -793,7 +793,7 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
     }
 
     scalarSettings.setColorRampShader( colorRampShader );
-    scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+    scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NoResampling );
   }
 }
 

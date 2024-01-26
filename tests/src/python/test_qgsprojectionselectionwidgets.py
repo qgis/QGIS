@@ -51,57 +51,57 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         w = QgsProjectionSelectionWidget()
 
         # layer crs
-        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.LayerCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs, True)
         # should still be hidden, because layer crs not set
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.LayerCrs))
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs))
         w.setLayerCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.LayerCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.LayerCrs))
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs))
 
         # project crs
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, True)
         # should still be hidden, because project crs was not set
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs))
         QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs))
 
         # default crs
-        w.setOptionVisible(QgsProjectionSelectionWidget.DefaultCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.DefaultCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.DefaultCrs, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.DefaultCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.DefaultCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.DefaultCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.DefaultCrs, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.DefaultCrs))
 
         # current crs
         w = QgsProjectionSelectionWidget()
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
 
         w = QgsProjectionSelectionWidget()
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
 
         # not set
         w = QgsProjectionSelectionWidget()
-        w.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
 
     def testShowingNotSetOption(self):
         """ test showing the not set option """
@@ -109,41 +109,41 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         # start with an invalid CRS
         w.setCrs(QgsCoordinateReferenceSystem())
         # add the not-set option
-        w.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
         # current crs (which would show "invalid") should be hidden
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
         # hide not-set option
-        w.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, False)
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet, False)
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
         # and now current crs option ('invalid') should be reshown
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
 
         # repeat with a slightly different workflow
         w = QgsProjectionSelectionWidget()
         # start with an invalid CRS
         w.setCrs(QgsCoordinateReferenceSystem())
         # add the not-set option
-        w.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet, True)
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
         # current crs (which would show "invalid") should be hidden
-        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
+        self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
         # now set a current crs
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         # both current and not set options should be shown
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
-        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs))
+        self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsOption.CrsNotSet))
 
     def testRecent(self):
         registry = QgsApplication.coordinateReferenceSystemRegistry()
         registry.clearRecent()
         QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
-        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs, True)
         w.setLayerCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, True)
 
         self.assertIsInstance(w.children()[0], QComboBox)
         cb = w.children()[0]
@@ -202,12 +202,12 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
             QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
 
-        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs, True)
         # some vertical crses
         w.setLayerCrs(QgsCoordinateReferenceSystem('ESRI:115851'))
         w.setCrs(QgsCoordinateReferenceSystem('ESRI:115852'))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, True)
 
         # by default vertical won't be shown
         self.assertIsInstance(w.children()[0], QComboBox)
@@ -255,11 +255,11 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
 
-        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.LayerCrs, True)
         w.setLayerCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
-        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
-        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.CurrentCrs, True)
+        w.setOptionVisible(QgsProjectionSelectionWidget.CrsOption.ProjectCrs, True)
 
         self.assertIsInstance(w.children()[0], QComboBox)
         cb = w.children()[0]
@@ -311,7 +311,7 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
         self.assertTrue(w.crs().isValid())
         self.assertFalse(w.crs().authid())
         self.assertTrue(w.hasValidSelection())
-        self.assertEqual(w.crs().toWkt(QgsCoordinateReferenceSystem.WKT2_2018), 'GEOGCRS["WGS 84",DATUM["unknown",ELLIPSOID["WGS84",6378137,298.257223563,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]]]')
+        self.assertEqual(w.crs().toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT2_2018), 'GEOGCRS["WGS 84",DATUM["unknown",ELLIPSOID["WGS84",6378137,298.257223563,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]]]')
 
     def testTreeWidgetNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """

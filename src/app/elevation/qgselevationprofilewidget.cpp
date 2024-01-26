@@ -59,7 +59,7 @@
 #include <QToolBar>
 #include <QProgressBar>
 #include <QTimer>
-#include <QPrinter>
+#include <QPdfWriter>
 #include <QSplitter>
 #include <QShortcut>
 #include <QActionGroup>
@@ -755,24 +755,19 @@ void QgsElevationProfileWidget::exportAsPdf()
   if ( !dialog.exec() )
     return;
 
-  QPrinter printer;
-  printer.setOutputFileName( outputFileName );
-  printer.setOutputFormat( QPrinter::PdfFormat );
+  QPdfWriter pdfWriter( outputFileName );
 
   const QgsLayoutSize pageSizeMM = dialog.pageSizeMM();
   QPageLayout pageLayout( QPageSize( pageSizeMM.toQSizeF(), QPageSize::Millimeter ),
                           QPageLayout::Portrait,
                           QMarginsF( 0, 0, 0, 0 ) );
   pageLayout.setMode( QPageLayout::FullPageMode );
-  printer.setPageLayout( pageLayout );
-  printer.setFullPage( true );
-  printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
-  printer.setResolution( 300 );
+  pdfWriter.setPageLayout( pageLayout );
+  pdfWriter.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
+  pdfWriter.setResolution( 300 );
 
   QPainter p;
-  if ( !p.begin( &printer ) )
+  if ( !p.begin( &pdfWriter ) )
   {
     //error beginning print
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not create %1" ).arg( QDir::toNativeSeparators( outputFileName ) ) );

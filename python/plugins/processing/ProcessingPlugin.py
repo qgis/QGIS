@@ -112,7 +112,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
         dlg.show()
         # do NOT remove!!!! if you do then sip forgets the python subclass of AlgorithmDialog and you get a broken
         # dialog
-        dlg.exec_()
+        dlg.exec()
         return True
 
     def customUriProviderKey(self):
@@ -126,8 +126,8 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 class ProcessingModelItem(QgsDataItem):
 
     def __init__(self, parent, name, path):
-        super().__init__(QgsDataItem.Custom, parent, name, path)
-        self.setState(QgsDataItem.Populated)  # no children
+        super().__init__(QgsDataItem.Type.Custom, parent, name, path)
+        self.setState(QgsDataItem.State.Populated)  # no children
         self.setIconName(":/images/themes/default/processingModel.svg")
         self.setToolTip(QDir.toNativeSeparators(path))
 
@@ -171,7 +171,7 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
         return 'processing'
 
     def capabilities(self):
-        return QgsDataProvider.File
+        return QgsDataProvider.DataCapability.File
 
     def createDataItem(self, path, parentItem):
         file_info = QFileInfo(path)
@@ -368,7 +368,7 @@ class ProcessingPlugin(QObject):
             action = QAction(self.tr("Execute…"), modelSubMenu)
             action.triggered.connect(partial(self.executeAlgorithm, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode))
             modelSubMenu.addAction(action)
-            if model.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+            if model.flags() & QgsProcessingAlgorithm.Flag.FlagSupportsBatch:
                 action = QAction(self.tr("Execute as Batch Process…"), modelSubMenu)
                 modelSubMenu.addAction(action)
                 action.triggered.connect(partial(self.executeAlgorithm, model.id(), self.projectModelsMenu, self.toolbox.in_place_mode, True))
@@ -402,13 +402,13 @@ class ProcessingPlugin(QObject):
                 dlg.setMessage(
                     self.tr('<h3>This algorithm cannot '
                             'be run :-( </h3>\n{0}').format(message))
-                dlg.exec_()
+                dlg.exec()
                 return
 
             if as_batch:
                 dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
                 dlg.show()
-                dlg.exec_()
+                dlg.exec()
             else:
                 in_place_input_parameter_name = 'INPUT'
                 if hasattr(alg, 'inputParameterName'):
@@ -432,7 +432,7 @@ class ProcessingPlugin(QObject):
                     canvas = iface.mapCanvas()
                     prevMapTool = canvas.mapTool()
                     dlg.show()
-                    dlg.exec_()
+                    dlg.exec()
                     if canvas.mapTool() != prevMapTool:
                         try:
                             canvas.mapTool().reset()

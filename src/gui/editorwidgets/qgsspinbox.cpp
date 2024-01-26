@@ -124,6 +124,11 @@ void QgsSpinBox::clear()
 
 void QgsSpinBox::setClearValue( int customValue, const QString &specialValueText )
 {
+  if ( mClearValueMode == CustomValue && mCustomClearValue == customValue && QAbstractSpinBox::specialValueText() == specialValueText )
+  {
+    return;
+  }
+
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
 
@@ -138,6 +143,11 @@ void QgsSpinBox::setClearValue( int customValue, const QString &specialValueText
 
 void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, const QString &specialValueText )
 {
+  if ( mClearValueMode == mode && mCustomClearValue == 0 && QAbstractSpinBox::specialValueText() == specialValueText )
+  {
+    return;
+  }
+
   mClearValueMode = mode;
   mCustomClearValue = 0;
 

@@ -72,6 +72,13 @@ class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
 class QgsUserProfileManager;
 class QgsDataSourceManagerDialog;
+class Qgs3DMapCanvas SIP_EXTERNAL;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+class Qgs3DMapCanvas;
+% End
+#endif
 
 /**
  * \ingroup gui
@@ -148,6 +155,26 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
+
+    /**
+     * Returns a list of all 3D map canvases open in the app.
+     * \since QGIS 3.36
+     */
+    virtual QList< Qgs3DMapCanvas * > mapCanvases3D() = 0;
+
+    /**
+     * Create a new 3D map canvas with the specified unique \a name.
+     * \see closeMapCanvas3D()
+     * \since QGIS 3.36
+     */
+    virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name ) = 0;
+
+    /**
+     * Closes the additional map canvas with matching \a name.
+     * \see createNewMapCanvas3D()
+     * \since QGIS 3.36
+     */
+    virtual void closeMapCanvas3D( const QString &name ) = 0;
 
     /**
      * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size

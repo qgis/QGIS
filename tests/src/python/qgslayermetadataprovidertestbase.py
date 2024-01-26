@@ -100,9 +100,9 @@ class LayerMetadataProviderTestBase():
         self.assertEqual(result.authid(), layer_authid)
         # For raster is unknown
         if layer_type != QgsMapLayerType.VectorLayer:
-            self.assertEqual(result.geometryType(), QgsWkbTypes.UnknownGeometry)
+            self.assertEqual(result.geometryType(), QgsWkbTypes.GeometryType.UnknownGeometry)
         else:
-            self.assertEqual(result.geometryType(), QgsWkbTypes.PointGeometry)
+            self.assertEqual(result.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         self.assertEqual(result.dataProviderName(), data_provider_name)
         self.assertEqual(result.standardUri(), 'http://mrcc.com/qgis.dtd')
         self.assertTrue(compareWkt(result.geographicExtent().asWkt(), extent_as_wkt))

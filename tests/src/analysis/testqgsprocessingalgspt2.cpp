@@ -63,13 +63,11 @@ class TestQgsProcessingAlgsPt2: public QgsTest
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-#ifndef QT_NO_PRINTER
     void exportLayoutPdf();
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
     void exportAtlasLayoutPdfMultiple();
     void exportAtlasLayoutPng();
-#endif
 
     void tinMeshCreation();
     void exportMeshVertices();
@@ -220,7 +218,6 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   return package->run( parameters, *context, &feedback, ok );
 }
 
-#ifndef QT_NO_PRINTER
 void TestQgsProcessingAlgsPt2::exportLayoutPdf()
 {
   QgsProject p;
@@ -464,7 +461,6 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
   QGSVERIFYIMAGECHECK( "export_atlas_custom_layers", "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png", QString(), 500, QSize( 3, 3 ) );
 }
-#endif
 
 void TestQgsProcessingAlgsPt2::tinMeshCreation()
 {

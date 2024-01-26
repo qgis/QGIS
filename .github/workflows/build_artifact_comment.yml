@@ -9,8 +9,14 @@ on:
       - 'master'
       - 'release*'
 
+permissions:
+  contents: read
+
 jobs:
   on-success:
+
+    permissions:
+      pull-requests: write
 
     runs-on: ubuntu-latest
     steps:
@@ -77,10 +83,10 @@ jobs:
             });
             const PREFIX = "## 🪟 Windows builds ready!";
             let body = PREFIX + "\n\n" +
-                "Windows builds of this PR are available for testing [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).";
+                "Windows builds of this PR are available for testing [here](https://github.com/" + context.repo.owner + "/" + context.repo.repo + "/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).";
             if ( ${{steps.download_artifact.outputs.debug_symbols_artifact_id}} > 0 )
             {
-              body += " Debug symbols for this build are available [here](https://github.com/qgis/QGIS/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
+              body += " Debug symbols for this build are available [here](https://github.com/" + context.repo.owner + "/" + context.repo.repo + "/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
             }
             body += "\n\n*(Built from commit " + git_sha + ")*";
 
