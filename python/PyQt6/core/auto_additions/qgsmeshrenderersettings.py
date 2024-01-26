@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/core/mesh/qgsmeshrenderersettings.h
-QgsMeshRendererScalarSettings.None_ = QgsMeshRendererScalarSettings.DataResamplingMethod.None_
+QgsMeshRendererScalarSettings.NoResampling = QgsMeshRendererScalarSettings.DataResamplingMethod.NoResampling
 QgsMeshRendererScalarSettings.NeighbourAverage = QgsMeshRendererScalarSettings.DataResamplingMethod.NeighbourAverage
 QgsMeshRendererVectorArrowSettings.MinMax = QgsMeshRendererVectorArrowSettings.ArrowScalingMethod.MinMax
 QgsMeshRendererVectorArrowSettings.Scaled = QgsMeshRendererVectorArrowSettings.ArrowScalingMethod.Scaled

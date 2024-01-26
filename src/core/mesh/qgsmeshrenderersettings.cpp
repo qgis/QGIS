@@ -122,8 +122,8 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
   QString methodTxt;
   switch ( mDataResamplingMethod )
   {
-    case None:
-      methodTxt = QStringLiteral( "none" );
+    case NoResampling:
+      methodTxt = QStringLiteral( "no-resampling" );
       break;
     case NeighbourAverage:
       methodTxt = QStringLiteral( "neighbour-average" );
@@ -154,7 +154,7 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   }
   else
   {
-    mDataResamplingMethod = DataResamplingMethod::None;
+    mDataResamplingMethod = DataResamplingMethod::NoResampling;
   }
   const QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader, context );

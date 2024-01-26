@@ -100,7 +100,7 @@ Represents a mesh renderer settings for scalar datasets
     enum DataResamplingMethod
     {
 
-      None,
+      NoResampling,
 
       NeighbourAverage,
     };
