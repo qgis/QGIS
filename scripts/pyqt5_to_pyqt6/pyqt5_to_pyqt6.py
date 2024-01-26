@@ -168,6 +168,10 @@ rename_function_definitions = {
     'exec_': 'exec'
 }
 
+import_warnings = {
+    'QRegExp': 'QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility'
+}
+
 # { (class, enum_value) : enum_name }
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
@@ -182,11 +186,13 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
     fix_pyqt_import = []  # from PyQt5.QtXXX
     fix_qt_enums = {}  # Unscoping of enums
     member_renames = {}
+    token_renames = {}
     function_def_renames = {}
     rename_qt_enums = []  # Renaming deprecated removed enums
     custom_updates = {}
     imported_modules = set()
     extra_imports = defaultdict(set)
+    removed_imports = defaultdict(set)
     import_offsets = {}
 
     def visit_call(_node: ast.Call, _parent):
@@ -226,6 +232,13 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = _fix_qdatetime_construct
 
+    def visit_attribute(_node: ast.Attribute, _parent):
+        if isinstance(_node.value, ast.Name):
+            if _node.value.id == 'qApp':
+                token_renames[Offset(_node.value.lineno, _node.value.col_offset)] = 'QApplication.instance()'
+                extra_imports['qgis.PyQt.QtWidgets'].update({'QApplication'})
+                removed_imports['qgis.PyQt.QtWidgets'].update({'qApp'})
+
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
 
@@ -233,6 +246,9 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             if isinstance(node, ast.ImportFrom):
                 import_offsets[Offset(node.lineno, node.col_offset)] = (node.module, set(name.name for name in node.names), node.end_lineno, node.end_col_offset)
                 imported_modules.add(node.module)
+                for name in node.names:
+                    if name.name in import_warnings:
+                        print(f'{filename}: {import_warnings[name.name]}')
 
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
@@ -240,6 +256,9 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
             if isinstance(node, ast.Call):
                 visit_call(node, parent)
+
+            if isinstance(node, ast.Attribute):
+                visit_attribute(node, parent)
 
             if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
                 function_def_renames[
@@ -288,7 +307,16 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             import_statement = f'from {module} import {class_import}'
             print(f'{filename}: Missing import, manually add \n\t{import_statement}')
 
-    if not fix_qvariant_type and not fix_pyqt_import and not fix_qt_enums and not rename_qt_enums and not member_renames and not function_def_renames and not custom_updates and not extra_imports:
+    if not any([fix_qvariant_type,
+               fix_pyqt_import,
+               fix_qt_enums,
+               rename_qt_enums,
+               member_renames,
+               function_def_renames,
+               custom_updates,
+               extra_imports,
+               removed_imports,
+               token_renames]):
         return 0
 
     tokens = src_to_tokens(contents)
@@ -305,18 +333,30 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 module += tokens[token_index].src
                 token_index += 1
 
-            if extra_imports.get(module):
+            if extra_imports.get(module) or removed_imports.get(module):
                 current_imports = set()
                 while True:
                     token_index += 1
                     if tokens[token_index].offset == end_import_offset:
                         break
-                    if tokens[token_index].src.strip() in ('', ',', 'import'):
+                    if tokens[token_index].src.strip() in ('', ',', 'import', '(', ')'):
                         continue
 
-                    current_imports.add(tokens[token_index].src)
+                    import_ = tokens[token_index].src
+                    if import_ in removed_imports.get(module, set()):
+                        tokens[token_index] = tokens[token_index]._replace(src='')
+                        prev_token_index = token_index - 1
+                        while True:
+                            if tokens[prev_token_index].src.strip() in ('', ','):
+                                tokens[prev_token_index] = tokens[
+                                    prev_token_index]._replace(src='')
+                                prev_token_index -= 1
+                            else:
+                                break
+                    else:
+                        current_imports.add(import_)
 
-                imports_to_add = extra_imports[module] - current_imports
+                imports_to_add = extra_imports.get(module, set()) - current_imports
                 if imports_to_add:
                     additional_import_string = ', '.join(imports_to_add)
                     if tokens[token_index - 1].src == ')':
@@ -327,7 +367,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                             token_index -= 1
                         tokens[token_index + 1] = tokens[token_index + 1]._replace(src=f", {additional_import_string})")
                     else:
-                        tokens[token_index] = tokens[token_index]._replace(src=f", {additional_import_string}\n")
+                        tokens[token_index] = tokens[token_index]._replace(src=f", {additional_import_string}{tokens[token_index].src}")
 
         if token.offset in fix_qvariant_type:
             assert tokens[i].src == "QVariant"
@@ -346,6 +386,9 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
         if token.offset in function_def_renames and tokens[i].src == "def":
             tokens[i + 2] = tokens[i + 2]._replace(src=function_def_renames[token.offset])
+
+        if token.offset in token_renames:
+            tokens[i] = tokens[i]._replace(src=token_renames[token.offset])
 
         if token.offset in member_renames:
             counter = i
