@@ -72,6 +72,13 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
      */
     void setPlaceholderText( const QString  &text );
 
+    /**
+     * Sets the result container \a anchorPoint and \a anchorWidgetPoint position.
+     *
+     * \since QGIS 3.36
+     */
+    void setResultContainerAnchors( QgsFloatingWidget::AnchorPoint anchorPoint, QgsFloatingWidget::AnchorPoint anchorWidgetPoint );
+
   public slots:
 
     /**
