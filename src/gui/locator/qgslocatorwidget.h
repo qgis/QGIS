@@ -68,7 +68,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
     /**
      * \brief Set placeholder \a text for the line edit.
-     * \since QGIS 3.36
+     * \since QGIS 3.34
      */
     void setPlaceholderText( const QString  &text );
 

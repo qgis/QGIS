@@ -48,7 +48,7 @@ as prioritizing results which are near the current canvas extent.
 %Docstring
 Set placeholder ``text`` for the line edit.
 
-.. versionadded:: 3.36
+.. versionadded:: 3.34
 %End
 
   public slots:
