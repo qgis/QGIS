@@ -62,7 +62,11 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     def requestDownloading(self):
         self.request = QNetworkRequest(self.url)
-        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
+        if hasattr(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass, "value"):
+            # Qt6
+            self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass.value), "QgsPluginInstallerInstallingDialog")
+        else:
+            self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
         authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(

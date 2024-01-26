@@ -291,7 +291,11 @@ class Repositories(QObject):
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
-        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "Relay")
+        if hasattr(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass, "value"):
+            # Qt6
+            self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass.value), "Relay")
+        else:
+            self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "Relay")
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute.RedirectPolicyAttribute, QNetworkRequest.RedirectPolicy.NoLessSafeRedirectPolicy)
         if force_reload:
             self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute.CacheLoadControlAttribute, QNetworkRequest.CacheLoadControl.AlwaysNetwork)
@@ -350,9 +354,9 @@ class Repositories(QObject):
             content = reply.readAll()
             # Fix lonely ampersands in metadata
             a = QByteArray()
-            a.append("& ")
+            a.append(b"& ")
             b = QByteArray()
-            b.append("&amp; ")
+            b.append(b"&amp; ")
             content = content.replace(a, b)
             reposXML.setContent(content)
             plugins_tag = reposXML.elementsByTagName("plugins")
