@@ -44,7 +44,7 @@ if @QT_VERSION_MAJOR@ == 6:
   QFileDialog.Options = lambda flags=0: QFileDialog.Option(flags)
   QFontComboBox.FontFilters = lambda flags=0: QFontComboBox.FontFilter(flags)
   QFontDialog.FontDialogOptions = lambda flags=0: QFontDialog.FontDialogOption(flags)
-  QGestureRecognizer.ResultFlag = lambda flags=0: QGestureRecognizer.ResultFlag(flags)
+  QGestureRecognizer.Result = lambda flags=0: QGestureRecognizer.ResultFlag(flags)
   QGraphicsEffect.ChangeFlags = lambda flags=0: QGraphicsEffect.ChangeFlag(flags)
   QGraphicsBlurEffect.BlurHints = lambda flags=0: QGraphicsBlurEffect.BlurHint(flags)
   QGraphicsScene.SceneLayers = lambda flags=0: QGraphicsScene.SceneLayer(flags)
