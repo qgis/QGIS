@@ -349,11 +349,7 @@ class Repositories(QObject):
             reposXML = QDomDocument()
             content = reply.readAll()
             # Fix lonely ampersands in metadata
-            a = QByteArray()
-            a.append("& ")
-            b = QByteArray()
-            b.append("&amp; ")
-            content = content.replace(a, b)
+            content = content.replace(b"& ", b"&amp; ")
             reposXML.setContent(content)
             plugins_tag = reposXML.elementsByTagName("plugins")
             if plugins_tag.size():
