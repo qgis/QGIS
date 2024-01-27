@@ -9939,11 +9939,12 @@ void QgisApp::addFeature()
     mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
     if ( !mMapCanvas->currentLayer()->isSpatial() )
     {
-      mMapCanvas->setCursor( QCursor( Qt::ClosedHandCursor ) );
+      mMapCanvas->setCursor( QCursor( Qt::ArrowCursor ) );
       mMapCanvas->mapTool()->action()->setChecked( false );
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
+      return;
     }
-    return;
+    mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
   }
   if ( !mMapCanvas->currentLayer()->isSpatial() )
   {
@@ -15884,11 +15885,11 @@ void QgisApp::manageDigitizingCursor( QgsVectorLayer *vlayer )
     if ( vlayer->isSpatial() )
     {
       mMapCanvas->mapTool()->action()->setChecked( true );
-      mMapCanvas->mapTool()->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+      mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
       return;
     }
     mMapCanvas->mapTool()->action()->setChecked( false );
-    mMapCanvas->mapTool()->setCursor( QCursor( Qt::ClosedHandCursor ) );
+    mMapCanvas->mapTool()->setCursor( QCursor( Qt::ArrowCursor ) );
   }
 }
 
