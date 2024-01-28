@@ -13,3 +13,10 @@ QgsTask.AllFlags = QgsTask.Flag.AllFlags
 QgsTask.Flags = lambda flags=0: QgsTask.Flag(flags)
 QgsTask.SubTaskIndependent = QgsTask.SubTaskDependency.SubTaskIndependent
 QgsTask.ParentDependsOnSubTask = QgsTask.SubTaskDependency.ParentDependsOnSubTask
+_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+
+
+QgsTask.Flag.__bool__ = lambda flag: _force_int(flag)
+QgsTask.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsTask.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsTask.Flag.__or__ = lambda flag1, flag2: QgsTask.Flag(_force_int(flag1) | _force_int(flag2))

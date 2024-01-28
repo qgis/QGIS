@@ -20,3 +20,10 @@ QgsZonalStatistics.RasterInvalid = QgsZonalStatistics.Result.RasterInvalid
 QgsZonalStatistics.RasterBandInvalid = QgsZonalStatistics.Result.RasterBandInvalid
 QgsZonalStatistics.FailedToCreateField = QgsZonalStatistics.Result.FailedToCreateField
 QgsZonalStatistics.Canceled = QgsZonalStatistics.Result.Canceled
+_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+
+
+QgsZonalStatistics.Statistic.__bool__ = lambda flag: _force_int(flag)
+QgsZonalStatistics.Statistic.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsZonalStatistics.Statistic.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsZonalStatistics.Statistic.__or__ = lambda flag1, flag2: QgsZonalStatistics.Statistic(_force_int(flag1) | _force_int(flag2))

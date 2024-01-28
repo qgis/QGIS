@@ -15,3 +15,10 @@ QgsSearchWidgetWrapper.IsNotNull = QgsSearchWidgetWrapper.FilterFlag.IsNotNull
 QgsSearchWidgetWrapper.StartsWith = QgsSearchWidgetWrapper.FilterFlag.StartsWith
 QgsSearchWidgetWrapper.EndsWith = QgsSearchWidgetWrapper.FilterFlag.EndsWith
 QgsSearchWidgetWrapper.FilterFlags = lambda flags=0: QgsSearchWidgetWrapper.FilterFlag(flags)
+_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+
+
+QgsSearchWidgetWrapper.FilterFlag.__bool__ = lambda flag: _force_int(flag)
+QgsSearchWidgetWrapper.FilterFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsSearchWidgetWrapper.FilterFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsSearchWidgetWrapper.FilterFlag.__or__ = lambda flag1, flag2: QgsSearchWidgetWrapper.FilterFlag(_force_int(flag1) | _force_int(flag2))

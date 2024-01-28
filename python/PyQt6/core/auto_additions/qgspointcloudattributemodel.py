@@ -15,3 +15,10 @@ QgsPointCloudAttributeProxyModel.AllTypes = QgsPointCloudAttributeProxyModel.Fil
 QgsPointCloudAttributeProxyModel.Filters = lambda flags=0: QgsPointCloudAttributeProxyModel.Filter(flags)
 QgsPointCloudAttributeProxyModel.Filters.baseClass = QgsPointCloudAttributeProxyModel
 Filters = QgsPointCloudAttributeProxyModel  # dirty hack since SIP seems to introduce the flags in module
+_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+
+
+QgsPointCloudAttributeProxyModel.Filter.__bool__ = lambda flag: _force_int(flag)
+QgsPointCloudAttributeProxyModel.Filter.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsPointCloudAttributeProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsPointCloudAttributeProxyModel.Filter.__or__ = lambda flag1, flag2: QgsPointCloudAttributeProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
