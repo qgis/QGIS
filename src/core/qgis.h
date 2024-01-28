@@ -344,7 +344,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.32
      */
-    enum class VectorDataProviderAttributeEditCapability
+    enum class VectorDataProviderAttributeEditCapability : int
     {
       EditAlias = 1 << 0, //!< Allows editing aliases
       EditComment = 1 << 1, //!< Allows editing comments

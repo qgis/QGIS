@@ -25,7 +25,7 @@ custom labeling.
 %End
   public:
 
-    enum class Flag
+    enum class Flag /BaseType=IntFlag/
     {
       FlagUsesLineSymbol,
       FlagUsesFillSymbol,

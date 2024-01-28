@@ -1368,8 +1368,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $py_flag =~ s/::/./;
 
         if ( any { $_ eq $py_flag } @ENUM_CLASS_NON_INT_TYPES ){
-          # TODO: Clear existing errors and then enable:
-          # exit_with_error("$flag is a flags type, but was not declared with int type. Add ': int' to the enum class declaration line");
+          exit_with_error("$flag is a flags type, but was not declared with int type. Add ': int' to the enum class declaration line");
         }
         elsif ( none { $_ eq $py_flag } @ENUM_INT_TYPES ){
           if ( $is_qt6 ) {
