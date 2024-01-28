@@ -12,3 +12,10 @@ QgsVectorSimplifyMethod.SnapToGrid = QgsVectorSimplifyMethod.SimplifyAlgorithm.S
 QgsVectorSimplifyMethod.Visvalingam = QgsVectorSimplifyMethod.SimplifyAlgorithm.Visvalingam
 QgsVectorSimplifyMethod.SnappedToGridGlobal = QgsVectorSimplifyMethod.SimplifyAlgorithm.SnappedToGridGlobal
 QgsVectorSimplifyMethod.SimplifyAlgorithm.baseClass = QgsVectorSimplifyMethod
+_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+
+
+QgsVectorSimplifyMethod.SimplifyHint.__bool__ = lambda flag: _force_int(flag)
+QgsVectorSimplifyMethod.SimplifyHint.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsVectorSimplifyMethod.SimplifyHint.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsVectorSimplifyMethod.SimplifyHint.__or__ = lambda flag1, flag2: QgsVectorSimplifyMethod.SimplifyHint(_force_int(flag1) | _force_int(flag2))
