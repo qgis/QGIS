@@ -231,7 +231,7 @@ The development version
       UnknownCount,
     };
 
-    enum class VectorDataProviderAttributeEditCapability
+    enum class VectorDataProviderAttributeEditCapability /BaseType=IntFlag/
     {
       EditAlias,
       EditComment,
