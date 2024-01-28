@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/core/qgsspatialindex.h
 QgsSpatialIndex.FlagStoreFeatureGeometries = QgsSpatialIndex.Flag.FlagStoreFeatureGeometries
 QgsSpatialIndex.Flags = lambda flags=0: QgsSpatialIndex.Flag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsSpatialIndex.Flag.__bool__ = lambda flag: _force_int(flag)

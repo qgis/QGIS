@@ -6,7 +6,7 @@ QgsAuthMethod.GenericDataSourceUri = QgsAuthMethod.Expansion.GenericDataSourceUr
 QgsAuthMethod.NetworkProxy = QgsAuthMethod.Expansion.NetworkProxy
 QgsAuthMethod.All = QgsAuthMethod.Expansion.All
 QgsAuthMethod.Expansions = lambda flags=0: QgsAuthMethod.Expansion(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsAuthMethod.Expansion.__bool__ = lambda flag: _force_int(flag)

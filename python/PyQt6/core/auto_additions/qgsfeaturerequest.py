@@ -13,7 +13,7 @@ QgsFeatureRequest.FilterFids = QgsFeatureRequest.FilterType.FilterFids
 QgsFeatureRequest.GeometryNoCheck = QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck
 QgsFeatureRequest.GeometrySkipInvalid = QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid
 QgsFeatureRequest.GeometryAbortOnInvalid = QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsFeatureRequest.Flag.__bool__ = lambda flag: _force_int(flag)

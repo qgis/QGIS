@@ -4,7 +4,7 @@ QgsModelComponentGraphicItem.Selected = QgsModelComponentGraphicItem.State.Selec
 QgsModelComponentGraphicItem.Hover = QgsModelComponentGraphicItem.State.Hover
 QgsModelComponentGraphicItem.Unused = QgsModelComponentGraphicItem.Flag.Unused
 QgsModelComponentGraphicItem.Flags = lambda flags=0: QgsModelComponentGraphicItem.Flag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsModelComponentGraphicItem.Flag.__bool__ = lambda flag: _force_int(flag)

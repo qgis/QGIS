@@ -3,7 +3,7 @@ QgsColorScheme.ShowInColorDialog = QgsColorScheme.SchemeFlag.ShowInColorDialog
 QgsColorScheme.ShowInColorButtonMenu = QgsColorScheme.SchemeFlag.ShowInColorButtonMenu
 QgsColorScheme.ShowInAllContexts = QgsColorScheme.SchemeFlag.ShowInAllContexts
 QgsColorScheme.SchemeFlags = lambda flags=0: QgsColorScheme.SchemeFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsColorScheme.SchemeFlag.__bool__ = lambda flag: _force_int(flag)

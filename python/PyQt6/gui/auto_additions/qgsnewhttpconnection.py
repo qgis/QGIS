@@ -13,14 +13,14 @@ QgsNewHttpConnection.WFS_VERSION_1_0 = QgsNewHttpConnection.WfsVersionIndex.WFS_
 QgsNewHttpConnection.WFS_VERSION_1_1 = QgsNewHttpConnection.WfsVersionIndex.WFS_VERSION_1_1
 QgsNewHttpConnection.WFS_VERSION_2_0 = QgsNewHttpConnection.WfsVersionIndex.WFS_VERSION_2_0
 QgsNewHttpConnection.WFS_VERSION_API_FEATURES_1_0 = QgsNewHttpConnection.WfsVersionIndex.WFS_VERSION_API_FEATURES_1_0
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsNewHttpConnection.ConnectionType.__bool__ = lambda flag: _force_int(flag)
 QgsNewHttpConnection.ConnectionType.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsNewHttpConnection.ConnectionType.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsNewHttpConnection.ConnectionType.__or__ = lambda flag1, flag2: QgsNewHttpConnection.ConnectionType(_force_int(flag1) | _force_int(flag2))
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsNewHttpConnection.Flag.__bool__ = lambda flag: _force_int(flag)

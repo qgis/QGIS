@@ -17,7 +17,7 @@ QgsProcessingAlgorithm.FlagDeprecated = QgsProcessingAlgorithm.Flag.FlagDeprecat
 QgsProcessingAlgorithm.Flags = lambda flags=0: QgsProcessingAlgorithm.Flag(flags)
 QgsProcessingAlgorithm.NotAvailable = QgsProcessingAlgorithm.PropertyAvailability.NotAvailable
 QgsProcessingAlgorithm.Available = QgsProcessingAlgorithm.PropertyAvailability.Available
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsProcessingAlgorithm.Flag.__bool__ = lambda flag: _force_int(flag)

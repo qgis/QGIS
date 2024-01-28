@@ -55,7 +55,7 @@ QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.baseClass = QgsAb
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities = lambda flags=0: QgsAbstractDatabaseProviderConnection.GeometryColumnCapability(flags)
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities.baseClass = QgsAbstractDatabaseProviderConnection
 GeometryColumnCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsAbstractDatabaseProviderConnection.Capability.__bool__ = lambda flag: _force_int(flag)

@@ -14,7 +14,7 @@ QgsMapToolIdentify.AllLayers = QgsMapToolIdentify.Type.AllLayers
 QgsMapToolIdentify.LayerType = lambda flags=0: QgsMapToolIdentify.Type(flags)
 QgsMapToolIdentify.LayerType.baseClass = QgsMapToolIdentify
 LayerType = QgsMapToolIdentify  # dirty hack since SIP seems to introduce the flags in module
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsMapToolIdentify.Type.__bool__ = lambda flag: _force_int(flag)

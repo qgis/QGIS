@@ -9,7 +9,7 @@ QgsFieldConstraints.ConstraintOriginLayer = QgsFieldConstraints.ConstraintOrigin
 QgsFieldConstraints.ConstraintStrengthNotSet = QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet
 QgsFieldConstraints.ConstraintStrengthHard = QgsFieldConstraints.ConstraintStrength.ConstraintStrengthHard
 QgsFieldConstraints.ConstraintStrengthSoft = QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsFieldConstraints.Constraint.__bool__ = lambda flag: _force_int(flag)

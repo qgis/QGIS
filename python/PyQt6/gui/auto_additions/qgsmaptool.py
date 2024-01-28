@@ -4,7 +4,7 @@ QgsMapTool.EditTool = QgsMapTool.Flag.EditTool
 QgsMapTool.AllowZoomRect = QgsMapTool.Flag.AllowZoomRect
 QgsMapTool.ShowContextMenu = QgsMapTool.Flag.ShowContextMenu
 QgsMapTool.Flags = lambda flags=0: QgsMapTool.Flag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsMapTool.Flag.__bool__ = lambda flag: _force_int(flag)

@@ -9,7 +9,7 @@ QgsProcessingContext.ProcessArgumentFlag.IncludeProjectPath.__doc__ = "Include t
 QgsProcessingContext.ProcessArgumentFlag.__doc__ = "Flags controlling the results given by :py:func:`~QgsProcessingContext.asQgisProcessArguments`.\n\n.. versionadded:: 3.24\n\n" + '* ``IncludeProjectPath``: ' + QgsProcessingContext.ProcessArgumentFlag.IncludeProjectPath.__doc__
 # --
 QgsProcessingContext.ProcessArgumentFlags = lambda flags=0: QgsProcessingContext.ProcessArgumentFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsProcessingContext.Flag.__bool__ = lambda flag: _force_int(flag)

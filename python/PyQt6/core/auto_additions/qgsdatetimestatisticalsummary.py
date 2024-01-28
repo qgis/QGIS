@@ -7,7 +7,7 @@ QgsDateTimeStatisticalSummary.Max = QgsDateTimeStatisticalSummary.Statistic.Max
 QgsDateTimeStatisticalSummary.Range = QgsDateTimeStatisticalSummary.Statistic.Range
 QgsDateTimeStatisticalSummary.All = QgsDateTimeStatisticalSummary.Statistic.All
 QgsDateTimeStatisticalSummary.Statistics = lambda flags=0: QgsDateTimeStatisticalSummary.Statistic(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsDateTimeStatisticalSummary.Statistic.__bool__ = lambda flag: _force_int(flag)

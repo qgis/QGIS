@@ -11,7 +11,7 @@ QgsStringStatisticalSummary.Minority = QgsStringStatisticalSummary.Statistic.Min
 QgsStringStatisticalSummary.Majority = QgsStringStatisticalSummary.Statistic.Majority
 QgsStringStatisticalSummary.All = QgsStringStatisticalSummary.Statistic.All
 QgsStringStatisticalSummary.Statistics = lambda flags=0: QgsStringStatisticalSummary.Statistic(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsStringStatisticalSummary.Statistic.__bool__ = lambda flag: _force_int(flag)
