@@ -498,7 +498,8 @@ QgsColorRampTransformer *QgsPropertyColorAssistantWidget::createTransformer( dou
     minValue,
     maxValue,
     mColorRampButton->colorRamp(),
-    mNullColorButton->color() );
+    mNullColorButton->color(),
+    mColorRampButton->colorRampName() );
   return transformer;
 }
 
