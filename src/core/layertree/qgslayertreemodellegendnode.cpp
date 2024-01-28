@@ -1069,12 +1069,13 @@ QJsonObject QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, c
 
 // -------------------------------------------------------------------------
 
-QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent, bool isCheckable, const QString &ruleKey )
+QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent, bool isCheckable, const QString &ruleKey, const QString &parentRuleKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mColor( color )
   , mLabel( label )
   , mCheckable( isCheckable )
   , mRuleKey( ruleKey )
+  , mParentRuleKey( parentRuleKey )
 {
 }
 
@@ -1107,6 +1108,9 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
 
     case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ):
       return mRuleKey;
+
+    case QgsLayerTreeModelLegendNode::ParentRuleKeyRole:
+      return mParentRuleKey;
 
     case Qt::CheckStateRole:
     {

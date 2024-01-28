@@ -554,9 +554,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   if ( indexScalar > -1 )
   {
-    QgsSimpleLegendNode *scalarNameNode = new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexScalar ).name() );
-    scalarNameNode->setObjectName( "scalarName" );
-    nodes << scalarNameNode;
+    const QString scalarNameKey = QStringLiteral( "scalarName" );
+    nodes << new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexScalar ).name(),
+                                      QIcon(), nullptr, scalarNameKey );
     const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar );
     const QgsColorRampShader shader = settings.colorRampShader();
     switch ( shader.colorRampType() )
@@ -570,10 +570,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
             nodes << new QgsColorRampLegendNode( nodeLayer, shader.createColorRamp(),
                                                  shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
                                                  shader.minimumValue(),
-                                                 shader.maximumValue() );
-
-            nodes.last()->setProperty( "parentNode", scalarNameNode->objectName() );
-            nodes.last()->setObjectName( "scalarLegend" );
+                                                 shader.maximumValue(),
+                                                 nullptr,
+                                                 QStringLiteral( "scalarLegend" ),
+                                                 scalarNameKey );
           }
           break;
         }
@@ -586,9 +586,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
         settings.colorRampShader().legendSymbologyItems( items );
         for ( const QPair< QString, QColor > &item : items )
         {
-          nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
-          nodes.last()->setProperty( "parentNode", scalarNameNode->objectName() );
-          nodes.last()->setObjectName( "scalarLegend" + QUuid::createUuid().toString() );
+          nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first, nullptr, false,
+                                                  QStringLiteral( "scalarLegend" ) + QUuid::createUuid().toString(),
+                                                  scalarNameKey
+                                                );
         }
         break;
       }
@@ -598,23 +599,22 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   if ( indexVector > -1 )
   {
     const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( indexVector );
+    const QString vectorNameKey = QStringLiteral( "vectorName" );
     switch ( settings.coloringMethod() )
     {
       case QgsInterpolatedLineColor::ColoringMethod::SingleColor:
       {
         const QColor arrowColor = settings.color();
         const QIcon vectorIcon = QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/meshvectors.svg" ), arrowColor, arrowColor );
-        QgsSimpleLegendNode *vectorNameNode = new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexVector ).name(), vectorIcon );
-        vectorNameNode->setObjectName( "vectorName" );
-        nodes << vectorNameNode;
+        nodes << new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexVector ).name(),
+                                          vectorIcon, nullptr, vectorNameKey );
         break;
       }
       case QgsInterpolatedLineColor::ColoringMethod::ColorRamp:
       {
         const QIcon vectorIcon = QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/meshvectors.svg" ) );
-        QgsSimpleLegendNode *vectorNameNode = new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexVector ).name(), vectorIcon );
-        vectorNameNode->setObjectName( "vectorName" );
-        nodes << vectorNameNode;
+        nodes << new QgsSimpleLegendNode( nodeLayer, mLayer->datasetGroupMetadata( indexVector ).name(),
+                                          vectorIcon, nullptr, vectorNameKey );
         const QgsColorRampShader shader = settings.colorRampShader();
         switch ( shader.colorRampType() )
         {
@@ -627,10 +627,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
                 nodes << new QgsColorRampLegendNode( nodeLayer, shader.createColorRamp(),
                                                      shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
                                                      shader.minimumValue(),
-                                                     shader.maximumValue() );
-
-                nodes.last()->setProperty( "parentNode", vectorNameNode->objectName() );
-                nodes.last()->setObjectName( "vectorLegend" );
+                                                     shader.maximumValue(),
+                                                     nullptr,
+                                                     QStringLiteral( "vectorLegend" ),
+                                                     vectorNameKey );
               }
               break;
             }
@@ -643,10 +643,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
             settings.colorRampShader().legendSymbologyItems( items );
             for ( const QPair< QString, QColor > &item : items )
             {
-              nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
-
-              nodes.last()->setProperty( "parentNode", vectorNameNode->objectName() );
-              nodes.last()->setObjectName( "vectorLegend" + QUuid::createUuid().toString() );
+              nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first, nullptr, false,
+                                                      QStringLiteral( "vectorLegend" ) + QUuid::createUuid().toString(),
+                                                      vectorNameKey
+                                                    );
             }
             break;
           }
