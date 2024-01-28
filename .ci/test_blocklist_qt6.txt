@@ -44,7 +44,6 @@ PyQgsAggregateMappingWidget
 PyQgsPythonProvider
 PyQgsAggregateCalculator
 PyQgsAnnotation
-PyQgsAttributeFormEditorWidget
 PyQgsAuthenticationSystem
 PyQgsBlockingProcess
 PyQgsBookmarkModel
@@ -71,7 +70,6 @@ PyQgsLabelSettingsWidget
 PyQgsLabelThinningSettings
 PyQgsLayerMetadata
 PyQgsLayerMetadataProviderPython
-PyQgsLayerMetadataProviderOgr
 PyQgsLayerMetadataResultsModel
 PyQgsLayoutAtlas
 PyQgsLayoutExporter
@@ -87,7 +85,6 @@ PyQgsLayoutMapGrid
 PyQgsLayoutMarker
 PyQgsLayoutPolygon
 PyQgsLayoutPolyline
-PyQgsLayoutShape
 PyQgsLineSymbolLayers
 PyQgsLocator
 PyQgsMapBoxGlStyleConverter
@@ -96,7 +93,6 @@ PyQgsMetadataBase
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsOGRProviderGpkg
-PyQgsOGRProviderSqlite
 PyQgsPalLabelingBase
 PyQgsPalLabelingCanvas
 PyQgsPalLabelingLayout
@@ -115,8 +111,6 @@ PyQgsProviderConnectionModel
 PyQgsProviderConnectionGpkg
 PyQgsProviderConnectionSpatialite
 PyQgsSensorModel
-PyQgsStyleStorageSpatialite
-PyQgsStyleStorageGpkg
 PyQgsProviderSublayerDetails
 PyQgsRasterAttributeTable
 PyQgsRasterAttributeTableModel
@@ -125,7 +119,6 @@ PyQgsRasterLayerRenderer
 PyQgsRasterPipe
 PyQgsProviderUtils
 PyQgsShapefileProvider
-PyQgsTabfileProvider
 PyQgsTextRenderer
 PyQgsOGRProvider
 PyQgsSimpleLineSymbolLayer
@@ -138,7 +131,6 @@ PyQgsStyleModel
 PyQgsTextDocument
 PyQgsValidityChecks
 PyQgsValidityResultsWidget
-PyQgsVectorFileWriter
 PyQgsVectorLayer
 PyQgsVectorLayerElevationProperties
 PyQgsVectorLayerCache
@@ -150,7 +142,6 @@ PyQgsZonalStatistics
 PyQgsVirtualLayerProvider
 PyQgsLayerDefinition
 PyQgsWFSProvider
-PyQgsOapifProvider
 PyQgsDBManagerGpkg
 PyQgsDBManagerSpatialite
 PyQgsSettings
@@ -174,7 +165,6 @@ PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
 ProcessingGeneralTest
 ProcessingGuiTest
-ProcessingModelerTest
 ProcessingProjectProviderTest
 ProcessingParametersTest
 ProcessingGenericAlgorithmsTest
@@ -193,5 +183,3 @@ ProcessingGrass7AlgorithmsRasterTestPt2
 ProcessingGrass7AlgorithmsVectorTest
 PyQgsCoordinateReferenceSystemModel
 PyQgsProviderRegistry
-PyQgsColorScheme
-PyQgsSearchWidgetToolButton
