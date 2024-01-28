@@ -15176,8 +15176,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       QgsVectorDataProvider *dprovider = vlayer->dataProvider();
       QString addFeatureText;
 
-      manageDigitizingCursor( vlayer );
-
       bool isEditable = vlayer->isEditable();
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
       bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, createMapLayerActionContext() ).isEmpty();
@@ -15221,6 +15219,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLayerSaveAs->setEnabled( true );
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionFeatureAction->setEnabled( layerHasActions );
+
+      if ( isEditable )
+      {
+          manageDigitizingCursor( vlayer );
+      }
 
       if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
            && ( mMapCanvas->mapTool()->flags() & QgsMapTool::EditTool ) && !mSaveRollbackInProgress )
