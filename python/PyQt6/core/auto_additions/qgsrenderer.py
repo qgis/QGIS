@@ -4,7 +4,7 @@ QgsFeatureRenderer.MoreSymbolsPerFeature = QgsFeatureRenderer.Capability.MoreSym
 QgsFeatureRenderer.Filter = QgsFeatureRenderer.Capability.Filter
 QgsFeatureRenderer.ScaleDependent = QgsFeatureRenderer.Capability.ScaleDependent
 QgsFeatureRenderer.Capabilities = lambda flags=0: QgsFeatureRenderer.Capability(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsFeatureRenderer.Capability.__bool__ = lambda flag: _force_int(flag)

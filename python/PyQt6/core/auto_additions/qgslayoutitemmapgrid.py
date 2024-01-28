@@ -50,7 +50,7 @@ QgsLayoutItemMapGrid.FrameBottom = QgsLayoutItemMapGrid.FrameSideFlag.FrameBotto
 QgsLayoutItemMapGrid.FrameSideFlags = lambda flags=0: QgsLayoutItemMapGrid.FrameSideFlag(flags)
 QgsLayoutItemMapGrid.Longitude = QgsLayoutItemMapGrid.AnnotationCoordinate.Longitude
 QgsLayoutItemMapGrid.Latitude = QgsLayoutItemMapGrid.AnnotationCoordinate.Latitude
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsLayoutItemMapGrid.FrameSideFlag.__bool__ = lambda flag: _force_int(flag)

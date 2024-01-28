@@ -13,7 +13,7 @@ QgsCoordinateReferenceSystemProxyModel.FilterCompound = QgsCoordinateReferenceSy
 QgsCoordinateReferenceSystemProxyModel.Filters = lambda flags=0: QgsCoordinateReferenceSystemProxyModel.Filter(flags)
 QgsCoordinateReferenceSystemProxyModel.Filters.baseClass = QgsCoordinateReferenceSystemProxyModel
 Filters = QgsCoordinateReferenceSystemProxyModel  # dirty hack since SIP seems to introduce the flags in module
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsCoordinateReferenceSystemProxyModel.Filter.__bool__ = lambda flag: _force_int(flag)

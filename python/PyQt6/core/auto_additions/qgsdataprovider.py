@@ -16,7 +16,7 @@ QgsDataProvider.ForceReadOnly = QgsDataProvider.ReadFlag.ForceReadOnly
 QgsDataProvider.SkipCredentialsRequest = QgsDataProvider.ReadFlag.SkipCredentialsRequest
 QgsDataProvider.ParallelThreadLoading = QgsDataProvider.ReadFlag.ParallelThreadLoading
 QgsDataProvider.ReadFlags = lambda flags=0: QgsDataProvider.ReadFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsDataProvider.ReadFlag.__bool__ = lambda flag: _force_int(flag)

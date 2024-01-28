@@ -7,7 +7,7 @@ QgsAbstractGeometry.YX = QgsAbstractGeometry.AxisOrder.YX
 QgsAbstractGeometry.FlagExportTrianglesAsPolygons = QgsAbstractGeometry.WkbFlag.FlagExportTrianglesAsPolygons
 QgsAbstractGeometry.FlagExportNanAsDoubleMin = QgsAbstractGeometry.WkbFlag.FlagExportNanAsDoubleMin
 QgsAbstractGeometry.WkbFlags = lambda flags=0: QgsAbstractGeometry.WkbFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsAbstractGeometry.WkbFlag.__bool__ = lambda flag: _force_int(flag)

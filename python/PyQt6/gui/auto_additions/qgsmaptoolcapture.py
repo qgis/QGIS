@@ -7,7 +7,7 @@ QgsMapToolCapture.NoCapabilities = QgsMapToolCapture.Capability.NoCapabilities
 QgsMapToolCapture.SupportsCurves = QgsMapToolCapture.Capability.SupportsCurves
 QgsMapToolCapture.ValidateGeometries = QgsMapToolCapture.Capability.ValidateGeometries
 QgsMapToolCapture.Capabilities = lambda flags=0: QgsMapToolCapture.Capability(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsMapToolCapture.Capability.__bool__ = lambda flag: _force_int(flag)

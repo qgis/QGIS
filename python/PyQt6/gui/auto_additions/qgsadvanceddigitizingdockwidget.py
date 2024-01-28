@@ -10,7 +10,7 @@ QgsAdvancedDigitizingDockWidget.ReturnPressed = QgsAdvancedDigitizingDockWidget.
 QgsAdvancedDigitizingDockWidget.CadConstraint.NoLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.NoLock
 QgsAdvancedDigitizingDockWidget.CadConstraint.SoftLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.SoftLock
 QgsAdvancedDigitizingDockWidget.CadConstraint.HardLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.HardLock
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsAdvancedDigitizingDockWidget.CadCapacity.__bool__ = lambda flag: _force_int(flag)

@@ -29,14 +29,14 @@ QgsVectorFileWriter.CreateOrOverwriteFile = QgsVectorFileWriter.ActionOnExisting
 QgsVectorFileWriter.CreateOrOverwriteLayer = QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteLayer
 QgsVectorFileWriter.AppendToLayerNoNewFields = QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerNoNewFields
 QgsVectorFileWriter.AppendToLayerAddFields = QgsVectorFileWriter.ActionOnExistingFile.AppendToLayerAddFields
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsVectorFileWriter.EditionCapability.__bool__ = lambda flag: _force_int(flag)
 QgsVectorFileWriter.EditionCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsVectorFileWriter.EditionCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsVectorFileWriter.EditionCapability.__or__ = lambda flag1, flag2: QgsVectorFileWriter.EditionCapability(_force_int(flag1) | _force_int(flag2))
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsVectorFileWriter.VectorFormatOption.__bool__ = lambda flag: _force_int(flag)

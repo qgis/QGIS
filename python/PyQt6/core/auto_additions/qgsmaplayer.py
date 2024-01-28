@@ -37,21 +37,21 @@ QgsMapLayer.FlagTrustLayerMetadata = QgsMapLayer.ReadFlag.FlagTrustLayerMetadata
 QgsMapLayer.FlagReadExtentFromXml = QgsMapLayer.ReadFlag.FlagReadExtentFromXml
 QgsMapLayer.FlagForceReadOnly = QgsMapLayer.ReadFlag.FlagForceReadOnly
 QgsMapLayer.ReadFlags = lambda flags=0: QgsMapLayer.ReadFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsMapLayer.LayerFlag.__bool__ = lambda flag: _force_int(flag)
 QgsMapLayer.LayerFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsMapLayer.LayerFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsMapLayer.LayerFlag.__or__ = lambda flag1, flag2: QgsMapLayer.LayerFlag(_force_int(flag1) | _force_int(flag2))
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsMapLayer.StyleCategory.__bool__ = lambda flag: _force_int(flag)
 QgsMapLayer.StyleCategory.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsMapLayer.StyleCategory.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsMapLayer.StyleCategory.__or__ = lambda flag1, flag2: QgsMapLayer.StyleCategory(_force_int(flag1) | _force_int(flag2))
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsMapLayer.ReadFlag.__bool__ = lambda flag: _force_int(flag)

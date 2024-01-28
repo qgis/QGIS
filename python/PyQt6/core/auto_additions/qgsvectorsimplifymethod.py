@@ -12,7 +12,7 @@ QgsVectorSimplifyMethod.SnapToGrid = QgsVectorSimplifyMethod.SimplifyAlgorithm.S
 QgsVectorSimplifyMethod.Visvalingam = QgsVectorSimplifyMethod.SimplifyAlgorithm.Visvalingam
 QgsVectorSimplifyMethod.SnappedToGridGlobal = QgsVectorSimplifyMethod.SimplifyAlgorithm.SnappedToGridGlobal
 QgsVectorSimplifyMethod.SimplifyAlgorithm.baseClass = QgsVectorSimplifyMethod
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsVectorSimplifyMethod.SimplifyHint.__bool__ = lambda flag: _force_int(flag)

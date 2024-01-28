@@ -116,7 +116,7 @@ QgsLayoutItem.CanGroupWithAnyOtherItem = QgsLayoutItem.ExportLayerBehavior.CanGr
 QgsLayoutItem.CanGroupWithItemsOfSameType = QgsLayoutItem.ExportLayerBehavior.CanGroupWithItemsOfSameType
 QgsLayoutItem.MustPlaceInOwnLayer = QgsLayoutItem.ExportLayerBehavior.MustPlaceInOwnLayer
 QgsLayoutItem.ItemContainsSubLayers = QgsLayoutItem.ExportLayerBehavior.ItemContainsSubLayers
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsLayoutItem.Flag.__bool__ = lambda flag: _force_int(flag)

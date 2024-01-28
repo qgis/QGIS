@@ -5,7 +5,7 @@ QgsLayoutManagerProxyModel.FilterReports = QgsLayoutManagerProxyModel.Filter.Fil
 QgsLayoutManagerProxyModel.Filters = lambda flags=0: QgsLayoutManagerProxyModel.Filter(flags)
 QgsLayoutManagerProxyModel.Filters.baseClass = QgsLayoutManagerProxyModel
 Filters = QgsLayoutManagerProxyModel  # dirty hack since SIP seems to introduce the flags in module
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsLayoutManagerProxyModel.Filter.__bool__ = lambda flag: _force_int(flag)

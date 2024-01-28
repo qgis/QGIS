@@ -6,7 +6,7 @@ QgsCoordinateFormatter.FormatDecimalDegrees = QgsCoordinateFormatter.Format.Form
 QgsCoordinateFormatter.FlagDegreesUseStringSuffix = QgsCoordinateFormatter.FormatFlag.FlagDegreesUseStringSuffix
 QgsCoordinateFormatter.FlagDegreesPadMinutesSeconds = QgsCoordinateFormatter.FormatFlag.FlagDegreesPadMinutesSeconds
 QgsCoordinateFormatter.FormatFlags = lambda flags=0: QgsCoordinateFormatter.FormatFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsCoordinateFormatter.FormatFlag.__bool__ = lambda flag: _force_int(flag)

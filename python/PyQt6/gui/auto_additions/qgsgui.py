@@ -5,7 +5,7 @@ QgsGui.ProjectCrsBehavior.baseClass = QgsGui
 QgsGui.HigMenuTextIsTitleCase = QgsGui.HigFlag.HigMenuTextIsTitleCase
 QgsGui.HigDialogTitleIsTitleCase = QgsGui.HigFlag.HigDialogTitleIsTitleCase
 QgsGui.HigFlags = lambda flags=0: QgsGui.HigFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsGui.HigFlag.__bool__ = lambda flag: _force_int(flag)

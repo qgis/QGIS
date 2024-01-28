@@ -5,7 +5,7 @@ QgsLayoutItemMap.Auto = QgsLayoutItemMap.AtlasScalingMode.Auto
 QgsLayoutItemMap.ShowPartialLabels = QgsLayoutItemMap.MapItemFlag.ShowPartialLabels
 QgsLayoutItemMap.ShowUnplacedLabels = QgsLayoutItemMap.MapItemFlag.ShowUnplacedLabels
 QgsLayoutItemMap.MapItemFlags = lambda flags=0: QgsLayoutItemMap.MapItemFlag(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsLayoutItemMap.MapItemFlag.__bool__ = lambda flag: _force_int(flag)

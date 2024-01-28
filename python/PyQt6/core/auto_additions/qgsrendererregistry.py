@@ -4,7 +4,7 @@ QgsRendererAbstractMetadata.LineLayer = QgsRendererAbstractMetadata.LayerType.Li
 QgsRendererAbstractMetadata.PolygonLayer = QgsRendererAbstractMetadata.LayerType.PolygonLayer
 QgsRendererAbstractMetadata.All = QgsRendererAbstractMetadata.LayerType.All
 QgsRendererAbstractMetadata.LayerTypes = lambda flags=0: QgsRendererAbstractMetadata.LayerType(flags)
-_force_int = lambda v: v if isinstance(v, int) else int(v.value)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
 QgsRendererAbstractMetadata.LayerType.__bool__ = lambda flag: _force_int(flag)
