@@ -24,6 +24,9 @@ Utility functions for use with processing classes.
 #include "qgsprocessingutils.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
 %Docstring
