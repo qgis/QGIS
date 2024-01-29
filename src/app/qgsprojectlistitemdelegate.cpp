@@ -67,7 +67,8 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
 
-  painter->setRenderHint( QPainter::Antialiasing );
+  painter->setRenderHint( QPainter::Antialiasing, true );
+  painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
   painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
@@ -75,7 +76,11 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
   const int textSize = static_cast<int>( titleSize * 0.85 );
-  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
+  QSize iconSize = icon.size();
+  if ( QWidget *w = qobject_cast<QWidget *>( option.styleObject ) )
+  {
+    iconSize /= w->devicePixelRatioF();
+  }
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
@@ -102,7 +107,7 @@ QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
   QSizeF iconSize = icon.size();
   if ( QWidget *w = qobject_cast<QWidget *>( option.styleObject ) )
   {
-    iconSize /= w->devicePixelRatio();
+    iconSize /= w->devicePixelRatioF();
   }
 
   int width;
@@ -228,7 +233,8 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
 
-  painter->setRenderHint( QPainter::Antialiasing );
+  painter->setRenderHint( QPainter::Antialiasing, true );
+  painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
   painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
@@ -236,7 +242,11 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
   const int textSize = static_cast<int>( titleSize * 0.85 );
-  QSizeF iconSize = icon.size() / painter->device()->devicePixelRatio();
+  QSizeF iconSize = icon.size();
+  if ( QWidget *w = qobject_cast<QWidget *>( option.styleObject ) )
+  {
+    iconSize /= w->devicePixelRatioF();
+  }
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsNewsFeedModel::Title ).toString(),
@@ -270,7 +280,7 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
   QSizeF iconSize = icon.size();
   if ( QWidget *w = qobject_cast<QWidget *>( option.styleObject ) )
   {
-    iconSize /= w->devicePixelRatio();
+    iconSize /= w->devicePixelRatioF();
   }
 
   int width;
