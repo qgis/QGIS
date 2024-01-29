@@ -14815,7 +14815,7 @@ void QgisApp::selectionChanged( const QgsFeatureIds &, const QgsFeatureIds &, bo
 
           QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
           if ( !exp.needsGeometry() )
-            request.setFlags( request.flags() | QgsFeatureRequest::NoGeometry );
+            request.setFlags( request.flags() | Qgis::FeatureRequestFlag::NoGeometry );
 
           QgsFeature feat;
           QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );

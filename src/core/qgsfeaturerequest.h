@@ -83,35 +83,6 @@
 class CORE_EXPORT QgsFeatureRequest
 {
   public:
-    enum Flag
-    {
-      NoFlags            = 0,
-      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
-      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 4,   //!< Use exact geometry intersection (slower) instead of bounding boxes
-      IgnoreStaticNodesDuringExpressionCompilation = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)
-      EmbeddedSymbols    = 16,  //!< Retrieve any embedded feature symbology (since QGIS 3.20)
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
-    /**
-     * Types of filters.
-     */
-    enum FilterType
-    {
-      FilterNone,       //!< No filter is applied
-      FilterFid,        //!< Filter using feature ID
-      FilterExpression, //!< Filter using expression
-      FilterFids        //!< Filter using feature IDs
-    };
-
-    //! Handling of features with invalid geometries
-    enum InvalidGeometryCheck
-    {
-      GeometryNoCheck = 0, //!< No invalid geometry checking
-      GeometrySkipInvalid = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
-      GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
-    };
 
     /**
      * \ingroup core
@@ -339,7 +310,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \see spatialFilterType()
      */
-    FilterType filterType() const { return mFilter; }
+    Qgis::FeatureRequestFilterType filterType() const { return mFilter; }
 
     /**
      * Returns the spatial filter type which is currently set on this request.
@@ -485,14 +456,14 @@ class CORE_EXPORT QgsFeatureRequest
      * \see invalidGeometryCheck()
      * \since QGIS 3.0
      */
-    QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
+    QgsFeatureRequest &setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check );
 
     /**
      * Returns the invalid geometry checking behavior.
      * \see setInvalidGeometryCheck()
      * \since QGIS 3.0
      */
-    InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
@@ -586,7 +557,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \since QGIS 2.12
      */
-    QgsFeatureRequest &disableFilter() { mFilter = FilterNone; mFilterExpression.reset(); return *this; }
+    QgsFeatureRequest &disableFilter() { mFilter = Qgis::FeatureRequestFilterType::NoFilter; mFilterExpression.reset(); return *this; }
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -650,14 +621,14 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \see flags()
      */
-    QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
+    QgsFeatureRequest &setFlags( Qgis::FeatureRequestFlags flags );
 
     /**
      * Returns the flags which affect how features are fetched.
      *
      * \see setFlags()
      */
-    Flags flags() const { return mFlags; }
+    Qgis::FeatureRequestFlags flags() const { return mFlags; }
 
     /**
      * Set a subset of attributes that will be fetched.
@@ -947,7 +918,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Attribute/ID filter type.
      */
-    FilterType mFilter = FilterNone;
+    Qgis::FeatureRequestFilterType mFilter = Qgis::FeatureRequestFilterType::NoFilter;
 
     /**
      * Spatial filter type.
@@ -980,12 +951,12 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureIds mFilterFids;
     std::unique_ptr< QgsExpression > mFilterExpression;
     QgsExpressionContext mExpressionContext;
-    Flags mFlags = Flags();
+    Qgis::FeatureRequestFlags mFlags;
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
     long long mLimit = -1;
     OrderBy mOrderBy;
-    InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
+    Qgis::InvalidGeometryCheck mInvalidGeometryFilter = Qgis::InvalidGeometryCheck::NoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QgsCoordinateReferenceSystem mCrs;
@@ -994,8 +965,6 @@ class CORE_EXPORT QgsFeatureRequest
     int mRequestMayBeNested = false;
     QgsFeedback *mFeedback = nullptr;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 
 
 class QgsFeatureIterator;

@@ -340,8 +340,8 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
 {
   QgsExpression exp( expression );
   request.setFlags( ( exp.needsGeometry() ) ?
-                    QgsFeatureRequest::NoFlags :
-                    QgsFeatureRequest::NoGeometry );
+                    Qgis::FeatureRequestFlag::NoFlags :
+                    Qgis::FeatureRequestFlag::NoGeometry );
   request.setLimit( 10 );
   request.setExpressionContext( context );
 

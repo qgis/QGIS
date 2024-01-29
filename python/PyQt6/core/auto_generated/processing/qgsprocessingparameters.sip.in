@@ -34,7 +34,7 @@ Encapsulates settings relating to a feature source input to a processing algorit
 
 
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
 
@@ -53,7 +53,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 %End
 
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
 
@@ -81,7 +81,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 
     Flags flags;
 
-    QgsFeatureRequest::InvalidGeometryCheck geometryCheck;
+    Qgis::InvalidGeometryCheck geometryCheck;
 
     QVariant toVariant() const;
 %Docstring

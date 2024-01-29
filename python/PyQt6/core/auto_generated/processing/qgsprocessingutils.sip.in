@@ -707,7 +707,7 @@ iterator, eg by restricting the returned attributes or geometry.
 Returns an expression context scope suitable for this source.
 %End
 
-    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+    void setInvalidGeometryCheck( Qgis::InvalidGeometryCheck method );
 %Docstring
 Overrides the default geometry check method for the source.
 
@@ -716,7 +716,7 @@ Overrides the default geometry check method for the source.
 .. versionadded:: 3.14
 %End
 
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
 Returns the geometry check method for the source.
 

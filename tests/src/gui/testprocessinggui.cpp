@@ -6176,10 +6176,10 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setValue( sourceDef, context );
   QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().featureLimit, -1LL );
   sourceDef.flags |= QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
-  sourceDef.geometryCheck = QgsFeatureRequest::GeometrySkipInvalid;
+  sourceDef.geometryCheck = Qgis::InvalidGeometryCheck::SkipInvalid;
   combo->setValue( sourceDef, context );
   QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
-  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().geometryCheck, Qgis::InvalidGeometryCheck::SkipInvalid );
   sourceDef.flags = QgsProcessingFeatureSourceDefinition::Flags();
   combo->setValue( sourceDef, context );
   QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck ) );
@@ -9516,20 +9516,20 @@ void TestProcessingGui::testFeatureSourceOptionsWidget()
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.featureLimit(), -1 );
 
-  w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometrySkipInvalid );
+  w.setGeometryCheckMethod( false, Qgis::InvalidGeometryCheck::SkipInvalid );
   QCOMPARE( spy.count(), 2 );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
-  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometrySkipInvalid );
+  w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::SkipInvalid );
   QCOMPARE( spy.count(), 3 );
   QVERIFY( w.isOverridingInvalidGeometryCheck() );
-  QCOMPARE( w.geometryCheckMethod(), QgsFeatureRequest::GeometrySkipInvalid );
-  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometrySkipInvalid );
+  QCOMPARE( w.geometryCheckMethod(), Qgis::InvalidGeometryCheck::SkipInvalid );
+  w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::SkipInvalid );
   QCOMPARE( spy.count(), 3 );
-  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometryAbortOnInvalid );
+  w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::AbortOnInvalid );
   QCOMPARE( spy.count(), 4 );
   QVERIFY( w.isOverridingInvalidGeometryCheck() );
-  QCOMPARE( w.geometryCheckMethod(), QgsFeatureRequest::GeometryAbortOnInvalid );
-  w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometryAbortOnInvalid );
+  QCOMPARE( w.geometryCheckMethod(), Qgis::InvalidGeometryCheck::AbortOnInvalid );
+  w.setGeometryCheckMethod( false, Qgis::InvalidGeometryCheck::AbortOnInvalid );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
   QCOMPARE( spy.count(), 5 );
 

@@ -981,6 +981,34 @@ The development version
       Structure,
     };
 
+    enum class FeatureRequestFlag /BaseType=IntFlag/
+      {
+      NoFlags,
+      NoGeometry,
+      SubsetOfAttributes,
+      ExactIntersect,
+      IgnoreStaticNodesDuringExpressionCompilation,
+      EmbeddedSymbols,
+    };
+
+    typedef QFlags<Qgis::FeatureRequestFlag> FeatureRequestFlags;
+
+
+    enum class FeatureRequestFilterType /BaseType=IntFlag/
+      {
+      NoFilter,
+      Fid,
+      Expression,
+      Fids
+    };
+
+    enum class InvalidGeometryCheck /BaseType=IntFlag/
+      {
+      NoCheck,
+      SkipInvalid,
+      AbortOnInvalid,
+    };
+
     enum class SpatialFilterType /BaseType=IntFlag/
     {
       NoFilter,
@@ -2560,6 +2588,7 @@ QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCap
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
 
+QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
 
 
 

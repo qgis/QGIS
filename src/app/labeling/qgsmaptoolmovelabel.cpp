@@ -866,7 +866,7 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
   }
 
   QgsFeature f;
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }

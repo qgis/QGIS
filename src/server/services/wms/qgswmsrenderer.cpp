@@ -306,7 +306,7 @@ namespace QgsWms
     r->startRender( context, vl->fields() );
     QgsFeature f;
     QgsFeatureRequest request( context.extent() );
-    request.setFlags( QgsFeatureRequest::ExactIntersect );
+    request.setFlags( Qgis::FeatureRequestFlag::ExactIntersect );
     QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
@@ -1850,7 +1850,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
 
     bool hasGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) || addWktGeometry || featureBBox || layerFilterGeom;
-    fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
+    fReq.setFlags( ( ( hasGeometry ) ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ) | Qgis::FeatureRequestFlag::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
     {
@@ -1858,7 +1858,7 @@ namespace QgsWms
     }
     else
     {
-      fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
+      fReq.setFlags( fReq.flags() & ~ static_cast<int>( Qgis::FeatureRequestFlag::ExactIntersect ) );
     }
 
 
@@ -2866,7 +2866,7 @@ namespace QgsWms
           else
           {
             QgsFeatureRequest request { QgsExpression( expression )};
-            request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+            request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
             vl->getFeatures( request ).nextFeature( feature );
           }
 

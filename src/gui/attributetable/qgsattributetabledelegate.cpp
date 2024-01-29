@@ -127,7 +127,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     // This fixes https://github.com/qgis/QGIS/issues/24398
     QgsFeatureRequest request( fid );
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeature feature;
     vl->getFeatures( request ).nextFeature( feature );
     if ( feature.isValid() )

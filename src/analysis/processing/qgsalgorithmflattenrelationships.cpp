@@ -135,7 +135,7 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
     feedback->setProgress( i * step );
 
     QgsFeatureRequest referencingRequest = mRelation.getRelatedFeaturesRequest( feat );
-    referencingRequest.setFlags( referencingRequest.flags() | QgsFeatureRequest::NoGeometry );
+    referencingRequest.setFlags( referencingRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeatureIterator childIt = mReferencingSource->getFeatures( referencingRequest );
     QgsFeature relatedFeature;
     while ( childIt.nextFeature( relatedFeature ) )

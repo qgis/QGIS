@@ -264,7 +264,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( selectGeomTrans.boundingBox() )
-                           .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
+                           .setFlags( Qgis::FeatureRequestFlag::NoGeometry | Qgis::FeatureRequestFlag::ExactIntersect )
                            .setNoAttributes() );
 
   QgsFeature f;

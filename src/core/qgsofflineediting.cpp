@@ -786,7 +786,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
 
     QgsFeatureIterator fit = layer->dataProvider()->getFeatures( req );
 
-    if ( req.filterType() == QgsFeatureRequest::FilterFids )
+    if ( req.filterType() == Qgis::FeatureRequestFilterType::Fids )
     {
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->selectedFeatureIds().size() );
     }
@@ -830,7 +830,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       const int layerId = getOrCreateLayerId( db, layer->id() );
       QList<QgsFeatureId> offlineFeatureIds;
 
-      QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
+      QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
       while ( fit.nextFeature( f ) )
       {
         offlineFeatureIds << f.id();
@@ -1103,7 +1103,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
   QMap < QgsFeatureId, QString > newRemoteFids;
   QgsFeature f;
 
-  QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
+  QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
 
   emit progressModeSet( QgsOfflineEditing::ProcessFeatures, remoteLayer->featureCount() );
 

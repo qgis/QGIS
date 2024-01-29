@@ -217,7 +217,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     request.setFilterExpression( filterExpression );
   }
   if ( !needsGeom )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
 
   // Initialize dual view
@@ -541,7 +541,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
 
   QgsFeatureRequest request( mMainView->masterModel()->request() );
   useGeometry |= !( request.spatialFilterType() == Qgis::SpatialFilterType::NoFilter );
-  request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+  request.setFlags( useGeometry ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry );
 
   int rownum = 1;
 

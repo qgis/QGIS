@@ -217,7 +217,7 @@ bool QgsReclassifyByLayerAlgorithm::_prepareAlgorithm( const QVariantMap &parame
     throw QgsProcessingException( QObject::tr( "Invalid field specified for VALUE_FIELD: %1" ).arg( fieldValue ) );
 
   QgsFeatureRequest request;
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   request.setSubsetOfAttributes( QgsAttributeList() << mMinFieldIdx << mMaxFieldIdx << mValueFieldIdx );
   mTableIterator = tableSource->getFeatures( request );
 

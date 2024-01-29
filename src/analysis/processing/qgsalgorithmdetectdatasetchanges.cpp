@@ -358,7 +358,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   // they are placed into the deleted sink.
   step = mOriginal->featureCount() > 0 ? 100.0 / mOriginal->featureCount() : 0;
 
-  request = QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+  request = QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   it = mOriginal->getFeatures( request );
   current = 0;
   long deleted = 0;

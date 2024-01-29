@@ -13,11 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeatureiterator.h"
-#include "qgslogger.h"
-
 #include "qgssimplifymethod.h"
 #include "qgsexception.h"
-#include "qgslinestring.h"
 #include "qgsexpressionsorter_p.h"
 #include "qgsfeedback.h"
 #include "qgscoordinatetransform.h"
@@ -57,11 +54,11 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature &f )
   {
     switch ( mRequest.filterType() )
     {
-      case QgsFeatureRequest::FilterExpression:
+      case Qgis::FeatureRequestFilterType::Expression:
         dataOk = nextFeatureFilterExpression( f );
         break;
 
-      case QgsFeatureRequest::FilterFids:
+      case Qgis::FeatureRequestFilterType::Fids:
         dataOk = nextFeatureFilterFids( f );
         break;
 

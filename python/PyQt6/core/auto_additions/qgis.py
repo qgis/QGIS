@@ -1671,6 +1671,70 @@ Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rin
 Qgis.MakeValidMethod.__doc__ = "Algorithms to use when repairing invalid geometries.\n\n.. versionadded:: 3.28\n\n" + '* ``Linework``: ' + Qgis.MakeValidMethod.Linework.__doc__ + '\n' + '* ``Structure``: ' + Qgis.MakeValidMethod.Structure.__doc__
 # --
 Qgis.MakeValidMethod.baseClass = Qgis
+QgsFeatureRequest.Flag = Qgis.FeatureRequestFlag
+# monkey patching scoped based enum
+QgsFeatureRequest.NoFlags = Qgis.FeatureRequestFlag.NoFlags
+QgsFeatureRequest.NoFlags.is_monkey_patched = True
+QgsFeatureRequest.NoFlags.__doc__ = "No flags are set"
+QgsFeatureRequest.NoGeometry = Qgis.FeatureRequestFlag.NoGeometry
+QgsFeatureRequest.NoGeometry.is_monkey_patched = True
+QgsFeatureRequest.NoGeometry.__doc__ = "Geometry is not required. It may still be returned if e.g. required for a filter condition."
+QgsFeatureRequest.SubsetOfAttributes = Qgis.FeatureRequestFlag.SubsetOfAttributes
+QgsFeatureRequest.SubsetOfAttributes.is_monkey_patched = True
+QgsFeatureRequest.SubsetOfAttributes.__doc__ = "Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)"
+QgsFeatureRequest.ExactIntersect = Qgis.FeatureRequestFlag.ExactIntersect
+QgsFeatureRequest.ExactIntersect.is_monkey_patched = True
+QgsFeatureRequest.ExactIntersect.__doc__ = "Use exact geometry intersection (slower) instead of bounding boxes"
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation = Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.is_monkey_patched = True
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.__doc__ = "If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)"
+QgsFeatureRequest.EmbeddedSymbols = Qgis.FeatureRequestFlag.EmbeddedSymbols
+QgsFeatureRequest.EmbeddedSymbols.is_monkey_patched = True
+QgsFeatureRequest.EmbeddedSymbols.__doc__ = "Retrieve any embedded feature symbology (since QGIS 3.20)"
+Qgis.FeatureRequestFlag.__doc__ = "Flags for controlling feature requests.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``NoFlags``: ' + Qgis.FeatureRequestFlag.NoFlags.__doc__ + '\n' + '* ``NoGeometry``: ' + Qgis.FeatureRequestFlag.NoGeometry.__doc__ + '\n' + '* ``SubsetOfAttributes``: ' + Qgis.FeatureRequestFlag.SubsetOfAttributes.__doc__ + '\n' + '* ``ExactIntersect``: ' + Qgis.FeatureRequestFlag.ExactIntersect.__doc__ + '\n' + '* ``IgnoreStaticNodesDuringExpressionCompilation``: ' + Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation.__doc__ + '\n' + '* ``EmbeddedSymbols``: ' + Qgis.FeatureRequestFlag.EmbeddedSymbols.__doc__
+# --
+Qgis.FeatureRequestFlag.baseClass = Qgis
+Qgis.FeatureRequestFlags = lambda flags=0: Qgis.FeatureRequestFlag(flags)
+Qgis.FeatureRequestFlags.baseClass = Qgis
+FeatureRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsFeatureRequest.FilterType = Qgis.FeatureRequestFilterType
+# monkey patching scoped based enum
+QgsFeatureRequest.FilterNone = Qgis.FeatureRequestFilterType.NoFilter
+QgsFeatureRequest.FilterType.FilterNone = Qgis.FeatureRequestFilterType.NoFilter
+QgsFeatureRequest.FilterNone.is_monkey_patched = True
+QgsFeatureRequest.FilterNone.__doc__ = "No filter is applied"
+QgsFeatureRequest.FilterFid = Qgis.FeatureRequestFilterType.Fid
+QgsFeatureRequest.FilterType.FilterFid = Qgis.FeatureRequestFilterType.Fid
+QgsFeatureRequest.FilterFid.is_monkey_patched = True
+QgsFeatureRequest.FilterFid.__doc__ = "Filter using feature ID"
+QgsFeatureRequest.FilterExpression = Qgis.FeatureRequestFilterType.Expression
+QgsFeatureRequest.FilterType.FilterExpression = Qgis.FeatureRequestFilterType.Expression
+QgsFeatureRequest.FilterExpression.is_monkey_patched = True
+QgsFeatureRequest.FilterExpression.__doc__ = "Filter using expression"
+QgsFeatureRequest.FilterFids = Qgis.FeatureRequestFilterType.Fids
+QgsFeatureRequest.FilterType.FilterFids = Qgis.FeatureRequestFilterType.Fids
+QgsFeatureRequest.FilterFids.is_monkey_patched = True
+QgsFeatureRequest.FilterFids.__doc__ = "Filter using feature IDs"
+Qgis.FeatureRequestFilterType.__doc__ = "Types of feature request filters.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.FilterType\n\n.. versionadded:: 3.36\n\n" + '* ``FilterNone``: ' + Qgis.FeatureRequestFilterType.NoFilter.__doc__ + '\n' + '* ``FilterFid``: ' + Qgis.FeatureRequestFilterType.Fid.__doc__ + '\n' + '* ``FilterExpression``: ' + Qgis.FeatureRequestFilterType.Expression.__doc__ + '\n' + '* ``FilterFids``: ' + Qgis.FeatureRequestFilterType.Fids.__doc__
+# --
+Qgis.FeatureRequestFilterType.baseClass = Qgis
+QgsFeatureRequest.InvalidGeometryCheck = Qgis.InvalidGeometryCheck
+# monkey patching scoped based enum
+QgsFeatureRequest.GeometryNoCheck = Qgis.InvalidGeometryCheck.NoCheck
+QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck = Qgis.InvalidGeometryCheck.NoCheck
+QgsFeatureRequest.GeometryNoCheck.is_monkey_patched = True
+QgsFeatureRequest.GeometryNoCheck.__doc__ = "No invalid geometry checking"
+QgsFeatureRequest.GeometrySkipInvalid = Qgis.InvalidGeometryCheck.SkipInvalid
+QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid = Qgis.InvalidGeometryCheck.SkipInvalid
+QgsFeatureRequest.GeometrySkipInvalid.is_monkey_patched = True
+QgsFeatureRequest.GeometrySkipInvalid.__doc__ = "Skip any features with invalid geometry. This requires a slow geometry validity check for every feature."
+QgsFeatureRequest.GeometryAbortOnInvalid = Qgis.InvalidGeometryCheck.AbortOnInvalid
+QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid = Qgis.InvalidGeometryCheck.AbortOnInvalid
+QgsFeatureRequest.GeometryAbortOnInvalid.is_monkey_patched = True
+QgsFeatureRequest.GeometryAbortOnInvalid.__doc__ = "Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature."
+Qgis.InvalidGeometryCheck.__doc__ = "Methods for handling of features with invalid geometries\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.InvalidGeometryCheck\n\n.. versionadded:: 3.36\n\n" + '* ``GeometryNoCheck``: ' + Qgis.InvalidGeometryCheck.NoCheck.__doc__ + '\n' + '* ``GeometrySkipInvalid``: ' + Qgis.InvalidGeometryCheck.SkipInvalid.__doc__ + '\n' + '* ``GeometryAbortOnInvalid``: ' + Qgis.InvalidGeometryCheck.AbortOnInvalid.__doc__
+# --
+Qgis.InvalidGeometryCheck.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SpatialFilterType.NoFilter.__doc__ = "No spatial filtering of features"
 Qgis.SpatialFilterType.BoundingBox.__doc__ = "Filter using a bounding box"
