@@ -88,6 +88,7 @@ jobs:
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DPython_EXECUTABLE=${MINGW_PREFIX}/bin/python \
             -DWITH_3D=ON \
+            -DWITH_DRACO=ON \
             -DWITH_PDAL=OFF \
             -DWITH_CUSTOM_WIDGETS=ON \
             -DWITH_QWTPOLAR=OFF \
