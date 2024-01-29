@@ -59,7 +59,7 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
 {
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('%1', %2" )
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
@@ -243,7 +243,7 @@ QString QgsProcessingParameterMeshDatasetTime::asPythonString( QgsProcessing::Py
 {
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterMeshDatasetTime('%1', '%2'" )
                      .arg( name(), description() );

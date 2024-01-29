@@ -52,6 +52,8 @@ class QgsTiledSceneLayer;
  */
 class CORE_EXPORT QgsProcessingUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -262,6 +264,7 @@ class CORE_EXPORT QgsProcessingUtils
       VectorTile, //!< Vector tile layer type, since QGIS 3.32
       TiledScene, //!< Tiled scene layer type, since QGIS 3.34
     };
+    Q_ENUM( LayerHint )
 
     /**
      * Interprets a string as a map layer within the supplied \a context.

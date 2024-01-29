@@ -39,6 +39,7 @@
 
 class CORE_EXPORT QgsProcessing
 {
+    Q_GADGET
 
   public:
 
@@ -61,10 +62,11 @@ class CORE_EXPORT QgsProcessing
     };
 
     //! Available Python output types
-    enum PythonOutputType
+    enum class PythonOutputType SIP_MONKEYPATCH_SCOPEENUM
     {
       PythonQgsProcessingAlgorithmSubclass, //!< Full Python QgsProcessingAlgorithm subclass
     };
+    Q_ENUM( PythonOutputType )
 
     /**
      * Layer options flags
@@ -75,7 +77,9 @@ class CORE_EXPORT QgsProcessing
     {
       SkipIndexGeneration = 1 << 0, //!< Do not generate index when creating a layer. Makes sense only for point cloud layers
     };
+    Q_ENUM( LayerOptionsFlag )
     Q_DECLARE_FLAGS( LayerOptionsFlags, LayerOptionsFlag )
+    Q_FLAG( LayerOptionsFlags )
 
     /**
      * Converts a source \a type to a string representation.
