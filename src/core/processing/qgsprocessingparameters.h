@@ -58,17 +58,6 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
   public:
 
     /**
-     * Flags which control source behavior.
-     * \since QGIS 3.14
-     */
-    enum Flag
-    {
-      FlagOverrideDefaultGeometryCheck = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
-      FlagCreateIndividualOutputPerInputFeature = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
-    /**
      * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string \a source.
      *
      * If \a selectedFeaturesOnly is TRUE, then only selected features from the source will be used.
@@ -81,11 +70,11 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      *
      * The \a flags argument can be used to specify flags which dictate the source behavior.
      *
-     * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
+     * If the Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() )
+                                          Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
@@ -107,11 +96,11 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      *
      * The \a flags argument can be used to specify flags which dictate the source behavior.
      *
-     * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
+     * If the Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() )
+                                          Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
@@ -150,7 +139,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      *
      * \since QGIS 3.14
      */
-    Flags flags = Flags();
+    Qgis::ProcessingFeatureSourceDefinitionFlags flags;
 
     /**
      * Geometry check method to apply to this source. This setting is only
@@ -203,7 +192,6 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 };
 
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingFeatureSourceDefinition::Flags )
 
 /**
  * \class QgsProcessingOutputLayerDefinition
