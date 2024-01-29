@@ -90,4 +90,6 @@ jobs:
         days-before-issue-stale: 14
         days-before-issue-close: 28
 
+        exempt-draft-pr: true
+
         operations-per-run: 1000
