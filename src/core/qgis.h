@@ -2766,6 +2766,30 @@ class CORE_EXPORT Qgis
     Q_FLAG( HistoryProviderBackends )
 
     /**
+     * Flags which control behavior for a Processing feature source.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class ProcessingFeatureSourceDefinitionFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingFeatureSourceDefinition, Flag ) : int
+      {
+      OverrideDefaultGeometryCheck SIP_MONKEYPATCH_COMPAT_NAME( FlagOverrideDefaultGeometryCheck ) = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+      CreateIndividualOutputPerInputFeature SIP_MONKEYPATCH_COMPAT_NAME( FlagCreateIndividualOutputPerInputFeature ) = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+    };
+    Q_ENUM( ProcessingFeatureSourceDefinitionFlag )
+
+    /**
+     * Flags which control behavior for a Processing feature source.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( ProcessingFeatureSourceDefinitionFlags, ProcessingFeatureSourceDefinitionFlag )
+    Q_FLAG( ProcessingFeatureSourceDefinitionFlags )
+
+    /**
      * Processing model child parameter sources.
      *
      * \since QGIS 3.34
@@ -4409,6 +4433,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRequestFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceDefinitionFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

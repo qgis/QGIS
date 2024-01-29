@@ -60,7 +60,7 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
   selectedFeaturesOnly = map.value( QStringLiteral( "selected_only" ), false ).toBool();
   featureLimit = map.value( QStringLiteral( "feature_limit" ), -1 ).toLongLong();
   filterExpression = map.value( QStringLiteral( "filter" ) ).toString();
-  flags = static_cast< Flags >( map.value( QStringLiteral( "flags" ), 0 ).toInt() );
+  flags = static_cast< Qgis::ProcessingFeatureSourceDefinitionFlags >( map.value( QStringLiteral( "flags" ), 0 ).toInt() );
   geometryCheck = static_cast< Qgis::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), static_cast< int >( Qgis::InvalidGeometryCheck::AbortOnInvalid ) ).toInt() );
   return true;
 }
@@ -6190,9 +6190,9 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 
     QStringList flags;
     QString flagString;
-    if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck )
+    if ( fromVar.flags & Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck )
       flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck" );
-    if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature )
+    if ( fromVar.flags & Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature )
       flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature" );
     if ( !flags.empty() )
       flagString = flags.join( QLatin1String( " | " ) );

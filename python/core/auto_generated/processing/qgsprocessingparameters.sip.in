@@ -25,16 +25,8 @@ Encapsulates settings relating to a feature source input to a processing algorit
 %End
   public:
 
-    enum Flag
-    {
-      FlagOverrideDefaultGeometryCheck,
-      FlagCreateIndividualOutputPerInputFeature,
-    };
-    typedef QFlags<QgsProcessingFeatureSourceDefinition::Flag> Flags;
-
-
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() );
+                                          Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
 
@@ -48,12 +40,12 @@ to filter the features read from the source.
 
 The ``flags`` argument can be used to specify flags which dictate the source behavior.
 
-If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
+If the :py:class:`Qgis`.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
 the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() );
+                                          Qgis::ProcessingFeatureSourceDefinitionFlags flags = Qgis::ProcessingFeatureSourceDefinitionFlags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
 
@@ -67,7 +59,7 @@ to filter the features read from the source.
 
 The ``flags`` argument can be used to specify flags which dictate the source behavior.
 
-If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
+If the :py:class:`Qgis`.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
 the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
@@ -79,7 +71,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 
     QString filterExpression;
 
-    Flags flags;
+    Qgis::ProcessingFeatureSourceDefinitionFlags flags;
 
     Qgis::InvalidGeometryCheck geometryCheck;
 
@@ -110,8 +102,6 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
     operator QVariant() const;
 
 };
-
-QFlags<QgsProcessingFeatureSourceDefinition::Flag> operator|(QgsProcessingFeatureSourceDefinition::Flag f1, QFlags<QgsProcessingFeatureSourceDefinition::Flag> f2);
 
 
 
