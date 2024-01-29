@@ -281,7 +281,7 @@ void QgsMapSaveDialog::checkOutputSize()
   // check if image size does not exceed QPainter limitation https://doc.qt.io/qt-5/qpainter.html#limitations
   if ( mSize.width() > 32768 || mSize.height() > 32768 )
   {
-    mMessageBar->pushWarning( tr( "Save as image" ), tr( "Image width or height is larger than 32768 pixels. Output raster will be truncated." ) );
+    mMessageBar->pushWarning( tr( "Save as image" ), tr( "Output raster will be truncated, as image width or height is larger than 32768 pixels." ) );
   }
 }
 
