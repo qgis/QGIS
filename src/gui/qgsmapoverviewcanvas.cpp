@@ -23,13 +23,13 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
 #include "qgsprojectviewsettings.h"
+#include "qgslogger.h"
 
 #include <QPainter>
 #include <QPainterPath>
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
-#include "qgslogger.h"
 #include <limits>
 
 
@@ -75,13 +75,18 @@ void QgsMapOverviewCanvas::showEvent( QShowEvent *e )
 void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 {
   QPainter paint( this );
+  QRect rect = pe->rect();
+  QRect sourceRect( std::ceil( pe->rect().left() * mPixmap.devicePixelRatio() ),
+                    std::ceil( pe->rect().top() * mPixmap.devicePixelRatio() ),
+                    std::ceil( pe->rect().width() * mPixmap.devicePixelRatio() ),
+                    std::ceil( pe->rect().height() * mPixmap.devicePixelRatio() ) );
   if ( !mPixmap.isNull() )
   {
-    paint.drawPixmap( pe->rect().topLeft(), mPixmap, pe->rect() );
+    paint.drawPixmap( rect.topLeft(), mPixmap, sourceRect );
   }
   else
   {
-    paint.fillRect( pe->rect(), QBrush( mSettings.backgroundColor() ) );
+    paint.fillRect( rect, QBrush( mSettings.backgroundColor() ) );
   }
 }
 
@@ -214,6 +219,8 @@ void QgsMapOverviewCanvas::refresh()
   }
 
   QgsDebugMsgLevel( QStringLiteral( "oveview - starting new" ), 2 );
+
+  mSettings.setDevicePixelRatio( static_cast<float>( devicePixelRatioF() ) );
 
   // TODO: setup overview mode
   mJob = new QgsMapRendererSequentialJob( mSettings );
