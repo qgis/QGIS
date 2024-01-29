@@ -82,7 +82,7 @@ QgsProcessingFeatureSource::Flag QgsDropGeometryAlgorithm::sourceFlags() const
 
 QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
 {
-  return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+  return QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 }
 
 QgsFeatureList QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )

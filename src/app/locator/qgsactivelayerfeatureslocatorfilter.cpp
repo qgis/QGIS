@@ -85,7 +85,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
     QgsFeatureRequest req;
     req.setSubsetOfAttributes( qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) ) );
     if ( !mDispExpression.needsGeometry() )
-      req.setFlags( QgsFeatureRequest::NoGeometry );
+      req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QString enhancedSearch = searchString;
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
@@ -143,7 +143,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
 
   QgsFeatureRequest req;
   if ( !mDispExpression.needsGeometry() )
-    req.setFlags( QgsFeatureRequest::NoGeometry );
+    req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   req.setFilterExpression( expression );
   if ( isRestricting )
     req.setSubsetOfAttributes( subsetOfAttributes );

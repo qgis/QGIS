@@ -59,7 +59,7 @@ bool QgsVectorDataProvider::empty() const
   QgsFeature f;
   QgsFeatureRequest request;
   request.setNoAttributes();
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   request.setLimit( 1 );
   if ( getFeatures( request ).nextFeature( f ) )
     return false;
@@ -151,7 +151,7 @@ bool QgsVectorDataProvider::truncate()
     return false;
 
   QgsFeatureIds toDelete;
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
   QgsFeature f;
   while ( it.nextFeature( f ) )
     toDelete << f.id();
@@ -571,7 +571,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
 
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( keys );
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   const QString fieldName = fields().at( index ).name();
   request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
   QgsFeatureIterator fi = getFeatures( request );
@@ -655,7 +655,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
   QgsFeature f;
   const QgsAttributeList keys = mCacheMinValues.keys();
   QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys )
-                                       .setFlags( QgsFeatureRequest::NoGeometry ) );
+                                       .setFlags( Qgis::FeatureRequestFlag::NoGeometry ) );
 
   while ( fi.nextFeature( f ) )
   {

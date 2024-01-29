@@ -38,7 +38,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
 #include "qgsmeshlayer.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
@@ -309,7 +308,7 @@ void QgsBrowserLayerProperties::loadAttributeTable()
   layerCache->setCacheGeometry( false );
   QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache, this );
   mAttributeTableFilterModel = new QgsAttributeTableFilterModel( nullptr, tableModel, this );
-  tableModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setLimit( 100 ) );
+  tableModel->setRequest( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 100 ) );
   layerCache->setParent( tableModel );
   tableModel->setParent( mAttributeTableFilterModel );
 

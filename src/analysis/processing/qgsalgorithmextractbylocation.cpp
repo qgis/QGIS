@@ -352,7 +352,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
     disjointSet = disjointSet.subtract( foundSet );
     QgsFeatureRequest disjointReq = QgsFeatureRequest().setFilterFids( disjointSet );
     if ( onlyRequireTargetIds )
-      disjointReq.setNoAttributes().setFlags( QgsFeatureRequest::NoGeometry );
+      disjointReq.setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeatureIterator disjointIt = targetSource->getFeatures( disjointReq );
     QgsFeature f;
     while ( disjointIt.nextFeature( f ) )

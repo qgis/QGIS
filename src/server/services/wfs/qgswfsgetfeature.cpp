@@ -334,9 +334,9 @@ namespace QgsWfs
 
       // geometry flags
       if ( vlayer->wkbType() == Qgis::WkbType::NoGeometry )
-        featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::NoGeometry );
+        featureRequest.setFlags( featureRequest.flags() | Qgis::FeatureRequestFlag::NoGeometry );
       else
-        featureRequest.setFlags( featureRequest.flags() | ( withGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+        featureRequest.setFlags( featureRequest.flags() | ( withGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ) );
 
       // subset of attributes
       featureRequest.setSubsetOfAttributes( attrIndexes );
@@ -348,7 +348,7 @@ namespace QgsWfs
       if ( accessControl )
       {
         // Access control expression could not be combined with feature ids filter
-        if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid || featureRequest.filterType() == QgsFeatureRequest::FilterFids )
+        if ( featureRequest.filterType() == Qgis::FeatureRequestFilterType::Fid || featureRequest.filterType() == Qgis::FeatureRequestFilterType::Fids )
         {
           // expression context for access control filter
           QgsExpressionContext accessControlContext;
@@ -446,7 +446,7 @@ namespace QgsWfs
       {
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
-          if ( accessControlRequest.filterType() != QgsFeatureRequest::FilterNone && !accessControlRequest.acceptFeature( feature ) )
+          if ( accessControlRequest.filterType() != Qgis::FeatureRequestFilterType::NoFilter && !accessControlRequest.acceptFeature( feature ) )
           {
             continue;
           }
@@ -479,7 +479,7 @@ namespace QgsWfs
                                         };
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
-          if ( accessControlRequest.filterType() != QgsFeatureRequest::FilterNone && !accessControlRequest.acceptFeature( feature ) )
+          if ( accessControlRequest.filterType() != Qgis::FeatureRequestFilterType::NoFilter && !accessControlRequest.acceptFeature( feature ) )
           {
             continue;
           }
@@ -758,7 +758,7 @@ namespace QgsWfs
             }
             if ( filter->needsGeometry() )
             {
-              query.featureRequest.setFlags( QgsFeatureRequest::NoFlags );
+              query.featureRequest.setFlags( Qgis::FeatureRequestFlag::NoFlags );
             }
             query.featureRequest.setFilterExpression( filter->expression() );
           }
@@ -824,7 +824,7 @@ namespace QgsWfs
       for ( ; qIt != request.queries.end(); ++qIt )
       {
         getFeatureQuery &query = *qIt;
-        query.featureRequest.setFilterRect( extent ).setFlags( query.featureRequest.flags() | QgsFeatureRequest::ExactIntersect );
+        query.featureRequest.setFilterRect( extent ).setFlags( query.featureRequest.flags() | Qgis::FeatureRequestFlag::ExactIntersect );
       }
       return request;
     }

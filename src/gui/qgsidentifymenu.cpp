@@ -91,7 +91,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
 
         QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
                                  .setFilterRect( rect )
-                                 .setFlags( QgsFeatureRequest::ExactIntersect ) );
+                                 .setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
         QgsFeature f;
         while ( fit.nextFeature( f ) )
         {

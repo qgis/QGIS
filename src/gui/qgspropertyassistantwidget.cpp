@@ -278,8 +278,8 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
 
   QgsFeatureIterator fit = mLayer->getFeatures(
                              QgsFeatureRequest().setFlags( e.needsGeometry()
-                                 ? QgsFeatureRequest::NoFlags
-                                 : QgsFeatureRequest::NoGeometry )
+                                 ? Qgis::FeatureRequestFlag::NoFlags
+                                 : Qgis::FeatureRequestFlag::NoGeometry )
                              .setSubsetOfAttributes( referencedCols, mLayer->fields() ) );
 
   // create list of non-null attribute values

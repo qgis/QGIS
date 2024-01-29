@@ -144,7 +144,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
     joinInfo.cachedAttributes.clear();
 
     QgsFeatureRequest request;
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     // maybe user requested just a subset of layer's attributes
     // so we do not have to cache everything
     QVector<int> subsetIndices;
@@ -581,7 +581,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
         const QString filter = QgsExpression::createFieldEqualityExpression( info.joinFieldName(), idFieldValue.toString() );
 
         QgsFeatureRequest request;
-        request.setFlags( QgsFeatureRequest::NoGeometry );
+        request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
         request.setNoAttributes();
         request.setFilterExpression( filter );
         request.setLimit( 1 );

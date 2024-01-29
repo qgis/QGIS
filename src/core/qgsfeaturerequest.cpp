@@ -30,13 +30,13 @@ QgsFeatureRequest::QgsFeatureRequest()
 QgsFeatureRequest::~QgsFeatureRequest() = default;
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
-  : mFilter( FilterFid )
+  : mFilter( Qgis::FeatureRequestFilterType::Fid )
   , mFilterFid( fid )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
-  : mFilter( FilterFids )
+  : mFilter( Qgis::FeatureRequestFilterType::Fids )
   , mFilterFids( fids )
 {
 
@@ -49,7 +49,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context )
-  : mFilter( FilterExpression )
+  : mFilter( Qgis::FeatureRequestFilterType::Expression )
   , mFilterExpression( new QgsExpression( expr ) )
   , mExpressionContext( context )
 {
@@ -140,19 +140,19 @@ QgsFeatureRequest &QgsFeatureRequest::setDistanceWithin( const QgsGeometry &geom
 
 QgsFeatureRequest &QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
 {
-  mFilter = FilterFid;
+  mFilter = Qgis::FeatureRequestFilterType::Fid;
   mFilterFid = fid;
   return *this;
 }
 
 QgsFeatureRequest &QgsFeatureRequest::setFilterFids( const QgsFeatureIds &fids )
 {
-  mFilter = FilterFids;
+  mFilter = Qgis::FeatureRequestFilterType::Fids;
   mFilterFids = fids;
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check )
 {
   mInvalidGeometryFilter = check;
   return *this;
@@ -166,7 +166,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::fun
 
 QgsFeatureRequest &QgsFeatureRequest::setFilterExpression( const QString &expression )
 {
-  mFilter = FilterExpression;
+  mFilter = Qgis::FeatureRequestFilterType::Expression;
   mFilterExpression.reset( new QgsExpression( expression ) );
   return *this;
 }
@@ -219,7 +219,7 @@ QgsFeatureRequest &QgsFeatureRequest::setLimit( long long limit )
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
+QgsFeatureRequest &QgsFeatureRequest::setFlags( Qgis::FeatureRequestFlags flags )
 {
   mFlags = flags;
   return *this;
@@ -227,7 +227,7 @@ QgsFeatureRequest &QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
 
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeList &attrs )
 {
-  mFlags |= SubsetOfAttributes;
+  mFlags |= Qgis::FeatureRequestFlag::SubsetOfAttributes;
   mAttrs = attrs;
   return *this;
 }
@@ -245,7 +245,7 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &
     return *this;
   }
 
-  mFlags |= SubsetOfAttributes;
+  mFlags |= Qgis::FeatureRequestFlag::SubsetOfAttributes;
   mAttrs.clear();
 
   const auto constAttrNames = attrNames;
@@ -267,7 +267,7 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
     return *this;
   }
 
-  mFlags |= SubsetOfAttributes;
+  mFlags |= Qgis::FeatureRequestFlag::SubsetOfAttributes;
   mAttrs.clear();
 
   const auto constAttrNames = attrNames;
@@ -317,21 +317,21 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
   // the spatial filter
   switch ( mFilter )
   {
-    case QgsFeatureRequest::FilterNone:
+    case Qgis::FeatureRequestFilterType::NoFilter:
       break;
 
-    case QgsFeatureRequest::FilterFid:
+    case Qgis::FeatureRequestFilterType::Fid:
       if ( feature.id() != mFilterFid )
         return false;
       break;
 
-    case QgsFeatureRequest::FilterExpression:
+    case Qgis::FeatureRequestFilterType::Expression:
       mExpressionContext.setFeature( feature );
       if ( !mFilterExpression->evaluate( &mExpressionContext ).toBool() )
         return false;
       break;
 
-    case QgsFeatureRequest::FilterFids:
+    case Qgis::FeatureRequestFilterType::Fids:
       if ( !mFilterFids.contains( feature.id() ) )
         return false;
       break;
@@ -345,9 +345,9 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
     case Qgis::SpatialFilterType::BoundingBox:
       if ( !feature.hasGeometry() ||
            (
-             ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+             ( ( mFlags & Qgis::FeatureRequestFlag::ExactIntersect ) && !feature.geometry().intersects( mFilterRect ) )
              ||
-             ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+             ( !( mFlags & Qgis::FeatureRequestFlag::ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
            )
          )
         return false;

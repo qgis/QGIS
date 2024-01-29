@@ -85,7 +85,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid, const QString &filterExpression = QString() )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid, const QString &filterExpression = QString() )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * \see overrideDefaultGeometryCheck
      * \since QGIS 3.14
      */
-    QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+    Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
 
     /**
      * Saves this source definition to a QVariantMap, wrapped in a QVariant.

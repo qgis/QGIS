@@ -124,11 +124,11 @@ QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &para
 
   switch ( source->invalidGeometryCheck() )
   {
-    case QgsFeatureRequest::GeometryNoCheck:
+    case Qgis::InvalidGeometryCheck::NoCheck:
       break;
 
-    case QgsFeatureRequest::GeometrySkipInvalid:
-    case QgsFeatureRequest::GeometryAbortOnInvalid:
+    case Qgis::InvalidGeometryCheck::SkipInvalid:
+    case Qgis::InvalidGeometryCheck::AbortOnInvalid:
     {
       if ( geos.validateCoverage( 0, nullptr, &error ) != Qgis::CoverageValidityResult::Valid )
       {

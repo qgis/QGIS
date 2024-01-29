@@ -157,7 +157,7 @@ bool QgsCategorizeUsingStyleAlgorithm::prepareAlgorithm( const QVariantMap &para
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( mExpression.referencedColumns(), mLayerFields );
   if ( !mExpression.needsGeometry() )
-    req.setFlags( QgsFeatureRequest::NoGeometry );
+    req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   mIterator = layer->getFeatures( req );
 

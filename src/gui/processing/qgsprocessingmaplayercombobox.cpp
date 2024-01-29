@@ -249,7 +249,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     mFeatureLimit = -1;
     mFilterExpression.clear();
     mIsOverridingDefaultGeometryCheck = false;
-    mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+    mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
   }
 
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )

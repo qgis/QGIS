@@ -88,7 +88,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   const QgsGeometry clipGeom = parameterAsExtentGeometry( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
 
   const double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
-  QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   QgsFeature f;
   int i = -1;
   while ( inputIt.nextFeature( f ) )

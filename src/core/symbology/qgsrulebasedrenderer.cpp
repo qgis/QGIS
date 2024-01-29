@@ -1618,7 +1618,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QgsFeatureRequest req;
-    req.setFlags( QgsFeatureRequest::EmbeddedSymbols | QgsFeatureRequest::NoGeometry );
+    req.setFlags( Qgis::FeatureRequestFlag::EmbeddedSymbols | Qgis::FeatureRequestFlag::NoGeometry );
     req.setNoAttributes();
     QgsFeatureIterator it = layer->getFeatures( req );
     QgsFeature feature;

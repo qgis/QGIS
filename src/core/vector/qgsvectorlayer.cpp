@@ -539,7 +539,7 @@ void QgsVectorLayer::selectByRect( QgsRectangle &rect, Qgis::SelectBehavior beha
 
   QgsFeatureIterator features = getFeatures( QgsFeatureRequest()
                                 .setFilterRect( rect )
-                                .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
+                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect | Qgis::FeatureRequestFlag::NoGeometry )
                                 .setNoAttributes() );
 
   QgsFeature feat;
@@ -569,7 +569,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   {
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
                                 .setExpressionContext( *context )
-                                .setFlags( QgsFeatureRequest::NoGeometry )
+                                .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
                                 .setNoAttributes();
 
     QgsFeatureIterator features = getFeatures( request );
@@ -595,7 +595,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
 
     //refine request
     if ( !exp.needsGeometry() )
-      request.setFlags( QgsFeatureRequest::NoGeometry );
+      request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     request.setSubsetOfAttributes( exp.referencedColumns(), fields() );
 
     QgsFeatureIterator features = getFeatures( request );
@@ -693,7 +693,7 @@ void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
 
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFilterRect( rect )
-                                        .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
+                                        .setFlags( Qgis::FeatureRequestFlag::NoGeometry | Qgis::FeatureRequestFlag::ExactIntersect )
                                         .setNoAttributes() );
 
   QgsFeatureIds selectIds;
@@ -1303,7 +1303,7 @@ QgsGeometry QgsVectorLayer::getGeometry( QgsFeatureId fid ) const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsFeature feature;
-  getFeatures( QgsFeatureRequest( fid ).setFlags( QgsFeatureRequest::SubsetOfAttributes ) ).nextFeature( feature );
+  getFeatures( QgsFeatureRequest( fid ).setFlags( Qgis::FeatureRequestFlag::SubsetOfAttributes ) ).nextFeature( feature );
   if ( feature.isValid() )
     return feature.geometry();
   else
@@ -3992,7 +3992,7 @@ QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest reques
     return QgsFeatureIterator();
 
   if ( geometryType() == Qgis::GeometryType::Null )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   if ( mSelectedFeatureIds.count() == 1 )
     request.setFilterFid( *mSelectedFeatureIds.constBegin() );
@@ -4678,7 +4678,7 @@ QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
       attList << index;
 
       QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                            .setFlags( QgsFeatureRequest::NoGeometry )
+                                            .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
                                             .setSubsetOfAttributes( attList ) );
 
       QgsFeature f;
@@ -4778,7 +4778,7 @@ QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &sub
 
       QgsFeatureRequest request;
       request.setSubsetOfAttributes( attList );
-      request.setFlags( QgsFeatureRequest::NoGeometry );
+      request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
       QString fieldName = mFields.at( index ).name();
       request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
       QgsFeatureIterator fit = getFeatures( request );
@@ -4912,7 +4912,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
       attList << index;
 
       QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                            .setFlags( QgsFeatureRequest::NoGeometry )
+                                            .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
                                             .setSubsetOfAttributes( attList ) );
 
       QgsFeature f;

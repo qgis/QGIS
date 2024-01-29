@@ -1645,6 +1645,65 @@ class CORE_EXPORT Qgis
     Q_ENUM( MakeValidMethod )
 
     /**
+     * Flags for controlling feature requests.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::Flag
+     *
+     * \since QGIS 3.36
+     */
+    enum class FeatureRequestFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, Flag ) : int
+      {
+      NoFlags            = 0, //!< No flags are set
+      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
+      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect     = 4,   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      IgnoreStaticNodesDuringExpressionCompilation = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)
+      EmbeddedSymbols    = 16,  //!< Retrieve any embedded feature symbology (since QGIS 3.20)
+    };
+    Q_ENUM( FeatureRequestFlag )
+
+    /**
+     * Flags for controlling feature requests.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::Flags
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( FeatureRequestFlags, FeatureRequestFlag )
+    Q_FLAG( FeatureRequestFlags )
+
+    /**
+     * Types of feature request filters.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::FilterType
+     *
+     * \since QGIS 3.36
+     */
+    enum class FeatureRequestFilterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, FilterType ) : int
+      {
+      NoFilter SIP_MONKEYPATCH_COMPAT_NAME( FilterNone ), //!< No filter is applied
+      Fid SIP_MONKEYPATCH_COMPAT_NAME( FilterFid ), //!< Filter using feature ID
+      Expression SIP_MONKEYPATCH_COMPAT_NAME( FilterExpression ), //!< Filter using expression
+      Fids SIP_MONKEYPATCH_COMPAT_NAME( FilterFids ) //!< Filter using feature IDs
+    };
+    Q_ENUM( FeatureRequestFilterType )
+
+    /**
+     * Methods for handling of features with invalid geometries
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureRequest::InvalidGeometryCheck
+     *
+     * \since QGIS 3.36
+     */
+    enum class InvalidGeometryCheck SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, InvalidGeometryCheck ) : int
+      {
+      NoCheck SIP_MONKEYPATCH_COMPAT_NAME( GeometryNoCheck ) = 0, //!< No invalid geometry checking
+      SkipInvalid SIP_MONKEYPATCH_COMPAT_NAME( GeometrySkipInvalid ) = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
+      AbortOnInvalid SIP_MONKEYPATCH_COMPAT_NAME( GeometryAbortOnInvalid ) = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+    };
+    Q_ENUM( InvalidGeometryCheck )
+
+    /**
      * Feature request spatial filter types.
      *
      * \since QGIS 3.22
@@ -4349,7 +4408,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorFileWriterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorLayerTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRequestFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

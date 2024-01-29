@@ -341,10 +341,10 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   requestOnlyGeoms.setNoAttributes();
 
   QgsFeatureRequest requestOnlyAttrs;
-  requestOnlyAttrs.setFlags( QgsFeatureRequest::NoGeometry );
+  requestOnlyAttrs.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   QgsFeatureRequest requestOnlyIds;
-  requestOnlyIds.setFlags( QgsFeatureRequest::NoGeometry );
+  requestOnlyIds.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   requestOnlyIds.setNoAttributes();
 
   // make a set of used feature IDs so that we do not try to reuse them for newly added features

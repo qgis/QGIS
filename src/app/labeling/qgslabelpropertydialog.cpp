@@ -115,7 +115,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
     return;
   }
 
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( mCurLabelFeat ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( mCurLabelFeat ) )
   {
     return;
   }

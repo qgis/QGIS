@@ -373,7 +373,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
 
   if ( renderer->usesEmbeddedSymbols() )
   {
-    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::EmbeddedSymbols );
+    featureRequest.setFlags( featureRequest.flags() | Qgis::FeatureRequestFlag::EmbeddedSymbols );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

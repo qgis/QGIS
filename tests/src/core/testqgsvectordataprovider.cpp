@@ -151,7 +151,7 @@ void TestQgsVectorDataProvider::select_checkContents_data()
 
   QTest::newRow( "all" ) << QgsFeatureRequest() << 17 << true << true << -1;
   QTest::newRow( "no attrs" ) << QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) << 17 << true << false << -1;
-  QTest::newRow( "no geom" ) << QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) << 17 << false << true << -1;
+  QTest::newRow( "no geom" ) << QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ) << 17 << false << true << -1;
   QTest::newRow( "one attr" ) << QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << 1 ) << 17 << true << true << 1;
 }
 
@@ -198,8 +198,8 @@ void TestQgsVectorDataProvider::select_checkSubset_data()
   // OGR always does exact intersection test
   //QTest::newRow("rect1") << QgsFeatureRequest().setExtent(rect1) << 2;
   //QTest::newRow("rect2") << QgsFeatureRequest().setExtent(rect2) << 4;
-  QTest::newRow( "rect1 + exact intersect" ) << QgsFeatureRequest().setFilterRect( rect1 ).setFlags( QgsFeatureRequest::ExactIntersect ) << 0;
-  QTest::newRow( "rect2 + exact intersect" ) << QgsFeatureRequest().setFilterRect( rect2 ).setFlags( QgsFeatureRequest::ExactIntersect ) << 2;
+  QTest::newRow( "rect1 + exact intersect" ) << QgsFeatureRequest().setFilterRect( rect1 ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) << 0;
+  QTest::newRow( "rect2 + exact intersect" ) << QgsFeatureRequest().setFilterRect( rect2 ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) << 2;
 }
 
 void TestQgsVectorDataProvider::select_checkSubset()
@@ -226,8 +226,8 @@ void TestQgsVectorDataProvider::featureAtId()
   QgsVectorDataProvider *pr = vlayerLines->dataProvider();
   QgsFeatureRequest request;
   request.setFilterFid( 4 );
-  QVERIFY( request.filterType() == QgsFeatureRequest::FilterFid );
-  QVERIFY( request.filterFid() == 4 );
+  QCOMPARE( request.filterType(), Qgis::FeatureRequestFilterType::Fid );
+  QCOMPARE( request.filterFid(), 4LL );
 
   QgsFeatureIterator fi = pr->getFeatures( request );
   QgsFeature feature;
@@ -235,7 +235,7 @@ void TestQgsVectorDataProvider::featureAtId()
   QVERIFY( fi.nextFeature( feature ) );
   QVERIFY( feature.isValid() );
   qDebug( "FID: %lld", feature.id() );
-  QVERIFY( feature.id() == 4 );
+  QCOMPARE( feature.id(), 4LL );
 
   // further invocations are not valid
   QVERIFY( !fi.nextFeature( feature ) );

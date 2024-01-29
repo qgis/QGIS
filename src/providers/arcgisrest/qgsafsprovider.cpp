@@ -395,7 +395,7 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
   }
 
   // REST API requires a full definition of features, so we have to read their initial values first
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) );
   QgsFeature feature;
 
   QgsFeatureList updatedFeatures;

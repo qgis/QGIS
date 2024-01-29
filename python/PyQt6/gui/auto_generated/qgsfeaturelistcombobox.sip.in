@@ -9,7 +9,6 @@
 
 
 
-
 class QgsFeatureListComboBox : QComboBox
 {
 %Docstring(signature="appended")

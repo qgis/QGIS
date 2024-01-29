@@ -103,8 +103,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   }
 
   request.setFlags( expressionNeedsGeometry ?
-                    QgsFeatureRequest::NoFlags :
-                    QgsFeatureRequest::NoGeometry )
+                    Qgis::FeatureRequestFlag::NoFlags :
+                    Qgis::FeatureRequestFlag::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
 
   if ( mFidsSet )

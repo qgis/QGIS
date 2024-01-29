@@ -21,7 +21,6 @@
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
 #include "qgsmessagelog.h"
-#include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsgeometryengine.h"
 
@@ -31,7 +30,7 @@
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
 {
-  if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
+  if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids && request.filterFids().isEmpty() )
   {
     mClosed = true;
     iteratorClosed();
@@ -122,22 +121,22 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, '(' + mSource->mSqlWhereClause + ')' );
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
   {
     QString fidWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
 
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidWhereClause );
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids )
   {
     QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
 
     whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  else if ( request.filterType() == Qgis::FeatureRequestFilterType::Expression )
   {
     // ensure that all attributes required for expression filter are being fetched
-    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    if ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes )
     {
       QgsAttributeList attrs = mRequest.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared
@@ -148,7 +147,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
     //IMPORTANT - this MUST be the last clause added!
-    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+    QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source, request.flags() & Qgis::FeatureRequestFlag::IgnoreStaticNodesDuringExpressionCompilation );
 
     if ( compiler.compile( request.filterExpression() ) == QgsSqlExpressionCompiler::Complete )
     {
@@ -211,7 +210,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
 
     // ensure that all attributes required for order by are fetched
-    if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    if ( !mOrderByCompiled && mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes )
     {
       QgsAttributeList attrs = mRequest.subsetOfAttributes();
       const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
@@ -388,7 +387,7 @@ bool QgsPostgresFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
   // setup simplification of geometries to fetch
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) &&
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) &&
        simplifyMethod.methodType() != QgsSimplifyMethod::NoSimplification &&
        !simplifyMethod.forceLocalOptimization() )
   {
@@ -635,7 +634,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                          qBoxGeog );
   }
 
-  if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  if ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
   {
     QString curveToLineFn; // in PostGIS < 1.5 the st_curvetoline function does not exist
     if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
@@ -670,7 +669,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
 bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long limit, bool closeOnFail, const QString &orderBy )
 {
-  mFetchGeometry = ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
+  mFetchGeometry = ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry )
                      || mFilterRequiresGeometry
                      || ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin && !mTransform.isShortCircuited() ) )
                    && !mSource->mGeometryColumn.isNull();
@@ -807,7 +806,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
       return false;
   }
 
-  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  bool subsetOfAttributes = mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes;
   const auto constAllAttributesList = subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
   for ( int idx : constAllAttributesList )
   {
@@ -910,7 +909,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
   QgsFeatureId fid = 0;
 
-  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  bool subsetOfAttributes = mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes;
   QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
 
   switch ( mSource->mPrimaryKeyType )

@@ -82,12 +82,12 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   QVariantList args;
   mQry = QSqlQuery( *mConnection );
 
-  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  if ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes )
   {
     mAttributeList = mRequest.subsetOfAttributes();
 
     // ensure that all attributes required for expression filter are being fetched
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression )
     {
       const QSet<int> attributeIndexes = mRequest.filterExpression()->referencedAttributeIndexes( mSource->mFields );
       for ( int attrIdx : attributeIndexes )
@@ -118,10 +118,10 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( !mSource->mGeometryColumn.isNull() )
   {
     // fetch geometry if requested
-    mFetchGeometry = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0
+    mFetchGeometry = ( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) == 0
                      || !mFilterRect.isNull()
                      || mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() )
+    if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() )
     {
       mFetchGeometry = true;
     }
@@ -141,7 +141,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
 
         args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
-        if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0
+        if ( ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) != 0
              && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox )
         {
           // sdo_relate requires Spatial
@@ -173,24 +173,24 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
 
   switch ( mRequest.filterType() )
   {
-    case QgsFeatureRequest::FilterFid:
+    case Qgis::FeatureRequestFilterType::Fid:
     {
       QString fidWhereClause = QgsOracleUtils::whereClause( mRequest.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared, args );
       whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidWhereClause );
     }
     break;
 
-    case QgsFeatureRequest::FilterFids:
+    case Qgis::FeatureRequestFilterType::Fids:
     {
       QString fidsWhereClause = QgsOracleUtils::whereClause( mRequest.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared, args );
       whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidsWhereClause );
     }
     break;
 
-    case QgsFeatureRequest::FilterNone:
+    case Qgis::FeatureRequestFilterType::NoFilter:
       break;
 
-    case QgsFeatureRequest::FilterExpression:
+    case Qgis::FeatureRequestFilterType::Expression:
       //handled below
       break;
 
@@ -222,9 +222,9 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   mCompileStatus = NoCompilation;
   QString fallbackStatement;
   bool useFallback = false;
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.filterType() == Qgis::FeatureRequestFilterType::Expression )
   {
-    QgsOracleExpressionCompiler compiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+    QgsOracleExpressionCompiler compiler( mSource, request.flags() & Qgis::FeatureRequestFlag::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( mRequest.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -338,7 +338,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
           continue;
         }
 
-        if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
+        if ( ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) == 0 )
         {
           // even if we could use sdo_filter earlier, we still need to double-check the results
           // as sdo_filter can return results outside the filter (it's only a first-pass

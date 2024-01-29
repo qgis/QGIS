@@ -213,7 +213,7 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
     if ( transformedPolygon.isNull() )
     {
       request.setFilterRect( context.extent() );
-      request.setFlags( QgsFeatureRequest::ExactIntersect );
+      request.setFlags( Qgis::FeatureRequestFlag::ExactIntersect );
     }
     else
     {

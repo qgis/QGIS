@@ -61,7 +61,7 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
   featureLimit = map.value( QStringLiteral( "feature_limit" ), -1 ).toLongLong();
   filterExpression = map.value( QStringLiteral( "filter" ) ).toString();
   flags = static_cast< Flags >( map.value( QStringLiteral( "flags" ), 0 ).toInt() );
-  geometryCheck = static_cast< QgsFeatureRequest::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), QgsFeatureRequest::GeometryAbortOnInvalid ).toInt() );
+  geometryCheck = static_cast< Qgis::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), static_cast< int >( Qgis::InvalidGeometryCheck::AbortOnInvalid ) ).toInt() );
   return true;
 }
 
@@ -6175,15 +6175,15 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     QString geometryCheckString;
     switch ( fromVar.geometryCheck )
     {
-      case QgsFeatureRequest::GeometryNoCheck:
+      case Qgis::InvalidGeometryCheck::NoCheck:
         geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryNoCheck" );
         break;
 
-      case QgsFeatureRequest::GeometrySkipInvalid:
+      case Qgis::InvalidGeometryCheck::SkipInvalid:
         geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometrySkipInvalid" );
         break;
 
-      case QgsFeatureRequest::GeometryAbortOnInvalid:
+      case Qgis::InvalidGeometryCheck::AbortOnInvalid:
         geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryAbortOnInvalid" );
         break;
     }

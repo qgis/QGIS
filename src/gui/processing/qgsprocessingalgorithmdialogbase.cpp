@@ -977,9 +977,9 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   setupUi( this );
   setPanelTitle( tr( "Algorithm Settings" ) );
 
-  mComboInvalidFeatureFiltering->addItem( tr( "Do not Filter (Better Performance)" ), QgsFeatureRequest::GeometryNoCheck );
-  mComboInvalidFeatureFiltering->addItem( tr( "Skip (Ignore) Features with Invalid Geometries" ), QgsFeatureRequest::GeometrySkipInvalid );
-  mComboInvalidFeatureFiltering->addItem( tr( "Stop Algorithm Execution When a Geometry is Invalid" ), QgsFeatureRequest::GeometryAbortOnInvalid );
+  mComboInvalidFeatureFiltering->addItem( tr( "Do not Filter (Better Performance)" ), QVariant::fromValue( Qgis::InvalidGeometryCheck::NoCheck ) );
+  mComboInvalidFeatureFiltering->addItem( tr( "Skip (Ignore) Features with Invalid Geometries" ), QVariant::fromValue( Qgis::InvalidGeometryCheck::SkipInvalid ) );
+  mComboInvalidFeatureFiltering->addItem( tr( "Stop Algorithm Execution When a Geometry is Invalid" ), QVariant::fromValue( Qgis::InvalidGeometryCheck::AbortOnInvalid ) );
 
   mTemporaryFolderWidget->setDialogTitle( tr( "Select Temporary Directory" ) );
   mTemporaryFolderWidget->setStorageMode( QgsFileWidget::GetDirectory );
@@ -1059,7 +1059,7 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
 
 void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
 {
-  whileBlocking( mComboInvalidFeatureFiltering )->setCurrentIndex( mComboInvalidFeatureFiltering->findData( static_cast< int >( context->invalidGeometryCheck() ) ) );
+  whileBlocking( mComboInvalidFeatureFiltering )->setCurrentIndex( mComboInvalidFeatureFiltering->findData( QVariant::fromValue( context->invalidGeometryCheck() ) ) );
   whileBlocking( mDistanceUnitsCombo )->setCurrentIndex( mDistanceUnitsCombo->findData( QVariant::fromValue( context->distanceUnit() ) ) );
   whileBlocking( mAreaUnitsCombo )->setCurrentIndex( mAreaUnitsCombo->findData( QVariant::fromValue( context->areaUnit() ) ) );
   whileBlocking( mTemporaryFolderWidget )->setFilePath( context->temporaryFolder() );
@@ -1067,9 +1067,9 @@ void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingConte
   whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( context->logLevel() ) ) );
 }
 
-QgsFeatureRequest::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
+Qgis::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
 {
-  return static_cast< QgsFeatureRequest::InvalidGeometryCheck >( mComboInvalidFeatureFiltering->currentData().toInt() );
+  return mComboInvalidFeatureFiltering->currentData().value< Qgis::InvalidGeometryCheck >();
 }
 
 Qgis::DistanceUnit QgsProcessingContextOptionsWidget::distanceUnit() const

@@ -21,7 +21,6 @@
 #include <QCompleter>
 
 #include "qgsfeature.h"
-#include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
 
 class QToolButton;

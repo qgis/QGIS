@@ -329,7 +329,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     {
       int labelFieldId = vlayer->fields().lookupField( labelField );
       QgsFeature f;
-      if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+      if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
       {
         QString labelText = f.attribute( labelFieldId ).toString();
         if ( trunc > 0 && labelText.length() > trunc )
@@ -479,7 +479,7 @@ bool QgsMapToolLabel::currentFeature( QgsFeature &f, bool fetchGeom )
   }
   return vlayer->getFeatures( QgsFeatureRequest()
                               .setFilterFid( mCurrentLabel.pos.featureId )
-                              .setFlags( fetchGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry )
+                              .setFlags( fetchGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry )
                             ).nextFeature( f );
 }
 
@@ -496,7 +496,7 @@ QFont QgsMapToolLabel::currentLabelFont()
     font = labelSettings.format().font();
 
     QgsFeature f;
-    if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+    if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
     {
       //size
       int sizeIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Size, mCurrentLabel.settings, vlayer );
@@ -813,7 +813,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   }
 
   QgsFeature f;
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }
@@ -878,7 +878,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
   }
 
   QgsFeature f;
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }
@@ -960,7 +960,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
   }
 
   QgsFeature f;
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }
@@ -1073,7 +1073,7 @@ bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer *vlayer, QgsFeatureId 
   }
 
   QgsFeature f;
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
   {
     return false;
   }

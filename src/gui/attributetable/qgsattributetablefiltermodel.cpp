@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QItemSelectionModel>
+#include <QApplication>
 
 #include "qgis.h"
 #include "qgsattributetablefiltermodel.h"
@@ -27,7 +28,6 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvasutils.h"
@@ -507,12 +507,12 @@ void QgsAttributeTableFilterModel::filterFeatures()
   request.setSubsetOfAttributes( mFilterExpression.referencedColumns(), mTableModel->layer()->fields() );
   if ( !fetchGeom )
   {
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   }
   else
   {
     // force geometry extraction if the filter requests it
-    request.setFlags( request.flags() & ~QgsFeatureRequest::NoGeometry );
+    request.setFlags( request.flags() & ~static_cast<int>( Qgis::FeatureRequestFlag::NoGeometry ) );
   }
   QgsFeatureIterator featIt = mTableModel->layer()->getFeatures( request );
 

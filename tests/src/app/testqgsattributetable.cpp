@@ -216,23 +216,23 @@ void TestQgsAttributeTable::testNoGeom()
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry );
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
   // try changing existing dialog to no geometry mode
   dlg->mFeatureFilterWidget->filterShowAll();
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry );
 
   // and back to a geometry mode
   dlg->mFeatureFilterWidget->filterVisible();
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
 }
 
@@ -292,22 +292,22 @@ void TestQgsAttributeTable::testSelected()
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no selection!
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 
   // make a selection
   tempLayer->selectByIds( QgsFeatureIds() << 1 << 3 );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with selection when dialog created
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
   // remove selection
   tempLayer->removeSelection();
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
 
@@ -326,27 +326,27 @@ void TestQgsAttributeTable::testEdited()
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no edited features!
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 
   // make some edits
   tempLayer->startEditing();
   QVERIFY( tempLayer->changeAttributeValue( 1, 1, 5.5 ) );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 );
   QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 1 1)" ) );
   QVERIFY( tempLayer->changeGeometry( 3, geom ) );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with edited features when dialog created
   dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
   // remove edits
   tempLayer->rollBack();
-  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
 
