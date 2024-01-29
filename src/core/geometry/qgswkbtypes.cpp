@@ -115,6 +115,11 @@ Q_GLOBAL_STATIC_WITH_ARGS( WkbEntries, sWkbEntries, (
   { Qgis::WkbType::MultiPolygonM, WkbEntry( QLatin1String( "MultiPolygonM" ), true, Qgis::WkbType::MultiPolygonM, Qgis::WkbType::PolygonM, Qgis::WkbType::MultiPolygon, Qgis::GeometryType::Polygon, false, true ) },
   { Qgis::WkbType::MultiPolygonZM, WkbEntry( QLatin1String( "MultiPolygonZM" ), true, Qgis::WkbType::MultiPolygonZM, Qgis::WkbType::PolygonZM, Qgis::WkbType::MultiPolygon, Qgis::GeometryType::Polygon, true, true ) },
   { Qgis::WkbType::MultiPolygon25D, WkbEntry( QLatin1String( "MultiPolygon25D" ), true, Qgis::WkbType::MultiPolygon25D, Qgis::WkbType::Polygon25D, Qgis::WkbType::MultiPolygon, Qgis::GeometryType::Polygon, true, false ) },
+  //TIN
+  { Qgis::WkbType::TIN, WkbEntry( QLatin1String( "TIN" ), true, Qgis::WkbType::TIN, Qgis::WkbType::Triangle, Qgis::WkbType::TIN, Qgis::GeometryType::Polygon, false, false ) },
+  { Qgis::WkbType::TINZ, WkbEntry( QLatin1String( "TINZ" ), true, Qgis::WkbType::TINZ, Qgis::WkbType::TriangleZ, Qgis::WkbType::TIN, Qgis::GeometryType::Polygon, true, false ) },
+  { Qgis::WkbType::TINM, WkbEntry( QLatin1String( "TINM" ), true, Qgis::WkbType::TINM, Qgis::WkbType::TriangleM, Qgis::WkbType::TIN, Qgis::GeometryType::Polygon, false, true ) },
+  { Qgis::WkbType::TINZM, WkbEntry( QLatin1String( "TINZM" ), true, Qgis::WkbType::TINZM, Qgis::WkbType::TriangleZM, Qgis::WkbType::TIN, Qgis::GeometryType::Polygon, true, true ) },
   //multisurface
   { Qgis::WkbType::MultiSurface, WkbEntry( QLatin1String( "MultiSurface" ), true, Qgis::WkbType::MultiSurface, Qgis::WkbType::CurvePolygon, Qgis::WkbType::MultiSurface, Qgis::GeometryType::Polygon, false, false ) },
   { Qgis::WkbType::MultiSurfaceZ, WkbEntry( QLatin1String( "MultiSurfaceZ" ), true, Qgis::WkbType::MultiSurfaceZ, Qgis::WkbType::CurvePolygonZ, Qgis::WkbType::MultiSurface, Qgis::GeometryType::Polygon, true, false ) },
@@ -161,6 +166,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::LineString: return QObject::tr( "LineString" );
     case Qgis::WkbType::Polygon: return QObject::tr( "Polygon" );
     case Qgis::WkbType::Triangle: return QObject::tr( "Triangle" );
+    case Qgis::WkbType::TIN: return QObject::tr( "TIN" );
     case Qgis::WkbType::MultiPoint: return QObject::tr( "MultiPoint" );
     case Qgis::WkbType::MultiLineString: return QObject::tr( "MultiLine" );
     case Qgis::WkbType::MultiPolygon: return QObject::tr( "MultiPolygon" );
@@ -175,6 +181,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::LineStringZ: return QObject::tr( "LineStringZ" );
     case Qgis::WkbType::PolygonZ: return QObject::tr( "PolygonZ" );
     case Qgis::WkbType::TriangleZ: return QObject::tr( "TriangleZ" );
+    case Qgis::WkbType::TINZ: return QObject::tr( "TINZ" );
     case Qgis::WkbType::MultiPointZ: return QObject::tr( "MultiPointZ" );
     case Qgis::WkbType::MultiLineStringZ: return QObject::tr( "MultiLineZ" );
     case Qgis::WkbType::MultiPolygonZ: return QObject::tr( "MultiPolygonZ" );
@@ -188,6 +195,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::LineStringM: return QObject::tr( "LineStringM" );
     case Qgis::WkbType::PolygonM: return QObject::tr( "PolygonM" );
     case Qgis::WkbType::TriangleM: return QObject::tr( "TriangleM" );
+    case Qgis::WkbType::TINM: return QObject::tr( "TINM" );
     case Qgis::WkbType::MultiPointM: return QObject::tr( "MultiPointM" );
     case Qgis::WkbType::MultiLineStringM: return QObject::tr( "MultiLineStringM" );
     case Qgis::WkbType::MultiPolygonM: return QObject::tr( "MultiPolygonM" );
@@ -210,6 +218,7 @@ QString QgsWkbTypes::translatedDisplayString( Qgis::WkbType type )
     case Qgis::WkbType::MultiCurveZM: return QObject::tr( "MultiCurveZM" );
     case Qgis::WkbType::MultiSurfaceZM: return QObject::tr( "MultiSurfaceZM" );
     case Qgis::WkbType::TriangleZM: return QObject::tr( "TriangleZM" );
+    case Qgis::WkbType::TINZM: return QObject::tr( "TINZM" );
     case Qgis::WkbType::Point25D: return QObject::tr( "Point25D" );
     case Qgis::WkbType::LineString25D: return QObject::tr( "LineString25D" );
     case Qgis::WkbType::Polygon25D: return QObject::tr( "Polygon25D" );

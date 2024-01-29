@@ -111,19 +111,19 @@ class CORE_EXPORT QgsWkbTypes
           return Qgis::WkbType::PolygonZM;
 
         case Qgis::WkbType::Triangle:
-          // case MultiTriangle:
+        case Qgis::WkbType::TIN:
           return Qgis::WkbType::Triangle;
 
         case Qgis::WkbType::TriangleZ:
-          // case MultiTriangleZ:
+        case Qgis::WkbType::TINZ:
           return Qgis::WkbType::TriangleZ;
 
         case Qgis::WkbType::TriangleM:
-          // case MultiTriangleM:
+        case Qgis::WkbType::TINM:
           return Qgis::WkbType::TriangleM;
 
         case Qgis::WkbType::TriangleZM:
-          // case MultiTriangleZM:
+        case Qgis::WkbType::TINZM:
           return Qgis::WkbType::TriangleZM;
 
         case Qgis::WkbType::CircularString:
@@ -205,18 +205,21 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::Unknown:
           return Qgis::WkbType::Unknown;
 
-        // until we support TIN types, use multipolygon
         case Qgis::WkbType::Triangle:
-          return Qgis::WkbType::MultiPolygon;
+        case Qgis::WkbType::TIN:
+          return Qgis::WkbType::TIN;
 
         case Qgis::WkbType::TriangleZ:
-          return Qgis::WkbType::MultiPolygonZ;
+        case Qgis::WkbType::TINZ:
+          return Qgis::WkbType::TINZ;
 
         case Qgis::WkbType::TriangleM:
-          return Qgis::WkbType::MultiPolygonM;
+        case Qgis::WkbType::TINM:
+          return Qgis::WkbType::TINM;
 
         case Qgis::WkbType::TriangleZM:
-          return Qgis::WkbType::MultiPolygonZM;
+        case Qgis::WkbType::TINZM:
+          return Qgis::WkbType::TINZM;
 
         case Qgis::WkbType::GeometryCollection:
           return Qgis::WkbType::GeometryCollection;
@@ -384,6 +387,10 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::TriangleZ:
         case Qgis::WkbType::TriangleM:
         case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::TIN:
+        case Qgis::WkbType::TINZ:
+        case Qgis::WkbType::TINM:
+        case Qgis::WkbType::TINZM:
           return Qgis::WkbType::Unknown;
 
         case Qgis::WkbType::GeometryCollection:
@@ -612,6 +619,10 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::TriangleM:
         case Qgis::WkbType::TriangleZ:
         case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::TIN:
+        case Qgis::WkbType::TINM:
+        case Qgis::WkbType::TINZ:
+        case Qgis::WkbType::TINZM:
         case Qgis::WkbType::Unknown:
           return type;
 
@@ -680,6 +691,12 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::MultiPolygonZM:
         case Qgis::WkbType::MultiPolygon25D:
           return Qgis::WkbType::MultiPolygon;
+
+        case Qgis::WkbType::TIN:
+        case Qgis::WkbType::TINM:
+        case Qgis::WkbType::TINZ:
+        case Qgis::WkbType::TINZM:
+          return Qgis::WkbType::TIN;
 
         case Qgis::WkbType::GeometryCollection:
         case Qgis::WkbType::GeometryCollectionZ:
@@ -912,15 +929,19 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::Polygon:
         case Qgis::WkbType::MultiPolygon:
         case Qgis::WkbType::Triangle:
+        case Qgis::WkbType::TIN:
         case Qgis::WkbType::PolygonZ:
         case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::TINZ:
         case Qgis::WkbType::MultiPolygonZ:
         case Qgis::WkbType::PolygonM:
         case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::TINM:
         case Qgis::WkbType::MultiPolygonM:
         case Qgis::WkbType::PolygonZM:
         case Qgis::WkbType::MultiPolygonZM:
         case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::TINZM:
         case Qgis::WkbType::Polygon25D:
         case Qgis::WkbType::MultiPolygon25D:
         case Qgis::WkbType::CurvePolygon:
@@ -982,6 +1003,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringZ:
         case Qgis::WkbType::PolygonZ:
         case Qgis::WkbType::TriangleZ:
+        case Qgis::WkbType::TINZ:
         case Qgis::WkbType::MultiPointZ:
         case Qgis::WkbType::MultiLineStringZ:
         case Qgis::WkbType::MultiPolygonZ:
@@ -995,6 +1017,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringZM:
         case Qgis::WkbType::PolygonZM:
         case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::TINZM:
         case Qgis::WkbType::MultiPointZM:
         case Qgis::WkbType::MultiLineStringZM:
         case Qgis::WkbType::MultiPolygonZM:
@@ -1032,6 +1055,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringM:
         case Qgis::WkbType::PolygonM:
         case Qgis::WkbType::TriangleM:
+        case Qgis::WkbType::TINM:
         case Qgis::WkbType::MultiPointM:
         case Qgis::WkbType::MultiLineStringM:
         case Qgis::WkbType::MultiPolygonM:
@@ -1045,6 +1069,7 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::LineStringZM:
         case Qgis::WkbType::PolygonZM:
         case Qgis::WkbType::TriangleZM:
+        case Qgis::WkbType::TINZM:
         case Qgis::WkbType::MultiPointZM:
         case Qgis::WkbType::MultiLineStringZM:
         case Qgis::WkbType::MultiPolygonZM:

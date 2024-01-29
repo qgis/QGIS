@@ -2364,6 +2364,10 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case Qgis::WkbType::TriangleZ:
       case Qgis::WkbType::TriangleM:
       case Qgis::WkbType::TriangleZM:
+      case Qgis::WkbType::TIN:
+      case Qgis::WkbType::TINZ:
+      case Qgis::WkbType::TINM:
+      case Qgis::WkbType::TINZM:
       case Qgis::WkbType::Unknown:
       case Qgis::WkbType::NoGeometry:
 

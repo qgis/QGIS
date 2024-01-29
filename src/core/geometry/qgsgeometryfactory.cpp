@@ -117,7 +117,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   {
     geom = std::make_unique< QgsMultiSurface >();
   }
-  else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
+  else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) || trimmed.startsWith( QLatin1String( "TIN" ), Qt::CaseInsensitive ) )
   {
     geom = std::make_unique< QgsMultiPolygon >();
   }
@@ -245,6 +245,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( Qgis::
     case Qgis::WkbType::MultiLineString:
       return std::make_unique< QgsMultiLineString >();
     case Qgis::WkbType::MultiPolygon:
+    case Qgis::WkbType::TIN:
       return std::make_unique< QgsMultiPolygon >();
     case Qgis::WkbType::MultiPoint:
       return std::make_unique< QgsMultiPoint >();
@@ -277,6 +278,7 @@ std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfTyp
       collect = std::make_unique< QgsMultiCurve >();
       break;
     case Qgis::WkbType::MultiPolygon:
+    case Qgis::WkbType::TIN:
       collect = std::make_unique< QgsMultiPolygon >();
       break;
     case Qgis::WkbType::MultiSurface:

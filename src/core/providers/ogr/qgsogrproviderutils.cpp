@@ -1739,13 +1739,17 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
       return wkbMultiLineStringZM;
 
     case Qgis::WkbType::MultiPolygon:
+    case Qgis::WkbType::TIN:
       return wkbMultiPolygon;
     case Qgis::WkbType::MultiPolygon25D:
     case Qgis::WkbType::MultiPolygonZ:
+    case Qgis::WkbType::TINZ:
       return wkbMultiPolygon25D;
     case Qgis::WkbType::MultiPolygonM:
+    case Qgis::WkbType::TINM:
       return wkbMultiPolygonM;
     case Qgis::WkbType::MultiPolygonZM:
+    case Qgis::WkbType::TINZM:
       return wkbMultiPolygonZM;
 
     case Qgis::WkbType::CircularString:
@@ -1838,6 +1842,7 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbMultiLineString:
       return Qgis::WkbType::MultiLineString;
     case wkbMultiPolygon:
+    case wkbTIN:
       return Qgis::WkbType::MultiPolygon;
     case wkbGeometryCollection:
       return Qgis::WkbType::GeometryCollection;
@@ -1861,6 +1866,7 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbCompoundCurveZ:
       return Qgis::WkbType::CompoundCurveZ;
     case wkbCurvePolygonZ:
+    case wkbTINZ:
       return Qgis::WkbType::PolygonZ;
     case wkbMultiCurveZ:
       return Qgis::WkbType::MultiCurveZ;
@@ -1880,6 +1886,7 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbMultiLineStringM:
       return Qgis::WkbType::LineStringM;
     case wkbMultiPolygonM:
+    case wkbTINM:
       return Qgis::WkbType::PolygonM;
     case wkbGeometryCollectionM:
       return Qgis::WkbType::GeometryCollectionM;
@@ -1907,6 +1914,7 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
     case wkbMultiLineStringZM:
       return Qgis::WkbType::MultiLineStringZM;
     case wkbMultiPolygonZM:
+    case wkbTINZM:
       return Qgis::WkbType::MultiPolygonZM;
     case wkbGeometryCollectionZM:
       return Qgis::WkbType::GeometryCollectionZM;
@@ -1949,10 +1957,6 @@ Qgis::WkbType QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type 
       return Qgis::WkbType::Unknown; // abstract types - no direct mapping to QGIS types
 
     case wkbLinearRing:
-    case wkbTIN:
-    case wkbTINZ:
-    case wkbTINM:
-    case wkbTINZM:
     case wkbPolyhedralSurface:
     case wkbPolyhedralSurfaceZ:
     case wkbPolyhedralSurfaceM:
