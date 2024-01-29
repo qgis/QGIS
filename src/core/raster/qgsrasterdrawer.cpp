@@ -63,7 +63,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
   // last pipe filter has only 1 band
   const int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->mWidth * mDevicePixelRatio, viewPort->mHeight * mDevicePixelRatio, viewPort->mDrawnExtent, feedback );
+  mIterator->startRasterRead( bandNumber, std::floor( static_cast<double>( viewPort->mWidth ) * mDevicePixelRatio ), std::floor( static_cast<double>( viewPort->mHeight ) * mDevicePixelRatio ), viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
   int nCols = 0;
