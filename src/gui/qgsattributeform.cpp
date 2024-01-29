@@ -1770,6 +1770,8 @@ void QgsAttributeForm::init()
             {
               tabWidget = new QgsTabWidget();
               layout->addWidget( tabWidget, row, column, 1, 2 );
+              // Use row stretch to allocate more vertical space for tab widget.
+              layout->setRowStretch( row, 2 );
               column += 2;
             }
 
