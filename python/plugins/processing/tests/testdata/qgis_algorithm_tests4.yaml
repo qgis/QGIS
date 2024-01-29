@@ -1166,6 +1166,22 @@ tests:
         name: expected/filter_by_z.shp
         type: vector
 
+  - algorithm: native:filterverticesbyz
+    name: Filter by z (points)
+    params:
+      INPUT:
+        name: multipointsz.gml
+        type: vector
+      MAX: 1.0
+      MIN: 1.0
+    results:
+      OUTPUT:
+        name: expected/filter_points_by_z.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: native:arraytranslatedfeatures
     name: Array of point features
     params:
