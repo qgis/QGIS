@@ -27,7 +27,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn *c )
 
 inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsPostgresConn *&c )
 {
-  c = QgsPostgresConn::connectDb( connInfo, true, false );
+  c = QgsPostgresConn::connectDb( connInfo, true, true );
 }
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn *c )
