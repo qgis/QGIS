@@ -26,6 +26,7 @@
 #include "qgsprocessingfeaturesourceoptionswidget.h"
 #include "qgsdatasourceselectdialog.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingprovider.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -120,6 +121,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     vl->addWidget( mUseSelectionCheckBox );
   }
 
+  bool mayBeRaster { false };
+
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
   {
     QList<int> dataTypes;
@@ -141,6 +144,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   }
   else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
   {
+    mayBeRaster = true;
     filters = Qgis::LayerFilter::RasterLayer;
   }
   else if ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName() )
@@ -165,7 +169,10 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     if ( dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
       filters |= Qgis::LayerFilter::PolygonLayer;
     if ( dataTypes.contains( QgsProcessing::TypeRaster ) )
+    {
+      mayBeRaster = true;
       filters |= Qgis::LayerFilter::RasterLayer;
+    }
     if ( dataTypes.contains( QgsProcessing::TypeMesh ) )
       filters |= Qgis::LayerFilter::MeshLayer;
     if ( dataTypes.contains( QgsProcessing::TypePointCloud ) )
@@ -180,7 +187,18 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   if ( filters )
     mCombo->setFilters( filters );
+
   mCombo->setExcludedProviders( QStringList() << QStringLiteral( "grass" ) ); // not sure if this is still required...
+
+  // see https://github.com/qgis/QGIS/issues/55890
+  // There is a chance that "qgis" algorithms can handle virtual rasters but other almost certainly cannot
+  // so we exclude them from the list of available layers for processing algorithms
+  const QStringList providersCompatibleWithVirtualRaster {{ QStringLiteral( "qgis" ), QStringLiteral( "native" ) }};
+  if ( mayBeRaster &&
+       ( ! mParameter->provider() || ! providersCompatibleWithVirtualRaster.contains( mParameter->provider()->id() ) ) )
+  {
+    mCombo->setExcludedProviders( mCombo->excludedProviders() << QStringLiteral( "virtualraster" ) );
+  }
 
   if ( mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
   {
