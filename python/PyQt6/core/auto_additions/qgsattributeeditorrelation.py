@@ -14,7 +14,7 @@ Buttons = QgsAttributeEditorRelation  # dirty hack since SIP seems to introduce 
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsAttributeEditorRelation.Button.__bool__ = lambda flag: _force_int(flag)
+QgsAttributeEditorRelation.Button.__bool__ = lambda flag: bool(_force_int(flag))
 QgsAttributeEditorRelation.Button.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsAttributeEditorRelation.Button.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsAttributeEditorRelation.Button.__or__ = lambda flag1, flag2: QgsAttributeEditorRelation.Button(_force_int(flag1) | _force_int(flag2))

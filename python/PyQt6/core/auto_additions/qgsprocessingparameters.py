@@ -5,7 +5,7 @@ QgsProcessingFeatureSourceDefinition.Flags = lambda flags=0: QgsProcessingFeatur
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsProcessingFeatureSourceDefinition.Flag.__bool__ = lambda flag: _force_int(flag)
+QgsProcessingFeatureSourceDefinition.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsProcessingFeatureSourceDefinition.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsProcessingFeatureSourceDefinition.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsProcessingFeatureSourceDefinition.Flag.__or__ = lambda flag1, flag2: QgsProcessingFeatureSourceDefinition.Flag(_force_int(flag1) | _force_int(flag2))
@@ -17,7 +17,7 @@ QgsProcessingParameterDefinition.Flags = lambda flags=0: QgsProcessingParameterD
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsProcessingParameterDefinition.Flag.__bool__ = lambda flag: _force_int(flag)
+QgsProcessingParameterDefinition.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsProcessingParameterDefinition.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsProcessingParameterDefinition.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsProcessingParameterDefinition.Flag.__or__ = lambda flag1, flag2: QgsProcessingParameterDefinition.Flag(_force_int(flag1) | _force_int(flag2))

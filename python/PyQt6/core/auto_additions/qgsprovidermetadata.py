@@ -10,7 +10,7 @@ MeshDriverCapabilities = QgsMeshDriverMetadata  # dirty hack since SIP seems to 
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsMeshDriverMetadata.MeshDriverCapability.__bool__ = lambda flag: _force_int(flag)
+QgsMeshDriverMetadata.MeshDriverCapability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsMeshDriverMetadata.MeshDriverCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsMeshDriverMetadata.MeshDriverCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsMeshDriverMetadata.MeshDriverCapability.__or__ = lambda flag1, flag2: QgsMeshDriverMetadata.MeshDriverCapability(_force_int(flag1) | _force_int(flag2))
@@ -26,14 +26,14 @@ QgsProviderMetadata.ProviderCapabilities = lambda flags=0: QgsProviderMetadata.P
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsProviderMetadata.ProviderMetadataCapability.__bool__ = lambda flag: _force_int(flag)
+QgsProviderMetadata.ProviderMetadataCapability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsProviderMetadata.ProviderMetadataCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsProviderMetadata.ProviderMetadataCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsProviderMetadata.ProviderMetadataCapability.__or__ = lambda flag1, flag2: QgsProviderMetadata.ProviderMetadataCapability(_force_int(flag1) | _force_int(flag2))
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsProviderMetadata.ProviderCapability.__bool__ = lambda flag: _force_int(flag)
+QgsProviderMetadata.ProviderCapability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsProviderMetadata.ProviderCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsProviderMetadata.ProviderCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsProviderMetadata.ProviderCapability.__or__ = lambda flag1, flag2: QgsProviderMetadata.ProviderCapability(_force_int(flag1) | _force_int(flag2))

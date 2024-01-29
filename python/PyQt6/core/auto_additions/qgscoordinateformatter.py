@@ -9,7 +9,7 @@ QgsCoordinateFormatter.FormatFlags = lambda flags=0: QgsCoordinateFormatter.Form
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsCoordinateFormatter.FormatFlag.__bool__ = lambda flag: _force_int(flag)
+QgsCoordinateFormatter.FormatFlag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsCoordinateFormatter.FormatFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsCoordinateFormatter.FormatFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsCoordinateFormatter.FormatFlag.__or__ = lambda flag1, flag2: QgsCoordinateFormatter.FormatFlag(_force_int(flag1) | _force_int(flag2))

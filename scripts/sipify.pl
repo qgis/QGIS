@@ -1374,7 +1374,7 @@ while ($LINE_IDX < $LINE_COUNT){
           if ( $is_qt6 ) {
             dbg_info("monkey patching operators for non class enum");
             push @OUTPUT_PYTHON, "def _force_int(v): return v if isinstance(v, int) else int(v.value)\n\n\n";
-            push @OUTPUT_PYTHON, "$py_flag.__bool__ = lambda flag: _force_int(flag)\n";
+            push @OUTPUT_PYTHON, "$py_flag.__bool__ = lambda flag: bool(_force_int(flag))\n";
             push @OUTPUT_PYTHON, "$py_flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n";
             push @OUTPUT_PYTHON, "$py_flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n";
             push @OUTPUT_PYTHON, "$py_flag.__or__ = lambda flag1, flag2: $py_flag(_force_int(flag1) | _force_int(flag2))\n";

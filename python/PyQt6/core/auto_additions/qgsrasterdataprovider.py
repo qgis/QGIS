@@ -24,7 +24,7 @@ QgsRasterDataProvider.ResamplingMethod.__doc__ = "Resampling method for provider
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsRasterDataProvider.ProviderCapability.__bool__ = lambda flag: _force_int(flag)
+QgsRasterDataProvider.ProviderCapability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsRasterDataProvider.ProviderCapability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsRasterDataProvider.ProviderCapability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsRasterDataProvider.ProviderCapability.__or__ = lambda flag1, flag2: QgsRasterDataProvider.ProviderCapability(_force_int(flag1) | _force_int(flag2))

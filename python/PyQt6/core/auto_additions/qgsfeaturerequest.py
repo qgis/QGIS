@@ -16,7 +16,7 @@ QgsFeatureRequest.GeometryAbortOnInvalid = QgsFeatureRequest.InvalidGeometryChec
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsFeatureRequest.Flag.__bool__ = lambda flag: _force_int(flag)
+QgsFeatureRequest.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsFeatureRequest.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsFeatureRequest.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsFeatureRequest.Flag.__or__ = lambda flag1, flag2: QgsFeatureRequest.Flag(_force_int(flag1) | _force_int(flag2))
