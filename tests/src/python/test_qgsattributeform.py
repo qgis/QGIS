@@ -204,13 +204,132 @@ class TestQgsAttributeForm(QgisTestCase):
         QGISAPP.processEvents()
 
         self.assertEqual(form.currentFormFeature()['age'], 15)
-        self.assertEqual(form.currentFormFeature()['number'], 15)
+        # not yet update it on init
+        self.assertEqual(form.currentFormFeature()['number'], None)
         # return
         form.changeAttribute('number', 12)
         form.changeAttribute('age', 1)
         self.assertEqual(form.currentFormFeature()['number'], 12)
         form.changeAttribute('age', 7)
         self.assertEqual(form.currentFormFeature()['number'], 12)
+
+    def test_default_value_always_updated_live_edit(self):
+        """Test live update, when:
+        - dependency changed
+        - express1ion contains a volatile function (now, rand, randf, uuid)
+        This means:
+        - changing age -> update number, birthday, pos, random/ not update year
+        - changing year -> update birthday, pos and random / not update number, age
+        - update birthday -> update only pos and random
+        """
+
+        layer = QgsVectorLayer("Point?field=age:int&field=year:int&field=birthday:int&field=pos:int&field=random:int", "vl", "memory")
+
+        # add another field numbers
+        field = QgsField('numbers', QVariant.List, 'array')
+        field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
+        layer.dataProvider().addAttributes([field])
+        layer.updateFields()
+
+        apply_on_update = True
+
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for birthday (2), it will depend on the field age and year
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('year - age', apply_on_update))
+        layer.setEditorWidgetSetup(2, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for pos (3), it contains a volatile function and should update always (and it contains it's own value, to evaluate if it's changing)
+        layer.setDefaultValueDefinition(3, QgsDefaultValue('pos + age + day_of_week( now() ) - day_of_week( now() )', apply_on_update))
+        layer.setEditorWidgetSetup(3, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for pos (4), it contains a volatile function and should update always (and it contains it's own value, to evaluate if it's changing)
+        layer.setDefaultValueDefinition(4, QgsDefaultValue('random + 100 + rand(0,0)', apply_on_update))
+        layer.setEditorWidgetSetup(4, QgsEditorWidgetSetup('Range', {}))
+
+        # set default value for numbers (5), it will depend on the field age
+        layer.setDefaultValueDefinition(5, QgsDefaultValue('array(1, age)', apply_on_update))
+        layer.setEditorWidgetSetup(5, QgsEditorWidgetSetup('List', {}))
+
+        layer.startEditing()
+        form = QgsAttributeForm(layer)
+        feature = QgsFeature(layer.fields())
+        feature.setAttribute('age', 15)
+        feature.setAttribute('year', 2023)
+        feature.setAttribute('random', 100)
+        feature.setAttribute('birthday', 1900)
+        feature.setAttribute('pos', 100)
+        feature.setAttribute('numbers', [12])
+        form.setFeature(feature)
+        form.setMode(QgsAttributeEditorContext.AddFeatureMode)
+
+        QGISAPP.processEvents()
+
+        # changing age
+        form.changeAttribute('age', 10)
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # no change
+        self.assertEqual(form.currentFormFeature()['year'], 2023)
+        # ubdate birthday because of age
+        self.assertEqual(form.currentFormFeature()['birthday'], 2013)
+        # 4 changes because now-function (and dependency)
+        # update pos because of age: pos(100) + age (10) = 110
+        # update pos in the process of random, but still having pos(100) + age (10) = 110 (because in this chained update, the value of pos is not yet updated)
+        # update pos because of birthday (what changed because of age): pos(110) + age (10) = 120
+        # update pos in the process of random, but still having pos(110) + age (10) = 120 (because in this chained update, the value of pos is not yet updated)
+        self.assertEqual(form.currentFormFeature()['pos'], 120)
+        # 2 changes because rand-function
+        # update random because change of age: random(100) + 100
+        # update random birthday (what changed because of age): random(200) + 100
+        # not updating because of pos, since it breaks the recursion
+        self.assertEqual(form.currentFormFeature()['random'], 300)
+        # change because dependency
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        # changing year
+        form.changeAttribute('year', 2024)
+
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # no change
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # change because dependency
+        self.assertEqual(form.currentFormFeature()['birthday'], 2014)
+        # 4 changes because now-function (and dependency)
+        # update pos because of year: pos(120) + age (10) = 130
+        # update pos in the process of random, but still having pos(120) + age (10) = 130 (because in this chained update, the value of pos is not yet updated)
+        # update pos because of birthday (what changed because of year): pos(130) + age (10) = 140
+        # update pos in the process of random, but still having pos(130) + age (10) = 140 (because in this chained update, the value of pos is not yet updated)
+        self.assertEqual(form.currentFormFeature()['pos'], 140)
+        # 2 changes because rand-function
+        # update random because change of year: random(300) + 100
+        # update random birthday (what changed because of year): random(400) + 100
+        # not updating because of pos, since it breaks the recursion
+        self.assertEqual(form.currentFormFeature()['random'], 500)
+        # no change
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
+
+        print("changed year")
+        # changing mode
+        form.save()
+
+        form.setMode(QgsAttributeEditorContext.SingleEditMode)
+        # changing birthday
+        form.changeAttribute('birthday', 2200)
+
+        self.assertEqual(form.currentFormFeature()['birthday'], 2200)
+        # no change
+        self.assertEqual(form.currentFormFeature()['age'], 10)
+        # no change
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
+        # 2 changes because now-function
+        # update pos because of birthday:  pos(140) + age (10) = 150
+        # update pos in the process of random, but still having pos(140) + age (10) = 150 (because in this chained update, the value of pos is not yet updated)
+        self.assertEqual(form.currentFormFeature()['pos'], 150)
+        # 1 changes because rand-function
+        # update random because change of birthday: random(500) + 100
+        # not updating because of pos, since it breaks the recursion
+        self.assertEqual(form.currentFormFeature()['random'], 600)
 
 
 if __name__ == '__main__':
