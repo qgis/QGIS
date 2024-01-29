@@ -58,7 +58,7 @@ GeometryColumnCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsAbstractDatabaseProviderConnection.Capability.__bool__ = lambda flag: _force_int(flag)
+QgsAbstractDatabaseProviderConnection.Capability.__bool__ = lambda flag: bool(_force_int(flag))
 QgsAbstractDatabaseProviderConnection.Capability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsAbstractDatabaseProviderConnection.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsAbstractDatabaseProviderConnection.Capability.__or__ = lambda flag1, flag2: QgsAbstractDatabaseProviderConnection.Capability(_force_int(flag1) | _force_int(flag2))

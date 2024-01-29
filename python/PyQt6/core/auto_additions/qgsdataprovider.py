@@ -19,7 +19,7 @@ QgsDataProvider.ReadFlags = lambda flags=0: QgsDataProvider.ReadFlag(flags)
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 
 
-QgsDataProvider.ReadFlag.__bool__ = lambda flag: _force_int(flag)
+QgsDataProvider.ReadFlag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsDataProvider.ReadFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsDataProvider.ReadFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsDataProvider.ReadFlag.__or__ = lambda flag1, flag2: QgsDataProvider.ReadFlag(_force_int(flag1) | _force_int(flag2))
