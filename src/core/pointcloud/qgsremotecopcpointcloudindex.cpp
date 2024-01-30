@@ -34,6 +34,7 @@
 #include "qgstiledownloadmanager.h"
 #include "qgsapplication.h"
 #include "qgscopcpointcloudblockrequest.h"
+#include "qgscachedpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
 #include "qgsnetworkaccessmanager.h"
 
@@ -97,6 +98,11 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &uri )
 
 std::unique_ptr<QgsPointCloudBlock> QgsRemoteCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return std::unique_ptr<QgsPointCloudBlock>( cached );
+  }
+
   std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
   if ( !blockRequest )
     return nullptr;
@@ -112,11 +118,18 @@ std::unique_ptr<QgsPointCloudBlock> QgsRemoteCopcPointCloudIndex::nodeData( cons
     QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
+  storeNodeDataToCache( block.get(), n, request );
   return block;
 }
 
 QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
+           scale(), offset(), mFilterExpression, request.filterRect() );
+  }
+
   if ( !fetchNodeHierarchy( n ) )
     return nullptr;
   QMutexLocker locker( &mHierarchyMutex );
