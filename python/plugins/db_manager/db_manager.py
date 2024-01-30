@@ -23,7 +23,7 @@ The content of this file is based on
 import functools
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QSize
-from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
+from qgis.PyQt.QtWidgets import QAction, QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
@@ -451,12 +451,24 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_DbMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionRefresh = self.menuDb.addAction(QgsApplication.getThemeIcon("/mActionRefresh.svg"), self.tr("&Refresh"),
-                                                   self.refreshActionSlot, QKeySequence("F5"))
-        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
-                                                     self.runSqlWindow, QKeySequence("F2"))
+        self.actionRefresh = QAction(QgsApplication.getThemeIcon("/mActionRefresh.svg"), self.tr("&Refresh"),
+                                     self.menuDb)
+        self.actionRefresh.triggered.connect(self.refreshActionSlot)
+        self.actionRefresh.setShortcut(QKeySequence("F5"))
+        self.menuDb.addAction(self.actionRefresh)
+
+        self.actionSqlWindow = QAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
+                                       self.menuDb)
+        self.actionSqlWindow.triggered.connect(self.runSqlWindow)
+        self.actionSqlWindow.setShortcut(QKeySequence("F2"))
+        self.menuDb.addAction(self.actionSqlWindow)
+
         self.menuDb.addSeparator()
-        self.actionClose = self.menuDb.addAction(QIcon(), self.tr("&Exit"), self.close, QKeySequence("CTRL+Q"))
+
+        self.actionClose = QAction(QIcon(), self.tr("&Exit"), self.menuDb)
+        self.actionClose.triggered.connect(self.close)
+        self.actionClose.setShortcut(QKeySequence("CTRL+Q"))
+        self.menuDb.addAction(self.actionClose)
 
         # menu SCHEMA
         sep = self.menuSchema.addSeparator()

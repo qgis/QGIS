@@ -203,6 +203,10 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     Offset(_node.func.lineno, attr_node.end_col_offset - len(
                         _node.func.attr) - 1)] = rename_function_attributes[
                     _node.func.attr]
+            if _node.func.attr == 'addAction':
+                if len(_node.args) >= 4:
+                    sys.stderr.write(
+                        f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: fragile call to addAction. Use my_action = QAction(...), obj.addAction(my_action) instead.\n')
 
         if isinstance(_node.func, ast.Name) and _node.func.id == 'QDateTime':
             if len(_node.args) == 8:
