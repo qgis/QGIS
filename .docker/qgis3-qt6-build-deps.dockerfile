@@ -33,6 +33,7 @@ RUN dnf -y --refresh install \
     PDAL-libs \
     PDAL-devel \
     perl-YAML-Tiny \
+    poppler-utils \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
@@ -46,6 +47,7 @@ RUN dnf -y --refresh install \
     python3-termcolor \
     PyQt-builder \
     qca-qt6-devel \
+    qpdf \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
     qt6-qtbase-private-devel \
