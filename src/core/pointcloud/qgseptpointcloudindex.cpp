@@ -309,6 +309,11 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return std::unique_ptr<QgsPointCloudBlock>( cached );
+  }
+
   mHierarchyMutex.lock();
   const bool found = mHierarchy.contains( n );
   mHierarchyMutex.unlock();
@@ -323,25 +328,25 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const Index
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
   QgsRectangle filterRect = request.filterRect();
 
+  std::unique_ptr<QgsPointCloudBlock> decoded;
   if ( mDataType == QLatin1String( "binary" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressBinary( filename, attributes(), requestAttributes, scale(), offset(), filterExpression, filterRect );
+    decoded = QgsEptDecoder::decompressBinary( filename, attributes(), requestAttributes, scale(), offset(), filterExpression, filterRect );
   }
   else if ( mDataType == QLatin1String( "zstandard" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression, filterRect );
+    decoded = QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression, filterRect );
   }
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    return QgsLazDecoder::decompressLaz( filename, requestAttributes, filterExpression, filterRect );
+    decoded = QgsLazDecoder::decompressLaz( filename, requestAttributes, filterExpression, filterRect );
   }
-  else
-  {
-    return nullptr;  // unsupported
-  }
+
+  storeNodeDataToCache( decoded.get(), n, request );
+  return decoded;
 }
 
 QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

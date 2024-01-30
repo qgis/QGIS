@@ -25,6 +25,7 @@
 #include <QVector>
 #include <QList>
 #include <QMutex>
+#include <QCache>
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
@@ -34,6 +35,7 @@
 #include "qgsrange.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression.h"
+#include "qgspointcloudrequest.h"
 
 #define SIP_NO_FILE
 
@@ -104,6 +106,46 @@ Q_DECLARE_TYPEINFO( IndexedPointCloudNode, Q_PRIMITIVE_TYPE );
 
 //! Hash function for indexed nodes
 CORE_EXPORT uint qHash( IndexedPointCloudNode id );
+
+/**
+ * \ingroup core
+ *
+ * \brief Container class for QgsPointCloudBlock cache keys
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.36
+ */
+class CORE_EXPORT QgsPointCloudCacheKey
+{
+  public:
+    //! Ctor
+    QgsPointCloudCacheKey( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
+
+    //! Compares keys
+    bool operator==( const QgsPointCloudCacheKey &other ) const;
+
+    //! Returns the key's IndexedPointCloudNode
+    IndexedPointCloudNode node() const { return mNode; }
+
+    //! Returns the key's uri
+    QString uri() const { return mUri; }
+
+    //! Returns the key's QgsPointCloudRequest
+    QgsPointCloudRequest request() const { return mRequest; }
+
+    //! Returns the key's QgsPointCloudExpression
+    QgsPointCloudExpression filterExpression() const { return mFilterExpression; }
+
+  private:
+    IndexedPointCloudNode mNode;
+    QString mUri;
+    QgsPointCloudRequest mRequest;
+    QgsPointCloudExpression mFilterExpression;
+};
+
+//! Hash function for QgsPointCloudCacheKey
+uint qHash( const QgsPointCloudCacheKey &key );
 
 /**
  * \ingroup core
@@ -330,6 +372,24 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      */
     void copyCommonProperties( QgsPointCloudIndex *destination ) const;
 
+    /**
+     * Fetches the requested node data from the cache for the specified \a node and \a request.
+     * If not found in the cache, nullptr is returned.
+     * Caller takes ownership of the returned object.
+     */
+    QgsPointCloudBlock *getNodeDataFromCache( const IndexedPointCloudNode &node, const QgsPointCloudRequest &request );
+
+    /**
+     * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
+     */
+    void storeNodeDataToCache( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request );
+
+    /**
+     * Stores existing \a data to the cache for the specified \a node, \a request, \a expression and \a uri. Ownership is not transferred, block gets cloned in the cache.
+     */
+    static void storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request,
+                                            const QgsPointCloudExpression &expression, const QString &uri );
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
@@ -348,6 +408,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 
     QString mError;
     QString mUri;
+    static QMutex sBlockCacheMutex;
+    static QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> sBlockCache;
 };
 
 #endif // QGSPOINTCLOUDINDEX_H

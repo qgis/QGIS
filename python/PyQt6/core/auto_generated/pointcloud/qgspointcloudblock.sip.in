@@ -34,6 +34,12 @@ Ctor
 %End
     virtual ~QgsPointCloudBlock();
 
+    QgsPointCloudBlock *clone() const;
+%Docstring
+Clones the QgsPointCloudBlock returning a new copy.
+Caller takes ownership of the returned object.
+%End
+
     const char *data() const;
 %Docstring
 Returns raw pointer to data

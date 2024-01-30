@@ -45,6 +45,12 @@ class CORE_EXPORT QgsPointCloudBlock
     //! Dtor
     virtual ~QgsPointCloudBlock() = default;
 
+    /**
+     * Clones the QgsPointCloudBlock returning a new copy.
+     * Caller takes ownership of the returned object.
+     */
+    QgsPointCloudBlock *clone() const;
+
     //! Returns raw pointer to data
     const char *data() const;
 
