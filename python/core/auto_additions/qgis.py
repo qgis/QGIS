@@ -1663,6 +1663,7 @@ QgsFeatureRequest.EmbeddedSymbols.__doc__ = "Retrieve any embedded feature symbo
 Qgis.FeatureRequestFlag.__doc__ = "Flags for controlling feature requests.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``NoFlags``: ' + Qgis.FeatureRequestFlag.NoFlags.__doc__ + '\n' + '* ``NoGeometry``: ' + Qgis.FeatureRequestFlag.NoGeometry.__doc__ + '\n' + '* ``SubsetOfAttributes``: ' + Qgis.FeatureRequestFlag.SubsetOfAttributes.__doc__ + '\n' + '* ``ExactIntersect``: ' + Qgis.FeatureRequestFlag.ExactIntersect.__doc__ + '\n' + '* ``IgnoreStaticNodesDuringExpressionCompilation``: ' + Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation.__doc__ + '\n' + '* ``EmbeddedSymbols``: ' + Qgis.FeatureRequestFlag.EmbeddedSymbols.__doc__
 # --
 Qgis.FeatureRequestFlag.baseClass = Qgis
+QgsFeatureRequest.Flags = Qgis.FeatureRequestFlags
 Qgis.FeatureRequestFlags.baseClass = Qgis
 FeatureRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsFeatureRequest.FilterType = Qgis.FeatureRequestFilterType
@@ -2749,6 +2750,7 @@ QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature._
 Qgis.ProcessingFeatureSourceDefinitionFlag.__doc__ = "Flags which control behavior for a Processing feature source.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingFeatureSourceDefinition`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``FlagOverrideDefaultGeometryCheck``: ' + Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck.__doc__ + '\n' + '* ``FlagCreateIndividualOutputPerInputFeature``: ' + Qgis.ProcessingFeatureSourceDefinitionFlag.CreateIndividualOutputPerInputFeature.__doc__
 # --
 Qgis.ProcessingFeatureSourceDefinitionFlag.baseClass = Qgis
+QgsProcessingFeatureSourceDefinition.Flags = Qgis.ProcessingFeatureSourceDefinitionFlags
 Qgis.ProcessingFeatureSourceDefinitionFlags.baseClass = Qgis
 ProcessingFeatureSourceDefinitionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum

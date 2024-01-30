@@ -1695,6 +1695,7 @@ Qgis.FeatureRequestFlag.__doc__ = "Flags for controlling feature requests.\n\n..
 # --
 Qgis.FeatureRequestFlag.baseClass = Qgis
 Qgis.FeatureRequestFlags = lambda flags=0: Qgis.FeatureRequestFlag(flags)
+QgsFeatureRequest.Flags = Qgis.FeatureRequestFlags
 Qgis.FeatureRequestFlags.baseClass = Qgis
 FeatureRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsFeatureRequest.FilterType = Qgis.FeatureRequestFilterType
@@ -2797,6 +2798,7 @@ Qgis.ProcessingFeatureSourceDefinitionFlag.__doc__ = "Flags which control behavi
 # --
 Qgis.ProcessingFeatureSourceDefinitionFlag.baseClass = Qgis
 Qgis.ProcessingFeatureSourceDefinitionFlags = lambda flags=0: Qgis.ProcessingFeatureSourceDefinitionFlag(flags)
+QgsProcessingFeatureSourceDefinition.Flags = Qgis.ProcessingFeatureSourceDefinitionFlags
 Qgis.ProcessingFeatureSourceDefinitionFlags.baseClass = Qgis
 ProcessingFeatureSourceDefinitionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
