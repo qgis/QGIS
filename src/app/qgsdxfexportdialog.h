@@ -74,6 +74,15 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     void retrieveAllLayers( QgsLayerTreeNode *node, QSet<QString> &layers );
 };
 
+class QgsDxfExportLayerTreeView : public QgsLayerTreeView
+{
+    Q_OBJECT
+  public:
+    explicit QgsDxfExportLayerTreeView( QWidget *parent = nullptr );
+
+  protected:
+    void resizeEvent( QResizeEvent *event ) override;
+};
 
 class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
@@ -112,6 +121,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsLayerTree *mLayerTreeGroup = nullptr;
     FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
     QgsVectorLayerAndAttributeModel *mModel = nullptr;
+    QgsDxfExportLayerTreeView *mTreeView = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };
