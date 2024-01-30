@@ -432,19 +432,36 @@ void TestQgsOgrProvider::testExtent()
 
   QString uri3D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/3d/points_with_z.shp" );
   // QString uri3D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/3d/earth_size_sphere_4978.gpkg|layername=earth_size_sphere_4978" );
-  QgsVectorLayer *layer3D = new QgsVectorLayer( uri3D, QStringLiteral( "gpkg" ), QLatin1String( "ogr" ) );
+  QgsVectorLayer *layer3D = new QgsVectorLayer( uri3D, QStringLiteral( "shp" ), QLatin1String( "ogr" ) );
   QVERIFY( layer3D->isValid() );
-  QGSCOMPARENEAR( layer3D->sourceExtent().xMinimum(), 321384.94, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent().xMaximum(), 322342.3, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent().yMinimum(), 129147.09, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent().yMaximum(), 130554.6, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().xMinimum(), 321384.94, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().xMaximum(), 322342.3, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().yMinimum(), 129147.09, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().yMaximum(), 130554.6, 0.001 );
 
-  QGSCOMPARENEAR( layer3D->sourceExtent3D().xMinimum(), 321384.94, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent3D().xMaximum(), 322342.3, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent3D().yMinimum(), 129147.09, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent3D().yMaximum(), 130554.6, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent3D().zMinimum(), 64.9, 0.001 );
-  QGSCOMPARENEAR( layer3D->sourceExtent3D().zMaximum(), 105.6, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().xMinimum(), 321384.94, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().xMaximum(), 322342.3, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().yMinimum(), 129147.09, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().yMaximum(), 130554.6, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().zMinimum(), 64.9, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().zMaximum(), 105.6, 0.001 );
+  delete layer3D;
+
+  uri3D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/3d/points_with_z.gpkg|layername=points_with_z" );
+  // QString uri3D = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/3d/earth_size_sphere_4978.gpkg|layername=earth_size_sphere_4978" );
+  layer3D = new QgsVectorLayer( uri3D, QStringLiteral( "gpkg" ), QLatin1String( "ogr" ) );
+  QVERIFY( layer3D->isValid() );
+  QGSCOMPARENEAR( layer3D->extent().xMinimum(), -102.436, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().xMaximum(), -93.160, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().yMinimum(), 40.577, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent().yMaximum(), 41.240, 0.001 );
+
+  QGSCOMPARENEAR( layer3D->extent3D().xMinimum(), -102.436, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().xMaximum(), -93.160, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().yMinimum(), 40.577, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().yMaximum(), 41.240, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().zMinimum(), -50.0, 0.001 );
+  QGSCOMPARENEAR( layer3D->extent3D().zMaximum(), 75.0, 0.001 );
   delete layer3D;
 }
 

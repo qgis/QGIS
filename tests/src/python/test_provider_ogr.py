@@ -1417,10 +1417,6 @@ class PyQgsOGRProvider(QgisTestCase):
                     handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                                 '{ "type": "FeatureCollection", "features": [] }')
 
-                # Asked when ogr provider check for elevation capabilities. See QgsOgrProvider::QgsOgrProvider#475 f.reset( mOgrOrigLayer->GetNextFeature() );
-                handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
-                            '{ "type": "FeatureCollection", "features": [] }')
-
             else:
                 handler.add('GET', '/', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
                 handler.add('GET', '/api', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
