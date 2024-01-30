@@ -640,7 +640,7 @@ Constructor for QgsColorRampTransformer.
 :param maxValue: maximum expected value
 :param ramp: source color ramp. Ownership is transferred to the transformer.
 :param nullColor: color to return for null values
-:param rampName: name of the source color ramp
+:param rampName: name of the source color ramp (since QGIS 3.36)
 %End
 
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
