@@ -1012,6 +1012,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     QTimer *mBackgroundUpdateTimer = nullptr;
     double mPreviewScaleFactor = 0;
+    double mPreviewDevicePixelRatio = 1.0;
 
     bool mDrawingPreview = false;
 
