@@ -27,31 +27,31 @@
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
 {
-  mPalProperties << QgsPalLayerSettings::PositionX;
-  mPalProperties << QgsPalLayerSettings::PositionY;
-  mPalProperties << QgsPalLayerSettings::Show;
-  mPalProperties << QgsPalLayerSettings::LabelRotation;
-  mPalProperties << QgsPalLayerSettings::Family;
-  mPalProperties << QgsPalLayerSettings::FontStyle;
-  mPalProperties << QgsPalLayerSettings::Size;
-  mPalProperties << QgsPalLayerSettings::Bold;
-  mPalProperties << QgsPalLayerSettings::Italic;
-  mPalProperties << QgsPalLayerSettings::Underline;
-  mPalProperties << QgsPalLayerSettings::Color;
-  mPalProperties << QgsPalLayerSettings::Strikeout;
-  mPalProperties << QgsPalLayerSettings::MultiLineAlignment;
-  mPalProperties << QgsPalLayerSettings::BufferSize;
-  mPalProperties << QgsPalLayerSettings::BufferColor;
-  mPalProperties << QgsPalLayerSettings::BufferDraw;
-  mPalProperties << QgsPalLayerSettings::LabelDistance;
-  mPalProperties << QgsPalLayerSettings::Hali;
-  mPalProperties << QgsPalLayerSettings::Vali;
-  mPalProperties << QgsPalLayerSettings::ScaleVisibility;
-  mPalProperties << QgsPalLayerSettings::MinScale;
-  mPalProperties << QgsPalLayerSettings::MaxScale;
-  mPalProperties << QgsPalLayerSettings::AlwaysShow;
-  mPalProperties << QgsPalLayerSettings::CalloutDraw;
-  mPalProperties << QgsPalLayerSettings::LabelAllParts;
+  mPalProperties << QgsPalLayerSettings::Property::PositionX;
+  mPalProperties << QgsPalLayerSettings::Property::PositionY;
+  mPalProperties << QgsPalLayerSettings::Property::Show;
+  mPalProperties << QgsPalLayerSettings::Property::LabelRotation;
+  mPalProperties << QgsPalLayerSettings::Property::Family;
+  mPalProperties << QgsPalLayerSettings::Property::FontStyle;
+  mPalProperties << QgsPalLayerSettings::Property::Size;
+  mPalProperties << QgsPalLayerSettings::Property::Bold;
+  mPalProperties << QgsPalLayerSettings::Property::Italic;
+  mPalProperties << QgsPalLayerSettings::Property::Underline;
+  mPalProperties << QgsPalLayerSettings::Property::Color;
+  mPalProperties << QgsPalLayerSettings::Property::Strikeout;
+  mPalProperties << QgsPalLayerSettings::Property::MultiLineAlignment;
+  mPalProperties << QgsPalLayerSettings::Property::BufferSize;
+  mPalProperties << QgsPalLayerSettings::Property::BufferColor;
+  mPalProperties << QgsPalLayerSettings::Property::BufferDraw;
+  mPalProperties << QgsPalLayerSettings::Property::LabelDistance;
+  mPalProperties << QgsPalLayerSettings::Property::Hali;
+  mPalProperties << QgsPalLayerSettings::Property::Vali;
+  mPalProperties << QgsPalLayerSettings::Property::ScaleVisibility;
+  mPalProperties << QgsPalLayerSettings::Property::MinScale;
+  mPalProperties << QgsPalLayerSettings::Property::MaxScale;
+  mPalProperties << QgsPalLayerSettings::Property::AlwaysShow;
+  mPalProperties << QgsPalLayerSettings::Property::CalloutDraw;
+  mPalProperties << QgsPalLayerSettings::Property::LabelAllParts;
 }
 
 void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )

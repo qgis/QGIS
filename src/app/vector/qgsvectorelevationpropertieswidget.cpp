@@ -55,8 +55,8 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
   mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
 
-  initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::ZOffset );
-  initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::ExtrusionHeight );
+  initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::Property::ZOffset );
+  initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::Property::ExtrusionHeight );
 
   syncToLayer( layer );
 
@@ -360,13 +360,13 @@ void QgsVectorElevationPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsMapLayerElevationProperties::Property key = static_cast<  QgsMapLayerElevationProperties::Property >( button->propertyKey() );
-  mPropertyCollection.setProperty( key, button->toProperty() );
+  mPropertyCollection.setProperty( static_cast< int >( key ), button->toProperty() );
 }
 
 void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsMapLayerElevationProperties::Property key )
 {
   button->blockSignals( true );
-  button->init( key, mPropertyCollection, QgsMapLayerElevationProperties::propertyDefinitions(), nullptr );
+  button->init( static_cast< int >( key ), mPropertyCollection, QgsMapLayerElevationProperties::propertyDefinitions(), nullptr );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsVectorElevationPropertiesWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );
@@ -390,7 +390,7 @@ void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOve
     return;
 
   QgsMapLayerElevationProperties::Property key = static_cast< QgsMapLayerElevationProperties::Property >( button->propertyKey() );
-  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( static_cast< int >( key ) ) );
   whileBlocking( button )->setVectorLayer( mLayer );
 }
 

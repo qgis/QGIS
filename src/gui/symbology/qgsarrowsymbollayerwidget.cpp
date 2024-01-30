@@ -86,13 +86,13 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mCurvedArrowChck->setChecked( mLayer->isCurved() );
   mRepeatArrowChck->setChecked( mLayer->isRepeated() );
 
-  registerDataDefinedButton( mArrowWidthDDBtn, QgsSymbolLayer::PropertyArrowWidth );
-  registerDataDefinedButton( mArrowStartWidthDDBtn, QgsSymbolLayer::PropertyArrowStartWidth );
-  registerDataDefinedButton( mHeadWidthDDBtn, QgsSymbolLayer::PropertyArrowHeadLength );
-  registerDataDefinedButton( mHeadHeightDDBtn, QgsSymbolLayer::PropertyArrowHeadThickness );
-  registerDataDefinedButton( mHeadTypeDDBtn, QgsSymbolLayer::PropertyArrowHeadType );
-  registerDataDefinedButton( mArrowTypeDDBtn, QgsSymbolLayer::PropertyArrowType );
-  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mArrowWidthDDBtn, QgsSymbolLayer::Property::ArrowWidth );
+  registerDataDefinedButton( mArrowStartWidthDDBtn, QgsSymbolLayer::Property::ArrowStartWidth );
+  registerDataDefinedButton( mHeadWidthDDBtn,  QgsSymbolLayer::Property::ArrowHeadLength );
+  registerDataDefinedButton( mHeadHeightDDBtn, QgsSymbolLayer::Property::ArrowHeadThickness );
+  registerDataDefinedButton( mHeadTypeDDBtn, QgsSymbolLayer::Property::ArrowHeadType );
+  registerDataDefinedButton( mArrowTypeDDBtn,  QgsSymbolLayer::Property::ArrowType );
+  registerDataDefinedButton( mOffsetDDBtn,  QgsSymbolLayer::Property::Offset );
 }
 
 

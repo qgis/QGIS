@@ -184,18 +184,18 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
       break;
   }
 
-  if ( mDataDefinedProperties.isActive( Property::ZOffset ) )
+  if ( mDataDefinedProperties.isActive( static_cast< int >( Property::ZOffset ) ) )
   {
-    switch ( mDataDefinedProperties.property( Property::ZOffset ).propertyType() )
+    switch ( mDataDefinedProperties.property( static_cast< int >( Property::ZOffset ) ).propertyType() )
     {
       case Qgis::PropertyType::Invalid:
       case Qgis::PropertyType::Static:
         break;
       case Qgis::PropertyType::Field:
-        properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( Property::ZOffset ).field() );
+        properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( static_cast< int >( Property::ZOffset ) ).field() );
         break;
       case Qgis::PropertyType::Expression:
-        properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( Property::ZOffset ).expressionString() );
+        properties << tr( "Offset: %1" ).arg( mDataDefinedProperties.property( static_cast< int >( Property::ZOffset ) ).expressionString() );
         break;
     }
   }
@@ -206,18 +206,18 @@ QString QgsVectorLayerElevationProperties::htmlSummary() const
 
   if ( mEnableExtrusion )
   {
-    if ( mDataDefinedProperties.isActive( Property::ExtrusionHeight ) )
+    if ( mDataDefinedProperties.isActive( static_cast< int >( Property::ExtrusionHeight ) ) )
     {
-      switch ( mDataDefinedProperties.property( Property::ExtrusionHeight ).propertyType() )
+      switch ( mDataDefinedProperties.property( static_cast< int >( Property::ExtrusionHeight ) ).propertyType() )
       {
         case Qgis::PropertyType::Invalid:
         case Qgis::PropertyType::Static:
           break;
         case Qgis::PropertyType::Field:
-          properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( Property::ExtrusionHeight ).field() );
+          properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( static_cast< int >( Property::ExtrusionHeight ) ).field() );
           break;
         case Qgis::PropertyType::Expression:
-          properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( Property::ExtrusionHeight ).expressionString() );
+          properties << tr( "Extrusion: %1" ).arg( mDataDefinedProperties.property( static_cast< int >( Property::ExtrusionHeight ) ).expressionString() );
           break;
       }
     }

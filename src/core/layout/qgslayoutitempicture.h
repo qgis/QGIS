@@ -309,7 +309,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      */
     void recalculateSize();
 
-    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
 
   signals:
     //! Emitted on picture rotation change

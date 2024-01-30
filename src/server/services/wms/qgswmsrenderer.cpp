@@ -3235,8 +3235,8 @@ namespace QgsWms
 
         if ( !qgsDoubleNear( param.mLabelRotation, 0 ) )
         {
-          QgsPalLayerSettings::Property pR = QgsPalLayerSettings::LabelRotation;
-          palSettings.dataDefinedProperties().setProperty( pR, param.mLabelRotation );
+          QgsPalLayerSettings::Property pR = QgsPalLayerSettings::Property::LabelRotation;
+          palSettings.dataDefinedProperties().setProperty( static_cast< int >( pR ), param.mLabelRotation );
         }
 
         Qgis::LabelPlacement placement = Qgis::LabelPlacement::AroundPoint;
@@ -3252,16 +3252,16 @@ namespace QgsWms
             else //set label directly on point if there is hali/vali
             {
               QgsPointXY pt = param.mGeom.asPoint();
-              QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
+              QgsPalLayerSettings::Property pX = QgsPalLayerSettings::Property::PositionX;
               QVariant x( pt.x() );
-              palSettings.dataDefinedProperties().setProperty( pX, x );
-              QgsPalLayerSettings::Property pY = QgsPalLayerSettings::PositionY;
+              palSettings.dataDefinedProperties().setProperty( static_cast< int >( pX ), x );
+              QgsPalLayerSettings::Property pY = QgsPalLayerSettings::Property::PositionY;
               QVariant y( pt.y() );
-              palSettings.dataDefinedProperties().setProperty( pY, y );
-              QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Hali;
-              palSettings.dataDefinedProperties().setProperty( pHali, param.mHali );
-              QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Vali;
-              palSettings.dataDefinedProperties().setProperty( pVali, param.mVali );
+              palSettings.dataDefinedProperties().setProperty( static_cast< int >( pY ), y );
+              QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Property::Hali;
+              palSettings.dataDefinedProperties().setProperty( static_cast< int >( pHali ), param.mHali );
+              QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Property::Vali;
+              palSettings.dataDefinedProperties().setProperty( static_cast< int >( pVali ), param.mVali );
             }
 
             break;
@@ -3272,21 +3272,21 @@ namespace QgsWms
             QgsPointXY pt = point.asPoint();
             placement = Qgis::LabelPlacement::AroundPoint;
 
-            QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
+            QgsPalLayerSettings::Property pX = QgsPalLayerSettings::Property::PositionX;
             QVariant x( pt.x() );
-            palSettings.dataDefinedProperties().setProperty( pX, x );
+            palSettings.dataDefinedProperties().setProperty( static_cast< int >( pX ), x );
 
-            QgsPalLayerSettings::Property pY = QgsPalLayerSettings::PositionY;
+            QgsPalLayerSettings::Property pY = QgsPalLayerSettings::Property::PositionY;
             QVariant y( pt.y() );
-            palSettings.dataDefinedProperties().setProperty( pY, y );
+            palSettings.dataDefinedProperties().setProperty( static_cast< int >( pY ), y );
 
-            QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Hali;
+            QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Property::Hali;
             QVariant hali( "Center" );
-            palSettings.dataDefinedProperties().setProperty( pHali, hali );
+            palSettings.dataDefinedProperties().setProperty( static_cast< int >( pHali ), hali );
 
-            QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Vali;
+            QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Property::Vali;
             QVariant vali( "Half" );
-            palSettings.dataDefinedProperties().setProperty( pVali, vali );
+            palSettings.dataDefinedProperties().setProperty( static_cast< int >( pVali ), vali );
             break;
           }
           default:

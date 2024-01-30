@@ -654,7 +654,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      */
     void update();
 
-    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
     void finalizeRestoreFromXml() override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     ExportLayerBehavior exportLayerBehavior() const override;

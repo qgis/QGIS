@@ -85,7 +85,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Data definable properties.
      * \since QGIS 3.0
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       BackgroundColor, //!< Diagram background color
       StrokeColor, //!< Stroke color

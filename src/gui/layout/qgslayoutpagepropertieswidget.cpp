@@ -68,11 +68,11 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mExcludePageCheckBox, &QCheckBox::toggled, this, &QgsLayoutPagePropertiesWidget::excludeExportsToggled );
 
   connect( mSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutPagePropertiesWidget::symbolChanged );
-  registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
-  registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
-  registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
-  registerDataDefinedButton( mOrientationDDBtn, QgsLayoutObject::PaperOrientation );
-  registerDataDefinedButton( mExcludePageDDBtn, QgsLayoutObject::ExcludeFromExports );
+  registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::DataDefinedProperty::PresetPaperSize );
+  registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::DataDefinedProperty::ItemWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::DataDefinedProperty::ItemHeight );
+  registerDataDefinedButton( mOrientationDDBtn, QgsLayoutObject::DataDefinedProperty::PaperOrientation );
+  registerDataDefinedButton( mExcludePageDDBtn, QgsLayoutObject::DataDefinedProperty::ExcludeFromExports );
 
   connect( mPaperSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
   connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );

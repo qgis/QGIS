@@ -127,9 +127,9 @@ class CORE_EXPORT QgsSymbol
      * Data definable properties.
      * \since QGIS 3.18
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
-      PropertyOpacity, //!< Opacity
+      Opacity SIP_MONKEYPATCH_COMPAT_NAME( PropertyOpacity ), //!< Opacity
     };
 
     /**

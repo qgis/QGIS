@@ -73,8 +73,8 @@ class TestQgsLabelPropertyDialog : public QObject
       vl->setAuxiliaryLayer( al );
 
       // create auxiliary field for BufferDraw
-      QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::BufferDraw, vl );
-      const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[QgsPalLayerSettings::BufferDraw];
+      QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property::BufferDraw, vl );
+      const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast< int >( QgsPalLayerSettings::Property::BufferDraw )];
       const QString propName = QgsAuxiliaryLayer::nameFromProperty( def, true );
       QCOMPARE( int( al->featureCount() ), 0 );
 

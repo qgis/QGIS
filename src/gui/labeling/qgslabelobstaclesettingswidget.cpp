@@ -38,8 +38,7 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
       emit changed();
   } );
 
-  registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::ObstacleFactor );
-
+  registerDataDefinedButton( mObstacleFactorDDBtn, QgsPalLayerSettings::Property::ObstacleFactor );
 }
 
 void QgsLabelObstacleSettingsWidget::setSettings( const QgsLabelObstacleSettings &settings )
@@ -66,5 +65,5 @@ void QgsLabelObstacleSettingsWidget::setGeometryType( Qgis::GeometryType type )
 
 void QgsLabelObstacleSettingsWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
-  properties.setProperty( QgsPalLayerSettings::ObstacleFactor, mDataDefinedProperties.property( QgsPalLayerSettings::ObstacleFactor ) );
+  properties.setProperty( static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ), mDataDefinedProperties.property( static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ) ) );
 }

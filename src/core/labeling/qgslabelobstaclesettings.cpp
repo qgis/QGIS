@@ -31,10 +31,10 @@ QgsGeometry QgsLabelObstacleSettings::obstacleGeometry() const
 
 void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
-  if ( properties.isActive( QgsPalLayerSettings::ObstacleFactor ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ) ) )
   {
     context.setOriginalValueVariable( mObstacleFactor );
-    QVariant exprVal = properties.value( QgsPalLayerSettings::ObstacleFactor, context );
+    QVariant exprVal = properties.value( static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ), context );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       bool ok;

@@ -179,18 +179,18 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   }
 
 
-  registerDataDefinedButton( mScaleDDBtn, QgsLayoutObject::MapScale );
-  registerDataDefinedButton( mMapRotationDDBtn, QgsLayoutObject::MapRotation );
-  registerDataDefinedButton( mXMinDDBtn, QgsLayoutObject::MapXMin );
-  registerDataDefinedButton( mYMinDDBtn, QgsLayoutObject::MapYMin );
-  registerDataDefinedButton( mXMaxDDBtn, QgsLayoutObject::MapXMax );
-  registerDataDefinedButton( mYMaxDDBtn, QgsLayoutObject::MapYMax );
-  registerDataDefinedButton( mAtlasMarginDDBtn, QgsLayoutObject::MapAtlasMargin );
-  registerDataDefinedButton( mStylePresetsDDBtn, QgsLayoutObject::MapStylePreset );
-  registerDataDefinedButton( mLayersDDBtn, QgsLayoutObject::MapLayers );
-  registerDataDefinedButton( mCRSDDBtn, QgsLayoutObject::MapCrs );
-  registerDataDefinedButton( mStartDateTimeDDBtn, QgsLayoutObject::StartDateTime );
-  registerDataDefinedButton( mEndDateTimeDDBtn, QgsLayoutObject::EndDateTime );
+  registerDataDefinedButton( mScaleDDBtn, QgsLayoutObject::DataDefinedProperty::MapScale );
+  registerDataDefinedButton( mMapRotationDDBtn, QgsLayoutObject::DataDefinedProperty::MapRotation );
+  registerDataDefinedButton( mXMinDDBtn, QgsLayoutObject::DataDefinedProperty::MapXMin );
+  registerDataDefinedButton( mYMinDDBtn, QgsLayoutObject::DataDefinedProperty::MapYMin );
+  registerDataDefinedButton( mXMaxDDBtn, QgsLayoutObject::DataDefinedProperty::MapXMax );
+  registerDataDefinedButton( mYMaxDDBtn, QgsLayoutObject::DataDefinedProperty::MapYMax );
+  registerDataDefinedButton( mAtlasMarginDDBtn, QgsLayoutObject::DataDefinedProperty::MapAtlasMargin );
+  registerDataDefinedButton( mStylePresetsDDBtn, QgsLayoutObject::DataDefinedProperty::MapStylePreset );
+  registerDataDefinedButton( mLayersDDBtn, QgsLayoutObject::DataDefinedProperty::MapLayers );
+  registerDataDefinedButton( mCRSDDBtn, QgsLayoutObject::DataDefinedProperty::MapCrs );
+  registerDataDefinedButton( mStartDateTimeDDBtn, QgsLayoutObject::DataDefinedProperty::StartDateTime );
+  registerDataDefinedButton( mEndDateTimeDDBtn, QgsLayoutObject::DataDefinedProperty::EndDateTime );
 
   updateGuiElements();
   loadGridEntries();
@@ -1750,7 +1750,7 @@ QgsLayoutMapLabelingWidget::QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map )
   connect( mShowPartialLabelsCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showPartialsToggled );
   connect( mShowUnplacedCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapLabelingWidget::showUnplacedToggled );
 
-  registerDataDefinedButton( mLabelMarginDDBtn, QgsLayoutObject::MapLabelMargin );
+  registerDataDefinedButton( mLabelMarginDDBtn, QgsLayoutObject::DataDefinedProperty::MapLabelMargin );
 
   setNewItem( map );
 }

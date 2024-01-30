@@ -80,7 +80,7 @@ class CORE_EXPORT QgsCallout
   public:
 
     //! Data definable properties.
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       MinimumCalloutLength, //!< Minimum length of callouts
       OffsetFromAnchor, //!< Distance to offset lines from anchor points

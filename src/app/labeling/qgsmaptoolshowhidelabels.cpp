@@ -35,8 +35,8 @@ QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdv
   mToolName = tr( "Show/hide labels" );
   mRubberBand = nullptr;
 
-  mPalProperties << QgsPalLayerSettings::Show;
-  mDiagramProperties << QgsDiagramLayerSettings::Show;
+  mPalProperties << QgsPalLayerSettings::Property::Show;
+  mDiagramProperties << QgsDiagramLayerSettings::Property::Show;
 }
 
 QgsMapToolShowHideLabels::~QgsMapToolShowHideLabels()
@@ -333,7 +333,7 @@ bool QgsMapToolShowHideLabels::showHide( const QgsLabelPosition &pos, bool show 
       QgsDiagramIndexes indexes;
       createAuxiliaryFields( details, indexes );
 
-      showCol = indexes[ QgsDiagramLayerSettings::Show ];
+      showCol = indexes[ QgsDiagramLayerSettings::Property::Show ];
     }
   }
   else
@@ -343,7 +343,7 @@ bool QgsMapToolShowHideLabels::showHide( const QgsLabelPosition &pos, bool show 
       QgsPalIndexes indexes;
       createAuxiliaryFields( details, indexes );
 
-      showCol = indexes[ QgsPalLayerSettings::Show ];
+      showCol = indexes[ QgsPalLayerSettings::Property::Show ];
     }
   }
 

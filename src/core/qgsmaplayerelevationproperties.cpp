@@ -131,7 +131,7 @@ void QgsMapLayerElevationProperties::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsMapLayerElevationProperties::ZOffset, QgsPropertyDefinition( "ZOffset", QObject::tr( "Offset" ), QgsPropertyDefinition::Double, origin ) },
-    { QgsMapLayerElevationProperties::ExtrusionHeight, QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ), QgsPropertyDefinition( "ZOffset", QObject::tr( "Offset" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }

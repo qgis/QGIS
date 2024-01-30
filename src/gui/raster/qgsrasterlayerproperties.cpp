@@ -527,7 +527,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
 #endif
 
-  initializeDataDefinedButton( mRasterTransparencyWidget->mOpacityDDBtn, QgsRasterPipe::RendererOpacity );
+  initializeDataDefinedButton( mRasterTransparencyWidget->mOpacityDDBtn, QgsRasterPipe::Property::RendererOpacity );
 
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
@@ -1470,7 +1470,7 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 void QgsRasterLayerProperties::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
 {
   button->blockSignals( true );
-  button->init( key, mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
+  button->init( static_cast< int >( key ), mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRasterLayerProperties::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );
@@ -1494,14 +1494,14 @@ void QgsRasterLayerProperties::updateDataDefinedButton( QgsPropertyOverrideButto
     return;
 
   QgsRasterPipe::Property key = static_cast< QgsRasterPipe::Property >( button->propertyKey() );
-  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( static_cast< int >( key ) ) );
 }
 
 void QgsRasterLayerProperties::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsRasterPipe::Property key = static_cast<  QgsRasterPipe::Property >( button->propertyKey() );
-  mPropertyCollection.setProperty( key, button->toProperty() );
+  mPropertyCollection.setProperty( static_cast< int >( key ), button->toProperty() );
 }
 
 void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )

@@ -57,14 +57,14 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
 
-  registerDataDefinedButton( mSegmentsLeftDDBtn, QgsLayoutObject::ScalebarLeftSegments );
-  registerDataDefinedButton( mSegmentsRightDDBtn, QgsLayoutObject::ScalebarRightSegments );
-  registerDataDefinedButton( mSegmentSizeDDBtn, QgsLayoutObject::ScalebarSegmentWidth );
-  registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinimumWidth );
-  registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaximumWidth );
-  registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ScalebarHeight );
-  registerDataDefinedButton( mSubdivisionHeightDDBtn, QgsLayoutObject::ScalebarSubdivisionHeight );
-  registerDataDefinedButton( mRightSegmentSubdivisionsDDBtn, QgsLayoutObject::ScalebarRightSegmentSubdivisions );
+  registerDataDefinedButton( mSegmentsLeftDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments );
+  registerDataDefinedButton( mSegmentsRightDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments );
+  registerDataDefinedButton( mSegmentSizeDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth );
+  registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth );
+  registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarMaximumWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarHeight );
+  registerDataDefinedButton( mSubdivisionHeightDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarSubdivisionHeight );
+  registerDataDefinedButton( mRightSegmentSubdivisionsDDBtn, QgsLayoutObject::DataDefinedProperty::ScalebarRightSegmentSubdivisions );
 
   mSegmentsLeftDDBtn->registerEnabledWidget( mSegmentsLeftSpinBox, false );
   mSegmentsRightDDBtn->registerEnabledWidget( mNumberOfSegmentsSpinBox, false );

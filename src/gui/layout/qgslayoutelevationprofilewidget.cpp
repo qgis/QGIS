@@ -494,21 +494,21 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
 
-  registerDataDefinedButton( mDDBtnTolerance, QgsLayoutObject::ElevationProfileTolerance );
-  registerDataDefinedButton( mDDBtnMinDistance, QgsLayoutObject::ElevationProfileMinimumDistance );
-  registerDataDefinedButton( mDDBtnMaxDistance, QgsLayoutObject::ElevationProfileMaximumDistance );
-  registerDataDefinedButton( mDDBtnMinElevation, QgsLayoutObject::ElevationProfileMinimumElevation );
-  registerDataDefinedButton( mDDBtnMaxElevation, QgsLayoutObject::ElevationProfileMaximumElevation );
-  registerDataDefinedButton( mDDBtnDistanceMajorInterval, QgsLayoutObject::ElevationProfileDistanceMajorInterval );
-  registerDataDefinedButton( mDDBtnDistanceMinorInterval, QgsLayoutObject::ElevationProfileDistanceMinorInterval );
-  registerDataDefinedButton( mDDBtnDistanceLabelInterval, QgsLayoutObject::ElevationProfileDistanceLabelInterval );
-  registerDataDefinedButton( mDDBtnElevationMajorInterval, QgsLayoutObject::ElevationProfileElevationMajorInterval );
-  registerDataDefinedButton( mDDBtnElevationMinorInterval, QgsLayoutObject::ElevationProfileElevationMinorInterval );
-  registerDataDefinedButton( mDDBtnElevationLabelInterval, QgsLayoutObject::ElevationProfileElevationLabelInterval );
-  registerDataDefinedButton( mDDBtnLeftMargin, QgsLayoutObject::MarginLeft );
-  registerDataDefinedButton( mDDBtnRightMargin, QgsLayoutObject::MarginRight );
-  registerDataDefinedButton( mDDBtnTopMargin, QgsLayoutObject::MarginTop );
-  registerDataDefinedButton( mDDBtnBottomMargin, QgsLayoutObject::MarginBottom );
+  registerDataDefinedButton( mDDBtnTolerance, QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance );
+  registerDataDefinedButton( mDDBtnMinDistance, QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumDistance );
+  registerDataDefinedButton( mDDBtnMaxDistance, QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumDistance );
+  registerDataDefinedButton( mDDBtnMinElevation, QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumElevation );
+  registerDataDefinedButton( mDDBtnMaxElevation, QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumElevation );
+  registerDataDefinedButton( mDDBtnDistanceMajorInterval, QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval );
+  registerDataDefinedButton( mDDBtnDistanceMinorInterval, QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval );
+  registerDataDefinedButton( mDDBtnDistanceLabelInterval, QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceLabelInterval );
+  registerDataDefinedButton( mDDBtnElevationMajorInterval, QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMajorInterval );
+  registerDataDefinedButton( mDDBtnElevationMinorInterval, QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMinorInterval );
+  registerDataDefinedButton( mDDBtnElevationLabelInterval, QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationLabelInterval );
+  registerDataDefinedButton( mDDBtnLeftMargin, QgsLayoutObject::DataDefinedProperty::MarginLeft );
+  registerDataDefinedButton( mDDBtnRightMargin, QgsLayoutObject::DataDefinedProperty::MarginRight );
+  registerDataDefinedButton( mDDBtnTopMargin, QgsLayoutObject::DataDefinedProperty::MarginTop );
+  registerDataDefinedButton( mDDBtnBottomMargin, QgsLayoutObject::DataDefinedProperty::MarginBottom );
 
   mLayerTreeView = new QgsElevationProfileLayerTreeView( mLayerTree.get() );
 

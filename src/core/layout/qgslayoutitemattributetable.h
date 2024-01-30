@@ -285,7 +285,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     QgsExpressionContext createExpressionContext() const override;
     void finalizeRestoreFromXml() override;
 
-    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
 
     /**
      * Returns TRUE if the attribute table will be rendered using the conditional styling

@@ -232,7 +232,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     //! Recalculates the frame sizes for the current viewport dimensions
     void recalculateFrameSizes() override;
 
-    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
 
   protected:
 

@@ -142,7 +142,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
     mLayerSourceDDBtn->registerExpressionContextGenerator( mTable );
   }
 
-  registerDataDefinedButton( mLayerSourceDDBtn, QgsLayoutObject::AttributeTableSourceLayer );
+  registerDataDefinedButton( mLayerSourceDDBtn, QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer );
 
   //embed widget for general options
   if ( mFrame )

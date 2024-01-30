@@ -174,19 +174,19 @@ void QgsTextBufferSettings::setPaintEffect( QgsPaintEffect *effect )
 
 void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {
-  if ( properties.isActive( QgsPalLayerSettings::BufferDraw ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::BufferDraw ) ) )
   {
     context.expressionContext().setOriginalValueVariable( d->enabled );
-    d->enabled = properties.valueAsBool( QgsPalLayerSettings::BufferDraw, context.expressionContext(), d->enabled );
+    d->enabled = properties.valueAsBool( static_cast< int >( QgsPalLayerSettings::Property::BufferDraw ), context.expressionContext(), d->enabled );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::BufferSize ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::BufferSize ) ) )
   {
     context.expressionContext().setOriginalValueVariable( d->size );
-    d->size = properties.valueAsDouble( QgsPalLayerSettings::BufferSize, context.expressionContext(), d->size );
+    d->size = properties.valueAsDouble( static_cast< int >( QgsPalLayerSettings::Property::BufferSize ), context.expressionContext(), d->size );
   }
 
-  QVariant exprVal = properties.value( QgsPalLayerSettings::BufferUnit, context.expressionContext() );
+  QVariant exprVal = properties.value( static_cast< int >( QgsPalLayerSettings::Property::BufferUnit ), context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
@@ -199,33 +199,33 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::BufferOpacity ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::BufferOpacity ) ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    const QVariant val = properties.value( QgsPalLayerSettings::BufferOpacity, context.expressionContext(), d->opacity * 100 );
+    const QVariant val = properties.value( static_cast< int >( QgsPalLayerSettings::Property::BufferOpacity ), context.expressionContext(), d->opacity * 100 );
     if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::BufferColor ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::BufferColor ) ) )
   {
     context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( d->color ) );
-    d->color = properties.valueAsColor( QgsPalLayerSettings::BufferColor, context.expressionContext(), d->color );
+    d->color = properties.valueAsColor( static_cast< int >( QgsPalLayerSettings::Property::BufferColor ), context.expressionContext(), d->color );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::BufferBlendMode ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::BufferBlendMode ) ) )
   {
-    exprVal = properties.value( QgsPalLayerSettings::BufferBlendMode, context.expressionContext() );
+    exprVal = properties.value( static_cast< int >( QgsPalLayerSettings::Property::BufferBlendMode ), context.expressionContext() );
     const QString blendstr = exprVal.toString().trimmed();
     if ( !blendstr.isEmpty() )
       d->blendMode = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::BufferJoinStyle ) )
+  if ( properties.isActive( static_cast< int >( QgsPalLayerSettings::Property::BufferJoinStyle ) ) )
   {
-    exprVal = properties.value( QgsPalLayerSettings::BufferJoinStyle, context.expressionContext() );
+    exprVal = properties.value( static_cast< int >( QgsPalLayerSettings::Property::BufferJoinStyle ), context.expressionContext() );
     const QString joinstr = exprVal.toString().trimmed();
     if ( !joinstr.isEmpty() )
     {

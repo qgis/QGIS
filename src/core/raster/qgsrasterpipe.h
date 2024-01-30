@@ -54,7 +54,7 @@ class CORE_EXPORT QgsRasterPipe
      * Data definable properties.
      * \since QGIS 3.22
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       RendererOpacity, //!< Raster renderer global opacity
     };

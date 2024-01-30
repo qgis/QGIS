@@ -84,7 +84,7 @@ void QgsLabelSettingsWidgetBase::createAuxiliaryField()
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
-  QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[key];
+  QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
@@ -105,7 +105,7 @@ void QgsLabelSettingsWidgetBase::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
 
-  mDataDefinedProperties.setProperty( key, button->toProperty() );
+  mDataDefinedProperties.setProperty( static_cast< int >( key ), button->toProperty() );
 
   emit auxiliaryFieldCreated();
 
@@ -116,7 +116,7 @@ void QgsLabelSettingsWidgetBase::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
-  mDataDefinedProperties.setProperty( key, button->toProperty() );
+  mDataDefinedProperties.setProperty( static_cast< int >( key ), button->toProperty() );
   emit changed();
 }
 
@@ -133,7 +133,7 @@ void QgsLabelSettingsWidgetBase::setDataDefinedProperties( const QgsPropertyColl
   for ( QgsPropertyOverrideButton *button : overrideButtons )
   {
     const QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
-    button->setToProperty( mDataDefinedProperties.property( key ) );
+    button->setToProperty( mDataDefinedProperties.property( static_cast< int >( key ) ) );
   }
 }
 
@@ -144,7 +144,7 @@ void QgsLabelSettingsWidgetBase::updateDataDefinedProperties( QgsPropertyCollect
 
 void QgsLabelSettingsWidgetBase::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mVectorLayer, true );
+  button->init( static_cast< int >( key ), mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mVectorLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelSettingsWidgetBase::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsLabelSettingsWidgetBase::createAuxiliaryField );
 

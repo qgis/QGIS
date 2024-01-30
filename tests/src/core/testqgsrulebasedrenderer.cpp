@@ -571,21 +571,21 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsSimpleMarkerSymbolLayer *l1 = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Triangle, 5 );
       l1->setColor( QColor( 255, 0, 0 ) );
       l1->setStrokeStyle( Qt::NoPen );
-      l1->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromField( QStringLiteral( "Heading" ) ) );
+      l1->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromField( QStringLiteral( "Heading" ) ) );
       sym1->changeSymbolLayer( 0, l1 );
 
       QgsMarkerSymbol *sym2 = new QgsMarkerSymbol();
       QgsSimpleMarkerSymbolLayer *l2 = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Triangle, 5 );
       l2->setColor( QColor( 0, 255, 0 ) );
       l2->setStrokeStyle( Qt::NoPen );
-      l2->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromField( QStringLiteral( "Heading" ) ) );
+      l2->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromField( QStringLiteral( "Heading" ) ) );
       sym2->changeSymbolLayer( 0, l2 );
 
       QgsMarkerSymbol *sym3 = new QgsMarkerSymbol();
       QgsSimpleMarkerSymbolLayer *l3 = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Triangle, 5 );
       l3->setColor( QColor( 0, 0, 255 ) );
       l3->setStrokeStyle( Qt::NoPen );
-      l3->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromField( QStringLiteral( "Heading" ) ) );
+      l3->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromField( QStringLiteral( "Heading" ) ) );
       sym3->changeSymbolLayer( 0, l3 );
 
       QgsRuleBasedRenderer::Rule *r1 = new QgsRuleBasedRenderer::Rule( sym1, 0, 0, "\"Class\" = 'B52'" );

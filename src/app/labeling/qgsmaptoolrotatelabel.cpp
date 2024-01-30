@@ -28,7 +28,7 @@
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
 {
-  mPalProperties << QgsPalLayerSettings::LabelRotation;
+  mPalProperties << QgsPalLayerSettings::Property::LabelRotation;
 }
 
 QgsMapToolRotateLabel::~QgsMapToolRotateLabel()

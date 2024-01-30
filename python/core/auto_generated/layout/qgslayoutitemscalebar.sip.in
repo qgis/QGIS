@@ -803,7 +803,7 @@ Ownership of ``format`` is transferred to the scalebar.
 Adjusts the scale bar box size and updates the item.
 %End
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
     virtual void finalizeRestoreFromXml();
 

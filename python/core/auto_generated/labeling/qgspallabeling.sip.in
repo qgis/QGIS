@@ -50,7 +50,7 @@ Contains settings for how a map layer will be labeled.
       PolygonWhole
     };
 
-    enum Property
+    enum class Property
     {
       // text style
       Size,

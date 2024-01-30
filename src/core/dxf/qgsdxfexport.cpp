@@ -1329,9 +1329,9 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
     Qgis::LabelQuadrantPosition offsetQuad = layerSettings.quadOffset;
 
-    if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
+    if ( props.isActive( static_cast< int >( QgsPalLayerSettings::Property::OffsetQuad ) ) )
     {
-      const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
+      const QVariant exprVal = props.value( static_cast< int >( QgsPalLayerSettings::Property::OffsetQuad ), expressionContext );
       if ( !QgsVariantUtils::isNull( exprVal ) )
       {
         offsetQuad = static_cast<Qgis::LabelQuadrantPosition>( exprVal.toInt() );
@@ -1379,13 +1379,13 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  if ( props.isActive( QgsPalLayerSettings::Hali ) )
+  if ( props.isActive( static_cast< int >( QgsPalLayerSettings::Property::Hali ) ) )
   {
     lblX = labelFeature->anchorPosition().x();
     lblY = labelFeature->anchorPosition().y();
 
     hali = HAlign::HLeft;
-    QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
+    QVariant exprVal = props.value( static_cast< int >( QgsPalLayerSettings::Property::Hali ), expressionContext );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString haliString = exprVal.toString();
@@ -1401,10 +1401,10 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   }
 
   //vertical alignment
-  if ( props.isActive( QgsPalLayerSettings::Vali ) )
+  if ( props.isActive( static_cast< int >( QgsPalLayerSettings::Property::Vali ) ) )
   {
     vali = VAlign::VBottom;
-    QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
+    QVariant exprVal = props.value( static_cast< int >( QgsPalLayerSettings::Property::Vali ), expressionContext );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString valiString = exprVal.toString();
@@ -2080,8 +2080,8 @@ bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *
   {
     QSet<int> properties = sl->dataDefinedProperties().propertyKeys();
     // Remove data defined properties handled through DXF property codes
-    properties.remove( QgsSymbolLayer::PropertySize );
-    properties.remove( QgsSymbolLayer::PropertyAngle );
+    properties.remove( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+    properties.remove( static_cast< int >( QgsSymbolLayer::Property::Angle ) );
     blockBreak = !properties.isEmpty();
   }
 

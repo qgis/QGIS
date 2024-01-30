@@ -504,7 +504,7 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
 QgsDataDefinedSizeDialog::QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
   : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
 {
-  init( QgsSymbolLayer::PropertySize );
+  init( static_cast< int >( QgsSymbolLayer::Property::Size ) );
   if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
   {
     mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol *>( symbolList.at( 0 ) )->clone() );
@@ -533,7 +533,7 @@ void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol *symbol, const QgsPrope
 QgsDataDefinedRotationDialog::QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
   : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
 {
-  init( QgsSymbolLayer::PropertyAngle );
+  init( static_cast< int >( QgsSymbolLayer::Property::Angle ) );
 }
 
 QgsProperty QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
@@ -556,7 +556,7 @@ void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsP
 QgsDataDefinedWidthDialog::QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
   : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
 {
-  init( QgsSymbolLayer::PropertyStrokeWidth );
+  init( static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) );
 }
 
 QgsProperty QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const

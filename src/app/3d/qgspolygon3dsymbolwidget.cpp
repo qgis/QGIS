@@ -79,8 +79,8 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
 
   widgetMaterial->setSettings( polygonSymbol->materialSettings(), layer );
 
-  btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  btnExtrusionDD->init( QgsAbstract3DSymbol::PropertyExtrusionHeight, polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  btnHeightDD->init( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
+  btnExtrusionDD->init( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
 
   groupEdges->setChecked( polygonSymbol->edgesEnabled() );
   spinEdgeWidth->setValue( polygonSymbol->edgeWidth() );
@@ -101,8 +101,8 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setMaterialSettings( widgetMaterial->settings() );
 
   QgsPropertyCollection ddp;
-  ddp.setProperty( QgsAbstract3DSymbol::PropertyHeight, btnHeightDD->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::PropertyExtrusionHeight, btnExtrusionDD->toProperty() );
+  ddp.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), btnHeightDD->toProperty() );
+  ddp.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), btnExtrusionDD->toProperty() );
   sym->setDataDefinedProperties( ddp );
 
   sym->setEdgesEnabled( groupEdges->isChecked() );

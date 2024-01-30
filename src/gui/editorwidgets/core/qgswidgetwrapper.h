@@ -73,7 +73,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     /**
      * Data defined properties for different editor widgets.
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       RootPath = 0, //!< Root path for external resource
       DocumentViewerContent, //!< Document type for external resource
