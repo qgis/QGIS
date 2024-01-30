@@ -48,8 +48,9 @@ Constructor for TabData
       QList<QgsEditFormConfig::GroupData> mGroups;
     };
 
+
     enum class DataDefinedProperty /BaseType=IntFlag/
-    {
+      {
       NoProperty,
       AllProperties,
       Alias,

@@ -48,6 +48,7 @@ changed status of the widget will be saved.
 %End
   public:
 
+
     enum class Property /BaseType=IntFlag/
     {
       RootPath,

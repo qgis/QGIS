@@ -65,12 +65,14 @@ class CORE_EXPORT QgsAbstract3DSymbol
      */
     virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 
+    // *INDENT-OFF*
     //! Data definable properties.
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
-    {
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstract3DSymbol, Property ) : int
+      {
       Height SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ) = 0, //!< Height (altitude)
       ExtrusionHeight SIP_MONKEYPATCH_COMPAT_NAME( PropertyExtrusionHeight ), //!< Extrusion height (zero means no extrusion)
     };
+    // *INDENT-ON*
 
     //! Returns the symbol layer property definitions.
     static const QgsPropertiesDefinition &propertyDefinitions();

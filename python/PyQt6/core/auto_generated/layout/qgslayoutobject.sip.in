@@ -111,8 +111,9 @@ A base class for objects which belong to a layout.
 %End
   public:
 
+
     enum class DataDefinedProperty /BaseType=IntFlag/
-    {
+      {
       NoProperty,
       AllProperties,
       TestProperty,
@@ -208,6 +209,7 @@ A base class for objects which belong to a layout.
       ElevationProfileMinimumElevation,
       ElevationProfileMaximumElevation,
     };
+
 
     enum PropertyValueType
     {
