@@ -360,7 +360,7 @@ void QgsVectorElevationPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsMapLayerElevationProperties::Property key = static_cast<  QgsMapLayerElevationProperties::Property >( button->propertyKey() );
-  mPropertyCollection.setProperty( static_cast< int >( key ), button->toProperty() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
 }
 
 void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsMapLayerElevationProperties::Property key )
@@ -390,7 +390,7 @@ void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOve
     return;
 
   QgsMapLayerElevationProperties::Property key = static_cast< QgsMapLayerElevationProperties::Property >( button->propertyKey() );
-  whileBlocking( button )->setToProperty( mPropertyCollection.property( static_cast< int >( key ) ) );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
   whileBlocking( button )->setVectorLayer( mLayer );
 }
 

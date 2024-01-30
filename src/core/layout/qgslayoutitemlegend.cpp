@@ -962,7 +962,7 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
   if ( property == QgsLayoutObject::DataDefinedProperty::LegendTitle || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     bool ok = false;
-    const QString t = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::LegendTitle ), context, mTitle, &ok );
+    const QString t = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::LegendTitle, context, mTitle, &ok );
     if ( ok )
     {
       mSettings.setTitle( t );
@@ -972,7 +972,7 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
   if ( property == QgsLayoutObject::DataDefinedProperty::LegendColumnCount || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     bool ok = false;
-    const int cols = mDataDefinedProperties.valueAsInt( static_cast< int >( QgsLayoutObject::DataDefinedProperty::LegendColumnCount ), context, mColumnCount, &ok );
+    const int cols = mDataDefinedProperties.valueAsInt( QgsLayoutObject::DataDefinedProperty::LegendColumnCount, context, mColumnCount, &ok );
     if ( ok && cols >= 0 )
     {
       mSettings.setColumnCount( cols );

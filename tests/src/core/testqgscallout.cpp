@@ -573,7 +573,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::CalloutDraw ), QgsProperty::fromExpression( QStringLiteral( "Class = 'Jet'" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::CalloutDraw, QgsProperty::fromExpression( QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
@@ -716,7 +716,7 @@ void TestQgsCallout::calloutMinimumDistance()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelDistance ), QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 20 else 5 end" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelDistance, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 20 else 5 end" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -780,7 +780,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::MinimumCalloutLength ), QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 30 else 10 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::MinimumCalloutLength, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 30 else 10 end" ) ) );
 
   settings.setCallout( callout );
 
@@ -885,7 +885,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OffsetFromAnchor ), QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -990,8 +990,8 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OffsetFromAnchor ), QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OffsetFromLabel ), QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -1064,7 +1064,7 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1132,7 +1132,7 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1200,7 +1200,7 @@ void TestQgsCallout::calloutLabelAnchorTop()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1268,7 +1268,7 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1336,7 +1336,7 @@ void TestQgsCallout::calloutLabelAnchorBottom()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1404,7 +1404,7 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1472,7 +1472,7 @@ void TestQgsCallout::calloutLabelAnchorLeft()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1540,7 +1540,7 @@ void TestQgsCallout::calloutLabelAnchorRight()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1608,7 +1608,7 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromValue( 15 ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
@@ -1656,7 +1656,7 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
   callout->setLabelAnchorPoint( QgsCallout::LabelCentroid );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::LabelAnchorPointPosition ), QgsProperty::fromExpression( QStringLiteral( "'TL'" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::LabelAnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'TL'" ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -1697,9 +1697,9 @@ void TestQgsCallout::calloutBehindLabel()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::ZIndex ), QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1753,9 +1753,9 @@ void TestQgsCallout::calloutBehindIndividualLabels()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   settings.placement = Qgis::LabelPlacement::AroundPoint;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::ZIndex ), QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1824,8 +1824,8 @@ void TestQgsCallout::calloutNoDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1892,8 +1892,8 @@ void TestQgsCallout::calloutDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1961,8 +1961,8 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -1974,7 +1974,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::DrawCalloutToAllParts ), QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2024,8 +2024,8 @@ void TestQgsCallout::calloutPointOnExterior()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2087,8 +2087,8 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2100,7 +2100,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::AnchorPointPosition ), QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::AnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2151,8 +2151,8 @@ void TestQgsCallout::calloutDataDefinedDestination()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2164,8 +2164,8 @@ void TestQgsCallout::calloutDataDefinedDestination()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::DestinationX ), QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::DestinationY ), QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2216,8 +2216,8 @@ void TestQgsCallout::calloutDataDefinedOrigin()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2229,8 +2229,8 @@ void TestQgsCallout::calloutDataDefinedOrigin()
   QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OriginX ), QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OriginY ), QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2391,8 +2391,8 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2459,8 +2459,8 @@ void TestQgsCallout::manhattanDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2528,8 +2528,8 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2541,7 +2541,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::DrawCalloutToAllParts ), QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2592,8 +2592,8 @@ void TestQgsCallout::manhattanDataDefinedDestination()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2605,8 +2605,8 @@ void TestQgsCallout::manhattanDataDefinedDestination()
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::DestinationX ), QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::DestinationY ), QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromExpression( QStringLiteral( "190004.33" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2657,8 +2657,8 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2670,8 +2670,8 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
   QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
   callout->setEnabled( true );
   callout->lineSymbol()->setWidth( 1 );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OriginX ), QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::OriginY ), QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginX, QgsProperty::fromExpression( QStringLiteral( "189959.47" ) ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
   settings.setCallout( callout );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -2758,8 +2758,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2858,8 +2858,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -2958,8 +2958,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3058,8 +3058,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3158,8 +3158,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3258,8 +3258,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3358,8 +3358,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3458,8 +3458,8 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3528,8 +3528,8 @@ void TestQgsCallout::curvedAutoHorizontalLines()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3597,8 +3597,8 @@ void TestQgsCallout::curvedAutoVerticalLines()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3696,8 +3696,8 @@ void TestQgsCallout::curvedClockwise()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3796,8 +3796,8 @@ void TestQgsCallout::curvedCounterClockwise()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -3896,8 +3896,8 @@ void TestQgsCallout::curvedCurvature()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  settings.dataDefinedProperties().setProperty( static_cast<int>( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
 
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
@@ -4158,7 +4158,7 @@ void TestQgsCallout::blendMode()
   callout->setBlendMode( QPainter::CompositionMode_SourceOver );
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
-  callout->dataDefinedProperties().setProperty( static_cast< int >( QgsCallout::Property::BlendMode ), QStringLiteral( "multiply" ) );
+  callout->dataDefinedProperties().setProperty( QgsCallout::Property::BlendMode, QStringLiteral( "multiply" ) );
   QCOMPARE( callout->containsAdvancedEffects(), true );
 }
 

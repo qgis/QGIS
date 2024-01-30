@@ -175,7 +175,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
 
       //data defined url set?
       bool ok = false;
-      currentUrl = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::SourceUrl ), *evalContext, currentUrl, &ok );
+      currentUrl = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::SourceUrl, *evalContext, currentUrl, &ok );
       if ( ok )
       {
         currentUrl = currentUrl.trimmed();

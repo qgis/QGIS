@@ -136,8 +136,8 @@ void TestQgsDxfExport::init()
   QVERIFY( mPointLayerDataDefinedSizeAngle );
   QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape::Triangle, 10.0, 0 );
   QgsPropertyCollection properties;
-  properties.setProperty( static_cast< int >( QgsSymbolLayer::Property::Size ), QgsProperty::fromExpression( "coalesce( 10 + $id * 5, 10 )" ) );
-  properties.setProperty( static_cast< int >( QgsSymbolLayer::Property::Angle ), QgsProperty::fromExpression( "coalesce( $id * 5, 0 )" ) );
+  properties.setProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( "coalesce( 10 + $id * 5, 10 )" ) );
+  properties.setProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromExpression( "coalesce( $id * 5, 0 )" ) );
   markerSymbolLayer->setDataDefinedProperties( properties );
   QgsSymbolLayerList symbolLayerList;
   symbolLayerList << markerSymbolLayer;
@@ -569,7 +569,7 @@ void TestQgsDxfExport::testTextAngle()
   auto ddp = settings.dataDefinedProperties();
   QgsProperty prop;
   prop.setExpressionString( QStringLiteral( "ori" ) );
-  ddp.setProperty( static_cast< int >( QgsPalLayerSettings::Property::LabelRotation ), prop );
+  ddp.setProperty( QgsPalLayerSettings::Property::LabelRotation, prop );
   settings.setDataDefinedProperties( ddp );
   settings.fieldName = QStringLiteral( "ori" );
   QgsTextFormat format;
@@ -641,16 +641,16 @@ void TestQgsDxfExport::testTextAlign()
   QgsPropertyCollection props = settings.dataDefinedProperties();
   QgsProperty halignProp = QgsProperty();
   halignProp.setStaticValue( hali );
-  props.setProperty( static_cast< int >( QgsPalLayerSettings::Property::Hali ), halignProp );
+  props.setProperty( QgsPalLayerSettings::Property::Hali, halignProp );
   QgsProperty posXProp = QgsProperty();
   posXProp.setExpressionString( QStringLiteral( "x($geometry) + 1" ) );
-  props.setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), posXProp );
+  props.setProperty( QgsPalLayerSettings::Property::PositionX, posXProp );
   QgsProperty valignProp = QgsProperty();
   valignProp.setStaticValue( vali );
-  props.setProperty( static_cast< int >( QgsPalLayerSettings::Property::Vali ), valignProp );
+  props.setProperty( QgsPalLayerSettings::Property::Vali, valignProp );
   QgsProperty posYProp = QgsProperty();
   posYProp.setExpressionString( QStringLiteral( "y($geometry) + 1" ) );
-  props.setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), posYProp );
+  props.setProperty( QgsPalLayerSettings::Property::PositionY, posYProp );
   settings.setDataDefinedProperties( props );
 
   QgsTextFormat format;
@@ -790,8 +790,8 @@ void TestQgsDxfExport::testTextQuadrant()
   QgsPropertyCollection props = settings.dataDefinedProperties();
   QgsProperty offsetQuadProp = QgsProperty();
   offsetQuadProp.setStaticValue( offsetQuad );
-  props.setProperty( static_cast< int >( QgsPalLayerSettings::Property::OffsetQuad ), offsetQuadProp );
-  props.setProperty( static_cast< int >( QgsPalLayerSettings::Property::LabelRotation ), angle );
+  props.setProperty( QgsPalLayerSettings::Property::OffsetQuad, offsetQuadProp );
+  props.setProperty( QgsPalLayerSettings::Property::LabelRotation, angle );
   settings.setDataDefinedProperties( props );
 
   QgsTextFormat format;
@@ -1286,7 +1286,7 @@ void TestQgsDxfExport::testDataDefinedPoints()
 {
   std::unique_ptr<QgsSimpleMarkerSymbolLayer> symbolLayer = std::make_unique<QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::Circle, 2.0 );
   QgsPropertyCollection properties;
-  properties.setProperty( static_cast< int >( QgsSymbolLayer::Property::Size ), QgsProperty::fromExpression( "200" ) );
+  properties.setProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( "200" ) );
   symbolLayer->setDataDefinedProperties( properties );
 
   QgsMarkerSymbol *symbol = new QgsMarkerSymbol();

@@ -346,11 +346,11 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
 
   //data defined source set?
   mHasExpressionError = false;
-  if ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSource ) ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PictureSource ) )
   {
     mMode = FormatUnknown;
     bool ok = false;
-    const QgsProperty &sourceProperty = mDataDefinedProperties.property( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSource ) );
+    const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::PictureSource );
     source = sourceProperty.value( *evalContext, source, &ok );
     if ( !ok || !source.canConvert( QMetaType::QString ) )
     {
@@ -429,9 +429,9 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
     {
       //try to open svg
       const QgsExpressionContext context = createExpressionContext();
-      const QColor fillColor = mDataDefinedProperties.valueAsColor( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor ), context, mSvgFillColor );
-      const QColor strokeColor = mDataDefinedProperties.valueAsColor( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor ), context, mSvgStrokeColor );
-      const double strokeWidth = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth ), context, mSvgStrokeWidth );
+      const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor, context, mSvgFillColor );
+      const QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      const double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
       const QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
 
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
@@ -508,9 +508,9 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
     case FormatSVG:
     {
       const QgsExpressionContext context = createExpressionContext();
-      const QColor fillColor = mDataDefinedProperties.valueAsColor( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor ), context, mSvgFillColor );
-      const QColor strokeColor = mDataDefinedProperties.valueAsColor( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor ), context, mSvgStrokeColor );
-      const double strokeWidth = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth ), context, mSvgStrokeWidth );
+      const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor, context, mSvgFillColor );
+      const QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      const double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
 
       const QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
 
@@ -849,7 +849,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
     bool expressionActive;
     expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
-    mDataDefinedProperties.setProperty( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSource ), QgsProperty::fromExpression( sourceExpression, expressionActive ) );
+    mDataDefinedProperties.setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
   QString imagePath = itemElem.attribute( QStringLiteral( "file" ) );

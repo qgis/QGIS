@@ -251,21 +251,21 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
         QgsPropertyCollection c = settings->dataDefinedProperties();
 
         // is there an existing property?
-        const QgsProperty existingProperty = c.property( static_cast< int >( property ) );
+        const QgsProperty existingProperty = c.property( property );
         if ( existingProperty.propertyType() == Qgis::PropertyType::Invalid
              || ( existingProperty.propertyType() == Qgis::PropertyType::Field && existingProperty.field().isEmpty() )
              || ( existingProperty.propertyType() == Qgis::PropertyType::Expression && existingProperty.expressionString().isEmpty() )
              || overwriteExisting )
         {
           const QgsProperty prop = QgsProperty::fromField( fieldName );
-          c.setProperty( static_cast< int >( property ), prop );
+          c.setProperty( property, prop );
         }
         else
         {
           // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
           const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
                                    existingProperty.asExpression() ) );
-          c.setProperty( static_cast< int >( property ), prop );
+          c.setProperty( property, prop );
         }
         settings->setDataDefinedProperties( c );
 
@@ -295,18 +295,18 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
 
       QgsPropertyCollection c = settings.dataDefinedProperties();
       // is there an existing property?
-      const QgsProperty existingProperty = c.property( static_cast< int >( property ) );
+      const QgsProperty existingProperty = c.property( property );
       if ( existingProperty.propertyType() == Qgis::PropertyType::Invalid || overwriteExisting )
       {
         const QgsProperty prop = QgsProperty::fromField( fieldName );
-        c.setProperty( static_cast< int >( property ), prop );
+        c.setProperty( property, prop );
       }
       else
       {
         // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
         const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
                                  existingProperty.asExpression() ) );
-        c.setProperty( static_cast< int>( property ), prop );
+        c.setProperty( property, prop );
       }
       settings.setDataDefinedProperties( c );
 
@@ -340,18 +340,18 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
         {
           QgsPropertyCollection c = settings->callout()->dataDefinedProperties();
           // is there an existing property?
-          const QgsProperty existingProperty = c.property( static_cast< int >( property ) );
+          const QgsProperty existingProperty = c.property( property );
           if ( existingProperty.propertyType() == Qgis::PropertyType::Invalid || overwriteExisting )
           {
             const QgsProperty prop = QgsProperty::fromField( fieldName );
-            c.setProperty( static_cast< int >( property ), prop );
+            c.setProperty( property, prop );
           }
           else
           {
             // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
             const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
                                      existingProperty.asExpression() ) );
-            c.setProperty( static_cast< int >( property ), prop );
+            c.setProperty( property, prop );
           }
           settings->callout()->setDataDefinedProperties( c );
         }

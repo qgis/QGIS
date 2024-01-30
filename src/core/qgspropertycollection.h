@@ -291,6 +291,33 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      */
     virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 
+    ///cond PRIVATE
+    template<class T> QDateTime valueAsDateTime( const T &key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok = nullptr ) const SIP_SKIP
+    {
+      return valueAsDateTime( static_cast< int >( key ), context, defaultDateTime, ok );
+    }
+    template<class T> QString valueAsString( const T &key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const SIP_SKIP
+    {
+      return valueAsString( static_cast< int >( key ), context, defaultString, ok );
+    }
+    template<class T> QColor valueAsColor( const T &key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const SIP_SKIP
+    {
+      return valueAsColor( static_cast< int >( key ), context, defaultColor, ok );
+    }
+    template<class T> double valueAsDouble( const T &key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const SIP_SKIP
+    {
+      return valueAsDouble( static_cast< int >( key ), context, defaultValue, ok );
+    }
+    template<class T> int valueAsInt( const T &key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const SIP_SKIP
+    {
+      return valueAsInt( static_cast< int >( key ), context, defaultValue, ok );
+    }
+    template<class T> bool valueAsBool( const T &key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const SIP_SKIP
+    {
+      return valueAsBool( static_cast< int >( key ), context, defaultValue, ok );
+    }
+    ///@endcond PRIVATE
+
   private:
 
     QString mName;
@@ -340,10 +367,24 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      */
     int count() const;
 
-    QSet<int> propertyKeys() const override;
-    void clear() override;
-    bool hasProperty( int key ) const override;
-    QgsProperty property( int key ) const override SIP_SKIP;
+    QSet<int> propertyKeys() const final;
+    void clear() final;
+    bool hasProperty( int key ) const final;
+
+    /**
+     * Returns TRUE if the collection contains a property with the specified \a key.
+     * \see property()
+     * \since QGIS 3.36
+     */
+    template< class T> bool hasProperty( T key ) const SIP_SKIP { return hasProperty( static_cast< int >( key ) ); }
+
+    QgsProperty property( int key ) const final SIP_SKIP;
+
+    /**
+     * Returns the property with the specified \a key.
+     * \since QGIS 3.36
+     */
+    template< class T> QgsProperty property( T key ) const SIP_SKIP { return property( static_cast< int >( key ) ); }
 
     /**
      * Returns a reference to a matching property from the collection, if one exists.
@@ -354,15 +395,30 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      */
     virtual QgsProperty &property( int key );
 
-    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
-    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
-    bool isActive( int key ) const override;
-    bool hasActiveProperties() const override;
-    bool hasDynamicProperties() const override;
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const final;
 
-    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
-    bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) override;
+    /**
+     * Returns the value of the property with the specified \a key.
+     * \since QGIS 3.36
+     */
+    template< class T> QVariant value( T key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const SIP_SKIP { return value( static_cast< int >( key ), context, defaultValue ); }
+
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const final;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
+    bool isActive( int key ) const final;
+
+    /**
+     * Returns TRUE if the property with the specified \a key is active.
+     * \see property()
+     * \since QGIS 3.36
+     */
+    template< class T> bool isActive( T key ) const SIP_SKIP { return isActive( static_cast< int >( key ) ); }
+
+    bool hasActiveProperties() const final;
+    bool hasDynamicProperties() const final;
+
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const final;
+    bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) final;
 
     /**
      * Adds a property to the collection and takes ownership of it.
@@ -375,6 +431,18 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     void setProperty( int key, const QgsProperty &property );
 
     /**
+     * Adds a property to the collection and takes ownership of it.
+     * \param key integer key for property. Any existing property with the same key will be removed
+     * and replaced by this property. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * \param property property to add. Ownership is transferred to the collection. Setting an invalid property
+     * will remove the property from the collection.
+     *
+     * \since QGIS 3.36
+     */
+    template< class T> void setProperty( T key, const QgsProperty &property ) SIP_SKIP { setProperty( static_cast< int >( key ), property ); }
+
+    /**
      * Convenience method, creates a QgsStaticProperty and stores it within the collection.
      * \param key integer key for property. Any existing property with the same key will be deleted
      * and replaced by this property. The intended use case is that a context specific enum is cast to
@@ -382,6 +450,17 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * \param value static value for property
      */
     void setProperty( int key, const QVariant &value );
+
+    /**
+     * Convenience method, creates a QgsStaticProperty and stores it within the collection.
+     * \param key integer key for property. Any existing property with the same key will be deleted
+     * and replaced by this property. The intended use case is that a context specific enum is cast to
+     * int and used for the key value.
+     * \param value static value for property
+     *
+     * \since QGIS 3.36
+     */
+    template< class T> void setProperty( T key,  const QVariant &value ) SIP_SKIP { setProperty( static_cast< int >( key ), value ); }
 
   private:
 

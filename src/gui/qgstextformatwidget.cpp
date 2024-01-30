@@ -1205,7 +1205,7 @@ void QgsTextFormatWidget::deactivateField( QgsPalLayerSettings::Property key )
     QgsPropertyOverrideButton *button = mButtons[ key ];
     button->updateFieldLists();
     button->setToProperty( QgsProperty() );
-    mDataDefinedProperties.setProperty( static_cast< int >( key ), QgsProperty() );
+    mDataDefinedProperties.setProperty( key, QgsProperty() );
   }
 }
 
@@ -1829,7 +1829,7 @@ void QgsTextFormatWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
-  mDataDefinedProperties.setProperty( static_cast< int >( key ), button->toProperty() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
   updatePreview();
 }
 
@@ -1868,7 +1868,7 @@ void QgsTextFormatWidget::createAuxiliaryField()
   property.setActive( true );
   button->updateFieldLists();
   button->setToProperty( property );
-  mDataDefinedProperties.setProperty( static_cast< int >( key ), button->toProperty() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
   updatePreview();
   emit auxiliaryFieldCreated();
 }

@@ -753,7 +753,7 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
     if ( QgsVectorLayer *currentLayer = mVectorLayer.get() )
       currentLayerIdentifier = currentLayer->id();
 
-    const QString layerIdentifier = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer ), context, currentLayerIdentifier );
+    const QString layerIdentifier = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer, context, currentLayerIdentifier );
     QgsVectorLayer *ddLayer = qobject_cast< QgsVectorLayer * >( QgsLayoutUtils::mapLayerFromString( layerIdentifier, mLayout->project() ) );
     if ( ddLayer )
       mDataDefinedVectorLayer = ddLayer;

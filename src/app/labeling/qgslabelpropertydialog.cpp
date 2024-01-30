@@ -293,10 +293,10 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
 
 int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsVectorLayer *vlayer, const QgsExpressionContext &context ) const
 {
-  if ( !mDataDefinedProperties.isActive( static_cast< int >( p ) ) )
+  if ( !mDataDefinedProperties.isActive( p ) )
     return -1;
 
-  const QgsProperty property = mDataDefinedProperties.property( static_cast< int >( p ) );
+  const QgsProperty property = mDataDefinedProperties.property( p );
 
   QString fieldName;
   switch ( property.propertyType() )
@@ -857,9 +857,9 @@ void QgsLabelPropertyDialog::mLabelTextLineEdit_textChanged( const QString &text
 
 void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p, const QVariant &value )
 {
-  if ( mDataDefinedProperties.isActive( static_cast< int >( p ) ) )
+  if ( mDataDefinedProperties.isActive( p ) )
   {
-    const QgsProperty prop = mDataDefinedProperties.property( static_cast< int >( p ) );
+    const QgsProperty prop = mDataDefinedProperties.property( p );
     if ( const int index = mPropertyToFieldMap.value( static_cast< int >( p ) ); index >= 0 )
     {
       mChangedProperties.insert( index, value );

@@ -251,12 +251,12 @@ void Qgs25DRenderer::setWallColor( const QColor &wallColor ) const
 
 void Qgs25DRenderer::setWallShadingEnabled( bool enabled ) const
 {
-  wallLayer()->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::FillColor ) ).setActive( enabled );
+  wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::Property::FillColor ).setActive( enabled );
 }
 
 bool Qgs25DRenderer::wallShadingEnabled() const
 {
-  return wallLayer()->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::FillColor ) ).isActive();
+  return wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::Property::FillColor ).isActive();
 }
 
 QColor Qgs25DRenderer::roofColor() const

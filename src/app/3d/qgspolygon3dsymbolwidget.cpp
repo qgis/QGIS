@@ -101,8 +101,8 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setMaterialSettings( widgetMaterial->settings() );
 
   QgsPropertyCollection ddp;
-  ddp.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), btnHeightDD->toProperty() );
-  ddp.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), btnExtrusionDD->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::Height, btnHeightDD->toProperty() );
+  ddp.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, btnExtrusionDD->toProperty() );
   sym->setDataDefinedProperties( ddp );
 
   sym->setEdgesEnabled( groupEdges->isChecked() );

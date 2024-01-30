@@ -1329,9 +1329,9 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
     Qgis::LabelQuadrantPosition offsetQuad = layerSettings.quadOffset;
 
-    if ( props.isActive( static_cast< int >( QgsPalLayerSettings::Property::OffsetQuad ) ) )
+    if ( props.isActive( QgsPalLayerSettings::Property::OffsetQuad ) )
     {
-      const QVariant exprVal = props.value( static_cast< int >( QgsPalLayerSettings::Property::OffsetQuad ), expressionContext );
+      const QVariant exprVal = props.value( QgsPalLayerSettings::Property::OffsetQuad, expressionContext );
       if ( !QgsVariantUtils::isNull( exprVal ) )
       {
         offsetQuad = static_cast<Qgis::LabelQuadrantPosition>( exprVal.toInt() );
@@ -1379,13 +1379,13 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  if ( props.isActive( static_cast< int >( QgsPalLayerSettings::Property::Hali ) ) )
+  if ( props.isActive( QgsPalLayerSettings::Property::Hali ) )
   {
     lblX = labelFeature->anchorPosition().x();
     lblY = labelFeature->anchorPosition().y();
 
     hali = HAlign::HLeft;
-    QVariant exprVal = props.value( static_cast< int >( QgsPalLayerSettings::Property::Hali ), expressionContext );
+    QVariant exprVal = props.value( QgsPalLayerSettings::Property::Hali, expressionContext );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString haliString = exprVal.toString();
@@ -1401,10 +1401,10 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   }
 
   //vertical alignment
-  if ( props.isActive( static_cast< int >( QgsPalLayerSettings::Property::Vali ) ) )
+  if ( props.isActive( QgsPalLayerSettings::Property::Vali ) )
   {
     vali = VAlign::VBottom;
-    QVariant exprVal = props.value( static_cast< int >( QgsPalLayerSettings::Property::Vali ), expressionContext );
+    QVariant exprVal = props.value( QgsPalLayerSettings::Property::Vali, expressionContext );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString valiString = exprVal.toString();

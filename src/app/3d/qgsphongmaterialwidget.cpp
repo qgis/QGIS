@@ -145,9 +145,9 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   float opacity = mHasOpacity ? static_cast<float>( mOpacityWidget->opacity() ) : 1.0f;
   m->setOpacity( opacity );
 
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Diffuse ), mDiffuseDataDefinedButton->toProperty() );
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), mAmbientDataDefinedButton->toProperty() );
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Specular ), mSpecularDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, mDiffuseDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, mAmbientDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Specular, mSpecularDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();

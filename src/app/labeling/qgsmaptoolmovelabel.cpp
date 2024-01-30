@@ -321,7 +321,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       }
       else if ( !mCurrentLabel.pos.isDiagram && !isMovableUsingPoint )
       {
-        if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionPoint ) ) )
+        if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionPoint ) )
         {
           // Point position is defined as a read only expression (not pointing to a writable geometry column)
           QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The point position expression is not pointing to a writable geometry column" ) );
@@ -490,7 +490,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
           bool success = false;
 
-          if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ) ) )
+          if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::LineAnchorPercent ) )
           {
             success = changeCurrentLabelDataDefinedLineAnchorPercent( lineAnchorPercent );
           }
@@ -554,7 +554,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
           bool success = false;
           if ( !isCalloutMove
-               && mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionPoint ) ) )
+               && mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::PositionPoint ) )
           {
             success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
             changeCurrentLabelDataDefinedLineAnchorPercent( QVariant() );
@@ -821,10 +821,10 @@ bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool 
 
   auto calloutPropertyColumnName = [callout]( QgsCallout::Property p )
   {
-    if ( !callout->dataDefinedProperties().isActive( static_cast< int >( p ) ) )
+    if ( !callout->dataDefinedProperties().isActive( p ) )
       return QString();
 
-    const QgsProperty prop = callout->dataDefinedProperties().property( static_cast< int >( p ) );
+    const QgsProperty prop = callout->dataDefinedProperties().property( p );
     if ( prop.propertyType() != Qgis::PropertyType::Field )
       return QString();
 

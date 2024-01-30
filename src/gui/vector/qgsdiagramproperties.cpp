@@ -543,7 +543,7 @@ void QgsDiagramProperties::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
-  mDataDefinedProperties.setProperty( static_cast< int >( key ), button->toProperty() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
 void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -1115,7 +1115,7 @@ void QgsDiagramProperties::createAuxiliaryField()
   property.setActive( true );
   button->updateFieldLists();
   button->setToProperty( property );
-  mDataDefinedProperties.setProperty( static_cast< int >( key ), button->toProperty() );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
 
   emit auxiliaryFieldCreated();
 }

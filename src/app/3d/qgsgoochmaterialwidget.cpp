@@ -109,10 +109,10 @@ QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
   m->setAlpha( spinAlpha->value() );
   m->setBeta( spinBeta->value() );
 
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Diffuse ), mDiffuseDataDefinedButton->toProperty() );
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Warm ), mWarmDataDefinedButton->toProperty() );
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Cool ), mCoolDataDefinedButton->toProperty() );
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Specular ), mSpecularDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, mDiffuseDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Warm, mWarmDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Cool, mCoolDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Specular, mSpecularDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();

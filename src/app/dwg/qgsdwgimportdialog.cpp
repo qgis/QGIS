@@ -399,11 +399,11 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     pls.fieldName = QStringLiteral( "text" );
     pls.wrapChar = QStringLiteral( "\\P" );
 
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Size ), QgsProperty::fromField( QStringLiteral( "height" ) ) );
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Color ), QgsProperty::fromField( QStringLiteral( "color" ) ) );
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::MultiLineHeight ), QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( QStringLiteral( "height" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
 
     // DXF TEXT
     // vertical: 0 = Base, 1 = Bottom, 2 = Middle, 3 = Top,  default Base
@@ -462,8 +462,8 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
                                  )
     );
 
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::LabelRotation ), QgsProperty::fromExpression( QStringLiteral( "360-angle" ) ) );
-    pls.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::AlwaysShow ), QgsProperty::fromExpression( QStringLiteral( "1" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::AlwaysShow, QgsProperty::fromExpression( QStringLiteral( "1" ) ) );
 
     l->setLabeling( new QgsVectorLayerSimpleLabeling( pls ) );
     l->setLabelsEnabled( true );

@@ -164,9 +164,9 @@ void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effec
 
 QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-  const QColor ambient = dataDefinedProperties().valueAsColor( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), expressionContext, mAmbient );
-  const QColor diffuse = dataDefinedProperties().valueAsColor( static_cast< int >( QgsAbstractMaterialSettings::Property::Diffuse ), expressionContext, mDiffuse );
-  const QColor specular = dataDefinedProperties().valueAsColor( static_cast< int >( QgsAbstractMaterialSettings::Property::Specular ), expressionContext, mSpecular );
+  const QColor ambient = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Ambient, expressionContext, mAmbient );
+  const QColor diffuse = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Diffuse, expressionContext, mDiffuse );
+  const QColor specular = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Specular, expressionContext, mSpecular );
 
   QByteArray array;
   if ( mDiffuseCoefficient < 1 || mAmbientCoefficient < 1 || mSpecularCoefficient < 1 )

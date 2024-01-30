@@ -65,5 +65,5 @@ void QgsLabelObstacleSettingsWidget::setGeometryType( Qgis::GeometryType type )
 
 void QgsLabelObstacleSettingsWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
-  properties.setProperty( static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ), mDataDefinedProperties.property( static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ) ) );
+  properties.setProperty( QgsPalLayerSettings::Property::ObstacleFactor, mDataDefinedProperties.property( QgsPalLayerSettings::Property::ObstacleFactor ) );
 }

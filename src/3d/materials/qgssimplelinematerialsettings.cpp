@@ -105,7 +105,7 @@ Qt3DRender::QMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSet
       if ( !context.isSelected() )
       {
         mat->setLineColor( mAmbient );
-        mat->setUseVertexColors( dataDefinedProperties().isActive( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ) ) );
+        mat->setUseVertexColors( dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) );
       }
       else
       {
@@ -135,7 +135,7 @@ void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *
 
 QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-  const QColor ambient = dataDefinedProperties().valueAsColor( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), expressionContext, mAmbient );
+  const QColor ambient = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Ambient, expressionContext, mAmbient );
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 3 );

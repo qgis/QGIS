@@ -132,21 +132,21 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
   mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
-  if ( props->dataDefinedProperties().isActive( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) ) )
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) )
   {
-    mDataDefinedProperties.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), props->dataDefinedProperties().property( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) ) );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) );
   }
   else
   {
-    mDataDefinedProperties.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), QgsProperty() );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, QgsProperty() );
   }
-  if ( props->dataDefinedProperties().isActive( static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ) ) )
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::Property::ZOffset ) )
   {
-    mDataDefinedProperties.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), props->dataDefinedProperties().property( static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ) ) );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::Height, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::ZOffset ) );
   }
   else
   {
-    mDataDefinedProperties.setProperty( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), QgsProperty() );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::Height, QgsProperty() );
   }
   mOffset = static_cast< float >( props->zOffset() );
 }

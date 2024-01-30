@@ -1005,15 +1005,15 @@ QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &po
   }
 
   const QgsExpressionContext context = createExpressionContext();
-  const double evaluatedX = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PositionX ), context, position.x() );
-  const double evaluatedY = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PositionY ), context, position.y() );
+  const double evaluatedX = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::PositionX, context, position.x() );
+  const double evaluatedY = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::PositionY, context, position.y() );
   return QgsLayoutPoint( evaluatedX, evaluatedY, position.units() );
 }
 
 void QgsLayoutItem::applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context )
 {
   bool ok = false;
-  const QString orientationString = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperOrientation ), context, QString(), &ok );
+  const QString orientationString = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::PaperOrientation, context, QString(), &ok );
   if ( ok && !orientationString.isEmpty() )
   {
     const QgsLayoutItemPage::Orientation orientation = QgsLayoutUtils::decodePaperOrientation( orientationString, ok );
@@ -1048,17 +1048,17 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
     return size;
   }
 
-  if ( !mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) ) &&
-       !mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ItemWidth ) ) &&
-       !mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ItemHeight ) ) &&
-       !mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) ) )
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
     return size;
 
 
   const QgsExpressionContext context = createExpressionContext();
 
   // lowest priority is page size
-  const QString pageSize = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ), context );
+  const QString pageSize = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::PresetPaperSize, context );
   QgsPageSize matchedSize;
   double evaluatedWidth = size.width();
   double evaluatedHeight = size.height();
@@ -1070,8 +1070,8 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   }
 
   // highest priority is dd width/height
-  evaluatedWidth = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ItemWidth ), context, evaluatedWidth );
-  evaluatedHeight = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ItemHeight ), context, evaluatedHeight );
+  evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ItemWidth, context, evaluatedWidth );
+  evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ItemHeight, context, evaluatedHeight );
 
   //which is finally overwritten by data defined orientation
   applyDataDefinedOrientation( evaluatedWidth, evaluatedHeight, context );
@@ -1105,7 +1105,7 @@ double QgsLayoutItem::applyDataDefinedRotation( const double rotation )
   }
 
   const QgsExpressionContext context = createExpressionContext();
-  const double evaluatedRotation = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ItemRotation ), context, rotation );
+  const double evaluatedRotation = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ItemRotation, context, rotation );
   return evaluatedRotation;
 }
 
@@ -1148,7 +1148,7 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   {
     const bool exclude = mExcludeFromExports;
     //data defined exclude from exports set?
-    mEvaluatedExcludeFromExports = mDataDefinedProperties.valueAsBool( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports ), createExpressionContext(), exclude );
+    mEvaluatedExcludeFromExports = mDataDefinedProperties.valueAsBool( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, createExpressionContext(), exclude );
   }
 
   update();
@@ -1446,7 +1446,7 @@ void QgsLayoutItem::refreshItemRotation( QPointF *origin )
   double r = mItemRotation;
 
   //data defined rotation set?
-  r = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ItemRotation ), createExpressionContext(), r );
+  r = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ItemRotation, createExpressionContext(), r );
 
   if ( qgsDoubleNear( r, rotation() ) && !origin )
   {
@@ -1483,7 +1483,7 @@ void QgsLayoutItem::refreshItemRotation( QPointF *origin )
 void QgsLayoutItem::refreshOpacity( bool updateItem )
 {
   //data defined opacity set?
-  const double opacity = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::Opacity ), createExpressionContext(), mOpacity * 100.0 );
+  const double opacity = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::Opacity, createExpressionContext(), mOpacity * 100.0 );
 
   // Set the QGraphicItem's opacity
   mEvaluatedOpacity = opacity / 100.0;
@@ -1511,7 +1511,7 @@ void QgsLayoutItem::refreshFrame( bool updateItem )
 
   //data defined stroke color set?
   bool ok = false;
-  const QColor frameColor = mDataDefinedProperties.valueAsColor( static_cast< int >( QgsLayoutObject::DataDefinedProperty::FrameColor ), createExpressionContext(), mFrameColor, &ok );
+  const QColor frameColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::FrameColor, createExpressionContext(), mFrameColor, &ok );
   QPen itemPen;
   if ( ok )
   {
@@ -1546,7 +1546,7 @@ void QgsLayoutItem::refreshBackgroundColor( bool updateItem )
 {
   //data defined fill color set?
   bool ok = false;
-  const QColor backgroundColor = mDataDefinedProperties.valueAsColor( static_cast< int >( QgsLayoutObject::DataDefinedProperty::BackgroundColor ), createExpressionContext(), mBackgroundColor, &ok );
+  const QColor backgroundColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::BackgroundColor, createExpressionContext(), mBackgroundColor, &ok );
   if ( ok )
   {
     setBrush( QBrush( backgroundColor, Qt::SolidPattern ) );
@@ -1567,7 +1567,7 @@ void QgsLayoutItem::refreshBlendMode()
 
   //data defined blend mode set?
   bool ok = false;
-  const QString blendStr = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::BlendMode ), createExpressionContext(), QString(), &ok );
+  const QString blendStr = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::BlendMode, createExpressionContext(), QString(), &ok );
   if ( ok && !blendStr.isEmpty() )
   {
     const QString blendstr = blendStr.trimmed();

@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCompositionConverter
     /**
      * Composition data defined properties for different item types
      */
-    enum DataDefinedProperty
+    enum class DataDefinedProperty
     {
       NoProperty = 0, //!< No property
       AllProperties, //!< All properties for item

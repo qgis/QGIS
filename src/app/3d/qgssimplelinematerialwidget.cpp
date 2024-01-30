@@ -52,7 +52,7 @@ QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
   std::unique_ptr< QgsSimpleLineMaterialSettings > m = std::make_unique< QgsSimpleLineMaterialSettings >();
   m->setAmbient( btnAmbient->color() );
 
-  mPropertyCollection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), mAmbientDataDefinedButton->toProperty() );
+  mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, mAmbientDataDefinedButton->toProperty() );
   m->setDataDefinedProperties( mPropertyCollection );
 
   return m.release();

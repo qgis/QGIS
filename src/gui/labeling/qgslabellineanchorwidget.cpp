@@ -135,10 +135,10 @@ QgsLabelLineSettings QgsLabelLineAnchorWidget::settings() const
 
 void QgsLabelLineAnchorWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
-  properties.setProperty( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ), mDataDefinedProperties.property( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ) ) );
-  properties.setProperty( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ), mDataDefinedProperties.property( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ) ) );
-  properties.setProperty( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ), mDataDefinedProperties.property( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ) ) );
-  properties.setProperty( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ), mDataDefinedProperties.property( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ) ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorPercent ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorClipping, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorClipping ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorType, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorType ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorTextPoint, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorTextPoint ) );
 }
 
 void QgsLabelLineAnchorWidget::updateAnchorTypeHint()
