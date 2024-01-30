@@ -431,10 +431,26 @@ void QgsVectorLayerAndAttributeModel::deSelectAll()
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
+QgsDxfExportLayerTreeView::QgsDxfExportLayerTreeView( QWidget *parent )
+  : QgsLayerTreeView( parent )
+{
+}
+
+void QgsDxfExportLayerTreeView::resizeEvent( QResizeEvent *event )
+{
+  header()->setMinimumSectionSize( viewport()->width() / 2 );
+  header()->setMaximumSectionSize( viewport()->width() / 2 );
+  QTreeView::resizeEvent( event );
+}
+
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+
+  mTreeView = new QgsDxfExportLayerTreeView( this );
+  mTreeViewContainer->layout()->addWidget( mTreeView );
+
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
@@ -451,8 +467,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   mModel = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
   mModel->setFlags( QgsLayerTreeModel::Flags() );
+
   mTreeView->setModel( mModel );
-  mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
 
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
