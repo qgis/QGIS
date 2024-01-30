@@ -89,6 +89,7 @@ my $LINE;
 my @OUTPUT = ();
 my @OUTPUT_PYTHON = ();
 my $DOXY_INSIDE_SIP_RUN = 0;
+my $HAS_PUSHED_FORCE_INT = 0;
 
 sub read_line {
     my $new_line = $INPUT_LINES[$LINE_IDX];
@@ -1373,7 +1374,10 @@ while ($LINE_IDX < $LINE_COUNT){
         elsif ( none { $_ eq $py_flag } @ENUM_INT_TYPES ){
           if ( $is_qt6 ) {
             dbg_info("monkey patching operators for non class enum");
-            push @OUTPUT_PYTHON, "def _force_int(v): return v if isinstance(v, int) else int(v.value)\n\n\n";
+            if ($HAS_PUSHED_FORCE_INT eq 0) {
+              push @OUTPUT_PYTHON, "def _force_int(v): return v if isinstance(v, int) else int(v.value)\n\n\n";
+              $HAS_PUSHED_FORCE_INT = 1;
+            }
             push @OUTPUT_PYTHON, "$py_flag.__bool__ = lambda flag: bool(_force_int(flag))\n";
             push @OUTPUT_PYTHON, "$py_flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n";
             push @OUTPUT_PYTHON, "$py_flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n";
