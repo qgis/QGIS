@@ -171,6 +171,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   {
     // sharing connection between threads is not safe
     // See https://github.com/qgis/QGIS/issues/21205
+    QgsDebugMsgLevel( QStringLiteral( "refusing to use shared connection as we are not the main thread" ), 2 );
     shared = false;
   }
 

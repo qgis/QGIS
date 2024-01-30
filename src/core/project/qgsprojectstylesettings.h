@@ -375,7 +375,7 @@ class CORE_EXPORT QgsProjectStyleDatabaseProxyModel : public QSortFilterProxyMod
   public:
 
     //! Available filter flags for filtering the model
-    enum class Filter
+    enum class Filter : int
     {
       FilterHideReadOnly = 1 << 0, //!< Hide read-only style databases
     };

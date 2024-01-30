@@ -19,3 +19,10 @@ QgsStatisticalSummary.First = QgsStatisticalSummary.Statistic.First
 QgsStatisticalSummary.Last = QgsStatisticalSummary.Statistic.Last
 QgsStatisticalSummary.All = QgsStatisticalSummary.Statistic.All
 QgsStatisticalSummary.Statistics = lambda flags=0: QgsStatisticalSummary.Statistic(flags)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
+
+
+QgsStatisticalSummary.Statistic.__bool__ = lambda flag: bool(_force_int(flag))
+QgsStatisticalSummary.Statistic.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsStatisticalSummary.Statistic.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsStatisticalSummary.Statistic.__or__ = lambda flag1, flag2: QgsStatisticalSummary.Statistic(_force_int(flag1) | _force_int(flag2))

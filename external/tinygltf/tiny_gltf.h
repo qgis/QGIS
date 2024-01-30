@@ -25,7 +25,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-// Version: - v2.8.18
+// Version: - v2.8.20
 // See https://github.com/syoyo/tinygltf/releases for release history.
 //
 // Tiny glTF loader is using following third party libraries:
@@ -6652,7 +6652,7 @@ bool TinyGLTF::LoadBinaryFromMemory(Model *model, std::string *err,
 
   memcpy(&version, bytes + 4, 4);
   swap4(&version);
-  memcpy(&length, bytes + 8, 4);
+  memcpy(&length, bytes + 8, 4); // Total glb size, including header and all chunks.
   swap4(&length);
   memcpy(&chunk0_length, bytes + 12, 4);  // JSON data length
   swap4(&chunk0_length);
@@ -6708,68 +6708,86 @@ bool TinyGLTF::LoadBinaryFromMemory(Model *model, std::string *err,
     bin_size_ = 0;
   } else {
     // Read Chunk1 info(BIN data)
-    // At least Chunk1 should have 12 bytes(8 bytes(header) + 4 bytes(bin
-    // payload could be 1~3 bytes, but need to be aligned to 4 bytes)
-    if ((header_and_json_size + 12ull) > uint64_t(length)) {
+    //
+    // issue-440:
+    // 'SHOULD' in glTF spec means 'RECOMMENDED',
+    // So there is a situation that Chunk1(BIN) is composed of zero-sized BIN data
+    // (chunksize(0) + binformat(BIN) = 8bytes).
+    // 
+    if ((header_and_json_size + 8ull) > uint64_t(length)) {
       if (err) {
         (*err) =
             "Insufficient storage space for Chunk1(BIN data). At least Chunk1 "
-            "Must have 4 or more bytes, but got " +
+            "Must have 8 or more bytes, but got " +
             std::to_string((header_and_json_size + 8ull) - uint64_t(length)) +
             ".\n";
       }
       return false;
     }
 
-    unsigned int chunk1_length;  // 4 bytes
-    unsigned int chunk1_format;  // 4 bytes;
+    unsigned int chunk1_length{0};  // 4 bytes
+    unsigned int chunk1_format{0};  // 4 bytes;
     memcpy(&chunk1_length, bytes + header_and_json_size,
-           4);  // JSON data length
+           4);  // Bin data length
     swap4(&chunk1_length);
     memcpy(&chunk1_format, bytes + header_and_json_size + 4, 4);
     swap4(&chunk1_format);
 
-    // std::cout << "chunk1_length = " << chunk1_length << "\n";
-
-    if (chunk1_length < 4) {
+    if (chunk1_format != 0x004e4942) {
       if (err) {
-        (*err) = "Insufficient Chunk1(BIN) data size.";
+        (*err) = "Invalid chunkType for Chunk1.";
       }
       return false;
     }
 
-    if ((chunk1_length % 4) != 0) {
-      if (strictness_==ParseStrictness::Permissive) {
-        if (warn) {
-          (*warn) += "BIN Chunk end is not aligned to a 4-byte boundary.\n";
-        }
-      }
-      else {
+    if (chunk1_length == 0) {
+
+      if (header_and_json_size + 8 > uint64_t(length)) {
         if (err) {
-          (*err) = "BIN Chunk end is not aligned to a 4-byte boundary.";
+          (*err) = "BIN Chunk header location exceeds the GLB size.";
         }
         return false;
       }
-    }
 
-    if (uint64_t(chunk1_length) + header_and_json_size > uint64_t(length)) {
-      if (err) {
-        (*err) = "BIN Chunk data length exceeds the GLB size.";
+      bin_data_ = nullptr;
+
+    } else {
+
+      // When BIN chunk size is not zero, at least Chunk1 should have 12 bytes(8 bytes(header) + 4 bytes(bin
+      // payload could be 1~3 bytes, but need to be aligned to 4 bytes)
+
+      if (chunk1_length < 4) {
+        if (err) {
+          (*err) = "Insufficient Chunk1(BIN) data size.";
+        }
+        return false;
       }
-      return false;
-    }
 
-    if (chunk1_format != 0x004e4942) {
-      if (err) {
-        (*err) = "Invalid type for chunk1 data.";
+      if ((chunk1_length % 4) != 0) {
+        if (strictness_==ParseStrictness::Permissive) {
+          if (warn) {
+            (*warn) += "BIN Chunk end is not aligned to a 4-byte boundary.\n";
+          }
+        }
+        else {
+          if (err) {
+            (*err) = "BIN Chunk end is not aligned to a 4-byte boundary.";
+          }
+          return false;
+        }
       }
-      return false;
+
+      // +8 chunk1 header size.
+      if (uint64_t(chunk1_length) + header_and_json_size + 8 > uint64_t(length)) {
+        if (err) {
+          (*err) = "BIN Chunk data length exceeds the GLB size.";
+        }
+        return false;
+      }
+
+      bin_data_ = bytes + header_and_json_size +
+                  8;  // 4 bytes (bin_buffer_length) + 4 bytes(bin_buffer_format)
     }
-
-    // std::cout << "chunk1_length = " << chunk1_length << "\n";
-
-    bin_data_ = bytes + header_and_json_size +
-                8;  // 4 bytes (bin_buffer_length) + 4 bytes(bin_buffer_format)
 
     bin_size_ = size_t(chunk1_length);
   }

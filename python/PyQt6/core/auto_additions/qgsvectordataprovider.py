@@ -25,3 +25,10 @@ QgsVectorDataProvider.CreateLabeling = QgsVectorDataProvider.Capability.CreateLa
 QgsVectorDataProvider.ReloadData = QgsVectorDataProvider.Capability.ReloadData
 QgsVectorDataProvider.FeatureSymbology = QgsVectorDataProvider.Capability.FeatureSymbology
 QgsVectorDataProvider.Capabilities = lambda flags=0: QgsVectorDataProvider.Capability(flags)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
+
+
+QgsVectorDataProvider.Capability.__bool__ = lambda flag: bool(_force_int(flag))
+QgsVectorDataProvider.Capability.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsVectorDataProvider.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsVectorDataProvider.Capability.__or__ = lambda flag1, flag2: QgsVectorDataProvider.Capability(_force_int(flag1) | _force_int(flag2))
