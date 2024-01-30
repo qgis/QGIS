@@ -127,6 +127,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
   public:
 
+    // *INDENT-OFF*
+
     /**
      * Data defined properties.
      * Overrides of user defined server parameters are stored in a
@@ -135,12 +137,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.14
      */
-    enum class DataDefinedServerProperty SIP_MONKEYPATCH_SCOPEENUM : int
-    {
+    enum class DataDefinedServerProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, DataDefinedServerProperty ) : int
+      {
       NoProperty = 0, //!< No property
       AllProperties = 1, //!< All properties for item
       WMSOnlineResource = 2, //!< Alias
     };
+    // *INDENT-ON*
 
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();

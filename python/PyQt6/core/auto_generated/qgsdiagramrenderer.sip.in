@@ -46,8 +46,9 @@ Stores the settings for rendering of all diagrams for a layer.
     typedef QFlags<QgsDiagramLayerSettings::LinePlacementFlag> LinePlacementFlags;
 
 
+
     enum class Property /BaseType=IntFlag/
-    {
+      {
       BackgroundColor,
       StrokeColor,
       StrokeWidth,

@@ -98,6 +98,7 @@ Returns the default symbol type required for the specified geometry ``type``.
 .. versionadded:: 3.20
 %End
 
+
     enum class Property
     {
       Opacity,

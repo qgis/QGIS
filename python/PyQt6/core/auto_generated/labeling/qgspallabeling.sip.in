@@ -51,7 +51,7 @@ Contains settings for how a map layer will be labeled.
     };
 
     enum class Property /BaseType=IntFlag/
-    {
+      {
       // text style
       Size,
       Bold,
@@ -190,7 +190,6 @@ Contains settings for how a map layer will be labeled.
       Show,
       AlwaysShow
     };
-
 
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 %Docstring

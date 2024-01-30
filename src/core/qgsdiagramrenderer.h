@@ -81,12 +81,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
     Q_DECLARE_FLAGS( LinePlacementFlags, LinePlacementFlag )
 
+    // *INDENT-OFF*
+
     /**
      * Data definable properties.
      * \since QGIS 3.0
      */
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
-    {
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDiagramLayerSettings, Property ) : int
+      {
       BackgroundColor, //!< Diagram background color
       StrokeColor, //!< Stroke color
       StrokeWidth, //!< Stroke width
@@ -100,6 +102,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
       AlwaysShow, //!< Whether the diagram should always be shown, even if it overlaps other diagrams/labels
       StartAngle, //!< Angle offset for pie diagram
     };
+    // *INDENT-ON*
 
     /**
      * Returns the diagram property definitions.

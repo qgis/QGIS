@@ -51,7 +51,7 @@ relevant symbology elements to render them.
   public:
 
     enum class Property
-    {
+      {
       MinimumCalloutLength,
       OffsetFromAnchor,
       OffsetFromLabel,

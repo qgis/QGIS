@@ -135,11 +135,13 @@ class CORE_EXPORT QgsSymbolLayer
 #endif
   public:
 
+    // *INDENT-OFF*
+
     /**
      * Data definable properties.
      * \since QGIS 3.0
      */
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbolLayer, Property ) : int
     {
       Size SIP_MONKEYPATCH_COMPAT_NAME( PropertySize ) = 0, //!< Symbol size
       Angle SIP_MONKEYPATCH_COMPAT_NAME( PropertyAngle ), //!< Symbol angle
@@ -212,6 +214,7 @@ class CORE_EXPORT QgsSymbolLayer
       RandomOffsetY SIP_MONKEYPATCH_COMPAT_NAME( PropertyRandomOffsetY ), //!< Random offset Y (since QGIS 3.24)
       LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode (since QGIS 3.24)
     };
+    // *INDENT-ON*
 
     /**
      * Returns the symbol layer property definitions.

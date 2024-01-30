@@ -23,8 +23,9 @@ Contains a pipeline of raster interfaces for sequential raster processing.
 %End
   public:
 
+
     enum class Property /BaseType=IntFlag/
-    {
+      {
       RendererOpacity,
     };
 

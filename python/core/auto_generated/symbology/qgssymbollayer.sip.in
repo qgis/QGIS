@@ -94,6 +94,7 @@ class QgsSymbolLayer
 %End
   public:
 
+
     enum class Property
     {
       Size,

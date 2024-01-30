@@ -140,9 +140,10 @@ class CORE_EXPORT QgsPalLayerSettings
        placing labels over any part of the polygon is avoided.*/
     };
 
+    // *INDENT-OFF*
     //! Data definable properties.
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
-    {
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, Property ) : int
+      {
       // text style
       Size = 0, //!< Label size
       Bold = 1, //!< Use bold style
@@ -281,7 +282,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Show = 15,
       AlwaysShow = 20
     };
-
+    // *INDENT-ON*
 
     /**
      * Prepare for registration of features.

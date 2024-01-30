@@ -36,8 +36,9 @@ open within the main QGIS application.
 %End
   public:
 
+
     enum class DataDefinedServerProperty /BaseType=IntFlag/
-    {
+      {
       NoProperty,
       AllProperties,
       WMSOnlineResource,

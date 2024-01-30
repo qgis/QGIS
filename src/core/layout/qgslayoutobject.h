@@ -136,11 +136,13 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     Q_OBJECT
   public:
 
+    // *INDENT-OFF*
+
     /**
      * Data defined properties for different item types
      */
-    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM : int
-    {
+    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutObject, DataDefinedProperty ) : int
+      {
       NoProperty = 0, //!< No property
       AllProperties, //!< All properties for item
       TestProperty, //!< Dummy property with no effect on item
@@ -236,6 +238,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ElevationProfileMinimumElevation, //!< Minimum elevation value for elevation profile (since QGIS 3.30)
       ElevationProfileMaximumElevation, //!< Maximum elevation value for elevation profile (since QGIS 3.30)
     };
+
+    // *INDENT-ON*
 
     /**
      * Specifies whether the value returned by a function should be the original, user
