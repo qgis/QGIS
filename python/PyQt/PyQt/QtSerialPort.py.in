@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    QtSql.py
+    QtSerialPort.py
     ---------------------
-    Date                 : March 2024
-    Copyright            : (C) 2024 by Jorge Tornero
-    Email                : jorge dot tornero at ieo dot csic dot es
+    Date                 : March 2016
+    Copyright            : (C) 2016 by Juergen E. Fischer
+    Email                : jef at norbit dot de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,8 +17,8 @@
 ***************************************************************************
 """
 
-__author__ = 'Jorge Tornero'
-__date__ = 'January 2024'
-__copyright__ = '(C) 2024, Jorge Tornero'
+__author__ = 'Juergen E. Fischer'
+__date__ = 'March 2016'
+__copyright__ = '(C) 2016, Juergen E. Fischer'
 
 from PyQt@QT_VERSION_MAJOR@.QtSerialPort import *
