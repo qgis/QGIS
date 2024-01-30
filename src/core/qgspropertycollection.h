@@ -395,6 +395,10 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      */
     virtual QgsProperty &property( int key );
 
+    ///@cond PRIVATE
+    template< class T> QgsProperty &property( T key ) SIP_SKIP { return property( static_cast< int >( key ) ); }
+    ///@endcond
+
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const final;
 
     /**

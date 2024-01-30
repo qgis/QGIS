@@ -77,7 +77,7 @@ class CORE_EXPORT QgsEditFormConfig
      * enum.
      * \since QGIS 3.14
      */
-    enum DataDefinedProperty
+    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM : int
     {
       NoProperty = 0, //!< No property
       AllProperties = 1, //!< All properties for item
