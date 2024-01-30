@@ -306,8 +306,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfCenter );
 
       // using field bound alignment
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Hali ), QgsProperty::fromField( QStringLiteral( "halig" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Vali ), QgsProperty::fromField( QStringLiteral( "valig" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromField( QStringLiteral( "halig" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromField( QStringLiteral( "valig" ) ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
 
       canvas->refreshAllLayers();
@@ -337,8 +337,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::BaseCenter );
 
       // now try with expression based alignment
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Hali ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Vali ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
 
       canvas->refreshAllLayers();
@@ -462,15 +462,15 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       // using field bound alignment
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Hali ), QgsProperty::fromField( QStringLiteral( "halig" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Vali ), QgsProperty::fromField( QStringLiteral( "valig" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromField( QStringLiteral( "halig" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromField( QStringLiteral( "valig" ) ) );
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );
 
       // now try with expression based alignment
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Hali ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::Vali ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Hali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'right' else 'left' end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Vali, QgsProperty::fromExpression( QStringLiteral( "case when $id % 2 = 0 then 'half' else 'cap' end" ) ) );
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::CapLeft );
@@ -496,8 +496,8 @@ class TestQgsMapToolLabel : public QObject
       pls1.fieldName = QStringLiteral( "'label'" );
 
       // not using a column
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromValue( 5 ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromValue( 6 ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromValue( 5 ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromValue( 6 ) );
 
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
@@ -511,8 +511,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // using direct field references
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromField( QStringLiteral( "label_x_2" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromField( QStringLiteral( "label_y_2" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "label_x_2" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "label_y_2" ) ) );
 
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
@@ -525,8 +525,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // using expressions which are just field references, should still work
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "\"label_x_1\"" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromExpression( QStringLiteral( "\"label_y_1\"" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"label_x_1\"" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "\"label_y_1\"" ) ) );
 
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
@@ -541,8 +541,8 @@ class TestQgsMapToolLabel : public QObject
 
       // using complex expressions which change field depending on a project level variable
 
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_x_1\" else \"label_x_2\" end" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_x_1\" else \"label_x_2\" end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end" ) ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
@@ -563,8 +563,8 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // another smart situation -- an expression which uses coalesce to store per-feature overrides in a field, otherwise falling back to some complex expression
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "coalesce(\"override_x_field\", $x + 10)" ) ) );
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionY ), QgsProperty::fromExpression( QStringLiteral( "COALESCE(case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end, $y-20)" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "coalesce(\"override_x_field\", $x + 10)" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "COALESCE(case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end, $y-20)" ) ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
 
@@ -587,7 +587,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( status, QgsMapToolLabel::PropertyStatus::Valid );
 
       // with an invalid expression set
-      pls1.dataDefinedProperties().setProperty( static_cast< int >( QgsPalLayerSettings::Property::PositionX ), QgsProperty::fromExpression( QStringLiteral( "\"this field does not exist\"" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"this field does not exist\"" ) ) );
       vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
       vl1->setLabelsEnabled( true );
       QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, pls1, vl1, status ), QString() );

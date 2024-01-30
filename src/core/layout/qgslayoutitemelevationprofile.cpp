@@ -126,12 +126,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   bool forceUpdate = false;
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance ) ) )
   {
     double value = mTolerance;
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileTolerance, context, value, &ok );
 
     if ( !ok )
     {
@@ -146,12 +146,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumDistance || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumDistance ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumDistance ) ) )
   {
     double value = mPlot->xMinimum();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumDistance ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumDistance, context, value, &ok );
 
     if ( !ok )
     {
@@ -166,12 +166,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumDistance || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumDistance ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumDistance ) ) )
   {
     double value = mPlot->xMaximum();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumDistance ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumDistance, context, value, &ok );
 
     if ( !ok )
     {
@@ -186,12 +186,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumElevation || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumElevation ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumElevation ) ) )
   {
     double value = mPlot->yMinimum();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumElevation ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileMinimumElevation, context, value, &ok );
 
     if ( !ok )
     {
@@ -206,12 +206,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumElevation || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumElevation ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumElevation ) ) )
   {
     double value = mPlot->yMaximum();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumElevation ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileMaximumElevation, context, value, &ok );
 
     if ( !ok )
     {
@@ -226,12 +226,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval ) ) )
   {
     double value = mPlot->xAxis().gridIntervalMajor();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMajorInterval, context, value, &ok );
 
     if ( !ok )
     {
@@ -246,12 +246,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval ) ) )
   {
     double value = mPlot->xAxis().gridIntervalMinor();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceMinorInterval, context, value, &ok );
 
     if ( !ok )
     {
@@ -266,12 +266,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceLabelInterval || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceLabelInterval ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceLabelInterval ) ) )
   {
     double value = mPlot->xAxis().labelInterval();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceLabelInterval ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileDistanceLabelInterval, context, value, &ok );
 
     if ( !ok )
     {
@@ -286,12 +286,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMajorInterval || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMajorInterval ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMajorInterval ) ) )
   {
     double value = mPlot->yAxis().gridIntervalMajor();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMajorInterval ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMajorInterval, context, value, &ok );
 
     if ( !ok )
     {
@@ -306,12 +306,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMinorInterval || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMinorInterval ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMinorInterval ) ) )
   {
     double value = mPlot->yAxis().gridIntervalMinor();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMinorInterval ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationMinorInterval, context, value, &ok );
 
     if ( !ok )
     {
@@ -326,12 +326,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationLabelInterval || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationLabelInterval ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationLabelInterval ) ) )
   {
     double value = mPlot->yAxis().labelInterval();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationLabelInterval ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ElevationProfileElevationLabelInterval, context, value, &ok );
 
     if ( !ok )
     {
@@ -346,12 +346,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::MarginLeft || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginLeft ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MarginLeft ) ) )
   {
     double value = mPlot->margins().left();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginLeft ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MarginLeft, context, value, &ok );
 
     if ( !ok )
     {
@@ -368,12 +368,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::MarginRight || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginRight ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MarginRight ) ) )
   {
     double value = mPlot->margins().right();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginRight ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MarginRight, context, value, &ok );
 
     if ( !ok )
     {
@@ -390,12 +390,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::MarginTop || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginTop ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MarginTop ) ) )
   {
     double value = mPlot->margins().top();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginTop ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MarginTop, context, value, &ok );
 
     if ( !ok )
     {
@@ -412,12 +412,12 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   }
 
   if ( ( property == QgsLayoutObject::DataDefinedProperty::MarginBottom || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-       && ( mDataDefinedProperties.isActive( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginBottom ) ) ) )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MarginBottom ) ) )
   {
     double value = mPlot->margins().bottom();
 
     bool ok = false;
-    value = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MarginBottom ), context, value, &ok );
+    value = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MarginBottom, context, value, &ok );
 
     if ( !ok )
     {

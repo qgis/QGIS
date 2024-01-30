@@ -423,14 +423,14 @@ void QgsRasterPipe::evaluateDataDefinedProperties( QgsExpressionContext &context
   if ( !mDataDefinedProperties.hasActiveProperties() )
     return;
 
-  if ( mDataDefinedProperties.isActive( static_cast< int >( Property::RendererOpacity ) ) )
+  if ( mDataDefinedProperties.isActive( Property::RendererOpacity ) )
   {
     if ( QgsRasterRenderer *r = renderer() )
     {
       const double prevOpacity = r->opacity();
       context.setOriginalValueVariable( prevOpacity * 100 );
       bool ok = false;
-      const double opacity = mDataDefinedProperties.valueAsDouble( static_cast< int >( Property::RendererOpacity ), context, prevOpacity, &ok ) / 100;
+      const double opacity = mDataDefinedProperties.valueAsDouble( Property::RendererOpacity, context, prevOpacity, &ok ) / 100;
       if ( ok )
       {
         r->setOpacity( opacity );

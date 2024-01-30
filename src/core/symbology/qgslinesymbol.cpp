@@ -185,9 +185,9 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     const QgsLineSymbolLayer *layer = dynamic_cast<const QgsLineSymbolLayer *>( *it );
-    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->dataDefinedProperties().isActive( static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) ) )
+    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::StrokeWidth ) )
     {
-      symbolDD = layer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) );
+      symbolDD = layer->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth );
       break;
     }
   }
@@ -203,8 +203,8 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
       continue;
     const QgsLineSymbolLayer *lineLayer = static_cast<const QgsLineSymbolLayer *>( layer );
 
-    const QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) );
-    const QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Offset ) );
+    const QgsProperty layerWidthDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth );
+    const QgsProperty layerOffsetDD = lineLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Offset );
 
     if ( qgsDoubleNear( lineLayer->width(), symbolWidth ) )
     {
@@ -231,7 +231,7 @@ QgsProperty QgsLineSymbol::dataDefinedWidth() const
 
 void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
-  const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( static_cast< int >( QgsSymbol::Property::Opacity ), context.expressionContext(), mOpacity * 100 ) * 0.01
+  const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, context.expressionContext(), mOpacity * 100 ) * 0.01
                          : mOpacity;
 
   //save old painter
@@ -282,7 +282,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
 void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( static_cast< int >( QgsSymbolLayer::Property::LayerEnabled ), context.renderContext().expressionContext(), true ) )
+  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.renderContext().expressionContext(), true ) )
     return;
 
   QgsPaintEffect *effect = layer->paintEffect();

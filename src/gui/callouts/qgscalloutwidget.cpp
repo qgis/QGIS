@@ -109,7 +109,7 @@ void QgsCalloutWidget::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
 
-  callout()->dataDefinedProperties().setProperty( static_cast< int >( key ), button->toProperty() );
+  callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
 
   emit changed();
 }
@@ -118,7 +118,7 @@ void QgsCalloutWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
-  callout()->dataDefinedProperties().setProperty( static_cast< int >( key ), button->toProperty() );
+  callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
   emit changed();
 }
 

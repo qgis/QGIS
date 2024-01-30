@@ -131,10 +131,10 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
   const auto constSymbolLayers = markerSymbol->symbolLayers();
   for ( QgsSymbolLayer *layer : constSymbolLayers )
   {
-    if ( !layer->dataDefinedProperties().isActive( static_cast< int >( QgsSymbolLayer::Property::Offset ) ) )
+    if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::Offset ) )
       continue;
 
-    const QgsProperty p = layer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Offset ) );
+    const QgsProperty p = layer->dataDefinedProperties().property( QgsSymbolLayer::Property::Offset );
     if ( p.propertyType() != Qgis::PropertyType::Field )
       continue;
 
@@ -142,9 +142,9 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
     if ( !mMarkerSymbol )
     {
       double symbolRotation = markerSymbol->angle();
-      if ( layer->dataDefinedProperties().isActive( static_cast< int >( QgsSymbolLayer::Property::Angle ) ) )
+      if ( layer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::Angle ) )
       {
-        symbolRotation = layer->dataDefinedProperties().valueAsDouble( static_cast< int >( QgsSymbolLayer::Property::Angle ), context.expressionContext(), symbolRotation );
+        symbolRotation = layer->dataDefinedProperties().valueAsDouble( QgsSymbolLayer::Property::Angle, context.expressionContext(), symbolRotation );
       }
 
       mSymbolRotation = symbolRotation;
@@ -204,10 +204,10 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
   const auto constSymbolLayers = mMarkerSymbol->symbolLayers();
   for ( QgsSymbolLayer *layer : constSymbolLayers )
   {
-    if ( !layer->dataDefinedProperties().isActive( static_cast< int >( QgsSymbolLayer::Property::Offset ) ) )
+    if ( !layer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::Offset ) )
       continue;
 
-    const QgsProperty ddOffset = layer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Offset ) );
+    const QgsProperty ddOffset = layer->dataDefinedProperties().property( QgsSymbolLayer::Property::Offset );
     if ( ddOffset.propertyType() != Qgis::PropertyType::Field )
       continue;
 

@@ -127,8 +127,8 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mWidthMethodComboBox )->setCurrentIndex( mWidthMethodComboBox->findData( interpolatedWidth.isVariableWidth() ) );
 
   whileBlocking( mDoubleSpinBoxWidth )->setValue( interpolatedWidth.fixedStrokeWidth() );
-  whileBlocking( mWidthStartFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::LineStartWidthValue ) ).asExpression() );
-  whileBlocking( mWidthEndFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::LineEndWidthValue ) ).asExpression() );
+  whileBlocking( mWidthStartFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::LineStartWidthValue ).asExpression() );
+  whileBlocking( mWidthEndFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::LineEndWidthValue ).asExpression() );
   setLineEditValue( mLineEditWidthMinValue, interpolatedWidth.minimumValue() );
   setLineEditValue( mLineEditWidthMaxValue, interpolatedWidth.maximumValue() );
   whileBlocking( mDoubleSpinBoxMinWidth )->setValue( interpolatedWidth.minimumWidth() );
@@ -141,8 +141,8 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   const QgsInterpolatedLineColor interpolatedColor = mLayer->interpolatedColor();
   whileBlocking( mColorMethodComboBox )->setCurrentIndex( mColorMethodComboBox->findData( interpolatedColor.coloringMethod() ) );
 
-  whileBlocking( mColorStartFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::LineStartColorValue ) ).asExpression() );
-  whileBlocking( mColorEndFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::LineEndColorValue ) ).asExpression() );
+  whileBlocking( mColorStartFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::LineStartColorValue ).asExpression() );
+  whileBlocking( mColorEndFieldExpression )->setExpression( mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::LineEndColorValue ).asExpression() );
   whileBlocking( mColorRampShaderWidget )->setFromShader( interpolatedColor.colorRampShader() );
   setLineEditValue( mLineEditColorMinValue, interpolatedColor.colorRampShader().minimumValue() );
   setLineEditValue( mLineEditColorMaxValue, interpolatedColor.colorRampShader().maximumValue() );

@@ -115,9 +115,9 @@ QgsProperty QgsMarkerSymbol::dataDefinedAngle() const
     if ( layer->type() != Qgis::SymbolType::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
-    if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) && markerLayer->dataDefinedProperties().isActive( static_cast< int >( QgsSymbolLayer::Property::Angle ) ) )
+    if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) && markerLayer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::Angle ) )
     {
-      symbolDD = markerLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Angle ) );
+      symbolDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
       break;
     }
   }
@@ -132,7 +132,7 @@ QgsProperty QgsMarkerSymbol::dataDefinedAngle() const
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
 
-    QgsProperty layerAngleDD = markerLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Angle ) );
+    QgsProperty layerAngleDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Angle );
 
     if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
     {
@@ -353,9 +353,9 @@ QgsProperty QgsMarkerSymbol::dataDefinedSize() const
     if ( layer->type() != Qgis::SymbolType::Marker )
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
-    if ( qgsDoubleNear( markerLayer->size(), symbolSize ) && markerLayer->dataDefinedProperties().isActive( static_cast< int >( QgsSymbolLayer::Property::Size ) ) )
+    if ( qgsDoubleNear( markerLayer->size(), symbolSize ) && markerLayer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::Size ) )
     {
-      symbolDD = markerLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+      symbolDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
       break;
     }
   }
@@ -370,8 +370,8 @@ QgsProperty QgsMarkerSymbol::dataDefinedSize() const
       continue;
     const QgsMarkerSymbolLayer *markerLayer = static_cast<const QgsMarkerSymbolLayer *>( layer );
 
-    QgsProperty layerSizeDD = markerLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Size ) );
-    QgsProperty layerOffsetDD = markerLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Offset ) );
+    QgsProperty layerSizeDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
+    QgsProperty layerOffsetDD = markerLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Offset );
 
     if ( qgsDoubleNear( markerLayer->size(), symbolSize ) )
     {
@@ -427,7 +427,7 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 {
   static QPointF nullPoint( 0, 0 );
 
-  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( static_cast< int >( QgsSymbolLayer::Property::LayerEnabled ), context.renderContext().expressionContext(), true ) )
+  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.renderContext().expressionContext(), true ) )
     return;
 
   QgsPaintEffect *effect = layer->paintEffect();
@@ -446,7 +446,7 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 
 void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
-  const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( static_cast< int >( QgsSymbol::Property::Opacity ), context.expressionContext(), mOpacity * 100 ) * 0.01
+  const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, context.expressionContext(), mOpacity * 100 ) * 0.01
                          : mOpacity;
 
   QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, mRenderHints, f );
@@ -507,7 +507,7 @@ QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const 
     if ( layer->type() == Qgis::SymbolType::Marker )
     {
       if ( !layer->enabled()
-           || ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( static_cast< int >( QgsSymbolLayer::Property::LayerEnabled ), context.expressionContext(), true ) ) )
+           || ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.expressionContext(), true ) ) )
         continue;
 
       QgsMarkerSymbolLayer *symbolLayer = static_cast< QgsMarkerSymbolLayer * >( layer );

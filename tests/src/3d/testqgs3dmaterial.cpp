@@ -73,7 +73,7 @@ void TestQgs3dMaterial::cleanup()
 
 void TestQgs3dMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
 {
-  collection.setProperty( static_cast< int >( propertyType ), property );
+  collection.setProperty( propertyType, property );
   materialSettings.setDataDefinedProperties( collection );
 }
 

@@ -811,7 +811,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
     if ( !bufferedCurveEngine.intersects( point ) )
       return;
 
-    const double offset = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ), mExpressionContext, mOffset );
+    const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
 
     const double height = featureZToHeight( point->x(), point->y(), point->z(), offset );
     mResults->mRawPoints.append( QgsPoint( point->x(), point->y(), height ) );
@@ -826,7 +826,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
     resultFeature.featureId = feature.id();
     if ( mExtrusionEnabled )
     {
-      const double extrusion = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), mExpressionContext, mExtrusionHeight );
+      const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
 
       resultFeature.geometry = QgsGeometry( new QgsLineString( QgsPoint( point->x(), point->y(), height ),
                                             QgsPoint( point->x(), point->y(), height + extrusion ) ) );
@@ -904,7 +904,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
         const double distance = curveGeos.lineLocatePoint( *intersectionPoint, &error );
         std::unique_ptr< QgsPoint > interpolatedPoint( curve->interpolatePoint( distance ) );
 
-        const double offset = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ), mExpressionContext, mOffset );
+        const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
 
         const double height = featureZToHeight( interpolatedPoint->x(), interpolatedPoint->y(), interpolatedPoint->z(), offset );
         mResults->mRawPoints.append( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ) );
@@ -918,7 +918,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
         resultFeature.featureId = feature.id();
         if ( mExtrusionEnabled )
         {
-          const double extrusion = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), mExpressionContext, mExtrusionHeight );
+          const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
 
           resultFeature.geometry = QgsGeometry( new QgsLineString( QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height ),
                                                 QgsPoint( interpolatedPoint->x(), interpolatedPoint->y(), height + extrusion ) ) );
@@ -962,7 +962,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
           extrudedZ.resize( numPoints );
           extZOut = extrudedZ.data();
 
-          extrusion = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), mExpressionContext, mExtrusionHeight );
+          extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
         }
 
         QString lastError;
@@ -1107,7 +1107,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 
           if ( mExtrusionEnabled )
           {
-            const double extrusion = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), mExpressionContext, mExtrusionHeight );
+            const double extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
 
             transformedParts.append( QgsGeometry( new QgsLineString( interpolatedPoint,
                                                   QgsPoint( interpolatedPoint.x(), interpolatedPoint.y(), interpolatedPoint.z() + extrusion ) ) ) );
@@ -1159,7 +1159,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
             extrudedZ.resize( numPoints );
             extZOut = extrudedZ.data();
 
-            extrusion = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), mExpressionContext, mExtrusionHeight );
+            extrusion = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ExtrusionHeight, mExpressionContext, mExtrusionHeight );
           }
 
           QString lastError;
@@ -1354,7 +1354,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
 
     mExpressionContext.setFeature( feature );
 
-    const double offset = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ), mExpressionContext, mOffset );
+    const double offset = mDataDefinedProperties.valueAsDouble( QgsMapLayerElevationProperties::Property::ZOffset, mExpressionContext, mOffset );
 
     const QgsGeometry g = feature.geometry();
     QVector< QgsGeometry > transformedParts;

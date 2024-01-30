@@ -326,7 +326,7 @@ void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddWidth = mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) );
+  const QgsProperty ddWidth = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth );
   if ( ddWidth )
     mAssistantPreviewSymbol->setDataDefinedWidth( ddWidth );
 }
@@ -933,7 +933,7 @@ void QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -1274,7 +1274,7 @@ void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -2570,7 +2570,7 @@ void QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }
@@ -3869,7 +3869,7 @@ void QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol()
     mAssistantPreviewSymbol->deleteSymbolLayer( i );
   }
   mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
-  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+  const QgsProperty ddSize = mLayer->dataDefinedProperties().property( QgsSymbolLayer::Property::Size );
   if ( ddSize )
     mAssistantPreviewSymbol->setDataDefinedSize( ddSize );
 }

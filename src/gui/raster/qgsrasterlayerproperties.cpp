@@ -1494,14 +1494,14 @@ void QgsRasterLayerProperties::updateDataDefinedButton( QgsPropertyOverrideButto
     return;
 
   QgsRasterPipe::Property key = static_cast< QgsRasterPipe::Property >( button->propertyKey() );
-  whileBlocking( button )->setToProperty( mPropertyCollection.property( static_cast< int >( key ) ) );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
 }
 
 void QgsRasterLayerProperties::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsRasterPipe::Property key = static_cast<  QgsRasterPipe::Property >( button->propertyKey() );
-  mPropertyCollection.setProperty( static_cast< int >( key ), button->toProperty() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
 }
 
 void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )

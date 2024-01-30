@@ -539,14 +539,14 @@ void QgsRasterTransparencyWidget::updateDataDefinedButton( QgsPropertyOverrideBu
     return;
 
   const QgsRasterPipe::Property key = static_cast< QgsRasterPipe::Property >( button->propertyKey() );
-  whileBlocking( button )->setToProperty( mPropertyCollection.property( static_cast< int >( key ) ) );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
 }
 
 void QgsRasterTransparencyWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsRasterPipe::Property key = static_cast<  QgsRasterPipe::Property >( button->propertyKey() );
-  mPropertyCollection.setProperty( static_cast< int >( key ), button->toProperty() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
   emit widgetChanged();
 }
 

@@ -120,7 +120,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
 
 void QgsSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property )
 {
-  dataDefinedProperties().setProperty( static_cast< int >( key ), property );
+  dataDefinedProperties().setProperty( key, property );
 }
 
 void QgsSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
@@ -578,10 +578,10 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( mDataDefinedProperties.isActive( static_cast< int >( QgsSymbolLayer::Property::Offset ) ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Offset ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
-    QVariant exprVal = mDataDefinedProperties.value( static_cast< int >( QgsSymbolLayer::Property::Offset ), context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::Offset, context.renderContext().expressionContext() );
     bool ok = false;
     const QPointF offset = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
     if ( ok )
@@ -596,17 +596,17 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( mDataDefinedProperties.isActive( static_cast< int >( QgsSymbolLayer::Property::HorizontalAnchor ) ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::HorizontalAnchor ) )
   {
-    QVariant exprVal = mDataDefinedProperties.value( static_cast< int >( QgsSymbolLayer::Property::HorizontalAnchor ), context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::HorizontalAnchor, context.renderContext().expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       horizontalAnchorPoint = decodeHorizontalAnchorPoint( exprVal.toString() );
     }
   }
-  if ( mDataDefinedProperties.isActive( static_cast< int >( QgsSymbolLayer::Property::VerticalAnchor ) ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::VerticalAnchor ) )
   {
-    QVariant exprVal = mDataDefinedProperties.value( static_cast< int >( QgsSymbolLayer::Property::VerticalAnchor ), context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::VerticalAnchor, context.renderContext().expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       verticalAnchorPoint = decodeVerticalAnchorPoint( exprVal.toString() );
@@ -921,10 +921,10 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   double size = mSize;
-  if ( mDataDefinedProperties.isActive( static_cast< int >( QgsSymbolLayer::Property::Size ) ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Size ) )
   {
     bool ok = false;
-    size = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsSymbolLayer::Property::Size ), context.renderContext().expressionContext(), mSize, &ok );
+    size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Size, context.renderContext().expressionContext(), mSize, &ok );
 
     if ( ok )
     {
@@ -944,10 +944,10 @@ double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderCont
 double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
 {
   double angle = mAngle;
-  if ( mDataDefinedProperties.isActive( static_cast< int >( QgsSymbolLayer::Property::Angle ) ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
   {
     context.setOriginalValueVariable( mAngle );
-    angle = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsSymbolLayer::Property::Angle ), context.renderContext().expressionContext(), mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Angle, context.renderContext().expressionContext(), mAngle );
   }
   return angle;
 }

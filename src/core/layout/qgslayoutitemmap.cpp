@@ -627,7 +627,7 @@ double QgsLayoutItemMap::atlasMargin( const QgsLayoutObject::PropertyValueType v
     QgsExpressionContext context = createExpressionContext();
 
     bool ok = false;
-    double ddMargin = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapAtlasMargin ), context, 0.0, &ok );
+    double ddMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapAtlasMargin, context, 0.0, &ok );
     if ( ok )
     {
       //divide by 100 to convert to 0 -> 1.0 range
@@ -2084,7 +2084,7 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
   if ( property == QgsLayoutObject::DataDefinedProperty::MapCrs || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     bool ok;
-    const QString crsVar = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ), context, QString(), &ok );
+    const QString crsVar = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapCrs, context, QString(), &ok );
     if ( ok && QgsCoordinateReferenceSystem( crsVar ).isValid() )
     {
       const QgsCoordinateReferenceSystem newCrs( crsVar );
@@ -2116,7 +2116,7 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
   if ( property == QgsLayoutObject::DataDefinedProperty::MapStylePreset || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     const QString previousTheme = mLastEvaluatedThemeName.isEmpty() ? mFollowVisibilityPresetName : mLastEvaluatedThemeName;
-    mLastEvaluatedThemeName = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapStylePreset ), context, mFollowVisibilityPresetName );
+    mLastEvaluatedThemeName = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapStylePreset, context, mFollowVisibilityPresetName );
     if ( mLastEvaluatedThemeName != previousTheme )
       emit themeChanged( mLastEvaluatedThemeName );
   }
@@ -2127,9 +2127,9 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     QDateTime end = temporalRange().end();
 
     if ( property == QgsLayoutObject::DataDefinedProperty::StartDateTime || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-      begin = mDataDefinedProperties.valueAsDateTime( static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ), context, temporalRange().begin() );
+      begin = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::DataDefinedProperty::StartDateTime, context, temporalRange().begin() );
     if ( property == QgsLayoutObject::DataDefinedProperty::EndDateTime || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
-      end = mDataDefinedProperties.valueAsDateTime( static_cast< int >( QgsLayoutObject::DataDefinedProperty::EndDateTime ), context, temporalRange().end() );
+      end = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::DataDefinedProperty::EndDateTime, context, temporalRange().end() );
 
     setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
@@ -2337,7 +2337,7 @@ QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) c
   {
     presetName = mFollowVisibilityPresetName;
     // preset name can be overridden by data-defined one
-    presetName = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapStylePreset ), context, presetName );
+    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapStylePreset, context, presetName );
   }
   else if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
     presetName = *mExportThemeIt;
@@ -2371,7 +2371,7 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   bool ok = false;
-  QString ddLayers = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapLayers ), *evalContext, QString(), &ok );
+  QString ddLayers = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapLayers, *evalContext, QString(), &ok );
   if ( ok )
   {
     renderLayers.clear();
@@ -2431,7 +2431,7 @@ QMap<QString, QString> QgsLayoutItemMap::layerStyleOverridesToRender( const QgsE
   {
     QString presetName = mFollowVisibilityPresetName;
     // data defined preset name?
-    presetName = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapStylePreset ), context, presetName );
+    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::MapStylePreset, context, presetName );
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
     {
       if ( presetName.isEmpty() || presetName != mCachedLayerStyleOverridesPresetName )
@@ -2695,25 +2695,25 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   double maxXD = 0;
   double maxYD = 0;
 
-  minXD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapXMin ), *evalContext, 0.0, &ok );
+  minXD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapXMin, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdXMin = true;
     newExtent.setXMinimum( minXD );
   }
-  minYD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapYMin ), *evalContext, 0.0, &ok );
+  minYD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapYMin, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdYMin = true;
     newExtent.setYMinimum( minYD );
   }
-  maxXD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapXMax ), *evalContext, 0.0, &ok );
+  maxXD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapXMax, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdXMax = true;
     newExtent.setXMaximum( maxXD );
   }
-  maxYD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapYMax ), *evalContext, 0.0, &ok );
+  maxYD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapYMax, *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdYMax = true;
@@ -2752,7 +2752,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  double scaleD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapScale ), *evalContext, 0.0, &ok );
+  double scaleD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapScale, *evalContext, 0.0, &ok );
   if ( ok )
   {
     setScale( scaleD, false );
@@ -2798,7 +2798,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  mapRotation = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapRotation ), *evalContext, mapRotation );
+  mapRotation = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapRotation, *evalContext, mapRotation );
 
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
@@ -2810,7 +2810,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
 void QgsLayoutItemMap::refreshLabelMargin( bool updateItem )
 {
   //data defined label margin set?
-  double labelMargin = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapLabelMargin ), createExpressionContext(), mLabelMargin.length() );
+  double labelMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::MapLabelMargin, createExpressionContext(), mLabelMargin.length() );
   mEvaluatedLabelMargin.setLength( labelMargin );
   mEvaluatedLabelMargin.setUnits( mLabelMargin.units() );
 

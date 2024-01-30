@@ -132,7 +132,7 @@ void QgsCallout::stopRender( QgsRenderContext & )
 
 bool QgsCallout::containsAdvancedEffects() const
 {
-  return mBlendMode != QPainter::CompositionMode_SourceOver || dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::BlendMode ) );
+  return mBlendMode != QPainter::CompositionMode_SourceOver || dataDefinedProperties().isActive( QgsCallout::Property::BlendMode );
 }
 
 QSet<QString> QgsCallout::referencedFields( const QgsRenderContext &context ) const
@@ -153,10 +153,10 @@ void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const do
   {
 
     const QPainter::CompositionMode blendMode = mBlendMode;
-    if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::BlendMode ) ) )
+    if ( dataDefinedProperties().isActive( QgsCallout::Property::BlendMode ) )
     {
       context.expressionContext().setOriginalValueVariable( QString() );
-      mBlendMode = QgsSymbolLayerUtils::decodeBlendMode( dataDefinedProperties().valueAsString( static_cast< int >( QgsCallout::Property::BlendMode ), context.expressionContext(), QString() ) );
+      mBlendMode = QgsSymbolLayerUtils::decodeBlendMode( dataDefinedProperties().valueAsString( QgsCallout::Property::BlendMode, context.expressionContext(), QString() ) );
     }
 
     painter->setCompositionMode( blendMode );
@@ -350,13 +350,13 @@ QgsGeometry QgsCallout::labelAnchorGeometry( const QRectF &rect, const double an
 QgsGeometry QgsCallout::calloutLabelPoint( const QRectF &rect, const double angle, QgsCallout::LabelAnchorPoint anchor, QgsRenderContext &context, const QgsCallout::QgsCalloutContext &calloutContext, bool &pinned ) const
 {
   pinned = false;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::OriginX ) ) && dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::OriginY ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::OriginX ) && dataDefinedProperties().isActive( QgsCallout::Property::OriginY ) )
   {
     bool ok = false;
-    const double x = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::OriginX ), context.expressionContext(), 0, &ok );
+    const double x = dataDefinedProperties().valueAsDouble( QgsCallout::Property::OriginX, context.expressionContext(), 0, &ok );
     if ( ok )
     {
-      const double y = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::OriginY ), context.expressionContext(), 0, &ok );
+      const double y = dataDefinedProperties().valueAsDouble( QgsCallout::Property::OriginY, context.expressionContext(), 0, &ok );
       if ( ok )
       {
         pinned = true;
@@ -431,13 +431,13 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
   const QgsAbstractGeometry *evaluatedPartAnchor = partGeometry;
   std::unique_ptr< QgsAbstractGeometry > tempPartAnchor;
 
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::DestinationX ) ) && dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::DestinationY ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::DestinationX ) && dataDefinedProperties().isActive( QgsCallout::Property::DestinationY ) )
   {
     bool ok = false;
-    const double x = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::DestinationX ), context.expressionContext(), 0, &ok );
+    const double x = dataDefinedProperties().valueAsDouble( QgsCallout::Property::DestinationX, context.expressionContext(), 0, &ok );
     if ( ok )
     {
-      const double y = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::DestinationY ), context.expressionContext(), 0, &ok );
+      const double y = dataDefinedProperties().valueAsDouble( QgsCallout::Property::DestinationY, context.expressionContext(), 0, &ok );
       if ( ok )
       {
         pinned = true;
@@ -456,11 +456,11 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
     }
   }
 
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::AnchorPointPosition ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::AnchorPointPosition ) )
   {
     const QString encodedAnchor = encodeAnchorPoint( anchor );
     context.expressionContext().setOriginalValueVariable( encodedAnchor );
-    anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( static_cast< int >( QgsCallout::Property::AnchorPointPosition ), context.expressionContext(), encodedAnchor ) );
+    anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::Property::AnchorPointPosition, context.expressionContext(), encodedAnchor ) );
   }
 
   QgsGeometry line;
@@ -654,11 +654,11 @@ void QgsSimpleLineCallout::setLineSymbol( QgsLineSymbol *symbol )
 void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   LabelAnchorPoint labelAnchor = labelAnchorPoint();
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::LabelAnchorPointPosition ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::LabelAnchorPointPosition ) )
   {
     const QString encodedAnchor = encodeLabelAnchorPoint( labelAnchor );
     context.expressionContext().setOriginalValueVariable( encodedAnchor );
-    labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( static_cast< int >( QgsCallout::Property::LabelAnchorPointPosition ), context.expressionContext(), encodedAnchor ) );
+    labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::Property::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
   }
 
   bool originPinned = false;
@@ -678,10 +678,10 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
       return;
 
     double minLength = mMinCalloutLength;
-    if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::MinimumCalloutLength ) ) )
+    if ( dataDefinedProperties().isActive( QgsCallout::Property::MinimumCalloutLength ) )
     {
       context.expressionContext().setOriginalValueVariable( minLength );
-      minLength = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::MinimumCalloutLength ), context.expressionContext(), minLength );
+      minLength = dataDefinedProperties().valueAsDouble( QgsCallout::Property::MinimumCalloutLength, context.expressionContext(), minLength );
     }
     const double minLengthPixels = context.convertToPainterUnits( minLength, mMinCalloutLengthUnit, mMinCalloutLengthScale );
     if ( minLengthPixels > 0 && lineLength < minLengthPixels )
@@ -691,18 +691,18 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
         qgsgeometry_cast< const QgsLineString * >( line.constGet() )->endPoint(), context, rect, angle, anchor, calloutContext ) );
 
     double offsetFromAnchor = mOffsetFromAnchorDistance;
-    if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::OffsetFromAnchor ) ) )
+    if ( dataDefinedProperties().isActive( QgsCallout::Property::OffsetFromAnchor ) )
     {
       context.expressionContext().setOriginalValueVariable( offsetFromAnchor );
-      offsetFromAnchor = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::OffsetFromAnchor ), context.expressionContext(), offsetFromAnchor );
+      offsetFromAnchor = dataDefinedProperties().valueAsDouble( QgsCallout::Property::OffsetFromAnchor, context.expressionContext(), offsetFromAnchor );
     }
     const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchor, mOffsetFromAnchorUnit, mOffsetFromAnchorScale );
 
     double offsetFromLabel = mOffsetFromLabelDistance;
-    if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::OffsetFromLabel ) ) )
+    if ( dataDefinedProperties().isActive( QgsCallout::Property::OffsetFromLabel ) )
     {
       context.expressionContext().setOriginalValueVariable( offsetFromLabel );
-      offsetFromLabel = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::OffsetFromLabel ), context.expressionContext(), offsetFromLabel );
+      offsetFromLabel = dataDefinedProperties().valueAsDouble( QgsCallout::Property::OffsetFromLabel, context.expressionContext(), offsetFromLabel );
     }
     const double offsetFromLabelPixels = context.convertToPainterUnits( offsetFromLabel, mOffsetFromLabelUnit, mOffsetFromLabelScale );
     if ( offsetFromAnchorPixels > 0 || offsetFromLabelPixels > 0 )
@@ -726,10 +726,10 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
   };
 
   bool toAllParts = mDrawCalloutToAllParts;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::DrawCalloutToAllParts ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::DrawCalloutToAllParts ) )
   {
     context.expressionContext().setOriginalValueVariable( toAllParts );
-    toAllParts = dataDefinedProperties().valueAsBool( static_cast< int >( QgsCallout::Property::DrawCalloutToAllParts ), context.expressionContext(), toAllParts );
+    toAllParts = dataDefinedProperties().valueAsBool( QgsCallout::Property::DrawCalloutToAllParts, context.expressionContext(), toAllParts );
   }
 
   if ( calloutContext.allFeaturePartsLabeled || !toAllParts )
@@ -833,17 +833,17 @@ QVariantMap QgsCurvedLineCallout::properties( const QgsReadWriteContext &context
 QgsCurve *QgsCurvedLineCallout::createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &context, const QRectF &rect, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) const
 {
   double curvature = mCurvature * 100;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::Curvature ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::Curvature ) )
   {
     context.expressionContext().setOriginalValueVariable( curvature );
-    curvature = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::Curvature ), context.expressionContext(), curvature );
+    curvature = dataDefinedProperties().valueAsDouble( QgsCallout::Property::Curvature, context.expressionContext(), curvature );
   }
 
   Orientation orientation = mOrientation;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::Orientation ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::Orientation ) )
   {
     bool ok = false;
-    const QString orientationString = dataDefinedProperties().property( static_cast< int >( QgsCallout::Property::Orientation ) ).valueAsString( context.expressionContext(), QString(), &ok );
+    const QString orientationString = dataDefinedProperties().property( QgsCallout::Property::Orientation ).valueAsString( context.expressionContext(), QString(), &ok );
     if ( ok )
     {
       orientation = decodeOrientation( orientationString );
@@ -1167,10 +1167,10 @@ void QgsBalloonCallout::draw( QgsRenderContext &context, const QRectF &rect, con
   QgsGeometry line = calloutLineToPart( QgsGeometry::fromRect( rect ), anchor.constGet(), context, calloutContext, destinationIsPinned );
 
   double offsetFromAnchor = mOffsetFromAnchorDistance;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::OffsetFromAnchor ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::OffsetFromAnchor ) )
   {
     context.expressionContext().setOriginalValueVariable( offsetFromAnchor );
-    offsetFromAnchor = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::OffsetFromAnchor ), context.expressionContext(), offsetFromAnchor );
+    offsetFromAnchor = dataDefinedProperties().valueAsDouble( QgsCallout::Property::OffsetFromAnchor, context.expressionContext(), offsetFromAnchor );
   }
   const double offsetFromAnchorPixels = context.convertToPainterUnits( offsetFromAnchor, mOffsetFromAnchorUnit, mOffsetFromAnchorScale );
 
@@ -1214,18 +1214,18 @@ void QgsBalloonCallout::draw( QgsRenderContext &context, const QRectF &rect, con
 QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY origin, QRectF rect ) const
 {
   double segmentPointWidth = mWedgeWidth;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::WedgeWidth ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::WedgeWidth ) )
   {
     context.expressionContext().setOriginalValueVariable( segmentPointWidth );
-    segmentPointWidth = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::WedgeWidth ), context.expressionContext(), segmentPointWidth );
+    segmentPointWidth = dataDefinedProperties().valueAsDouble( QgsCallout::Property::WedgeWidth, context.expressionContext(), segmentPointWidth );
   }
   segmentPointWidth = context.convertToPainterUnits( segmentPointWidth, mWedgeWidthUnit, mWedgeWidthScale );
 
   double cornerRadius = mCornerRadius;
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::CornerRadius ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::CornerRadius ) )
   {
     context.expressionContext().setOriginalValueVariable( cornerRadius );
-    cornerRadius = dataDefinedProperties().valueAsDouble( static_cast< int >( QgsCallout::Property::CornerRadius ), context.expressionContext(), cornerRadius );
+    cornerRadius = dataDefinedProperties().valueAsDouble( QgsCallout::Property::CornerRadius, context.expressionContext(), cornerRadius );
   }
   cornerRadius = context.convertToPainterUnits( cornerRadius, mCornerRadiusUnit, mCornerRadiusScale );
 
@@ -1234,9 +1234,9 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
   double top = mMargins.top();
   double bottom = mMargins.bottom();
 
-  if ( dataDefinedProperties().isActive( static_cast< int >( QgsCallout::Property::Margins ) ) )
+  if ( dataDefinedProperties().isActive( QgsCallout::Property::Margins ) )
   {
-    const QVariant value = dataDefinedProperties().value( static_cast< int >( QgsCallout::Property::Margins ), context.expressionContext() );
+    const QVariant value = dataDefinedProperties().value( QgsCallout::Property::Margins, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( value ) )
     {
       if ( value.type() == QVariant::List )

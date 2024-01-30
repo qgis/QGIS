@@ -725,8 +725,8 @@ void TestQgsLayout::shouldExportPage()
   QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 
   l.pageCollection()->page( 1 )->setExcludeFromExports( false );
-  l.pageCollection()->page( 0 )->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
-  l.pageCollection()->page( 1 )->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromValue( true ) );
+  l.pageCollection()->page( 0 )->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
+  l.pageCollection()->page( 1 )->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromValue( true ) );
   l.refresh();
   QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
   QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );

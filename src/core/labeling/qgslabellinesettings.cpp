@@ -22,32 +22,32 @@
 
 void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
-  if ( properties.isActive( static_cast<int>( QgsPalLayerSettings::Property::LinePlacementOptions ) ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::LinePlacementOptions ) )
   {
     context.setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( mPlacementFlags ) );
-    const QString dataDefinedLineArrangement = properties.valueAsString( static_cast<int>( QgsPalLayerSettings::Property::LinePlacementOptions ), context );
+    const QString dataDefinedLineArrangement = properties.valueAsString( QgsPalLayerSettings::Property::LinePlacementOptions, context );
     if ( !dataDefinedLineArrangement.isEmpty() )
     {
       mPlacementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
     }
   }
 
-  if ( properties.isActive( static_cast<int>( QgsPalLayerSettings::Property::OverrunDistance ) ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::OverrunDistance ) )
   {
     context.setOriginalValueVariable( mOverrunDistance );
-    mOverrunDistance = properties.valueAsDouble( static_cast<int>( QgsPalLayerSettings::Property::OverrunDistance ), context, mOverrunDistance );
+    mOverrunDistance = properties.valueAsDouble( QgsPalLayerSettings::Property::OverrunDistance, context, mOverrunDistance );
   }
 
-  if ( properties.isActive( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorPercent ) ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorPercent ) )
   {
     context.setOriginalValueVariable( mLineAnchorPercent );
-    mLineAnchorPercent = properties.valueAsDouble( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorPercent ), context, mLineAnchorPercent );
+    mLineAnchorPercent = properties.valueAsDouble( QgsPalLayerSettings::Property::LineAnchorPercent, context, mLineAnchorPercent );
   }
 
-  if ( properties.isActive( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorClipping ) ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorClipping ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorClipping ), context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorClipping, context, QString(), &ok ).trimmed();
     if ( ok )
     {
       if ( value.compare( QLatin1String( "visible" ), Qt::CaseInsensitive ) == 0 )
@@ -57,10 +57,10 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     }
   }
 
-  if ( properties.isActive( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorType ) ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorType ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorType ), context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorType, context, QString(), &ok ).trimmed();
     if ( ok )
     {
       if ( value.compare( QLatin1String( "hint" ), Qt::CaseInsensitive ) == 0 )
@@ -70,10 +70,10 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     }
   }
 
-  if ( properties.isActive( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorTextPoint ) ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::LineAnchorTextPoint ) )
   {
     bool ok = false;
-    const QString value = properties.valueAsString( static_cast<int>( QgsPalLayerSettings::Property::LineAnchorTextPoint ), context, QString(), &ok ).trimmed();
+    const QString value = properties.valueAsString( QgsPalLayerSettings::Property::LineAnchorTextPoint, context, QString(), &ok ).trimmed();
     if ( ok )
     {
       if ( value.compare( QLatin1String( "follow" ), Qt::CaseInsensitive ) == 0 )

@@ -445,7 +445,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 10 );
   pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
-  pointPatternFill->dataDefinedProperties().setProperty( static_cast< int >( QgsSymbolLayer::Property::MarkerClipping ), QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
+  pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::MarkerClipping, QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
   const bool res = imageCheck( "symbol_pointfill_datadefined_clip", layer.get() );
   QVERIFY( res );
 }

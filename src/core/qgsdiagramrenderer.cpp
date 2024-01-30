@@ -476,13 +476,13 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
   if ( properties.hasActiveProperties() )
   {
     c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.backgroundColor ) );
-    s.backgroundColor = properties.valueAsColor( static_cast< int >( QgsDiagramLayerSettings::Property::BackgroundColor ), c.expressionContext(), s.backgroundColor );
+    s.backgroundColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::BackgroundColor, c.expressionContext(), s.backgroundColor );
     c.expressionContext().setOriginalValueVariable( QgsColorUtils::colorToString( s.penColor ) );
-    s.penColor = properties.valueAsColor( static_cast< int >( QgsDiagramLayerSettings::Property::StrokeColor ), c.expressionContext(), s.penColor );
+    s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::Property::StrokeColor, c.expressionContext(), s.penColor );
     c.expressionContext().setOriginalValueVariable( s.penWidth );
-    s.penWidth = properties.valueAsDouble( static_cast< int >( QgsDiagramLayerSettings::Property::StrokeWidth ), c.expressionContext(), s.penWidth );
+    s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StrokeWidth, c.expressionContext(), s.penWidth );
     c.expressionContext().setOriginalValueVariable( s.rotationOffset );
-    s.rotationOffset = properties.valueAsDouble( static_cast< int >( QgsDiagramLayerSettings::Property::StartAngle ), c.expressionContext(), s.rotationOffset );
+    s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::Property::StartAngle, c.expressionContext(), s.rotationOffset );
   }
 
   QgsPaintEffect *effect = s.paintEffect();

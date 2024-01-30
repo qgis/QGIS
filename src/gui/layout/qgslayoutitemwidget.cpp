@@ -75,19 +75,19 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
     {
       if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       {
-        multiFrame->dataDefinedProperties().setProperty( static_cast< int >( key ), ddButton->toProperty() );
+        multiFrame->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
         multiFrame->refresh();
       }
     }
     else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast< QgsLayoutMultiFrame * >( mLayoutObject.data() ) )
     {
-      multiFrame->dataDefinedProperties().setProperty( static_cast< int >( key ), ddButton->toProperty() );
+      multiFrame->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
       multiFrame->refresh();
     }
   }
   else if ( mLayoutObject )
   {
-    mLayoutObject->dataDefinedProperties().setProperty( static_cast< int >( key ), ddButton->toProperty() );
+    mLayoutObject->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
     mLayoutObject->refresh();
   }
 }
@@ -128,17 +128,17 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
     {
       if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       {
-        whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( static_cast< int >( key ) ) );
+        whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( key ) );
       }
     }
     else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast< QgsLayoutMultiFrame * >( mLayoutObject.data() ) )
     {
-      whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( static_cast< int >( key ) ) );
+      whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( key ) );
     }
   }
   else if ( mLayoutObject )
   {
-    whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( static_cast<int>( key ) ) );
+    whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
   }
 
   // In case the button was initialized to a different config object, we need to reconnect to it here (see https://github.com/qgis/QGIS/issues/26582 )
