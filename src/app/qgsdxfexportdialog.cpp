@@ -440,7 +440,7 @@ void QgsDxfExportLayerTreeView::resizeEvent( QResizeEvent *event )
 {
   header()->setMinimumSectionSize( viewport()->width() / 2 );
   header()->setMaximumSectionSize( viewport()->width() / 2 );
-  QTreeView::resizeEvent( event );
+  QTreeView::resizeEvent( event ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
 }
 
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
