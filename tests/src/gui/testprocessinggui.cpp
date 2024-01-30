@@ -6160,13 +6160,13 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( spy.count(), 13 );
 
   // iterate over features
-  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature ) );
-  sourceDef.flags |= QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature;
+  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature ) );
+  sourceDef.flags |= Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature;
   combo->setValue( sourceDef, context );
-  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature );
-  sourceDef.flags = QgsProcessingFeatureSourceDefinition::Flags();
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature );
+  sourceDef.flags = Qgis::ProcessingFeatureSourceDefinitionFlags();
   combo->setValue( sourceDef, context );
-  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature ) );
+  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature ) );
 
   // advanced settings
   sourceDef.featureLimit = 67;
@@ -6175,14 +6175,14 @@ void TestProcessingGui::mapLayerComboBox()
   sourceDef.featureLimit = -1;
   combo->setValue( sourceDef, context );
   QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().featureLimit, -1LL );
-  sourceDef.flags |= QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
-  sourceDef.geometryCheck = QgsFeatureRequest::GeometrySkipInvalid;
+  sourceDef.flags |= Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck;
+  sourceDef.geometryCheck = Qgis::InvalidGeometryCheck::SkipInvalid;
   combo->setValue( sourceDef, context );
-  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
-  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
-  sourceDef.flags = QgsProcessingFeatureSourceDefinition::Flags();
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().geometryCheck, Qgis::InvalidGeometryCheck::SkipInvalid );
+  sourceDef.flags = Qgis::ProcessingFeatureSourceDefinitionFlags();
   combo->setValue( sourceDef, context );
-  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck ) );
+  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck ) );
   sourceDef.filterExpression = QStringLiteral( "name='test'" );
   combo->setValue( sourceDef, context );
   QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().filterExpression, QStringLiteral( "name='test'" ) );
@@ -9516,20 +9516,20 @@ void TestProcessingGui::testFeatureSourceOptionsWidget()
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( w.featureLimit(), -1 );
 
-  w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometrySkipInvalid );
+  w.setGeometryCheckMethod( false, Qgis::InvalidGeometryCheck::SkipInvalid );
   QCOMPARE( spy.count(), 2 );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
-  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometrySkipInvalid );
+  w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::SkipInvalid );
   QCOMPARE( spy.count(), 3 );
   QVERIFY( w.isOverridingInvalidGeometryCheck() );
-  QCOMPARE( w.geometryCheckMethod(), QgsFeatureRequest::GeometrySkipInvalid );
-  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometrySkipInvalid );
+  QCOMPARE( w.geometryCheckMethod(), Qgis::InvalidGeometryCheck::SkipInvalid );
+  w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::SkipInvalid );
   QCOMPARE( spy.count(), 3 );
-  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometryAbortOnInvalid );
+  w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::AbortOnInvalid );
   QCOMPARE( spy.count(), 4 );
   QVERIFY( w.isOverridingInvalidGeometryCheck() );
-  QCOMPARE( w.geometryCheckMethod(), QgsFeatureRequest::GeometryAbortOnInvalid );
-  w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometryAbortOnInvalid );
+  QCOMPARE( w.geometryCheckMethod(), Qgis::InvalidGeometryCheck::AbortOnInvalid );
+  w.setGeometryCheckMethod( false, Qgis::InvalidGeometryCheck::AbortOnInvalid );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
   QCOMPARE( spy.count(), 5 );
 

@@ -541,7 +541,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   long long featureLimit = -1;
   QString filterExpression;
   bool overrideGeometryCheck = false;
-  QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+  Qgis::InvalidGeometryCheck geometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
   if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
@@ -550,7 +550,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     featureLimit = fromVar.featureLimit;
     filterExpression = fromVar.filterExpression;
     val = fromVar.source;
-    overrideGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
+    overrideGeometryCheck = fromVar.flags & Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck;
     geometryCheck = fromVar.geometryCheck;
   }
   else if ( val.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
@@ -1655,12 +1655,12 @@ QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *origin
   , mSourceExtent( mSource->sourceExtent() )
   , mSourceSpatialIndexPresence( mSource->hasSpatialIndex() )
   , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == Qgis::GeometryType::Point
-                           ? QgsFeatureRequest::GeometryNoCheck // never run geometry validity checks for point layers!
+                           ? Qgis::InvalidGeometryCheck::NoCheck // never run geometry validity checks for point layers!
                            : context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback( originalSource ) )
   , mTransformErrorCallback( context.transformErrorCallback() )
-  , mInvalidGeometryCallbackSkip( context.defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::GeometrySkipInvalid, originalSource ) )
-  , mInvalidGeometryCallbackAbort( context.defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::GeometryAbortOnInvalid, originalSource ) )
+  , mInvalidGeometryCallbackSkip( context.defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck::SkipInvalid, originalSource ) )
+  , mInvalidGeometryCallbackAbort( context.defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck::AbortOnInvalid, originalSource ) )
   , mFeatureLimit( featureLimit )
   , mFilterExpression( filterExpression )
 {}
@@ -1677,7 +1677,7 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
   req.setTransformErrorCallback( mTransformErrorCallback );
 
   if ( flags & FlagSkipGeometryValidityChecks )
-    req.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
+    req.setInvalidGeometryCheck( Qgis::InvalidGeometryCheck::NoCheck );
   else
   {
     req.setInvalidGeometryCheck( mInvalidGeometryCheck );
@@ -1700,7 +1700,7 @@ QgsFeatureSource::FeatureAvailability QgsProcessingFeatureSource::hasFeatures() 
   FeatureAvailability sourceAvailability = mSource->hasFeatures();
   if ( sourceAvailability == NoFeaturesAvailable )
     return NoFeaturesAvailable; // never going to be features if underlying source has no features
-  else if ( mInvalidGeometryCheck == QgsFeatureRequest::GeometryNoCheck && mFilterExpression.isEmpty() )
+  else if ( mInvalidGeometryCheck == Qgis::InvalidGeometryCheck::NoCheck && mFilterExpression.isEmpty() )
     return sourceAvailability;
   else
     // we don't know... source has features, but these may be filtered out by invalid geometry check or filter expression
@@ -1767,7 +1767,7 @@ QSet<QVariant> QgsProcessingFeatureSource::uniqueValues( int fieldIndex, int lim
     return QSet<QVariant>();
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
   req.setFilterExpression( mFilterExpression );
 
@@ -1794,7 +1794,7 @@ QVariant QgsProcessingFeatureSource::minimumValue( int fieldIndex ) const
     return QVariant();
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
 
   QVariant min;
@@ -1822,7 +1822,7 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
     return QVariant();
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
 
   QVariant max;
@@ -1850,7 +1850,7 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
     return mSource->allFeatureIds();
 
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
                                         .setNoAttributes()
                                         .setFilterExpression( mFilterExpression ) );
 
@@ -1881,27 +1881,27 @@ QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextSc
   return expressionContextScope;
 }
 
-void QgsProcessingFeatureSource::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method )
+void QgsProcessingFeatureSource::setInvalidGeometryCheck( Qgis::InvalidGeometryCheck method )
 {
   mInvalidGeometryCheck = method;
   switch ( mInvalidGeometryCheck )
   {
-    case QgsFeatureRequest::GeometryNoCheck:
+    case Qgis::InvalidGeometryCheck::NoCheck:
       mInvalidGeometryCallback = nullptr;
       break;
 
-    case QgsFeatureRequest::GeometrySkipInvalid:
+    case Qgis::InvalidGeometryCheck::SkipInvalid:
       mInvalidGeometryCallback = mInvalidGeometryCallbackSkip;
       break;
 
-    case QgsFeatureRequest::GeometryAbortOnInvalid:
+    case Qgis::InvalidGeometryCheck::AbortOnInvalid:
       mInvalidGeometryCallback = mInvalidGeometryCallbackAbort;
       break;
 
   }
 }
 
-QgsFeatureRequest::InvalidGeometryCheck QgsProcessingFeatureSource::invalidGeometryCheck() const
+Qgis::InvalidGeometryCheck QgsProcessingFeatureSource::invalidGeometryCheck() const
 {
   return mInvalidGeometryCheck;
 }

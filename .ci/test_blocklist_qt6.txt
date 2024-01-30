@@ -49,7 +49,6 @@ PyQgsBookmarkModel
 PyQgsCodeEditor
 PyQgsColorRampLegendNode
 PyQgsCombinedStyleModel
-PyQgsConnectionRegistry
 PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
@@ -67,7 +66,6 @@ PyQgsLabelObstacleSettings
 PyQgsLabelSettingsWidget
 PyQgsLabelThinningSettings
 PyQgsLayerMetadata
-PyQgsLayerMetadataProviderPython
 PyQgsLayerMetadataResultsModel
 PyQgsLayoutAtlas
 PyQgsLayoutExporter
@@ -144,7 +142,6 @@ PyQgsDBManagerGpkg
 PyQgsDBManagerSpatialite
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsSettingsTreeNode
 PyQgsAuxiliaryStorage
 PyQgsDBManagerSQLWindow
 PyQgsSelectiveMasking

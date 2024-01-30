@@ -341,7 +341,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
 
     QgsFeatureRequest deletedFeaturesRequest;
     deletedFeaturesRequest.setFilterFids( fids );
-    deletedFeaturesRequest.setFlags( QgsFeatureRequest::NoGeometry );
+    deletedFeaturesRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     deletedFeaturesRequest.setSubsetOfAttributes( QgsAttributeList() << mNmRelation.referencedFields().first() );
 
     QgsFeatureIterator deletedFeatures = layer->getFeatures( deletedFeaturesRequest );
@@ -353,7 +353,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     }
 
     QgsFeatureRequest linkingFeaturesRequest;
-    linkingFeaturesRequest.setFlags( QgsFeatureRequest::NoGeometry );
+    linkingFeaturesRequest.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
     linkingFeaturesRequest.setNoAttributes();
 
     QString linkingFeaturesRequestExpression;

@@ -103,7 +103,7 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
   fields.unite( filenameExpression.referencedColumns() );
   request.setSubsetOfAttributes( fields, input->fields() );
   if ( !filenameExpression.needsGeometry() )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   QgsFeatureIterator features = input->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   const double step = input->featureCount() > 0 ? 100.0 / input->featureCount() : 1;

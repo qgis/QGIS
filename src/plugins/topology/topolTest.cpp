@@ -19,7 +19,6 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
@@ -1284,7 +1283,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &exten
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
-                              .setFlags( QgsFeatureRequest::ExactIntersect )
+                              .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
                               .setNoAttributes() );
   }
 
@@ -1310,7 +1309,7 @@ void topolTest::fillFeatureList( QgsVectorLayer *layer, const QgsRectangle &exte
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
-                              .setFlags( QgsFeatureRequest::ExactIntersect )
+                              .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
                               .setNoAttributes() );
   }
 
@@ -1339,7 +1338,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
-                              .setFlags( QgsFeatureRequest::ExactIntersect )
+                              .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
                               .setNoAttributes() );
   }
 

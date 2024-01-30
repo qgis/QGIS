@@ -18,8 +18,6 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
@@ -420,7 +418,7 @@ void QgsFeaturePickerModelBase::scheduledReload()
   }
 
   if ( !mFetchGeometry )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   if ( mFetchLimit > 0 )
     request.setLimit( mFetchLimit );
 

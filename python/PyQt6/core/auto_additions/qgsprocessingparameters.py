@@ -1,14 +1,4 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingparameters.h
-QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck
-QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature = QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
-QgsProcessingFeatureSourceDefinition.Flags = lambda flags=0: QgsProcessingFeatureSourceDefinition.Flag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
-
-
-QgsProcessingFeatureSourceDefinition.Flag.__bool__ = lambda flag: bool(_force_int(flag))
-QgsProcessingFeatureSourceDefinition.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
-QgsProcessingFeatureSourceDefinition.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
-QgsProcessingFeatureSourceDefinition.Flag.__or__ = lambda flag1, flag2: QgsProcessingFeatureSourceDefinition.Flag(_force_int(flag1) | _force_int(flag2))
 QgsProcessingParameterDefinition.FlagAdvanced = QgsProcessingParameterDefinition.Flag.FlagAdvanced
 QgsProcessingParameterDefinition.FlagHidden = QgsProcessingParameterDefinition.Flag.FlagHidden
 QgsProcessingParameterDefinition.FlagOptional = QgsProcessingParameterDefinition.Flag.FlagOptional

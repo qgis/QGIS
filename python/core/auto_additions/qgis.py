@@ -1640,6 +1640,70 @@ Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rin
 Qgis.MakeValidMethod.__doc__ = "Algorithms to use when repairing invalid geometries.\n\n.. versionadded:: 3.28\n\n" + '* ``Linework``: ' + Qgis.MakeValidMethod.Linework.__doc__ + '\n' + '* ``Structure``: ' + Qgis.MakeValidMethod.Structure.__doc__
 # --
 Qgis.MakeValidMethod.baseClass = Qgis
+QgsFeatureRequest.Flag = Qgis.FeatureRequestFlag
+# monkey patching scoped based enum
+QgsFeatureRequest.NoFlags = Qgis.FeatureRequestFlag.NoFlags
+QgsFeatureRequest.NoFlags.is_monkey_patched = True
+QgsFeatureRequest.NoFlags.__doc__ = "No flags are set"
+QgsFeatureRequest.NoGeometry = Qgis.FeatureRequestFlag.NoGeometry
+QgsFeatureRequest.NoGeometry.is_monkey_patched = True
+QgsFeatureRequest.NoGeometry.__doc__ = "Geometry is not required. It may still be returned if e.g. required for a filter condition."
+QgsFeatureRequest.SubsetOfAttributes = Qgis.FeatureRequestFlag.SubsetOfAttributes
+QgsFeatureRequest.SubsetOfAttributes.is_monkey_patched = True
+QgsFeatureRequest.SubsetOfAttributes.__doc__ = "Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)"
+QgsFeatureRequest.ExactIntersect = Qgis.FeatureRequestFlag.ExactIntersect
+QgsFeatureRequest.ExactIntersect.is_monkey_patched = True
+QgsFeatureRequest.ExactIntersect.__doc__ = "Use exact geometry intersection (slower) instead of bounding boxes"
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation = Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.is_monkey_patched = True
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.__doc__ = "If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)"
+QgsFeatureRequest.EmbeddedSymbols = Qgis.FeatureRequestFlag.EmbeddedSymbols
+QgsFeatureRequest.EmbeddedSymbols.is_monkey_patched = True
+QgsFeatureRequest.EmbeddedSymbols.__doc__ = "Retrieve any embedded feature symbology (since QGIS 3.20)"
+Qgis.FeatureRequestFlag.__doc__ = "Flags for controlling feature requests.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``NoFlags``: ' + Qgis.FeatureRequestFlag.NoFlags.__doc__ + '\n' + '* ``NoGeometry``: ' + Qgis.FeatureRequestFlag.NoGeometry.__doc__ + '\n' + '* ``SubsetOfAttributes``: ' + Qgis.FeatureRequestFlag.SubsetOfAttributes.__doc__ + '\n' + '* ``ExactIntersect``: ' + Qgis.FeatureRequestFlag.ExactIntersect.__doc__ + '\n' + '* ``IgnoreStaticNodesDuringExpressionCompilation``: ' + Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation.__doc__ + '\n' + '* ``EmbeddedSymbols``: ' + Qgis.FeatureRequestFlag.EmbeddedSymbols.__doc__
+# --
+Qgis.FeatureRequestFlag.baseClass = Qgis
+QgsFeatureRequest.Flags = Qgis.FeatureRequestFlags
+Qgis.FeatureRequestFlags.baseClass = Qgis
+FeatureRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsFeatureRequest.FilterType = Qgis.FeatureRequestFilterType
+# monkey patching scoped based enum
+QgsFeatureRequest.FilterNone = Qgis.FeatureRequestFilterType.NoFilter
+QgsFeatureRequest.FilterType.FilterNone = Qgis.FeatureRequestFilterType.NoFilter
+QgsFeatureRequest.FilterNone.is_monkey_patched = True
+QgsFeatureRequest.FilterNone.__doc__ = "No filter is applied"
+QgsFeatureRequest.FilterFid = Qgis.FeatureRequestFilterType.Fid
+QgsFeatureRequest.FilterType.FilterFid = Qgis.FeatureRequestFilterType.Fid
+QgsFeatureRequest.FilterFid.is_monkey_patched = True
+QgsFeatureRequest.FilterFid.__doc__ = "Filter using feature ID"
+QgsFeatureRequest.FilterExpression = Qgis.FeatureRequestFilterType.Expression
+QgsFeatureRequest.FilterType.FilterExpression = Qgis.FeatureRequestFilterType.Expression
+QgsFeatureRequest.FilterExpression.is_monkey_patched = True
+QgsFeatureRequest.FilterExpression.__doc__ = "Filter using expression"
+QgsFeatureRequest.FilterFids = Qgis.FeatureRequestFilterType.Fids
+QgsFeatureRequest.FilterType.FilterFids = Qgis.FeatureRequestFilterType.Fids
+QgsFeatureRequest.FilterFids.is_monkey_patched = True
+QgsFeatureRequest.FilterFids.__doc__ = "Filter using feature IDs"
+Qgis.FeatureRequestFilterType.__doc__ = "Types of feature request filters.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.FilterType\n\n.. versionadded:: 3.36\n\n" + '* ``FilterNone``: ' + Qgis.FeatureRequestFilterType.NoFilter.__doc__ + '\n' + '* ``FilterFid``: ' + Qgis.FeatureRequestFilterType.Fid.__doc__ + '\n' + '* ``FilterExpression``: ' + Qgis.FeatureRequestFilterType.Expression.__doc__ + '\n' + '* ``FilterFids``: ' + Qgis.FeatureRequestFilterType.Fids.__doc__
+# --
+Qgis.FeatureRequestFilterType.baseClass = Qgis
+QgsFeatureRequest.InvalidGeometryCheck = Qgis.InvalidGeometryCheck
+# monkey patching scoped based enum
+QgsFeatureRequest.GeometryNoCheck = Qgis.InvalidGeometryCheck.NoCheck
+QgsFeatureRequest.InvalidGeometryCheck.GeometryNoCheck = Qgis.InvalidGeometryCheck.NoCheck
+QgsFeatureRequest.GeometryNoCheck.is_monkey_patched = True
+QgsFeatureRequest.GeometryNoCheck.__doc__ = "No invalid geometry checking"
+QgsFeatureRequest.GeometrySkipInvalid = Qgis.InvalidGeometryCheck.SkipInvalid
+QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid = Qgis.InvalidGeometryCheck.SkipInvalid
+QgsFeatureRequest.GeometrySkipInvalid.is_monkey_patched = True
+QgsFeatureRequest.GeometrySkipInvalid.__doc__ = "Skip any features with invalid geometry. This requires a slow geometry validity check for every feature."
+QgsFeatureRequest.GeometryAbortOnInvalid = Qgis.InvalidGeometryCheck.AbortOnInvalid
+QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid = Qgis.InvalidGeometryCheck.AbortOnInvalid
+QgsFeatureRequest.GeometryAbortOnInvalid.is_monkey_patched = True
+QgsFeatureRequest.GeometryAbortOnInvalid.__doc__ = "Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature."
+Qgis.InvalidGeometryCheck.__doc__ = "Methods for handling of features with invalid geometries\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsFeatureRequest`.InvalidGeometryCheck\n\n.. versionadded:: 3.36\n\n" + '* ``GeometryNoCheck``: ' + Qgis.InvalidGeometryCheck.NoCheck.__doc__ + '\n' + '* ``GeometrySkipInvalid``: ' + Qgis.InvalidGeometryCheck.SkipInvalid.__doc__ + '\n' + '* ``GeometryAbortOnInvalid``: ' + Qgis.InvalidGeometryCheck.AbortOnInvalid.__doc__
+# --
+Qgis.InvalidGeometryCheck.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SpatialFilterType.NoFilter.__doc__ = "No spatial filtering of features"
 Qgis.SpatialFilterType.BoundingBox.__doc__ = "Filter using a bounding box"
@@ -2673,6 +2737,22 @@ Qgis.HistoryProviderBackend.__doc__ = "History provider backends.\n\n.. versiona
 Qgis.HistoryProviderBackend.baseClass = Qgis
 Qgis.HistoryProviderBackends.baseClass = Qgis
 HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
+# monkey patching scoped based enum
+QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
+QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
+QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck.is_monkey_patched = True
+QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck.__doc__ = "If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source"
+QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature = Qgis.ProcessingFeatureSourceDefinitionFlag.CreateIndividualOutputPerInputFeature
+QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature = Qgis.ProcessingFeatureSourceDefinitionFlag.CreateIndividualOutputPerInputFeature
+QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature.is_monkey_patched = True
+QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature.__doc__ = "If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed."
+Qgis.ProcessingFeatureSourceDefinitionFlag.__doc__ = "Flags which control behavior for a Processing feature source.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsProcessingFeatureSourceDefinition`.Flag\n\n.. versionadded:: 3.36\n\n" + '* ``FlagOverrideDefaultGeometryCheck``: ' + Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck.__doc__ + '\n' + '* ``FlagCreateIndividualOutputPerInputFeature``: ' + Qgis.ProcessingFeatureSourceDefinitionFlag.CreateIndividualOutputPerInputFeature.__doc__
+# --
+Qgis.ProcessingFeatureSourceDefinitionFlag.baseClass = Qgis
+QgsProcessingFeatureSourceDefinition.Flags = Qgis.ProcessingFeatureSourceDefinitionFlags
+Qgis.ProcessingFeatureSourceDefinitionFlags.baseClass = Qgis
+ProcessingFeatureSourceDefinitionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ProcessingModelChildParameterSource.ModelParameter.__doc__ = "Parameter value is taken from a parent model parameter"
 Qgis.ProcessingModelChildParameterSource.ChildOutput.__doc__ = "Parameter value is taken from an output generated by a child algorithm"
@@ -4086,3 +4166,21 @@ Qgis.GdalResampleAlgorithm.RA_Q3.__doc__ = "Third quartile (selects the third qu
 Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)\n\n.. note::\n\n   RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only\n\n.. versionadded:: 3.34\n\n" + '* ``RA_NearestNeighbour``: ' + Qgis.GdalResampleAlgorithm.RA_NearestNeighbour.__doc__ + '\n' + '* ``RA_Bilinear``: ' + Qgis.GdalResampleAlgorithm.RA_Bilinear.__doc__ + '\n' + '* ``RA_Cubic``: ' + Qgis.GdalResampleAlgorithm.RA_Cubic.__doc__ + '\n' + '* ``RA_CubicSpline``: ' + Qgis.GdalResampleAlgorithm.RA_CubicSpline.__doc__ + '\n' + '* ``RA_Lanczos``: ' + Qgis.GdalResampleAlgorithm.RA_Lanczos.__doc__ + '\n' + '* ``RA_Average``: ' + Qgis.GdalResampleAlgorithm.RA_Average.__doc__ + '\n' + '* ``RA_Mode``: ' + Qgis.GdalResampleAlgorithm.RA_Mode.__doc__ + '\n' + '* ``RA_Max``: ' + Qgis.GdalResampleAlgorithm.RA_Max.__doc__ + '\n' + '* ``RA_Min``: ' + Qgis.GdalResampleAlgorithm.RA_Min.__doc__ + '\n' + '* ``RA_Median``: ' + Qgis.GdalResampleAlgorithm.RA_Median.__doc__ + '\n' + '* ``RA_Q1``: ' + Qgis.GdalResampleAlgorithm.RA_Q1.__doc__ + '\n' + '* ``RA_Q3``: ' + Qgis.GdalResampleAlgorithm.RA_Q3.__doc__
 # --
 Qgis.GdalResampleAlgorithm.baseClass = Qgis
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+
+Qgis.BrowserItemCapability.__or__ = lambda flag1, flag2: Qgis.BrowserItemCapabilities(_force_int(flag1) | _force_int(flag2))
+Qgis.GeometryValidityFlag.__or__ = lambda flag1, flag2: Qgis.GeometryValidityFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.LabelingFlag.__or__ = lambda flag1, flag2: Qgis.LabelingFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.LabelLinePlacementFlag.__or__ = lambda flag1, flag2: Qgis.LabelLinePlacementFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.MapSettingsFlag.__or__ = lambda flag1, flag2: Qgis.MapSettingsFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.ProjectReadFlag.__or__ = lambda flag1, flag2: Qgis.ProjectReadFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.RenderContextFlag.__or__ = lambda flag1, flag2: Qgis.RenderContextFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.SnappingType.__or__ = lambda flag1, flag2: Qgis.SnappingTypes(_force_int(flag1) | _force_int(flag2))
+Qgis.SymbolPreviewFlag.__or__ = lambda flag1, flag2: Qgis.SymbolPreviewFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.SymbolRenderHint.__or__ = lambda flag1, flag2: Qgis.SymbolRenderHints(_force_int(flag1) | _force_int(flag2))
+Qgis.FeatureRequestFlag.__or__ = lambda flag1, flag2: Qgis.FeatureRequestFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.ProcessingFeatureSourceDefinitionFlag.__or__ = lambda flag1, flag2: Qgis.ProcessingFeatureSourceDefinitionFlags(_force_int(flag1) | _force_int(flag2))

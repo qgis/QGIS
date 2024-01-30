@@ -52,6 +52,8 @@ class QgsTiledSceneLayer;
  */
 class CORE_EXPORT QgsProcessingUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -262,6 +264,7 @@ class CORE_EXPORT QgsProcessingUtils
       VectorTile, //!< Vector tile layer type, since QGIS 3.32
       TiledScene, //!< Tiled scene layer type, since QGIS 3.34
     };
+    Q_ENUM( LayerHint )
 
     /**
      * Interprets a string as a map layer within the supplied \a context.
@@ -733,7 +736,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      * \see invalidGeometryCheck()
      * \since QGIS 3.14
      */
-    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+    void setInvalidGeometryCheck( Qgis::InvalidGeometryCheck method );
 
     /**
      * Returns the geometry check method for the source.
@@ -741,7 +744,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      * \see setInvalidGeometryCheck()
      * \since QGIS 3.36
      */
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 
   private:
 
@@ -754,7 +757,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsRectangle mSourceExtent;
     QgsFeatureSource::SpatialIndexPresence mSourceSpatialIndexPresence = QgsFeatureSource::SpatialIndexPresence::SpatialIndexUnknown;
 
-    QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    Qgis::InvalidGeometryCheck mInvalidGeometryCheck = Qgis::InvalidGeometryCheck::NoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
 

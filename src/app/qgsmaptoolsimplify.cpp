@@ -461,7 +461,7 @@ void QgsMapToolSimplify::selectFeaturesInRect()
   QgsFeature f;
   QgsFeatureRequest request;
   request.setFilterRect( rect );
-  request.setFlags( QgsFeatureRequest::ExactIntersect );
+  request.setFlags( Qgis::FeatureRequestFlag::ExactIntersect );
   request.setNoAttributes();
   QgsFeatureIterator fit = vlayer->getFeatures( request );
   while ( fit.nextFeature( f ) )

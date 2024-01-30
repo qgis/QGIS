@@ -981,6 +981,34 @@ The development version
       Structure,
     };
 
+    enum class FeatureRequestFlag
+      {
+      NoFlags,
+      NoGeometry,
+      SubsetOfAttributes,
+      ExactIntersect,
+      IgnoreStaticNodesDuringExpressionCompilation,
+      EmbeddedSymbols,
+    };
+
+    typedef QFlags<Qgis::FeatureRequestFlag> FeatureRequestFlags;
+
+
+    enum class FeatureRequestFilterType
+      {
+      NoFilter,
+      Fid,
+      Expression,
+      Fids
+    };
+
+    enum class InvalidGeometryCheck
+      {
+      NoCheck,
+      SkipInvalid,
+      AbortOnInvalid,
+    };
+
     enum class SpatialFilterType
     {
       NoFilter,
@@ -1585,6 +1613,15 @@ The development version
 //      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
     };
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
+
+
+    enum class ProcessingFeatureSourceDefinitionFlag
+      {
+      OverrideDefaultGeometryCheck,
+      CreateIndividualOutputPerInputFeature,
+    };
+
+    typedef QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> ProcessingFeatureSourceDefinitionFlags;
 
 
     enum class ProcessingModelChildParameterSource
@@ -2560,6 +2597,9 @@ QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCap
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
 
+QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
+
+QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> operator|(Qgis::ProcessingFeatureSourceDefinitionFlag f1, QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> f2);
 
 
 

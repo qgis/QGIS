@@ -1004,7 +1004,7 @@ namespace QgsWfs
             {
               if ( filter->needsGeometry() )
               {
-                action.featureRequest.setFlags( QgsFeatureRequest::NoFlags );
+                action.featureRequest.setFlags( Qgis::FeatureRequestFlag::NoFlags );
               }
               action.featureRequest.setFilterExpression( filter->expression() );
             }

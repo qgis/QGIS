@@ -331,7 +331,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttribute::undo()
         QgsFeature tmp;
         QgsFeatureRequest request;
         request.setFilterFid( mFid );
-        request.setFlags( QgsFeatureRequest::NoGeometry );
+        request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
         request.setSubsetOfAttributes( QgsAttributeList() << mFieldIndex );
         std::unique_ptr<QgsVectorLayer> layerClone( layer()->clone() );
         QgsFeatureIterator fi = layerClone->getFeatures( request );

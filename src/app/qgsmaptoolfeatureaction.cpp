@@ -121,7 +121,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 
   QgsFeature f;
   QgsFeatureList features;
-  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   while ( fit.nextFeature( f ) )
   {
     features.append( f );

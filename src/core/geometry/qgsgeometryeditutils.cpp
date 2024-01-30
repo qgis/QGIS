@@ -311,7 +311,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
       ignoreIds = ignoreIt.value();
 
     QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
-                            .setFlags( QgsFeatureRequest::ExactIntersect )
+                            .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
                             .setNoAttributes() );
     QgsFeature f;
     while ( fi.nextFeature( f ) )

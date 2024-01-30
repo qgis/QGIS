@@ -6366,7 +6366,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
     req.setFeedback( context->feedback() );
   if ( !parent->needsGeometry() )
   {
-    req.setFlags( QgsFeatureRequest::NoGeometry );
+    req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   }
   QgsFeatureIterator fIt = featureSource->getFeatures( req );
 

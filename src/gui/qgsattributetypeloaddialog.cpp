@@ -20,7 +20,6 @@
 #include "qgsmaplayer.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
-#include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -131,7 +130,7 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   attributeList.append( idx );
   attributeList.append( idx2 );
 
-  QgsFeatureIterator fit = vLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
+  QgsFeatureIterator fit = vLayer->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
   QgsFeature f;
   QMap<QString, QVariant> valueMap;
@@ -180,7 +179,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   attributeList.append( idx );
   attributeList.append( idx2 );
 
-  QgsFeatureIterator fit = vLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
+  QgsFeatureIterator fit = vLayer->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )

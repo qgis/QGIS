@@ -64,32 +64,6 @@ Examples:
 #include "qgsfeaturerequest.h"
 %End
   public:
-    enum Flag
-    {
-      NoFlags,
-      NoGeometry,
-      SubsetOfAttributes,
-      ExactIntersect,
-      IgnoreStaticNodesDuringExpressionCompilation,
-      EmbeddedSymbols,
-    };
-    typedef QFlags<QgsFeatureRequest::Flag> Flags;
-
-
-    enum FilterType
-    {
-      FilterNone,
-      FilterFid,
-      FilterExpression,
-      FilterFids
-    };
-
-    enum InvalidGeometryCheck
-    {
-      GeometryNoCheck,
-      GeometrySkipInvalid,
-      GeometryAbortOnInvalid,
-    };
 
     class OrderByClause
 {
@@ -311,7 +285,7 @@ copy constructor
 
     ~QgsFeatureRequest();
 
-    FilterType filterType() const;
+    Qgis::FeatureRequestFilterType filterType() const;
 %Docstring
 Returns the attribute/ID filter type which is currently set on this request.
 
@@ -464,7 +438,7 @@ Returns the feature IDs that should be fetched.
 .. seealso:: :py:func:`filterFid`
 %End
 
-    QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
+    QgsFeatureRequest &setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check );
 %Docstring
 Sets invalid geometry checking behavior.
 
@@ -478,7 +452,7 @@ Sets invalid geometry checking behavior.
 .. versionadded:: 3.0
 %End
 
-    InvalidGeometryCheck invalidGeometryCheck() const;
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
 Returns the invalid geometry checking behavior.
 
@@ -642,14 +616,14 @@ Returns the maximum number of features to request, or -1 if no limit set.
 .. versionadded:: 2.14
 %End
 
-    QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
+    QgsFeatureRequest &setFlags( Qgis::FeatureRequestFlags flags );
 %Docstring
 Sets ``flags`` that affect how features will be fetched.
 
 .. seealso:: :py:func:`flags`
 %End
 
-    Flags flags() const;
+    Qgis::FeatureRequestFlags flags() const;
 %Docstring
 Returns the flags which affect how features are fetched.
 
@@ -978,9 +952,6 @@ if it should be canceled, if set.
 
 
 };
-
-QFlags<QgsFeatureRequest::Flag> operator|(QgsFeatureRequest::Flag f1, QFlags<QgsFeatureRequest::Flag> f2);
-
 
 
 

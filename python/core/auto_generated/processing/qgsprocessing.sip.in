@@ -25,6 +25,9 @@ and parameters.
 #include "qgsprocessing.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum SourceType
     {
@@ -43,7 +46,7 @@ and parameters.
       TypeVectorTile
     };
 
-    enum PythonOutputType
+    enum class PythonOutputType
     {
       PythonQgsProcessingAlgorithmSubclass,
     };

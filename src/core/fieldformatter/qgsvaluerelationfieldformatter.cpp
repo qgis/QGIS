@@ -140,7 +140,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 
   QgsFeatureRequest request;
 
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   QgsAttributeIds subsetOfAttributes { ki, vi };
 
   const QString descriptionExpressionString = config.value( "Description" ).toString();
