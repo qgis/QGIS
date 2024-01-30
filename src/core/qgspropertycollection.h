@@ -291,7 +291,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      */
     virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 
-    ///cond PRIVATE
+    ///@cond PRIVATE
     template<class T> QDateTime valueAsDateTime( const T &key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok = nullptr ) const SIP_SKIP
     {
       return valueAsDateTime( static_cast< int >( key ), context, defaultDateTime, ok );
