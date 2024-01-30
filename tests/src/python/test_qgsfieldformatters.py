@@ -469,7 +469,7 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowTrueFalse
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, True), 'true')
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, False), 'false')
-        self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Type.Bool)), 'NULL')
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Bool)), 'NULL')
 
 
 class TestQgsFallbackFieldFormatter(QgisTestCase):
