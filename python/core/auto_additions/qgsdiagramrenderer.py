@@ -1,0 +1,40 @@
+# The following has been generated automatically from src/core/qgsdiagramrenderer.h
+# monkey patching scoped based enum
+QgsDiagramLayerSettings.BackgroundColor = QgsDiagramLayerSettings.Property.BackgroundColor
+QgsDiagramLayerSettings.BackgroundColor.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.BackgroundColor.__doc__ = "Diagram background color"
+QgsDiagramLayerSettings.StrokeColor = QgsDiagramLayerSettings.Property.StrokeColor
+QgsDiagramLayerSettings.StrokeColor.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.StrokeColor.__doc__ = "Stroke color"
+QgsDiagramLayerSettings.StrokeWidth = QgsDiagramLayerSettings.Property.StrokeWidth
+QgsDiagramLayerSettings.StrokeWidth.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.StrokeWidth.__doc__ = "Stroke width"
+QgsDiagramLayerSettings.PositionX = QgsDiagramLayerSettings.Property.PositionX
+QgsDiagramLayerSettings.PositionX.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.PositionX.__doc__ = "X-coordinate data defined diagram position"
+QgsDiagramLayerSettings.PositionY = QgsDiagramLayerSettings.Property.PositionY
+QgsDiagramLayerSettings.PositionY.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.PositionY.__doc__ = "Y-coordinate data defined diagram position"
+QgsDiagramLayerSettings.Distance = QgsDiagramLayerSettings.Property.Distance
+QgsDiagramLayerSettings.Distance.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.Distance.__doc__ = "Distance to diagram from feature"
+QgsDiagramLayerSettings.Priority = QgsDiagramLayerSettings.Property.Priority
+QgsDiagramLayerSettings.Priority.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.Priority.__doc__ = "Diagram priority (between 0 and 10)"
+QgsDiagramLayerSettings.ZIndex = QgsDiagramLayerSettings.Property.ZIndex
+QgsDiagramLayerSettings.ZIndex.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.ZIndex.__doc__ = "Z-index for diagram ordering"
+QgsDiagramLayerSettings.IsObstacle = QgsDiagramLayerSettings.Property.IsObstacle
+QgsDiagramLayerSettings.IsObstacle.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.IsObstacle.__doc__ = "Whether diagram features act as obstacles for other diagrams/labels"
+QgsDiagramLayerSettings.Show = QgsDiagramLayerSettings.Property.Show
+QgsDiagramLayerSettings.Show.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.Show.__doc__ = "Whether to show the diagram"
+QgsDiagramLayerSettings.AlwaysShow = QgsDiagramLayerSettings.Property.AlwaysShow
+QgsDiagramLayerSettings.AlwaysShow.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.AlwaysShow.__doc__ = "Whether the diagram should always be shown, even if it overlaps other diagrams/labels"
+QgsDiagramLayerSettings.StartAngle = QgsDiagramLayerSettings.Property.StartAngle
+QgsDiagramLayerSettings.StartAngle.is_monkey_patched = True
+QgsDiagramLayerSettings.Property.StartAngle.__doc__ = "Angle offset for pie diagram"
+QgsDiagramLayerSettings.Property.__doc__ = "Data definable properties.\n\n.. versionadded:: 3.0\n\n" + '* ``BackgroundColor``: ' + QgsDiagramLayerSettings.Property.BackgroundColor.__doc__ + '\n' + '* ``StrokeColor``: ' + QgsDiagramLayerSettings.Property.StrokeColor.__doc__ + '\n' + '* ``StrokeWidth``: ' + QgsDiagramLayerSettings.Property.StrokeWidth.__doc__ + '\n' + '* ``PositionX``: ' + QgsDiagramLayerSettings.Property.PositionX.__doc__ + '\n' + '* ``PositionY``: ' + QgsDiagramLayerSettings.Property.PositionY.__doc__ + '\n' + '* ``Distance``: ' + QgsDiagramLayerSettings.Property.Distance.__doc__ + '\n' + '* ``Priority``: ' + QgsDiagramLayerSettings.Property.Priority.__doc__ + '\n' + '* ``ZIndex``: ' + QgsDiagramLayerSettings.Property.ZIndex.__doc__ + '\n' + '* ``IsObstacle``: ' + QgsDiagramLayerSettings.Property.IsObstacle.__doc__ + '\n' + '* ``Show``: ' + QgsDiagramLayerSettings.Property.Show.__doc__ + '\n' + '* ``AlwaysShow``: ' + QgsDiagramLayerSettings.Property.AlwaysShow.__doc__ + '\n' + '* ``StartAngle``: ' + QgsDiagramLayerSettings.Property.StartAngle.__doc__
+# --
