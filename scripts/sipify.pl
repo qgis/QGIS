@@ -63,6 +63,7 @@ my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 my @ENUM_INT_TYPES = ();
 my @ENUM_CLASS_NON_INT_TYPES = ();
+my @ENUM_MONKEY_PATCHED_TYPES = ();
 
 my $INDENT = '';
 my $PREV_INDENT = '';
@@ -1158,8 +1159,9 @@ while ($LINE_IDX < $LINE_COUNT){
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
     if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\)\s*$/ ){
-
         push @OUTPUT_PYTHON, "$+{emkb}.$+{emkf} = $ACTUAL_CLASS.$+{flags_name}\n";
+        push @ENUM_MONKEY_PATCHED_TYPES, [$ACTUAL_CLASS, $+{flags_name}, $+{emkb}, $+{emkf}];
+
         $LINE =~ s/\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)//;
     }
     if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?<oneliner>.*)$/ ){
@@ -1362,7 +1364,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
-        my $flag = $QFLAG_HASH{$2};
+        my $flags = $2;
+        my $flag = $QFLAG_HASH{$flags};
         $LINE = "$1QFlags<$flag> operator|($flag f1, QFlags<$flag> f2);\n";
 
         my $py_flag = $flag;
@@ -1383,6 +1386,20 @@ while ($LINE_IDX < $LINE_COUNT){
             push @OUTPUT_PYTHON, "$py_flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n";
             push @OUTPUT_PYTHON, "$py_flag.__or__ = lambda flag1, flag2: $py_flag(_force_int(flag1) | _force_int(flag2))\n";
           }
+        }
+        if ( !$is_qt6 )
+        {
+           foreach ( @ENUM_MONKEY_PATCHED_TYPES ) {
+             if ( $flags eq "$_->[0]::$_->[1]" )
+             {
+               dbg_info("monkey patching flags");
+               if ($HAS_PUSHED_FORCE_INT eq 0) {
+                 push @OUTPUT_PYTHON, "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n";
+                 $HAS_PUSHED_FORCE_INT = 1;
+               }
+               push @OUTPUT_PYTHON, "$py_flag.__or__ = lambda flag1, flag2: $_->[0].$_->[1](_force_int(flag1) | _force_int(flag2))\n";
+             }
+           }
         }
     }
 

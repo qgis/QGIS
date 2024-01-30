@@ -4166,3 +4166,21 @@ Qgis.GdalResampleAlgorithm.RA_Q3.__doc__ = "Third quartile (selects the third qu
 Qgis.GdalResampleAlgorithm.__doc__ = "Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)\n\n.. note::\n\n   RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only\n\n.. versionadded:: 3.34\n\n" + '* ``RA_NearestNeighbour``: ' + Qgis.GdalResampleAlgorithm.RA_NearestNeighbour.__doc__ + '\n' + '* ``RA_Bilinear``: ' + Qgis.GdalResampleAlgorithm.RA_Bilinear.__doc__ + '\n' + '* ``RA_Cubic``: ' + Qgis.GdalResampleAlgorithm.RA_Cubic.__doc__ + '\n' + '* ``RA_CubicSpline``: ' + Qgis.GdalResampleAlgorithm.RA_CubicSpline.__doc__ + '\n' + '* ``RA_Lanczos``: ' + Qgis.GdalResampleAlgorithm.RA_Lanczos.__doc__ + '\n' + '* ``RA_Average``: ' + Qgis.GdalResampleAlgorithm.RA_Average.__doc__ + '\n' + '* ``RA_Mode``: ' + Qgis.GdalResampleAlgorithm.RA_Mode.__doc__ + '\n' + '* ``RA_Max``: ' + Qgis.GdalResampleAlgorithm.RA_Max.__doc__ + '\n' + '* ``RA_Min``: ' + Qgis.GdalResampleAlgorithm.RA_Min.__doc__ + '\n' + '* ``RA_Median``: ' + Qgis.GdalResampleAlgorithm.RA_Median.__doc__ + '\n' + '* ``RA_Q1``: ' + Qgis.GdalResampleAlgorithm.RA_Q1.__doc__ + '\n' + '* ``RA_Q3``: ' + Qgis.GdalResampleAlgorithm.RA_Q3.__doc__
 # --
 Qgis.GdalResampleAlgorithm.baseClass = Qgis
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
+
+
+Qgis.BrowserItemCapability.__or__ = lambda flag1, flag2: Qgis.BrowserItemCapabilities(_force_int(flag1) | _force_int(flag2))
+Qgis.GeometryValidityFlag.__or__ = lambda flag1, flag2: Qgis.GeometryValidityFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.LabelingFlag.__or__ = lambda flag1, flag2: Qgis.LabelingFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.LabelLinePlacementFlag.__or__ = lambda flag1, flag2: Qgis.LabelLinePlacementFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.MapSettingsFlag.__or__ = lambda flag1, flag2: Qgis.MapSettingsFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.ProjectReadFlag.__or__ = lambda flag1, flag2: Qgis.ProjectReadFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.RenderContextFlag.__or__ = lambda flag1, flag2: Qgis.RenderContextFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.SnappingType.__or__ = lambda flag1, flag2: Qgis.SnappingTypes(_force_int(flag1) | _force_int(flag2))
+Qgis.SymbolPreviewFlag.__or__ = lambda flag1, flag2: Qgis.SymbolPreviewFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.SymbolRenderHint.__or__ = lambda flag1, flag2: Qgis.SymbolRenderHints(_force_int(flag1) | _force_int(flag2))
+Qgis.FeatureRequestFlag.__or__ = lambda flag1, flag2: Qgis.FeatureRequestFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.ProcessingFeatureSourceDefinitionFlag.__or__ = lambda flag1, flag2: Qgis.ProcessingFeatureSourceDefinitionFlags(_force_int(flag1) | _force_int(flag2))
