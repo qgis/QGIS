@@ -593,15 +593,13 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, co
 
 }
 
-bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema )
+bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema, const QString &name )
 {
   QMutexLocker locker( &mLock );
   int nColumns = 0;
   int foundInTables = 0;
   QgsPostgresResult result;
   QString query;
-
-  mLayersSupported.clear();
 
   for ( int i = SctGeometry; i <= SctRaster; ++i )
   {
@@ -709,6 +707,9 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND %1='%2'" ).arg( schemaName, schema );
+
+    if ( !name.isEmpty() )
+      sql += QStringLiteral( " AND %1='%2'" ).arg( tableName, name );
 
     sql += QString( " GROUP BY 1,2,3,4,5,6,7,c.oid,11" );
 
@@ -848,7 +849,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND n.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND n.nspname='%2'" ).arg( schema );
+      sql += QStringLiteral( " AND n.nspname='%1'" ).arg( schema );
+
+    if ( !name.isEmpty() )
+      sql += QStringLiteral( " AND c.relname ='%1'" ).arg( name );
 
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
@@ -987,7 +991,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND pg_namespace.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND pg_namespace.nspname='%2'" ).arg( schema );
+      sql += QStringLiteral( " AND pg_namespace.nspname='%1'" ).arg( schema );
+
+    if ( !name.isEmpty() )
+      sql += QStringLiteral( " AND pg_class.relname='%1'" ).arg( name );
 
     sql += QLatin1String( " GROUP BY 1,2,3,4" );
 
@@ -1062,12 +1069,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return true;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema, const QString &table )
 {
   QMutexLocker locker( &mLock );
 
+  mLayersSupported.clear();
+
   // Get the list of supported tables
-  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema ) )
+  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema, table ) )
   {
     QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "PostGIS" ) );
     return false;
@@ -2172,7 +2181,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
           sql = QStringLiteral( "SELECT %1, "
                                 "array_agg(DISTINCT st_srid(%2) || ':RASTER:-1') "
                                 "FROM %3 "
-                                "%2 IS NOT NULL "
+                                "WHERE %2 IS NOT NULL "
                                 "%4"   // SQL clause
                                 "%5" )
                 .arg( i - 1 )

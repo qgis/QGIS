@@ -72,6 +72,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QStringList schemas( ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
@@ -92,7 +93,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
-
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesPrivate( const QString &schema, const QString &table,
+        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const;
 
 };
 

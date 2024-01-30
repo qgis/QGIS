@@ -385,13 +385,15 @@ class QgsPostgresConn : public QObject
      * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param schema restrict layers to layers within specified schema
+     * \param table restrict tables to those with specified table
      * \returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
                           bool searchGeometryColumnsOnly = true,
                           bool searchPublicOnly = true,
                           bool allowGeometrylessTables = false,
-                          const QString &schema = QString() );
+                          const QString &schema = QString(),
+                          const QString &table = QString() );
 
     /**
      * Gets the list of database schemas
@@ -418,10 +420,11 @@ class QgsPostgresConn : public QObject
      * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param schema restrict tables to those within specified schema
+     * \param name restrict tables to those with specified name
      * \returns true if tables were successfully queried
      */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
-                       const QString &schema = QString() );
+                       const QString &schema = QString(), const QString &name = QString() );
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
