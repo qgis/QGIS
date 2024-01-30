@@ -2983,8 +2983,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings = nullptr;
 
-    mutable bool mValidExtent = false;
-    mutable bool mLazyExtent = true;
+    mutable bool mValidExtent2D = false;
+    mutable bool mLazyExtent2D = true;
+    mutable bool mValidExtent3D = false;
+    mutable bool mLazyExtent3D = true;
 
     //! Auxiliary layer
     std::unique_ptr<QgsAuxiliaryLayer> mAuxiliaryLayer;
@@ -3006,7 +3008,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mCommitChangesActive = false;
 
     bool mReadExtentFromXml;
-    QgsRectangle mXmlExtent;
+    QgsRectangle mXmlExtent2D;
+    QgsBox3D mXmlExtent3D;
 
     QgsFeatureIds mDeletedFids;
 
