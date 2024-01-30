@@ -238,10 +238,22 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 token_renames[Offset(_node.value.lineno, _node.value.col_offset)] = 'QApplication.instance()'
                 extra_imports['qgis.PyQt.QtWidgets'].update({'QApplication'})
                 removed_imports['qgis.PyQt.QtWidgets'].update({'qApp'})
+            if _node.value.id == 'QVariant' and _node.attr == 'Type':
+                def _replace_qvariant_type(start_index: int, tokens):
+                    # QVariant.Type.XXX doesn't exist, it should be QVariant.XXX
+                    assert tokens[start_index].src == 'QVariant'
+                    assert tokens[start_index + 1].src == '.'
+                    assert tokens[start_index + 2].src == 'Type'
+                    assert tokens[start_index + 3].src == '.'
+
+                    tokens[start_index + 2] = tokens[start_index + 2]._replace(src='')
+                    tokens[start_index + 3] = tokens[start_index + 3]._replace(
+                        src='')
+
+                custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
 
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
-
         for node in ast.iter_child_nodes(parent):
             if isinstance(node, ast.ImportFrom):
                 import_offsets[Offset(node.lineno, node.col_offset)] = (node.module, set(name.name for name in node.names), node.end_lineno, node.end_col_offset)
