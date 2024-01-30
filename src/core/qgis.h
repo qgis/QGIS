@@ -1669,7 +1669,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.36
      */
-    Q_DECLARE_FLAGS( FeatureRequestFlags, FeatureRequestFlag )
+    Q_DECLARE_FLAGS( FeatureRequestFlags, FeatureRequestFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsFeatureRequest, Flags )
     Q_FLAG( FeatureRequestFlags )
 
     /**
@@ -2786,7 +2786,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.36
      */
-    Q_DECLARE_FLAGS( ProcessingFeatureSourceDefinitionFlags, ProcessingFeatureSourceDefinitionFlag )
+    Q_DECLARE_FLAGS( ProcessingFeatureSourceDefinitionFlags, ProcessingFeatureSourceDefinitionFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProcessingFeatureSourceDefinition, Flags )
     Q_FLAG( ProcessingFeatureSourceDefinitionFlags )
 
     /**
