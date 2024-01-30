@@ -3113,6 +3113,7 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
   return OGR_L_GetExtent3D( hLayer, /* iGeomField = */ 0, psExtent3D, bForce );
 #else
 
+  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   OGRErr err = OGRERR_UNSUPPORTED_OPERATION;
   const char *geomCol = OGR_L_GetGeometryColumn( hLayer );
   if ( geomCol != NULL && strlen( geomCol ) > 0 )
@@ -3123,13 +3124,13 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
     if ( err == OGRERR_NONE )
     {
       err = OGRERR_UNSUPPORTED_OPERATION;
-      QByteArray geomColQuoted = QgsOgrProviderUtils::quotedIdentifier( geomCol, name() );
+      QByteArray geomColQuoted = QgsOgrProviderUtils::quotedIdentifier( geomCol, driverName );
       QByteArray sql = "SELECT MIN(ST_MinZ("
                        + geomColQuoted
                        + ")), MAX(ST_MaxZ("
                        + geomColQuoted
                        + ")) FROM "
-                       + QgsOgrProviderUtils::quotedIdentifier( name(), name() );
+                       + QgsOgrProviderUtils::quotedIdentifier( name(), driverName );
       QgsDebugMsgLevel( QStringLiteral( "sql: %1" ).arg( sql.toStdString().c_str() ), 3 );
 
       CPLPushErrorHandler( CPLQuietErrorHandler );
