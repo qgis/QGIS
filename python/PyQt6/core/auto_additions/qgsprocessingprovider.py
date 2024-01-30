@@ -1,5 +1,6 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingprovider.h
 QgsProcessingProvider.FlagDeemphasiseSearchResults = QgsProcessingProvider.Flag.FlagDeemphasiseSearchResults
+QgsProcessingProvider.FlagCompatibleWithVirtualRaster = QgsProcessingProvider.Flag.FlagCompatibleWithVirtualRaster
 QgsProcessingProvider.Flags = lambda flags=0: QgsProcessingProvider.Flag(flags)
 def _force_int(v): return v if isinstance(v, int) else int(v.value)
 

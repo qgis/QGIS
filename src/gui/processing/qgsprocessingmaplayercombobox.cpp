@@ -190,12 +190,10 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   mCombo->setExcludedProviders( QStringList() << QStringLiteral( "grass" ) ); // not sure if this is still required...
 
+  // Check compatibility with virtualraster data provider
   // see https://github.com/qgis/QGIS/issues/55890
-  // There is a chance that "qgis" algorithms can handle virtual rasters but other almost certainly cannot
-  // so we exclude them from the list of available layers for processing algorithms
-  const QStringList providersCompatibleWithVirtualRaster {{ QStringLiteral( "qgis" ), QStringLiteral( "native" ) }};
   if ( mayBeRaster &&
-       ( ! mParameter->provider() || ! providersCompatibleWithVirtualRaster.contains( mParameter->provider()->id() ) ) )
+       ( ! mParameter->provider() || ! mParameter->provider()->flags().testFlag( QgsProcessingProvider::Flag::FlagCompatibleWithVirtualRaster ) ) )
   {
     mCombo->setExcludedProviders( mCombo->excludedProviders() << QStringLiteral( "virtualraster" ) );
   }

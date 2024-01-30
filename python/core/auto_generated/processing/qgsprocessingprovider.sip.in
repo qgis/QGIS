@@ -28,6 +28,7 @@ to a common area of analysis.
     enum Flag
     {
       FlagDeemphasiseSearchResults,
+      FlagCompatibleWithVirtualRaster,
     };
     typedef QFlags<QgsProcessingProvider::Flag> Flags;
 

@@ -45,6 +45,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     enum Flag
     {
       FlagDeemphasiseSearchResults = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+      FlagCompatibleWithVirtualRaster = 1 << 2, //!< The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

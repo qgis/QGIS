@@ -173,3 +173,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
 
     def supportsNonFileBasedOutput(self):
         return True
+
+    def flags(self):
+        return QgsProcessingProvider.Flag.FlagCompatibleWithVirtualRaster
