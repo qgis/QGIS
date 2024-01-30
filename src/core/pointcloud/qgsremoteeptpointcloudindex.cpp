@@ -36,6 +36,7 @@
 #include "qgstiledownloadmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgseptpointcloudblockrequest.h"
+#include "qgscachedpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
 #include "qgsnetworkaccessmanager.h"
 
@@ -81,7 +82,6 @@ QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const In
 void QgsRemoteEptPointCloudIndex::load( const QString &uri )
 {
   mUri = uri;
-  QUrl url( uri );
 
   QStringList splitUrl = uri.split( '/' );
 
@@ -89,7 +89,7 @@ void QgsRemoteEptPointCloudIndex::load( const QString &uri )
   splitUrl.pop_back();
   mUrlDirectoryPart = splitUrl.join( '/' );
 
-  QNetworkRequest nr( uri );
+  QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
 
   QgsBlockingNetworkRequest req;
   const QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
@@ -106,6 +106,11 @@ void QgsRemoteEptPointCloudIndex::load( const QString &uri )
 
 std::unique_ptr<QgsPointCloudBlock> QgsRemoteEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return std::unique_ptr<QgsPointCloudBlock>( cached );
+  }
+
   std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
   if ( !blockRequest )
     return nullptr;
@@ -120,11 +125,18 @@ std::unique_ptr<QgsPointCloudBlock> QgsRemoteEptPointCloudIndex::nodeData( const
     QgsDebugError( QStringLiteral( "Error downloading node %1 data, error : %2 " ).arg( n.toString(), blockRequest->errorStr() ) );
   }
 
+  storeNodeDataToCache( block.get(), n, request );
   return block;
 }
 
 QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
+           scale(), offset(), mFilterExpression, request.filterRect() );
+  }
+
   if ( !loadNodeHierarchy( n ) )
     return nullptr;
 

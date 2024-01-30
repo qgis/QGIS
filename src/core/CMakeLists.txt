@@ -2145,6 +2145,7 @@ if (WITH_COPC)
       pointcloud/qgscopcpointcloudindex.cpp
       pointcloud/qgsremotecopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
+      pointcloud/qgscachedpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/copc/qgscopcprovider.h
@@ -2152,6 +2153,7 @@ if (WITH_COPC)
       pointcloud/qgscopcpointcloudindex.h
       pointcloud/qgsremotecopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
+      pointcloud/qgscachedpointcloudblockrequest.h
   )
 
   add_definitions( -DWITH_COPC )
