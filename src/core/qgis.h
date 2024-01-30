@@ -332,7 +332,7 @@ class CORE_EXPORT Qgis
      * \brief Enumeration of feature count states
      * \since QGIS 3.20
      */
-    enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int
+    enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int SIP_ENUM_BASETYPE(IntEnum)
       {
       Uncounted = -2, //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count

@@ -225,7 +225,7 @@ The development version
       NotForThisSession,
     };
 
-    enum class FeatureCountState /BaseType=IntFlag/
+    enum class FeatureCountState /BaseType=IntEnum/
       {
       Uncounted,
       UnknownCount,
