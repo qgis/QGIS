@@ -4547,7 +4547,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
       break;
     }
 
-    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::MapRotation ) )
+    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( static_cast<int>( QgsLayoutObject::DataDefinedProperty::MapRotation ) ) )
     {
       allowGeoPdfExport = false;
       dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );

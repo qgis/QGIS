@@ -2881,26 +2881,26 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
             {
               int xPosColumn = diagramSettingsElem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
               if ( xPosColumn >= 0 && xPosColumn < mFields.count() )
-                ddp.setProperty( QgsDiagramLayerSettings::PositionX, QgsProperty::fromField( mFields.at( xPosColumn ).name(), true ) );
+                ddp.setProperty( static_cast< int >( QgsDiagramLayerSettings::Property::PositionX ), QgsProperty::fromField( mFields.at( xPosColumn ).name(), true ) );
             }
             if ( oldYPos )
             {
               int yPosColumn = diagramSettingsElem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
               if ( yPosColumn >= 0 && yPosColumn < mFields.count() )
-                ddp.setProperty( QgsDiagramLayerSettings::PositionY, QgsProperty::fromField( mFields.at( yPosColumn ).name(), true ) );
+                ddp.setProperty( static_cast< int >( QgsDiagramLayerSettings::Property::PositionY ), QgsProperty::fromField( mFields.at( yPosColumn ).name(), true ) );
             }
             if ( oldShow )
             {
               int showColumn = diagramSettingsElem.attribute( QStringLiteral( "showColumn" ) ).toInt();
               if ( showColumn >= 0 && showColumn < mFields.count() )
-                ddp.setProperty( QgsDiagramLayerSettings::Show, QgsProperty::fromField( mFields.at( showColumn ).name(), true ) );
+                ddp.setProperty( static_cast< int >( QgsDiagramLayerSettings::Property::Show ), QgsProperty::fromField( mFields.at( showColumn ).name(), true ) );
             }
             QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( QStringLiteral( "properties" ) );
             QgsPropertiesDefinition defs = QgsPropertiesDefinition
             {
-              { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
-              { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
-              { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+              { static_cast< int >( QgsDiagramLayerSettings::Property::PositionX ), QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+              { static_cast< int >( QgsDiagramLayerSettings::Property::PositionY ), QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+              { static_cast< int >( QgsDiagramLayerSettings::Property::Show ), QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
             };
             ddp.writeXml( propertiesElem, defs );
             diagramSettingsElem.appendChild( propertiesElem );

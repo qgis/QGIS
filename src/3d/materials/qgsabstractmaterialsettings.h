@@ -193,7 +193,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual void addParametersToEffect( Qt3DRender::QEffect *effect ) const = 0;
 
     //! Data definable properties.
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       Diffuse, //!< Diffuse color
       Ambient, //!< Ambient color (phong material)

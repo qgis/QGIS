@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
-    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
     QgsLayoutItem::Flags itemFlags() const override;
     bool requiresRasterization() const override;
     bool containsAdvancedEffects() const override;

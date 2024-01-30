@@ -173,15 +173,15 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   }
 
   const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
-  const bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
-  const bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
+  const bool hasDDHeight = ddp.isActive( static_cast< int >( QgsAbstract3DSymbol::Property::Height ) );
+  const bool hasDDExtrusion = ddp.isActive( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ) );
 
   float offset = mSymbol->offset();
   float extrusionHeight = mSymbol->extrusionHeight();
   if ( hasDDHeight )
-    offset = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyHeight, context.expressionContext(), offset ) );
+    offset = static_cast<float>( ddp.valueAsDouble( static_cast< int >( QgsAbstract3DSymbol::Property::Height ), context.expressionContext(), offset ) );
   if ( hasDDExtrusion )
-    extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyExtrusionHeight, context.expressionContext(), extrusionHeight );
+    extrusionHeight = ddp.valueAsDouble( static_cast< int >( QgsAbstract3DSymbol::Property::ExtrusionHeight ), context.expressionContext(), extrusionHeight );
 
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {

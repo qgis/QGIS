@@ -323,10 +323,10 @@ void QgsVectorLayerLabelProvider::drawLabelBackground( QgsRenderContext &context
 void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
   bool enabled = mSettings.callout()->enabled();
-  if ( mSettings.dataDefinedProperties().isActive( QgsPalLayerSettings::CalloutDraw ) )
+  if ( mSettings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::CalloutDraw ) ) )
   {
     context.expressionContext().setOriginalValueVariable( enabled );
-    enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), enabled );
+    enabled = mSettings.dataDefinedProperties().valueAsBool( static_cast< int >( QgsPalLayerSettings::Property::CalloutDraw ), context.expressionContext(), enabled );
   }
   if ( enabled )
   {

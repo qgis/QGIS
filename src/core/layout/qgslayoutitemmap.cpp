@@ -602,7 +602,6 @@ void QgsLayoutItemMap::setMapRotation( double rotation )
 double QgsLayoutItemMap::mapRotation( QgsLayoutObject::PropertyValueType valueType ) const
 {
   return valueType == QgsLayoutObject::EvaluatedValue ? mEvaluatedMapRotation : mMapRotation;
-
 }
 
 void QgsLayoutItemMap::setAtlasDriven( bool enabled )
@@ -628,7 +627,7 @@ double QgsLayoutItemMap::atlasMargin( const QgsLayoutObject::PropertyValueType v
     QgsExpressionContext context = createExpressionContext();
 
     bool ok = false;
-    double ddMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapAtlasMargin, context, 0.0, &ok );
+    double ddMargin = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapAtlasMargin ), context, 0.0, &ok );
     if ( ok )
     {
       //divide by 100 to convert to 0 -> 1.0 range
@@ -2082,10 +2081,10 @@ void QgsLayoutItemMap::updateBoundingRect()
 void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
   QgsExpressionContext context = createExpressionContext();
-  if ( property == QgsLayoutObject::MapCrs || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::MapCrs || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     bool ok;
-    const QString crsVar = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapCrs, context, QString(), &ok );
+    const QString crsVar = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapCrs ), context, QString(), &ok );
     if ( ok && QgsCoordinateReferenceSystem( crsVar ).isValid() )
     {
       const QgsCoordinateReferenceSystem newCrs( crsVar );
@@ -2096,11 +2095,11 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     }
   }
   //updates data defined properties and redraws item to match
-  if ( property == QgsLayoutObject::MapRotation || property == QgsLayoutObject::MapScale ||
-       property == QgsLayoutObject::MapXMin || property == QgsLayoutObject::MapYMin ||
-       property == QgsLayoutObject::MapXMax || property == QgsLayoutObject::MapYMax ||
-       property == QgsLayoutObject::MapAtlasMargin ||
-       property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::MapRotation || property == QgsLayoutObject::DataDefinedProperty::MapScale ||
+       property == QgsLayoutObject::DataDefinedProperty::MapXMin || property == QgsLayoutObject::DataDefinedProperty::MapYMin ||
+       property == QgsLayoutObject::DataDefinedProperty::MapXMax || property == QgsLayoutObject::DataDefinedProperty::MapYMax ||
+       property == QgsLayoutObject::DataDefinedProperty::MapAtlasMargin ||
+       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     QgsRectangle beforeExtent = mExtent;
     refreshMapExtents( &context );
@@ -2110,27 +2109,27 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
       emit extentChanged();
     }
   }
-  if ( property == QgsLayoutObject::MapLabelMargin || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::MapLabelMargin || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshLabelMargin( false );
   }
-  if ( property == QgsLayoutObject::MapStylePreset || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::MapStylePreset || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     const QString previousTheme = mLastEvaluatedThemeName.isEmpty() ? mFollowVisibilityPresetName : mLastEvaluatedThemeName;
-    mLastEvaluatedThemeName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, mFollowVisibilityPresetName );
+    mLastEvaluatedThemeName = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapStylePreset ), context, mFollowVisibilityPresetName );
     if ( mLastEvaluatedThemeName != previousTheme )
       emit themeChanged( mLastEvaluatedThemeName );
   }
 
-  if ( isTemporal() && ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties ) )
+  if ( isTemporal() && ( property == QgsLayoutObject::DataDefinedProperty::StartDateTime || property == QgsLayoutObject::DataDefinedProperty::EndDateTime || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
   {
     QDateTime begin = temporalRange().begin();
     QDateTime end = temporalRange().end();
 
-    if ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::AllProperties )
-      begin = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::StartDateTime, context, temporalRange().begin() );
-    if ( property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties )
-      end = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::EndDateTime, context, temporalRange().end() );
+    if ( property == QgsLayoutObject::DataDefinedProperty::StartDateTime || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+      begin = mDataDefinedProperties.valueAsDateTime( static_cast< int >( QgsLayoutObject::DataDefinedProperty::StartDateTime ), context, temporalRange().begin() );
+    if ( property == QgsLayoutObject::DataDefinedProperty::EndDateTime || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+      end = mDataDefinedProperties.valueAsDateTime( static_cast< int >( QgsLayoutObject::DataDefinedProperty::EndDateTime ), context, temporalRange().end() );
 
     setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
@@ -2338,7 +2337,7 @@ QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) c
   {
     presetName = mFollowVisibilityPresetName;
     // preset name can be overridden by data-defined one
-    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
+    presetName = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapStylePreset ), context, presetName );
   }
   else if ( !mExportThemes.empty() && mExportThemeIt != mExportThemes.end() )
     presetName = *mExportThemeIt;
@@ -2372,7 +2371,7 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   bool ok = false;
-  QString ddLayers = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapLayers, *evalContext, QString(), &ok );
+  QString ddLayers = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapLayers ), *evalContext, QString(), &ok );
   if ( ok )
   {
     renderLayers.clear();
@@ -2432,7 +2431,7 @@ QMap<QString, QString> QgsLayoutItemMap::layerStyleOverridesToRender( const QgsE
   {
     QString presetName = mFollowVisibilityPresetName;
     // data defined preset name?
-    presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
+    presetName = mDataDefinedProperties.valueAsString( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapStylePreset ), context, presetName );
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
     {
       if ( presetName.isEmpty() || presetName != mCachedLayerStyleOverridesPresetName )
@@ -2696,25 +2695,25 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   double maxXD = 0;
   double maxYD = 0;
 
-  minXD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapXMin, *evalContext, 0.0, &ok );
+  minXD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapXMin ), *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdXMin = true;
     newExtent.setXMinimum( minXD );
   }
-  minYD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapYMin, *evalContext, 0.0, &ok );
+  minYD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapYMin ), *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdYMin = true;
     newExtent.setYMinimum( minYD );
   }
-  maxXD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapXMax, *evalContext, 0.0, &ok );
+  maxXD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapXMax ), *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdXMax = true;
     newExtent.setXMaximum( maxXD );
   }
-  maxYD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapYMax, *evalContext, 0.0, &ok );
+  maxYD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapYMax ), *evalContext, 0.0, &ok );
   if ( ok )
   {
     useDdYMax = true;
@@ -2753,7 +2752,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  double scaleD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapScale, *evalContext, 0.0, &ok );
+  double scaleD = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapScale ), *evalContext, 0.0, &ok );
   if ( ok )
   {
     setScale( scaleD, false );
@@ -2799,7 +2798,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  mapRotation = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapRotation, *evalContext, mapRotation );
+  mapRotation = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapRotation ), *evalContext, mapRotation );
 
   if ( !qgsDoubleNear( mEvaluatedMapRotation, mapRotation ) )
   {
@@ -2811,7 +2810,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
 void QgsLayoutItemMap::refreshLabelMargin( bool updateItem )
 {
   //data defined label margin set?
-  double labelMargin = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapLabelMargin, createExpressionContext(), mLabelMargin.length() );
+  double labelMargin = mDataDefinedProperties.valueAsDouble( static_cast< int >( QgsLayoutObject::DataDefinedProperty::MapLabelMargin ), createExpressionContext(), mLabelMargin.length() );
   mEvaluatedLabelMargin.setLength( labelMargin );
   mEvaluatedLabelMargin.setUnits( mLabelMargin.units() );
 

@@ -371,9 +371,9 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
       quadrantOffset = mCurrentLabel.settings.quadOffset;
 
     // quadrant offest DD defined
-    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::OffsetQuad ) )
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::OffsetQuad ) ) )
     {
-      QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::OffsetQuad, mCurrentLabel.settings, f, static_cast< int >( quadrantOffset ) );
+      QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::Property::OffsetQuad, mCurrentLabel.settings, f, static_cast< int >( quadrantOffset ) );
       if ( !QgsVariantUtils::isNull( exprVal ) )
       {
         bool ok;
@@ -418,13 +418,13 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
   }
 
   // quadrant defined by DD alignment
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Hali ) ||
-       mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Vali ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::Hali ) ) ||
+       mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::Vali ) ) )
   {
     QString hali = QStringLiteral( "Left" );
     QString vali = QStringLiteral( "Bottom" );
-    hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Hali, mCurrentLabel.settings, f, hali ).toString();
-    vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Vali, mCurrentLabel.settings, f, vali ).toString();
+    hali = evaluateDataDefinedProperty( QgsPalLayerSettings::Property::Hali, mCurrentLabel.settings, f, hali ).toString();
+    vali = evaluateDataDefinedProperty( QgsPalLayerSettings::Property::Vali, mCurrentLabel.settings, f, vali ).toString();
 
     if ( hali.compare( QLatin1String( "Left" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -499,7 +499,7 @@ QFont QgsMapToolLabel::currentLabelFont()
     if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) ).nextFeature( f ) )
     {
       //size
-      int sizeIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Size, mCurrentLabel.settings, vlayer );
+      int sizeIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Property::Size, mCurrentLabel.settings, vlayer );
       if ( sizeIndx != -1 )
       {
         font.setPixelSize( QgsTextRenderer::sizeToPixel( f.attribute( sizeIndx ).toDouble(),
@@ -508,35 +508,35 @@ QFont QgsMapToolLabel::currentLabelFont()
       }
 
       //family
-      int fmIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Family, labelSettings, vlayer );
+      int fmIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Property::Family, labelSettings, vlayer );
       if ( fmIndx != -1 )
       {
         QgsFontUtils::setFontFamily( font, f.attribute( fmIndx ).toString() );
       }
 
       //underline
-      int ulIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Underline, labelSettings, vlayer );
+      int ulIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Property::Underline, labelSettings, vlayer );
       if ( ulIndx != -1 )
       {
         font.setUnderline( f.attribute( ulIndx ).toBool() );
       }
 
       //strikeout
-      int soIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Strikeout, labelSettings, vlayer );
+      int soIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Property::Strikeout, labelSettings, vlayer );
       if ( soIndx != -1 )
       {
         font.setStrikeOut( f.attribute( soIndx ).toBool() );
       }
 
       //bold
-      int boIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Bold, labelSettings, vlayer );
+      int boIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Property::Bold, labelSettings, vlayer );
       if ( boIndx != -1 )
       {
         font.setBold( f.attribute( boIndx ).toBool() );
       }
 
       //italic
-      int itIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Italic, labelSettings, vlayer );
+      int itIndx = dataDefinedColumnIndex( QgsPalLayerSettings::Property::Italic, labelSettings, vlayer );
       if ( itIndx != -1 )
       {
         font.setItalic( f.attribute( itIndx ).toBool() );
@@ -677,7 +677,7 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
 }
 
 #if 0
-bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProperties p, QgsVectorLayer *vlayer ) const
+bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::Property::DataDefinedProperties p, QgsVectorLayer *vlayer ) const
 {
   const auto constSubProviders = vlayer->labeling()->subProviders();
   for ( const QString &providerId : constSubProviders )
@@ -696,10 +696,10 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer, PropertyStatus &status ) const
 {
   status = PropertyStatus::DoesNotExist;
-  if ( !labelSettings.dataDefinedProperties().isActive( p ) )
+  if ( !labelSettings.dataDefinedProperties().isActive( static_cast< int >( p ) ) )
     return QString();
 
-  const QgsProperty property = labelSettings.dataDefinedProperties().property( p );
+  const QgsProperty property = labelSettings.dataDefinedProperties().property( static_cast< int >( p ) );
 
   switch ( property.propertyType() )
   {
@@ -784,7 +784,7 @@ QVariant QgsMapToolLabel::evaluateDataDefinedProperty( QgsPalLayerSettings::Prop
   QgsExpressionContext context = mCanvas->mapSettings().expressionContext();
   context.setFeature( feature );
   context.setFields( feature.fields() );
-  return labelSettings.dataDefinedProperties().value( property, context, defaultValue );
+  return labelSettings.dataDefinedProperties().value( static_cast< int >( property ), context, defaultValue );
 }
 
 bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol, int &pointCol ) const
@@ -822,7 +822,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
   {
     QgsAttributes attributes = f.attributes();
 
-    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+    if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionPoint ) ) )
     {
       if ( pointCol >= 0
            && !QgsVariantUtils::isNull( attributes.at( pointCol ) ) )
@@ -885,7 +885,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
 
   QgsAttributes attributes = f.attributes();
 
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ) ) )
   {
     if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorPercentCol ) ) )
     {
@@ -893,7 +893,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
     }
   }
 
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorClipping ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ) ) )
   {
     if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorClippingCol ) ) )
     {
@@ -905,7 +905,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
     }
   }
 
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorType ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ) ) )
   {
     if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorTypeCol ) ) )
     {
@@ -917,7 +917,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
     }
   }
 
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorTextPoint ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ) ) )
   {
     if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorTextPointCol ) ) )
     {
@@ -935,7 +935,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
 QgsMapToolLabel::PropertyStatus QgsMapToolLabel::labelRotatableStatus( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
   PropertyStatus status = PropertyStatus::DoesNotExist;
-  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer, status );
+  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LabelRotation, settings, layer, status );
   if ( status == PropertyStatus::CurrentExpressionInvalid )
     return status;
 
@@ -983,10 +983,10 @@ bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &r
 
 bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, const QVariant &y )
 {
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionPoint ) ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
     int pointCol = mCurrentLabel.layer->fields().lookupField( pointColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, pointCol, QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPoint( x.toDouble(), y.toDouble() ) ), mCurrentLabel.layer->crs() ) ) ) )
@@ -995,8 +995,8 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
   else
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
-    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, mCurrentLabel.settings, mCurrentLabel.layer, status );
     int xCol = mCurrentLabel.layer->fields().lookupField( xColName );
     int yCol = mCurrentLabel.layer->fields().lookupField( yColName );
 
@@ -1010,29 +1010,29 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedPosition( const QVariant &x, 
 
 bool QgsMapToolLabel::changeCurrentLabelDataDefinedLineAnchorPercent( const QVariant &lineAnchorPercent )
 {
-  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
+  if ( mCurrentLabel.settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ) ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    const QString lineAnchorPercentColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorPercent, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const QString lineAnchorPercentColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorPercent, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorPercentCol = mCurrentLabel.layer->fields().lookupField( lineAnchorPercentColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorPercentCol, lineAnchorPercent ) )
       return false;
 
     // Also set the other anchor properties
-    const QString lineAnchorClippingColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorClipping, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const QString lineAnchorClippingColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorClipping, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorClippingCol = mCurrentLabel.layer->fields().lookupField( lineAnchorClippingColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorClippingCol, QStringLiteral( "entire" ) ) )
       return false;
 
-    const QString lineAnchorTypeColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorType, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const QString lineAnchorTypeColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorType, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorTypeCol = mCurrentLabel.layer->fields().lookupField( lineAnchorTypeColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTypeCol, QStringLiteral( "strict" ) ) )
       return false;
 
-    const QString lineAnchorTextPointColName = dataDefinedColumnName( QgsPalLayerSettings::LineAnchorTextPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const QString lineAnchorTextPointColName = dataDefinedColumnName( QgsPalLayerSettings::Property::LineAnchorTextPoint, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorTextPointCol = mCurrentLabel.layer->fields().lookupField( lineAnchorTextPointColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorTextPointCol, QStringLiteral( "start" ) ) )
@@ -1042,7 +1042,7 @@ bool QgsMapToolLabel::changeCurrentLabelDataDefinedLineAnchorPercent( const QVar
   else
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    const QString lineAnchorPercentColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
+    const QString lineAnchorPercentColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, mCurrentLabel.settings, mCurrentLabel.layer, status );
     const int lineAnchorPercentCol = mCurrentLabel.layer->fields().lookupField( lineAnchorPercentColName );
 
     if ( !mCurrentLabel.layer->changeAttributeValue( mCurrentLabel.pos.featureId, lineAnchorPercentCol, lineAnchorPercent ) )
@@ -1090,7 +1090,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
     if ( dls )
     {
       xCol = -1;
-      if ( QgsProperty ddX = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionX ) )
+      if ( QgsProperty ddX = dls->dataDefinedProperties().property( static_cast< int >( QgsDiagramLayerSettings::Property::PositionX ) ) )
       {
         if ( ddX.propertyType() == Qgis::PropertyType::Field && ddX.isActive() )
         {
@@ -1098,7 +1098,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
         }
       }
       yCol = -1;
-      if ( QgsProperty ddY = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::PositionY ) )
+      if ( QgsProperty ddY = dls->dataDefinedProperties().property( static_cast< int >( QgsDiagramLayerSettings::Property::PositionY ) ) )
       {
         if ( ddY.propertyType() == Qgis::PropertyType::Field && ddY.isActive() )
         {
@@ -1122,7 +1122,7 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
   PropertyStatus status = PropertyStatus::DoesNotExist;
   for ( const QString &providerId : constSubProviders )
   {
-    QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
+    QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Property::Show,
                         vlayer->labeling()->settings( providerId ), vlayer, status );
     showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol != -1 )
@@ -1184,21 +1184,21 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   yCol = -1;
   pointCol = -1;
 
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
+  if ( settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionPoint ) ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer, status );
+    QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionPoint, settings, vlayer, status );
     pointCol = vlayer->fields().lookupField( pointColName );
     if ( pointCol >= 0 )
       return true;
   }
 
-  if ( settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionX )
-       && settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionY ) )
+  if ( settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionX ) )
+       && settings.dataDefinedProperties().isActive( static_cast< int >( QgsPalLayerSettings::Property::PositionY ) ) )
   {
     PropertyStatus status = PropertyStatus::DoesNotExist;
-    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer, status );
-    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer, status );
+    QString xColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionX, settings, vlayer, status );
+    QString yColName = dataDefinedColumnName( QgsPalLayerSettings::Property::PositionY, settings, vlayer, status );
     xCol = vlayer->fields().lookupField( xColName );
     yCol = vlayer->fields().lookupField( yColName );
     if ( xCol >= 0 || yCol >= 0 )
@@ -1213,7 +1213,7 @@ bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const Q
 
   auto checkProperty = [ & ]( const QgsPalLayerSettings::Property & property, int &col ) -> bool
   {
-    if ( settings.dataDefinedProperties().isActive( property ) )
+    if ( settings.dataDefinedProperties().isActive( static_cast< int >( property ) ) )
     {
       PropertyStatus status = PropertyStatus::DoesNotExist;
       QString colName = dataDefinedColumnName( property, settings, vlayer, status );
@@ -1226,10 +1226,10 @@ bool QgsMapToolLabel::labelAnchorPercentMovable( QgsVectorLayer *vlayer, const Q
     }
   };
 
-  return checkProperty( QgsPalLayerSettings::LineAnchorPercent, lineAnchorPercentCol )
-         && checkProperty( QgsPalLayerSettings::LineAnchorClipping, lineAnchorClippingCol )
-         && checkProperty( QgsPalLayerSettings::LineAnchorType, lineAnchorTypeCol )
-         && checkProperty( QgsPalLayerSettings::LineAnchorTextPoint, lineAnchorTextPointCol );
+  return checkProperty( QgsPalLayerSettings::Property::LineAnchorPercent, lineAnchorPercentCol )
+         && checkProperty( QgsPalLayerSettings::Property::LineAnchorClipping, lineAnchorClippingCol )
+         && checkProperty( QgsPalLayerSettings::Property::LineAnchorType, lineAnchorTypeCol )
+         && checkProperty( QgsPalLayerSettings::Property::LineAnchorTextPoint, lineAnchorTextPointCol );
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
@@ -1240,7 +1240,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
   {
     if ( const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings() )
     {
-      if ( QgsProperty ddShow = dls->dataDefinedProperties().property( QgsDiagramLayerSettings::Show ) )
+      if ( QgsProperty ddShow = dls->dataDefinedProperties().property( static_cast< int >( QgsDiagramLayerSettings::Property::Show ) ) )
       {
         if ( ddShow.propertyType() == Qgis::PropertyType::Field && ddShow.isActive() )
         {
@@ -1309,7 +1309,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     int index = -1;
 
     // always use the default activated property
-    QgsProperty prop = details.settings.dataDefinedProperties().property( p );
+    QgsProperty prop = details.settings.dataDefinedProperties().property( static_cast< int >( p ) );
     if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {
       index = vlayer->fields().lookupField( prop.field() );
@@ -1332,7 +1332,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
       int index = -1;
 
       // always use the default activated property
-      QgsProperty prop = details.settings.dataDefinedProperties().property( p );
+      QgsProperty prop = details.settings.dataDefinedProperties().property( static_cast< int >( p ) );
       if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
       {
         index = vlayer->fields().lookupField( prop.field() );
@@ -1385,7 +1385,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     int index = -1;
 
     // always use the default activated property
-    QgsProperty prop = vlayer->diagramLayerSettings()->dataDefinedProperties().property( p );
+    QgsProperty prop = vlayer->diagramLayerSettings()->dataDefinedProperties().property( static_cast< int >( p ) );
     if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {
       index = vlayer->fields().lookupField( prop.field() );
@@ -1434,7 +1434,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCal
     int index = -1;
 
     // always use the default activated property
-    QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout() ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( p ) :
+    QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout() ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( static_cast< int >( p ) ) :
                        QgsProperty();
     if ( prop.propertyType() == Qgis::PropertyType::Field && prop.isActive() )
     {

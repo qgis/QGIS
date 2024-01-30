@@ -511,9 +511,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
   ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
   specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
-  propertyColection.setProperty( QgsAbstractMaterialSettings::Diffuse, diffuseColor );
-  propertyColection.setProperty( QgsAbstractMaterialSettings::Ambient, ambientColor );
-  propertyColection.setProperty( QgsAbstractMaterialSettings::Specular, specularColor );
+  propertyColection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Diffuse ), diffuseColor );
+  propertyColection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), ambientColor );
+  propertyColection.setProperty( static_cast< int >( QgsAbstractMaterialSettings::Property::Specular ), specularColor );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setDataDefinedProperties( propertyColection );
   materialSettings.setAmbient( Qt::red );
@@ -829,7 +829,7 @@ void TestQgs3DRendering::testLineRenderingDataDefinedColors()
   QgsSimpleLineMaterialSettings matSettings;
   matSettings.setAmbient( Qt::red );
   QgsPropertyCollection properties;
-  properties.setProperty( QgsSimpleLineMaterialSettings::Ambient, QgsProperty::fromExpression( QStringLiteral( "case when \"category\" = 'blue' then '#2233cc' when \"category\" = 'green' then '#33ff55' end" ) ) );
+  properties.setProperty( static_cast< int >( QgsSimpleLineMaterialSettings::Property::Ambient ), QgsProperty::fromExpression( QStringLiteral( "case when \"category\" = 'blue' then '#2233cc' when \"category\" = 'green' then '#33ff55' end" ) ) );
   matSettings.setDataDefinedProperties( properties );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );

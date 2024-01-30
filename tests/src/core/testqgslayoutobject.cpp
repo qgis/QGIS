@@ -169,7 +169,7 @@ void TestQgsLayoutObject::writeRetrieveDDProperty()
   QgsLayout l( &p );
 
   QgsLayoutObject *object = new QgsLayoutObject( &l );
-  object->dataDefinedProperties().setProperty( QgsLayoutObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
+  object->dataDefinedProperties().setProperty( static_cast< int >( QgsLayoutObject::DataDefinedProperty::TestProperty ), QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
 
   //test writing object with dd settings
   QDomImplementation DomImplementation;
@@ -189,11 +189,11 @@ void TestQgsLayoutObject::writeRetrieveDDProperty()
   QVERIFY( readObject->readObjectPropertiesFromElement( rootNode, doc, QgsReadWriteContext() ) );
 
   //test getting not set dd from restored object
-  QgsProperty dd = readObject->dataDefinedProperties().property( QgsLayoutObject::BlendMode );
+  QgsProperty dd = readObject->dataDefinedProperties().property( static_cast< int >( QgsLayoutObject::DataDefinedProperty::BlendMode ) );
   QVERIFY( !dd );
 
   //test getting good property
-  dd = readObject->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
+  dd = readObject->dataDefinedProperties().property( static_cast< int >( QgsLayoutObject::DataDefinedProperty::TestProperty ) );
   QVERIFY( dd );
   QVERIFY( dd.isActive() );
   QCOMPARE( dd.propertyType(), Qgis::PropertyType::Expression );

@@ -111,7 +111,7 @@ A base class for objects which belong to a layout.
 %End
   public:
 
-    enum DataDefinedProperty
+    enum class DataDefinedProperty
     {
       NoProperty,
       AllProperties,

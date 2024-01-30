@@ -141,7 +141,7 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
     //! Data definable properties.
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       // text style
       Size = 0, //!< Label size

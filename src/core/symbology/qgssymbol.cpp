@@ -943,7 +943,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   const bool prevForceVector = context->forceVectorOutput();
   context->setForceVectorOutput( true );
 
-  const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, *expressionContext, mOpacity ) : mOpacity;
+  const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( static_cast< int >( QgsSymbol::Property::Opacity ), *expressionContext, mOpacity ) : mOpacity;
 
   QgsSymbolRenderContext symbolContext( *context, Qgis::RenderUnit::Unknown, opacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
@@ -1181,7 +1181,7 @@ void QgsSymbol::renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext 
 {
   Q_ASSERT( layer->type() == Qgis::SymbolType::Hybrid );
 
-  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::PropertyLayerEnabled, context.renderContext().expressionContext(), true ) )
+  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( static_cast< int >( QgsSymbolLayer::Property::LayerEnabled ), context.renderContext().expressionContext(), true ) )
     return;
 
   QgsGeometryGeneratorSymbolLayer *generatorLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( layer );
@@ -1217,7 +1217,7 @@ QSet<QString> QgsSymbol::usedAttributes( const QgsRenderContext &context ) const
 
 void QgsSymbol::setDataDefinedProperty( QgsSymbol::Property key, const QgsProperty &property )
 {
-  mDataDefinedProperties.setProperty( key, property );
+  mDataDefinedProperties.setProperty( static_cast< int >( key ), property );
 }
 
 bool QgsSymbol::hasDataDefinedProperties() const
@@ -1858,7 +1858,7 @@ void QgsSymbol::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsSymbol::PropertyOpacity, QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
+    { static_cast< int >( QgsSymbol::Property::Opacity ), QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
   };
 }
 

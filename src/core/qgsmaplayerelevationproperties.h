@@ -88,7 +88,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      * Data definable properties.
      * \since QGIS 3.26
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM : int
     {
       ZOffset, //! Z offset
       ExtrusionHeight, //!< Extrusion height

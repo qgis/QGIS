@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     /**
      * Data defined properties for different item types
      */
-    enum DataDefinedProperty
+    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM : int
     {
       NoProperty = 0, //!< No property
       AllProperties, //!< All properties for item

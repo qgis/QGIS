@@ -48,7 +48,7 @@ changed status of the widget will be saved.
 %End
   public:
 
-    enum Property
+    enum class Property /BaseType=IntFlag/
     {
       RootPath,
       DocumentViewerContent,

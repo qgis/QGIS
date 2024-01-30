@@ -597,7 +597,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void refresh() override;
     void invalidateCache() override;
-    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties ) override;
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;

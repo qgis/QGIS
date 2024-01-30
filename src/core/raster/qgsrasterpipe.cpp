@@ -423,14 +423,14 @@ void QgsRasterPipe::evaluateDataDefinedProperties( QgsExpressionContext &context
   if ( !mDataDefinedProperties.hasActiveProperties() )
     return;
 
-  if ( mDataDefinedProperties.isActive( RendererOpacity ) )
+  if ( mDataDefinedProperties.isActive( static_cast< int >( Property::RendererOpacity ) ) )
   {
     if ( QgsRasterRenderer *r = renderer() )
     {
       const double prevOpacity = r->opacity();
       context.setOriginalValueVariable( prevOpacity * 100 );
       bool ok = false;
-      const double opacity = mDataDefinedProperties.valueAsDouble( RendererOpacity, context, prevOpacity, &ok ) / 100;
+      const double opacity = mDataDefinedProperties.valueAsDouble( static_cast< int >( Property::RendererOpacity ), context, prevOpacity, &ok ) / 100;
       if ( ok )
       {
         r->setOpacity( opacity );
@@ -447,7 +447,7 @@ void QgsRasterPipe::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsRasterPipe::RendererOpacity, QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { static_cast< int >( QgsRasterPipe::Property::RendererOpacity ), QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
   };
 }
 
