@@ -417,6 +417,7 @@ Returns a reference to a matching property from the collection, if one exists.
 .. seealso:: :py:func:`hasProperty`
 %End
 
+
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const final;
 
 

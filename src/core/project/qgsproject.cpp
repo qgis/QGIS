@@ -4686,7 +4686,7 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   static QgsPropertiesDefinition sPropertyDefinitions
   {
     {
-      QgsProject::DataDefinedServerProperty::WMSOnlineResource,
+      static_cast< int >( QgsProject::DataDefinedServerProperty::WMSOnlineResource ),
       QgsPropertyDefinition( "WMSOnlineResource", QObject::tr( "WMS Online Resource" ), QgsPropertyDefinition::String )
     },
   };

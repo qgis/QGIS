@@ -59,13 +59,13 @@ class QgsEditFormConfigPrivate : public QSharedData
       static QgsPropertiesDefinition sPropertyDefinitions
       {
         {
-          QgsEditFormConfig::DataDefinedProperty::Alias,
+          static_cast< int >( QgsEditFormConfig::DataDefinedProperty::Alias ),
           QgsPropertyDefinition( "dataDefinedAlias",
                                  QObject::tr( "Alias" ),
                                  QgsPropertyDefinition::String )
         },
         {
-          QgsEditFormConfig::DataDefinedProperty::Editable,
+          static_cast< int >( QgsEditFormConfig::DataDefinedProperty::Editable ),
           QgsPropertyDefinition( "dataDefinedEditable",
                                  QObject::tr( "Editable" ),
                                  QgsPropertyDefinition::Boolean )
