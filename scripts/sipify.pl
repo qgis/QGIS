@@ -1164,14 +1164,19 @@ while ($LINE_IDX < $LINE_COUNT){
 
         $LINE =~ s/\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)//;
     }
-    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?<oneliner>.*)$/ ){
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?:\s*SIP_ENUM_BASETYPE\s*\(\s*(?<py_enum_type>\w+)\s*\))?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         my $enum_qualname = $+{enum_qualname};
+        my $py_enum_type = $+{py_enum_type};
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
         if ( defined $+{enum_type} and $+{enum_type} eq "int" ) {
           push @ENUM_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
           if ( $is_qt6 eq 1 ) {
-            $enum_decl .= " /BaseType=IntFlag/"
+            if (defined $py_enum_type) {
+              $enum_decl .= " /BaseType=$py_enum_type/"
+            } else {
+              $enum_decl .= " /BaseType=IntFlag/"
+            }
           }
         }
         elsif (defined $+{isclass})
