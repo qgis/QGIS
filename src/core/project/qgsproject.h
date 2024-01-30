@@ -135,7 +135,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.14
      */
-    enum DataDefinedServerProperty
+    enum class DataDefinedServerProperty SIP_MONKEYPATCH_SCOPEENUM : int
     {
       NoProperty = 0, //!< No property
       AllProperties = 1, //!< All properties for item
