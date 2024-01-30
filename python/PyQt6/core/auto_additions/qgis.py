@@ -394,17 +394,6 @@ Qgis.NotForThisSession.__doc__ = "Macros will not be run for this session"
 Qgis.PythonMacroMode.__doc__ = "Authorisation to run Python Macros\n\n.. versionadded:: 3.10\n\n" + '* ``Never``: ' + Qgis.PythonMacroMode.Never.__doc__ + '\n' + '* ``Ask``: ' + Qgis.PythonMacroMode.Ask.__doc__ + '\n' + '* ``SessionOnly``: ' + Qgis.PythonMacroMode.SessionOnly.__doc__ + '\n' + '* ``Always``: ' + Qgis.PythonMacroMode.Always.__doc__ + '\n' + '* ``NotForThisSession``: ' + Qgis.PythonMacroMode.NotForThisSession.__doc__
 # --
 Qgis.PythonMacroMode.baseClass = Qgis
-QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
-# monkey patching scoped based enum
-QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted
-QgsVectorDataProvider.Uncounted.is_monkey_patched = True
-QgsVectorDataProvider.Uncounted.__doc__ = "Feature count not yet computed"
-QgsVectorDataProvider.UnknownCount = Qgis.FeatureCountState.UnknownCount
-QgsVectorDataProvider.UnknownCount.is_monkey_patched = True
-QgsVectorDataProvider.UnknownCount.__doc__ = "Provider returned an unknown feature count"
-Qgis.FeatureCountState.__doc__ = "Enumeration of feature count states\n\n.. versionadded:: 3.20\n\n" + '* ``Uncounted``: ' + Qgis.FeatureCountState.Uncounted.__doc__ + '\n' + '* ``UnknownCount``: ' + Qgis.FeatureCountState.UnknownCount.__doc__
-# --
-Qgis.FeatureCountState.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VectorDataProviderAttributeEditCapability.EditAlias.__doc__ = "Allows editing aliases"
 Qgis.VectorDataProviderAttributeEditCapability.EditComment.__doc__ = "Allows editing comments"

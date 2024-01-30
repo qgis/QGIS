@@ -24,6 +24,8 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 from qgis.PyQt.QtCore import NULL
 from qgis._core import *
 
+from enum import IntEnum
+
 @MONKEYPATCH_INJECTIONS@
 
 from .additions.edit import edit, QgsEditError
@@ -159,3 +161,24 @@ PROJECT_SCALES = Qgis.defaultProjectScales()
 GEOPROJ4 = geoProj4()
 GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
 GEO_NONE = geoNone()
+
+# manually patch this in -- it's not referenced anywhere in the sip bindings
+# and we need it to have negative values, which aren't supported by sip
+class _FeatureCountState(IntEnum):
+    Uncounted = -2
+    UnknownCount = -1
+
+
+Qgis.FeatureCountState = _FeatureCountState
+Qgis.FeatureCountState.Uncounted.__doc__ = "Feature count not yet computed"
+Qgis.FeatureCountState.UnknownCount.__doc__ = "Provider returned an unknown feature count"
+QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
+QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted
+QgsVectorDataProvider.Uncounted.is_monkey_patched = True
+QgsVectorDataProvider.Uncounted.__doc__ = "Feature count not yet computed"
+QgsVectorDataProvider.UnknownCount = Qgis.FeatureCountState.UnknownCount
+QgsVectorDataProvider.UnknownCount.is_monkey_patched = True
+QgsVectorDataProvider.UnknownCount.__doc__ = "Provider returned an unknown feature count"
+Qgis.FeatureCountState.__doc__ = "Enumeration of feature count states\n\n.. versionadded:: 3.20\n\n" + '* ``Uncounted``: ' + Qgis.FeatureCountState.Uncounted.__doc__ + '\n' + '* ``UnknownCount``: ' + Qgis.FeatureCountState.UnknownCount.__doc__
+Qgis.FeatureCountState.baseClass = Qgis
+

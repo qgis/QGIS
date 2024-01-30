@@ -327,6 +327,9 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( PythonMacroMode )
 
+    // this is manually patched in Qt6 builds to allow for negative values
+#ifdef SIP_PYQT5_RUN
+
     /**
      * \ingroup core
      * \brief Enumeration of feature count states
@@ -338,6 +341,7 @@ class CORE_EXPORT Qgis
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
     Q_ENUM( FeatureCountState )
+#endif
 
     /**
      * Attribute editing capabilities which may be supported by vector data providers.

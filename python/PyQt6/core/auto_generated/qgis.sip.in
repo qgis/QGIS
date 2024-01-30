@@ -225,11 +225,6 @@ The development version
       NotForThisSession,
     };
 
-    enum class FeatureCountState /BaseType=IntFlag/
-      {
-      Uncounted,
-      UnknownCount,
-    };
 
     enum class VectorDataProviderAttributeEditCapability /BaseType=IntFlag/
     {
