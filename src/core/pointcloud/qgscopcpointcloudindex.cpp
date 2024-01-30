@@ -138,6 +138,11 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 
 std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return std::unique_ptr<QgsPointCloudBlock>( cached );
+  }
+
   const bool found = fetchNodeHierarchy( n );
   if ( !found )
     return nullptr;
@@ -164,7 +169,9 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const Inde
   }
   QgsRectangle filterRect = request.filterRect();
 
-  return QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
+  std::unique_ptr<QgsPointCloudBlock> decoded = QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
+  storeNodeDataToCache( decoded.get(), n, request );
+  return decoded;
 }
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )

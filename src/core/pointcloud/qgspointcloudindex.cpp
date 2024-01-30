@@ -27,6 +27,7 @@
 
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudstatistics.h"
+#include "qgslogger.h"
 
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
@@ -86,6 +87,31 @@ uint qHash( IndexedPointCloudNode id )
 }
 
 ///@cond PRIVATE
+
+//
+// QgsPointCloudCacheKey
+//
+
+QgsPointCloudCacheKey::QgsPointCloudCacheKey( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+  : mNode( n )
+  , mUri( uri )
+  , mRequest( request )
+  , mFilterExpression( expression )
+{
+}
+
+bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) const
+{
+  return mNode == other.mNode &&
+         mUri == other.mUri &&
+         mRequest == other.mRequest &&
+         mFilterExpression == other.mFilterExpression;
+}
+
+uint qHash( const QgsPointCloudCacheKey &key )
+{
+  return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.filterExpression() );
+}
 
 //
 // QgsPointCloudDataBounds
@@ -152,6 +178,9 @@ QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const
 //
 // QgsPointCloudIndex
 //
+
+QMutex QgsPointCloudIndex::sBlockCacheMutex;
+QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> QgsPointCloudIndex::sBlockCache( 200'000'000 ); // 200MB of cached points
 
 QgsPointCloudIndex::QgsPointCloudIndex() = default;
 
@@ -363,4 +392,29 @@ void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination )
   destination->mAttributes = mAttributes;
   destination->mSpan = mSpan;
   destination->mFilterExpression = mFilterExpression;
+}
+
+QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const IndexedPointCloudNode &node, const QgsPointCloudRequest &request )
+{
+  QgsPointCloudCacheKey key( node, request, mFilterExpression, mUri );
+
+  QMutexLocker l( &sBlockCacheMutex );
+  QgsPointCloudBlock *cached = sBlockCache.object( key );
+  return cached ? cached->clone() : nullptr;
+}
+
+void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request )
+{
+  storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
+}
+
+void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+{
+  QgsPointCloudCacheKey key( node, request, expression, uri );
+
+  const int cost = data->pointCount() * data->pointRecordSize();
+
+  QMutexLocker l( &sBlockCacheMutex );
+  QgsDebugMsgLevel( QStringLiteral( "(%1/%2): Caching node %3 of %4" ).arg( sBlockCache.totalCost() ).arg( sBlockCache.maxCost() ).arg( key.node().toString() ).arg( key.uri() ), 4 );
+  sBlockCache.insert( key, data->clone(), cost );
 }
