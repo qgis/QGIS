@@ -1186,30 +1186,19 @@ QgsRectangle QgsOgrProvider::extent() const
       else
       {
         QgsDebugMsgLevel( QStringLiteral( "Will call mOgrLayer->GetExtent" ), 3 );
-        mOgrLayer->GetExtent( mExtent2D.get(), true );
+        OGRErr err = mOgrLayer->GetExtent( mExtent2D.get(), true );
+        if ( err != OGRERR_NONE )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent2D (ogr error: %1)" ).arg( err ), 1 );
+        }
       }
     }
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "will apply slow default 2D extent computing" ), 3 );
-      gdal::ogr_feature_unique_ptr f;
-
-      mOgrLayer->ResetReading();
-      while ( f.reset( mOgrLayer->GetNextFeature() ), f )
-      {
-        OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
-        if ( g && !OGR_G_IsEmpty( g ) )
-        {
-          OGREnvelope env;
-          OGR_G_GetEnvelope( g, &env );
-
-          mExtent2D->MinX = std::min( mExtent2D->MinX, env.MinX );
-          mExtent2D->MinY = std::min( mExtent2D->MinY, env.MinY );
-          mExtent2D->MaxX = std::max( mExtent2D->MaxX, env.MaxX );
-          mExtent2D->MaxY = std::max( mExtent2D->MaxY, env.MaxY );
-        }
-      }
-      mOgrLayer->ResetReading();
+      OGRErr err = mOgrLayer->computeExtent3DSlowly( mExtent2D.get() );
+      if ( err != OGRERR_NONE )
+        QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute slow extent2D (ogr error: %1)" ).arg( err ), 1 );
     }
   }
 
