@@ -892,6 +892,3 @@ bool QgsProperty::convertToTransformer()
     setExpressionString( baseExpression );
   return true;
 }
-
-
-

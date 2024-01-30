@@ -631,7 +631,8 @@ color ramp.
     QgsColorRampTransformer( double minValue = 0.0,
                              double maxValue = 1.0,
                              QgsColorRamp *ramp /Transfer/ = 0,
-                             const QColor &nullColor = QColor( 0, 0, 0, 0 ) );
+                             const QColor &nullColor = QColor( 0, 0, 0, 0 ),
+                             const QString &rampName = QString() );
 %Docstring
 Constructor for QgsColorRampTransformer.
 
@@ -639,6 +640,7 @@ Constructor for QgsColorRampTransformer.
 :param maxValue: maximum expected value
 :param ramp: source color ramp. Ownership is transferred to the transformer.
 :param nullColor: color to return for null values
+:param rampName: name of the source color ramp (since QGIS 3.36)
 %End
 
     QgsColorRampTransformer( const QgsColorRampTransformer &other );
