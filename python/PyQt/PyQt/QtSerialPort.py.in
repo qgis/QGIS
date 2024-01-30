@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    QtSql.py
+    ---------------------
+    Date                 : March 2024
+    Copyright            : (C) 2024 by Jorge Tornero
+    Email                : jorge dot tornero at ieo dot csic dot es
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Jorge Tornero'
+__date__ = 'January 2024'
+__copyright__ = '(C) 2024, Jorge Tornero'
+
+from PyQt@QT_VERSION_MAJOR@.QtSerialPort import *
