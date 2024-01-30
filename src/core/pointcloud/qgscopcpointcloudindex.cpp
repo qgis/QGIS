@@ -58,7 +58,7 @@ std::unique_ptr<QgsPointCloudIndex> QgsCopcPointCloudIndex::clone() const
 
 void QgsCopcPointCloudIndex::load( const QString &fileName )
 {
-  mFileName = fileName;
+  mUri = fileName;
   mCopcFile.open( QgsLazDecoder::toNativePath( fileName ), std::ios::binary );
 
   if ( !mCopcFile.is_open() || !mCopcFile.good() )
@@ -154,12 +154,12 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const Inde
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
   QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
-  std::ifstream file( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
+  std::ifstream file( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
   file.seekg( blockOffset );
   file.read( rawBlockData.data(), blockSize );
   if ( !file )
   {
-    QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
+    QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mUri ) );
     return nullptr;
   }
   QgsRectangle filterRect = request.filterRect();
@@ -197,14 +197,14 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   if ( mLazInfo->version() != qMakePair<uint8_t, uint8_t>( 1, 4 ) )
   {
     // EVLR isn't supported in the first place
-    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": laz version != 1.4" ).arg( mFileName ) );
+    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": laz version != 1.4" ).arg( mUri ) );
     return false;
   }
 
   QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
   if ( !statisticsEvlrData.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": file already contains COPC statistics!" ).arg( mFileName ) );
+    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": file already contains COPC statistics!" ).arg( mUri ) );
     return false;
   }
 
@@ -218,7 +218,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   // Save the EVLRs to the end of the original file (while erasing the exisitng EVLRs in the file)
   mCopcFile.close();
   std::fstream copcFile;
-  copcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios_base::binary | std::iostream::in | std::iostream::out );
+  copcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios_base::binary | std::iostream::in | std::iostream::out );
   if ( copcFile.is_open() && copcFile.good() )
   {
     // Write the new number of EVLRs
@@ -235,11 +235,11 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mFileName ) );
+    QgsMessageLog::logMessage( tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mUri ) );
     return false;
   }
   copcFile.close();
-  mCopcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
+  mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
   return true;
 }
 
@@ -361,8 +361,8 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
 
   // QgsCopcPointCloudIndex specific fields
   destination->mIsValid = mIsValid;
-  destination->mFileName = mFileName;
-  destination->mCopcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
+  destination->mUri = mUri;
+  destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
   destination->mCopcInfoVlr = mCopcInfoVlr;
   destination->mHierarchyNodePos = mHierarchyNodePos;
   destination->mOriginalMetadata = mOriginalMetadata;
