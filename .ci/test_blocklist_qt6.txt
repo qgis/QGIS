@@ -109,13 +109,11 @@ PyQgsProviderConnectionModel
 PyQgsProviderConnectionGpkg
 PyQgsProviderConnectionSpatialite
 PyQgsSensorModel
-PyQgsProviderSublayerDetails
 PyQgsRasterAttributeTable
 PyQgsRasterAttributeTableModel
 PyQgsRasterLayer
 PyQgsRasterLayerRenderer
 PyQgsRasterPipe
-PyQgsProviderUtils
 PyQgsShapefileProvider
 PyQgsTextRenderer
 PyQgsOGRProvider
