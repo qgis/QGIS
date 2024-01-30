@@ -275,6 +275,11 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
   return true;
 }
 
+QgsProcessingProvider::Flags QgsNativeAlgorithms::flags() const
+{
+  return QgsProcessingProvider::Flag::FlagCompatibleWithVirtualRaster;
+}
+
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
