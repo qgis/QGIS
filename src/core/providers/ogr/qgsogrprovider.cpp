@@ -1152,7 +1152,7 @@ QgsRectangle QgsOgrProvider::extent() const
     mExtent2D.reset( new OGREnvelope3D() );
 
     // get the extent_ (envelope) of the layer
-    QgsDebugMsgLevel( QStringLiteral( "Starting computing extent. subset: %1" ).arg( mSubsetString ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Starting computing extent. subset: '%1'" ).arg( mSubsetString ), 3 );
 
     if ( mForceRecomputeExtent && mValid && mWriteAccess &&
          ( mGDALDriverName == QLatin1String( "GPKG" ) ||
@@ -1185,11 +1185,13 @@ QgsRectangle QgsOgrProvider::extent() const
       }
       else
       {
+        QgsDebugMsgLevel( QStringLiteral( "Will call mOgrLayer->GetExtent" ), 3 );
         mOgrLayer->GetExtent( mExtent2D.get(), true );
       }
     }
     else
     {
+      QgsDebugMsgLevel( QStringLiteral( "will apply slow default 2D extent computing" ), 3 );
       gdal::ogr_feature_unique_ptr f;
 
       mOgrLayer->ResetReading();
@@ -1215,9 +1217,9 @@ QgsRectangle QgsOgrProvider::extent() const
   {
     mExtentRect = QgsBox3D( mExtent2D->MinX, mExtent2D->MinY, std::numeric_limits<double>::quiet_NaN(),
                             mExtent2D->MaxX, mExtent2D->MaxY, std::numeric_limits<double>::quiet_NaN() );
-    QgsDebugMsgLevel( QStringLiteral( "Finished get extent from 2D: (%1, %2, %3 : %4, %5, %6)" )
-                      .arg( mExtentRect.xMinimum() ).arg( mExtentRect.yMinimum() ).arg( mExtentRect.zMinimum() )
-                      .arg( mExtentRect.xMaximum() ).arg( mExtentRect.yMaximum() ).arg( mExtentRect.zMaximum() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Finished get extent from 2D: (%1, %2, : %3, %4)" )
+                      .arg( mExtentRect.xMinimum() ).arg( mExtentRect.yMinimum() )
+                      .arg( mExtentRect.xMaximum() ).arg( mExtentRect.yMaximum() ), 3 );
   }
   else
   {
@@ -1248,7 +1250,7 @@ QgsBox3D QgsOgrProvider::extent3D() const
     mExtent3D.reset( new OGREnvelope3D() );
 
     // get the extent_ (envelope) of the layer
-    QgsDebugMsgLevel( QStringLiteral( "Starting computing extent3D. subset: %1" ).arg( mSubsetString ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Starting computing extent3D. subset: '%1'" ).arg( mSubsetString ), 3 );
 
     bool hasBeenComputed = false;
 
@@ -1307,10 +1309,10 @@ QgsBox3D QgsOgrProvider::extent3D() const
 
       if ( !hasBeenComputed )
       {
-        QgsDebugMsgLevel( QStringLiteral( "will apply slow default extent computing" ), 3 );
+        QgsDebugMsgLevel( QStringLiteral( "will apply slow default 3D extent computing" ), 3 );
         OGRErr err = mOgrLayer->computeExtent3DSlowly( mExtent3D.get() );
         if ( err != OGRERR_NONE )
-          QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent3D (ogr error: %1)" ).arg( err ), 1 );
+          QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute slow extent3D (ogr error: %1)" ).arg( err ), 1 );
       }
 
       if ( mExtent3D->MinZ == std::numeric_limits<double>::max() && mExtent3D->MaxZ == -std::numeric_limits<double>::max() )
