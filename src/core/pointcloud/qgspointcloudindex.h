@@ -347,6 +347,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
 
     QString mError;
+    QString mUri;
 };
 
 #endif // QGSPOINTCLOUDINDEX_H

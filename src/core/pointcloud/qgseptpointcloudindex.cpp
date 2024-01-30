@@ -53,6 +53,7 @@ std::unique_ptr<QgsPointCloudIndex> QgsEptPointCloudIndex::clone() const
 
 void QgsEptPointCloudIndex::load( const QString &fileName )
 {
+  mUri = fileName;
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
   {

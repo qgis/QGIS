@@ -78,23 +78,24 @@ QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const In
   return lst;
 }
 
-void QgsRemoteEptPointCloudIndex::load( const QString &url )
+void QgsRemoteEptPointCloudIndex::load( const QString &uri )
 {
-  mUrl = QUrl( url );
+  mUri = uri;
+  QUrl url( uri );
 
-  QStringList splitUrl = url.split( '/' );
+  QStringList splitUrl = uri.split( '/' );
 
   mUrlFileNamePart = splitUrl.back();
   splitUrl.pop_back();
   mUrlDirectoryPart = splitUrl.join( '/' );
 
-  QNetworkRequest nr( url );
+  QNetworkRequest nr( uri );
 
   QgsBlockingNetworkRequest req;
   const QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
   if ( errCode != QgsBlockingNetworkRequest::NoError )
   {
-    QgsDebugError( QStringLiteral( "Request failed: " ) + url );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + uri );
     mIsValid = false;
     return;
   }
@@ -206,7 +207,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugError( QStringLiteral( "Request failed: " ) + mUrl.toString() );
+      QgsDebugError( QStringLiteral( "Request failed: " ) + mUri );
       return false;
     }
 
@@ -253,7 +254,6 @@ void QgsRemoteEptPointCloudIndex::copyCommonProperties( QgsRemoteEptPointCloudIn
   // QgsRemoteEptPointCloudIndex specific fields
   destination->mUrlDirectoryPart = mUrlDirectoryPart;
   destination->mUrlFileNamePart = mUrlFileNamePart;
-  destination->mUrl = mUrl;
   destination->mHierarchyNodes = mHierarchyNodes;
 }
 

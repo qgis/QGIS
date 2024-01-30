@@ -352,6 +352,7 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
 void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination ) const
 {
   // Base QgsPointCloudIndex fields
+  destination->mUri = mUri;
   destination->mExtent = mExtent;
   destination->mZMin = mZMin;
   destination->mZMax = mZMax;

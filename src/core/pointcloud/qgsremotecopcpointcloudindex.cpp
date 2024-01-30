@@ -75,10 +75,11 @@ QList<IndexedPointCloudNode> QgsRemoteCopcPointCloudIndex::nodeChildren( const I
   return lst;
 }
 
-void QgsRemoteCopcPointCloudIndex::load( const QString &url )
+void QgsRemoteCopcPointCloudIndex::load( const QString &uri )
 {
-  mUrl = QUrl( url );
-  mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( mUrl ) ) );
+  mUri = uri;
+  QUrl url( uri );
+  mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
   mIsValid = mLazInfo->isValid();
   if ( mIsValid )
   {
@@ -90,7 +91,7 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
   }
   if ( !mIsValid )
   {
-    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url, mLazInfo->error() );
+    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( uri, mLazInfo->error() );
   }
 }
 
@@ -129,7 +130,7 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
   auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );
   int pointCount = mHierarchy.value( n );
 
-  return new QgsCopcPointCloudBlockRequest( n, mUrl.toString(), attributes(), requestAttributes,
+  return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes,
          scale(), offset(), filterExpression, request.filterRect(),
          blockOffset, blockSize, pointCount, *mLazInfo.get() );
 }
@@ -174,7 +175,7 @@ bool QgsRemoteCopcPointCloudIndex::isValid() const
 
 void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
-  QNetworkRequest nr( mUrl );
+  QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
   QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsRemoteCopcPointCloudIndex" ) );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -189,7 +190,7 @@ void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t
 
   if ( reply->error() != QNetworkReply::NoError )
   {
-    QgsDebugError( QStringLiteral( "Request failed: " ) + mUrl.toString() );
+    QgsDebugError( QStringLiteral( "Request failed: " ) + mUri );
     return;
   }
 
@@ -225,7 +226,6 @@ void QgsRemoteCopcPointCloudIndex::copyCommonProperties( QgsRemoteCopcPointCloud
   QgsCopcPointCloudIndex::copyCommonProperties( destination );
 
   // QgsRemoteCopcPointCloudIndex specific fields
-  destination->mUrl = mUrl;
   destination->mHierarchyNodes = mHierarchyNodes;
 }
 
