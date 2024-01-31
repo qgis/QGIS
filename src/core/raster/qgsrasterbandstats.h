@@ -19,6 +19,7 @@
 #define QGSRASTERBANDSTATS
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QString>
 #include <QVector>
 
@@ -34,17 +35,21 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
+
+    /**
+     * Available statistics
+     */
     enum Stats SIP_ENUM_BASETYPE( IntFlag )
     {
-      None         = 0,
-      Min          = 1,
-      Max          = 1 << 1,
-      Range        = 1 << 2,
-      Sum          = 1 << 3,
-      Mean         = 1 << 4,
-      StdDev       = 1 << 5,
-      SumOfSquares = 1 << 6,
-      All          = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares
+      None = 0, //!< No statistic
+      Min = 1, //!< Minimum
+      Max = 1 << 1, //!< Maximum
+      Range = 1 << 2, //!< Range
+      Sum = 1 << 3, //!< Sum
+      Mean = 1 << 4, //!< Mean
+      StdDev = 1 << 5, //!< Standard deviation
+      SumOfSquares = 1 << 6, //!< Sum of squares
+      All = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares //!< All available statistics
     };
 
     QgsRasterBandStats()
