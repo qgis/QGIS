@@ -122,7 +122,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   int userType = 0;
   if ( attrNum == -1 )
   {
-    if ( aggregate == GeometryCollect )
+    if ( aggregate == Aggregate::GeometryCollect )
     {
       // in this case we know the result should be a geometry value, so no need to sniff it out...
       resultType = QVariant::UserType;
@@ -147,41 +147,41 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
         switch ( aggregate )
         {
           // string
-          case StringConcatenate:
-          case StringConcatenateUnique:
-          case StringMinimumLength:
-          case StringMaximumLength:
+          case Aggregate::StringConcatenate:
+          case Aggregate::StringConcatenateUnique:
+          case Aggregate::StringMinimumLength:
+          case Aggregate::StringMaximumLength:
             v = QString();
             break;
 
           // numerical
-          case Sum:
-          case Mean:
-          case Median:
-          case StDev:
-          case StDevSample:
-          case Range:
-          case FirstQuartile:
-          case ThirdQuartile:
-          case InterQuartileRange:
+          case Aggregate::Sum:
+          case Aggregate::Mean:
+          case Aggregate::Median:
+          case Aggregate::StDev:
+          case Aggregate::StDevSample:
+          case Aggregate::Range:
+          case Aggregate::FirstQuartile:
+          case Aggregate::ThirdQuartile:
+          case Aggregate::InterQuartileRange:
           // mixed type, fallback to numerical
-          case Count:
-          case CountDistinct:
-          case CountMissing:
-          case Minority:
-          case Majority:
-          case Min:
-          case Max:
+          case Aggregate::Count:
+          case Aggregate::CountDistinct:
+          case Aggregate::CountMissing:
+          case Aggregate::Minority:
+          case Aggregate::Majority:
+          case Aggregate::Min:
+          case Aggregate::Max:
             v = 0.0;
             break;
 
           // geometry
-          case GeometryCollect:
+          case Aggregate::GeometryCollect:
             v = QgsGeometry();
             break;
 
           // list, fallback to string
-          case ArrayAggregate:
+          case Aggregate::ArrayAggregate:
             v = QString();
             break;
         }
@@ -205,103 +205,103 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     *ok = true;
 
   if ( normalized == QLatin1String( "count" ) )
-    return Count;
+    return Aggregate::Count;
   else if ( normalized == QLatin1String( "count_distinct" ) )
-    return CountDistinct;
+    return Aggregate::CountDistinct;
   else if ( normalized == QLatin1String( "count_missing" ) )
-    return CountMissing;
+    return Aggregate::CountMissing;
   else if ( normalized == QLatin1String( "min" ) || normalized == QLatin1String( "minimum" ) )
-    return Min;
+    return Aggregate::Min;
   else if ( normalized == QLatin1String( "max" ) || normalized == QLatin1String( "maximum" ) )
-    return Max;
+    return Aggregate::Max;
   else if ( normalized == QLatin1String( "sum" ) )
-    return Sum;
+    return Aggregate::Sum;
   else if ( normalized == QLatin1String( "mean" ) )
-    return Mean;
+    return Aggregate::Mean;
   else if ( normalized == QLatin1String( "median" ) )
-    return Median;
+    return Aggregate::Median;
   else if ( normalized == QLatin1String( "stdev" ) )
-    return StDev;
+    return Aggregate::StDev;
   else if ( normalized == QLatin1String( "stdevsample" ) )
-    return StDevSample;
+    return Aggregate::StDevSample;
   else if ( normalized == QLatin1String( "range" ) )
-    return Range;
+    return Aggregate::Range;
   else if ( normalized == QLatin1String( "minority" ) )
-    return Minority;
+    return Aggregate::Minority;
   else if ( normalized == QLatin1String( "majority" ) )
-    return Majority;
+    return Aggregate::Majority;
   else if ( normalized == QLatin1String( "q1" ) )
-    return FirstQuartile;
+    return Aggregate::FirstQuartile;
   else if ( normalized == QLatin1String( "q3" ) )
-    return ThirdQuartile;
+    return Aggregate::ThirdQuartile;
   else if ( normalized == QLatin1String( "iqr" ) )
-    return InterQuartileRange;
+    return Aggregate::InterQuartileRange;
   else if ( normalized == QLatin1String( "min_length" ) )
-    return StringMinimumLength;
+    return Aggregate::StringMinimumLength;
   else if ( normalized == QLatin1String( "max_length" ) )
-    return StringMaximumLength;
+    return Aggregate::StringMaximumLength;
   else if ( normalized == QLatin1String( "concatenate" ) )
-    return StringConcatenate;
+    return Aggregate::StringConcatenate;
   else if ( normalized == QLatin1String( "concatenate_unique" ) )
-    return StringConcatenateUnique;
+    return Aggregate::StringConcatenateUnique;
   else if ( normalized == QLatin1String( "collect" ) )
-    return GeometryCollect;
+    return Aggregate::GeometryCollect;
   else if ( normalized == QLatin1String( "array_agg" ) )
-    return ArrayAggregate;
+    return Aggregate::ArrayAggregate;
 
   if ( ok )
     *ok = false;
 
-  return Count;
+  return Aggregate::Count;
 }
 
 QString QgsAggregateCalculator::displayName( Aggregate aggregate )
 {
   switch ( aggregate )
   {
-    case QgsAggregateCalculator::Count:
+    case QgsAggregateCalculator::Aggregate::Count:
       return QObject::tr( "count" );
-    case QgsAggregateCalculator::CountDistinct:
+    case QgsAggregateCalculator::Aggregate::CountDistinct:
       return QObject::tr( "count distinct" );
-    case QgsAggregateCalculator::CountMissing:
+    case QgsAggregateCalculator::Aggregate::CountMissing:
       return QObject::tr( "count missing" );
-    case QgsAggregateCalculator::Min:
+    case QgsAggregateCalculator::Aggregate::Min:
       return QObject::tr( "minimum" );
-    case QgsAggregateCalculator::Max:
+    case QgsAggregateCalculator::Aggregate::Max:
       return QObject::tr( "maximum" );
-    case QgsAggregateCalculator::Sum:
+    case QgsAggregateCalculator::Aggregate::Sum:
       return QObject::tr( "sum" );
-    case QgsAggregateCalculator::Mean:
+    case QgsAggregateCalculator::Aggregate::Mean:
       return QObject::tr( "mean" );
-    case QgsAggregateCalculator::Median:
+    case QgsAggregateCalculator::Aggregate::Median:
       return QObject::tr( "median" );
-    case QgsAggregateCalculator::StDev:
+    case QgsAggregateCalculator::Aggregate::StDev:
       return QObject::tr( "standard deviation" );
-    case QgsAggregateCalculator::StDevSample:
+    case QgsAggregateCalculator::Aggregate::StDevSample:
       return QObject::tr( "standard deviation (sample)" );
-    case QgsAggregateCalculator::Range:
+    case QgsAggregateCalculator::Aggregate::Range:
       return QObject::tr( "range" );
-    case QgsAggregateCalculator::Minority:
+    case QgsAggregateCalculator::Aggregate::Minority:
       return QObject::tr( "minority" );
-    case QgsAggregateCalculator::Majority:
+    case QgsAggregateCalculator::Aggregate::Majority:
       return QObject::tr( "majority" );
-    case QgsAggregateCalculator::FirstQuartile:
+    case QgsAggregateCalculator::Aggregate::FirstQuartile:
       return QObject::tr( "first quartile" );
-    case QgsAggregateCalculator::ThirdQuartile:
+    case QgsAggregateCalculator::Aggregate::ThirdQuartile:
       return QObject::tr( "third quartile" );
-    case QgsAggregateCalculator::InterQuartileRange:
+    case QgsAggregateCalculator::Aggregate::InterQuartileRange:
       return QObject::tr( "inter quartile range" );
-    case QgsAggregateCalculator::StringMinimumLength:
+    case QgsAggregateCalculator::Aggregate::StringMinimumLength:
       return QObject::tr( "minimum length" );
-    case QgsAggregateCalculator::StringMaximumLength:
+    case QgsAggregateCalculator::Aggregate::StringMaximumLength:
       return QObject::tr( "maximum length" );
-    case QgsAggregateCalculator::StringConcatenate:
+    case QgsAggregateCalculator::Aggregate::StringConcatenate:
       return QObject::tr( "concatenate" );
-    case QgsAggregateCalculator::GeometryCollect:
+    case QgsAggregateCalculator::Aggregate::GeometryCollect:
       return QObject::tr( "collection" );
-    case QgsAggregateCalculator::ArrayAggregate:
+    case QgsAggregateCalculator::Aggregate::ArrayAggregate:
       return QObject::tr( "array aggregate" );
-    case QgsAggregateCalculator::StringConcatenateUnique:
+    case QgsAggregateCalculator::Aggregate::StringConcatenateUnique:
       return QObject::tr( "concatenate (unique)" );
   }
   return QString();
@@ -543,7 +543,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   if ( ok )
     *ok = false;
 
-  if ( aggregate == QgsAggregateCalculator::ArrayAggregate )
+  if ( aggregate == QgsAggregateCalculator::Aggregate::ArrayAggregate )
   {
     if ( ok )
       *ok = true;
@@ -593,7 +593,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
     case QVariant::UserType:
     {
-      if ( aggregate == GeometryCollect )
+      if ( aggregate == Aggregate::GeometryCollect )
       {
         if ( ok )
           *ok = true;
@@ -608,14 +608,14 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     default:
     {
       // treat as string
-      if ( aggregate == StringConcatenate )
+      if ( aggregate == Aggregate::StringConcatenate )
       {
         //special case
         if ( ok )
           *ok = true;
         return concatenateStrings( fit, attr, expression, context, delimiter );
       }
-      else if ( aggregate == StringConcatenateUnique )
+      else if ( aggregate == Aggregate::StringConcatenateUnique )
       {
         //special case
         if ( ok )
@@ -659,54 +659,54 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
 
   switch ( aggregate )
   {
-    case Count:
-      return QgsStatisticalSummary::Count;
-    case CountDistinct:
-      return QgsStatisticalSummary::Variety;
-    case CountMissing:
-      return QgsStatisticalSummary::CountMissing;
-    case Min:
-      return QgsStatisticalSummary::Min;
-    case Max:
-      return QgsStatisticalSummary::Max;
-    case Sum:
-      return QgsStatisticalSummary::Sum;
-    case Mean:
-      return QgsStatisticalSummary::Mean;
-    case Median:
-      return QgsStatisticalSummary::Median;
-    case StDev:
-      return QgsStatisticalSummary::StDev;
-    case StDevSample:
-      return QgsStatisticalSummary::StDevSample;
-    case Range:
-      return QgsStatisticalSummary::Range;
-    case Minority:
-      return QgsStatisticalSummary::Minority;
-    case Majority:
-      return QgsStatisticalSummary::Majority;
-    case FirstQuartile:
-      return QgsStatisticalSummary::FirstQuartile;
-    case ThirdQuartile:
-      return QgsStatisticalSummary::ThirdQuartile;
-    case InterQuartileRange:
-      return QgsStatisticalSummary::InterQuartileRange;
-    case StringMinimumLength:
-    case StringMaximumLength:
-    case StringConcatenate:
-    case StringConcatenateUnique:
-    case GeometryCollect:
-    case ArrayAggregate:
+    case Aggregate::Count:
+      return QgsStatisticalSummary::Statistic::Count;
+    case Aggregate::CountDistinct:
+      return QgsStatisticalSummary::Statistic::Variety;
+    case Aggregate::CountMissing:
+      return QgsStatisticalSummary::Statistic::CountMissing;
+    case Aggregate::Min:
+      return QgsStatisticalSummary::Statistic::Min;
+    case Aggregate::Max:
+      return QgsStatisticalSummary::Statistic::Max;
+    case Aggregate::Sum:
+      return QgsStatisticalSummary::Statistic::Sum;
+    case Aggregate::Mean:
+      return QgsStatisticalSummary::Statistic::Mean;
+    case Aggregate::Median:
+      return QgsStatisticalSummary::Statistic::Median;
+    case Aggregate::StDev:
+      return QgsStatisticalSummary::Statistic::StDev;
+    case Aggregate::StDevSample:
+      return QgsStatisticalSummary::Statistic::StDevSample;
+    case Aggregate::Range:
+      return QgsStatisticalSummary::Statistic::Range;
+    case Aggregate::Minority:
+      return QgsStatisticalSummary::Statistic::Minority;
+    case Aggregate::Majority:
+      return QgsStatisticalSummary::Statistic::Majority;
+    case Aggregate::FirstQuartile:
+      return QgsStatisticalSummary::Statistic::FirstQuartile;
+    case Aggregate::ThirdQuartile:
+      return QgsStatisticalSummary::Statistic::ThirdQuartile;
+    case Aggregate::InterQuartileRange:
+      return QgsStatisticalSummary::Statistic::InterQuartileRange;
+    case Aggregate::StringMinimumLength:
+    case Aggregate::StringMaximumLength:
+    case Aggregate::StringConcatenate:
+    case Aggregate::StringConcatenateUnique:
+    case Aggregate::GeometryCollect:
+    case Aggregate::ArrayAggregate:
     {
       if ( ok )
         *ok = false;
-      return QgsStatisticalSummary::Count;
+      return QgsStatisticalSummary::Statistic::Count;
     }
   }
 
   if ( ok )
     *ok = false;
-  return QgsStatisticalSummary::Count;
+  return QgsStatisticalSummary::Statistic::Count;
 }
 
 QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAggregate( QgsAggregateCalculator::Aggregate aggregate, bool *ok )
@@ -716,48 +716,48 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
 
   switch ( aggregate )
   {
-    case Count:
-      return QgsStringStatisticalSummary::Count;
-    case CountDistinct:
-      return QgsStringStatisticalSummary::CountDistinct;
-    case CountMissing:
-      return QgsStringStatisticalSummary::CountMissing;
-    case Min:
-      return QgsStringStatisticalSummary::Min;
-    case Max:
-      return QgsStringStatisticalSummary::Max;
-    case StringMinimumLength:
-      return QgsStringStatisticalSummary::MinimumLength;
-    case StringMaximumLength:
-      return QgsStringStatisticalSummary::MaximumLength;
-    case Minority:
-      return QgsStringStatisticalSummary::Minority;
-    case Majority:
-      return QgsStringStatisticalSummary::Majority;
+    case Aggregate::Count:
+      return QgsStringStatisticalSummary::Statistic::Count;
+    case Aggregate::CountDistinct:
+      return QgsStringStatisticalSummary::Statistic::CountDistinct;
+    case Aggregate::CountMissing:
+      return QgsStringStatisticalSummary::Statistic::CountMissing;
+    case Aggregate::Min:
+      return QgsStringStatisticalSummary::Statistic::Min;
+    case Aggregate::Max:
+      return QgsStringStatisticalSummary::Statistic::Max;
+    case Aggregate::StringMinimumLength:
+      return QgsStringStatisticalSummary::Statistic::MinimumLength;
+    case Aggregate::StringMaximumLength:
+      return QgsStringStatisticalSummary::Statistic::MaximumLength;
+    case Aggregate::Minority:
+      return QgsStringStatisticalSummary::Statistic::Minority;
+    case Aggregate::Majority:
+      return QgsStringStatisticalSummary::Statistic::Majority;
 
-    case Sum:
-    case Mean:
-    case Median:
-    case StDev:
-    case StDevSample:
-    case Range:
-    case FirstQuartile:
-    case ThirdQuartile:
-    case InterQuartileRange:
-    case StringConcatenate:
-    case StringConcatenateUnique:
-    case GeometryCollect:
-    case ArrayAggregate:
+    case Aggregate::Sum:
+    case Aggregate::Mean:
+    case Aggregate::Median:
+    case Aggregate::StDev:
+    case Aggregate::StDevSample:
+    case Aggregate::Range:
+    case Aggregate::FirstQuartile:
+    case Aggregate::ThirdQuartile:
+    case Aggregate::InterQuartileRange:
+    case Aggregate::StringConcatenate:
+    case Aggregate::StringConcatenateUnique:
+    case Aggregate::GeometryCollect:
+    case Aggregate::ArrayAggregate:
     {
       if ( ok )
         *ok = false;
-      return QgsStringStatisticalSummary::Count;
+      return QgsStringStatisticalSummary::Statistic::Count;
     }
   }
 
   if ( ok )
     *ok = false;
-  return QgsStringStatisticalSummary::Count;
+  return QgsStringStatisticalSummary::Statistic::Count;
 }
 
 QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFromAggregate( QgsAggregateCalculator::Aggregate aggregate, bool *ok )
@@ -767,45 +767,45 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
 
   switch ( aggregate )
   {
-    case Count:
-      return QgsDateTimeStatisticalSummary::Count;
-    case CountDistinct:
-      return QgsDateTimeStatisticalSummary::CountDistinct;
-    case CountMissing:
-      return QgsDateTimeStatisticalSummary::CountMissing;
-    case Min:
-      return QgsDateTimeStatisticalSummary::Min;
-    case Max:
-      return QgsDateTimeStatisticalSummary::Max;
-    case Range:
-      return QgsDateTimeStatisticalSummary::Range;
+    case Aggregate::Count:
+      return QgsDateTimeStatisticalSummary::Statistic::Count;
+    case Aggregate::CountDistinct:
+      return QgsDateTimeStatisticalSummary::Statistic::CountDistinct;
+    case Aggregate::CountMissing:
+      return QgsDateTimeStatisticalSummary::Statistic::CountMissing;
+    case Aggregate::Min:
+      return QgsDateTimeStatisticalSummary::Statistic::Min;
+    case Aggregate::Max:
+      return QgsDateTimeStatisticalSummary::Statistic::Max;
+    case Aggregate::Range:
+      return QgsDateTimeStatisticalSummary::Statistic::Range;
 
-    case Sum:
-    case Mean:
-    case Median:
-    case StDev:
-    case StDevSample:
-    case Minority:
-    case Majority:
-    case FirstQuartile:
-    case ThirdQuartile:
-    case InterQuartileRange:
-    case StringMinimumLength:
-    case StringMaximumLength:
-    case StringConcatenate:
-    case StringConcatenateUnique:
-    case GeometryCollect:
-    case ArrayAggregate:
+    case Aggregate::Sum:
+    case Aggregate::Mean:
+    case Aggregate::Median:
+    case Aggregate::StDev:
+    case Aggregate::StDevSample:
+    case Aggregate::Minority:
+    case Aggregate::Majority:
+    case Aggregate::FirstQuartile:
+    case Aggregate::ThirdQuartile:
+    case Aggregate::InterQuartileRange:
+    case Aggregate::StringMinimumLength:
+    case Aggregate::StringMaximumLength:
+    case Aggregate::StringConcatenate:
+    case Aggregate::StringConcatenateUnique:
+    case Aggregate::GeometryCollect:
+    case Aggregate::ArrayAggregate:
     {
       if ( ok )
         *ok = false;
-      return QgsDateTimeStatisticalSummary::Count;
+      return QgsDateTimeStatisticalSummary::Statistic::Count;
     }
   }
 
   if ( ok )
     *ok = false;
-  return QgsDateTimeStatisticalSummary::Count;
+  return QgsDateTimeStatisticalSummary::Statistic::Count;
 }
 
 QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
@@ -916,35 +916,35 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
   switch ( aggregate )
   {
     // sensible values:
-    case Count:
-    case CountDistinct:
-    case CountMissing:
+    case Aggregate::Count:
+    case Aggregate::CountDistinct:
+    case Aggregate::CountMissing:
       return 0;
 
-    case StringConcatenate:
-    case StringConcatenateUnique:
+    case Aggregate::StringConcatenate:
+    case Aggregate::StringConcatenateUnique:
       return ""; // zero length string - not null!
 
-    case ArrayAggregate:
+    case Aggregate::ArrayAggregate:
       return QVariantList(); // empty list
 
     // undefined - nothing makes sense here
-    case Sum:
-    case Min:
-    case Max:
-    case Mean:
-    case Median:
-    case StDev:
-    case StDevSample:
-    case Range:
-    case Minority:
-    case Majority:
-    case FirstQuartile:
-    case ThirdQuartile:
-    case InterQuartileRange:
-    case StringMinimumLength:
-    case StringMaximumLength:
-    case GeometryCollect:
+    case Aggregate::Sum:
+    case Aggregate::Min:
+    case Aggregate::Max:
+    case Aggregate::Mean:
+    case Aggregate::Median:
+    case Aggregate::StDev:
+    case Aggregate::StDevSample:
+    case Aggregate::Range:
+    case Aggregate::Minority:
+    case Aggregate::Majority:
+    case Aggregate::FirstQuartile:
+    case Aggregate::ThirdQuartile:
+    case Aggregate::InterQuartileRange:
+    case Aggregate::StringMinimumLength:
+    case Aggregate::StringMaximumLength:
+    case Aggregate::GeometryCollect:
       return QVariant();
   }
   return QVariant();

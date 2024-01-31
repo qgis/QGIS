@@ -5482,7 +5482,7 @@ QgsRasterBandStats QgsWmsInterpretationConverterMapTilerTerrainRGB::statistics( 
   QgsRasterBandStats stat;
   stat.minimumValue = -10000;
   stat.maximumValue = 9000;
-  stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
+  stat.statsGathered = QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max;
   return stat;
 }
 
@@ -5520,7 +5520,7 @@ QgsRasterBandStats QgsWmsInterpretationConverterTerrariumRGB::statistics( int, i
   QgsRasterBandStats stat;
   stat.minimumValue = -11000;
   stat.maximumValue = 9000;
-  stat.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max;
+  stat.statsGathered = QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max;
   return stat;
 }
 

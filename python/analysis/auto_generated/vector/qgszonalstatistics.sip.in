@@ -23,7 +23,7 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
 %End
   public:
 
-    enum Statistic
+    enum class Statistic
     {
       Count,
       Sum,
@@ -37,7 +37,8 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
       Majority,
       Variety,
       Variance,
-      All
+      All,
+      Default,
     };
     typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
 
@@ -57,7 +58,7 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
                         QgsRasterLayer *rasterLayer,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::Default );
 %Docstring
 Convenience constructor for QgsZonalStatistics, using an input raster layer.
 
@@ -76,7 +77,7 @@ The raster layer must exist for the lifetime of the zonal statistics calculation
                         double rasterUnitsPerPixelY,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::Default );
 %Docstring
 Constructor for QgsZonalStatistics, using a QgsRasterInterface.
 

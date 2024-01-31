@@ -240,7 +240,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   QgsDebugMsgLevel( QStringLiteral( "MEAN %1" ).arg( myRasterBandStats.mean ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "STDDEV %1" ).arg( myRasterBandStats.stdDev ), 4 );
 
-  myRasterBandStats.statsGathered = QgsRasterBandStats::All;
+  myRasterBandStats.statsGathered = static_cast< int >( QgsRasterBandStats::Statistic::All );
   mStatistics.append( myRasterBandStats );
 
   return myRasterBandStats;
@@ -274,7 +274,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       // We need statistics -> avoid histogramDefaults in hasHistogram if possible
       // TODO: use approximated statistics if approximated histogram is requested
       // (theSampleSize > 0)
-      const QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Min, boundingBox, sampleSize );
+      const QgsRasterBandStats stats = bandStatistics( bandNo, static_cast< int >( QgsRasterBandStats::Statistic::Min ), boundingBox, sampleSize );
       histogram.minimum = stats.minimumValue;
     }
   }
@@ -286,7 +286,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
     }
     else
     {
-      const QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Max, boundingBox, sampleSize );
+      const QgsRasterBandStats stats = bandStatistics( bandNo, static_cast< int >( QgsRasterBandStats::Statistic::Max ), boundingBox, sampleSize );
       histogram.maximum = stats.maximumValue;
     }
   }
@@ -535,7 +535,7 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
   upperValue = std::numeric_limits<double>::quiet_NaN();
 
   //get band stats to specify real histogram min/max (fix #9793 Byte bands)
-  const QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Min, extent, sampleSize );
+  const QgsRasterBandStats stats = bandStatistics( bandNo, static_cast< int >( QgsRasterBandStats::Statistic::Min ), extent, sampleSize );
   if ( stats.maximumValue < stats.minimumValue )
     return;
 

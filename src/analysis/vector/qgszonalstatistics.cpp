@@ -23,9 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "processing/qgsrasteranalysisutils.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include "qgslogger.h"
 #include "qgsproject.h"
 
 #include <QFile>
@@ -85,18 +83,18 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
   QList<QgsField> newFieldList;
   for ( QgsZonalStatistics::Statistic stat :
         {
-          QgsZonalStatistics::Count,
-          QgsZonalStatistics::Sum,
-          QgsZonalStatistics::Mean,
-          QgsZonalStatistics::Median,
-          QgsZonalStatistics::StDev,
-          QgsZonalStatistics::Min,
-          QgsZonalStatistics::Max,
-          QgsZonalStatistics::Range,
-          QgsZonalStatistics::Minority,
-          QgsZonalStatistics::Majority,
-          QgsZonalStatistics::Variety,
-          QgsZonalStatistics::Variance
+          QgsZonalStatistics::Statistic::Count,
+          QgsZonalStatistics::Statistic::Sum,
+          QgsZonalStatistics::Statistic::Mean,
+          QgsZonalStatistics::Statistic::Median,
+          QgsZonalStatistics::Statistic::StDev,
+          QgsZonalStatistics::Statistic::Min,
+          QgsZonalStatistics::Statistic::Max,
+          QgsZonalStatistics::Statistic::Range,
+          QgsZonalStatistics::Statistic::Minority,
+          QgsZonalStatistics::Statistic::Majority,
+          QgsZonalStatistics::Statistic::Variety,
+          QgsZonalStatistics::Statistic::Variance
         } )
   {
     if ( mStatistics & stat )
@@ -223,31 +221,32 @@ QString QgsZonalStatistics::displayName( QgsZonalStatistics::Statistic statistic
 {
   switch ( statistic )
   {
-    case Count:
+    case Statistic::Count:
       return QObject::tr( "Count" );
-    case Sum:
+    case Statistic::Sum:
       return QObject::tr( "Sum" );
-    case Mean:
+    case Statistic::Mean:
       return QObject::tr( "Mean" );
-    case Median:
+    case Statistic::Median:
       return QObject::tr( "Median" );
-    case StDev:
+    case Statistic::StDev:
       return QObject::tr( "St dev" );
-    case Min:
+    case Statistic::Min:
       return QObject::tr( "Minimum" );
-    case Max:
+    case Statistic::Max:
       return QObject::tr( "Maximum" );
-    case Range:
+    case Statistic::Range:
       return QObject::tr( "Range" );
-    case Minority:
+    case Statistic::Minority:
       return QObject::tr( "Minority" );
-    case Majority:
+    case Statistic::Majority:
       return QObject::tr( "Majority" );
-    case Variety:
+    case Statistic::Variety:
       return QObject::tr( "Variety" );
-    case Variance:
+    case Statistic::Variance:
       return QObject::tr( "Variance" );
-    case All:
+    case Statistic::All:
+    case Statistic::Default:
       return QString();
   }
   return QString();
@@ -257,31 +256,32 @@ QString QgsZonalStatistics::shortName( QgsZonalStatistics::Statistic statistic )
 {
   switch ( statistic )
   {
-    case Count:
+    case Statistic::Count:
       return QStringLiteral( "count" );
-    case Sum:
+    case Statistic::Sum:
       return QStringLiteral( "sum" );
-    case Mean:
+    case Statistic::Mean:
       return QStringLiteral( "mean" );
-    case Median:
+    case Statistic::Median:
       return QStringLiteral( "median" );
-    case StDev:
+    case Statistic::StDev:
       return QStringLiteral( "stdev" );
-    case Min:
+    case Statistic::Min:
       return QStringLiteral( "min" );
-    case Max:
+    case Statistic::Max:
       return QStringLiteral( "max" );
-    case Range:
+    case Statistic::Range:
       return QStringLiteral( "range" );
-    case Minority:
+    case Statistic::Minority:
       return QStringLiteral( "minority" );
-    case Majority:
+    case Statistic::Majority:
       return QStringLiteral( "majority" );
-    case Variety:
+    case Statistic::Variety:
       return QStringLiteral( "variety" );
-    case Variance:
+    case Statistic::Variance:
       return QStringLiteral( "variance" );
-    case All:
+    case Statistic::All:
+    case Statistic::Default:
       return QString();
   }
   return QString();
@@ -294,7 +294,7 @@ QMap<int, QVariant> QgsZonalStatistics::calculateStatisticsInt( QgsRasterInterfa
   QMap<int, QVariant> pyResult;
   for ( auto it = result.constBegin(); it != result.constEnd(); ++it )
   {
-    pyResult.insert( it.key(), it.value() );
+    pyResult.insert( static_cast< int >( it.key() ), it.value() );
   }
   return pyResult;
 }
@@ -314,11 +314,11 @@ QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStati
   if ( featureRect.isEmpty() )
     return results;
 
-  bool statsStoreValues = ( statistics & QgsZonalStatistics::Median ) ||
-                          ( statistics & QgsZonalStatistics::StDev ) ||
-                          ( statistics & QgsZonalStatistics::Variance );
-  bool statsStoreValueCount = ( statistics & QgsZonalStatistics::Minority ) ||
-                              ( statistics & QgsZonalStatistics::Majority );
+  bool statsStoreValues = ( statistics & QgsZonalStatistics::Statistic::Median ) ||
+                          ( statistics & QgsZonalStatistics::Statistic::StDev ) ||
+                          ( statistics & QgsZonalStatistics::Statistic::Variance );
+  bool statsStoreValueCount = ( statistics & QgsZonalStatistics::Statistic::Minority ) ||
+                              ( statistics & QgsZonalStatistics::Statistic::Majority );
 
   FeatureStats featureStats( statsStoreValues, statsStoreValueCount );
 
@@ -341,16 +341,16 @@ QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStati
 
   // calculate the statistics
 
-  if ( statistics & QgsZonalStatistics::Count )
-    results.insert( QgsZonalStatistics::Count, QVariant( featureStats.count ) );
-  if ( statistics & QgsZonalStatistics::Sum )
-    results.insert( QgsZonalStatistics::Sum, QVariant( featureStats.sum ) );
+  if ( statistics & QgsZonalStatistics::Statistic::Count )
+    results.insert( QgsZonalStatistics::Statistic::Count, QVariant( featureStats.count ) );
+  if ( statistics & QgsZonalStatistics::Statistic::Sum )
+    results.insert( QgsZonalStatistics::Statistic::Sum, QVariant( featureStats.sum ) );
   if ( featureStats.count > 0 )
   {
     double mean = featureStats.sum / featureStats.count;
-    if ( statistics & QgsZonalStatistics::Mean )
-      results.insert( QgsZonalStatistics::Mean, QVariant( mean ) );
-    if ( statistics & QgsZonalStatistics::Median )
+    if ( statistics & QgsZonalStatistics::Statistic::Mean )
+      results.insert( QgsZonalStatistics::Statistic::Mean, QVariant( mean ) );
+    if ( statistics & QgsZonalStatistics::Statistic::Median )
     {
       std::sort( featureStats.values.begin(), featureStats.values.end() );
       int size = featureStats.values.count();
@@ -364,9 +364,9 @@ QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStati
       {
         medianValue = featureStats.values.at( ( size + 1 ) / 2 - 1 );
       }
-      results.insert( QgsZonalStatistics::Median, QVariant( medianValue ) );
+      results.insert( QgsZonalStatistics::Statistic::Median, QVariant( medianValue ) );
     }
-    if ( statistics & QgsZonalStatistics::StDev || statistics & QgsZonalStatistics::Variance )
+    if ( statistics & QgsZonalStatistics::Statistic::StDev || statistics & QgsZonalStatistics::Statistic::Variance )
     {
       double sumSquared = 0;
       for ( int i = 0; i < featureStats.values.count(); ++i )
@@ -375,37 +375,37 @@ QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStati
         sumSquared += diff * diff;
       }
       double variance = sumSquared / featureStats.values.count();
-      if ( statistics & QgsZonalStatistics::StDev )
+      if ( statistics & QgsZonalStatistics::Statistic::StDev )
       {
         double stdev = std::pow( variance, 0.5 );
-        results.insert( QgsZonalStatistics::StDev, QVariant( stdev ) );
+        results.insert( QgsZonalStatistics::Statistic::StDev, QVariant( stdev ) );
       }
-      if ( statistics & QgsZonalStatistics::Variance )
-        results.insert( QgsZonalStatistics::Variance, QVariant( variance ) );
+      if ( statistics & QgsZonalStatistics::Statistic::Variance )
+        results.insert( QgsZonalStatistics::Statistic::Variance, QVariant( variance ) );
     }
-    if ( statistics & QgsZonalStatistics::Min )
-      results.insert( QgsZonalStatistics::Min, QVariant( featureStats.min ) );
-    if ( statistics & QgsZonalStatistics::Max )
-      results.insert( QgsZonalStatistics::Max, QVariant( featureStats.max ) );
-    if ( statistics & QgsZonalStatistics::Range )
-      results.insert( QgsZonalStatistics::Range, QVariant( featureStats.max - featureStats.min ) );
-    if ( statistics & QgsZonalStatistics::Minority || statistics & QgsZonalStatistics::Majority )
+    if ( statistics & QgsZonalStatistics::Statistic::Min )
+      results.insert( QgsZonalStatistics::Statistic::Min, QVariant( featureStats.min ) );
+    if ( statistics & QgsZonalStatistics::Statistic::Max )
+      results.insert( QgsZonalStatistics::Statistic::Max, QVariant( featureStats.max ) );
+    if ( statistics & QgsZonalStatistics::Statistic::Range )
+      results.insert( QgsZonalStatistics::Statistic::Range, QVariant( featureStats.max - featureStats.min ) );
+    if ( statistics & QgsZonalStatistics::Statistic::Minority || statistics & QgsZonalStatistics::Statistic::Majority )
     {
       QList<int> vals = featureStats.valueCount.values();
       std::sort( vals.begin(), vals.end() );
-      if ( statistics & QgsZonalStatistics::Minority )
+      if ( statistics & QgsZonalStatistics::Statistic::Minority )
       {
         double minorityKey = featureStats.valueCount.key( vals.first() );
-        results.insert( QgsZonalStatistics::Minority, QVariant( minorityKey ) );
+        results.insert( QgsZonalStatistics::Statistic::Minority, QVariant( minorityKey ) );
       }
-      if ( statistics & QgsZonalStatistics::Majority )
+      if ( statistics & QgsZonalStatistics::Statistic::Majority )
       {
         double majKey = featureStats.valueCount.key( vals.last() );
-        results.insert( QgsZonalStatistics::Majority, QVariant( majKey ) );
+        results.insert( QgsZonalStatistics::Statistic::Majority, QVariant( majKey ) );
       }
     }
-    if ( statistics & QgsZonalStatistics::Variety )
-      results.insert( QgsZonalStatistics::Variety, QVariant( featureStats.valueCount.count() ) );
+    if ( statistics & QgsZonalStatistics::Statistic::Variety )
+      results.insert( QgsZonalStatistics::Statistic::Variety, QVariant( featureStats.valueCount.count() ) );
   }
 
   return results;

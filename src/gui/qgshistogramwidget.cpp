@@ -120,7 +120,7 @@ void QgsHistogramWidget::refreshValues()
   mBinsSpinBox->setValue( std::max( mHistogram.optimalNumberBins(), 30 ) );
   mBinsSpinBox->blockSignals( false );
 
-  mStats.setStatistics( QgsStatisticalSummary::StDev );
+  mStats.setStatistics( QgsStatisticalSummary::Statistic::StDev );
   mStats.calculate( mValues );
 
   mpPlot->setEnabled( true );

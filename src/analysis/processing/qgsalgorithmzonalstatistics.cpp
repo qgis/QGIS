@@ -21,18 +21,18 @@
 
 const std::vector< QgsZonalStatistics::Statistic > STATS
 {
-  QgsZonalStatistics::Count,
-  QgsZonalStatistics::Sum,
-  QgsZonalStatistics::Mean,
-  QgsZonalStatistics::Median,
-  QgsZonalStatistics::StDev,
-  QgsZonalStatistics::Min,
-  QgsZonalStatistics::Max,
-  QgsZonalStatistics::Range,
-  QgsZonalStatistics::Minority,
-  QgsZonalStatistics::Majority,
-  QgsZonalStatistics::Variety,
-  QgsZonalStatistics::Variance,
+  QgsZonalStatistics::Statistic::Count,
+  QgsZonalStatistics::Statistic::Sum,
+  QgsZonalStatistics::Statistic::Mean,
+  QgsZonalStatistics::Statistic::Median,
+  QgsZonalStatistics::Statistic::StDev,
+  QgsZonalStatistics::Statistic::Min,
+  QgsZonalStatistics::Statistic::Max,
+  QgsZonalStatistics::Statistic::Range,
+  QgsZonalStatistics::Statistic::Minority,
+  QgsZonalStatistics::Statistic::Majority,
+  QgsZonalStatistics::Statistic::Variety,
+  QgsZonalStatistics::Statistic::Variance,
 };
 
 QString QgsZonalStatisticsAlgorithm::name() const

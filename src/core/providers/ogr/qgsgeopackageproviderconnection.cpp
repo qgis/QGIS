@@ -243,18 +243,18 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       // Table type
       if ( dataType == QLatin1String( "tiles" ) || dataType == QLatin1String( "2d-gridded-coverage" ) )
       {
-        property.setFlag( QgsGeoPackageProviderConnection::Raster );
+        property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Raster );
       }
       else if ( dataType == QLatin1String( "features" ) )
       {
-        property.setFlag( QgsGeoPackageProviderConnection::Vector );
+        property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Vector );
         property.setGeometryColumn( row.at( 5 ).toString() );
         property.setGeometryColumnCount( 1 );
       }
 
       if ( aspatialTypes.contains( dataType ) )
       {
-        property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
+        property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Aspatial );
         property.addGeometryColumnType( Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() );
       }
       else

@@ -23,4 +23,3 @@ QgsDateTimeStatisticalSummary.All.is_monkey_patched = True
 QgsDateTimeStatisticalSummary.All.__doc__ = "All statistics"
 QgsDateTimeStatisticalSummary.Statistic.__doc__ = "Enumeration of flags that specify statistics to be calculated\n\n" + '* ``Count``: ' + QgsDateTimeStatisticalSummary.Statistic.Count.__doc__ + '\n' + '* ``CountDistinct``: ' + QgsDateTimeStatisticalSummary.Statistic.CountDistinct.__doc__ + '\n' + '* ``CountMissing``: ' + QgsDateTimeStatisticalSummary.Statistic.CountMissing.__doc__ + '\n' + '* ``Min``: ' + QgsDateTimeStatisticalSummary.Statistic.Min.__doc__ + '\n' + '* ``Max``: ' + QgsDateTimeStatisticalSummary.Statistic.Max.__doc__ + '\n' + '* ``Range``: ' + QgsDateTimeStatisticalSummary.Statistic.Range.__doc__ + '\n' + '* ``All``: ' + QgsDateTimeStatisticalSummary.Statistic.All.__doc__
 # --
-QgsDateTimeStatisticalSummary.Statistics = lambda flags=0: QgsDateTimeStatisticalSummary.Statistic(flags)

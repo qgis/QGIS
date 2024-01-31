@@ -34,7 +34,8 @@ to a data provider for remote calculation.
       QSet<QVariant::Type> supportedTypes;
     };
 
-    enum Aggregate
+
+    enum class Aggregate
     {
       Count,
       CountDistinct,

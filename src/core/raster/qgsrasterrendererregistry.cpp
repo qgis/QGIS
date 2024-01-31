@@ -264,7 +264,7 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   const QgsSettings s;
   if ( s.value( QStringLiteral( "/Raster/useStandardDeviation" ), false ).toBool() )
   {
-    const QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
+    const QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev );
 
     const double stdDevFactor = s.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), 2.0 ).toDouble();
     const double diff = stdDevFactor * stats.stdDev;
@@ -273,7 +273,7 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   }
   else
   {
-    const QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    const QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max );
     minValue = stats.minimumValue;
     maxValue = stats.maximumValue;
   }

@@ -1698,13 +1698,13 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
 QgsFeatureSource::FeatureAvailability QgsProcessingFeatureSource::hasFeatures() const
 {
   FeatureAvailability sourceAvailability = mSource->hasFeatures();
-  if ( sourceAvailability == NoFeaturesAvailable )
-    return NoFeaturesAvailable; // never going to be features if underlying source has no features
+  if ( sourceAvailability == QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable )
+    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable; // never going to be features if underlying source has no features
   else if ( mInvalidGeometryCheck == Qgis::InvalidGeometryCheck::NoCheck && mFilterExpression.isEmpty() )
     return sourceAvailability;
   else
     // we don't know... source has features, but these may be filtered out by invalid geometry check or filter expression
-    return FeaturesMaybeAvailable;
+    return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
 }
 
 QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const

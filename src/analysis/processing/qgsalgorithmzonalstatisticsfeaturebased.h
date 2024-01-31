@@ -60,7 +60,7 @@ class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBased
     std::unique_ptr< QgsRasterInterface > mRaster;
     int mBand = 1;
     QString mPrefix;
-    QgsZonalStatistics::Statistics mStats = QgsZonalStatistics::All;
+    QgsZonalStatistics::Statistics mStats = QgsZonalStatistics::Statistic::All;
     QgsCoordinateReferenceSystem mCrs;
     bool mCreatedTransform = false;
     QgsCoordinateTransform mFeatureToRasterTransform;

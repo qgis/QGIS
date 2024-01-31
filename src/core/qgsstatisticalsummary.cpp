@@ -57,11 +57,11 @@ void QgsStatisticalSummary::reset()
   mValueCount.clear();
   mValues.clear();
 
-  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety;
+  mRequiresHisto = mStatistics & QgsStatisticalSummary::Statistic::Majority || mStatistics & QgsStatisticalSummary::Statistic::Minority || mStatistics & QgsStatisticalSummary::Statistic::Variety;
 
-  mRequiresAllValueStorage = mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
-                             mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
-                             mStatistics & QgsStatisticalSummary::ThirdQuartile || mStatistics & QgsStatisticalSummary::InterQuartileRange;
+  mRequiresAllValueStorage = mStatistics & QgsStatisticalSummary::Statistic::StDev || mStatistics & QgsStatisticalSummary::Statistic::StDevSample ||
+                             mStatistics & QgsStatisticalSummary::Statistic::Median || mStatistics & QgsStatisticalSummary::Statistic::FirstQuartile ||
+                             mStatistics & QgsStatisticalSummary::Statistic::ThirdQuartile || mStatistics & QgsStatisticalSummary::Statistic::InterQuartileRange;
 }
 
 /***************************************************************************
@@ -135,7 +135,7 @@ void QgsStatisticalSummary::finalize()
 
   mMean = mSum / mCount;
 
-  if ( mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample )
+  if ( mStatistics & QgsStatisticalSummary::Statistic::StDev || mStatistics & QgsStatisticalSummary::Statistic::StDevSample )
   {
     double sumSquared = 0;
     const auto constMValues = mValues;
@@ -148,10 +148,10 @@ void QgsStatisticalSummary::finalize()
     mSampleStdev = std::pow( sumSquared / ( mValues.count() - 1 ), 0.5 );
   }
 
-  if ( mStatistics & QgsStatisticalSummary::Median
-       || mStatistics & QgsStatisticalSummary::FirstQuartile
-       || mStatistics & QgsStatisticalSummary::ThirdQuartile
-       || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  if ( mStatistics & QgsStatisticalSummary::Statistic::Median
+       || mStatistics & QgsStatisticalSummary::Statistic::FirstQuartile
+       || mStatistics & QgsStatisticalSummary::Statistic::ThirdQuartile
+       || mStatistics & QgsStatisticalSummary::Statistic::InterQuartileRange )
   {
     std::sort( mValues.begin(), mValues.end() );
     const bool even = ( mCount % 2 ) < 1;
@@ -165,8 +165,8 @@ void QgsStatisticalSummary::finalize()
     }
   }
 
-  if ( mStatistics & QgsStatisticalSummary::FirstQuartile
-       || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  if ( mStatistics & QgsStatisticalSummary::Statistic::FirstQuartile
+       || mStatistics & QgsStatisticalSummary::Statistic::InterQuartileRange )
   {
     if ( ( mCount % 2 ) < 1 )
     {
@@ -196,8 +196,8 @@ void QgsStatisticalSummary::finalize()
     }
   }
 
-  if ( mStatistics & QgsStatisticalSummary::ThirdQuartile
-       || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  if ( mStatistics & QgsStatisticalSummary::Statistic::ThirdQuartile
+       || mStatistics & QgsStatisticalSummary::Statistic::InterQuartileRange )
   {
     if ( ( mCount % 2 ) < 1 )
     {
@@ -227,15 +227,15 @@ void QgsStatisticalSummary::finalize()
     }
   }
 
-  if ( mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Majority )
+  if ( mStatistics & QgsStatisticalSummary::Statistic::Minority || mStatistics & QgsStatisticalSummary::Statistic::Majority )
   {
     QList<int> valueCounts = mValueCount.values();
 
-    if ( mStatistics & QgsStatisticalSummary::Minority )
+    if ( mStatistics & QgsStatisticalSummary::Statistic::Minority )
     {
       mMinority = mValueCount.key( *std::min_element( valueCounts.begin(), valueCounts.end() ) );
     }
-    if ( mStatistics & QgsStatisticalSummary::Majority )
+    if ( mStatistics & QgsStatisticalSummary::Statistic::Majority )
     {
       mMajority = mValueCount.key( *std::max_element( valueCounts.begin(), valueCounts.end() ) );
     }
@@ -253,43 +253,43 @@ double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat )
 {
   switch ( stat )
   {
-    case Count:
+    case Statistic::Count:
       return mCount;
-    case CountMissing:
+    case Statistic::CountMissing:
       return mMissing;
-    case Sum:
+    case Statistic::Sum:
       return mSum;
-    case Mean:
+    case Statistic::Mean:
       return mMean;
-    case Median:
+    case Statistic::Median:
       return mMedian;
-    case StDev:
+    case Statistic::StDev:
       return mStdev;
-    case StDevSample:
+    case Statistic::StDevSample:
       return mSampleStdev;
-    case Min:
+    case Statistic::Min:
       return mMin;
-    case Max:
+    case Statistic::Max:
       return mMax;
-    case Range:
+    case Statistic::Range:
       return mMax - mMin;
-    case Minority:
+    case Statistic::Minority:
       return mMinority;
-    case Majority:
+    case Statistic::Majority:
       return mMajority;
-    case Variety:
+    case Statistic::Variety:
       return mValueCount.count();
-    case FirstQuartile:
+    case Statistic::FirstQuartile:
       return mFirstQuartile;
-    case ThirdQuartile:
+    case Statistic::ThirdQuartile:
       return mThirdQuartile;
-    case InterQuartileRange:
+    case Statistic::InterQuartileRange:
       return mThirdQuartile - mFirstQuartile;
-    case First:
+    case Statistic::First:
       return mFirst;
-    case Last:
+    case Statistic::Last:
       return mLast;
-    case All:
+    case Statistic::All:
       return 0;
   }
   return 0;
@@ -299,43 +299,43 @@ QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic sta
 {
   switch ( statistic )
   {
-    case Count:
+    case Statistic::Count:
       return QObject::tr( "Count" );
-    case CountMissing:
+    case Statistic::CountMissing:
       return QObject::tr( "Count (missing)" );
-    case Sum:
+    case Statistic::Sum:
       return QObject::tr( "Sum" );
-    case Mean:
+    case Statistic::Mean:
       return QObject::tr( "Mean" );
-    case Median:
+    case Statistic::Median:
       return QObject::tr( "Median" );
-    case StDev:
+    case Statistic::StDev:
       return QObject::tr( "St dev (pop)" );
-    case StDevSample:
+    case Statistic::StDevSample:
       return QObject::tr( "St dev (sample)" );
-    case Min:
+    case Statistic::Min:
       return QObject::tr( "Minimum" );
-    case Max:
+    case Statistic::Max:
       return QObject::tr( "Maximum" );
-    case Range:
+    case Statistic::Range:
       return QObject::tr( "Range" );
-    case Minority:
+    case Statistic::Minority:
       return QObject::tr( "Minority" );
-    case Majority:
+    case Statistic::Majority:
       return QObject::tr( "Majority" );
-    case Variety:
+    case Statistic::Variety:
       return QObject::tr( "Variety" );
-    case FirstQuartile:
+    case Statistic::FirstQuartile:
       return QObject::tr( "Q1" );
-    case ThirdQuartile:
+    case Statistic::ThirdQuartile:
       return QObject::tr( "Q3" );
-    case InterQuartileRange:
+    case Statistic::InterQuartileRange:
       return QObject::tr( "IQR" );
-    case First:
+    case Statistic::First:
       return QObject::tr( "First" );
-    case Last:
+    case Statistic::Last:
       return QObject::tr( "Last" );
-    case All:
+    case Statistic::All:
       return QString();
   }
   return QString();
@@ -345,43 +345,43 @@ QString QgsStatisticalSummary::shortName( QgsStatisticalSummary::Statistic stati
 {
   switch ( statistic )
   {
-    case Count:
+    case Statistic::Count:
       return QStringLiteral( "count" );
-    case CountMissing:
+    case Statistic::CountMissing:
       return QStringLiteral( "countmissing" );
-    case Sum:
+    case Statistic::Sum:
       return QStringLiteral( "sum" );
-    case Mean:
+    case Statistic::Mean:
       return QStringLiteral( "mean" );
-    case Median:
+    case Statistic::Median:
       return QStringLiteral( "median" );
-    case StDev:
+    case Statistic::StDev:
       return QStringLiteral( "stdev" );
-    case StDevSample:
+    case Statistic::StDevSample:
       return QStringLiteral( "stdevsample" );
-    case Min:
+    case Statistic::Min:
       return QStringLiteral( "min" );
-    case Max:
+    case Statistic::Max:
       return QStringLiteral( "max" );
-    case Range:
+    case Statistic::Range:
       return QStringLiteral( "range" );
-    case Minority:
+    case Statistic::Minority:
       return QStringLiteral( "minority" );
-    case Majority:
+    case Statistic::Majority:
       return QStringLiteral( "majority" );
-    case Variety:
+    case Statistic::Variety:
       return QStringLiteral( "variety" );
-    case FirstQuartile:
+    case Statistic::FirstQuartile:
       return QStringLiteral( "q1" );
-    case ThirdQuartile:
+    case Statistic::ThirdQuartile:
       return QStringLiteral( "q3" );
-    case InterQuartileRange:
+    case Statistic::InterQuartileRange:
       return QStringLiteral( "iqr" );
-    case First:
+    case Statistic::First:
       return QStringLiteral( "first" );
-    case Last:
+    case Statistic::Last:
       return QStringLiteral( "last" );
-    case All:
+    case Statistic::All:
       return QString();
   }
   return QString();

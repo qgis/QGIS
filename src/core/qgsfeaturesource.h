@@ -38,6 +38,8 @@ class CORE_EXPORT QgsFeatureSource
 {
   public:
 
+    // *INDENT-OFF*
+
     /**
      * Possible return value for hasFeatures() to determine if a source is empty.
      * It is implemented as a three-value logic, so it can return if
@@ -47,12 +49,13 @@ class CORE_EXPORT QgsFeatureSource
      *
      * \since QGIS 3.4
      */
-    enum FeatureAvailability
-    {
-      NoFeaturesAvailable, //!< There are certainly no features available in this source
+    enum class FeatureAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, FeatureAvailability ) : int
+      {
+      NoFeaturesAvailable = 0, //!< There are certainly no features available in this source
       FeaturesAvailable, //!< There is at least one feature available in this source
       FeaturesMaybeAvailable //!< There may be features available in this source
     };
+    // *INDENT-ON*
 
     virtual ~QgsFeatureSource() = default;
 

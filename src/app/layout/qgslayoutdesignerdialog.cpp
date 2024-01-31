@@ -4926,7 +4926,7 @@ bool QgsLayoutDesignerDialog::checkBeforeExport( )
   if ( mLayout )
   {
     QgsLayoutValidityCheckContext context( mLayout );
-    return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+    return QgsValidityCheckResultsWidget::runChecks( static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck ), &context, tr( "Checking Layout" ),
            tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
   }
   else

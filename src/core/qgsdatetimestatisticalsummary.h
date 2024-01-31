@@ -46,8 +46,9 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
 {
   public:
 
+    // *INDENT-OFF*
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDateTimeStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Count = 1,  //!< Count
       CountDistinct = 2,  //!< Number of distinct datetime values
@@ -57,13 +58,14 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
       Range = 32, //!< Interval between earliest and latest datetime value
       All = Count | CountDistinct | CountMissing | Min | Max | Range, //!< All statistics
     };
+    // *INDENT-ON*
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /**
      * Constructor for QgsDateTimeStatisticalSummary
      * \param stats flags for statistics to calculate
      */
-    QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
+    QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = QgsDateTimeStatisticalSummary::Statistic::All );
 
     /**
      * Returns flags which specify which statistics will be calculated. Some statistics

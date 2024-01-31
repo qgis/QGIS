@@ -25,7 +25,7 @@
 
 QgsFeatureSource::FeatureAvailability QgsFeatureSource::hasFeatures() const
 {
-  return FeaturesMaybeAvailable;
+  return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
 }
 
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const

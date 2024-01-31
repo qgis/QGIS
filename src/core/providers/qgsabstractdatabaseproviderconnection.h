@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Flags can be useful for filtering the tables returned
      * from tables().
      */
-    enum TableFlag SIP_ENUM_BASETYPE( IntFlag )
+    enum class TableFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractDatabaseProviderConnection, TableFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Aspatial = 1 << 1,          //!< Aspatial table (it does not contain any geometry column)
       Vector = 1 << 2,            //!< Vector table (it does contain one geometry column)

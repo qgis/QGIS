@@ -39,7 +39,7 @@ QString QgsLayoutScaleBarValidityCheck::id() const
 
 int QgsLayoutScaleBarValidityCheck::checkType() const
 {
-  return QgsAbstractValidityCheck::TypeLayoutCheck;
+  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -91,7 +91,7 @@ QString QgsLayoutNorthArrowValidityCheck::id() const
 
 int QgsLayoutNorthArrowValidityCheck::checkType() const
 {
-  return QgsAbstractValidityCheck::TypeLayoutCheck;
+  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -149,7 +149,7 @@ QString QgsLayoutOverviewValidityCheck::id() const
 
 int QgsLayoutOverviewValidityCheck::checkType() const
 {
-  return QgsAbstractValidityCheck::TypeLayoutCheck;
+  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -206,7 +206,7 @@ QString QgsLayoutPictureSourceValidityCheck::id() const
 
 int QgsLayoutPictureSourceValidityCheck::checkType() const
 {
-  return QgsAbstractValidityCheck::TypeLayoutCheck;
+  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )

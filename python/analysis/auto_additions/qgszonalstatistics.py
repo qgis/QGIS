@@ -44,11 +44,3 @@ QgsZonalStatistics.Default.is_monkey_patched = True
 QgsZonalStatistics.Default.__doc__ = ""
 QgsZonalStatistics.Statistic.__doc__ = "Enumeration of flags that specify statistics to be calculated\n\n" + '* ``Count``: ' + QgsZonalStatistics.Statistic.Count.__doc__ + '\n' + '* ``Sum``: ' + QgsZonalStatistics.Statistic.Sum.__doc__ + '\n' + '* ``Mean``: ' + QgsZonalStatistics.Statistic.Mean.__doc__ + '\n' + '* ``Median``: ' + QgsZonalStatistics.Statistic.Median.__doc__ + '\n' + '* ``StDev``: ' + QgsZonalStatistics.Statistic.StDev.__doc__ + '\n' + '* ``Min``: ' + QgsZonalStatistics.Statistic.Min.__doc__ + '\n' + '* ``Max``: ' + QgsZonalStatistics.Statistic.Max.__doc__ + '\n' + '* ``Range``: ' + QgsZonalStatistics.Statistic.Range.__doc__ + '\n' + '* ``Minority``: ' + QgsZonalStatistics.Statistic.Minority.__doc__ + '\n' + '* ``Majority``: ' + QgsZonalStatistics.Statistic.Majority.__doc__ + '\n' + '* ``Variety``: ' + QgsZonalStatistics.Statistic.Variety.__doc__ + '\n' + '* ``Variance``: ' + QgsZonalStatistics.Statistic.Variance.__doc__ + '\n' + '* ``All``: ' + QgsZonalStatistics.Statistic.All.__doc__ + '\n' + '* ``Default``: ' + QgsZonalStatistics.Statistic.Default.__doc__
 # --
-QgsZonalStatistics.Statistics = lambda flags=0: QgsZonalStatistics.Statistic(flags)
-QgsZonalStatistics.Success = QgsZonalStatistics.Result.Success
-QgsZonalStatistics.LayerTypeWrong = QgsZonalStatistics.Result.LayerTypeWrong
-QgsZonalStatistics.LayerInvalid = QgsZonalStatistics.Result.LayerInvalid
-QgsZonalStatistics.RasterInvalid = QgsZonalStatistics.Result.RasterInvalid
-QgsZonalStatistics.RasterBandInvalid = QgsZonalStatistics.Result.RasterBandInvalid
-QgsZonalStatistics.FailedToCreateField = QgsZonalStatistics.Result.FailedToCreateField
-QgsZonalStatistics.Canceled = QgsZonalStatistics.Result.Canceled

@@ -34,21 +34,21 @@
 #include <QComboBox>
 
 const QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::DISPLAY_STATS =
-  QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
-  << QgsStatisticalSummary::Sum
-  << QgsStatisticalSummary::Mean
-  << QgsStatisticalSummary::Median
-  << QgsStatisticalSummary::StDev
-  << QgsStatisticalSummary::StDevSample
-  << QgsStatisticalSummary::Min
-  << QgsStatisticalSummary::Max
-  << QgsStatisticalSummary::Range
-  << QgsStatisticalSummary::Minority
-  << QgsStatisticalSummary::Majority
-  << QgsStatisticalSummary::Variety
-  << QgsStatisticalSummary::FirstQuartile
-  << QgsStatisticalSummary::ThirdQuartile
-  << QgsStatisticalSummary::InterQuartileRange;
+  QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Statistic::Count
+  << QgsStatisticalSummary::Statistic::Sum
+  << QgsStatisticalSummary::Statistic::Mean
+  << QgsStatisticalSummary::Statistic::Median
+  << QgsStatisticalSummary::Statistic::StDev
+  << QgsStatisticalSummary::Statistic::StDevSample
+  << QgsStatisticalSummary::Statistic::Min
+  << QgsStatisticalSummary::Statistic::Max
+  << QgsStatisticalSummary::Statistic::Range
+  << QgsStatisticalSummary::Statistic::Minority
+  << QgsStatisticalSummary::Statistic::Majority
+  << QgsStatisticalSummary::Statistic::Variety
+  << QgsStatisticalSummary::Statistic::FirstQuartile
+  << QgsStatisticalSummary::Statistic::ThirdQuartile
+  << QgsStatisticalSummary::Statistic::InterQuartileRange;
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -288,7 +288,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     {
       for ( QgsStatisticalSummary::Statistic stat : std::as_const( DISPLAY_STATS ) )
       {
-        newComboBox->addItem( QgsStatisticalSummary::displayName( stat ), stat );
+        newComboBox->addItem( QgsStatisticalSummary::displayName( stat ), static_cast< int >( stat ) );
       }
       break;
     }
