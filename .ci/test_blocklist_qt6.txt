@@ -118,7 +118,6 @@ PyQgsStyleModel
 PyQgsTextDocument
 PyQgsValidityChecks
 PyQgsValidityResultsWidget
-PyQgsVectorLayer
 PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
