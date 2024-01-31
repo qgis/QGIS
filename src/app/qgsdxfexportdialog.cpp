@@ -366,8 +366,6 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
   mCheckedLeafs.clear();
   applyVisibility( visibleLayers, rootGroup() );
-
-  emit dataChanged( QModelIndex(), QModelIndex() );
 }
 
 void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node )
@@ -382,10 +380,15 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
     if ( QgsLayerTree::isLayer( child ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsLayerTree::toLayer( child )->layer() );
-      if ( vl && visibleLayers.contains( vl->id() ) )
+      if ( vl )
       {
-        visibleLayers.remove( vl->id() );
-        mCheckedLeafs.insert( node2index( child ) );
+        QModelIndex idx = node2index( child );
+        if ( visibleLayers.contains( vl->id() ) )
+        {
+          visibleLayers.remove( vl->id() );
+          mCheckedLeafs.insert( idx );
+        }
+        emit dataChanged( idx, idx, QVector<int>() << Qt::CheckStateRole );
       }
       continue;
     }
