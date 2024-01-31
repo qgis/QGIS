@@ -385,15 +385,21 @@ class QgsPostgresConn : public QObject
      * \param searchPublicOnly
      * \param allowGeometrylessTables
      * \param schema restrict layers to layers within specified schema
-     * \param table restrict tables to those with specified table
      * \returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
                           bool searchGeometryColumnsOnly = true,
                           bool searchPublicOnly = true,
                           bool allowGeometrylessTables = false,
-                          const QString &schema = QString(),
-                          const QString &table = QString() );
+                          const QString &schema = QString() );
+
+    /**
+     * Get the information about a supported layer
+     * \param schema
+     * \param table
+     * \returns TRUE if the table was found
+     */
+    bool supportedLayer( QgsPostgresLayerProperty &layerProperty, const QString &schema, const QString &table );
 
     /**
      * Gets the list of database schemas
@@ -533,6 +539,24 @@ class QgsPostgresConn : public QObject
 
     //! Count number of spatial columns in a given relation
     void addColumnInfo( QgsPostgresLayerProperty &layerProperty, const QString &schemaName, const QString &viewName, bool fetchPkCandidates );
+
+    /**
+     * Gets the list of supported layers
+     * \param layers list to store layers in
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
+     * contained in the geometry_columns metatable
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict layers to layers within specified schema
+     * \param table restrict tables to those with specified table
+     * \returns true if layers were fetched successfully
+     */
+    bool supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers,
+                                 bool searchGeometryColumnsOnly = true,
+                                 bool searchPublicOnly = true,
+                                 bool allowGeometrylessTables = false,
+                                 const QString &schema = QString(),
+                                 const QString &table = QString() );
 
     //! List of the supported layers
     QVector<QgsPostgresLayerProperty> mLayersSupported;

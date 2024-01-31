@@ -1069,7 +1069,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return true;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema, const QString &table )
+bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema, const QString &table )
 {
   QMutexLocker locker( &mLock );
 
@@ -1481,6 +1481,26 @@ Qgis::PostgresRelKind QgsPostgresConn::relKindFromValue( const QString &value )
 
   return Qgis::PostgresRelKind::Unknown;
 }
+
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema )
+{
+  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema );
+}
+
+bool QgsPostgresConn::supportedLayer( QgsPostgresLayerProperty &layerProperty, const QString &schema, const QString &table )
+{
+  QVector<QgsPostgresLayerProperty> layers;
+  if ( !supportedLayersPrivate( layers, false, false, true /* allowGeometrylessTables */, schema, table ) || layers.empty() )
+  {
+    return false;
+  }
+  else
+  {
+    layerProperty = layers.first();
+  }
+  return true;
+}
+
 
 PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool retry, const QString &originatorClass, const QString &queryOrigin ) const
 {

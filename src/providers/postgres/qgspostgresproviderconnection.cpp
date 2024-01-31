@@ -239,9 +239,23 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
   }
   else
   {
+    bool ok { false };
     QVector<QgsPostgresLayerProperty> properties;
     const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
-    bool ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema, table );
+    if ( ! table.isEmpty() )
+    {
+      QgsPostgresLayerProperty property;
+      ok = conn->supportedLayer( property, schema, table );
+      if ( ok )
+      {
+        properties.push_back( property );
+      }
+    }
+    else
+    {
+      ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
+    }
+
     if ( ! ok )
     {
       if ( ! table.isEmpty() )
