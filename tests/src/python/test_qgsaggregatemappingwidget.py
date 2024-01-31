@@ -12,13 +12,11 @@ __author__ = 'Nyall Dawson'
 __date__ = '03/06/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QItemSelectionModel,
     QModelIndex,
-    QVariant,
-)
+    QVariant, Qt)
 from qgis.core import QgsField, QgsFields
 from qgis.gui import QgsAggregateMappingModel, QgsAggregateMappingWidget
 import unittest
