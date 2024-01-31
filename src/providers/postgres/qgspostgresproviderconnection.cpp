@@ -341,7 +341,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
             }
             catch ( const QgsProviderConnectionException &ex )
             {
-              QgsDebugError( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
+              QgsError( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
             }
           }
 
@@ -564,7 +564,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
           else
           {
             // Just a warning, usually ok
-            QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
+            QgsMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
           }
           static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[ rowIdx ] = vType;
         }
@@ -802,7 +802,6 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
 
   // From URI
   const QgsDataSourceUri dsUri { uri() };
-  qDebug() << settings.fileName();
   settings.setValue( "service", dsUri.service() );
   settings.setValue( "host",  dsUri.host() );
   settings.setValue( "port", dsUri.port() );
