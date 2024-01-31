@@ -18,6 +18,9 @@ on:
       - queued_ltr_backports
     paths:
 
+permissions:
+  contents: read
+
 env:
   QT_VERSION: 5.15.2
   QGIS_DEPS_VERSION: 0.9
