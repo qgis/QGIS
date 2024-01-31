@@ -34,7 +34,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
     /**
        * Possible buttons shown in the relation editor
-       * \deprecated since QGIS 3.18 use QgsRelationEditorWidget::Button instead
+       * Deprecated since QGIS 3.18 use QgsRelationEditorWidget::Button instead
        * \since QGIS 3.16
        */
     enum Button SIP_ENUM_BASETYPE( IntFlag )
