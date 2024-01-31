@@ -48,10 +48,12 @@ jobs:
           msystem: UCRT64
           install: base-devel
           pacboy: >-
-            draco:p exiv2:p gdal:p gsl:p hdf5:p libxml2:p libzip:p netcdf:p opencl-icd:p pdal:p
-            protobuf:p proj:p qca-qt5:p qscintilla-qt5:p qt5-3d:p qt5-base:p qt5-declarative:p
-            qt5-gamepad:p qt5-location:p qt5-serialport:p qt5-svg:p qtkeychain-qt5:p qtwebkit:p
-            qwt-qt5:p spatialindex:p cc:p cmake:p ninja:p opencl-clhpp:p qt5-tools:p python:p ccache:p
+            draco:p exiv2:p gdal:p gsl:p hdf5:p libxml2:p libzip:p netcdf:p opencl-icd:p
+            pdal:p protobuf:p proj:p python:p python-gdal:p python-owslib:p python-pyqt5:p
+            python-python-qscintilla-qt5:p qca-qt5:p qscintilla-qt5:p qt5-3d:p qt5-base:p
+            qt5-declarative:p qt5-gamepad:p qt5-location:p qt5-serialport:p qt5-svg:p
+            qtkeychain-qt5:p qtwebkit:p qwt-qt5:p spatialindex:p
+            cc:p cmake:p ninja:p opencl-clhpp:p qt5-tools:p ccache:p sip:p pyqt-builder:p
           update: true
           release: false
 
@@ -92,7 +94,7 @@ jobs:
             -DWITH_PDAL=OFF \
             -DWITH_CUSTOM_WIDGETS=ON \
             -DWITH_QWTPOLAR=OFF \
-            -DWITH_BINDINGS=OFF \
+            -DWITH_BINDINGS=ON \
             -DWITH_GRASS=OFF \
             -DUSE_CCACHE=ON \
             -S . \
