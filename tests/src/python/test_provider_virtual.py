@@ -292,7 +292,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         # check that it fails when a query has a wrong geometry column
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}&query={query}&geometry=geo", "vtab", "virtual",
                             QgsVectorLayer.LayerOptions(False))
-        self.assertTrue(l2.isValid())
+        self.assertFalse(l2.isValid())
 
         QgsProject.instance().removeMapLayer(l1.id())
 
