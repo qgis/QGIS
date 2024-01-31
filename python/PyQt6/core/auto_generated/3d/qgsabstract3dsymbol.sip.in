@@ -64,7 +64,7 @@ Returns the list of the vector layer geometry types which are compatible with th
 .. versionadded:: 3.16
 %End
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
       {
       Height,
       ExtrusionHeight,

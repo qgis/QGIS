@@ -37,7 +37,7 @@ open within the main QGIS application.
   public:
 
 
-    enum class DataDefinedServerProperty /BaseType=IntFlag/
+    enum class DataDefinedServerProperty /BaseType=IntEnum/
       {
       NoProperty,
       AllProperties,

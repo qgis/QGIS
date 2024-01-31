@@ -112,7 +112,7 @@ A base class for objects which belong to a layout.
   public:
 
 
-    enum class DataDefinedProperty /BaseType=IntFlag/
+    enum class DataDefinedProperty /BaseType=IntEnum/
       {
       NoProperty,
       AllProperties,
