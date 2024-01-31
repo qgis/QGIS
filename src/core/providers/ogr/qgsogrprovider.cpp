@@ -1190,6 +1190,8 @@ QgsRectangle QgsOgrProvider::extent() const
         if ( err != OGRERR_NONE )
         {
           QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent2D (ogr error: %1)" ).arg( err ), 1 );
+          mExtent2D.reset();
+          return QgsRectangle();
         }
       }
     }
@@ -1198,7 +1200,11 @@ QgsRectangle QgsOgrProvider::extent() const
       QgsDebugMsgLevel( QStringLiteral( "will apply slow default 2D extent computing" ), 3 );
       OGRErr err = mOgrLayer->computeExtent3DSlowly( mExtent2D.get() );
       if ( err != OGRERR_NONE )
+      {
         QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute slow extent2D (ogr error: %1)" ).arg( err ), 1 );
+        mExtent2D.reset();
+        return QgsRectangle();
+      }
     }
   }
 
@@ -1231,6 +1237,7 @@ QgsBox3D QgsOgrProvider::extent3D() const
                             mExtent2D->MaxX, mExtent2D->MaxY, std::numeric_limits<double>::quiet_NaN() );
     return mExtentRect;
   }
+
   if ( !mExtent3D )
   {
     QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
@@ -1241,28 +1248,30 @@ QgsBox3D QgsOgrProvider::extent3D() const
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting computing extent3D. subset: '%1'" ).arg( mSubsetString ), 3 );
 
-    bool hasBeenComputed = false;
-
-    mExtent3D->MinX = std::numeric_limits<double>::max();
-    mExtent3D->MinY = std::numeric_limits<double>::max();
-    mExtent3D->MinZ = std::numeric_limits<double>::max();
-    mExtent3D->MaxX = -std::numeric_limits<double>::max();
-    mExtent3D->MaxY = -std::numeric_limits<double>::max();
-    mExtent3D->MaxZ = -std::numeric_limits<double>::max();
-
-    if ( mForceRecomputeExtent && mValid && mWriteAccess &&
-         ( mGDALDriverName == QLatin1String( "GPKG" ) ||
-           mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ) &&
-         mOgrOrigLayer )
-    {
-      // works with unquoted layerName
-      QByteArray sql = QByteArray( "RECOMPUTE EXTENT ON " ) + mOgrOrigLayer->name();
-      QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ), 2 );
-      mOgrOrigLayer->ExecuteSQLNoReturn( sql );
-    }
-
     if ( mOgrLayer == mOgrOrigLayer.get() )
     {
+      bool hasBeenComputed = false;
+
+      mExtent3D->MinX = std::numeric_limits<double>::max();
+      mExtent3D->MinY = std::numeric_limits<double>::max();
+      mExtent3D->MinZ = std::numeric_limits<double>::max();
+      mExtent3D->MaxX = -std::numeric_limits<double>::max();
+      mExtent3D->MaxY = -std::numeric_limits<double>::max();
+      mExtent3D->MaxZ = -std::numeric_limits<double>::max();
+
+      if ( mForceRecomputeExtent && mValid && mWriteAccess &&
+           ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+             mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ) &&
+           mOgrOrigLayer )
+      {
+        // works with unquoted layerName
+        QByteArray sql = QByteArray( "RECOMPUTE EXTENT ON " ) + mOgrOrigLayer->name();
+        QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ), 2 );
+        mOgrOrigLayer->ExecuteSQLNoReturn( sql );
+      }
+      else
+        mOgrLayer->GetExtent( mExtent3D.get(), true ); // switch OLCFastGetExtent flag to TRUE
+
       if ( !mOgrLayer->TestCapability( OLCFastGetExtent ) )
       {
         QgsDebugMsgLevel( QStringLiteral( "WITHOUT OLCFastGetExtent" ), 3 );
@@ -1301,7 +1310,11 @@ QgsBox3D QgsOgrProvider::extent3D() const
         QgsDebugMsgLevel( QStringLiteral( "will apply slow default 3D extent computing" ), 3 );
         OGRErr err = mOgrLayer->computeExtent3DSlowly( mExtent3D.get() );
         if ( err != OGRERR_NONE )
+        {
           QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute slow extent3D (ogr error: %1)" ).arg( err ), 1 );
+          mExtent3D.reset();
+          return QgsBox3D();
+        }
       }
 
       if ( mExtent3D->MinZ == std::numeric_limits<double>::max() && mExtent3D->MaxZ == -std::numeric_limits<double>::max() )
@@ -1315,8 +1328,11 @@ QgsBox3D QgsOgrProvider::extent3D() const
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute extent3D (mOgrLayer != mOgrOrigLayer)" ), 1 );
+      mExtent3D.reset();
+      return QgsBox3D();
     }
-  }
+  } // ends if !mExtent3D
+
 
   QgsDebugMsgLevel( QStringLiteral( "Finished get extent3D: (%1, %2, %3 : %4, %5, %6)" )
                     .arg( mExtent3D->MinX ).arg( mExtent3D->MinY ).arg( mExtent3D->MinZ )
