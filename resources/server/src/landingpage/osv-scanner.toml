@@ -5,3 +5,7 @@ reason = "...the built application is meant to be run on the client and not on t
 [[IgnoredVulns]]
 id = "GHSA-rc47-6667-2j5j"
 reason = "...the built application is meant to be run on the client and not on the server... Look to https://github.com/qgis/QGIS/pull/55748#discussion_r1440141394"
+
+[[IgnoredVulns]]
+id = "GHSA-9c47-m6qq-7p4h"
+reason = "...the built application is meant to be run on the client and not on the server... Look to https://github.com/qgis/QGIS/pull/55748#discussion_r1440141394"
