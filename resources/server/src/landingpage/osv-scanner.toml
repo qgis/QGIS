@@ -1,0 +1,3 @@
+[[IgnoredVulns]]
+id = "GHSA-pfrx-2q88-qq97"
+reason = "...the built application is meant to be run on the client and not on the server... Look to https://github.com/qgis/QGIS/pull/55748#discussion_r1440141394"
