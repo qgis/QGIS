@@ -39,7 +39,6 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-PyQgsAggregateMappingWidget
 PyQgsPythonProvider
 PyQgsAggregateCalculator
 PyQgsAnnotation
@@ -58,7 +57,6 @@ PyQgsProject
 PyQgsProjectStyleSettings
 PyQgsFields
 PyQgsFieldModel
-PyQgsFieldMappingWidget
 PyQgsFloatingWidget
 PyQgsGeometryTest
 PyQgsJsonUtils
@@ -101,12 +99,10 @@ PyQgsProviderConnectionGpkg
 PyQgsProviderConnectionSpatialite
 PyQgsSensorModel
 PyQgsRasterAttributeTable
-PyQgsRasterAttributeTableModel
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
 PyQgsTextRenderer
 PyQgsOGRProvider
-PyQgsSimpleLineSymbolLayer
 PyQgsSpatialiteProvider
 PyQgsRasterRendererCreateSld
 PyQgsSymbolLayerCreateSld
@@ -119,18 +115,14 @@ PyQgsValidityResultsWidget
 PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
-PyQgsVectorLayerProfileGenerator
 PyQgsVectorLayerUtils
 PyQgsZonalStatistics
 PyQgsVirtualLayerProvider
 PyQgsLayerDefinition
 PyQgsWFSProvider
 PyQgsDBManagerGpkg
-PyQgsDBManagerSpatialite
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsAuxiliaryStorage
-PyQgsDBManagerSQLWindow
 PyQgsSelectiveMasking
 PyQgsServerApi
 PyQgsServerWMSGetFeatureInfo
