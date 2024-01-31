@@ -13,8 +13,7 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '04/09/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
-from qgis.PyQt.Qt import Qt
-from qgis.PyQt.QtCore import QModelIndex, QVariant
+from qgis.PyQt.QtCore import QModelIndex, QVariant, Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.core import Qgis, QgsRasterAttributeTable

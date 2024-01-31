@@ -276,15 +276,23 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
 
+    def visit_import(_node: ast.ImportFrom, _parent):
+        import_offsets[Offset(node.lineno, node.col_offset)] = (
+            node.module, set(name.name for name in node.names), node.end_lineno,
+            node.end_col_offset)
+        imported_modules.add(node.module)
+        for name in node.names:
+            if name.name in import_warnings:
+                print(f'{filename}: {import_warnings[name.name]}')
+        if _node.module == 'qgis.PyQt.Qt':
+            extra_imports['qgis.PyQt.QtCore'].update({'Qt'})
+            removed_imports['qgis.PyQt.Qt'].update({'Qt'})
+
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
         for node in ast.iter_child_nodes(parent):
             if isinstance(node, ast.ImportFrom):
-                import_offsets[Offset(node.lineno, node.col_offset)] = (node.module, set(name.name for name in node.names), node.end_lineno, node.end_col_offset)
-                imported_modules.add(node.module)
-                for name in node.names:
-                    if name.name in import_warnings:
-                        print(f'{filename}: {import_warnings[name.name]}')
+                visit_import(node, parent)
 
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
@@ -389,6 +397,41 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                                 prev_token_index -= 1
                             else:
                                 break
+
+                        none_forward = True
+                        current_index = prev_token_index + 1
+                        while True:
+                            if tokens[current_index].src in ('\n', ')'):
+                                break
+                            elif tokens[current_index].src.strip():
+                                none_forward = False
+                                break
+                            current_index += 1
+
+                        none_backward = True
+                        current_index = prev_token_index
+                        while True:
+                            if tokens[current_index].src in ('import',):
+                                break
+                            elif tokens[current_index].src.strip():
+                                none_backward = False
+                                break
+                            current_index -= 1
+                        if none_backward and none_forward:
+                            # no more imports from this module, remove whole import
+                            while True:
+                                if tokens[current_index].src in ('from',):
+                                    break
+                                current_index -= 1
+
+                            while True:
+                                if tokens[current_index].src in ('\n',):
+                                    tokens[current_index] = tokens[
+                                        current_index]._replace(src='')
+                                    break
+                                tokens[current_index] = tokens[current_index]._replace(src='')
+                                current_index += 1
+
                     else:
                         current_imports.add(import_)
 

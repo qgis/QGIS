@@ -10,13 +10,11 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QItemSelectionModel,
     QModelIndex,
-    QVariant,
-)
+    QVariant, Qt)
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
