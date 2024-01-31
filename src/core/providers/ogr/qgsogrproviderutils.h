@@ -426,6 +426,9 @@ class QgsOgrLayer
     //! Returns layer name
     QByteArray name();
 
+    //! Return OGRERR_NONE if lmyer is not sqlite OR if layer is sqlite but with spatialite, else returns OGRERR_UNSUPPORTED_OPERATION
+    OGRErr isSpatialiteEnabled();
+
     //! Wrapper of OGR_L_GetLayerCount
     int GetLayerCount();
 
