@@ -47,7 +47,7 @@ Stores the settings for rendering of all diagrams for a layer.
 
 
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
       {
       BackgroundColor,
       StrokeColor,

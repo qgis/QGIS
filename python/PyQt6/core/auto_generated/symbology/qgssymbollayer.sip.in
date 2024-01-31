@@ -95,7 +95,7 @@ class QgsSymbolLayer
   public:
 
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
     {
       Size,
       Angle,

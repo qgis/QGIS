@@ -50,7 +50,7 @@ relevant symbology elements to render them.
 %End
   public:
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
       {
       MinimumCalloutLength,
       OffsetFromAnchor,

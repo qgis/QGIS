@@ -61,7 +61,7 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
   public:
 
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
       {
       ZOffset,
       ExtrusionHeight,

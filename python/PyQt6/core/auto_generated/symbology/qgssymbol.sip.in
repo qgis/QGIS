@@ -99,7 +99,7 @@ Returns the default symbol type required for the specified geometry ``type``.
 %End
 
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
     {
       Opacity,
     };
