@@ -321,9 +321,9 @@ bool QgsDelimitedTextProvider::createSpatialIndex()
   return true;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsDelimitedTextProvider::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsDelimitedTextProvider::hasSpatialIndex() const
 {
-  return mSpatialIndex ? QgsFeatureSource::SpatialIndexPresent : QgsFeatureSource::SpatialIndexNotPresent;
+  return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
 }
 
 // Really want to merge scanFile and rescan into single code.  Currently the reason

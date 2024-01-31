@@ -231,6 +231,20 @@ The development version
       UnknownCount,
     };
 
+    enum class SpatialIndexPresence /BaseType=IntEnum/
+      {
+      Unknown,
+      NotPresent,
+      Present,
+    };
+
+    enum class FeatureAvailability /BaseType=IntEnum/
+      {
+      NoFeaturesAvailable,
+      FeaturesAvailable,
+      FeaturesMaybeAvailable
+    };
+
     enum class VectorDataProviderAttributeEditCapability /BaseType=IntFlag/
     {
       EditAlias,
@@ -2423,6 +2437,139 @@ The development version
       RA_Q3,
     };
 
+
+    enum class ZonalStatistic /BaseType=IntFlag/
+    {
+      Count,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      Variance,
+      All,
+      Default,
+    };
+
+    typedef QFlags<Qgis::ZonalStatistic> ZonalStatistics;
+
+
+    enum class ZonalStatisticResult /BaseType=IntEnum/
+    {
+      Success,
+      LayerTypeWrong,
+      LayerInvalid,
+      RasterInvalid,
+      RasterBandInvalid,
+      FailedToCreateField,
+      Canceled
+    };
+
+    enum class Aggregate /BaseType=IntEnum/
+      {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Range,
+      Minority,
+      Majority,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      StringMinimumLength,
+      StringMaximumLength,
+      StringConcatenate,
+      GeometryCollect,
+      ArrayAggregate,
+      StringConcatenateUnique
+    };
+
+    enum class Statistic /BaseType=IntFlag/
+    {
+      Count,
+      CountMissing,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      First,
+      Last,
+      All
+    };
+
+    typedef QFlags<Qgis::Statistic> Statistics;
+
+
+    enum class DateTimeStatistic /BaseType=IntFlag/
+    {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Range,
+      All,
+    };
+
+    typedef QFlags<Qgis::DateTimeStatistic> DateTimeStatistics;
+
+
+    enum class StringStatistic /BaseType=IntFlag/
+    {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      MinimumLength,
+      MaximumLength,
+      MeanLength,
+      Minority,
+      Majority,
+      All,
+    };
+
+    typedef QFlags<Qgis::StringStatistic> StringStatistics;
+
+
+    enum class RasterBandStatistic /BaseType=IntFlag/
+    {
+      NoStatistic,
+      Min,
+      Max,
+      Range,
+      Sum,
+      Mean,
+      StdDev,
+      SumOfSquares,
+      All
+    };
+
+    typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2600,6 +2747,16 @@ QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, 
 QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
 
 QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> operator|(Qgis::ProcessingFeatureSourceDefinitionFlag f1, QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> f2);
+
+QFlags<Qgis::ZonalStatistic> operator|(Qgis::ZonalStatistic f1, QFlags<Qgis::ZonalStatistic> f2);
+
+QFlags<Qgis::Statistic> operator|(Qgis::Statistic f1, QFlags<Qgis::Statistic> f2);
+
+QFlags<Qgis::DateTimeStatistic> operator|(Qgis::DateTimeStatistic f1, QFlags<Qgis::DateTimeStatistic> f2);
+
+QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::StringStatistic> f2);
+
+QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
 
 
 

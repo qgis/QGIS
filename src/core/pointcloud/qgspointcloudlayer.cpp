@@ -905,19 +905,19 @@ void QgsPointCloudLayer::calculateStatistics()
     for ( const QString &attribute : coordinateAttributes )
     {
       QgsPointCloudAttributeStatistics s;
-      QVariant min = index->metadataStatistic( attribute, QgsStatisticalSummary::Statistic::Min );
-      QVariant max = index->metadataStatistic( attribute, QgsStatisticalSummary::Statistic::Max );
+      QVariant min = index->metadataStatistic( attribute, Qgis::Statistic::Min );
+      QVariant max = index->metadataStatistic( attribute, Qgis::Statistic::Max );
       if ( !min.isValid() )
         continue;
       s.minimum = min.toDouble();
       s.maximum = max.toDouble();
-      s.count = index->metadataStatistic( attribute, QgsStatisticalSummary::Statistic::Count ).toInt();
-      s.mean = index->metadataStatistic( attribute, QgsStatisticalSummary::Statistic::Mean ).toInt();
-      s.stDev = index->metadataStatistic( attribute, QgsStatisticalSummary::Statistic::StDev ).toInt();
+      s.count = index->metadataStatistic( attribute, Qgis::Statistic::Count ).toInt();
+      s.mean = index->metadataStatistic( attribute, Qgis::Statistic::Mean ).toInt();
+      s.stDev = index->metadataStatistic( attribute, Qgis::Statistic::StDev ).toInt();
       QVariantList classes = index->metadataClasses( attribute );
       for ( const QVariant &c : classes )
       {
-        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, QgsStatisticalSummary::Statistic::Count ).toInt();
+        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, Qgis::Statistic::Count ).toInt();
       }
       statsMap[ attribute ] = s;
     }

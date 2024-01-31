@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgsdataprovider.h"
 #include "qgspointcloudattribute.h"
-#include "qgsstatisticalsummary.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 #include "qgspoint.h"
@@ -250,7 +249,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * If no matching precalculated statistic is available then an invalid variant will be returned.
      */
-    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    virtual QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
 #else
 
     /**
@@ -263,7 +262,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \throws ValueError if no matching precalculated statistic is available for the attribute.
      */
-    SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    SIP_PYOBJECT metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
     % MethodCode
     {
       const QVariant res = sipCpp->metadataStatistic( *a0, a1 );
@@ -304,7 +303,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * If no matching precalculated statistic is available then an invalid variant will be returned.
      */
-    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
 
 #else
 
@@ -317,7 +316,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \throws ValueError if no matching precalculated statistic is available for the attribute.
      */
-    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
     % MethodCode
     {
       const QVariant res = sipCpp->metadataClassStatistic( *a0, *a1, a2 );

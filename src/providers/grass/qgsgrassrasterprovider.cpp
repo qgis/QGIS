@@ -333,10 +333,10 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats
   QgsDebugMsgLevel( QString( "count = %1" ).arg( myRasterBandStats.elementCount ), 2 );
   QgsDebugMsgLevel( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ), 2 );
 
-  myRasterBandStats.statsGathered = QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                                    QgsRasterBandStats::Statistic::Range | QgsRasterBandStats::Statistic::Mean |
-                                    QgsRasterBandStats::Statistic::Sum | QgsRasterBandStats::Statistic::SumOfSquares |
-                                    QgsRasterBandStats::Statistic::StdDev;
+  myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                                    Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean |
+                                    Qgis::RasterBandStatistic::Sum | Qgis::RasterBandStatistic::SumOfSquares |
+                                    Qgis::RasterBandStatistic::StdDev;
 
   mStatistics.append( myRasterBandStats );
   return myRasterBandStats;

@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QString>
 #include <QVector>
 
@@ -36,26 +37,9 @@ class CORE_EXPORT QgsRasterBandStats
 {
   public:
 
-    /**
-     * Available statistics
-     */
-    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterBandStats, Stats ) : int SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoStatistic = 0, //!< No statistic
-      Min = 1, //!< Minimum
-      Max = 1 << 1, //!< Maximum
-      Range = 1 << 2, //!< Range
-      Sum = 1 << 3, //!< Sum
-      Mean = 1 << 4, //!< Mean
-      StdDev = 1 << 5, //!< Standard deviation
-      SumOfSquares = 1 << 6, //!< Sum of squares
-      All = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares //!< All available statistics
-    };
-    Q_DECLARE_FLAGS( Statistics, Statistic )
-
     QgsRasterBandStats()
     {
-      statsGathered = static_cast< int >( Statistic::NoStatistic );
+      statsGathered = static_cast< int >( Qgis::RasterBandStatistic::NoStatistic );
       minimumValue = std::numeric_limits<double>::max();
       maximumValue = -std::numeric_limits<double>::max();
       range = 0.0;
@@ -126,6 +110,5 @@ class CORE_EXPORT QgsRasterBandStats
     //! \brief Extent used to calc statistics
     QgsRectangle extent;
 };
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRasterBandStats::Statistics )
 
 #endif

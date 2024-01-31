@@ -162,7 +162,7 @@ bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     mPointAttributes.append( mClassFieldIndex );
   }
 
-  if ( mPointSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( mPointSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for points layer, performance will be severely degraded" ) );
 
   return true;

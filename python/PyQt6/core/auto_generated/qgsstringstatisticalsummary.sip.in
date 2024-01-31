@@ -29,31 +29,14 @@ specifying the statistic in the constructor or via :py:func:`~setStatistics`.
 %End
   public:
 
-    enum class Statistic /BaseType=IntFlag/
-    {
-      Count,
-      CountDistinct,
-      CountMissing,
-      Min,
-      Max,
-      MinimumLength,
-      MaximumLength,
-      MeanLength,
-      Minority,
-      Majority,
-      All,
-    };
-    typedef QFlags<QgsStringStatisticalSummary::Statistic> Statistics;
-
-
-    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::Statistic::All );
+    QgsStringStatisticalSummary( Qgis::StringStatistics stats = Qgis::StringStatistic::All );
 %Docstring
 Constructor for :py:class:`QgsStringStatistics`
 
 :param stats: flags for statistics to calculate
 %End
 
-    Statistics statistics() const;
+    Qgis::StringStatistics statistics() const;
 %Docstring
 Returns flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
@@ -61,7 +44,7 @@ are always calculated (e.g., count).
 .. seealso:: :py:func:`setStatistics`
 %End
 
-    void setStatistics( QgsStringStatisticalSummary::Statistics stats );
+    void setStatistics( Qgis::StringStatistics stats );
 %Docstring
 Sets flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
@@ -157,7 +140,7 @@ any calculated string statistics.
 .. seealso:: :py:func:`addString`
 %End
 
-    QVariant statistic( QgsStringStatisticalSummary::Statistic stat ) const;
+    QVariant statistic( Qgis::StringStatistic stat ) const;
 %Docstring
 Returns the value of a specified statistic
 
@@ -241,7 +224,7 @@ initial values order.
 .. versionadded:: 3.14
 %End
 
-    static QString displayName( QgsStringStatisticalSummary::Statistic statistic );
+    static QString displayName( Qgis::StringStatistic statistic );
 %Docstring
 Returns the friendly display name for a statistic
 
@@ -249,9 +232,6 @@ Returns the friendly display name for a statistic
 %End
 
 };
-
-QFlags<QgsStringStatisticalSummary::Statistic> operator|(QgsStringStatisticalSummary::Statistic f1, QFlags<QgsStringStatisticalSummary::Statistic> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

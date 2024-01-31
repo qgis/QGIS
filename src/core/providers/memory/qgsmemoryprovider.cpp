@@ -779,9 +779,9 @@ bool QgsMemoryProvider::createSpatialIndex()
   return true;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
 {
-  return mSpatialIndex ? SpatialIndexPresent : SpatialIndexNotPresent;
+  return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
 }
 
 QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const

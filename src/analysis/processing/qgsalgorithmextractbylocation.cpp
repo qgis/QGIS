@@ -122,7 +122,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
     QgsProcessingFeedback *feedback,
     const QgsFeatureIds &skipTargetFeatureIds )
 {
-  if ( intersectSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( intersectSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
 
   QgsFeatureIds foundSet;
@@ -229,7 +229,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
     QgsProcessingFeedback *feedback,
     const QgsFeatureIds &skipTargetFeatureIds )
 {
-  if ( targetSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( targetSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
   // build a list of 'reversed' predicates, because in this function

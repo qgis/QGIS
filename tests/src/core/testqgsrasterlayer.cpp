@@ -376,8 +376,8 @@ void TestQgsRasterLayer::checkDimensions()
 void TestQgsRasterLayer::checkStats()
 {
   QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
-                                    QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                                    QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev );
+                                    Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                                    Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
   QCOMPARE( mpRasterLayer->width(), 10 );
   QCOMPARE( mpRasterLayer->height(), 10 );
   //QCOMPARE( myStatistics.elementCount, 100 );
@@ -390,8 +390,8 @@ void TestQgsRasterLayer::checkStats()
 
   // limited extent
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
-                 QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                 QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ) );
+                 Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                 Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ) );
 
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 7.0 );
@@ -400,8 +400,8 @@ void TestQgsRasterLayer::checkStats()
 
   // with sample size
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
-                 QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                 QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ), 10 );
+                 Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                 Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ), 10 );
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 7.0 );
   QCOMPARE( myStatistics.elementCount, 12ULL );
@@ -410,8 +410,8 @@ void TestQgsRasterLayer::checkStats()
 
   // extremely limited extent - ~1 px size
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
-                 QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                 QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ) );
+                 Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                 Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ) );
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 3.0 );
   QGSCOMPARENEAR( myStatistics.mean, 2.600000, 4 * std::numeric_limits<double>::epsilon() );
@@ -419,8 +419,8 @@ void TestQgsRasterLayer::checkStats()
 
   // extremely limited extent - ~1 px size - with sample size
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
-                 QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                 QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ), 6 );
+                 Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                 Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ), 6 );
   QCOMPARE( myStatistics.minimumValue, 2.0 );
   QCOMPARE( myStatistics.maximumValue, 3.0 );
   QCOMPARE( myStatistics.elementCount, 2ULL );
@@ -446,8 +446,8 @@ void TestQgsRasterLayer::checkScaleOffset()
 
   QFile::remove( myRasterFileInfo.filePath() + ".aux.xml" ); // remove cached stats
   const QgsRasterBandStats myStatistics = myRasterLayer->dataProvider()->bandStatistics( 1,
-                                          QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max |
-                                          QgsRasterBandStats::Statistic::Mean | QgsRasterBandStats::Statistic::StdDev );
+                                          Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                                          Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev );
 
   const QString oldReport = mReport;
 

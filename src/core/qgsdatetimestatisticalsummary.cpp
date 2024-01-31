@@ -29,7 +29,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats )
+QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( Qgis::DateTimeStatistics stats )
   : mStatistics( stats )
 {
   reset();
@@ -99,11 +99,11 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime, boo
   if ( !dateTime.isValid() || isNull )
     mCountMissing++;
 
-  if ( mStatistics & Statistic::CountDistinct )
+  if ( mStatistics & Qgis::DateTimeStatistic::CountDistinct )
   {
     mValues << dateTime;
   }
-  if ( mStatistics & Statistic::Min || mStatistics & Statistic::Range )
+  if ( mStatistics & Qgis::DateTimeStatistic::Min || mStatistics & Qgis::DateTimeStatistic::Range )
   {
     if ( mMin.isValid() && dateTime.isValid() )
     {
@@ -114,7 +114,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime, boo
       mMin = dateTime;
     }
   }
-  if ( mStatistics & Statistic::Max || mStatistics & Statistic::Range )
+  if ( mStatistics & Qgis::DateTimeStatistic::Max || mStatistics & Qgis::DateTimeStatistic::Range )
   {
     if ( mMax.isValid() && dateTime.isValid() )
     {
@@ -127,45 +127,45 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime, boo
   }
 }
 
-QVariant QgsDateTimeStatisticalSummary::statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const
+QVariant QgsDateTimeStatisticalSummary::statistic( Qgis::DateTimeStatistic stat ) const
 {
   switch ( stat )
   {
-    case Statistic::Count:
+    case Qgis::DateTimeStatistic::Count:
       return mCount;
-    case Statistic::CountDistinct:
+    case Qgis::DateTimeStatistic::CountDistinct:
       return mValues.count();
-    case Statistic::CountMissing:
+    case Qgis::DateTimeStatistic::CountMissing:
       return mCountMissing;
-    case Statistic::Min:
+    case Qgis::DateTimeStatistic::Min:
       return mIsTimes ? QVariant( mMin.time() ) : QVariant( mMin );
-    case Statistic::Max:
+    case Qgis::DateTimeStatistic::Max:
       return mIsTimes ? QVariant( mMax.time() ) : QVariant( mMax );
-    case Statistic::Range:
+    case Qgis::DateTimeStatistic::Range:
       return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( mMax - mMin );
-    case Statistic::All:
+    case Qgis::DateTimeStatistic::All:
       return 0;
   }
   return 0;
 }
 
-QString QgsDateTimeStatisticalSummary::displayName( QgsDateTimeStatisticalSummary::Statistic statistic )
+QString QgsDateTimeStatisticalSummary::displayName( Qgis::DateTimeStatistic statistic )
 {
   switch ( statistic )
   {
-    case Statistic::Count:
+    case Qgis::DateTimeStatistic::Count:
       return QObject::tr( "Count" );
-    case Statistic::CountDistinct:
+    case Qgis::DateTimeStatistic::CountDistinct:
       return QObject::tr( "Count (distinct)" );
-    case Statistic::CountMissing:
+    case Qgis::DateTimeStatistic::CountMissing:
       return QObject::tr( "Count (missing)" );
-    case Statistic::Min:
+    case Qgis::DateTimeStatistic::Min:
       return QObject::tr( "Minimum (earliest)" );
-    case Statistic::Max:
+    case Qgis::DateTimeStatistic::Max:
       return QObject::tr( "Maximum (latest)" );
-    case Statistic::Range:
+    case Qgis::DateTimeStatistic::Range:
       return QObject::tr( "Range (interval)" );
-    case Statistic::All:
+    case Qgis::DateTimeStatistic::All:
       return QString();
   }
   return QString();

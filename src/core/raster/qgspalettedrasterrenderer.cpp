@@ -708,7 +708,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     else
     {
       // get min and max value from raster
-      const QgsRasterBandStats stats = raster->bandStatistics( bandNumber, QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max, QgsRectangle(), 0, feedback );
+      const QgsRasterBandStats stats = raster->bandStatistics( bandNumber, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, QgsRectangle(), 0, feedback );
       if ( feedback && feedback->isCanceled() )
         return ClassData();
 

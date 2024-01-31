@@ -34,33 +34,6 @@ to a data provider for remote calculation.
       QSet<QVariant::Type> supportedTypes;
     };
 
-
-    enum class Aggregate /BaseType=IntEnum/
-    {
-      Count,
-      CountDistinct,
-      CountMissing,
-      Min,
-      Max,
-      Sum,
-      Mean,
-      Median,
-      StDev,
-      StDevSample,
-      Range,
-      Minority,
-      Majority,
-      FirstQuartile,
-      ThirdQuartile,
-      InterQuartileRange,
-      StringMinimumLength,
-      StringMaximumLength,
-      StringConcatenate,
-      GeometryCollect,
-      ArrayAggregate,
-      StringConcatenateUnique
-    };
-
     struct AggregateParameters
     {
 
@@ -139,7 +112,7 @@ Returns the delimiter used for joining values with the StringConcatenate aggrega
 .. seealso:: :py:func:`setDelimiter`
 %End
 
-    QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
+    QVariant calculate( Qgis::Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = 0, bool *ok = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates the value of an aggregate.
@@ -155,7 +128,7 @@ Calculates the value of an aggregate.
 :return: calculated aggregate value
 %End
 
-    static Aggregate stringToAggregate( const QString &string, bool *ok = 0 );
+    static Qgis::Aggregate stringToAggregate( const QString &string, bool *ok = 0 );
 %Docstring
 Converts a string to a aggregate type.
 
@@ -165,7 +138,7 @@ Converts a string to a aggregate type.
 :return: aggregate type
 %End
 
-    static QString displayName( Aggregate aggregate );
+    static QString displayName( Qgis::Aggregate aggregate );
 %Docstring
 Returns the friendly display name for a ``aggregate``.
 

@@ -95,7 +95,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     QgsFields fields() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
     bool createSpatialIndex() override;
-    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
+    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
     QString name() const override;
     QString description() const override;
     QgsRectangle extent() const override;

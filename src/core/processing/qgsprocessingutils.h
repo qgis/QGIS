@@ -710,7 +710,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
 
-    QgsFeatureSource::FeatureAvailability hasFeatures() const override;
+    Qgis::FeatureAvailability hasFeatures() const override;
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsCoordinateReferenceSystem sourceCrs() const override;
@@ -723,7 +723,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QVariant maximumValue( int fieldIndex ) const override;
     QgsRectangle sourceExtent() const override;
     QgsFeatureIds allFeatureIds() const override;
-    SpatialIndexPresence hasSpatialIndex() const override;
+    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * Returns an expression context scope suitable for this source.
@@ -755,7 +755,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     Qgis::WkbType mSourceWkbType = Qgis::WkbType::Unknown;
     QString mSourceName;
     QgsRectangle mSourceExtent;
-    QgsFeatureSource::SpatialIndexPresence mSourceSpatialIndexPresence = QgsFeatureSource::SpatialIndexPresence::SpatialIndexUnknown;
+    Qgis::SpatialIndexPresence mSourceSpatialIndexPresence = Qgis::SpatialIndexPresence::Unknown;
 
     Qgis::InvalidGeometryCheck mInvalidGeometryCheck = Qgis::InvalidGeometryCheck::NoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;

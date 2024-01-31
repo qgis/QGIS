@@ -3725,16 +3725,16 @@ Qgis::VectorDataProviderAttributeEditCapabilities QgsPostgresProvider::attribute
   return Qgis::VectorDataProviderAttributeEditCapability::EditComment;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsPostgresProvider::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsPostgresProvider::hasSpatialIndex() const
 {
   QgsPostgresProviderConnection conn( mUri.uri(), QVariantMap() );
   try
   {
-    return conn.spatialIndexExists( mUri.schema(), mUri.table(), mUri.geometryColumn() ) ? SpatialIndexPresent : SpatialIndexNotPresent;
+    return conn.spatialIndexExists( mUri.schema(), mUri.table(), mUri.geometryColumn() ) ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
   }
   catch ( QgsProviderConnectionException & )
   {
-    return SpatialIndexUnknown;
+    return Qgis::SpatialIndexPresence::Unknown;
   }
 }
 

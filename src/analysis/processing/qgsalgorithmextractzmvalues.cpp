@@ -20,24 +20,24 @@
 
 ///@cond PRIVATE
 
-const std::vector< QgsStatisticalSummary::Statistic > STATS
+const std::vector< Qgis::Statistic > STATS
 {
-  QgsStatisticalSummary::Statistic::First,
-  QgsStatisticalSummary::Statistic::Last,
-  QgsStatisticalSummary::Statistic::Count,
-  QgsStatisticalSummary::Statistic::Sum,
-  QgsStatisticalSummary::Statistic::Mean,
-  QgsStatisticalSummary::Statistic::Median,
-  QgsStatisticalSummary::Statistic::StDev,
-  QgsStatisticalSummary::Statistic::Min,
-  QgsStatisticalSummary::Statistic::Max,
-  QgsStatisticalSummary::Statistic::Range,
-  QgsStatisticalSummary::Statistic::Minority,
-  QgsStatisticalSummary::Statistic::Majority,
-  QgsStatisticalSummary::Statistic::Variety,
-  QgsStatisticalSummary::Statistic::FirstQuartile,
-  QgsStatisticalSummary::Statistic::ThirdQuartile,
-  QgsStatisticalSummary::Statistic::InterQuartileRange,
+  Qgis::Statistic::First,
+  Qgis::Statistic::Last,
+  Qgis::Statistic::Count,
+  Qgis::Statistic::Sum,
+  Qgis::Statistic::Mean,
+  Qgis::Statistic::Median,
+  Qgis::Statistic::StDev,
+  Qgis::Statistic::Min,
+  Qgis::Statistic::Max,
+  Qgis::Statistic::Range,
+  Qgis::Statistic::Minority,
+  Qgis::Statistic::Majority,
+  Qgis::Statistic::Variety,
+  Qgis::Statistic::FirstQuartile,
+  Qgis::Statistic::ThirdQuartile,
+  Qgis::Statistic::InterQuartileRange,
 };
 
 QString QgsExtractZMValuesAlgorithmBase::group() const
@@ -69,7 +69,7 @@ void QgsExtractZMValuesAlgorithmBase::initParameters( const QVariantMap & )
 {
   QStringList statChoices;
   statChoices.reserve( STATS.size() );
-  for ( QgsStatisticalSummary::Statistic stat : STATS )
+  for ( Qgis::Statistic stat : STATS )
   {
     statChoices << QgsStatisticalSummary::displayName( stat );
   }
@@ -91,12 +91,12 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
   mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "SUMMARIES" ), context );
-  mStats = QgsStatisticalSummary::Statistics();
+  mStats = Qgis::Statistics();
   for ( int s : stats )
   {
     mStats |= STATS.at( s );
     mSelectedStats << STATS.at( s );
-    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == QgsStatisticalSummary::Statistic::Count || STATS.at( s ) == QgsStatisticalSummary::Statistic::Variety ? QVariant::Int : QVariant::Double ) );
+    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == Qgis::Statistic::Count || STATS.at( s ) == Qgis::Statistic::Variety ? QVariant::Int : QVariant::Double ) );
   }
 
   return true;
@@ -118,7 +118,7 @@ QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature
     for ( auto it = g.vertices_begin(); it != g.vertices_end(); ++it )
     {
       stat.addValue( mExtractValFunc( *it ) );
-      if ( mStats == QgsStatisticalSummary::Statistic::First )
+      if ( mStats == Qgis::Statistics( Qgis::Statistic::First ) )
       {
         // only retrieving first vertex info (default behavior), so short cut and
         // don't iterate remaining vertices
@@ -127,7 +127,7 @@ QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature
     }
     stat.finalize();
 
-    for ( QgsStatisticalSummary::Statistic s : std::as_const( mSelectedStats ) )
+    for ( Qgis::Statistic s : std::as_const( mSelectedStats ) )
       attrs.append( stat.statistic( s ) );
   }
   f.setAttributes( attrs );

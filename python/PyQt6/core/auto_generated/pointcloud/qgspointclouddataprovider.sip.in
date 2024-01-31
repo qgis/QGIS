@@ -178,7 +178,7 @@ Returns whether the dataset contains statistics metadata
 %End
 
 
-    SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    SIP_PYOBJECT metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
 %Docstring
 Returns a statistic for the specified ``attribute``, taken only from the metadata of the point cloud
 data source.
@@ -217,7 +217,7 @@ in the metadata.
 
 
 
-    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
 %Docstring
 Returns a statistic for one class ``value`` from the specified ``attribute``, taken only from the metadata of the point cloud
 data source.

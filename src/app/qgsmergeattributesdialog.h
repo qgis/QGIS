@@ -21,7 +21,6 @@
 
 #include "ui_qgsmergeattributesdialogbase.h"
 #include "qgsfeature.h"
-#include "qgsstatisticalsummary.h"
 #include "qgsfields.h"
 #include "qgis_app.h"
 
@@ -108,7 +107,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
      * Calculates a summary statistic for a column. Returns null if no valid numerical
      * values found in column.
      */
-    QVariant calcStatistic( int col, QgsStatisticalSummary::Statistic stat );
+    QVariant calcStatistic( int col, Qgis::Statistic stat );
 
     //! Sets mSelectionRubberBand to a new feature
     void createRubberBandForFeature( QgsFeatureId featureId );
@@ -125,7 +124,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QMap< QString, int > mFieldToColumnMap;
     bool mUpdating = false;
 
-    static const QList< QgsStatisticalSummary::Statistic > DISPLAY_STATS;
+    static const QList< Qgis::Statistic > DISPLAY_STATS;
 
 };
 
