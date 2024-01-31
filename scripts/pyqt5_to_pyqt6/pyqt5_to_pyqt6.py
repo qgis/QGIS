@@ -234,7 +234,27 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     assert tokens[i].src == ','
                     tokens[i] = tokens[i]._replace(src='),')
 
-                custom_updates[Offset(node.lineno, node.col_offset)] = _fix_qdatetime_construct
+                custom_updates[Offset(_node.lineno, _node.col_offset)] = _fix_qdatetime_construct
+            elif len(_node.args) == 1 and isinstance(_node.args[0], ast.Call) and _node.args[0].func.id == 'QDate':
+                # QDateTime(QDate(..)) doesn't work anymore,
+                # so port to more reliable QDateTime(QDate(...), QTime(0,0,0)) form
+                extra_imports['qgis.PyQt.QtCore'].update({'QTime'})
+
+                def _fix_qdatetime_construct(start_index: int, tokens):
+                    assert tokens[start_index].src == 'QDateTime'
+                    assert tokens[start_index + 1].src == '('
+                    assert tokens[start_index + 2].src == 'QDate'
+                    assert tokens[start_index + 3].src == '('
+                    i = start_index + 4
+                    while tokens[i].offset < Offset(_node.args[0].end_lineno,
+                                                    _node.args[0].end_col_offset):
+                        i += 1
+
+                    assert tokens[i - 1].src == ')'
+                    tokens[i - 1] = tokens[i - 1]._replace(src='), QTime(0, 0, 0)')
+
+                custom_updates[Offset(_node.lineno,
+                                      _node.col_offset)] = _fix_qdatetime_construct
 
     def visit_attribute(_node: ast.Attribute, _parent):
         if isinstance(_node.value, ast.Name):
