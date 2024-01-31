@@ -28,7 +28,7 @@ specifying the statistic in the constructor or via :py:func:`~setStatistics`.
 %End
   public:
 
-    enum Statistic
+    enum class Statistic
     {
       Count,
       CountMissing,
@@ -53,7 +53,8 @@ specifying the statistic in the constructor or via :py:func:`~setStatistics`.
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
 
 
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
+
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::Statistic::All );
 %Docstring
 Constructor for QgsStatisticalSummary
 

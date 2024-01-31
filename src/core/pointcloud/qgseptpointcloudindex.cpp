@@ -376,37 +376,37 @@ QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgs
   const AttributeStatistics &stats = mMetadataStats[ attribute ];
   switch ( statistic )
   {
-    case QgsStatisticalSummary::Count:
+    case QgsStatisticalSummary::Statistic::Count:
       return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
 
-    case QgsStatisticalSummary::Mean:
+    case QgsStatisticalSummary::Statistic::Mean:
       return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
 
-    case QgsStatisticalSummary::StDev:
+    case QgsStatisticalSummary::Statistic::StDev:
       return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
 
-    case QgsStatisticalSummary::Min:
+    case QgsStatisticalSummary::Statistic::Min:
       return stats.minimum;
 
-    case QgsStatisticalSummary::Max:
+    case QgsStatisticalSummary::Statistic::Max:
       return stats.maximum;
 
-    case QgsStatisticalSummary::Range:
+    case QgsStatisticalSummary::Statistic::Range:
       return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
 
-    case QgsStatisticalSummary::CountMissing:
-    case QgsStatisticalSummary::Sum:
-    case QgsStatisticalSummary::Median:
-    case QgsStatisticalSummary::StDevSample:
-    case QgsStatisticalSummary::Minority:
-    case QgsStatisticalSummary::Majority:
-    case QgsStatisticalSummary::Variety:
-    case QgsStatisticalSummary::FirstQuartile:
-    case QgsStatisticalSummary::ThirdQuartile:
-    case QgsStatisticalSummary::InterQuartileRange:
-    case QgsStatisticalSummary::First:
-    case QgsStatisticalSummary::Last:
-    case QgsStatisticalSummary::All:
+    case QgsStatisticalSummary::Statistic::CountMissing:
+    case QgsStatisticalSummary::Statistic::Sum:
+    case QgsStatisticalSummary::Statistic::Median:
+    case QgsStatisticalSummary::Statistic::StDevSample:
+    case QgsStatisticalSummary::Statistic::Minority:
+    case QgsStatisticalSummary::Statistic::Majority:
+    case QgsStatisticalSummary::Statistic::Variety:
+    case QgsStatisticalSummary::Statistic::FirstQuartile:
+    case QgsStatisticalSummary::Statistic::ThirdQuartile:
+    case QgsStatisticalSummary::Statistic::InterQuartileRange:
+    case QgsStatisticalSummary::Statistic::First:
+    case QgsStatisticalSummary::Statistic::Last:
+    case QgsStatisticalSummary::Statistic::All:
       return QVariant();
   }
   return QVariant();
@@ -425,7 +425,7 @@ QVariantList QgsEptPointCloudIndex::metadataClasses( const QString &attribute ) 
 
 QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
 {
-  if ( statistic != QgsStatisticalSummary::Count )
+  if ( statistic != QgsStatisticalSummary::Statistic::Count )
     return QVariant();
 
   const QMap< int, int > values =  mAttributeClasses.value( attribute );

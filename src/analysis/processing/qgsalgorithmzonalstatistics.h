@@ -56,7 +56,7 @@ class QgsZonalStatisticsAlgorithm : public QgsProcessingAlgorithm
     std::unique_ptr< QgsRasterInterface > mInterface;
     int mBand = 1;
     QString mPrefix;
-    QgsZonalStatistics::Statistics mStats = QgsZonalStatistics::All;
+    QgsZonalStatistics::Statistics mStats = QgsZonalStatistics::Statistic::All;
     QgsCoordinateReferenceSystem mCrs;
     double mPixelSizeX = 0;
     double mPixelSizeY = 0;

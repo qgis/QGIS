@@ -39,9 +39,9 @@ class CORE_EXPORT QgsRasterBandStats
     /**
      * Available statistics
      */
-    enum Stats SIP_ENUM_BASETYPE( IntFlag )
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterBandStats, Stats ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      None = 0, //!< No statistic
+      NoStatistic = 0, //!< No statistic
       Min = 1, //!< Minimum
       Max = 1 << 1, //!< Maximum
       Range = 1 << 2, //!< Range
@@ -51,10 +51,11 @@ class CORE_EXPORT QgsRasterBandStats
       SumOfSquares = 1 << 6, //!< Sum of squares
       All = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares //!< All available statistics
     };
+    Q_DECLARE_FLAGS( Statistics, Statistic )
 
     QgsRasterBandStats()
     {
-      statsGathered = None;
+      statsGathered = static_cast< int >( Statistic::NoStatistic );
       minimumValue = std::numeric_limits<double>::max();
       maximumValue = -std::numeric_limits<double>::max();
       range = 0.0;
@@ -125,4 +126,6 @@ class CORE_EXPORT QgsRasterBandStats
     //! \brief Extent used to calc statistics
     QgsRectangle extent;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRasterBandStats::Statistics )
+
 #endif

@@ -232,7 +232,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}&geometry=geometry:3:4326&query={query}&uid=OBJECTID", "vtab",
                             "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.Polygon)
 
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
@@ -245,7 +245,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}&query={query}&uid=OBJECTID", "vtab", "virtual",
                             QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.MultiPolygon)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
@@ -258,7 +258,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}&query={query}&uid=OBJECTID&geometry=geom:3:4326", "vtab",
                             "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.Polygon)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
@@ -270,7 +270,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}&query={query}&uid=OBJECTID", "vtab", "virtual",
                             QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.MultiPolygon)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
@@ -283,7 +283,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}:ww&query={query}&uid=ObJeCtId&nogeometry", "vtab", "virtual",
                             QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.NoGeometry)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         self.assertEqual(ref_sum, ref_sum2)
@@ -319,7 +319,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l2 = QgsVectorLayer(f"?layer_ref={l1.id()}:vt&query={query}&uid=ObJeCtId&nogeometry", "vtab", "virtual",
                             QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.NoGeometry)
 
         QgsProject.instance().removeMapLayer(l1.id())
 
@@ -341,7 +341,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
             f"?layer_ref={l1.id()}&layer_ref={l2.id()}&uid=id&query={query}&geometry=geometry:1:4326", "vtab",
             "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l3.isValid())
-        self.assertEqual(l3.dataProvider().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l3.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(l3.dataProvider().fields().count(), 2)
         ref_sum2 = sum(f.id() for f in l3.getFeatures())
         self.assertEqual(ref_sum, ref_sum2)
@@ -422,7 +422,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         df.setGeometryWkbType(QgsWkbTypes.Type.NoGeometry)
         l2 = QgsVectorLayer(df.toString(), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.NoGeometry)
 
     def test_reopen(self):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
@@ -433,7 +433,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.MultiPolygon)
         self.assertEqual(l2.dataProvider().featureCount(), 4)
 
     def test_reopen2(self):
@@ -445,7 +445,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(l2.dataProvider().featureCount(), 4)
 
     def test_reopen3(self):
@@ -458,7 +458,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.Polygon)
         self.assertEqual(l2.dataProvider().featureCount(), 4)
         sumid = sum([f.id() for f in l2.getFeatures()])
         self.assertEqual(sumid, 10659)
@@ -475,7 +475,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l2.isValid())
-        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.Type.NoGeometry)
         self.assertEqual(l2.dataProvider().featureCount(), 4)
         sumid = sum([f.id() for f in l2.getFeatures()])
         self.assertEqual(sumid, 10659)
@@ -551,7 +551,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l4 = QgsVectorLayer(f"?query={query}&uid=ObjectId", "tt", "virtual")
         self.assertTrue(l4.isValid())
 
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.MultiPolygon)
         self.assertEqual(l4.dataProvider().crs().authid(), 'EPSG:4326')
 
         n = 0
@@ -636,7 +636,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().fields().at(1).type(), QVariant.String)
         self.assertEqual(l4.dataProvider().fields().at(2).name(), "t4")
         self.assertEqual(l4.dataProvider().fields().at(2).type(), QVariant.LongLong)
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.MultiPoint)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.MultiPoint)
 
         # test value types (!= from declared column types)
         for f in l4.getFeatures():
@@ -648,7 +648,7 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         query = toPercent("SELECT 1 as id /*:int*/, geomfromtext('point(0 0)',4326) as geometry/*:point:4326*/")
         l4 = QgsVectorLayer(f"?query={query}&geometry=geometry", "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l4.isValid())
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
 
         # with type annotations and url options (2)
         query = toPercent(
@@ -660,25 +660,25 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.String)
         self.assertEqual(l4.dataProvider().fields().at(1).name(), "f")
         self.assertEqual(l4.dataProvider().fields().at(1).type(), QVariant.Double)
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
 
     def test_sql3b(self):
         query = toPercent("SELECT GeomFromText('POINT(0 0)') as geom")
         l4 = QgsVectorLayer(f"?query={query}&geometry=geom", "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l4.isValid())
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
 
         # forced geometry type
         query = toPercent("SELECT GeomFromText('POINT(0 0)') as geom")
         l4 = QgsVectorLayer(f"?query={query}&geometry=geom:point:0", "tt", "virtual",
                             QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l4.isValid())
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
 
         query = toPercent("SELECT CastToPoint(GeomFromText('POINT(0 0)')) as geom")
         l4 = QgsVectorLayer(f"?query={query}", "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l4.isValid())
-        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
 
     def test_sql4(self):
         l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",

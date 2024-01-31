@@ -60,11 +60,13 @@ class CORE_EXPORT QgsAggregateCalculator
       QSet<QVariant::Type> supportedTypes;
     };
 
+    // *INDENT-OFF*
+
     /**
      * Available aggregates to calculate. Not all aggregates are available for all field
      * types.
      */
-    enum Aggregate
+    enum class Aggregate SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAggregateCalculator, Aggregate ) : int
     {
       Count,  //!< Count
       CountDistinct,  //!< Number of distinct values
@@ -89,6 +91,7 @@ class CORE_EXPORT QgsAggregateCalculator
       ArrayAggregate, //!< Create an array of values
       StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
     };
+    // *INDENT-ON*
 
     //! A bundle of parameters controlling aggregate calculation
     struct AggregateParameters

@@ -48,10 +48,10 @@ class ANALYSIS_EXPORT QgsZonalStatistics
   public:
 
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsZonalStatistics, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Count       = 1,  //!< Pixel count
-      Sum    = 2,  //!< Sum of pixel values
+      Count = 1,  //!< Pixel count
+      Sum = 2,  //!< Sum of pixel values
       Mean = 4,  //!< Mean of pixel values
       Median = 8, //!< Median of pixel values
       StDev = 16, //!< Standard deviation of pixel values
@@ -62,7 +62,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       Majority = 512, //!< Majority of pixel values
       Variety = 1024, //!< Variety (count of distinct) pixel values
       Variance = 2048, //!< Variance of pixel values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance,
+      Default = Count | Sum | Mean,
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -90,7 +91,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         QgsRasterLayer *rasterLayer,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::Default );
 
     /**
      * Constructor for QgsZonalStatistics, using a QgsRasterInterface.
@@ -125,7 +126,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         double rasterUnitsPerPixelY,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::Default );
 
 
     /**
@@ -238,7 +239,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     int mRasterBand = 0;
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
-    Statistics mStatistics = QgsZonalStatistics::All;
+    Statistics mStatistics = QgsZonalStatistics::Statistic::All;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )

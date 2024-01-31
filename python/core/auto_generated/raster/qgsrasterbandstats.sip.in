@@ -23,9 +23,9 @@ raster band.
 %End
   public:
 
-    enum Stats
+    enum class Statistic
     {
-      None,
+      NoStatistic,
       Min,
       Max,
       Range,
@@ -35,6 +35,8 @@ raster band.
       SumOfSquares,
       All
     };
+    typedef QFlags<QgsRasterBandStats::Statistic> Statistics;
+
 
     QgsRasterBandStats();
 
@@ -70,6 +72,9 @@ Compares region, size etc. not collected statistics
 
     QgsRectangle extent;
 };
+QFlags<QgsRasterBandStats::Statistic> operator|(QgsRasterBandStats::Statistic f1, QFlags<QgsRasterBandStats::Statistic> f2);
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

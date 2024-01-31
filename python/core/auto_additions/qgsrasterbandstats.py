@@ -30,4 +30,3 @@ QgsRasterBandStats.All.is_monkey_patched = True
 QgsRasterBandStats.All.__doc__ = "All available statistics"
 QgsRasterBandStats.Statistic.__doc__ = "Available statistics\n\n" + '* ``NoStatistic``: ' + QgsRasterBandStats.Statistic.NoStatistic.__doc__ + '\n' + '* ``Min``: ' + QgsRasterBandStats.Statistic.Min.__doc__ + '\n' + '* ``Max``: ' + QgsRasterBandStats.Statistic.Max.__doc__ + '\n' + '* ``Range``: ' + QgsRasterBandStats.Statistic.Range.__doc__ + '\n' + '* ``Sum``: ' + QgsRasterBandStats.Statistic.Sum.__doc__ + '\n' + '* ``Mean``: ' + QgsRasterBandStats.Statistic.Mean.__doc__ + '\n' + '* ``StdDev``: ' + QgsRasterBandStats.Statistic.StdDev.__doc__ + '\n' + '* ``SumOfSquares``: ' + QgsRasterBandStats.Statistic.SumOfSquares.__doc__ + '\n' + '* ``All``: ' + QgsRasterBandStats.Statistic.All.__doc__
 # --
-QgsRasterBandStats.Statistics = lambda flags=0: QgsRasterBandStats.Statistic(flags)

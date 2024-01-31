@@ -22,22 +22,22 @@
 
 const std::vector< QgsStatisticalSummary::Statistic > STATS
 {
-  QgsStatisticalSummary::First,
-  QgsStatisticalSummary::Last,
-  QgsStatisticalSummary::Count,
-  QgsStatisticalSummary::Sum,
-  QgsStatisticalSummary::Mean,
-  QgsStatisticalSummary::Median,
-  QgsStatisticalSummary::StDev,
-  QgsStatisticalSummary::Min,
-  QgsStatisticalSummary::Max,
-  QgsStatisticalSummary::Range,
-  QgsStatisticalSummary::Minority,
-  QgsStatisticalSummary::Majority,
-  QgsStatisticalSummary::Variety,
-  QgsStatisticalSummary::FirstQuartile,
-  QgsStatisticalSummary::ThirdQuartile,
-  QgsStatisticalSummary::InterQuartileRange,
+  QgsStatisticalSummary::Statistic::First,
+  QgsStatisticalSummary::Statistic::Last,
+  QgsStatisticalSummary::Statistic::Count,
+  QgsStatisticalSummary::Statistic::Sum,
+  QgsStatisticalSummary::Statistic::Mean,
+  QgsStatisticalSummary::Statistic::Median,
+  QgsStatisticalSummary::Statistic::StDev,
+  QgsStatisticalSummary::Statistic::Min,
+  QgsStatisticalSummary::Statistic::Max,
+  QgsStatisticalSummary::Statistic::Range,
+  QgsStatisticalSummary::Statistic::Minority,
+  QgsStatisticalSummary::Statistic::Majority,
+  QgsStatisticalSummary::Statistic::Variety,
+  QgsStatisticalSummary::Statistic::FirstQuartile,
+  QgsStatisticalSummary::Statistic::ThirdQuartile,
+  QgsStatisticalSummary::Statistic::InterQuartileRange,
 };
 
 QString QgsExtractZMValuesAlgorithmBase::group() const
@@ -96,7 +96,7 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
   {
     mStats |= STATS.at( s );
     mSelectedStats << STATS.at( s );
-    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == QgsStatisticalSummary::Count || STATS.at( s ) == QgsStatisticalSummary::Variety ? QVariant::Int : QVariant::Double ) );
+    mNewFields.append( QgsField( mPrefix + QgsStatisticalSummary::shortName( STATS.at( s ) ), STATS.at( s ) == QgsStatisticalSummary::Statistic::Count || STATS.at( s ) == QgsStatisticalSummary::Statistic::Variety ? QVariant::Int : QVariant::Double ) );
   }
 
   return true;
@@ -118,7 +118,7 @@ QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature
     for ( auto it = g.vertices_begin(); it != g.vertices_end(); ++it )
     {
       stat.addValue( mExtractValFunc( *it ) );
-      if ( mStats == QgsStatisticalSummary::First )
+      if ( mStats == QgsStatisticalSummary::Statistic::First )
       {
         // only retrieving first vertex info (default behavior), so short cut and
         // don't iterate remaining vertices

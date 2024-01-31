@@ -45,8 +45,9 @@ class CORE_EXPORT QgsStringStatisticalSummary
 {
   public:
 
+    // *INDENT-OFF*
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStringStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Count = 1,  //!< Count
       CountDistinct = 2,  //!< Number of distinct string values
@@ -60,13 +61,14 @@ class CORE_EXPORT QgsStringStatisticalSummary
       Majority = 512, //!< Majority of strings
       All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength | Minority | Majority, //!< All statistics
     };
+    // *INDENT-ON*
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /**
      * Constructor for QgsStringStatistics
      * \param stats flags for statistics to calculate
      */
-    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::All );
+    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::Statistic::All );
 
     /**
      * Returns flags which specify which statistics will be calculated. Some statistics

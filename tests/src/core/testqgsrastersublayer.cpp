@@ -157,7 +157,7 @@ void TestQgsRasterSubLayer::checkStats()
   QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, QStringLiteral( "Sublayer 1" ) );
 
   const QgsRasterBandStats myStatistics = sublayer->dataProvider()->bandStatistics( 1,
-                                          QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+                                          QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max );
   const int width = 200;
   const int height = 200;
   const double min = 122;

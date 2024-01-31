@@ -34,9 +34,9 @@
 typedef QList< QgsStatisticalSummary::Statistic > StatsList;
 typedef QList< QgsStringStatisticalSummary::Statistic > StringStatsList;
 typedef QList< QgsDateTimeStatisticalSummary::Statistic > DateTimeStatsList;
-Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {QgsStatisticalSummary::Count, QgsStatisticalSummary::Sum, QgsStatisticalSummary::Mean, QgsStatisticalSummary::Median, QgsStatisticalSummary::StDev, QgsStatisticalSummary::StDevSample, QgsStatisticalSummary::Min, QgsStatisticalSummary::Max, QgsStatisticalSummary::Range, QgsStatisticalSummary::Minority, QgsStatisticalSummary::Majority, QgsStatisticalSummary::Variety, QgsStatisticalSummary::FirstQuartile, QgsStatisticalSummary::ThirdQuartile, QgsStatisticalSummary::InterQuartileRange} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {QgsStringStatisticalSummary::Count, QgsStringStatisticalSummary::CountDistinct, QgsStringStatisticalSummary::CountMissing, QgsStringStatisticalSummary::Min, QgsStringStatisticalSummary::Max, QgsStringStatisticalSummary::Minority, QgsStringStatisticalSummary::Majority, QgsStringStatisticalSummary::MinimumLength, QgsStringStatisticalSummary::MaximumLength, QgsStringStatisticalSummary::MeanLength} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, ( {QgsDateTimeStatisticalSummary::Count, QgsDateTimeStatisticalSummary::CountDistinct, QgsDateTimeStatisticalSummary::CountMissing, QgsDateTimeStatisticalSummary::Min, QgsDateTimeStatisticalSummary::Max, QgsDateTimeStatisticalSummary::Range} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {QgsStatisticalSummary::Statistic::Count, QgsStatisticalSummary::Statistic::Sum, QgsStatisticalSummary::Statistic::Mean, QgsStatisticalSummary::Statistic::Median, QgsStatisticalSummary::Statistic::StDev, QgsStatisticalSummary::Statistic::StDevSample, QgsStatisticalSummary::Statistic::Min, QgsStatisticalSummary::Statistic::Max, QgsStatisticalSummary::Statistic::Range, QgsStatisticalSummary::Statistic::Minority, QgsStatisticalSummary::Statistic::Majority, QgsStatisticalSummary::Statistic::Variety, QgsStatisticalSummary::Statistic::FirstQuartile, QgsStatisticalSummary::Statistic::ThirdQuartile, QgsStatisticalSummary::Statistic::InterQuartileRange} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {QgsStringStatisticalSummary::Statistic::Count, QgsStringStatisticalSummary::Statistic::CountDistinct, QgsStringStatisticalSummary::Statistic::CountMissing, QgsStringStatisticalSummary::Statistic::Min, QgsStringStatisticalSummary::Statistic::Max, QgsStringStatisticalSummary::Statistic::Minority, QgsStringStatisticalSummary::Statistic::Majority, QgsStringStatisticalSummary::Statistic::MinimumLength, QgsStringStatisticalSummary::Statistic::MaximumLength, QgsStringStatisticalSummary::Statistic::MeanLength} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, ( {QgsDateTimeStatisticalSummary::Statistic::Count, QgsDateTimeStatisticalSummary::Statistic::CountDistinct, QgsDateTimeStatisticalSummary::Statistic::CountMissing, QgsDateTimeStatisticalSummary::Statistic::Min, QgsDateTimeStatisticalSummary::Statistic::Max, QgsDateTimeStatisticalSummary::Statistic::Range} ) )
 
 #define MISSING_VALUES -1
 
@@ -299,7 +299,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
   const auto displayStats = *sDisplayStats();
   for ( const QgsStatisticalSummary::Statistic stat : displayStats )
   {
-    if ( mStatsActions.value( stat )->isChecked() )
+    if ( mStatsActions.value( static_cast< int >( stat ) )->isChecked() )
     {
       statsToDisplay << stat;
       statsToCalc |= stat;
@@ -356,7 +356,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
   const auto displayStringStats = *sDisplayStringStats();
   for ( const QgsStringStatisticalSummary::Statistic stat : displayStringStats )
   {
-    if ( mStatsActions.value( stat )->isChecked() )
+    if ( mStatsActions.value( static_cast< int >( stat ) )->isChecked() )
     {
       statsToDisplay << stat;
       statsToCalc |= stat;
@@ -485,7 +485,7 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
   const auto displayDateTimeStats = *sDisplayDateTimeStats();
   for ( const QgsDateTimeStatisticalSummary::Statistic stat : displayDateTimeStats )
   {
-    if ( mStatsActions.value( stat )->isChecked() )
+    if ( mStatsActions.value( static_cast< int >( stat ) )->isChecked() )
     {
       statsToDisplay << stat;
       statsToCalc |= stat;
@@ -504,7 +504,7 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
   const auto constStatsToDisplay = statsToDisplay;
   for ( const QgsDateTimeStatisticalSummary::Statistic stat : constStatsToDisplay )
   {
-    const QString value = ( stat == QgsDateTimeStatisticalSummary::Range
+    const QString value = ( stat == QgsDateTimeStatisticalSummary::Statistic::Range
                             ? tr( "%n second(s)", nullptr, stats.range().seconds() )
                             : stats.statistic( stat ).toString() );
 
@@ -552,10 +552,10 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       {
         QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_%1" ).arg( stat ), true ).toBool();
+        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/numeric_%1" ).arg( static_cast< int >( stat ) ), true ).toBool();
         action->setChecked( checked );
-        action->setData( stat );
-        mStatsActions.insert( stat, action );
+        action->setData( static_cast< int >( stat ) );
+        mStatsActions.insert( static_cast< int >( stat ), action );
         connect( action, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
         mStatisticsMenu->addAction( action );
       }
@@ -579,10 +579,10 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       {
         QAction *action = new QAction( QgsStringStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/string_%1" ).arg( stat ), true ).toBool();
+        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/string_%1" ).arg( static_cast< int >( stat ) ), true ).toBool();
         action->setChecked( checked );
-        action->setData( stat );
-        mStatsActions.insert( stat, action );
+        action->setData( static_cast< int >( stat ) );
+        mStatsActions.insert( static_cast< int >( stat ), action );
         connect( action, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
         mStatisticsMenu->addAction( action );
       }
@@ -595,10 +595,10 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       {
         QAction *action = new QAction( QgsDateTimeStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
-        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/datetime_%1" ).arg( stat ), true ).toBool();
+        const bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/datetime_%1" ).arg( static_cast< int >( stat ) ), true ).toBool();
         action->setChecked( checked );
-        action->setData( stat );
-        mStatsActions.insert( stat, action );
+        action->setData( static_cast< int >( stat ) );
+        mStatsActions.insert( static_cast< int >( stat ), action );
         connect( action, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
         mStatisticsMenu->addAction( action );
       }

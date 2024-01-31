@@ -288,19 +288,19 @@ QString QgsPointCloudIndex::subsetString() const
 
 QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
-  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Statistic::Min )
     return mExtent.xMinimum();
-  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Statistic::Max )
     return mExtent.xMaximum();
 
-  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Statistic::Min )
     return mExtent.yMinimum();
-  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Statistic::Max )
     return mExtent.yMaximum();
 
-  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Statistic::Min )
     return mZMin;
-  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Statistic::Max )
     return mZMax;
 
   return QVariant();
@@ -327,10 +327,10 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
   {
     QString name = attribute.name();
     QgsPointCloudAttributeStatistics s;
-    QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
-    QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
-    QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Mean );
-    QVariant stDev = metadataStatistic( name, QgsStatisticalSummary::StDev );
+    QVariant min = metadataStatistic( name, QgsStatisticalSummary::Statistic::Min );
+    QVariant max = metadataStatistic( name, QgsStatisticalSummary::Statistic::Max );
+    QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Statistic::Mean );
+    QVariant stDev = metadataStatistic( name, QgsStatisticalSummary::Statistic::StDev );
     if ( !min.isValid() )
       continue;
 
@@ -338,11 +338,11 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
     s.maximum = max.toDouble();
     s.mean = mean.toDouble();
     s.stDev = stDev.toDouble();
-    s.count = metadataStatistic( name, QgsStatisticalSummary::Count ).toInt();
+    s.count = metadataStatistic( name, QgsStatisticalSummary::Statistic::Count ).toInt();
     QVariantList classes = metadataClasses( name );
     for ( QVariant c : classes )
     {
-      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, QgsStatisticalSummary::Count ).toInt();
+      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, QgsStatisticalSummary::Statistic::Count ).toInt();
     }
     statsMap[ name ] = s;
   }

@@ -23,8 +23,9 @@ An interface for objects which provide features via a getFeatures method.
 %End
   public:
 
-    enum FeatureAvailability
-    {
+
+    enum class FeatureAvailability
+      {
       NoFeaturesAvailable,
       FeaturesAvailable,
       FeaturesMaybeAvailable

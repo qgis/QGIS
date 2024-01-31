@@ -59,7 +59,7 @@ class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorith
   private:
 
     QList< QgsStatisticalSummary::Statistic > mSelectedStats;
-    QgsStatisticalSummary::Statistics mStats = QgsStatisticalSummary::All;
+    QgsStatisticalSummary::Statistics mStats = QgsStatisticalSummary::Statistic::All;
     QString mPrefix;
     QgsFields mNewFields;
 

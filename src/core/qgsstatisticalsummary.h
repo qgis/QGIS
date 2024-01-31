@@ -45,8 +45,9 @@ class CORE_EXPORT QgsStatisticalSummary
 {
   public:
 
+    // *INDENT-OFF*
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Count = 1 << 0,  //!< Count
       CountMissing = 1 << 15, //!< Number of missing (null) values
@@ -66,15 +67,17 @@ class CORE_EXPORT QgsStatisticalSummary
       InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
       First = 1 << 16, //!< First value (since QGIS 3.6)
       Last = 1 << 17, //!< Last value (since QGIS 3.6)
-      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last
+      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last //!< All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
+
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
+    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::Statistic::All );
 
     virtual ~QgsStatisticalSummary() = default;
 

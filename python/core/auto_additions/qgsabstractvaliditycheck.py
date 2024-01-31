@@ -1,6 +1,4 @@
 # The following has been generated automatically from src/core/validity/qgsabstractvaliditycheck.h
-QgsValidityCheckResult.Warning = QgsValidityCheckResult.Type.Warning
-QgsValidityCheckResult.Critical = QgsValidityCheckResult.Type.Critical
 # monkey patching scoped based enum
 QgsAbstractValidityCheck.TypeLayoutCheck = QgsAbstractValidityCheck.Type.LayoutCheck
 QgsAbstractValidityCheck.Type.TypeLayoutCheck = QgsAbstractValidityCheck.Type.LayoutCheck

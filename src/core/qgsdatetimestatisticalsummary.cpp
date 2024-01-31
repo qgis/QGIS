@@ -99,11 +99,11 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime, boo
   if ( !dateTime.isValid() || isNull )
     mCountMissing++;
 
-  if ( mStatistics & CountDistinct )
+  if ( mStatistics & Statistic::CountDistinct )
   {
     mValues << dateTime;
   }
-  if ( mStatistics & Min || mStatistics & Range )
+  if ( mStatistics & Statistic::Min || mStatistics & Statistic::Range )
   {
     if ( mMin.isValid() && dateTime.isValid() )
     {
@@ -114,7 +114,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime, boo
       mMin = dateTime;
     }
   }
-  if ( mStatistics & Max || mStatistics & Range )
+  if ( mStatistics & Statistic::Max || mStatistics & Statistic::Range )
   {
     if ( mMax.isValid() && dateTime.isValid() )
     {
@@ -131,19 +131,19 @@ QVariant QgsDateTimeStatisticalSummary::statistic( QgsDateTimeStatisticalSummary
 {
   switch ( stat )
   {
-    case Count:
+    case Statistic::Count:
       return mCount;
-    case CountDistinct:
+    case Statistic::CountDistinct:
       return mValues.count();
-    case CountMissing:
+    case Statistic::CountMissing:
       return mCountMissing;
-    case Min:
+    case Statistic::Min:
       return mIsTimes ? QVariant( mMin.time() ) : QVariant( mMin );
-    case Max:
+    case Statistic::Max:
       return mIsTimes ? QVariant( mMax.time() ) : QVariant( mMax );
-    case Range:
+    case Statistic::Range:
       return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( mMax - mMin );
-    case All:
+    case Statistic::All:
       return 0;
   }
   return 0;
@@ -153,19 +153,19 @@ QString QgsDateTimeStatisticalSummary::displayName( QgsDateTimeStatisticalSummar
 {
   switch ( statistic )
   {
-    case Count:
+    case Statistic::Count:
       return QObject::tr( "Count" );
-    case CountDistinct:
+    case Statistic::CountDistinct:
       return QObject::tr( "Count (distinct)" );
-    case CountMissing:
+    case Statistic::CountMissing:
       return QObject::tr( "Count (missing)" );
-    case Min:
+    case Statistic::Min:
       return QObject::tr( "Minimum (earliest)" );
-    case Max:
+    case Statistic::Max:
       return QObject::tr( "Maximum (latest)" );
-    case Range:
+    case Statistic::Range:
       return QObject::tr( "Range (interval)" );
-    case All:
+    case Statistic::All:
       return QString();
   }
   return QString();

@@ -2932,7 +2932,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
 }
 
 bool QgsGdalProvider::hasStatistics( int bandNo,
-                                     int stats,
+                                     int _stats,
                                      const QgsRectangle &boundingBox,
                                      int sampleSize )
 {
@@ -2941,6 +2941,8 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
     return false;
 
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ), 2 );
+
+  QgsRasterBandStats::Statistics stats = static_cast< QgsRasterBandStats::Statistics>( _stats );
 
   // First check if cached in mStatistics
   if ( QgsRasterDataProvider::hasStatistics( bandNo, stats, boundingBox, sampleSize ) )
@@ -2959,9 +2961,9 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   }
 
   // If not cached, check if supported by GDAL
-  int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
-                       | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
-                       | QgsRasterBandStats::StdDev;
+  QgsRasterBandStats::Statistics supportedStats = QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max
+      | QgsRasterBandStats::Statistic::Range | QgsRasterBandStats::Statistic::Mean
+      | QgsRasterBandStats::Statistic::StdDev;
 
   if ( myRasterBandStats.extent != extent() ||
        ( stats & ( ~supportedStats ) ) )
@@ -2995,10 +2997,14 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   double *pdfMean = &dfMean;
   double *pdfStdDev = &dfStdDev;
 
-  if ( !( stats & QgsRasterBandStats::Min ) ) pdfMin = nullptr;
-  if ( !( stats & QgsRasterBandStats::Max ) ) pdfMax = nullptr;
-  if ( !( stats & QgsRasterBandStats::Mean ) ) pdfMean = nullptr;
-  if ( !( stats & QgsRasterBandStats::StdDev ) ) pdfStdDev = nullptr;
+  if ( !( stats & QgsRasterBandStats::Statistic::Min ) )
+    pdfMin = nullptr;
+  if ( !( stats & QgsRasterBandStats::Statistic::Max ) )
+    pdfMax = nullptr;
+  if ( !( stats & QgsRasterBandStats::Statistic::Mean ) )
+    pdfMean = nullptr;
+  if ( !( stats & QgsRasterBandStats::Statistic::StdDev ) )
+    pdfStdDev = nullptr;
 
   CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, true, pdfMin, pdfMax, pdfMean, pdfStdDev );
 
@@ -3048,9 +3054,9 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
     return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize, feedback );
   }
 
-  int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
-                       | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
-                       | QgsRasterBandStats::StdDev;
+  const QgsRasterBandStats::Statistics supportedStats = QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max
+      | QgsRasterBandStats::Statistic::Range | QgsRasterBandStats::Statistic::Mean
+      | QgsRasterBandStats::Statistic::StdDev;
 
   QgsDebugMsgLevel( QStringLiteral( "theStats = %1 supportedStats = %2" ).arg( stats, 0, 2 ).arg( supportedStats, 0, 2 ), 2 );
 
@@ -3124,9 +3130,9 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
     myRasterBandStats.elementCount = 0; //not available via gdal
     myRasterBandStats.sumOfSquares = 0; //not available via gdal
     myRasterBandStats.stdDev = pdfStdDev;
-    myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max
-                                      | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
-                                      | QgsRasterBandStats::StdDev;
+    myRasterBandStats.statsGathered = QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max
+                                      | QgsRasterBandStats::Statistic::Range | QgsRasterBandStats::Statistic::Mean
+                                      | QgsRasterBandStats::Statistic::StdDev;
 
     // define if the band has scale and offset to apply
     double myScale = bandScale( bandNo );
@@ -3168,7 +3174,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   }
   else
   {
-    myRasterBandStats.statsGathered = QgsRasterBandStats::Stats::None;
+    myRasterBandStats.statsGathered = static_cast< int >( QgsRasterBandStats::Statistic::NoStatistic );
   }
 
   mStatistics.append( myRasterBandStats );
