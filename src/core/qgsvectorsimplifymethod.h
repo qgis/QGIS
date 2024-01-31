@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup core
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     QgsVectorSimplifyMethod();
 
     //! Simplification flags for fast rendering of features
-    enum SimplifyHint
+    enum SimplifyHint SIP_ENUM_BASETYPE( IntFlag )
     {
       NoSimplification           = 0, //!< No simplification can be applied
       GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state

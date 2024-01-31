@@ -136,7 +136,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.28
      */
-    enum class Flag : int
+    enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
       ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close. Since QGIS 3.32.
@@ -162,13 +162,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param mode code editor mode (since QGIS 3.30)
      * \since QGIS 2.6
      */
-    QgsCodeEditor( QWidget * parent SIP_TRANSFERTHIS = nullptr, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+    QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 
     /**
      * Set the widget title
      * \param title widget title
      */
-    void setTitle( const QString & title );
+    void setTitle( const QString &title );
 
     /**
      * Returns the associated scripting language.
@@ -239,7 +239,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * made a selection.
      * \param text The text to be inserted
      */
-    void insertText( const QString & text );
+    void insertText( const QString &text );
 
     /**
      * Returns the default color for the specified \a role.
@@ -252,7 +252,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.16
      */
-    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString & theme = QString() );
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
 
     /**
      * Returns the color to use in the editor for the specified \a role.
@@ -276,7 +276,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see color()
      * \since QGIS 3.16
      */
-    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor & color );
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
 
     /**
      * Returns the monospaced font to use for code editors.
@@ -292,7 +292,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \note Not available in Python bindings
      * \since QGIS 3.16
      */
-    void setCustomAppearance( const QString & scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > & customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString & fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
+    void setCustomAppearance( const QString &scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > &customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
 
     /**
      * Adds a \a warning message and indicator to the specified a \a lineNumber.
@@ -300,7 +300,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see clearWarnings()
      * \since QGIS 3.16
      */
-    void addWarning( int lineNumber, const QString & warning );
+    void addWarning( int lineNumber, const QString &warning );
 
     /**
      * Clears all warning messages from the editor.

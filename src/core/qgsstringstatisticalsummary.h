@@ -46,7 +46,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
   public:
 
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic
+    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
     {
       Count = 1,  //!< Count
       CountDistinct = 2,  //!< Number of distinct string values

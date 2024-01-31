@@ -304,7 +304,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel: public QSortFilterProxy
   public:
 
     //! Available filter flags for filtering the model
-    enum Filter
+    enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       FilterHorizontal = 1 << 1, //!< Include horizontal CRS (excludes compound CRS containing a horizontal component)
       FilterVertical = 1 << 2, //!< Include vertical CRS (excludes compound CRS containing a vertical component)

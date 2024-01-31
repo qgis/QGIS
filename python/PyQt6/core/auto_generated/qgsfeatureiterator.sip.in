@@ -76,7 +76,7 @@ This indicates that there is something wrong with the expression compiler.
 .. versionadded:: 3.2
 %End
 
-    enum class RequestToSourceCrsResult /BaseType=IntFlag/
+    enum class RequestToSourceCrsResult /BaseType=IntEnum/
     {
       Success,
       DistanceWithinMustBeCheckedManually,

@@ -52,7 +52,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Capabilities that providers may implement.
      */
-    enum Capability
+    enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0,       //!< Provider has no capabilities
       ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Point cloud index state
      */
-    enum PointCloudIndexGenerationState
+    enum PointCloudIndexGenerationState SIP_ENUM_BASETYPE( IntFlag )
     {
       NotIndexed = 0, //!< Provider has no index available
       Indexing = 1 << 0, //!< Provider try to index the source data

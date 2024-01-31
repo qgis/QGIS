@@ -349,7 +349,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * Various flags that affect drawing of map items.
      * \since QGIS 3.6
      */
-    enum MapItemFlag
+    enum MapItemFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       ShowPartialLabels  = 1 << 0, //!< Whether to draw labels which are partially outside of the map view
       ShowUnplacedLabels = 1 << 1, //!< Whether to render unplaced labels in the map view

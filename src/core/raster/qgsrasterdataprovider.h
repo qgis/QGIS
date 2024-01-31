@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Enumeration with capabilities that raster providers might implement.
      * \since QGIS 3.0
      */
-    enum ProviderCapability
+    enum ProviderCapability SIP_ENUM_BASETYPE( IntFlag )
     {
       NoProviderCapabilities = 0,       //!< Provider has no capabilities
       ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()

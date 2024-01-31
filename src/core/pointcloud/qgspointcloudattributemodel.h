@@ -140,7 +140,7 @@ class CORE_EXPORT QgsPointCloudAttributeProxyModel : public QSortFilterProxyMode
   public:
 
     //! Attribute type filters
-    enum Filter
+    enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       Char = 1 << 0, //!< Character attributes
       Short = 1 << 1, //!< Short attributes

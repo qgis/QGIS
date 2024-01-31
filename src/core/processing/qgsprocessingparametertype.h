@@ -38,7 +38,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * Each parameter type can offer a number of additional flags to finetune its behavior
      * and capabilities.
      */
-    enum ParameterFlag
+    enum ParameterFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       ExposeToModeler = 1 //!< Is this parameter available in the modeler. Is set to on by default.
     };

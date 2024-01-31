@@ -72,7 +72,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     };
 
     //! Line placement flags for controlling line based placements
-    enum LinePlacementFlag
+    enum LinePlacementFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       OnLine    = 1,
       AboveLine = 1 << 1,

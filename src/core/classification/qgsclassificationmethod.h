@@ -110,7 +110,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
   public:
 
     //! Flags for the classification method
-    enum MethodProperty
+    enum MethodProperty SIP_ENUM_BASETYPE( IntFlag )
     {
       NoFlag                 = 0,       //!< No flag
       ValuesNotRequired      = 1 << 1,  //!< Deprecated since QGIS 3.12

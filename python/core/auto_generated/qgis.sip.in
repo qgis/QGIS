@@ -88,7 +88,7 @@ The development version
     };
 
     enum class LayerFilter
-      {
+    {
       RasterLayer,
       NoGeometry,
       PointLayer,
@@ -325,7 +325,7 @@ The development version
     };
 
     enum class SnappingType
-      {
+    {
       NoSnap,
       Vertex,
       Segment,
@@ -338,7 +338,7 @@ The development version
 
 
     enum class SymbolRenderHint
-      {
+    {
       DynamicRotation,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
@@ -358,7 +358,7 @@ The development version
 
 
     enum class SymbolPreviewFlag
-      {
+    {
       FlagIncludeCrosshairsForMarkerSymbols,
     };
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
@@ -400,7 +400,7 @@ The development version
     };
 
     enum class BrowserItemCapability
-      {
+    {
       NoCapabilities,
       SetCrs,
       Fertile,
@@ -573,7 +573,7 @@ The development version
     };
 
     enum class LabelLinePlacementFlag
-      {
+    {
       OnLine,
       AboveLine,
       BelowLine,
@@ -584,7 +584,7 @@ The development version
 
 
     enum class LabelPolygonPlacementFlag
-      {
+    {
       AllowPlacementOutsideOfPolygon,
       AllowPlacementInsideOfPolygon,
     };
@@ -936,7 +936,7 @@ The development version
     };
 
     enum class GeometryValidityFlag
-      {
+    {
       AllowSelfTouchingHoles,
     };
     typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
@@ -982,7 +982,7 @@ The development version
     };
 
     enum class FeatureRequestFlag
-      {
+    {
       NoFlags,
       NoGeometry,
       SubsetOfAttributes,
@@ -1256,7 +1256,7 @@ The development version
 
 
     enum class MapSettingsFlag
-      {
+    {
       Antialiasing,
       DrawEditingInfo,
       ForceVectorOutput,
@@ -1280,7 +1280,7 @@ The development version
 
 
     enum class RenderContextFlag
-      {
+    {
       DrawEditingInfo,
       ForceVectorOutput,
       UseAdvancedEffects,
@@ -1322,7 +1322,7 @@ The development version
     };
 
     enum class LabelingFlag
-      {
+    {
       UseAllLabels,
       UsePartialCandidates,
       // TODO QGIS 4.0: remove
@@ -1445,7 +1445,7 @@ The development version
     };
 
     enum class MarkerLinePlacement
-      {
+    {
       Interval,
       Vertex,
       LastVertex,
@@ -1616,7 +1616,7 @@ The development version
 
 
     enum class ProcessingFeatureSourceDefinitionFlag
-      {
+    {
       OverrideDefaultGeometryCheck,
       CreateIndividualOutputPerInputFeature,
     };
@@ -1815,7 +1815,7 @@ The development version
     };
 
     enum class ProjectReadFlag
-      {
+    {
       DontResolveLayers,
       DontLoadLayouts,
       TrustLayerMetadata,
@@ -2056,7 +2056,7 @@ The development version
     };
 
     enum class RasterIdentifyFormat
-      {
+    {
       Undefined,
       Value,
       Text,

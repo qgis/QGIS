@@ -250,7 +250,7 @@ class GUI_EXPORT QgsGui : public QObject
      * HIG flags, which indicate the Human Interface Guidelines for the current platform.
      * \since QGIS 3.4
     */
-    enum HigFlag
+    enum HigFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       HigMenuTextIsTitleCase = 1 << 0,       //!< Menu action texts should be title case
       HigDialogTitleIsTitleCase = 1 << 1     //!< Dialog titles should be title case

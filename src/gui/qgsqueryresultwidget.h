@@ -115,7 +115,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     /**
      * \brief The QueryWidgetMode enum represents various modes for the widget appearance.
      */
-    enum class QueryWidgetMode : int
+    enum class QueryWidgetMode : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SqlQueryMode = 1 << 0, //!< Defaults widget mode for SQL execution and SQL query layer creation.
       QueryLayerUpdateMode = 1 << 1, //!< SQL query layer update mode: the create SQL layer button is renamed to 'Update' and the SQL layer creation group box is expanded.

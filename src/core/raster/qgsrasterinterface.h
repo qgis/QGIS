@@ -202,7 +202,7 @@ class CORE_EXPORT QgsRasterInterface
 
   public:
     //! If you add to this, please also add to capabilitiesString()
-    enum Capability
+    enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities   = 0,
       Size             = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS

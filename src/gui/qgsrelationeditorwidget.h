@@ -99,7 +99,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      * Possible buttons shown in the relation editor
      * \since QGIS 3.18
      */
-    enum Button
+    enum Button SIP_ENUM_BASETYPE( IntFlag )
     {
       NoButton = 0, //!< No button (since QGIS 3.20)
       Link = 1 << 1, //!< Link button

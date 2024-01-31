@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     /* creation of spatial index */
 
     //! Flags controlling index behavior
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagStoreFeatureGeometries = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbor searches.
     };

@@ -62,6 +62,7 @@ my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 my @ENUM_INT_TYPES = ();
+my @ENUM_INTFLAG_TYPES = ();
 my @ENUM_CLASS_NON_INT_TYPES = ();
 my @ENUM_MONKEY_PATCHED_TYPES = ();
 
@@ -1167,27 +1168,38 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?:\s*SIP_ENUM_BASETYPE\s*\(\s*(?<py_enum_type>\w+)\s*\))?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
         my $enum_qualname = $+{enum_qualname};
-        my $py_enum_type = $+{py_enum_type};
+        my $enum_type = $+{enum_type};
+        my $isclass = $+{isclass};
+        my $oneliner = $+{oneliner};
+        my $is_scope_based = "0";
+        $is_scope_based = "1" if defined $isclass;
         $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
-        if ( defined $+{enum_type} and $+{enum_type} eq "int" ) {
+        my $py_enum_type;
+        if ( $LINE =~ m/SIP_ENUM_BASETYPE\(\s*(.*?)\s*\)/ ) {
+           $py_enum_type = $1;
+        }
+        if (defined $py_enum_type and $py_enum_type eq "IntFlag") {
+          push @ENUM_INTFLAG_TYPES, "$ACTUAL_CLASS" . "::$enum_qualname";
+        }
+        if ( defined $enum_type and $enum_type eq "int" ) {
           push @ENUM_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
           if ( $is_qt6 eq 1 ) {
             if (defined $py_enum_type) {
               $enum_decl .= " /BaseType=$py_enum_type/"
             } else {
-              $enum_decl .= " /BaseType=IntFlag/"
+              $enum_decl .= " /BaseType=IntEnum/"
             }
           }
         }
-        elsif (defined $+{isclass})
+        elsif (defined $isclass)
         {
           push @ENUM_CLASS_NON_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
         }
+
         write_output("ENU1", "$enum_decl");
-        write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
+        write_output("ENU1", $oneliner) if defined $oneliner;
         write_output("ENU1", "\n");
-        my $is_scope_based = "0";
-        $is_scope_based = "1" if defined $+{isclass};
+
         my $monkeypatch = "0";
         $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
         my $enum_mk_base = "";
@@ -1224,15 +1236,21 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$7/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?<optional_comma>,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$+{optional_comma}/r;
                     my $enum_member = $+{em};
                     my $comment = $+{co};
                     my $compat_name = $+{compat} ? $+{compat} : $enum_member;
+                    my $enum_value = $+{enum_value};
                     # replace :: with . (changes c++ style namespace/class directives to Python style)
                     $comment =~ s/::/./g;
                     $comment =~ s/\"/\\"/g;
                     $comment =~ s/\\since .*?([\d\.]+)/\\n.. versionadded:: $1\\n/i;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
+                    if ( defined $enum_value and ($enum_value =~ m/.*\<\<.*/ or $enum_value =~ m/.*0x0.*/)) {
+                       if (none { $_ eq "${ACTUAL_CLASS}::$enum_qualname" } @ENUM_INTFLAG_TYPES) {
+                         exit_with_error("${ACTUAL_CLASS}::$enum_qualname is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line");
+                      }
+                    }
                     if ($is_scope_based eq "1" and $enum_member ne "") {
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
                           if ( $ACTUAL_CLASS ne "" ) {
@@ -1366,6 +1384,10 @@ while ($LINE_IDX < $LINE_COUNT){
         dbg_info("Declare flags: $ACTUAL_CLASS");
         $LINE = "$1typedef QFlags<${ACTUAL_CLASS}$3> $2;\n";
         $QFLAG_HASH{"${ACTUAL_CLASS}$2"} = "${ACTUAL_CLASS}$3";
+
+        if ( none { $_ eq "${ACTUAL_CLASS}$3" } @ENUM_INTFLAG_TYPES ){
+           exit_with_error("${ACTUAL_CLASS}$3 is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line");
+        }
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){

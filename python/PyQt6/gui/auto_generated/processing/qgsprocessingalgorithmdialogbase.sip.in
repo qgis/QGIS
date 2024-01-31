@@ -35,7 +35,7 @@ Base class for processing algorithm dialogs.
       FormatHtml,
     };
 
-    enum class DialogMode /BaseType=IntFlag/
+    enum class DialogMode /BaseType=IntEnum/
     {
       Single,
       Batch,

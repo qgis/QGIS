@@ -44,7 +44,7 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
   public:
 
     //! Available floater items
-    enum class FloaterItem : int
+    enum class FloaterItem : int SIP_ENUM_BASETYPE( IntFlag )
     {
       XCoordinate = 1 << 1,
       YCoordinate = 1 << 2,

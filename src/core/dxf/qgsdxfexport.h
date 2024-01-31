@@ -101,7 +101,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     };
 
     //! Export flags
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagNoMText = 1 << 1, //!< Export text as TEXT elements. If not set, text will be exported as MTEXT elements.
     };
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      *
      * \since QGIS 3.12
      */
-    enum DxfPolylineFlag
+    enum DxfPolylineFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       Closed = 1, //!< This is a closed polyline (or a polygon mesh closed in the M direction)
       Curve = 2, //!< Curve-fit vertices have been added

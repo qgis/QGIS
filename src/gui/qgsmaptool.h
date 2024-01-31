@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Enumeration of flags that adjust the way the map tool operates
      * \since QGIS 2.16
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       Transient = 1 << 1, //!< Deprecated since QGIS 3.36 -- no longer used by QGIS and will be removed in QGIS 4.0
       EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable

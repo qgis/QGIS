@@ -254,7 +254,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     /**
      * Flags for controlling which side of the map a frame is drawn on
      */
-    enum FrameSideFlag
+    enum FrameSideFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FrameLeft = 0x01, //!< Left side of map
       FrameRight = 0x02, //!< Right side of map

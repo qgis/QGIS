@@ -94,7 +94,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     // New stuff
 
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       // display flags
       ShowLegend                 = 0x0001,  //!< Add legend nodes for layer nodes

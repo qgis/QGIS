@@ -765,7 +765,7 @@ Returns the default patch geometry for the given symbol ``type`` and ``size`` as
 .. versionadded:: 3.14
 %End
 
-    enum class TextFormatContext /BaseType=IntFlag/
+    enum class TextFormatContext /BaseType=IntEnum/
     {
       Labeling,
     };

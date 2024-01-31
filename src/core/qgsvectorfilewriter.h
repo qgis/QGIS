@@ -195,7 +195,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * Options for sorting and filtering vector formats.
      * \since QGIS 3.0
      */
-    enum VectorFormatOption
+    enum VectorFormatOption SIP_ENUM_BASETYPE( IntFlag )
     {
       SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
       SkipNonSpatialFormats = 1 << 2, //!< Filter out any formats which do not have spatial support (e.g. those which cannot save geometries)
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * Edition capability flags
      * \since QGIS 3.0
     */
-    enum EditionCapability
+    enum EditionCapability SIP_ENUM_BASETYPE( IntFlag )
     {
       //! Flag to indicate that a new layer can be added to the dataset
       CanAddNewLayer                 = 1 << 0,

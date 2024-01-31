@@ -48,7 +48,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
   public:
 
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic
+    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
     {
       Count       = 1,  //!< Pixel count
       Sum    = 2,  //!< Sum of pixel values

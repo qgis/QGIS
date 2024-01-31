@@ -28,26 +28,26 @@ a "perimeter" style mode).
 
   public:
 
-    enum class DirectionSymbolPlacement /BaseType=IntFlag/
+    enum class DirectionSymbolPlacement /BaseType=IntEnum/
     {
       SymbolLeftRight,
       SymbolAbove,
       SymbolBelow
     };
 
-    enum class AnchorType /BaseType=IntFlag/
+    enum class AnchorType /BaseType=IntEnum/
     {
       HintOnly,
       Strict,
     };
 
-    enum class AnchorClipping /BaseType=IntFlag/
+    enum class AnchorClipping /BaseType=IntEnum/
     {
       UseVisiblePartsOfLine,
       UseEntireLine,
     };
 
-    enum class AnchorTextPoint /BaseType=IntFlag/
+    enum class AnchorTextPoint /BaseType=IntEnum/
     {
       StartOfText,
       CenterOfText,

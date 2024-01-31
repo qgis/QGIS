@@ -199,7 +199,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * \since QGIS 3.28
      */
-    enum class Flag : int
+    enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       AvoidExportingRenderedImage = 1 << 0, //!< Avoids exporting rendered images to reports
     };

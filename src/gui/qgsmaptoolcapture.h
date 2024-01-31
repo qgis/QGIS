@@ -61,7 +61,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     };
 
     //! Specific capabilities of the tool
-    enum Capability
+    enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 1 << 0, //!< No specific capabilities
       SupportsCurves = 1 << 1, //!< Supports curved geometries input
