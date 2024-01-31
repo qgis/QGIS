@@ -1420,12 +1420,12 @@ QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpression
     return nullptr;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsVectorLayerSelectedFeatureSource::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsVectorLayerSelectedFeatureSource::hasSpatialIndex() const
 {
   if ( mLayer )
     return mLayer->hasSpatialIndex();
   else
-    return QgsFeatureSource::SpatialIndexUnknown;
+    return Qgis::SpatialIndexPresence::Unknown;
 }
 
 //

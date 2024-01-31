@@ -189,7 +189,7 @@ bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
   return index() && index()->hasStatisticsMetadata();
 }
 
-QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -213,7 +213,7 @@ QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribut
   return QVariantList();
 }
 
-QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

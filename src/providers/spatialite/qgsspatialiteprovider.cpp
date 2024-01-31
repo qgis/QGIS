@@ -4434,17 +4434,17 @@ bool QgsSpatiaLiteProvider::createAttributeIndex( int field )
   return true;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsSpatiaLiteProvider::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsSpatiaLiteProvider::hasSpatialIndex() const
 {
   QgsDataSourceUri u = uri();
   QgsSpatiaLiteProviderConnection conn( u.uri(), QVariantMap() );
   try
   {
-    return conn.spatialIndexExists( u.schema(), u.table(), u.geometryColumn() ) ? SpatialIndexPresent : SpatialIndexNotPresent;
+    return conn.spatialIndexExists( u.schema(), u.table(), u.geometryColumn() ) ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
   }
   catch ( QgsProviderConnectionException & )
   {
-    return SpatialIndexUnknown;
+    return Qgis::SpatialIndexPresence::Unknown;
   }
 }
 

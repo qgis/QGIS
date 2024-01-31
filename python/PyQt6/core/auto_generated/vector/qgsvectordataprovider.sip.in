@@ -151,7 +151,7 @@ Returns the vector layer type flags.
 .. versionadded:: 3.24
 %End
 
-    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+    virtual Qgis::FeatureAvailability hasFeatures() const;
 
 %Docstring
 Will always return FeatureAvailability.FeaturesAvailable or
@@ -223,7 +223,7 @@ matching is done in a case-insensitive manner.
 :return: list of unique strings containing substring
 %End
 
-    virtual QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
+    virtual QVariant aggregate( Qgis::Aggregate aggregate,
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,

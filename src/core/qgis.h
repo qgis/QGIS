@@ -340,6 +340,39 @@ class CORE_EXPORT Qgis
     Q_ENUM( FeatureCountState )
 
     /**
+     * Enumeration of spatial index presence states.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureSource::SpatialIndexPresence
+     * \since QGIS 3.36
+     */
+    enum class SpatialIndexPresence SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, SpatialIndexPresence ) : int
+      {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexUnknown ) = 0, //!< Spatial index presence cannot be determined, index may or may not exist
+      NotPresent SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexNotPresent ) = 1, //!< No spatial index exists for the source
+      Present SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexPresent ) = 2, //!< A valid spatial index exists for the source
+    };
+    Q_ENUM( SpatialIndexPresence )
+
+    /**
+     * Possible return value for QgsFeatureSource::hasFeatures() to determine if a source is empty.
+     *
+     * It is implemented as a three-value logic, so it can return if
+     * there are features available for sure, if there are no features
+     * available for sure or if there might be features available but
+     * there is no guarantee for this.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsFeatureSource::FeatureAvailability
+     * \since QGIS 3.36
+     */
+    enum class FeatureAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, FeatureAvailability ) : int
+      {
+      NoFeaturesAvailable = 0, //!< There are certainly no features available in this source
+      FeaturesAvailable, //!< There is at least one feature available in this source
+      FeaturesMaybeAvailable //!< There may be features available in this source
+    };
+    Q_ENUM( FeatureAvailability )
+
+    /**
      * Attribute editing capabilities which may be supported by vector data providers.
      *
      * \since QGIS 3.32
@@ -4262,6 +4295,207 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( GdalResampleAlgorithm )
 
+
+    /**
+     * Statistics to be calculated during a zonal statistics operation.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsZonalStatistics::Statistic.
+     */
+    enum class ZonalStatistic : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1,  //!< Pixel count
+      Sum = 2,  //!< Sum of pixel values
+      Mean = 4,  //!< Mean of pixel values
+      Median = 8, //!< Median of pixel values
+      StDev = 16, //!< Standard deviation of pixel values
+      Min = 32,  //!< Min of pixel values
+      Max = 64,  //!< Max of pixel values
+      Range = 128, //!< Range of pixel values (max - min)
+      Minority = 256, //!< Minority of pixel values
+      Majority = 512, //!< Majority of pixel values
+      Variety = 1024, //!< Variety (count of distinct) pixel values
+      Variance = 2048, //!< Variance of pixel values
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics
+      Default = Count | Sum | Mean, //!< Default statistics
+    };
+    Q_ENUM( ZonalStatistic )
+
+    /**
+     * Statistics to be calculated during a zonal statistics operation.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsZonalStatistics::Statistic.
+     */
+    Q_DECLARE_FLAGS( ZonalStatistics, ZonalStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( Qgis, ZonalStatistics )
+    Q_FLAG( ZonalStatistics )
+
+    /**
+     * Zonal statistics result codes.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsZonalStatistics::Result.
+     */
+    enum class ZonalStatisticResult : int
+    {
+      Success = 0, //!< Success
+      LayerTypeWrong = 1, //!< Layer is not a polygon layer
+      LayerInvalid, //!< Layer is invalid
+      RasterInvalid, //!< Raster layer is invalid
+      RasterBandInvalid, //!< The raster band does not exist on the raster layer
+      FailedToCreateField = 8, //!< Output fields could not be created
+      Canceled = 9 //!< Algorithm was canceled
+    };
+    Q_ENUM( ZonalStatisticResult )
+
+    /**
+     * Available aggregates to calculate. Not all aggregates are available for all field
+     * types.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsAggregateCalculator::Aggregate.
+     */
+    enum class Aggregate SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAggregateCalculator, Aggregate ) : int
+      {
+      Count, //!< Count
+      CountDistinct, //!< Number of distinct values
+      CountMissing, //!< Number of missing (null) values
+      Min, //!< Min of values
+      Max, //!< Max of values
+      Sum, //!< Sum of values
+      Mean, //!< Mean of values (numeric fields only)
+      Median, //!< Median of values (numeric fields only)
+      StDev, //!< Standard deviation of values (numeric fields only)
+      StDevSample,//!< Sample standard deviation of values (numeric fields only)
+      Range, //!< Range of values (max - min) (numeric and datetime fields only)
+      Minority, //!< Minority of values
+      Majority, //!< Majority of values
+      FirstQuartile, //!< First quartile (numeric fields only)
+      ThirdQuartile, //!< Third quartile (numeric fields only)
+      InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
+      StringMinimumLength, //!< Minimum length of string (string fields only)
+      StringMaximumLength, //!< Maximum length of string (string fields only)
+      StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      GeometryCollect, //!< Create a multipart geometry from aggregated geometries
+      ArrayAggregate, //!< Create an array of values
+      StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+    };
+    Q_ENUM( Aggregate )
+
+    /**
+     * Available generic statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStatisticalSummary::Statistic.
+     */
+    enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1 << 0,  //!< Count
+      CountMissing = 1 << 15, //!< Number of missing (null) values
+      Sum = 1 << 1,  //!< Sum of values
+      Mean = 1 << 2,  //!< Mean of values
+      Median = 1 << 3, //!< Median of values
+      StDev = 1 << 4, //!< Standard deviation of values
+      StDevSample = 1 << 5, //!< Sample standard deviation of values
+      Min = 1 << 6,  //!< Min of values
+      Max = 1 << 7,  //!< Max of values
+      Range = 1 << 8, //!< Range of values (max - min)
+      Minority = 1 << 9, //!< Minority of values
+      Majority = 1 << 10, //!< Majority of values
+      Variety = 1 << 11, //!< Variety (count of distinct) values
+      FirstQuartile = 1 << 12, //!< First quartile
+      ThirdQuartile = 1 << 13, //!< Third quartile
+      InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
+      First = 1 << 16, //!< First value (since QGIS 3.6)
+      Last = 1 << 17, //!< Last value (since QGIS 3.6)
+      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last //!< All statistics
+    };
+    Q_ENUM( Statistic )
+
+    /**
+     * Statistics to be calculated for generic values.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStatisticalSummary::Statistics.
+     */
+    Q_DECLARE_FLAGS( Statistics, Statistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsStatisticalSummary, Statistics )
+    Q_FLAG( Statistics )
+
+    /**
+     * Available date/time statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsDateTimeStatisticalSummary::Statistic.
+     */
+    enum class DateTimeStatistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDateTimeStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1,  //!< Count
+      CountDistinct = 2,  //!< Number of distinct datetime values
+      CountMissing = 4,  //!< Number of missing (null) values
+      Min = 8, //!< Minimum (earliest) datetime value
+      Max = 16, //!< Maximum (latest) datetime value
+      Range = 32, //!< Interval between earliest and latest datetime value
+      All = Count | CountDistinct | CountMissing | Min | Max | Range, //!< All statistics
+    };
+    Q_ENUM( DateTimeStatistic )
+
+    /**
+     * Statistics to be calculated for date/time values.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsDateTimeStatisticalSummary::Statistic.
+     */
+    Q_DECLARE_FLAGS( DateTimeStatistics, DateTimeStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDateTimeStatisticalSummary, Statistics )
+    Q_FLAG( DateTimeStatistics )
+
+    /**
+     * Available string statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStringStatisticalSummary::Statistic.
+     */
+    enum class StringStatistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStringStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Count = 1,  //!< Count
+      CountDistinct = 2,  //!< Number of distinct string values
+      CountMissing = 4,  //!< Number of missing (null) values
+      Min = 8, //!< Minimum string value
+      Max = 16, //!< Maximum string value
+      MinimumLength = 32, //!< Minimum length of string
+      MaximumLength = 64, //!< Maximum length of string
+      MeanLength = 128, //!< Mean length of strings
+      Minority = 256, //!< Minority of strings
+      Majority = 512, //!< Majority of strings
+      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength | Minority | Majority, //!< All statistics
+    };
+    Q_ENUM( StringStatistic )
+
+    /**
+     * Statistics to be calculated for string values.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsStringStatisticalSummary::Statistic.
+     */
+    Q_DECLARE_FLAGS( StringStatistics, StringStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsStringStatisticalSummary, Statistics )
+    Q_FLAG( StringStatistics )
+
+    /**
+     * Available raster band statistics.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsRasterBandStats::Stats.
+     */
+    enum class RasterBandStatistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterBandStats, Stats ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoStatistic = 0, //!< No statistic
+      Min = 1, //!< Minimum
+      Max = 1 << 1, //!< Maximum
+      Range = 1 << 2, //!< Range
+      Sum = 1 << 3, //!< Sum
+      Mean = 1 << 4, //!< Mean
+      StdDev = 1 << 5, //!< Standard deviation
+      SumOfSquares = 1 << 6, //!< Sum of squares
+      All = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares //!< All available statistics
+    };
+    Q_ENUM( RasterBandStatistic )
+
+    /**
+     * Statistics to be calculated for raster bands.
+     *
+     * \since QGIS 3.36. Prior to 3.36 this was available as QgsRasterBandStats::Stats.
+     */
+    Q_DECLARE_FLAGS( RasterBandStatistics, RasterBandStatistic )
+    Q_FLAG( RasterBandStatistics )
+
     /**
      * Identify search radius in mm
      * \since QGIS 2.3
@@ -4434,6 +4668,11 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorTileProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FeatureRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceDefinitionFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ZonalStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Statistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DateTimeStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

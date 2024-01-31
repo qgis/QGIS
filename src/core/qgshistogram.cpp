@@ -26,7 +26,7 @@ void QgsHistogram::prepareValues()
   std::sort( mValues.begin(), mValues.end() );
 
   QgsStatisticalSummary s;
-  s.setStatistics( QgsStatisticalSummary::Statistic::Max | QgsStatisticalSummary::Statistic::Min | QgsStatisticalSummary::Statistic::InterQuartileRange );
+  s.setStatistics( Qgis::Statistic::Max | Qgis::Statistic::Min | Qgis::Statistic::InterQuartileRange );
   s.calculate( mValues );
   mMin = s.min();
   mMax = s.max();

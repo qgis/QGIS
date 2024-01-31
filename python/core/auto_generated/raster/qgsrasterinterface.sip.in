@@ -306,7 +306,7 @@ resampling etc.
 %End
 
     virtual QgsRasterBandStats bandStatistics( int bandNo,
-        int stats = static_cast< int >( QgsRasterBandStats::Statistic::All ),
+        int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
         const QgsRectangle &extent = QgsRectangle(),
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
@@ -320,7 +320,7 @@ Returns the band statistics.
 %End
 
     virtual bool hasStatistics( int bandNo,
-                                int stats = static_cast< int >( QgsRasterBandStats::Statistic::All ),
+                                int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                                 const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 %Docstring
@@ -521,7 +521,7 @@ Fill in histogram defaults if not specified
 %End
 
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
-                         int stats = static_cast< int >( QgsRasterBandStats::Statistic::All ),
+                         int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                          const QgsRectangle &boundingBox = QgsRectangle(),
                          int binCount = 0 ) const;
 %Docstring

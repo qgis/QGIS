@@ -31,12 +31,12 @@
 #include <QAction>
 #include <QMenu>
 
-typedef QList< QgsStatisticalSummary::Statistic > StatsList;
-typedef QList< QgsStringStatisticalSummary::Statistic > StringStatsList;
-typedef QList< QgsDateTimeStatisticalSummary::Statistic > DateTimeStatsList;
-Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {QgsStatisticalSummary::Statistic::Count, QgsStatisticalSummary::Statistic::Sum, QgsStatisticalSummary::Statistic::Mean, QgsStatisticalSummary::Statistic::Median, QgsStatisticalSummary::Statistic::StDev, QgsStatisticalSummary::Statistic::StDevSample, QgsStatisticalSummary::Statistic::Min, QgsStatisticalSummary::Statistic::Max, QgsStatisticalSummary::Statistic::Range, QgsStatisticalSummary::Statistic::Minority, QgsStatisticalSummary::Statistic::Majority, QgsStatisticalSummary::Statistic::Variety, QgsStatisticalSummary::Statistic::FirstQuartile, QgsStatisticalSummary::Statistic::ThirdQuartile, QgsStatisticalSummary::Statistic::InterQuartileRange} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {QgsStringStatisticalSummary::Statistic::Count, QgsStringStatisticalSummary::Statistic::CountDistinct, QgsStringStatisticalSummary::Statistic::CountMissing, QgsStringStatisticalSummary::Statistic::Min, QgsStringStatisticalSummary::Statistic::Max, QgsStringStatisticalSummary::Statistic::Minority, QgsStringStatisticalSummary::Statistic::Majority, QgsStringStatisticalSummary::Statistic::MinimumLength, QgsStringStatisticalSummary::Statistic::MaximumLength, QgsStringStatisticalSummary::Statistic::MeanLength} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, ( {QgsDateTimeStatisticalSummary::Statistic::Count, QgsDateTimeStatisticalSummary::Statistic::CountDistinct, QgsDateTimeStatisticalSummary::Statistic::CountMissing, QgsDateTimeStatisticalSummary::Statistic::Min, QgsDateTimeStatisticalSummary::Statistic::Max, QgsDateTimeStatisticalSummary::Statistic::Range} ) )
+typedef QList< Qgis::Statistic > StatsList;
+typedef QList< Qgis::StringStatistic > StringStatsList;
+typedef QList< Qgis::DateTimeStatistic > DateTimeStatsList;
+Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {Qgis::Statistic::Count, Qgis::Statistic::Sum, Qgis::Statistic::Mean, Qgis::Statistic::Median, Qgis::Statistic::StDev, Qgis::Statistic::StDevSample, Qgis::Statistic::Min, Qgis::Statistic::Max, Qgis::Statistic::Range, Qgis::Statistic::Minority, Qgis::Statistic::Majority, Qgis::Statistic::Variety, Qgis::Statistic::FirstQuartile, Qgis::Statistic::ThirdQuartile, Qgis::Statistic::InterQuartileRange} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {Qgis::StringStatistic::Count, Qgis::StringStatistic::CountDistinct, Qgis::StringStatistic::CountMissing, Qgis::StringStatistic::Min, Qgis::StringStatistic::Max, Qgis::StringStatistic::Minority, Qgis::StringStatistic::Majority, Qgis::StringStatistic::MinimumLength, Qgis::StringStatistic::MaximumLength, Qgis::StringStatistic::MeanLength} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, ( {Qgis::DateTimeStatistic::Count, Qgis::DateTimeStatistic::CountDistinct, Qgis::DateTimeStatistic::CountMissing, Qgis::DateTimeStatistic::Min, Qgis::DateTimeStatistic::Max, Qgis::DateTimeStatistic::Range} ) )
 
 #define MISSING_VALUES -1
 
@@ -294,10 +294,10 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
     }
   }
 
-  QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  QgsStatisticalSummary::Statistics statsToCalc = QgsStatisticalSummary::Statistics();
+  QList< Qgis::Statistic > statsToDisplay;
+  Qgis::Statistics statsToCalc;
   const auto displayStats = *sDisplayStats();
-  for ( const QgsStatisticalSummary::Statistic stat : displayStats )
+  for ( const Qgis::Statistic stat : displayStats )
   {
     if ( mStatsActions.value( static_cast< int >( stat ) )->isChecked() )
     {
@@ -319,7 +319,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 
   int row = 0;
   const auto constStatsToDisplay = statsToDisplay;
-  for ( const QgsStatisticalSummary::Statistic stat : constStatsToDisplay )
+  for ( const Qgis::Statistic stat : constStatsToDisplay )
   {
     const double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
@@ -351,10 +351,10 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 
   const QVariantList values = mGatherer->values();
 
-  QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
-  QgsStringStatisticalSummary::Statistics statsToCalc = QgsStringStatisticalSummary::Statistics();
+  QList< Qgis::StringStatistic > statsToDisplay;
+  Qgis::StringStatistics statsToCalc;
   const auto displayStringStats = *sDisplayStringStats();
-  for ( const QgsStringStatisticalSummary::Statistic stat : displayStringStats )
+  for ( const Qgis::StringStatistic stat : displayStringStats )
   {
     if ( mStatsActions.value( static_cast< int >( stat ) )->isChecked() )
     {
@@ -372,7 +372,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 
   int row = 0;
   const auto constStatsToDisplay = statsToDisplay;
-  for ( const QgsStringStatisticalSummary::Statistic stat : constStatsToDisplay )
+  for ( const Qgis::StringStatistic stat : constStatsToDisplay )
   {
     addRow( row, QgsStringStatisticalSummary::displayName( stat ),
             stats.statistic( stat ).toString(),
@@ -480,10 +480,10 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 
   const QVariantList values = mGatherer->values();
 
-  QList< QgsDateTimeStatisticalSummary::Statistic > statsToDisplay;
-  QgsDateTimeStatisticalSummary::Statistics statsToCalc = QgsDateTimeStatisticalSummary::Statistics();
+  QList< Qgis::DateTimeStatistic > statsToDisplay;
+  Qgis::DateTimeStatistics statsToCalc;
   const auto displayDateTimeStats = *sDisplayDateTimeStats();
-  for ( const QgsDateTimeStatisticalSummary::Statistic stat : displayDateTimeStats )
+  for ( const Qgis::DateTimeStatistic stat : displayDateTimeStats )
   {
     if ( mStatsActions.value( static_cast< int >( stat ) )->isChecked() )
     {
@@ -502,9 +502,9 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 
   int row = 0;
   const auto constStatsToDisplay = statsToDisplay;
-  for ( const QgsDateTimeStatisticalSummary::Statistic stat : constStatsToDisplay )
+  for ( const Qgis::DateTimeStatistic stat : constStatsToDisplay )
   {
-    const QString value = ( stat == QgsDateTimeStatisticalSummary::Statistic::Range
+    const QString value = ( stat == Qgis::DateTimeStatistic::Range
                             ? tr( "%n second(s)", nullptr, stats.range().seconds() )
                             : stats.statistic( stat ).toString() );
 
@@ -548,7 +548,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
     case DataType::Numeric:
     {
       const auto displayStats = *sDisplayStats();
-      for ( const QgsStatisticalSummary::Statistic stat : displayStats )
+      for ( const Qgis::Statistic stat : displayStats )
       {
         QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
@@ -575,7 +575,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
     case DataType::String:
     {
       const auto displayStringStats = *sDisplayStringStats();
-      for ( const QgsStringStatisticalSummary::Statistic stat : displayStringStats )
+      for ( const Qgis::StringStatistic stat : displayStringStats )
       {
         QAction *action = new QAction( QgsStringStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );
@@ -591,7 +591,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
     case DataType::DateTime:
     {
       const auto displayDateTimeStats = *sDisplayDateTimeStats();
-      for ( const QgsDateTimeStatisticalSummary::Statistic stat : displayDateTimeStats )
+      for ( const Qgis::DateTimeStatistic stat : displayDateTimeStats )
       {
         QAction *action = new QAction( QgsDateTimeStatisticalSummary::displayName( stat ), mStatisticsMenu );
         action->setCheckable( true );

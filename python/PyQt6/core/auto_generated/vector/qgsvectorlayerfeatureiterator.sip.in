@@ -203,7 +203,7 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
 
     virtual QgsExpressionContextScope *createExpressionContextScope() const;
 
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 
 
   private:

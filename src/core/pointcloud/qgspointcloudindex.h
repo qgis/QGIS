@@ -33,7 +33,6 @@
 #include "qgspointcloudblock.h"
 #include "qgsrange.h"
 #include "qgspointcloudattribute.h"
-#include "qgsstatisticalsummary.h"
 #include "qgspointcloudexpression.h"
 
 #define SIP_NO_FILE
@@ -214,11 +213,11 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns whether the dataset contains metadata of statistics
     virtual bool hasStatisticsMetadata() const = 0;
     //! Returns the statistic \a statistic of \a attribute
-    virtual QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    virtual QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
     //! Returns the classes of \a attribute
     virtual QVariantList metadataClasses( const QString &attribute ) const;
     //! Returns the statistic \a statistic of the class \a value of the attribute \a attribute
-    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
     //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
 

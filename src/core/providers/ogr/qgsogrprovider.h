@@ -125,7 +125,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
                                        QgsFeedback *feedback = nullptr ) const override;
-    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
+    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 

@@ -267,7 +267,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
       {
         // Destination extent is (at least partially) outside of source extent, we need destination no data values
         // Get src sample statistics (estimation from sample)
-        const QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Statistic::Min | QgsRasterBandStats::Statistic::Max, outputExtentInSrcCrs, 250000 );
+        const QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, outputExtentInSrcCrs, 250000 );
 
         // Test if we have free (not used) values
         const double typeMinValue = QgsContrastEnhancement::minimumValuePossible( srcDataType );

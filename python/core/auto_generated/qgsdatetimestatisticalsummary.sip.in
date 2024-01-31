@@ -28,27 +28,14 @@ specifying the statistic in the constructor or via :py:func:`~setStatistics`.
 %End
   public:
 
-    enum class Statistic
-    {
-      Count,
-      CountDistinct,
-      CountMissing,
-      Min,
-      Max,
-      Range,
-      All,
-    };
-    typedef QFlags<QgsDateTimeStatisticalSummary::Statistic> Statistics;
-
-
-    QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = QgsDateTimeStatisticalSummary::Statistic::All );
+    QgsDateTimeStatisticalSummary( Qgis::DateTimeStatistics stats = Qgis::DateTimeStatistic::All );
 %Docstring
 Constructor for QgsDateTimeStatisticalSummary
 
 :param stats: flags for statistics to calculate
 %End
 
-    Statistics statistics() const;
+    Qgis::DateTimeStatistics statistics() const;
 %Docstring
 Returns flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
@@ -56,7 +43,7 @@ are always calculated (e.g., count).
 .. seealso:: :py:func:`setStatistics`
 %End
 
-    void setStatistics( Statistics stats );
+    void setStatistics( Qgis::DateTimeStatistics stats );
 %Docstring
 Sets flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
@@ -113,7 +100,7 @@ any calculated datetime statistics.
 .. seealso:: :py:func:`addValue`
 %End
 
-    QVariant statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const;
+    QVariant statistic( Qgis::DateTimeStatistic stat ) const;
 %Docstring
 Returns the value of a specified statistic
 
@@ -157,7 +144,7 @@ Returns the maximum (latest) non-null datetime value.
 Returns the range (interval between earliest and latest non-null datetime values).
 %End
 
-    static QString displayName( QgsDateTimeStatisticalSummary::Statistic statistic );
+    static QString displayName( Qgis::DateTimeStatistic statistic );
 %Docstring
 Returns the friendly display name for a statistic
 
@@ -165,9 +152,6 @@ Returns the friendly display name for a statistic
 %End
 
 };
-
-QFlags<QgsDateTimeStatisticalSummary::Statistic> operator|(QgsDateTimeStatisticalSummary::Statistic f1, QFlags<QgsDateTimeStatisticalSummary::Statistic> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

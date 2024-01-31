@@ -1695,16 +1695,16 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
   return mSource->getFeatures( req );
 }
 
-QgsFeatureSource::FeatureAvailability QgsProcessingFeatureSource::hasFeatures() const
+Qgis::FeatureAvailability QgsProcessingFeatureSource::hasFeatures() const
 {
-  FeatureAvailability sourceAvailability = mSource->hasFeatures();
-  if ( sourceAvailability == QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable )
-    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable; // never going to be features if underlying source has no features
+  Qgis::FeatureAvailability sourceAvailability = mSource->hasFeatures();
+  if ( sourceAvailability == Qgis::FeatureAvailability::NoFeaturesAvailable )
+    return Qgis::FeatureAvailability::NoFeaturesAvailable; // never going to be features if underlying source has no features
   else if ( mInvalidGeometryCheck == Qgis::InvalidGeometryCheck::NoCheck && mFilterExpression.isEmpty() )
     return sourceAvailability;
   else
     // we don't know... source has features, but these may be filtered out by invalid geometry check or filter expression
-    return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
+    return Qgis::FeatureAvailability::FeaturesMaybeAvailable;
 }
 
 QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
@@ -1865,7 +1865,7 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
   return ids;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
 {
   return mSourceSpatialIndexPresence;
 }

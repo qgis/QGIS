@@ -23,6 +23,8 @@
 #include "qgsfeature.h"
 #include "qgsfeaturesource.h"
 #include "qgsalgorithmjoinbylocation.h"
+#include "qgsdatetimestatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
 
 ///@cond PRIVATE
 
@@ -142,7 +144,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
   if ( !joinSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
 
-  if ( joinSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( joinSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->reportError( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
 
   QStringList joinedFieldNames = parameterAsStrings( parameters, QStringLiteral( "JOIN_FIELDS" ), context );

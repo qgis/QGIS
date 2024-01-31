@@ -32,8 +32,6 @@
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
-#include "qgsfeedback.h"
-#include "qgsmessagelog.h"
 #include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
@@ -368,7 +366,7 @@ bool QgsEptPointCloudIndex::hasStatisticsMetadata() const
   return !mMetadataStats.isEmpty();
 }
 
-QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
 {
   if ( !mMetadataStats.contains( attribute ) )
     return QVariant();
@@ -376,37 +374,37 @@ QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgs
   const AttributeStatistics &stats = mMetadataStats[ attribute ];
   switch ( statistic )
   {
-    case QgsStatisticalSummary::Statistic::Count:
+    case Qgis::Statistic::Count:
       return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
 
-    case QgsStatisticalSummary::Statistic::Mean:
+    case Qgis::Statistic::Mean:
       return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
 
-    case QgsStatisticalSummary::Statistic::StDev:
+    case Qgis::Statistic::StDev:
       return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
 
-    case QgsStatisticalSummary::Statistic::Min:
+    case Qgis::Statistic::Min:
       return stats.minimum;
 
-    case QgsStatisticalSummary::Statistic::Max:
+    case Qgis::Statistic::Max:
       return stats.maximum;
 
-    case QgsStatisticalSummary::Statistic::Range:
+    case Qgis::Statistic::Range:
       return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
 
-    case QgsStatisticalSummary::Statistic::CountMissing:
-    case QgsStatisticalSummary::Statistic::Sum:
-    case QgsStatisticalSummary::Statistic::Median:
-    case QgsStatisticalSummary::Statistic::StDevSample:
-    case QgsStatisticalSummary::Statistic::Minority:
-    case QgsStatisticalSummary::Statistic::Majority:
-    case QgsStatisticalSummary::Statistic::Variety:
-    case QgsStatisticalSummary::Statistic::FirstQuartile:
-    case QgsStatisticalSummary::Statistic::ThirdQuartile:
-    case QgsStatisticalSummary::Statistic::InterQuartileRange:
-    case QgsStatisticalSummary::Statistic::First:
-    case QgsStatisticalSummary::Statistic::Last:
-    case QgsStatisticalSummary::Statistic::All:
+    case Qgis::Statistic::CountMissing:
+    case Qgis::Statistic::Sum:
+    case Qgis::Statistic::Median:
+    case Qgis::Statistic::StDevSample:
+    case Qgis::Statistic::Minority:
+    case Qgis::Statistic::Majority:
+    case Qgis::Statistic::Variety:
+    case Qgis::Statistic::FirstQuartile:
+    case Qgis::Statistic::ThirdQuartile:
+    case Qgis::Statistic::InterQuartileRange:
+    case Qgis::Statistic::First:
+    case Qgis::Statistic::Last:
+    case Qgis::Statistic::All:
       return QVariant();
   }
   return QVariant();
@@ -423,9 +421,9 @@ QVariantList QgsEptPointCloudIndex::metadataClasses( const QString &attribute ) 
   return classes;
 }
 
-QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
 {
-  if ( statistic != QgsStatisticalSummary::Statistic::Count )
+  if ( statistic != Qgis::Statistic::Count )
     return QVariant();
 
   const QMap< int, int > values =  mAttributeClasses.value( attribute );

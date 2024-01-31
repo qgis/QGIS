@@ -22,8 +22,6 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsvectorlayer.h"
-#include "vector/qgszonalstatistics.h"
 
 ///@cond PRIVATE
 
@@ -56,7 +54,7 @@ class QgsZonalStatisticsAlgorithm : public QgsProcessingAlgorithm
     std::unique_ptr< QgsRasterInterface > mInterface;
     int mBand = 1;
     QString mPrefix;
-    QgsZonalStatistics::Statistics mStats = QgsZonalStatistics::Statistic::All;
+    Qgis::ZonalStatistics mStats = Qgis::ZonalStatistic::All;
     QgsCoordinateReferenceSystem mCrs;
     double mPixelSizeX = 0;
     double mPixelSizeY = 0;

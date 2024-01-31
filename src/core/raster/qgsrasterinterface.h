@@ -26,11 +26,12 @@
 #include <QImage>
 
 #include "qgsfeedback.h"
-#include "qgsrasterbandstats.h"
+#include "qgis.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
+#include "qgsrasterbandstats.h"
 
 /**
  * \ingroup core
@@ -342,7 +343,7 @@ class CORE_EXPORT QgsRasterInterface
      * \param feedback optional feedback object
      */
     virtual QgsRasterBandStats bandStatistics( int bandNo,
-        int stats = static_cast< int >( QgsRasterBandStats::Statistic::All ),
+        int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
         const QgsRectangle &extent = QgsRectangle(),
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
@@ -351,7 +352,7 @@ class CORE_EXPORT QgsRasterInterface
      * \returns TRUE if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
-                                int stats = static_cast< int >( QgsRasterBandStats::Statistic::All ),
+                                int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                                 const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 
@@ -572,7 +573,7 @@ class CORE_EXPORT QgsRasterInterface
 
     //! Fill in statistics defaults if not specified
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
-                         int stats = static_cast< int >( QgsRasterBandStats::Statistic::All ),
+                         int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
                          const QgsRectangle &boundingBox = QgsRectangle(),
                          int binCount = 0 ) const;
 

@@ -86,7 +86,7 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
 
   const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
-  const QgsRasterBandStats stat = layer->dataProvider()->bandStatistics( band, static_cast< int >( QgsRasterBandStats::Statistic::All ), QgsRectangle(), 0 );
+  const QgsRasterBandStats stat = layer->dataProvider()->bandStatistics( band, static_cast< int >( Qgis::RasterBandStatistic::All ), QgsRectangle(), 0 );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "MIN" ), stat.minimumValue );

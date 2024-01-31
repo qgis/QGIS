@@ -125,7 +125,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool createAttributeIndex( int field ) override;
-    SpatialIndexPresence hasSpatialIndex() const override;
+    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The SpatiaLite provider does its own transforms so we return

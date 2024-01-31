@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsterrainprovider.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsrasterbandstats.h"
 #include <QThread>
 
 QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;

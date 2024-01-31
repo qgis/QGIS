@@ -3012,7 +3012,7 @@ bool QgsOgrProvider::doInitialActionsForEdition()
       return false;
   }
 
-  mShapefileHadSpatialIndex = ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && hasSpatialIndex() );
+  mShapefileHadSpatialIndex = ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && ( hasSpatialIndex() == Qgis::SpatialIndexPresence::Present ) );
 
   return true;
 }
@@ -3388,17 +3388,17 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   return results;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
 {
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
   if ( mOgrLayer && mOgrLayer->TestCapability( OLCFastSpatialFilter ) )
-    return QgsFeatureSource::SpatialIndexPresent;
+    return Qgis::SpatialIndexPresence::Present;
   else if ( mOgrLayer )
-    return QgsFeatureSource::SpatialIndexNotPresent;
+    return Qgis::SpatialIndexPresence::NotPresent;
   else
-    return QgsFeatureSource::SpatialIndexUnknown;
+    return Qgis::SpatialIndexPresence::Unknown;
 }
 
 Qgis::VectorLayerTypeFlags QgsOgrProvider::vectorLayerTypeFlags() const

@@ -1828,11 +1828,11 @@ void QgsVectorLayer::setTransformContext( const QgsCoordinateTransformContext &t
     mDataProvider->setTransformContext( transformContext );
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsVectorLayer::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsVectorLayer::hasSpatialIndex() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider ? mDataProvider->hasSpatialIndex() : QgsFeatureSource::SpatialIndexUnknown;
+  return mDataProvider ? mDataProvider->hasSpatialIndex() : Qgis::SpatialIndexPresence::Unknown;
 }
 
 bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
@@ -3793,7 +3793,7 @@ long long QgsVectorLayer::featureCount() const
          ( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures().size() - mEditBuffer->deletedFeatureIds().size() : 0 );
 }
 
-QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
+Qgis::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3803,15 +3803,15 @@ QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
   if ( mEditBuffer && !deletedFeatures.empty() )
   {
     if ( addedFeatures.size() > deletedFeatures.size() )
-      return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+      return Qgis::FeatureAvailability::FeaturesAvailable;
     else
-      return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
+      return Qgis::FeatureAvailability::FeaturesMaybeAvailable;
   }
 
   if ( ( !mEditBuffer || addedFeatures.empty() ) && mDataProvider && mDataProvider->empty() )
-    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+    return Qgis::FeatureAvailability::NoFeaturesAvailable;
   else
-    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+    return Qgis::FeatureAvailability::FeaturesAvailable;
 }
 
 bool QgsVectorLayer::commitChanges( bool stopEditing )
@@ -4990,7 +4990,7 @@ void QgsVectorLayer::clearEditBuffer()
   mEditBuffer = nullptr;
 }
 
-QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
+QVariant QgsVectorLayer::aggregate( Qgis::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
                                     bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback, QString *error ) const
 {

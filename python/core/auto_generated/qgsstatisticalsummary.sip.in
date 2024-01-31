@@ -28,33 +28,7 @@ specifying the statistic in the constructor or via :py:func:`~setStatistics`.
 %End
   public:
 
-    enum class Statistic
-    {
-      Count,
-      CountMissing,
-      Sum,
-      Mean,
-      Median,
-      StDev,
-      StDevSample,
-      Min,
-      Max,
-      Range,
-      Minority,
-      Majority,
-      Variety,
-      FirstQuartile,
-      ThirdQuartile,
-      InterQuartileRange,
-      First,
-      Last,
-      All
-    };
-    typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
-
-
-
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::Statistic::All );
+    QgsStatisticalSummary( Qgis::Statistics stats = Qgis::Statistic::All );
 %Docstring
 Constructor for QgsStatisticalSummary
 
@@ -63,7 +37,7 @@ Constructor for QgsStatisticalSummary
 
     virtual ~QgsStatisticalSummary();
 
-    Statistics statistics() const;
+    Qgis::Statistics statistics() const;
 %Docstring
 Returns flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., sum, min and max).
@@ -71,7 +45,7 @@ are always calculated (e.g., sum, min and max).
 .. seealso:: :py:func:`setStatistics`
 %End
 
-    void setStatistics( QgsStatisticalSummary::Statistics stats );
+    void setStatistics( Qgis::Statistics stats );
 %Docstring
 Sets flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., sum, min and max).
@@ -161,7 +135,7 @@ any calculated statistics.
 .. versionadded:: 2.16
 %End
 
-    double statistic( QgsStatisticalSummary::Statistic stat ) const;
+    double statistic( Qgis::Statistic stat ) const;
 %Docstring
 Returns the value of a specified statistic
 
@@ -315,14 +289,14 @@ be calculated.
 .. seealso:: :py:func:`thirdQuartile`
 %End
 
-    static QString displayName( QgsStatisticalSummary::Statistic statistic );
+    static QString displayName( Qgis::Statistic statistic );
 %Docstring
 Returns the friendly display name for a ``statistic``.
 
 .. seealso:: :py:func:`shortName`
 %End
 
-    static QString shortName( QgsStatisticalSummary::Statistic statistic );
+    static QString shortName( Qgis::Statistic statistic );
 %Docstring
 Returns a short, friendly display name for a ``statistic``, suitable for use in a field name.
 
@@ -332,9 +306,6 @@ Returns a short, friendly display name for a ``statistic``, suitable for use in 
 %End
 
 };
-
-QFlags<QgsStatisticalSummary::Statistic> operator|(QgsStatisticalSummary::Statistic f1, QFlags<QgsStatisticalSummary::Statistic> f2);
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

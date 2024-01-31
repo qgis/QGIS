@@ -113,9 +113,10 @@ class CORE_EXPORT QgsPathResolver
     static QString setPathPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     PyObject *s = 0;
-    Py_BEGIN_ALLOW_THREADS
+    QString id;
     Py_XINCREF( a0 );
-    QString id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
     {
       QString res;
       SIP_BLOCK_THREADS
@@ -132,8 +133,8 @@ class CORE_EXPORT QgsPathResolver
       return res;
     } );
 
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
 #endif
@@ -223,9 +224,10 @@ class CORE_EXPORT QgsPathResolver
     static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     PyObject *s = 0;
-    Py_BEGIN_ALLOW_THREADS
+    QString id;
     Py_XINCREF( a0 );
-    QString id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
     {
       QString res;
       SIP_BLOCK_THREADS
@@ -242,8 +244,8 @@ class CORE_EXPORT QgsPathResolver
       return res;
     } );
 
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
 #endif

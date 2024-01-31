@@ -677,7 +677,7 @@ An optional ``request`` can be used to optimise the returned
 iterator, eg by restricting the returned attributes or geometry.
 %End
 
-    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+    virtual Qgis::FeatureAvailability hasFeatures() const;
 
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
@@ -702,7 +702,7 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsFeatureIds allFeatureIds() const;
 
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;

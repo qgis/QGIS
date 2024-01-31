@@ -291,7 +291,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     {
       pbnIndex->setEnabled( false );
     }
-    if ( mLayer->dataProvider()->hasSpatialIndex() == QgsFeatureSource::SpatialIndexPresent )
+    if ( mLayer->dataProvider()->hasSpatialIndex() == Qgis::SpatialIndexPresence::Present )
     {
       pbnIndex->setEnabled( false );
       pbnIndex->setText( tr( "Spatial Index Exists" ) );
