@@ -359,7 +359,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     /**
      * Stores currently opened widget configuration.
-     * \since QGIS 3.34.3
+     * \since QGIS 3.36
      */
     void store();
 
