@@ -22,7 +22,7 @@ Factory class for creating custom map layer property pages
 %End
   public:
 
-    enum class ParentPage /BaseType=IntFlag/
+    enum class ParentPage /BaseType=IntEnum/
     {
       NoParent,
       Temporal,

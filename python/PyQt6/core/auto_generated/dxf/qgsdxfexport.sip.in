@@ -68,7 +68,7 @@ unique value.
       EmptyExtentError
     };
 
-    enum class VAlign /BaseType=IntFlag/
+    enum class VAlign /BaseType=IntEnum/
     {
       VBaseLine,
       VBottom,
@@ -77,7 +77,7 @@ unique value.
       Undefined
     };
 
-    enum class HAlign /BaseType=IntFlag/
+    enum class HAlign /BaseType=IntEnum/
     {
       HLeft,
       HCenter,

@@ -39,7 +39,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Available dialog options.
      */
-    enum class Option : int
+    enum class Option : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Symbology = 1, //!< Show symbology options
       DestinationCrs = 1 << 2, //!< Show destination CRS (reprojection) option

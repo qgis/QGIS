@@ -383,7 +383,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    enum CascadedFeatureFlag
+    enum CascadedFeatureFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       IgnoreAuxiliaryLayers = 1 << 1, //!< Ignore auxiliary layers
     };

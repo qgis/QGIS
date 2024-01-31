@@ -242,7 +242,7 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
   public:
 
     //! Available filter flags for filtering the model
-    enum Filter
+    enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       FilterPrintLayouts = 1 << 1, //!< Includes print layouts
       FilterReports = 1 << 2, //!< Includes reports

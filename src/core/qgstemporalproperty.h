@@ -41,7 +41,7 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
     /**
      * Flags attached to the temporal property.
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when temporal range context is modified.
     };

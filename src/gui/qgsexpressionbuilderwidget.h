@@ -48,7 +48,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Flag to determine what should be loaded
      * \since QGIS 3.14
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       LoadNothing = 0, //!< Do not load anything
       LoadRecent = 1 << 1, //!< Load recent expressions given the collection key

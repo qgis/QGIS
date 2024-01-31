@@ -34,7 +34,7 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
-    enum Stats
+    enum Stats SIP_ENUM_BASETYPE( IntFlag )
     {
       None         = 0,
       Min          = 1,

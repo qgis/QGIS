@@ -35,7 +35,7 @@ embedded project items. The non-sublayer items can be added by calling
 %End
   public:
 
-    enum class Role /BaseType=IntFlag/
+    enum class Role /BaseType=IntEnum/
     {
       ProviderKey,
       LayerType,
@@ -52,7 +52,7 @@ embedded project items. The non-sublayer items can be added by calling
       Flags,
     };
 
-    enum class Column /BaseType=IntFlag/
+    enum class Column /BaseType=IntEnum/
     {
       Name,
       Description,

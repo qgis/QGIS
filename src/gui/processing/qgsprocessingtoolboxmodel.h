@@ -421,7 +421,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
   public:
 
     //! Available filter flags for filtering the model
-    enum Filter
+    enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
       FilterModeler = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler

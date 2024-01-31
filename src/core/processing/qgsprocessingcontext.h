@@ -46,7 +46,7 @@ class CORE_EXPORT QgsProcessingContext
   public:
 
     //! Flags that affect how processing algorithms are run
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused = 1 << 0, //!< Temporary unused entry
@@ -739,7 +739,7 @@ class CORE_EXPORT QgsProcessingContext
      *
      * \since QGIS 3.24
      */
-    enum class ProcessArgumentFlag : int
+    enum class ProcessArgumentFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IncludeProjectPath = 1 << 0, //!< Include the associated project path argument
     };

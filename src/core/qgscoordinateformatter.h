@@ -55,7 +55,7 @@ class CORE_EXPORT QgsCoordinateFormatter
     /**
      * Flags for controlling formatting of coordinates.
      */
-    enum FormatFlag
+    enum FormatFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDegreesUseStringSuffix = 1 << 1, //!< Include a direction suffix (eg 'N', 'E', 'S' or 'W'), otherwise a "-" prefix is used for west and south coordinates
       FlagDegreesPadMinutesSeconds = 1 << 2, //!< Pad minute and second values with leading zeros, eg '05' instead of '5'

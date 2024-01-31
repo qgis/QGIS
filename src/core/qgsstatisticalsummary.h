@@ -20,6 +20,7 @@
 #include <QVariant>
 #include <cmath>
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsStatisticalSummary
   public:
 
     //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic
+    enum Statistic SIP_ENUM_BASETYPE( IntFlag )
     {
       Count = 1 << 0,  //!< Count
       CountMissing = 1 << 15, //!< Number of missing (null) values

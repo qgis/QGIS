@@ -38,7 +38,7 @@ class CORE_EXPORT QgsMapSettingsUtils
      * Flags for controlling the behavior of containsAdvancedEffects()
      * \since QGIS 3.14
      */
-    enum class EffectsCheckFlag : int
+    enum class EffectsCheckFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IgnoreGeoPdfSupportedEffects = 1 << 0, //!< Ignore advanced effects which are supported in GeoPDF exports
     };

@@ -15,21 +15,31 @@
 %End
 
 
-struct QgsStoredExpression
+class QgsStoredExpression
 {
+%Docstring(signature="appended")
+Stored expression containing name, content (expression text) and a category tag.
 
-  enum Category
-  {
-    FilterExpression,
-    DefaultValueExpression,
-    All
-  };
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstoredexpressionmanager.h"
+%End
+  public:
+
+    enum Category
+    {
+      FilterExpression,
+      DefaultValueExpression,
+      All
+    };
 
 
-  QString id;
-  QString name;
-  QString expression;
-  Category tag;
+    QString id;
+    QString name;
+    QString expression;
+    Category tag;
 };
 
 class QgsStoredExpressionManager : QObject

@@ -48,7 +48,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
   public:
 
     //! Flags for controlling how a items behave in the GUI
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagNoCreationTools = 1 << 1,  //!< Do not show item creation tools for the item type
     };

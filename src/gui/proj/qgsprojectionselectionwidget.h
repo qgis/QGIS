@@ -51,7 +51,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     /**
      * Predefined CRS options shown in widget
      */
-    enum CrsOption
+    enum CrsOption SIP_ENUM_BASETYPE( IntFlag )
     {
       Invalid = 1 << 0, //!< Invalid option, since QGIS 3.36
       LayerCrs = 1 << 1, //!< Optional layer CRS

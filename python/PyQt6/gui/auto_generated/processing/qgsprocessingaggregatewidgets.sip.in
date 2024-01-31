@@ -25,7 +25,7 @@ fields from a :py:class:`QgsFields` object.
 %End
   public:
 
-    enum class ColumnDataIndex /BaseType=IntFlag/
+    enum class ColumnDataIndex /BaseType=IntEnum/
     {
       SourceExpression,
       Aggregate,

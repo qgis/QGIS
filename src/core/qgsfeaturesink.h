@@ -39,7 +39,7 @@ class CORE_EXPORT QgsFeatureSink
      *
      * \since QGIS 3.4
      */
-    enum SinkFlag
+    enum SinkFlag SIP_ENUM_BASETYPE( IntFlag )
     {
 
       /**
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsFeatureSink
     Q_DECLARE_FLAGS( SinkFlags, SinkFlag )
 
     //! Flags controlling how features are added to a sink.
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
 
       /**

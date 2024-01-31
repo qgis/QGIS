@@ -22,13 +22,13 @@ The :py:class:`QgsJsonEditWidget` is a widget to display JSON data in a code hig
 %End
   public:
 
-    enum class View /BaseType=IntFlag/
+    enum class View /BaseType=IntEnum/
     {
       Text,
       Tree
     };
 
-    enum class FormatJson /BaseType=IntFlag/
+    enum class FormatJson /BaseType=IntEnum/
     {
       Indented,
       Compact,

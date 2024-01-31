@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     };
     Q_ENUM( IdentifyMode )
 
-    enum Type
+    enum Type SIP_ENUM_BASETYPE( IntFlag )
     {
       VectorLayer = 1,
       RasterLayer = 2,

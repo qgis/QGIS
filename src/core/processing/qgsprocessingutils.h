@@ -680,7 +680,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
   public:
 
     //! Flags controlling how QgsProcessingFeatureSource fetches features
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagSkipGeometryValidityChecks = 1 << 1, //!< Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. "repair geometry" type algorithms).
     };
