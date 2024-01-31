@@ -229,7 +229,7 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         self.assertTrue(valuesModel)
 
         layer = QgsVectorLayer(
-            "None?field=myarray:string[]&field=mystr:string&field=myint:integer&field=myintarray:int[]&field=mydoublearray:double[]",
+            "None?field=myarray:string[]&field=mystr:string&field=myint:integer&field=myintarray:int[]&field=mydoublearray:double[]&field=mybool:boolean(0,0)",
             "arraylayer", "memory")
 
         self.assertTrue(layer.isValid())
@@ -237,11 +237,11 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
         # add some features, one has invalid geometry
         pr = layer.dataProvider()
         f1 = QgsFeature(1)
-        f1.setAttributes([["one 'item'", 'B'], "another 'item'", 0, [1, 2], [1.1, 2.1]])
+        f1.setAttributes([["one 'item'", 'B'], "another 'item'", 0, [1, 2], [1.1, 2.1], True])
         f2 = QgsFeature(2)
-        f2.setAttributes([['C'], "", 1, [3, 4], [-0.1, 2.0]])
+        f2.setAttributes([['C'], "", 1, [3, 4], [-0.1, 2.0], False])
         f3 = QgsFeature(3)
-        f3.setAttributes([[], "test", 2, [], []])
+        f3.setAttributes([[], "test", 2, [], [], False])
         f4 = QgsFeature(4)
         self.assertTrue(pr.addFeatures([f1, f2, f3, f4]))
 
@@ -330,6 +330,26 @@ class TestQgsExpressionBuilderWidget(QgisTestCase):
                                  ("1.1, 2.1 [array(1.1, 2.1)]", "array(1.1, 2.1)"),
                                  ("NULL [NULL]", "NULL"),
                                  ])
+
+        # test boolean
+        items = w.expressionTree().findExpressions("mybool")
+        self.assertEqual(len(items), 1)
+        currentIndex = w.expressionTree().model().mapFromSource(items[0].index())
+        self.assertTrue(currentIndex.isValid())
+        w.expressionTree().setCurrentIndex(currentIndex)
+        self.assertTrue(w.expressionTree().currentItem())
+
+        w.loadAllValues()
+
+        datas = [(valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.DisplayRole), valuesModel.data(valuesModel.index(i, 0), Qt.ItemDataRole.UserRole + 1)) for i in range(4)]
+        datas.remove((None, None))
+        datas.sort()
+        datas.append((None, None))
+
+        self.assertEqual(datas, [("NULL [NULL]", "NULL"),
+                                 ("false", "false"),
+                                 ("true", "true"),
+                                 (None, None)])
 
 
 if __name__ == '__main__':

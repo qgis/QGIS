@@ -556,7 +556,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
     bool forceRepresentedValue = false;
     if ( QgsVariantUtils::isNull( value ) )
       strValue = QStringLiteral( "NULL" );
-    else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
+    else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong || value.type() == QVariant::Bool )
       strValue = value.toString();
     else if ( value.type() == QVariant::StringList )
     {
