@@ -567,8 +567,8 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertEqual(f['nonconv'], 1)
         self.assertEqual(f['conv_attr'], 'converted_val')
 
-    def testInteger64WriteTabfile(self):
-        """Check writing Integer64 fields to an MapInfo tabfile (which does not support that type)."""
+    def testInteger64WriteUnsupportedFormat(self):
+        """Check writing Integer64 fields to a GMT file (which does not support that type)."""
         ml = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=int8:int8'),
             'test',
@@ -585,14 +585,14 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertTrue(res)
         self.assertTrue(features)
 
-        dest_file_name = os.path.join(str(QDir.tempPath()), 'integer64.tab')
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'integer64.gmt')
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
-            'MapInfo File')
+            'GMT')
         self.assertEqual(write_result, QgsVectorFileWriter.WriterError.NoError, error_message)
 
         # Open result and check
