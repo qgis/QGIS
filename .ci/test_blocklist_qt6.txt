@@ -120,7 +120,6 @@ PyQgsZonalStatistics
 PyQgsVirtualLayerProvider
 PyQgsLayerDefinition
 PyQgsWFSProvider
-PyQgsDBManagerGpkg
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsSelectiveMasking
