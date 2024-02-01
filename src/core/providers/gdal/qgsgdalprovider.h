@@ -166,12 +166,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
 
     bool hasStatistics( int bandNo,
-                        int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
+                        Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
                         const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0 ) override;
 
     QgsRasterBandStats bandStatistics( int bandNo,
-                                       int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
+                                       Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
                                        const QgsRectangle &boundingBox = QgsRectangle(),
                                        int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 

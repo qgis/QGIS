@@ -45,7 +45,7 @@ Compares region, size etc. not collected statistics
 
     double stdDev;
 
-    int statsGathered;
+    Qgis::RasterBandStatistics statsGathered;
 
     double sum;
 

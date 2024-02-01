@@ -315,7 +315,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     // Statistics could be available if the provider has a converter from colors to other value type, the returned statistics depend on the converter
     QgsRasterBandStats bandStatistics( int bandNo,
-                                       int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
+                                       Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
                                        const QgsRectangle &extent = QgsRectangle(),
                                        int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 

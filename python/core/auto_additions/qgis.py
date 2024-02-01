@@ -4490,3 +4490,4 @@ Qgis.ZonalStatistic.__or__ = lambda flag1, flag2: Qgis.ZonalStatistics(_force_in
 Qgis.Statistic.__or__ = lambda flag1, flag2: Qgis.Statistics(_force_int(flag1) | _force_int(flag2))
 Qgis.DateTimeStatistic.__or__ = lambda flag1, flag2: Qgis.DateTimeStatistics(_force_int(flag1) | _force_int(flag2))
 Qgis.StringStatistic.__or__ = lambda flag1, flag2: Qgis.StringStatistics(_force_int(flag1) | _force_int(flag2))
+Qgis.RasterBandStatistic.__or__ = lambda flag1, flag2: Qgis.RasterBandStatistics(_force_int(flag1) | _force_int(flag2))

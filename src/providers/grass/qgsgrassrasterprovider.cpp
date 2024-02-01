@@ -285,7 +285,7 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
   return true;
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ), 2 );
   QgsRasterBandStats myRasterBandStats;
