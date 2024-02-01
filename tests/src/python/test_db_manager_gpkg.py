@@ -219,7 +219,11 @@ class TestPyQgsDBManagerGpkg(QgisTestCase):
         uri = QgsDataSourceUri()
 
         test_gpkg_new = os.path.join(self.basetestpath, 'testCreateRenameDeleteFields.gpkg')
-        shutil.copy(self.test_gpkg, test_gpkg_new)
+
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(test_gpkg_new)
+        lyr = ds.CreateLayer('testLayer', geom_type=ogr.wkbLineString, options=['SPATIAL_INDEX=NO'])
+        lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
+        del ds
 
         uri.setDatabase(test_gpkg_new)
         self.assertTrue(plugin.addConnection(connection_name, uri))
