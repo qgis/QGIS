@@ -31,7 +31,7 @@ QSize QgsStackedWidget::sizeHint() const
   {
     case SizeMode::ConsiderAllPages:
       return QStackedWidget::sizeHint();
-    case SizeMode::ConsiderCurrentPage:
+    case SizeMode::CurrentPageOnly:
       return currentWidget() ? currentWidget()->sizeHint() : QSize();
   }
   return QSize();
@@ -43,7 +43,7 @@ QSize QgsStackedWidget::minimumSizeHint() const
   {
     case SizeMode::ConsiderAllPages:
       return QStackedWidget::sizeHint();
-    case SizeMode::ConsiderCurrentPage:
+    case SizeMode::CurrentPageOnly:
       return currentWidget() ? currentWidget()->minimumSizeHint() : QSize();
   }
   return QSize();

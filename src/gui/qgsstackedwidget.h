@@ -43,7 +43,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     enum class SizeMode
     {
       ConsiderAllPages, //!< The sizes of all pages are considered when calculating the stacked widget size
-      ConsiderCurrentPage, //!< Only the size of the current page is considered when calculating the stacked widget size
+      CurrentPageOnly, //!< Only the size of the current page is considered when calculating the stacked widget size
     };
 
     /**
