@@ -195,7 +195,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
@@ -441,7 +441,7 @@ jobs:
 
       - name: Archive test results report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-qt${{ matrix.qt-version }}
           path: qgis_test_report
