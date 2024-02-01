@@ -6865,21 +6865,32 @@ void QgisApp::dxfExport()
     switch ( dxfExport.writeToFile( &dxfFile, d.encoding() ) )
     {
       case QgsDxfExport::ExportResult::Success:
-        visibleMessageBar()->pushMessage( tr( "DXF export completed" ),
+        visibleMessageBar()->pushMessage( tr( "DXF export" ),
                                           tr( "Successfully exported DXF to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ),
                                           Qgis::MessageLevel::Success, 0 );
+        if ( !dxfExport.feedbackMessage().isEmpty() )
+        {
+          visibleMessageBar()->pushMessage( tr( "DXF export" ),
+                                            dxfExport.feedbackMessage(),
+                                            Qgis::MessageLevel::Info );
+        }
         break;
 
       case QgsDxfExport::ExportResult::DeviceNotWritableError:
-        visibleMessageBar()->pushMessage( tr( "DXF export failed, device is not writable" ), Qgis::MessageLevel::Critical );
+        visibleMessageBar()->pushMessage( tr( "DXF export" ),
+                                          tr( "DXF export failed, device is not writable" ),
+                                          Qgis::MessageLevel::Critical );
         break;
 
       case QgsDxfExport::ExportResult::InvalidDeviceError:
-        visibleMessageBar()->pushMessage( tr( "DXF export failed, the device is invalid" ), Qgis::MessageLevel::Critical );
+        visibleMessageBar()->pushMessage( tr( "DXF export" ),
+                                          tr( "DXF export failed, the device is invalid" ),
+                                          Qgis::MessageLevel::Critical );
         break;
 
       case QgsDxfExport::ExportResult::EmptyExtentError:
-        visibleMessageBar()->pushMessage( tr( "DXF export failed, the extent could not be determined" ), Qgis::MessageLevel::Critical );
+        visibleMessageBar()->pushMessage( tr( "DXF export" ),
+                                          tr( "DXF export failed, the extent could not be determined" ), Qgis::MessageLevel::Critical );
         break;
     }
     QApplication::restoreOverrideCursor();

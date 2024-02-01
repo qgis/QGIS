@@ -206,6 +206,12 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     /**
+     * Returns any feedback message produced while export to dxf file.
+     * \since QGIS 3.36
+     */
+    const QString feedbackMessage() const { return mFeedbackMessage; }
+
+    /**
      * Set reference \a scale for output.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see symbologyScale()
@@ -629,6 +635,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     QMap< QString, QMap<QgsFeatureId, QString> > mDxfLayerNames;
     QgsCoordinateReferenceSystem mCrs;
     QgsMapSettings mMapSettings;
+    QList<QgsMapLayer *> mLayerList;
     QHash<QString, int> mLayerNameAttribute;
     double mFactor = 1.0;
     bool mForce2d = false;
@@ -644,6 +651,8 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     // Internal cache for layer related information required during rendering
     QList<DxfLayerJob *> mJobs;
     std::unique_ptr<QgsLabelingEngine> mLabelingEngine;
+
+    QString mFeedbackMessage;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )
