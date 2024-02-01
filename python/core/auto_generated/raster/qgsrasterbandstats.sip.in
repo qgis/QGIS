@@ -24,6 +24,9 @@ raster band.
   public:
 
     QgsRasterBandStats();
+%Docstring
+Constructor for QgsRasterBandStats.
+%End
 
     bool contains( const QgsRasterBandStats &s ) const;
 %Docstring
