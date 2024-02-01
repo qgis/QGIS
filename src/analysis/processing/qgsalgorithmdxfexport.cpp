@@ -144,6 +144,10 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   switch ( dxfExport.writeToFile( &dxfFile, encoding ) )
   {
     case QgsDxfExport::ExportResult::Success:
+      if ( !dxfExport.feedbackMessage().isEmpty() )
+      {
+        feedback->pushInfo( dxfExport.feedbackMessage() );
+      }
       feedback->pushInfo( QObject::tr( "DXF export completed" ) );
       break;
 
