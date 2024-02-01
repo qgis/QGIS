@@ -22,13 +22,12 @@ ${DEFAULTDOCSTRINGSIGNATURE}
     pyStrException = PyObject_Str(exception);
     Py_DECREF(pyStrException);
 
-    SIP_RELEASE_GIL( sipGILState );
-
     QString strException = "API bad request error";
     if ( pyStrException && PyUnicode_Check(pyStrException) )
     {
        strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
     }
+    SIP_RELEASE_GIL( sipGILState );
 
     throw QgsServerApiBadRequestException( strException );
 %End
@@ -41,13 +40,12 @@ ${DEFAULTDOCSTRINGSIGNATURE}
     pyStrException = PyObject_Str(exception);
     Py_DECREF(pyStrException);
 
-    SIP_RELEASE_GIL( sipGILState );
-
     QString strException = "Server internal error";
     if ( pyStrException && PyUnicode_Check(pyStrException) )
     {
        strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
     }
+    SIP_RELEASE_GIL( sipGILState );
 
     throw QgsServerException( strException );
 %End
