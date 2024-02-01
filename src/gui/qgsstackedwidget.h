@@ -28,9 +28,9 @@ class QSize;
  * \ingroup gui
  * \brief A QStackedWidget that can be shrunk to its current widget's size.
  *
- * A regular QStackedWidget can be shrunk down the size of its
- * largest page widget. A QgsStackedWidget only takes the current
- * page widget into account when resizing.
+ * A regular QStackedWidget can be shrunk down the size of its largest page widget.
+ * A QgsStackedWidget can be set to only consider the current page widget's sizeHint
+ * and minimumSizeHint when resizing.
  *
  * \since QGIS 3.36
  */
@@ -40,14 +40,37 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
 
   public:
 
+    enum class SizeMode
+    {
+      ConsiderAllPages, //!< The sizes of all pages are considered when calculating the stacked widget size
+      ConsiderCurrentPage, //!< Only the size of the current page is considered when calculating the stacked widget size
+    };
+
     /**
      * Constructor for QgsStackedWidget.
+     * SizeMode defaults to SizeMode::ConsiderAllPages
      */
     explicit QgsStackedWidget( QWidget *parent = nullptr );
+
+    /**
+     * Returns the SizeMode for this QgsStackedWidget.
+     * See QgsStackedWidget::SizeMode for interpretation
+     * \see setSizeMode()
+     */
+    SizeMode sizeMode() const { return mSizeMode; }
+
+    /**
+     * Sets the \a mode for this QgsStackedWidget.
+     * See QgsStackedWidget::SizeMode for interpretation
+     * \see sizeMode()
+     */
+    void setSizeMode( SizeMode mode ) { mSizeMode = mode; }
 
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
 
+  private:
+    SizeMode mSizeMode;
 };
 
 #endif // QGSSTACKEDWIDGET_H
