@@ -58,6 +58,9 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 
     QList< QgsDxfExport::DxfLayer > layers() const;
 
+    void saveLayersOutputAttribute( QgsLayerTreeNode *node );
+    void loadLayersOutputAttribute( QgsLayerTreeNode *node );
+
     QgsVectorLayer *vectorLayer( const QModelIndex &index ) const;
     int attributeIndex( const QgsVectorLayer *vl ) const;
 
