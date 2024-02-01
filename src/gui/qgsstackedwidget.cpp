@@ -21,15 +21,30 @@
 
 QgsStackedWidget::QgsStackedWidget( QWidget *parent )
   : QStackedWidget( parent )
+  , mSizeMode( SizeMode::ConsiderAllPages )
 {
 }
 
 QSize QgsStackedWidget::sizeHint() const
 {
-  return currentWidget() ? currentWidget()->sizeHint() : QSize();
+  switch ( mSizeMode )
+  {
+    case SizeMode::ConsiderAllPages:
+      return QStackedWidget::sizeHint();
+    case SizeMode::ConsiderCurrentPage:
+      return currentWidget() ? currentWidget()->sizeHint() : QSize();
+  }
+  return QSize();
 }
 
 QSize QgsStackedWidget::minimumSizeHint() const
 {
-  return currentWidget() ? currentWidget()->minimumSizeHint() : QSize();
+  switch ( mSizeMode )
+  {
+    case SizeMode::ConsiderAllPages:
+      return QStackedWidget::sizeHint();
+    case SizeMode::ConsiderCurrentPage:
+      return currentWidget() ? currentWidget()->minimumSizeHint() : QSize();
+  }
+  return QSize();
 }
