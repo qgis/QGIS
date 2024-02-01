@@ -25,7 +25,7 @@ QgsCachedPointCloudBlockRequest::QgsCachedPointCloudBlockRequest( QgsPointCloudB
   : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect )
 {
   mBlock.reset( block );
-  QTimer::singleShot( 0, this, &QgsPointCloudBlockRequest::finished );
+  QMetaObject::invokeMethod( this, &QgsCachedPointCloudBlockRequest::finished, Qt::QueuedConnection );
 }
 
 ///@endcond
