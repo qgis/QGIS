@@ -149,16 +149,13 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
       }
 
       if ( renderAsTriangles() )
-      {
         addPointToTriangulation( x, y, z, color, context );
-      }
-      else
-      {
-        const double size = pointSizes.value( attributeValue );
-        drawPoint( x, y, color, size, context );
-        if ( renderElevation )
-          drawPointToElevationMap( x, y, z, size, context );
-      }
+
+      const double size = pointSizes.value( attributeValue );
+      drawPoint( x, y, color, size, context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, size, context );
+
       rendered++;
     }
   }

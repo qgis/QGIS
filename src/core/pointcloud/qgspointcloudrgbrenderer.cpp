@@ -165,15 +165,12 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       blue = std::max( 0, std::min( 255, blue ) );
 
       if ( renderAsTriangles() )
-      {
         addPointToTriangulation( x, y, z, QColor( red, green, blue ), context );
-      }
-      else
-      {
-        drawPoint( x, y, QColor( red, green, blue ), context );
-        if ( renderElevation )
-          drawPointToElevationMap( x, y, z, context );
-      }
+
+      drawPoint( x, y, QColor( red, green, blue ), context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, context );
+
       rendered++;
     }
   }
