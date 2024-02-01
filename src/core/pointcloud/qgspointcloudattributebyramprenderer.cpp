@@ -130,15 +130,11 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
 
       if ( renderAsTriangles() )
-      {
         addPointToTriangulation( x, y, z, QColor( red, green, blue, alpha ), context );
-      }
-      else
-      {
-        drawPoint( x, y, QColor( red, green, blue, alpha ), context );
-        if ( renderElevation )
-          drawPointToElevationMap( x, y, z, context );
-      }
+
+      drawPoint( x, y, QColor( red, green, blue, alpha ), context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, context );
 
       rendered++;
     }

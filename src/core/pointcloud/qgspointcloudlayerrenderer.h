@@ -65,6 +65,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     ~QgsPointCloudLayerRenderer();
 
     bool render() override;
+    Qgis::MapLayerRendererFlags flags() const override;
     bool forceRasterRender() const override;
     void setLayerRenderingTimeHint( int time ) override;
 
