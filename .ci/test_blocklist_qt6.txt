@@ -114,7 +114,6 @@ PyQgsVectorLayerEditUtils
 PyQgsVectorLayerUtils
 PyQgsLayerDefinition
 PyQgsWFSProvider
-PyQgsDBManagerGpkg
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsSelectiveMasking
