@@ -34,7 +34,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
 {
   setupUi( this );
 
-  mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::ConsiderCurrentPage );
+  mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
   mPointSizeSpinBox->setClearValue( 2.0 );
   mMaxScreenErrorSpinBox->setClearValue( 1.0 );
