@@ -16,6 +16,7 @@ email                : jef at norbit dot de
 #include "qgis.h"
 #include "qgsgeometryvalidator.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
 #include "qgslogger.h"
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
@@ -187,59 +188,21 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
     line = noDupes.get();
   }
 
+  // segment Intersection
   for ( int j = 0; !mStop && j < line->numPoints() - 3; j++ )
   {
-    const double xAtJ = line->xAt( j );
-    const double yAtJ = line->yAt( j );
-    const QgsVector v( line->xAt( j + 1 ) - xAtJ, line->yAt( j + 1 ) - yAtJ );
-    const double vl = v.length();
-
     const int n = ( j == 0 && ring ) ? line->numPoints() - 2 : line->numPoints() - 1;
-
     for ( int k = j + 2; !mStop && k < n; k++ )
     {
-      const double xAtK = line->xAt( k );
-      const double yAtK = line->yAt( k );
-
-      const QgsVector w( line->xAt( k + 1 ) - xAtK, line->yAt( k + 1 ) - yAtK );
-
-      double sX;
-      double sY;
-      if ( !intersectLines( xAtJ, yAtJ, v, xAtK, yAtK, w, sX, sY ) )
-        continue;
-
-      double d = 0.0;
-      try
+      QgsPoint intersectionPoint;
+      bool isIntersection = false;
+      if ( QgsGeometryUtils::segmentIntersection( line->pointN( j ), line->pointN( j + 1 ), line->pointN( k ), line->pointN( k + 1 ), intersectionPoint, isIntersection ) )
       {
-        d = -distLine2Point( xAtJ, yAtJ, v.perpVector(), sX, sY );
+        const QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4, %5" ).arg( j ).arg( k ).arg( i ).arg( intersectionPoint.x() ).arg( intersectionPoint.y() );
+        QgsDebugMsgLevel( msg, 2 );
+        emit errorFound( QgsGeometry::Error( msg, QgsPointXY( intersectionPoint.x(), intersectionPoint.y() ) ) );
+        mErrorCount++;
       }
-      catch ( QgsException &e )
-      {
-        Q_UNUSED( e )
-        QgsDebugError( "Error validating: " + e.what() );
-        continue;
-      }
-      if ( d < 0 || d > vl )
-        continue;
-
-      try
-      {
-        d = -distLine2Point( xAtK, yAtK, w.perpVector(), sX, sY );
-      }
-      catch ( QgsException &e )
-      {
-        Q_UNUSED( e )
-        QgsDebugError( "Error validating: " + e.what() );
-        continue;
-      }
-
-      if ( d <= 0 || d >= w.length() )
-        continue;
-
-      const QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4, %5" ).arg( j ).arg( k ).arg( i ).arg( sX ).arg( sY );
-      QgsDebugMsgLevel( msg, 2 );
-      emit errorFound( QgsGeometry::Error( msg, QgsPointXY( sX, sY ) ) );
-      mErrorCount++;
     }
   }
 }
