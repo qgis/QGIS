@@ -36,7 +36,6 @@ dnf install -y --nogpgcheck \
   mingw64-python3-OWSLib \
   mingw64-python3-pillow \
   mingw64-python3-psycopg2 \
-  mingw64-python3-pygments \
   mingw64-python3-PyQt-builder \
   mingw64-python3-pytz \
   mingw64-python3-pyyaml \
