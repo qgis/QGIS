@@ -37,21 +37,7 @@ class CORE_EXPORT QgsRasterBandStats
 {
   public:
 
-    QgsRasterBandStats()
-    {
-      statsGathered = static_cast< int >( Qgis::RasterBandStatistic::NoStatistic );
-      minimumValue = std::numeric_limits<double>::max();
-      maximumValue = -std::numeric_limits<double>::max();
-      range = 0.0;
-      mean = 0.0;
-      sumOfSquares = 0.0;
-      stdDev = 0.0;
-      sum = 0.0;
-      elementCount = 0;
-      width = 0;
-      height = 0;
-      bandNumber = 1;
-    }
+    QgsRasterBandStats() = default;
 
     //! Compares region, size etc. not collected statistics
     bool contains( const QgsRasterBandStats &s ) const
@@ -64,48 +50,48 @@ class CORE_EXPORT QgsRasterBandStats
     }
 
     //! \brief The gdal band number (starts at 1)
-    int bandNumber;
+    int bandNumber = 1;
 
     // TODO: check if no data are excluded in stats calculation
 
     //! \brief The number of not no data cells in the band.
-    qgssize elementCount;
+    qgssize elementCount = 0;
 
     /**
      * \brief The maximum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMaximmum function.
     */
-    double maximumValue;
+    double maximumValue = -std::numeric_limits<double>::max();
 
     /**
      * \brief The minimum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMinimum function.
     */
-    double minimumValue;
+    double minimumValue = std::numeric_limits<double>::max();
 
     //! \brief The mean cell value for the band. NO_DATA values are excluded.
-    double mean;
+    double mean = 0;
 
     //! \brief The range is the distance between min & max.
-    double range;
+    double range = 0;
 
     //! \brief The standard deviation of the cell values.
-    double stdDev;
+    double stdDev = 0;
 
     //! \brief Collected statistics
-    int statsGathered;
+    Qgis::RasterBandStatistics statsGathered;
 
     //! \brief The sum of all cells in the band. NO_DATA values are excluded.
-    double sum;
+    double sum = 0;
 
     //! \brief The sum of the squares. Used to calculate standard deviation.
-    double sumOfSquares;
+    double sumOfSquares = 0;
 
     //! \brief Number of columns used to calc statistics
-    int width;
+    int width = 0;
 
     //! \brief Number of rows used to calc statistics
-    int height;
+    int height = 0;
 
     //! \brief Extent used to calc statistics
     QgsRectangle extent;

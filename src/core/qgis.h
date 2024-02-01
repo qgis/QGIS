@@ -4493,7 +4493,7 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.36. Prior to 3.36 this was available as QgsRasterBandStats::Stats.
      */
-    Q_DECLARE_FLAGS( RasterBandStatistics, RasterBandStatistic )
+    Q_DECLARE_FLAGS( RasterBandStatistics, RasterBandStatistic ) SIP_MONKEYPATCH_FLAGS_UNNEST( Qgis, RasterBandStatistics )
     Q_FLAG( RasterBandStatistics )
 
     /**

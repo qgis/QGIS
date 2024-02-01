@@ -4070,7 +4070,7 @@ QgsLayerMetadata QgsWmsProvider::layerMetadata() const
 
 QgsRasterBandStats QgsWmsProvider::bandStatistics(
   int bandNo,
-  int stats,
+  Qgis::RasterBandStatistics stats,
   const QgsRectangle &extent,
   int sampleSize,
   QgsRasterBlockFeedback *feedback )

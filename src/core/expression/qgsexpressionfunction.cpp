@@ -6645,7 +6645,7 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
       return QVariant();
     }
 
-    QgsRasterBandStats stats = rl->dataProvider()->bandStatistics( band, static_cast< int >( stat ) );
+    QgsRasterBandStats stats = rl->dataProvider()->bandStatistics( band, stat );
     switch ( stat )
     {
       case Qgis::RasterBandStatistic::Mean:

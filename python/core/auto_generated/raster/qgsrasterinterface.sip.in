@@ -305,8 +305,22 @@ It may be used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
 
+ QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
+%Docstring
+Returns the band statistics.
+
+:param bandNo: The band (number).
+:param stats: Requested statistics
+:param extent: Extent used to calc statistics, if empty, whole raster extent is used.
+:param sampleSize: Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+:param feedback: optional feedback object
+
+.. deprecated::
+   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument
+%End
+
     virtual QgsRasterBandStats bandStatistics( int bandNo,
-        int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
+        Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
         const QgsRectangle &extent = QgsRectangle(),
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
@@ -319,12 +333,24 @@ Returns the band statistics.
 :param feedback: optional feedback object
 %End
 
+ bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated/;
+%Docstring
+Returns ``True`` if histogram is available (cached, already calculated).
+The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
+
+:return: ``True`` if statistics are available (ready to use)
+
+.. deprecated::
+   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument
+%End
+
     virtual bool hasStatistics( int bandNo,
-                                int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
+                                Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
                                 const QgsRectangle &extent = QgsRectangle(),
                                 int sampleSize = 0 );
 %Docstring
-Returns ``True`` if histogram is available (cached, already calculated).     *   The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
+Returns ``True`` if histogram is available (cached, already calculated).
+The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
 
 :return: ``True`` if statistics are available (ready to use)
 %End
@@ -520,8 +546,16 @@ Fill in histogram defaults if not specified
 #endif
 %End
 
+ void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated/;
+%Docstring
+Fill in statistics defaults if not specified
+
+.. deprecated::
+   Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument
+%End
+
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
-                         int stats = static_cast< int >( Qgis::RasterBandStatistic::All ),
+                         Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
                          const QgsRectangle &boundingBox = QgsRectangle(),
                          int binCount = 0 ) const;
 %Docstring
