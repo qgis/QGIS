@@ -385,6 +385,17 @@ QgsPalLayerSettings.PolygonBoundary = QgsLabelObstacleSettings.ObstacleType.Poly
 QgsPalLayerSettings.PolygonWhole = QgsLabelObstacleSettings.ObstacleType.PolygonWhole
 
 
+def get_obstacle_type(self):
+    return self.obstacleSettings().type()
+
+
+def set_obstacle_type(self, _type):
+    self.obstacleSettings().setType(QgsLabelObstacleSettings.ObstacleType(_type))
+
+
+QgsPalLayerSettings.obstacleType = property(get_obstacle_type)
+QgsPalLayerSettings.obstacleType = QgsPalLayerSettings.obstacleType.setter(set_obstacle_type)
+
 
 def get_display_all(self):
     return self.placementSettings().overlapHandling() == Qgis.LabelOverlapHandling.AllowOverlapIfRequired
