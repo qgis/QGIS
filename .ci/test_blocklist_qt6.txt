@@ -60,8 +60,6 @@ PyQgsFieldModel
 PyQgsFloatingWidget
 PyQgsGeometryTest
 PyQgsJsonUtils
-PyQgsLabelObstacleSettings
-PyQgsLabelThinningSettings
 PyQgsLayerMetadata
 PyQgsLayerMetadataResultsModel
 PyQgsLayoutExporter
