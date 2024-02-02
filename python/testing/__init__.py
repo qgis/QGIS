@@ -233,6 +233,7 @@ class QgisTestCase(unittest.TestCase):
         name: str,
         reference_image: str,
         map_settings: QgsMapSettings,
+        control_name=None,
         color_tolerance: Optional[int] = None,
         allowed_mismatch: Optional[int] = None,
         control_path_prefix: Optional[str] = None
@@ -248,7 +249,7 @@ class QgisTestCase(unittest.TestCase):
             checker.setControlPathPrefix(control_path_prefix)
         elif cls.control_path_prefix():
             checker.setControlPathPrefix(cls.control_path_prefix())
-        checker.setControlName("expected_" + reference_image)
+        checker.setControlName(control_name or "expected_" + reference_image)
         if color_tolerance:
             checker.setColorTolerance(color_tolerance)
         result = checker.runTest(name, allowed_mismatch or 0)

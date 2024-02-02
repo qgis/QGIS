@@ -15,7 +15,6 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import datetime
 import os
 import sys
 from collections.abc import Callable
@@ -28,7 +27,6 @@ from qgis.core import (
     QgsGeometry,
     QgsLabelingEngineSettings,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsPalLabeling,
     QgsPalLayerSettings,
     QgsProject,
@@ -44,13 +42,10 @@ from qgis.core import (
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
-from qgis.testing.mocked import get_iface
 
 from utilities import (
-    getTempfilePath,
     getTestFont,
     loadTestFonts,
-    openInBrowserTab,
     unitTestDataPath,
 )
 
@@ -68,18 +63,12 @@ class TestQgsPalLabeling(QgisTestCase):
     """:type: QgsProject"""
     _MapSettings = None
     """:type: QgsMapSettings"""
-    _Canvas = None
-    """:type: QgsMapCanvas"""
     _BaseSetup = False
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-
-        # qgis iface
-        cls._Iface = get_iface()
-        cls._Canvas = cls._Iface.mapCanvas()
 
         cls._TestFunction = ''
         cls._TestGroup = ''
@@ -98,10 +87,6 @@ class TestQgsPalLabeling(QgisTestCase):
         cls._MapRegistry = QgsProject.instance()
 
         cls._MapSettings = cls.getBaseMapSettings()
-        osize = cls._MapSettings.outputSize()
-        cls._Canvas.resize(QSize(osize.width(), osize.height()))  # necessary?
-        # set color to match render test comparisons background
-        cls._Canvas.setCanvasColor(cls._MapSettings.backgroundColor())
 
         cls.setDefaultEngineSettings()
 
@@ -158,7 +143,6 @@ class TestQgsPalLabeling(QgisTestCase):
 
         # zoom to aoi
         cls._MapSettings.setExtent(cls.aoiExtent())
-        cls._Canvas.zoomToFullExtent()
         return vlayer
 
     @classmethod
@@ -253,34 +237,6 @@ class TestQgsPalLabeling(QgisTestCase):
                 if not isinstance(value, Callable):
                     res[attr] = value
         return res
-
-    def renderCheck(self, mismatch=0, colortol=0, imgpath=''):
-        """Check rendered map canvas or existing image against control image
-
-        :mismatch: number of pixels different from control, and still valid
-        :colortol: maximum difference for each color component including alpha
-        :imgpath: existing image; if present, skips rendering canvas
-        """
-        grpprefix = self._TestGroupPrefix
-        chk = QgsMultiRenderChecker()
-
-        chk.setControlPathPrefix('expected_' + grpprefix)
-
-        chk.setControlName(self._Test)
-
-        if imgpath:
-            chk.setRenderedImage(imgpath)
-
-        ms = self._MapSettings  # class settings
-        if self._TestMapSettings is not None:
-            ms = self._TestMapSettings  # per test settings
-        chk.setMapSettings(ms)
-
-        chk.setColorTolerance(colortol)
-        # noinspection PyUnusedLocal
-        res = chk.runTest(self._Test, mismatch)
-        msg = f'\nRender check failed for "{self._Test}"'
-        return res, msg
 
     def checkTest(self, **kwargs):
         """Intended to be overridden in subclasses"""
