@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTextBrowser" name="txtbrAPIRequest"/>
+    <widget class="QWidget" name="txtbrAPIRequestFrame"/>
    </item>
    <item>
     <widget class="QLabel" name="lblAPIResponse">
@@ -32,13 +32,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTextBrowser" name="txtbrAPIResponse">
-     <property name="lineWrapMode">
-      <enum>QTextEdit::NoWrap</enum>
-     </property>
-     <property name="openExternalLinks">
-      <bool>true</bool>
-     </property>
+    <widget class="QWidget" name="txtbrAPIResponseFrame">
     </widget>
    </item>
    <item>
