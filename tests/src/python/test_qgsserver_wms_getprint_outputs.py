@@ -116,33 +116,15 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         test, report = self._pdf_diff(response, image, max_diff, max_size_diff, dpi)
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.pdf"), "rb") as rendered_file:
-            if not os.environ.get('ENCODED_OUTPUT'):
-                message = f"PDF is wrong: rendered file {tempfile.gettempdir()}/{image}_result.pdf"
-            else:
-                encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "PDF is wrong\n{}File:\necho '{}' | base64 -d >{}/{}_result.{}".format(
-                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'pdf'
-                )
+            message = f"PDF is wrong: rendered file {tempfile.gettempdir()}/{image}_result.pdf"
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
-            if not os.environ.get('ENCODED_OUTPUT'):
-                message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{image}_result.png"
-            else:
-                encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "Image is wrong\n{}\nImage:\necho '{}' | base64 -d >{}/{}_result.{}".format(
-                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'png'
-                )
+            message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{image}_result.png"
 
         # If the failure is in image sizes the diff file will not exists.
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
-                if not os.environ.get('ENCODED_OUTPUT'):
-                    message = f"Image is wrong: diff file {tempfile.gettempdir()}/{image}_result_diff.png"
-                else:
-                    encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '{}' | base64 -d > {}/{}_result_diff.{}".format(
-                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'png'
-                    )
+                message = f"Image is wrong: diff file {tempfile.gettempdir()}/{image}_result_diff.png"
 
         self.assertTrue(test, message)
 
