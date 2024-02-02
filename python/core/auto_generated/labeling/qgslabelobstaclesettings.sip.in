@@ -23,8 +23,8 @@ Contains settings related to how the label engine treats features as obstacles
 %End
   public:
 
-    enum ObstacleType
-    {
+    enum class ObstacleType
+      {
       PolygonInterior,
       PolygonBoundary,
       PolygonWhole

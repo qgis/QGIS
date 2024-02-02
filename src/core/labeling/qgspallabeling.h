@@ -93,53 +93,6 @@ class CORE_EXPORT QgsPalLayerSettings
     //! copy operator - only copies the permanent members
     QgsPalLayerSettings &operator=( const QgsPalLayerSettings &s );
 
-    //TODO QGIS 4.0 - remove, replaced by QgsLabeling::LinePlacementFlags
-
-    /**
-     * Line placement flags, which control how candidates are generated for a linear feature.
-     *
-     * \deprecated Use Qgis::LabelLinePlacementFlags instead
-     */
-    enum LinePlacementFlags
-    {
-      OnLine    = 1,      //!< Labels can be placed directly over a line feature.
-      AboveLine = 2,      /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
-                               respects the direction of the line feature, so a line from right to left labels will have labels
-                               placed placed below the line feature. */
-      BelowLine = 4,      /**< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode
-                               respects the direction of the line feature, so a line from right to left labels will have labels
-                               placed placed above the line feature. */
-      MapOrientation = 8, /**< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather
-                               than the feature's orientation. For example, AboveLine will always result in label's being placed
-                               above a line, regardless of the line's direction. */
-    };
-
-    //! \deprecated use QgsLabelLineSettings::DirectionSymbolPlacement instead
-    enum DirectionSymbols
-    {
-      SymbolLeftRight, //!< Place direction symbols on left/right of label
-      SymbolAbove, //!< Place direction symbols on above label
-      SymbolBelow //!< Place direction symbols on below label
-    };
-
-    //TODO QGIS 4.0 - Remove -- moved to QgsLabelEngineObstacleSettings
-
-    /**
-     * Valid obstacle types, which affect how features within the layer will act as obstacles
-     * for labels.
-     */
-    enum ObstacleType
-    {
-      PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
-       outside or just slightly inside polygon) */
-      PolygonBoundary, /*!< avoid placing labels over boundary of polygon (prefer placing outside or
-       completely inside polygon) */
-      PolygonWhole /*!< avoid placing labels over ANY part of polygon. Where PolygonInterior will prefer
-       to place labels with the smallest area of intersection between the label and the polygon,
-       PolygonWhole will penalise any label which intersects with the polygon by an equal amount, so that
-       placing labels over any part of the polygon is avoided.*/
-    };
-
     // *INDENT-OFF*
     //! Data definable properties.
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, Property ) : int
@@ -658,68 +611,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * only the largest part will be labeled.
      */
     bool labelPerPart = false;
-
-    // TODO QGIS 4.0 - remove this junk
-
-#ifdef SIP_RUN
-    SIP_PROPERTY( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
-    SIP_PROPERTY( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
-    SIP_PROPERTY( name = minFeatureSize, get = _minFeatureSize, set = _setMinFeatureSize )
-    SIP_PROPERTY( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
-    SIP_PROPERTY( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
-    SIP_PROPERTY( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
-    SIP_PROPERTY( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
-    SIP_PROPERTY( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
-    SIP_PROPERTY( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
-    SIP_PROPERTY( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
-    SIP_PROPERTY( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
-    SIP_PROPERTY( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
-    SIP_PROPERTY( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
-
-    SIP_PROPERTY( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
-    SIP_PROPERTY( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
-    SIP_PROPERTY( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
-    SIP_PROPERTY( name = displayAll, get = _getDisplayAll, set = _setDisplayAll )
-#endif
-
-    ///@cond PRIVATE
-    bool _limitNumLabels() const { return mThinningSettings.limitNumberOfLabelsEnabled(); }
-    void _setLimitNumLabels( bool limit ) { mThinningSettings.setLimitNumberLabelsEnabled( limit ); }
-    int _maxNumLabels() const { return mThinningSettings.maximumNumberLabels(); }
-    void _setMaxNumLabels( int max ) { mThinningSettings.setMaximumNumberLabels( max ); }
-    double _minFeatureSize() const { return mThinningSettings.minimumFeatureSize(); }
-    void _setMinFeatureSize( double size ) { mThinningSettings.setMinimumFeatureSize( size ); }
-    bool _getIsObstacle() const { return mObstacleSettings.isObstacle(); }
-    void _setIsObstacle( bool obstacle ) { mObstacleSettings.setIsObstacle( obstacle ); }
-    double _getObstacleFactor() const { return mObstacleSettings.factor(); }
-    void _setObstacleFactor( double factor ) { mObstacleSettings.setFactor( factor ); }
-    ObstacleType _getObstacleType() const { return static_cast< ObstacleType>( mObstacleSettings.type() ); }
-    void _setObstacleType( ObstacleType type ) { mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType>( type ) ); }
-    unsigned int _getLinePlacementFlags() const { return static_cast< unsigned int >( mLineSettings.placementFlags() ); }
-    void _setLinePlacementFlags( unsigned int flags ) { mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( flags ) ); }
-    bool _getMergeLines() const { return mLineSettings.mergeLines(); }
-    void _setMergeLines( bool merge ) { mLineSettings.setMergeLines( merge ); }
-    bool _getAddDirectionSymbol() const { return mLineSettings.addDirectionSymbol(); }
-    void _setAddDirectionSymbol( bool add ) { mLineSettings.setAddDirectionSymbol( add ); }
-    QString _getLeftDirectionSymbol() const { return mLineSettings.leftDirectionSymbol(); }
-    void _setLeftDirectionSymbol( const QString &symbol ) { mLineSettings.setLeftDirectionSymbol( symbol ); }
-    QString _getRightDirectionSymbol() const { return mLineSettings.rightDirectionSymbol(); }
-    void _setRightDirectionSymbol( const QString &symbol ) { mLineSettings.setRightDirectionSymbol( symbol ); }
-    bool _getReverseDirectionSymbol() const { return mLineSettings.reverseDirectionSymbol(); }
-    void _setReverseDirectionSymbol( bool reverse ) { mLineSettings.setReverseDirectionSymbol( reverse ); }
-    Q_NOWARN_DEPRECATED_PUSH
-    DirectionSymbols _getPlaceDirectionSymbol() const { return static_cast< DirectionSymbols>( mLineSettings.directionSymbolPlacement() ); }
-    void _setPlaceDirectionSymbol( DirectionSymbols placement ) { mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement>( placement ) ); }
-    Q_NOWARN_DEPRECATED_POP
-    double _getOverrunDistance() const { return mLineSettings.overrunDistance(); }
-    void _setOverrunDistance( double distance ) { mLineSettings.setOverrunDistance( distance ); }
-    Qgis::RenderUnit _getOverrunDistanceUnit() const { return mLineSettings.overrunDistanceUnit(); }
-    void _setOverrunDistanceUnit( Qgis::RenderUnit unit ) { mLineSettings.setOverrunDistanceUnit( unit ); }
-    QgsMapUnitScale _getOverrunDistanceMapUnitScale() const { return mLineSettings.overrunDistanceMapUnitScale(); }
-    void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mLineSettings.setOverrunDistanceMapUnitScale( scale ); }
-    bool _getDisplayAll() const { return mPlacementSettings.overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapIfRequired; }
-    void _setDisplayAll( bool display ) { mPlacementSettings.setOverlapHandling( display ? Qgis::LabelOverlapHandling::AllowOverlapIfRequired : Qgis::LabelOverlapHandling::PreventOverlap ); mPlacementSettings.setAllowDegradedPlacement( display ); }
-    ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex = 0;
