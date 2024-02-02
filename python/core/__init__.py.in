@@ -182,7 +182,7 @@ QgsPalLayerSettings.MapOrientation = QgsPalLayerSettings.LinePlacementFlags.MapO
 
 
 def get_placement_flags(self):
-    return self.lineSettings().placementFlags()
+    return int(self.lineSettings().placementFlags())
 
 
 def set_placement_flags(self, flags):
