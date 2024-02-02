@@ -78,7 +78,7 @@ class TestQgsLabelLineSettings(QgisTestCase):
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = QgsPalLayerSettings.LinePlacementFlags.OnLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-        self.assertEqual(pal_settings.placementFlags, 9)
+        self.assertEqual(pal_settings.placementFlags, QgsPalLayerSettings.LinePlacementFlags.OnLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation)
         self.assertEqual(pal_settings.lineSettings().placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
 
         pal_settings.mergeLines = True
