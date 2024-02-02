@@ -65,6 +65,9 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
+  std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true );
+  extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
+  addParameter( extentParam.release() );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
 
@@ -92,6 +95,13 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   const bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
   const bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
   const bool force2D = parameterAsBool( parameters, QStringLiteral( "FORCE_2D" ), context );
+
+  QgsRectangle extent;
+  if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
+  {
+    extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, crs );
+  }
+
   const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsDxfExport dxfExport;
@@ -103,6 +113,11 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   dxfExport.setLayerTitleAsName( useLayerTitle );
   dxfExport.setDestinationCrs( crs );
   dxfExport.setForce2d( force2D );
+
+  if ( !extent.isEmpty() )
+  {
+    dxfExport.setExtent( extent );
+  }
 
   QgsDxfExport::Flags flags = QgsDxfExport::Flags();
   if ( !useMText )
