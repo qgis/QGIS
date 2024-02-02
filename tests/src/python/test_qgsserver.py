@@ -258,7 +258,7 @@ class QgsServerTestBase(QgisTestCase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.runTest(control_image, max_diff), control.report()
 
-    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputFormat='PNG'):
+    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), outputFormat='PNG'):
         """
         :param outputFormat: PNG, JPG or WEBP
         """
@@ -275,7 +275,7 @@ class QgsServerTestBase(QgisTestCase):
         else:
             raise RuntimeError('Yeah, new format implemented')
 
-        reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.' + extFile
+        reference_path = unitTestDataPath('control_images') + '/qgis_server/' + image + '/' + image + '.' + extFile
         self.store_reference(reference_path, response)
 
         self.assertEqual(
