@@ -41,10 +41,6 @@ class TestPlacementBase(TestQgsPalLabeling):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
 
-    @classmethod
-    def tearDownClass(cls):
-        TestQgsPalLabeling.tearDownClass()
-
     def setUp(self):
         """Run before each test."""
         super().setUp()

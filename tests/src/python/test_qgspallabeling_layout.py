@@ -80,7 +80,7 @@ class TestLayoutBase(TestQgsPalLabeling):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        TestQgsPalLabeling.tearDownClass()
+        super().tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
 
