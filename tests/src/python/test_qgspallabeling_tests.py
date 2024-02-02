@@ -40,8 +40,6 @@ class TestPointBase:
         """:type: QgsPalLayerSettings"""
         # noinspection PyArgumentList
         self._TestFont = QFont()  # will become a standard test font
-        self._Canvas = None
-        """:type: QgsMapCanvas"""
         # custom mismatches per group/test (should not mask any needed anomaly)
         # e.g. self._Mismatches['TestClassName'] = 300
         # check base output class's checkTest() or subclasses for any defaults
@@ -247,8 +245,6 @@ class TestLineBase:
         self._TestFont = QFont()  # will become a standard test font
         self._Pal = None
         """:type: QgsPalLabeling"""
-        self._Canvas = None
-        """:type: QgsMapCanvas"""
         # custom mismatches per group/test (should not mask any needed anomaly)
         # e.g. self._Mismatches['TestClassName'] = 300
         # check base output class's checkTest() or subclasses for any defaults
