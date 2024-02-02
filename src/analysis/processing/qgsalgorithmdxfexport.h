@@ -38,6 +38,10 @@ class QgsDxfExportAlgorithm : public QgsProcessingAlgorithm
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QMap<QString, QString> mMapThemeStyleOverrides;
 };
 
 ///@endcond PRIVATE
