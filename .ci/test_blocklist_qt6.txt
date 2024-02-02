@@ -78,10 +78,6 @@ PyQgsMetadataBase
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsOGRProviderGpkg
-PyQgsPalLabelingBase
-PyQgsPalLabelingCanvas
-PyQgsPalLabelingLayout
-PyQgsPalLabelingPlacement
 PyQgsPlot
 PyQgsPointCloudAttributeModel
 PyQgsPointCloudClassifiedRenderer
