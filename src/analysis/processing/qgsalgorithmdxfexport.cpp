@@ -60,6 +60,9 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterDxfLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SYMBOLOGY_MODE" ), QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No Symbology" ) << QObject::tr( "Feature Symbology" ) << QObject::tr( "Symbol Layer Symbology" ), false, 0 ) );
   addParameter( new QgsProcessingParameterScale( QStringLiteral( "SYMBOLOGY_SCALE" ), QObject::tr( "Symbology scale" ), 1000000 ) );
+  std::unique_ptr<QgsProcessingParameterMapTheme> mapThemeParam = std::make_unique<QgsProcessingParameterMapTheme>( QStringLiteral( "MAP_THEME" ), QObject::tr( "Map theme" ), QVariant(), true );
+  mapThemeParam->setHelp( QObject::tr( "Match layer styling to the provided map theme" ) );
+  addParameter( mapThemeParam.release() );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QgsDxfExport::encodings(), false, QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "CRS" ), QStringLiteral( "EPSG:4326" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false ) );
@@ -71,10 +74,22 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
 
+bool QgsDxfExportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  // Retrieve and clone layers
+  const QString mapTheme = parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context );
+  if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
+  {
+    mMapThemeStyleOverrides = context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme );
+  }
+  return true;
+}
+
 QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMapSettings mapSettings;
   mapSettings.setTransformContext( context.transformContext() );
+  mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
 
   QList<QgsVectorLayer *> mapLayers;
 
