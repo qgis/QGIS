@@ -16,9 +16,7 @@ __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
 import datetime
-import glob
 import os
-import shutil
 import sys
 from collections.abc import Callable
 
@@ -58,9 +56,6 @@ from utilities import (
 
 start_app(sys.platform != 'darwin')  # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
 FONTSLOADED = loadTestFonts()
-
-PALREPORT = 'PAL_REPORT' in os.environ
-PALREPORTS = {}
 
 
 # noinspection PyPep8Naming,PyShadowingNames
@@ -284,9 +279,6 @@ class TestQgsPalLabeling(QgisTestCase):
         chk.setColorTolerance(colortol)
         # noinspection PyUnusedLocal
         res = chk.runTest(self._Test, mismatch)
-        if PALREPORT and not res:  # don't report OK checks
-            testname = self._TestGroup + ' . ' + self._Test
-            PALREPORTS[testname] = chk.report()
         msg = f'\nRender check failed for "{self._Test}"'
         return res, msg
 
@@ -403,20 +395,6 @@ def runSuite(module, tests):
     verb = 2 if 'PAL_VERBOSE' in os.environ else 0
 
     res = unittest.TextTestRunner(verbosity=verb).run(suite)
-
-    if PALREPORTS:
-        teststamp = 'PAL Test Report: ' + \
-                    datetime.datetime.now().strftime('%Y-%m-%d %X')
-        report = f'<html><head><title>{teststamp}</title></head><body>'
-        report += f'\n<h2>Failed Tests: {len(PALREPORTS)}</h2>'
-        for k, v in list(PALREPORTS.items()):
-            report += f'\n<h3>{k}</h3>\n{v}'
-        report += '</body></html>'
-
-        tmp_name = getTempfilePath('html')
-        with open(tmp_name, 'w') as report_file:
-            report_file.write(report)
-        openInBrowserTab('file://' + tmp_name)
 
     return res
 
