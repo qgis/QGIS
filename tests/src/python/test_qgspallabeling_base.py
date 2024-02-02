@@ -268,50 +268,6 @@ class TestQgsPalLabeling(QgisTestCase):
                             'expected_' + grpprefix,
                             self._Test, self._Test + '.png')
 
-    def saveControlImage(self, tmpimg=''):
-        # don't save control images for RenderVsOtherOutput (Vs) tests, since
-        # those control images belong to a different test result
-        if ('PAL_CONTROL_IMAGE' not in os.environ
-                or 'Vs' in self._TestGroup):
-            return
-        imgpath = self.controlImagePath()
-        testdir = os.path.dirname(imgpath)
-        if not os.path.exists(testdir):
-            os.makedirs(testdir)
-        imgbasepath = \
-            os.path.join(testdir,
-                         os.path.splitext(os.path.basename(imgpath))[0])
-        # remove any existing control images
-        for f in glob.glob(imgbasepath + '.*'):
-            if os.path.exists(f):
-                os.remove(f)
-        qDebug(f'Control image for {self._TestGroup}.{self._TestFunction}')
-
-        if not tmpimg:
-            # TODO: this can be deprecated, when per-base-test-class rendering
-            #       in checkTest() is verified OK for all classes
-            qDebug(f'Rendering control to: {imgpath}')
-            ms = self._MapSettings  # class settings
-            """:type: QgsMapSettings"""
-            settings_type = 'Class'
-            if self._TestMapSettings is not None:
-                ms = self._TestMapSettings  # per test settings
-                settings_type = 'Test'
-            qDebug(f'MapSettings type: {settings_type}')
-
-            img = renderMapToImage(ms, parallel=False)
-            """:type: QImage"""
-            tmpimg = getTempfilePath('png')
-            if not img.save(tmpimg, 'png'):
-                os.unlink(tmpimg)
-                raise OSError(f'Control not created for: {imgpath}')
-
-        if tmpimg and os.path.exists(tmpimg):
-            qDebug(f'Copying control to: {imgpath}')
-            shutil.copyfile(tmpimg, imgpath)
-        else:
-            raise OSError(f'Control not copied to: {imgpath}')
-
     def renderCheck(self, mismatch=0, colortol=0, imgpath=''):
         """Check rendered map canvas or existing image against control image
 
