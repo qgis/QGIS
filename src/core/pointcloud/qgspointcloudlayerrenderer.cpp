@@ -740,7 +740,10 @@ Qgis::MapLayerRendererFlags QgsPointCloudLayerRenderer::flags() const
   // when rendering as triangles we still want to show temporary incremental renders as points until
   // the final triangulated surface is ready, which may be slow
   // So we request here a preview render image for the temporary incremental updates:
-  return Qgis::MapLayerRendererFlag::RenderPartialOutputs | Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage;
+  if ( mRenderer->renderAsTriangles() )
+    return Qgis::MapLayerRendererFlag::RenderPartialOutputs | Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage;
+
+  return Qgis::MapLayerRendererFlags();
 }
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const
