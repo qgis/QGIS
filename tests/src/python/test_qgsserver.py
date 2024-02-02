@@ -1,7 +1,5 @@
 """QGIS Unit tests for QgsServer.
 
-Set the env var ENCODED_OUTPUT to enable printing the base64 encoded image diff
-
 FIXME: keep here only generic server tests and move specific services
        tests to test_qgsserver_<service>.py
 
@@ -286,23 +284,12 @@ class QgsServerTestBase(QgisTestCase):
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
-            if not os.environ.get('ENCODED_OUTPUT'):
-                message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{image}_result.{extFile}"
-            else:
-                message = "Image is wrong\n{}\nImage:\necho '{}' | base64 -d >{}/{}_result.{}".format(
-                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
-                )
+            message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{test_name}_result.{extFile}"
 
         # If the failure is in image sizes the diff file will not exists.
-        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
-            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
-                if not os.environ.get('ENCODED_OUTPUT'):
-                    message = f"Image is wrong: diff file {tempfile.gettempdir()}/{image}_result_diff.{extFile}"
-                else:
-                    encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '{}' | base64 -d > {}/{}_result_diff.{}".format(
-                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
-                    )
+        if os.path.exists(os.path.join(tempfile.gettempdir(), test_name + "_result_diff." + extFile)):
+            with open(os.path.join(tempfile.gettempdir(), test_name + "_result_diff." + extFile), "rb") as diff_file:
+                message = f"Image is wrong: diff file {tempfile.gettempdir()}/{test_name}_result_diff.{extFile}"
 
         self.assertTrue(test, message)
 
