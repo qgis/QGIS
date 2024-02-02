@@ -295,7 +295,6 @@ class TestLayoutBase(TestQgsPalLabeling):
 
         res_m, self._TestImage = self.get_layout_output(self._TestKind)
         self.assertTrue(res_m, 'Failed to retrieve/save output from layout')
-        self.saveControlImage(self._TestImage)
         mismatch = 0
         if 'PAL_NO_MISMATCH' not in os.environ:
             # some mismatch expected

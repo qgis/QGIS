@@ -69,7 +69,6 @@ class TestCanvasBase(TestQgsPalLabeling):
         if not img.save(self._TestImage, 'png'):
             os.unlink(self._TestImage)
             raise OSError('Failed to save output from map render job')
-        self.saveControlImage(self._TestImage)
 
         mismatch = 0
         if 'PAL_NO_MISMATCH' not in os.environ:

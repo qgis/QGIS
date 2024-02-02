@@ -152,7 +152,6 @@ class TestServerBase(TestQgsPalLabeling):
         # print self._TestImage.__repr__()
         if 'PAL_VERBOSE' in os.environ:
             qDebug(f'GetMap request:\n  {url}\n')
-        self.saveControlImage(self._TestImage)
         self.assertTrue(res_m, 'Failed to retrieve/save image from test server')
         mismatch = 0
         if 'PAL_NO_MISMATCH' not in os.environ:
