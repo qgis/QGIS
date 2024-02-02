@@ -33,19 +33,4 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-PyQgsAnnotation
-PyQgsAuthenticationSystem
-PyQgsDelimitedTextProvider
-PyQgsEditWidgets
-PyQgsElevationProfileCanvas
-PyQgsLayoutHtml
-PyQgsMapBoxGlStyleConverter
-PyQgsPalLabelingPlacement
-PyQgsRasterLayerRenderer
-PyQgsSymbolLayerReadSld
-PyQgsSettings
-PyQgsSettingsEntry
-PyQgsServerAccessControlWFSTransactional
-ProcessingQgisAlgorithmsTestPt4
-# PyQgsProviderRegistry runs fine locally on Fedora:rawhide but not on CI
-PyQgsProviderRegistry
+
