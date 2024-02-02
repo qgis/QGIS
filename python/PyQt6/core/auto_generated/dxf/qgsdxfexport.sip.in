@@ -27,7 +27,7 @@ Exports QGIS layers to the DXF format.
 
     struct DxfLayer
     {
-        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 );
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = false, int ddBlocksMaxNumberOfClasses = -1 );
 
         QgsVectorLayer *layer() const;
 %Docstring
@@ -49,6 +49,23 @@ will be split into several dxf layers, one per each
 unique value.
 
 .. versionadded:: 3.12
+%End
+
+        bool buildDDBlocks() const;
+%Docstring
+Flag if data defined point block symbols should be created. Default is false
+
+:return: True if data defined point block symbols should be created
+
+.. versionadded:: 3.36
+%End
+
+        int DDBlocksMaxNumerOfClasses() const;
+%Docstring
+
+:return:
+
+.. versionadded:: 3.36
 %End
 
     };

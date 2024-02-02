@@ -37,6 +37,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgslinesymbollayer.h"
 #include "qgsvectorlayer.h"
@@ -95,6 +96,10 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
     mLayerList << dxfLayer.layer();
     if ( dxfLayer.layerOutputAttributeIndex() >= 0 )
       mLayerNameAttribute.insert( dxfLayer.layer()->id(), dxfLayer.layerOutputAttributeIndex() );
+    if ( dxfLayer.buildDDBlocks() )
+    {
+      mLayerDDBlockMaxNumberOfClasses.insert( dxfLayer.layer()->id(), dxfLayer.DDBlocksMaxNumerOfClasses() );
+    }
   }
 }
 
@@ -278,6 +283,7 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
 
   writeHeader( dxfEncoding( encoding ) );
   prepareRenderers();
+  createDDBlockInfo();
   writeTables();
   writeBlocks();
   writeEntities();
@@ -417,14 +423,25 @@ void QgsDxfExport::writeTables()
       continue;
 
     if ( hasBlockBreakingDataDefinedProperties( ml, symbolLayer.second ) )
+    {
+      //reference to symbology class from mDataDefinedBlockInfo?
+      if ( !mDataDefinedBlockInfo.contains( ml ) )
+      {
+        continue;
+      }
+
+      const QHash <uint, DataDefinedBlockInfo> &symbolClasses = mDataDefinedBlockInfo[ml];
+      for ( const auto &blockInfo : symbolClasses )
+      {
+        writeSymbolTableBlockRef( blockInfo.blockName );
+      }
+
+      ++i;
       continue;
+    }
 
     QString name = QStringLiteral( "symbolLayer%1" ).arg( i++ );
-    writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
-    mBlockHandles.insert( name, writeHandle() );
-    writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
-    writeGroup( 100, QStringLiteral( "AcDbBlockTableRecord" ) );
-    writeGroup( 2, name );
+    writeSymbolTableBlockRef( name );
   }
 
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
@@ -599,6 +616,15 @@ void QgsDxfExport::writeTables()
   endSection();
 }
 
+void QgsDxfExport::writeSymbolTableBlockRef( const QString &blockName )
+{
+  writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
+  mBlockHandles.insert( blockName, writeHandle() );
+  writeGroup( 100, QStringLiteral( "AcDbSymbolTableRecord" ) );
+  writeGroup( 100, QStringLiteral( "AcDbBlockTableRecord" ) );
+  writeGroup( 2, blockName );
+}
+
 void QgsDxfExport::writeBlocks()
 {
   startSection();
@@ -653,37 +679,26 @@ void QgsDxfExport::writeBlocks()
     // markers with data defined properties are inserted inline
     if ( hasBlockBreakingDataDefinedProperties( ml, symbolLayer.second ) )
     {
+      if ( !mDataDefinedBlockInfo.contains( ml ) )
+      {
+        continue;
+      }
+
+      //Check if there is an entry for the symbol layer in mDataDefinedBlockInfo
+      const QHash <uint, DataDefinedBlockInfo> &symbolClasses = mDataDefinedBlockInfo[ml];
+      for ( const auto &blockInfo : symbolClasses )
+      {
+        ctx.setFeature( &blockInfo.feature );
+        ctx.renderContext().expressionContext().setFeature( blockInfo.feature );
+        writeSymbolLayerBlock( blockInfo.blockName, ml, ctx );
+      }
+
+      ++mBlockCounter;
       continue;
     }
 
     QString block( QStringLiteral( "symbolLayer%1" ).arg( mBlockCounter++ ) );
-    mBlockHandle = QString::number( mBlockHandles[ block ], 16 );
-
-    writeGroup( 0, QStringLiteral( "BLOCK" ) );
-    writeHandle();
-    writeGroup( 330, mBlockHandle );
-    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
-    writeGroup( 8, QStringLiteral( "0" ) );
-    writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
-    writeGroup( 2, block );
-    writeGroup( 70, 0 );
-
-    // x/y/z coordinates of reference point
-    // todo: consider anchor point
-    // double size = ml->size();
-    // size *= mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits );
-    writeGroup( 0, QgsPoint( Qgis::WkbType::PointZ, 0.0, 0.0, 0.0 ) );
-    writeGroup( 3, block );
-    writeGroup( 1, QString() );
-
-    // maplayer 0 -> block receives layer from INSERT statement
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), QStringLiteral( "0" ), ctx );
-
-    writeGroup( 0, QStringLiteral( "ENDBLK" ) );
-    writeHandle();
-    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
-    writeGroup( 8, QStringLiteral( "0" ) );
-    writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
+    writeSymbolLayerBlock( block, ml, ctx );
 
     mPointSymbolBlocks.insert( ml, block );
     mPointSymbolBlockSizes.insert( ml, ml->dxfSize( *this, ctx ) );
@@ -692,6 +707,36 @@ void QgsDxfExport::writeBlocks()
   endSection();
 }
 
+void QgsDxfExport::writeSymbolLayerBlock( const QString &blockName, const QgsMarkerSymbolLayer *ml, QgsSymbolRenderContext &ctx )
+{
+  mBlockHandle = QString::number( mBlockHandles[ blockName ], 16 );
+  writeGroup( 0, QStringLiteral( "BLOCK" ) );
+  writeHandle();
+  writeGroup( 330, mBlockHandle );
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 8, QStringLiteral( "0" ) );
+  writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
+  writeGroup( 2, blockName );
+  writeGroup( 70, 0 );
+
+  // x/y/z coordinates of reference point
+  // todo: consider anchor point
+  // double size = ml->size();
+  // size *= mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits );
+  writeGroup( 0, QgsPoint( Qgis::WkbType::PointZ, 0.0, 0.0, 0.0 ) );
+  writeGroup( 3, blockName );
+
+  writeGroup( 1, QString() );
+
+  // maplayer 0 -> block receives layer from INSERT statement
+  ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), QStringLiteral( "0" ), ctx );
+
+  writeGroup( 0, QStringLiteral( "ENDBLK" ) );
+  writeHandle();
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 8, QStringLiteral( "0" ) );
+  writeGroup( 100, QStringLiteral( "AcDbBlockEnd" ) );
+}
 
 void QgsDxfExport::writeEntities()
 {
@@ -986,40 +1031,88 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   }
 #endif // 0
 
-  // insert block or write point directly?
+  //there is a global block for the point layer
   QHash< const QgsSymbolLayer *, QString >::const_iterator blockIt = mPointSymbolBlocks.constFind( symbolLayer );
-  if ( !symbolLayer || blockIt == mPointSymbolBlocks.constEnd() )
+  if ( symbolLayer && blockIt != mPointSymbolBlocks.constEnd() )
   {
-    // write symbol directly here
-    const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
-    if ( msl && symbol )
-    {
-      if ( msl->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
-      {
-        return;
-      }
-    }
-    writePoint( layer, color, pt ); // write default point symbol
+    writePointBlockReference( pt, symbolLayer, ctx, layer, angle, blockIt.value(), mPointSymbolBlockAngles.value( symbolLayer ), mPointSymbolBlockSizes.value( symbolLayer ) );
+    return;
   }
-  else
-  {
-    const double scale = symbolLayer->dxfSize( *this, ctx ) / mPointSymbolBlockSizes.value( symbolLayer );
 
-    // insert block reference
-    writeGroup( 0, QStringLiteral( "INSERT" ) );
-    writeHandle();
-    writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
-    writeGroup( 100, QStringLiteral( "AcDbBlockReference" ) );
-    writeGroup( 8, layer );
-    writeGroup( 2, blockIt.value() ); // Block name
-    writeGroup( 50, mPointSymbolBlockAngles.value( symbolLayer ) - angle );
-    if ( std::isfinite( scale ) && scale != 1.0 )
+  //If there is a data defined block for the point layer, check if the feature falls into a data defined category
+  QHash< const QgsSymbolLayer *, QHash <uint, DataDefinedBlockInfo> >::const_iterator ddBlockIt = mDataDefinedBlockInfo.constFind( symbolLayer );
+  if ( symbolLayer && ctx.feature() && ddBlockIt != mDataDefinedBlockInfo.constEnd() )
+  {
+    const QHash <uint, DataDefinedBlockInfo> &symbolLayerDDBlocks = ddBlockIt.value();
+
+    QgsPropertyCollection props = symbolLayer->dataDefinedProperties();
+
+    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props );
+    if ( symbolLayerDDBlocks.contains( ddSymbolHash ) )
     {
-      writeGroup( 41, scale );
-      writeGroup( 42, scale );
+      const DataDefinedBlockInfo &info = symbolLayerDDBlocks[ddSymbolHash];
+      writePointBlockReference( pt, symbolLayer, ctx, layer, angle, info.blockName, info.angle, info.size );
+      return;
     }
-    writeGroup( 0, pt );  // Insertion point (in OCS)
   }
+
+  //no block has been created for the symbol. Write it directly here
+  const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
+  if ( msl && symbol )
+  {
+    if ( msl->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
+    {
+      return;
+    }
+  }
+  writePoint( layer, color, pt ); // write default point symbol
+}
+
+void QgsDxfExport::writePointBlockReference( const QgsPoint &pt, const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx, const QString &layer, double angle, const QString &blockName, double blockAngle, double blockSize )
+{
+  const double scale = symbolLayer->dxfSize( *this, ctx ) / blockSize;
+
+  // insert block reference
+  writeGroup( 0, QStringLiteral( "INSERT" ) );
+  writeHandle();
+  writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
+  writeGroup( 100, QStringLiteral( "AcDbBlockReference" ) );
+  writeGroup( 8, layer );
+  writeGroup( 2, blockName ); // Block name
+  writeGroup( 50, blockAngle - angle );
+  if ( std::isfinite( scale ) && scale != 1.0 )
+  {
+    writeGroup( 41, scale );
+    writeGroup( 42, scale );
+  }
+  writeGroup( 0, pt );  // Insertion point (in OCS)
+}
+
+uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop )
+{
+  uint hashValue = 0;
+
+  QgsPropertyCollection dxfProp = prop;
+  dxfProp.setProperty( QgsSymbolLayer::Property::Size, QgsProperty() );
+  dxfProp.setProperty( QgsSymbolLayer::Property::Angle, QgsProperty() );
+  QList< QString > fields = dxfProp.referencedFields().values();
+  std::sort( fields.begin(), fields.end() );
+  int i = 0;
+  for ( const auto &field : std::as_const( fields ) ) //convert set to list to have a well defined order
+  {
+    QVariant attValue = fet.attribute( field );
+    if ( i == 0 )
+    {
+      hashValue =  qHash( attValue );
+    }
+    else
+    {
+      hashValue = hashValue ^ qHash( attValue );
+    }
+    ++i;
+  }
+
+  return hashValue;
 }
 
 void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width )
@@ -2472,4 +2565,111 @@ QString QgsDxfExport::DxfLayer::splitLayerAttribute() const
   }
 
   return splitLayerFieldName;
+}
+
+void QgsDxfExport::createDDBlockInfo()
+{
+  int symbolLayerNr = 0;
+  for ( DxfLayerJob *job : std::as_const( mJobs ) )
+  {
+    int ddMaxNumberOfClasses = -1;
+    bool createDDBlocks = mLayerDDBlockMaxNumberOfClasses.contains( job->featureSource.id() );
+    if ( createDDBlocks )
+    {
+      ddMaxNumberOfClasses = mLayerDDBlockMaxNumberOfClasses[job->featureSource.id()];
+    }
+
+    const QgsSymbolList symbols = job->renderer->symbols( mRenderContext );
+
+    for ( const QgsSymbol *symbol : symbols )
+    {
+      //Create blocks only for marker symbols
+      if ( symbol->type() != Qgis::SymbolType::Marker )
+      {
+        continue;
+      }
+
+      int maxSymbolLayers = symbol->symbolLayerCount();
+      if ( mSymbologyExport != Qgis::FeatureSymbologyExport::PerSymbolLayer )
+      {
+        maxSymbolLayers = 1;
+      }
+
+      for ( int i = 0; i < maxSymbolLayers; ++i )
+      {
+
+        const QgsSymbolLayer *sl =  symbol->symbolLayer( i );
+        QgsPropertyCollection properties = sl->dataDefinedProperties();
+
+        if ( !sl )
+        {
+          continue;
+        }
+
+        if ( !hasBlockBreakingDataDefinedProperties( sl, symbol ) || !createDDBlocks )
+        {
+          ++symbolLayerNr;
+          continue;
+        }
+
+        //iterate layer, evaluate value and get symbology hash groups
+        QgsSymbolRenderContext sctx( mRenderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+        const QgsCoordinateTransform ct( job->crs, mMapSettings.destinationCrs(), mMapSettings.transformContext() );
+        QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setExpressionContext( job->renderContext.expressionContext() );
+        QgsCoordinateTransform extentTransform = ct;
+        extentTransform.setBallparkTransformsAreAppropriate( true );
+        request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
+
+        QHash <uint, QPair<int, DataDefinedBlockInfo> > blockSymbolMap; //symbolHash/occurences/block Text
+
+        QgsFeature fet;
+        while ( featureIt.nextFeature( fet ) )
+        {
+          uint symbolHash = dataDefinedSymbolClassHash( fet, properties );
+          if ( blockSymbolMap.contains( symbolHash ) )
+          {
+            blockSymbolMap[symbolHash].first += 1;
+            continue;
+          }
+
+          sctx.setFeature( &fet );
+
+          DataDefinedBlockInfo blockInfo;
+          blockInfo.blockName = QStringLiteral( "symbolLayer%1class%2" ).arg( symbolLayerNr ).arg( symbolHash );
+          blockInfo.angle = sl->dxfAngle( sctx );
+          blockInfo.size = sl->dxfSize( *this, sctx );
+          blockInfo.feature = fet;
+
+          blockSymbolMap.insert( symbolHash, qMakePair( 1, blockInfo ) );
+        }
+        ++symbolLayerNr;
+
+        //keep the entries with the most frequent occurrences
+        QMultiMap<int, uint> occurrences;
+        QHash <uint, QPair<int, DataDefinedBlockInfo> >::const_iterator blockSymbolIt = blockSymbolMap.constBegin();
+        for ( ; blockSymbolIt != blockSymbolMap.constEnd(); ++blockSymbolIt )
+        {
+          occurrences.insert( blockSymbolIt.value().first, blockSymbolIt.key() );
+        }
+
+        QHash <uint, DataDefinedBlockInfo > applyBlockSymbolMap;
+        QMapIterator<int, uint> occIt( occurrences ); occIt.toBack();
+        int nInsertedClasses = 0;
+        while ( occIt.hasPrevious() )
+        {
+          occIt.previous();
+          applyBlockSymbolMap.insert( occIt.value(), blockSymbolMap[occIt.value()].second );
+          ++nInsertedClasses;
+          if ( ddMaxNumberOfClasses != -1 && nInsertedClasses >= ddMaxNumberOfClasses )
+          {
+            break;
+          }
+        }
+
+        //add to mDataDefinedBlockInfo
+        mDataDefinedBlockInfo.insert( sl, applyBlockSymbolMap );
+      }
+    }
+  }
 }

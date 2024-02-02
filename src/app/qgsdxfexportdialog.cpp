@@ -43,6 +43,17 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 {
   Q_UNUSED( option )
 
+  if ( index.column() == 2 )
+  {
+    return nullptr;
+  }
+  else if ( index.column() == 3 )
+  {
+    QLineEdit *le = new QLineEdit( parent );
+    le->setValidator( new QIntValidator( le ) );
+    return le;
+  }
+
   QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return nullptr;
@@ -55,6 +66,16 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
+  if ( index.column() == 3 )
+  {
+    QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+    if ( le )
+    {
+      le->setText( index.data().toString() );
+    }
+    return;
+  }
+
   QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return;
@@ -70,6 +91,15 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
+  if ( index.column() == 3 )
+  {
+    QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+    if ( le )
+    {
+      model->setData( index, le->text().toInt() );
+    }
+  }
+
   QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return;
@@ -111,13 +141,24 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
 int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 2;
+  return 4;
 }
 
 Qt::ItemFlags QgsVectorLayerAndAttributeModel::flags( const QModelIndex &index ) const
 {
   if ( index.column() == 0 )
+  {
     return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+  }
+  else if ( index.column() == 2 )
+  {
+    return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+  }
+  else if ( index.column() == 3 )
+  {
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+
 
   QgsVectorLayer *vl = vectorLayer( index );
   if ( !vl )
@@ -150,6 +191,14 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
         return tr( "Layer" );
       else if ( section == 1 )
         return tr( "Output Layer Attribute" );
+      else if ( section == 2 )
+      {
+        return tr( "Allow data defined symbol blocks" );
+      }
+      else if ( section == 3 )
+      {
+        return tr( "Maximum number of symbol blocks" );
+      }
     }
     else if ( role == Qt::ToolTipRole )
     {
@@ -162,6 +211,7 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
 
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role ) const
 {
+  QgsVectorLayer *vl = vectorLayer( idx );
   if ( idx.column() == 0 )
   {
     if ( role == Qt::CheckStateRole )
@@ -213,9 +263,35 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
     else
       return QgsLayerTreeModel::data( idx, role );
   }
+  else if ( idx.column() == 2 )
+  {
+    bool checked = mCreateDDBlockInfo.contains( vl ) ? mCreateDDBlockInfo[vl] : false;
+    if ( role == Qt::CheckStateRole )
+    {
+      return checked ? Qt::Checked : Qt::Unchecked;
+    }
+    else
+    {
+      return QgsLayerTreeModel::data( idx, role );
+    }
+  }
+  else if ( idx.column() == 3 )
+  {
+    if ( role == Qt::DisplayRole )
+    {
+      if ( !mDDBlocksMaxNumberOfClasses.contains( vl ) )
+      {
+        return QVariant( -1 );
+      }
+      else
+      {
+        return QVariant( mDDBlocksMaxNumberOfClasses[vl] );
+      }
+    }
+  }
 
-  QgsVectorLayer *vl = vectorLayer( idx );
-  if ( vl )
+
+  if ( idx.column() == 1 && vl )
   {
     int idx = mAttributeIdx.value( vl, -1 );
     if ( role == Qt::EditRole )
@@ -267,15 +343,33 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
     return true;
   }
 
+  QgsVectorLayer *vl = vectorLayer( index );
   if ( index.column() == 1 )
   {
     if ( role != Qt::EditRole )
       return false;
 
-    QgsVectorLayer *vl = vectorLayer( index );
+
     if ( vl )
     {
       mAttributeIdx[ vl ] = value.toInt();
+      return true;
+    }
+  }
+
+  if ( index.column() == 2 && role == Qt::CheckStateRole )
+  {
+    if ( vl )
+    {
+      mCreateDDBlockInfo[ vl ] = value.toBool();
+      return true;
+    }
+  }
+  else if ( index.column() == 3 && role == Qt::EditRole )
+  {
+    if ( vl )
+    {
+      mDDBlocksMaxNumberOfClasses[ vl ] = value.toInt();
       return true;
     }
   }
@@ -302,7 +396,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
         if ( !layerIdx.contains( vl->id() ) )
         {
           layerIdx.insert( vl->id(), layers.size() );
-          layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ) );
+          layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, false ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
         }
       }
     }
@@ -313,7 +407,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
       if ( !layerIdx.contains( vl->id() ) )
       {
         layerIdx.insert( vl->id(), layers.size() );
-        layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ) );
+        layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ), mCreateDDBlockInfo.value( vl, false ), mDDBlocksMaxNumberOfClasses.value( vl,  -1 ) );
       }
     }
   }

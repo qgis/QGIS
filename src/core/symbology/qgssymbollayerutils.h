@@ -955,6 +955,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static void resetSymbolLayerIds( QgsSymbolLayer *symbolLayer );
 
+    static uint dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop );
+
     ///@cond PRIVATE
 #ifndef SIP_RUN
     static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
