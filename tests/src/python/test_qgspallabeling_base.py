@@ -53,7 +53,6 @@ from utilities import (
     getTestFont,
     loadTestFonts,
     openInBrowserTab,
-    renderMapToImage,
     unitTestDataPath,
 )
 
@@ -67,8 +66,7 @@ PALREPORTS = {}
 # noinspection PyPep8Naming,PyShadowingNames
 class TestQgsPalLabeling(QgisTestCase):
 
-    _TestDataDir = unitTestDataPath()
-    _PalDataDir = os.path.join(_TestDataDir, 'labeling')
+    _PalDataDir = os.path.join(unitTestDataPath(), 'labeling')
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
     _MapRegistry = None
@@ -260,13 +258,6 @@ class TestQgsPalLabeling(QgisTestCase):
                 if not isinstance(value, Callable):
                     res[attr] = value
         return res
-
-    def controlImagePath(self, grpprefix=''):
-        if not grpprefix:
-            grpprefix = self._TestGroupPrefix
-        return os.path.join(self._TestDataDir, 'control_images',
-                            'expected_' + grpprefix,
-                            self._Test, self._Test + '.png')
 
     def renderCheck(self, mismatch=0, colortol=0, imgpath=''):
         """Check rendered map canvas or existing image against control image
