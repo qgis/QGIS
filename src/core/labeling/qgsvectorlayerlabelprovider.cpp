@@ -95,7 +95,7 @@ void QgsVectorLayerLabelProvider::init()
   if ( mLayerGeometryType == Qgis::GeometryType::Point && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
-    mObstacleType = QgsLabelObstacleSettings::PolygonWhole;
+    mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonWhole;
   }
   else
   {
