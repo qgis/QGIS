@@ -326,7 +326,7 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(feature.attribute('birthday'), 2014)
         # don't updated pos (because newly created feature)
         self.assertEqual(feature.attribute('pos'), 110)
-        # don't updated random (becuase newly created feature)
+        # don't updated random (because newly created feature)
         self.assertEqual(feature.attribute('random'), 100)
         # don't updated numbers
         self.assertEqual(feature.attribute('numbers'), [1, 10])
@@ -343,9 +343,9 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(form.currentFormFeature()['age'], 10)
         # don't update birthday
         self.assertEqual(form.currentFormFeature()['birthday'], 2014)
-        # don't update pos (because new feature)
+        # don't update pos (because newly created feature)
         self.assertEqual(form.currentFormFeature()['pos'], 110)
-        # don't update random (becuase new feature)
+        # don't update random (because newly created feature)
         self.assertEqual(form.currentFormFeature()['random'], 100)
         # don't update numbers
         self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
