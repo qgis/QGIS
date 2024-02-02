@@ -34,6 +34,8 @@ class QgsPolygon3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Polygon3D
     QgsAbstract3DSymbol *symbol() override;
     QString symbolType() const override;
 
+  private slots:
+    void updateGuiState();
 };
 
 #endif // QGSPOLYGON3DSYMBOLWIDGET_H
