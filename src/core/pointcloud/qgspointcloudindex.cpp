@@ -410,6 +410,9 @@ void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const I
 
 void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
 {
+  if ( !data )
+    return;
+
   QgsPointCloudCacheKey key( node, request, expression, uri );
 
   const int cost = data->pointCount() * data->pointRecordSize();
