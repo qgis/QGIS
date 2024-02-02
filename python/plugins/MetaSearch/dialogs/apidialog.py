@@ -61,11 +61,11 @@ class APIRequestResponseDialog(QDialog, BASE_CLASS):
         self.txtbrAPIResponse.setReadOnly(True)
 
         request_layout = QVBoxLayout()
-        request_layout.setContentsMargins(0,0 ,0 ,0 )
+        request_layout.setContentsMargins(0, 0, 0, 0)
         request_layout.addWidget(self.txtbrAPIRequest)
         self.txtbrAPIRequestFrame.setLayout(request_layout)
 
         response_layout = QVBoxLayout()
-        response_layout.setContentsMargins(0,0 ,0 ,0 )
+        response_layout.setContentsMargins(0, 0, 0, 0)
         response_layout.addWidget(self.txtbrAPIResponse)
         self.txtbrAPIResponseFrame.setLayout(response_layout)
