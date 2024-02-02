@@ -312,16 +312,14 @@ class TestQgsPalLabeling(QgisTestCase):
         else:
             raise OSError(f'Control not copied to: {imgpath}')
 
-    def renderCheck(self, mismatch=0, colortol=0, imgpath='', grpprefix=''):
+    def renderCheck(self, mismatch=0, colortol=0, imgpath=''):
         """Check rendered map canvas or existing image against control image
 
         :mismatch: number of pixels different from control, and still valid
         :colortol: maximum difference for each color component including alpha
         :imgpath: existing image; if present, skips rendering canvas
-        :grpprefix: compare test image/rendering against different test group
         """
-        if not grpprefix:
-            grpprefix = self._TestGroupPrefix
+        grpprefix = self._TestGroupPrefix
         chk = QgsMultiRenderChecker()
 
         chk.setControlPathPrefix('expected_' + grpprefix)
