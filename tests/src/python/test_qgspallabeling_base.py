@@ -304,7 +304,7 @@ class TestPALConfig(TestQgsPalLabeling):
     @classmethod
     def tearDownClass(cls):
         cls.removeMapLayer(cls.layer)
-        TestQgsPalLabeling.tearDownClass()
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

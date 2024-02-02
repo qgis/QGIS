@@ -37,7 +37,7 @@ class TestCanvasBase(TestQgsPalLabeling):
 
     @classmethod
     def tearDownClass(cls):
-        TestQgsPalLabeling.tearDownClass()
+        super().tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
 
