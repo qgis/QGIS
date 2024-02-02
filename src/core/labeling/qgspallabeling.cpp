@@ -898,7 +898,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   mThinningSettings.setMaximumNumberLabels( layer->customProperty( QStringLiteral( "labeling/maxNumLabels" ), QVariant( 2000 ) ).toInt() );
   mObstacleSettings.setIsObstacle( layer->customProperty( QStringLiteral( "labeling/obstacle" ), QVariant( true ) ).toBool() );
   mObstacleSettings.setFactor( layer->customProperty( QStringLiteral( "labeling/obstacleFactor" ), QVariant( 1.0 ) ).toDouble() );
-  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( PolygonInterior ) ).toUInt() ) );
+  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
   zIndex = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QVariant( 0.0 ) ).toDouble();
 
   mDataDefinedProperties.clear();
@@ -1175,7 +1175,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt() );
   mObstacleSettings.setIsObstacle( renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt() );
   mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
-  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() ) );
+  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
   zIndex = renderingElem.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0.0" ) ).toDouble();
   mUnplacedVisibility = static_cast< Qgis::UnplacedLabelVisibility >( renderingElem.attribute( QStringLiteral( "unplacedVisibility" ), QString::number( static_cast< int >( Qgis::UnplacedLabelVisibility::FollowEngineSetting ) ) ).toInt() );
 
