@@ -548,7 +548,7 @@ void QgsAttributeForm::updateValuesDependenciesDefaultValues( const int originId
   // create updated Feature
   QgsFeature updatedFeature = getUpdatedFeature();
 
-  // go through depending fields and the ones with volatile function and update the fields with defaultexpression
+  // go through depending fields and update the fields with defaultexpression
   QList<QgsWidgetWrapper *> relevantWidgets = mDefaultValueDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : std::as_const( relevantWidgets ) )
   {
@@ -588,7 +588,7 @@ void QgsAttributeForm::updateValuesDependenciesVirtualFields( const int originId
   // create updated Feature
   QgsFeature updatedFeature = getUpdatedFeature();
 
-  // go through depending fields and the ones with volatile function and update the virtual field with its expression
+  // go through depending fields and update the virtual field with its expression
   const QList<QgsWidgetWrapper *> relevantWidgets = mVirtualFieldsDependencies.values( originIdx );
   for ( QgsWidgetWrapper *ww : relevantWidgets )
   {
@@ -3156,9 +3156,8 @@ void QgsAttributeForm::updateFieldDependenciesDefaultValue( QgsEditorWidgetWrapp
   if ( exp.needsGeometry() )
     mNeedsGeometry = true;
 
-  //if the expression contains volatile functions, it should have the dependency of every field change
-  //if a function requires all attributes, then as well
-  if ( !exp.referencedFunctions().intersect( volatileExpressionFunctions() ).isEmpty() || exp.referencedColumns().contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
+  //if a function requires all attributes, it should have the dependency of every field change
+  if ( exp.referencedColumns().contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
   {
     const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
 
@@ -3189,9 +3188,8 @@ void QgsAttributeForm::updateFieldDependenciesVirtualFields( QgsEditorWidgetWrap
   if ( exp.needsGeometry() )
     mNeedsGeometry = true;
 
-  //if the expression contains volatile functions, it should have the dependency of every field change
-  //if a function requires all attributes, then as well
-  if ( !exp.referencedFunctions().intersect( volatileExpressionFunctions() ).isEmpty() || exp.referencedColumns().contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
+  //if a function requires all attributes, it should have the dependency of every field change
+  if ( exp.referencedColumns().contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
   {
     const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
 
