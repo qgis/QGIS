@@ -24,8 +24,8 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
 
   setPanelTitle( tr( "Obstacle Settings" ) );
 
-  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), QgsLabelObstacleSettings::PolygonInterior );
-  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), QgsLabelObstacleSettings::PolygonBoundary );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), static_cast<int>( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonBoundary ) );
 
   connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
@@ -45,7 +45,7 @@ void QgsLabelObstacleSettingsWidget::setSettings( const QgsLabelObstacleSettings
 {
   mBlockSignals = true;
   mObstacleFactorSlider->setValue( static_cast< int >( std::round( settings.factor() * 5 ) ) );
-  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( settings.type() ) );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( static_cast< int >( settings.type() ) ) );
   mBlockSignals = false;
 }
 
