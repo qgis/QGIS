@@ -105,9 +105,16 @@ bool QgsMapToolShapeCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEven
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mPoints.size() < 3 )
+    {
+      clean();
+      return false;
+    }
+
     if ( !( mPoints.size() % 2 ) )
       mPoints.removeLast();
     addCurveToParentTool();
+
     return true;
   }
 

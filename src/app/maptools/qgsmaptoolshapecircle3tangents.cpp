@@ -108,6 +108,12 @@ bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
       }
     }
 
+    if ( mCircle.isEmpty() )
+    {
+      clean();
+      return false;
+    }
+
     addCircleToParentTool();
     return true;
   }
