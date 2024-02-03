@@ -266,6 +266,15 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
   }
 }
 
+void QgsEditorWidgetWrapper::updateConstraint( QgsEditorWidgetWrapper::ConstraintResult constraintResult, const QString &constraintFailureReason )
+{
+  mValidConstraint = constraintResult == ConstraintResultPass;
+  mIsBlockingCommit = constraintResult == ConstraintResultFailHard;
+  mConstraintFailureReason = constraintResult != ConstraintResultPass ? constraintFailureReason : QString();
+  mConstraintResult = constraintResult;
+  updateConstraintWidgetStatus();
+}
+
 bool QgsEditorWidgetWrapper::isValidConstraint() const
 {
   return mValidConstraint;

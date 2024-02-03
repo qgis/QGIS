@@ -176,6 +176,14 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
+     * Update constraint manually by providing the constraint result value and failure reason(s).
+     * \param constraintResult the constraint result value
+     * \param constraintFailureReason the constraint failure reason(s) (blank is the result passes)
+     * \since QGIS 3.36
+     */
+    void updateConstraint( QgsEditorWidgetWrapper::ConstraintResult constraintResult, const QString &constraintFailureReason );
+
+    /**
      * Gets the current constraint status.
      * \returns TRUE if the constraint is valid or if there's no constraint,
      * FALSE otherwise
