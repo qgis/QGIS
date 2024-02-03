@@ -30,7 +30,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 from warnings import warn
 
 from qgis.PyQt.QtCore import (
@@ -181,7 +181,7 @@ class QgisTestCase(unittest.TestCase):
         control_name=None,
         color_tolerance: int = 2,
         allowed_mismatch: int = 20,
-        size_tolerance: Optional[int] = None,
+        size_tolerance: Optional[Union[int, QSize]] = None,
         expect_fail: bool = False,
         control_path_prefix: Optional[str] = None,
         use_checkerboard_background: bool = False
@@ -213,7 +213,11 @@ class QgisTestCase(unittest.TestCase):
         checker.setColorTolerance(color_tolerance)
         checker.setExpectFail(expect_fail)
         if size_tolerance is not None:
-            checker.setSizeTolerance(size_tolerance, size_tolerance)
+            if isinstance(size_tolerance, QSize):
+                if size_tolerance.isValid():
+                    checker.setSizeTolerance(size_tolerance.width(), size_tolerance.height())
+            else:
+                checker.setSizeTolerance(size_tolerance, size_tolerance)
 
         result = checker.runTest(name, allowed_mismatch)
         if (not expect_fail and not result) or (expect_fail and result):
