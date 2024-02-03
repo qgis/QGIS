@@ -37,6 +37,7 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgstextformat.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsdxfexport.h"
 
 class TestQgsProcessingAlgsPt2: public QgsTest
 {
@@ -90,6 +91,8 @@ class TestQgsProcessingAlgsPt2: public QgsTest
     void transferMainAnnotationLayer();
 
     void extractLabels();
+
+    void dxfExport();
 
     void splitVectorLayer();
     void buffer();
@@ -1681,6 +1684,37 @@ void TestQgsProcessingAlgsPt2::extractLabels()
   QCOMPARE( attributes[QStringLiteral( "FontWordSpacing" )], 0.0 );
   QCOMPARE( attributes[QStringLiteral( "MultiLineAlignment" )], QStringLiteral( "left" ) );
   QCOMPARE( attributes[QStringLiteral( "MultiLineHeight" )], 1.0 );
+}
+
+void TestQgsProcessingAlgsPt2::dxfExport()
+{
+  QgsProject project;
+  project.addMapLayer( mPolygonLayer );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:dxfexport" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsReferencedRectangle extent( QgsRectangle( -103.9, 25.0, -98.0, 29.8 ), mPolygonLayer->crs() );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPolygonLayer->id() );
+  parameters.insert( QStringLiteral( "EXTENT" ), extent );
+  parameters.insert( QStringLiteral( "SCALE" ), 1000.00 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &project );
+
+  TestProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr< QgsVectorLayer > resultLayer = std::make_unique< QgsVectorLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "dxf" );
+  QVERIFY( resultLayer->isValid() );
+  QCOMPARE( resultLayer->featureCount(), 1L );
+  QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::LineString );
 }
 
 void TestQgsProcessingAlgsPt2::splitVectorLayer()
