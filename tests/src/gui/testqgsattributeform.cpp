@@ -61,6 +61,7 @@ class TestQgsAttributeForm : public QObject
     void testSameFieldSync();
     void testZeroDoubles();
     void testMinimumWidth();
+    void testFieldConstraintDuplicateField();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1209,6 +1210,41 @@ void TestQgsAttributeForm::testMinimumWidth()
   form->show();
   QGSVERIFYLESSTHAN( form->minimumWidth(), leMetrics.horizontalAdvance( 'x' ) * 100 );
 
+}
+
+void TestQgsAttributeForm::testFieldConstraintDuplicateField()
+{
+  // make a temporary vector layer
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "Range" ), QVariantMap() ) );
+
+  // add same field twice so they get synced
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
+  editFormConfig.clearTabs();
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.invisibleRootContainer()->addChildElement( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  layer->setEditFormConfig( editFormConfig );
+
+  // add a feature to the vector layer
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 1 );
+
+  // set a not null constraint
+  layer->setConstraintExpression( 0, QStringLiteral( "col0 > 10" ) );
+
+  // build a form for this feature
+  QgsAttributeForm form( layer );
+  form.setFeature( ft );
+
+  const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = form.mFormEditorWidgets.values( 0 );
+  QCOMPARE( formEditorWidgets[0]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultFailHard );
+  QCOMPARE( formEditorWidgets[1]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultFailHard );
+
+  formEditorWidgets[0]->editorWidget()->setValues( 20, QVariantList() );
+  QCOMPARE( formEditorWidgets[0]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultPass );
+  QCOMPARE( formEditorWidgets[1]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultPass );
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )
