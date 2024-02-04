@@ -48,6 +48,16 @@
 
 const int PG_DEFAULT_TIMEOUT = 30;
 
+static QString quotedString( const QString &v )
+{
+  QString result = v;
+  result.replace( '\'', QLatin1String( "''" ) );
+  if ( result.contains( '\\' ) )
+    return result.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "E'" ).append( '\'' );
+  else
+    return result.prepend( '\'' ).append( '\'' );
+}
+
 QgsPostgresResult::~QgsPostgresResult()
 {
   if ( mRes )
@@ -708,7 +718,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND n.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND %1='%2'" ).arg( schemaName, schema );
+      sql += QStringLiteral( " AND %1=%2" ).arg( schemaName, quotedString( schema ) );
 
     sql += QString( " GROUP BY 1,2,3,4,5,6,7,c.oid,11" );
 
@@ -848,7 +858,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND n.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND n.nspname='%2'" ).arg( schema );
+      sql += QStringLiteral( " AND n.nspname=%2" ).arg( quotedString( schema ) );
 
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
@@ -987,7 +997,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND pg_namespace.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND pg_namespace.nspname='%2'" ).arg( schema );
+      sql += QStringLiteral( " AND pg_namespace.nspname=%2" ).arg( quotedString( schema ) );
 
     sql += QLatin1String( " GROUP BY 1,2,3,4" );
 
@@ -1327,16 +1337,6 @@ QString QgsPostgresConn::quotedIdentifier( const QString &ident )
   QString result = ident;
   result.replace( '"', QLatin1String( "\"\"" ) );
   return result.prepend( '\"' ).append( '\"' );
-}
-
-static QString quotedString( const QString &v )
-{
-  QString result = v;
-  result.replace( '\'', QLatin1String( "''" ) );
-  if ( result.contains( '\\' ) )
-    return result.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "E'" ).append( '\'' );
-  else
-    return result.prepend( '\'' ).append( '\'' );
 }
 
 static QString doubleQuotedMapValue( const QString &v )
@@ -2933,7 +2933,7 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
       return -1;
     const QString authName = authParts.first();
     const QString authId = authParts.last();
-    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT srid FROM spatial_ref_sys WHERE auth_name='%1' AND auth_srid=%2" ).arg( authName, authId ) ) );
+    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT srid FROM spatial_ref_sys WHERE auth_name=%1 AND auth_srid=%2" ).arg( quotedString( authName ), authId ) ) );
 
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
