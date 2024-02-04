@@ -15220,10 +15220,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionFeatureAction->setEnabled( layerHasActions );
 
-      if ( isEditable )
-      {
-          manageDigitizingCursor( vlayer );
-      }
+      manageDigitizingCursor( vlayer );
 
       if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
            && ( mMapCanvas->mapTool()->flags() & QgsMapTool::EditTool ) && !mSaveRollbackInProgress )
@@ -15889,10 +15886,22 @@ void QgisApp::manageDigitizingCursor( QgsVectorLayer *vlayer )
     {
       mMapCanvas->mapTool()->action()->setChecked( true );
       mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
-      return;
     }
-    mMapCanvas->mapTool()->action()->setChecked( false );
-    mMapCanvas->mapTool()->setCursor( QCursor( Qt::ArrowCursor ) );
+    else
+    {
+      mMapCanvas->mapTool()->action()->setChecked( false );
+      mMapCanvas->mapTool()->setCursor( QCursor( Qt::ArrowCursor ) );
+    }
+  }
+  if ( !vlayer->isSpatial() )
+  {
+      QgsSnappingConfig config = QgsSnappingConfig();
+      config.setEnabled( false );
+      mMapCanvas->snappingUtils()->setConfig( config );
+  }
+  else
+  {
+      mMapCanvas->snappingUtils()->setConfig( QgsProject::instance()->snappingConfig() );
   }
 }
 

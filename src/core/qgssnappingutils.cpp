@@ -558,6 +558,14 @@ void QgsSnappingUtils::setEnableSnappingForInvisibleFeature( bool enable )
 
 void QgsSnappingUtils::setConfig( const QgsSnappingConfig &config )
 {
+  if ( mCurrentLayer && !mCurrentLayer->isSpatial() )
+  {
+    QgsSnappingConfig config = QgsSnappingConfig();
+    config.setEnabled( false );
+    mSnappingConfig = config;
+    emit configChanged( mSnappingConfig );
+    return;
+  }
   if ( mSnappingConfig == config )
     return;
 
