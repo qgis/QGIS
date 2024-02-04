@@ -2698,10 +2698,7 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       p.insert( name(), value );
       if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
       {
-        const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
-        if ( !source.isEmpty() )
-          return source;
-        return layer->id();
+        return QgsProcessingUtils::layerToStringIdentifier( layer );
       }
     }
 
@@ -2879,10 +2876,7 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
     p.insert( name(), value );
     if ( QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context ) )
     {
-      const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
-      if ( !source.isEmpty() )
-        return source;
-      return layer->id();
+      return QgsProcessingUtils::layerToStringIdentifier( layer );
     }
   }
 
@@ -3112,7 +3106,7 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   if ( layer )
-    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) );
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
@@ -3193,7 +3187,7 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
   QVariantMap p;
   p.insert( name(), val );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
@@ -3537,7 +3531,7 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   if ( layer )
-    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) );
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
@@ -4357,7 +4351,7 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
       parts.reserve( list.count() );
       for ( const QgsMapLayer *layer : list )
       {
-        parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+        parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) );
       }
       return parts.join( ',' ).prepend( '[' ).append( ']' );
     }
@@ -4863,7 +4857,7 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   QVariantMap p;
   p.insert( name(), val );
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
@@ -5597,7 +5591,7 @@ QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &
   QVariantMap p;
   p.insert( name(), val );
   QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
@@ -5749,7 +5743,7 @@ QString QgsProcessingParameterMeshLayer::valueAsPythonString( const QVariant &va
   QVariantMap p;
   p.insert( name(), val );
   QgsMeshLayer *layer = QgsProcessingParameters::parameterAsMeshLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
@@ -8133,7 +8127,7 @@ QString QgsProcessingParameterCoordinateOperation::valueAsPythonString( const QV
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   if ( layer )
-    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
+    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) );
 
   const QString s = value.toString();
   return QgsProcessingUtils::stringToPythonLiteral( s );
@@ -9020,7 +9014,7 @@ QString QgsProcessingParameterPointCloudLayer::valueAsPythonString( const QVaria
   QVariantMap p;
   p.insert( name(), val );
   QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( this, p, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::layerToStringIdentifier( layer ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 

@@ -337,6 +337,15 @@ Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
 %End
 
+    static QString layerToStringIdentifier( const QgsMapLayer *layer ) /HoldGIL/;
+%Docstring
+Returns a string representation of the source for a ``layer``. The returned
+value is suitable for storage for subsequent executions of an algorithm
+using the same layer source.
+
+.. versionadded:: 3.34
+%End
+
     static QString variantToPythonLiteral( const QVariant &value );
 %Docstring
 Converts a variant to a Python literal.
