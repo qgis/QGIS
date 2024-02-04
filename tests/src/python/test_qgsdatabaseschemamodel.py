@@ -50,7 +50,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.columnCount(), 1)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertEqual(model.data(model.index(schemas.index('qgis_test'), 0, QModelIndex()), Qt.ToolTipRole), 'qgis_test')
         self.assertIsNone(model.data(model.index(model.rowCount(), 0, QModelIndex()), Qt.DisplayRole))
@@ -64,7 +64,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 1)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertIn('myNewSchema', schemas)
 
@@ -74,7 +74,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 3)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertIn('myNewSchema', schemas)
         self.assertIn('myNewSchema2', schemas)
@@ -87,7 +87,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 2)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertNotIn('myNewSchema', schemas)
         self.assertNotIn('myNewSchema2', schemas)
@@ -100,7 +100,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertNotIn('myNewSchema3', schemas)
         self.assertNotIn('myNewSchema4', schemas)
@@ -117,7 +117,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
 
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole))
         self.assertTrue(model.data(model.index(0, 0, QModelIndex()), QgsDatabaseSchemaModel.RoleEmpty))
@@ -133,7 +133,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 2)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertIn('myNewSchema', schemas)
         self.assertFalse(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole))
@@ -156,7 +156,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 4)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertIn('myNewSchema', schemas)
         self.assertIn('myNewSchema2', schemas)
@@ -172,7 +172,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 3)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertNotIn('myNewSchema', schemas)
         self.assertNotIn('myNewSchema2', schemas)
@@ -188,7 +188,7 @@ class TestPyQgsDatabaseSchemaModel(QgisTestCase):
         self.assertEqual(model.rowCount(), old_count + 1)
         schemas = [model.data(model.index(r, 0, QModelIndex()), Qt.DisplayRole) for r in range(model.rowCount())]
         self.assertIn('public', schemas)
-        self.assertIn('CamelCaseSchema', schemas)
+        self.assertIn("CamelCase'singlequote'Schema", schemas)
         self.assertIn('qgis_test', schemas)
         self.assertNotIn('myNewSchema3', schemas)
         self.assertNotIn('myNewSchema4', schemas)
