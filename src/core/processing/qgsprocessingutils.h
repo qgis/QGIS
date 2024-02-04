@@ -307,6 +307,15 @@ class CORE_EXPORT QgsProcessingUtils
     static QString normalizeLayerSource( const QString &source );
 
     /**
+     * Returns a string representation of the source for a \a layer. The returned
+     * value is suitable for storage for subsequent executions of an algorithm
+     * using the same layer source.
+     *
+     * \since QGIS 3.34
+     */
+    static QString layerToStringIdentifier( const QgsMapLayer *layer ) SIP_HOLDGIL;
+
+    /**
      * Converts a variant to a Python literal.
      *
      * \see stringToPythonLiteral()
