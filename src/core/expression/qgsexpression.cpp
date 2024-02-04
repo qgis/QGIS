@@ -236,7 +236,8 @@ bool QgsExpression::hasParserError() const
 
 QString QgsExpression::parserErrorString() const
 {
-  return d->mParserErrorString;
+  return d->mParserErrorString.replace( "syntax error, unexpected end of file",
+                                        "Invalid expression. Unexpected end. You might not have finished the full expression" );
 }
 
 QList<QgsExpression::ParserError> QgsExpression::parserErrors() const
