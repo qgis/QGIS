@@ -728,6 +728,27 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
+QString QgsProcessingUtils::layerToStringIdentifier( const QgsMapLayer *layer )
+{
+  if ( !layer )
+    return QString();
+
+  const QString source = QgsProcessingUtils::normalizeLayerSource( layer->source() );
+  if ( !source.isEmpty() )
+  {
+    const QString provider = layer->providerType();
+    // don't prepend provider type for these exceptional providers -- we assume them
+    // by default if the provider type is excluded. See logic in QgsProcessingUtils::loadMapLayerFromString
+    if ( provider.compare( QLatin1String( "gdal" ), Qt::CaseInsensitive ) == 0
+         || provider.compare( QLatin1String( "ogr" ), Qt::CaseInsensitive ) == 0
+         || provider.compare( QLatin1String( "mdal" ), Qt::CaseInsensitive ) == 0 )
+      return source;
+
+    return QStringLiteral( "%1://%2" ).arg( provider, source );
+  }
+  return layer->id();
+}
+
 QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
 {
   if ( !value.isValid() )

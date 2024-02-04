@@ -10380,7 +10380,7 @@ void TestQgsProcessing::parameterTinInputLayers()
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'source': 'PointLayerForTin','type': 0,'attributeIndex': -1}]" ) );
 
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
-            QStringLiteral( "[{\"attributeIndex\":-1,\"source\":\"%1\",\"type\":0}]" ).arg( vectorLayer->source() ) );
+            QStringLiteral( "[{\"attributeIndex\":-1,\"source\":\"memory://%1\",\"type\":0}]" ).arg( vectorLayer->source() ) );
 
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
@@ -11053,7 +11053,7 @@ void TestQgsProcessing::parameterDxfLayers()
   const QString valueAsPythonString = def->valueAsPythonString( layerList, context );
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( def->valueAsJsonObject( layerList, context ) ).dump() ),
-            QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"%1\"}]" ).arg( vectorLayer->source() ) );
+            QStringLiteral( "[{\"attributeIndex\":-1,\"layer\":\"memory://%1\"}]" ).arg( vectorLayer->source() ) );
   bool ok = false;
   QCOMPARE( def->valueAsString( layerList, context, ok ), QString() );
   QVERIFY( !ok );
@@ -11329,26 +11329,26 @@ void TestQgsProcessing::parameterPointCloudLayer()
   QVERIFY( !QgsProcessingParameters::parameterAsPointCloudLayer( def.get(), params, context ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
-  QCOMPARE( def->valueAsPythonString( pointCloud, context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
-  QCOMPARE( def->valueAsPythonString( pc1->id(), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( pc1 ), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
+  QCOMPARE( def->valueAsPythonString( pointCloud, context ), QString( QStringLiteral( "'ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
+  QCOMPARE( def->valueAsPythonString( pc1->id(), context ), QString( QStringLiteral( "'ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( pc1 ), context ), QString( QStringLiteral( "'ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.las" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.las'" ) );
 
   QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
-  QCOMPARE( def->valueAsJsonObject( pointCloud, context ), QVariant( testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
-  QCOMPARE( def->valueAsJsonObject( pc1->id(), context ), QVariant( testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
-  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( pc1 ), context ), QVariant( testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
+  QCOMPARE( def->valueAsJsonObject( pointCloud, context ), QVariant( QStringLiteral( "ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
+  QCOMPARE( def->valueAsJsonObject( pc1->id(), context ), QVariant( QStringLiteral( "ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( pc1 ), context ), QVariant( QStringLiteral( "ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.las" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.las" ) ) );
 
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
   QVERIFY( ok );
-  QCOMPARE( def->valueAsString( pointCloud, context, ok ), testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
+  QCOMPARE( def->valueAsString( pointCloud, context, ok ), QStringLiteral( "ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
   QVERIFY( ok );
-  QCOMPARE( def->valueAsString( pc1->id(), context, ok ), testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
+  QCOMPARE( def->valueAsString( pc1->id(), context, ok ), QStringLiteral( "ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
   QVERIFY( ok );
-  QCOMPARE( def->valueAsString( QVariant::fromValue( pc1 ), context, ok ), testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( pc1 ), context, ok ), QStringLiteral( "ept://" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ) );
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.las" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.las" ) );
   QVERIFY( ok );
