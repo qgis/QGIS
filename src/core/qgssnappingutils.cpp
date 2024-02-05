@@ -235,15 +235,15 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   }
   if ( type & QgsPointLocator::Centroid )
   {
-    _replaceIfBetter( bestMatch, loc->nearestCentroid( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestCentroid( pointMap, tolerance, filter, relaxed ), tolerance );
   }
   if ( type & QgsPointLocator::MiddleOfSegment )
   {
-    _replaceIfBetter( bestMatch, loc->nearestMiddleOfSegment( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestMiddleOfSegment( pointMap, tolerance, filter, relaxed ), tolerance );
   }
   if ( type & QgsPointLocator::LineEndpoint )
   {
-    _replaceIfBetter( bestMatch, loc->nearestLineEndpoints( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestLineEndpoints( pointMap, tolerance, filter, relaxed ), tolerance );
   }
 }
 
