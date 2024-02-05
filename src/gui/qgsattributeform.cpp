@@ -1067,9 +1067,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
     // formEditorWidget and eww points to the same field, so block signals
     // as there is no need to handle valueChanged again for each duplicate
-    formEditorWidget->editorWidget()->blockSignals( true );
-    formEditorWidget->editorWidget()->setValue( value );
-    formEditorWidget->editorWidget()->blockSignals( false );
+    whileBlocking( formEditorWidget->editorWidget() )->setValue( value );
   }
 
   updateConstraints( eww );
