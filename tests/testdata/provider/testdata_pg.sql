@@ -31,12 +31,12 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON TABLES TO public;
 ALTER DEFAULT PRIVILEGES IN SCHEMA qgis_test GRANT ALL ON SEQUENCES TO public;
 
 
---- Create "CamelCaseSchema" schema
-DROP SCHEMA IF EXISTS "CamelCaseSchema" CASCADE;
-CREATE SCHEMA "CamelCaseSchema";
-GRANT ALL ON SCHEMA "CamelCaseSchema" TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCaseSchema" GRANT ALL ON TABLES TO public;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCaseSchema" GRANT ALL ON SEQUENCES TO public;
+--- Create "CamelCase'singlequote'Schema" schema
+DROP SCHEMA IF EXISTS "CamelCase'singlequote'Schema" CASCADE;
+CREATE SCHEMA "CamelCase'singlequote'Schema";
+GRANT ALL ON SCHEMA "CamelCase'singlequote'Schema" TO public;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON TABLES TO public;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "CamelCase'singlequote'Schema" GRANT ALL ON SEQUENCES TO public;
 
 
 SET default_tablespace = '';

@@ -340,12 +340,11 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
             {
               const QList<QVariantList> pks = executeSqlPrivate( QStringLiteral( R"(
               WITH pkrelid AS (
-              SELECT indexrelid AS idxri FROM pg_index WHERE indrelid='%1.%2'::regclass AND (indisprimary OR indisunique)
+              SELECT indexrelid AS idxri FROM pg_index WHERE indrelid=%1::regclass AND (indisprimary OR indisunique)
                 ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1)
               SELECT attname FROM pg_index,pg_attribute, pkrelid
               WHERE indexrelid=pkrelid.idxri AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey);
-             )" ).arg( QgsPostgresConn::quotedIdentifier( pr.schemaName ),
-                                                  QgsPostgresConn::quotedIdentifier( pr.tableName ) ), false );
+             )" ).arg( QgsPostgresConn::quotedValue( QString( QgsPostgresConn::quotedIdentifier( pr.schemaName ) + "." + QgsPostgresConn::quotedIdentifier( pr.tableName ) ) ) ), false );
               QStringList pkNames;
               for ( const QVariantList &pk : std::as_const( pks ) )
               {

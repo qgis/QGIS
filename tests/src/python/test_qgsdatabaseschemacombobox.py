@@ -50,10 +50,10 @@ class TestQgsDatabaseSchemaComboBox(unittest.TestCase):
         self.assertGreaterEqual(m.comboBox().count(), 3)
 
         text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
-        self.assertIn('CamelCaseSchema', text)
+        self.assertIn("CamelCase'singlequote'Schema", text)
         self.assertIn('qgis_test', text)
-        self.assertLess(text.index('CamelCaseSchema'), text.index('qgis_test'))
-        self.assertEqual(m.currentSchema(), 'CamelCaseSchema')
+        self.assertLess(text.index("CamelCase'singlequote'Schema"), text.index('qgis_test'))
+        self.assertEqual(m.currentSchema(), "CamelCase'singlequote'Schema")
 
         m.setSchema('qgis_test')
         self.assertEqual(m.currentSchema(), 'qgis_test')
@@ -124,10 +124,10 @@ class TestQgsDatabaseSchemaComboBox(unittest.TestCase):
 
         text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
         self.assertFalse(text[0])
-        self.assertIn('CamelCaseSchema', text)
+        self.assertIn("CamelCase'singlequote'Schema", text)
         self.assertIn('qgis_test', text)
-        self.assertLess(text.index('CamelCaseSchema'), text.index('qgis_test'))
-        self.assertEqual(m.currentSchema(), 'CamelCaseSchema')
+        self.assertLess(text.index("CamelCase'singlequote'Schema"), text.index('qgis_test'))
+        self.assertEqual(m.currentSchema(), "CamelCase'singlequote'Schema")
 
         m.setSchema('qgis_test')
         self.assertEqual(m.currentSchema(), 'qgis_test')
