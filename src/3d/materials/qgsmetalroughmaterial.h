@@ -81,7 +81,7 @@ class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     void init();
 
     void handleTextureScaleChanged( const QVariant &var );
-    void updateLayersOnTechnique( const QStringList &layers );
+    void updateFragmentShader();
 
     Qt3DRender::QParameter *mBaseColorParameter = nullptr;
     Qt3DRender::QParameter *mMetalnessParameter = nullptr;
@@ -96,8 +96,12 @@ class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QTechnique *mMetalRoughGL3Technique = nullptr;
     Qt3DRender::QRenderPass *mMetalRoughGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mMetalRoughGL3Shader = nullptr;
-    Qt3DRender::QShaderProgramBuilder *mMetalRoughGL3ShaderBuilder = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
+    bool mUsingBaseColorMap = false;
+    bool mUsingMetalnessMap = false;
+    bool mUsingRoughnessMap = false;
+    bool mUsingAmbientOcclusionMap = false;
+    bool mUsingNormalMap = false;
 
 };
 

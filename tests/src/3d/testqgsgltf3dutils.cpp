@@ -34,10 +34,10 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #endif
 
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DExtras/QMetalRoughMaterial>
 #include <Qt3DExtras/QTextureMaterial>
 
 #include "qgsgltf3dutils.h"
+#include "qgsmetalroughmaterial.h"
 
 
 
@@ -138,9 +138,9 @@ void TestQgsGltf3DUtils::testBox()
   QCOMPARE( indexAttr->vertexBaseType(), Qt3DQAttribute::UnsignedShort );
   QCOMPARE( indexAttr->vertexSize(), 1 );
 
-  QVector<Qt3DExtras::QMetalRoughMaterial *> pbrMaterials = child->componentsOfType<Qt3DExtras::QMetalRoughMaterial>();
+  QVector<QgsMetalRoughMaterial *> pbrMaterials = child->componentsOfType<QgsMetalRoughMaterial>();
   QCOMPARE( pbrMaterials.count(), 1 );
-  Qt3DExtras::QMetalRoughMaterial *pbrMaterial = pbrMaterials[0];
+  QgsMetalRoughMaterial *pbrMaterial = pbrMaterials[0];
   QCOMPARE( pbrMaterial->baseColor(), QColor::fromRgbF( 0.8, 0.0, 0.0, 1.0 ) );
 
   delete entity;
