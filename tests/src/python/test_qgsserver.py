@@ -209,6 +209,11 @@ class QgsServerTestBase(QgisTestCase):
     @classmethod
     def store_reference(self, reference_path, response):
         """Utility to store reference files"""
+
+        # Normally this is false
+        if not self.regenerate_reference:
+            return
+
         # Store the output for debug or to regenerate the reference documents:
         f = open(reference_path, 'wb+')
         f.write(response)
