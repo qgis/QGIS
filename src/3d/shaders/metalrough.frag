@@ -55,7 +55,7 @@ uniform float gamma = 2.2;
 mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
-    // This allows to build the tangentMatrix below by simply transposing the
+    // This allows building the tangentMatrix below by simply transposing the
     // tangent -> eyespace matrix (which would now be orthogonal)
     vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, wNormal) * wNormal);
 
