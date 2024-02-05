@@ -31,6 +31,7 @@
 #include "qgssimplelinematerialsettings.h"
 #include "qgspolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
+#include "qgsmessagelog.h"
 
 #include <Qt3DExtras/QPhongMaterial>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -174,6 +175,11 @@ void QgsBufferedLine3DSymbolHandler::processPolygon( QgsPolygon *polyBuffered, Q
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
   out.tessellator->addPolygon( *polyBuffered, extrusionHeight );
+  if ( !out.tessellator->error().isEmpty() )
+  {
+    QgsMessageLog::logMessage( out.tessellator->error(), QObject::tr( "3D" ) );
+  }
+
   delete polyBuffered;
 }
 
