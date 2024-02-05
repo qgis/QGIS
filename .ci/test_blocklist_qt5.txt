@@ -1,5 +1,4 @@
 # black list
-PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
 test_gui_queryresultwidget
