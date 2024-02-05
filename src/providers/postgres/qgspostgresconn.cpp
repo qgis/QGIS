@@ -858,7 +858,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND n.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND n.nspname=%2" ).arg( quotedString( schema ) );
+      sql += QStringLiteral( " AND n.nspname=%1" ).arg( quotedString( schema ) );
 
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
@@ -997,7 +997,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       sql += QLatin1String( " AND pg_namespace.nspname='public'" );
 
     if ( !schema.isEmpty() )
-      sql += QStringLiteral( " AND pg_namespace.nspname=%2" ).arg( quotedString( schema ) );
+      sql += QStringLiteral( " AND pg_namespace.nspname=%1" ).arg( quotedString( schema ) );
 
     sql += QLatin1String( " GROUP BY 1,2,3,4" );
 
