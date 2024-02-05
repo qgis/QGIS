@@ -3128,7 +3128,7 @@ class CORE_EXPORT QgsGeometry
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
-     * Creates and returns a new geometry engine representing the specified \a geometry.
+     * Creates and returns a new geometry engine representing the specified \a geometry using \a precision on a grid.
      *
      * A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
      * geometry libraries such as GEOS.
@@ -3164,7 +3164,7 @@ class CORE_EXPORT QgsGeometry
      *
      * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) SIP_FACTORY;
 
     /**
      * Upgrades a point list from QgsPointXY to QgsPoint

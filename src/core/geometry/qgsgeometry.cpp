@@ -4297,9 +4297,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
   }
 }
 
-QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry )
+QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry *geometry, double precision )
 {
-  return new QgsGeos( geometry );
+  return new QgsGeos( geometry, precision );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )
