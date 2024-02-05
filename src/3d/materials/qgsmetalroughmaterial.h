@@ -16,6 +16,8 @@
 #ifndef QGSMETALROUGHMATERIAL_H
 #define QGSMETALROUGHMATERIAL_H
 
+#include "qgis_3d.h"
+
 #include <Qt3DRender/QMaterial>
 #include <QObject>
 
@@ -43,7 +45,7 @@ namespace Qt3DRender
  * \brief A PBR metal rough material.
  * \since QGIS 3.36
  */
-class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
+class _3D_EXPORT QgsMetalRoughMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
   public:

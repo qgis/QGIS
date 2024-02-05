@@ -146,7 +146,7 @@ void QgsMetalRoughMaterial::setRoughness( const QVariant &roughness )
   }
   else
   {
-    mUsingRoughnessMap = true;
+    mUsingRoughnessMap = false;
     if ( mMetalRoughEffect->parameters().contains( mRoughnessMapParameter ) )
       mMetalRoughEffect->removeParameter( mRoughnessMapParameter );
     mMetalRoughEffect->addParameter( mRoughnessParameter );
