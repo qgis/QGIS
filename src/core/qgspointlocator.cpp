@@ -999,6 +999,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 
 void QgsPointLocator::waitForIndexingFinished()
 {
+
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
   mInitTask->waitForFinished();
