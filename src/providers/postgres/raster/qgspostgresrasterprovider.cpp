@@ -304,7 +304,15 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     bool ok;
-    const QString val { result.PQgetvalue( 0, 0 ) };
+    QString val { result.PQgetvalue( 0, 0 ) };
+
+    if ( val.isNull() && mUseSrcNoDataValue[bandNo - 1] )
+    {
+      // sparse rasters can have null values
+      val = QString::number( mSrcNoDataValue[bandNo - 1] );
+    }
+
+
     const Qgis::DataType dataType { mDataTypes[ static_cast<unsigned int>( bandNo - 1 ) ] };
     switch ( dataType )
     {
@@ -447,9 +455,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 
     if ( tileResponse.tiles.isEmpty() )
     {
-      QgsMessageLog::logMessage( tr( "No tiles available in table %1 for the requested extent: %2" )
-                                 .arg( tableToQuery, rasterExtent.toString( ) ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
-      return false;
+      // rasters can be sparse by omitting some of the blocks/tiles
+      return true;
     }
 
 
