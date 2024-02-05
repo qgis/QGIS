@@ -39,6 +39,7 @@
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
+#include "qgsmessagelog.h"
 
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
@@ -144,6 +145,10 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
+  if ( !out.tessellator->error().isEmpty() )
+  {
+    QgsMessageLog::logMessage( out.tessellator->error(), QObject::tr( "3D" ) );
+  }
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
     processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
