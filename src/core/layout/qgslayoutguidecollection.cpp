@@ -245,7 +245,7 @@ QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) co
     }
 
     case static_cast< int >( CustomRole::Orientation ):
-      return guide->orientation();
+      return QVariant::fromValue( guide->orientation() );
 
     case static_cast< int >( CustomRole::Position ):
       return guide->position().length();
@@ -342,6 +342,9 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
+
+    default:
+      break;
   }
 
   return false;
@@ -607,7 +610,7 @@ void QgsLayoutGuideProxyModel::setPage( int page )
 bool QgsLayoutGuideProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  Qt::Orientation orientation = static_cast< Qt::Orientation>( sourceModel()->data( index, static_cast< int >( QgsLayoutGuideCollection::CustomRole::Orientation ) ).toInt() );
+  const Qt::Orientation orientation = static_cast< Qt::Orientation>( sourceModel()->data( index, static_cast< int >( QgsLayoutGuideCollection::CustomRole::Orientation ) ).value< Qt::Orientation >() );
   if ( orientation != mOrientation )
     return false;
 
