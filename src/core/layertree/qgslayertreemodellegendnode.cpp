@@ -605,15 +605,15 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       return vlayer->renderer()->legendSymbolItemChecked( mItem.ruleKey() ) ? Qt::Checked : Qt::Unchecked;
     }
   }
-  else if ( role == RuleKeyRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) )
   {
     return mItem.ruleKey();
   }
-  else if ( role == ParentRuleKeyRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) )
   {
     return mItem.parentRuleKey();
   }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::SymbolLegend;
   }
@@ -993,9 +993,9 @@ QVariant QgsSimpleLegendNode::data( int role ) const
     return mUserLabel.isEmpty() ? mLabel : mUserLabel;
   else if ( role == Qt::DecorationRole )
     return mIcon;
-  else if ( role == RuleKeyRole && !mKey.isEmpty() )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) && !mKey.isEmpty() )
     return mKey;
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
     return QgsLayerTreeModelLegendNode::SimpleLegend;
   else
     return QVariant();
@@ -1020,7 +1020,7 @@ QVariant QgsImageLegendNode::data( int role ) const
   {
     return mImage.size();
   }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::ImageLegend;
   }
@@ -1101,10 +1101,10 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
     case Qt::EditRole:
       return mUserLabel.isEmpty() ? mLabel : mUserLabel;
 
-    case QgsLayerTreeModelLegendNode::NodeTypeRole:
+    case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ):
       return QgsLayerTreeModelLegendNode::RasterSymbolLegend;
 
-    case QgsLayerTreeModelLegendNode::RuleKeyRole:
+    case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ):
       return mRuleKey;
 
     case Qt::CheckStateRole:
@@ -1321,7 +1321,7 @@ QVariant QgsWmsLegendNode::data( int role ) const
   {
     return getLegendGraphic().size();
   }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::WmsLegend;
   }
@@ -1482,7 +1482,7 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
     cacheImage();
     return mImage.size();
   }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::DataDefinedSizeLegend;
   }

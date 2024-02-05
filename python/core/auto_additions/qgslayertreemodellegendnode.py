@@ -16,11 +16,3 @@ QgsLayerTreeModelLegendNode.NodeTypeRole.__doc__ = "Type of node. Added in 3.16"
 QgsLayerTreeModelLegendNode.CustomRole.__doc__ = "Legend node data roles\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsLayerTreeModelLegendNode.LegendNodeRoles\n\n.. versionadded:: 3.36\n\n" + '* ``RuleKeyRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.RuleKey.__doc__ + '\n' + '* ``ParentRuleKeyRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.ParentRuleKey.__doc__ + '\n' + '* ``NodeTypeRole``: ' + QgsLayerTreeModelLegendNode.CustomRole.NodeType.__doc__
 # --
 QgsLayerTreeModelLegendNode.CustomRole.baseClass = QgsLayerTreeModelLegendNode
-QgsLayerTreeModelLegendNode.SimpleLegend = QgsLayerTreeModelLegendNode.NodeTypes.SimpleLegend
-QgsLayerTreeModelLegendNode.SymbolLegend = QgsLayerTreeModelLegendNode.NodeTypes.SymbolLegend
-QgsLayerTreeModelLegendNode.RasterSymbolLegend = QgsLayerTreeModelLegendNode.NodeTypes.RasterSymbolLegend
-QgsLayerTreeModelLegendNode.ImageLegend = QgsLayerTreeModelLegendNode.NodeTypes.ImageLegend
-QgsLayerTreeModelLegendNode.WmsLegend = QgsLayerTreeModelLegendNode.NodeTypes.WmsLegend
-QgsLayerTreeModelLegendNode.DataDefinedSizeLegend = QgsLayerTreeModelLegendNode.NodeTypes.DataDefinedSizeLegend
-QgsLayerTreeModelLegendNode.EmbeddedWidget = QgsLayerTreeModelLegendNode.NodeTypes.EmbeddedWidget
-QgsLayerTreeModelLegendNode.ColorRampLegend = QgsLayerTreeModelLegendNode.NodeTypes.ColorRampLegend

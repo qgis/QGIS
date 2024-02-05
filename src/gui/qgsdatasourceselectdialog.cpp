@@ -129,7 +129,7 @@ void QgsDataSourceSelectWidget::showEvent( QShowEvent *e )
   {
     const QModelIndexList items = mBrowserProxyModel.match(
                                     mBrowserProxyModel.index( 0, 0 ),
-                                    QgsBrowserGuiModel::PathRole,
+                                    static_cast< int >( QgsBrowserModel::CustomRole::Path ),
                                     QVariant::fromValue( lastSelectedPath ),
                                     1,
                                     Qt::MatchRecursive );
@@ -299,7 +299,7 @@ void QgsDataSourceSelectWidget::onLayerSelected( const QModelIndex &index )
         isLayerCompatible = true;
         mUri = layerItem->mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : layerItem->mimeUris().first();
         // Store last viewed item
-        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, QgsBrowserGuiModel::PathRole ).toString(), QgsSettings::Section::Gui );
+        QgsSettings().setValue( QStringLiteral( "datasourceSelectLastSelectedItem" ),  mBrowserProxyModel.data( index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), QgsSettings::Section::Gui );
       }
     }
   }
