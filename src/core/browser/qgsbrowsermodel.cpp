@@ -301,7 +301,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return item->name();
   }
-  else if ( role == QgsBrowserModel::SortRole )
+  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::Sort ) )
   {
     return item->sortKey();
   }
@@ -313,11 +313,11 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return item->icon();
   }
-  else if ( role == QgsBrowserModel::PathRole )
+  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::Path ) )
   {
     return item->path();
   }
-  else if ( role == QgsBrowserModel::CommentRole )
+  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::Comment ) )
   {
     if ( item->type() == Qgis::BrowserItemType::Layer )
     {
@@ -326,7 +326,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     }
     return QVariant();
   }
-  else if ( role == QgsBrowserModel::LayerMetadataRole )
+  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::LayerMetadata ) )
   {
     if ( item->type() == Qgis::BrowserItemType::Layer )
     {
@@ -335,7 +335,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     }
     return QVariant();
   }
-  else if ( role == QgsBrowserModel::ProviderKeyRole )
+  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::ProviderKey ) )
   {
     return item->providerKey();
   }
@@ -439,7 +439,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
     {
       QModelIndex idx = model->index( i, 0, index );
 
-      QString itemPath = model->data( idx, PathRole ).toString();
+      QString itemPath = model->data( idx, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
       if ( itemPath == path )
       {
         QgsDebugMsgLevel( "Arrived " + itemPath, 4 );

@@ -829,7 +829,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsMapLayer *layer = QgsLayerTree::toLayer( node->layerNode() )->layer();
 
       const QString layerId = symbolNode->layerNode()->layerId();
-      const QString ruleKey = symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+      const QString ruleKey = symbolNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
 
       if ( layer && layer->type() == Qgis::LayerType::Vector )
       {
@@ -897,7 +897,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         //store the layer id and rule key in action, so we can later retrieve the corresponding
         //legend node, if it still exists
         colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-        colorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+        colorAction->setProperty( "ruleKey", symbolNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() );
         menu->addAction( colorAction );
 
         //add recent colors action
@@ -907,7 +907,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           QgsColorSwatchGridAction *recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, QStringLiteral( "symbology" ), menu );
           recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
-          recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
+          recentColorAction->setProperty( "ruleKey", symbolNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() );
           recentColorAction->setDismissOnColorSelection( false );
           menu->addAction( recentColorAction );
           connect( recentColorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor );

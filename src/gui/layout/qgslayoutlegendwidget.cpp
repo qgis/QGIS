@@ -1645,7 +1645,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
 
   if ( mLegendNode )
   {
-    switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt() ) )
+    switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt() ) )
     {
       case QgsLayerTreeModelLegendNode::EmbeddedWidget:
       case QgsLayerTreeModelLegendNode::RasterSymbolLegend:

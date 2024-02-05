@@ -593,9 +593,9 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
 
     QVariant data( int role ) const override
     {
-      if ( role == RuleKeyRole )
+      if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) )
         return mRuleKey;
-      else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+      else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
         return QgsLayerTreeModelLegendNode::EmbeddedWidget;
       return QVariant();
     }

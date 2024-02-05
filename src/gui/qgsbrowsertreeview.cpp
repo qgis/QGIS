@@ -139,7 +139,7 @@ void QgsBrowserTreeView::expandTree( const QModelIndex &index )
   if ( !model() )
     return;
 
-  QgsDebugMsgLevel( "itemPath = " + model()->data( index, QgsBrowserGuiModel::PathRole ).toString(), 4 );
+  QgsDebugMsgLevel( "itemPath = " + model()->data( index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), 4 );
 
   expand( index );
   const QModelIndex parentIndex = model()->parent( index );
@@ -331,7 +331,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
 
   QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( ',' ), 2 );
 
-  const QString parentPath = model()->data( parentIndex, QgsBrowserGuiModel::PathRole ).toString();
+  const QString parentPath = model()->data( parentIndex, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
   QgsDebugMsgLevel( "parentPath = " + parentPath, 2 );
 
   // remove parentPath from paths to be expanded
@@ -352,7 +352,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
   for ( int i = start; i <= end; i++ )
   {
     const QModelIndex childIndex = model()->index( i, 0, parentIndex );
-    const QString childPath = model()->data( childIndex, QgsBrowserGuiModel::PathRole ).toString();
+    const QString childPath = model()->data( childIndex, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
     const QString escapedChildPath = QRegularExpression::escape( childPath );
 
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
@@ -396,7 +396,7 @@ QStringList QgsBrowserTreeView::expandedPathsList( const QModelIndex &index )
       }
       else
       {
-        paths.append( model()->data( childIndex, QgsBrowserGuiModel::PathRole ).toString() );
+        paths.append( model()->data( childIndex, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString() );
       }
     }
   }

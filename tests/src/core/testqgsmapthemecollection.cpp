@@ -125,7 +125,7 @@ void TestQgsMapThemeCollection::expandedState()
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLayerTreeModel->layerLegendNodes( mNodeLayerPoints, true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    const QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    const QString key = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     pointLayerRootLegendNodes << key;
   }
   QCOMPARE( pointLayerRootLegendNodes.count(), 4 );
@@ -215,7 +215,7 @@ void TestQgsMapThemeCollection::checkedState()
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLayerTreeModel->layerLegendNodes( mNodeLayerPoints, true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    const QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    const QString key = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     pointLayerRootLegendNodes << key;
   }
   QCOMPARE( pointLayerRootLegendNodes.count(), 4 );
