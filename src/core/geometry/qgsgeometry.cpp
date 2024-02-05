@@ -2990,7 +2990,10 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::fu
   if ( type() != Qgis::GeometryType::Polygon )
     return QVector< QgsPointXY >();
 
-  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, acceptPoint, seed, feedback, maxTriesPerPoint );
+  QgsInternalGeometryEngine engine( *this );
+  const QVector<QgsPointXY> res = engine.randomPointsInPolygon( count, acceptPoint, seed, feedback, maxTriesPerPoint );
+  mLastError = engine.lastError();
+  return res;
 }
 
 QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback ) const
@@ -2998,7 +3001,10 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
   if ( type() != Qgis::GeometryType::Polygon )
     return QVector< QgsPointXY >();
 
-  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
+  QgsInternalGeometryEngine engine( *this );
+  const QVector<QgsPointXY> res = engine.randomPointsInPolygon( count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
+  mLastError = engine.lastError();
+  return res;
 }
 ///@endcond
 
