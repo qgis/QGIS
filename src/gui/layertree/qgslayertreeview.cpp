@@ -691,7 +691,7 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
       return;
     }
   }
-  if ( event->keyboardModifiers() & Qt::AltModifier )
+  if ( event->keyboardModifiers() & Qt::AltModifier || event->keyboardModifiers() & Qt::ControlModifier )
   {
     event->accept();
   }
