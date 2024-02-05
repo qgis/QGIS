@@ -50,13 +50,12 @@ const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS =
 
 const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );
 
-
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
   mProviderKey = QStringLiteral( "postgres" );
   // Remove the sql and table empty parts
-  const thread_local QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
+  const thread_local QRegularExpression removePartsRe{R"raw(\s*sql=\s*|\s*table=""\s*)raw"};
   setUri( QgsPostgresConn::connUri( name ).uri( false ).replace( removePartsRe, QString() ) );
 
   QgsSettings settings;
@@ -81,8 +80,7 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
   setDefaultCapabilities();
 }
 
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ) : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   mProviderKey = QStringLiteral( "postgres" );
   setDefaultCapabilities();
@@ -167,11 +165,11 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
 
   checkCapability( Capability::CreateVectorTable );
 
-  QgsDataSourceUri newUri { uri() };
+  QgsDataSourceUri newUri{uri()};
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column if it's not aspatial
-  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown && wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
@@ -185,8 +183,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
                                    overwrite,
                                    &map,
                                    &errCause,
-                                   options
-                                 );
+                                   options );
   if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
@@ -213,7 +210,6 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
   dropTablePrivate( schema, name );
 }
 
-
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
@@ -222,390 +218,13 @@ void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, c
                            QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-void QgsPostgresProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
-{
-  checkCapability( Capability::RenameVectorTable );
-  renameTablePrivate( schema, name, newName );
-}
-
-void QgsPostgresProviderConnection::renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const
-{
-  checkCapability( Capability::RenameRasterTable );
-  renameTablePrivate( schema, name, newName );
-}
-
-void QgsPostgresProviderConnection::createSchema( const QString &name ) const
-{
-  checkCapability( Capability::CreateSchema );
-  executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
-
-}
-
-void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force ) const
-{
-  checkCapability( Capability::DropSchema );
-  executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ),
-                           force ? QStringLiteral( "CASCADE" ) : QString() ) );
-}
-
-void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName ) const
-{
-  checkCapability( Capability::RenameSchema );
-  executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( name ),
-                           QgsPostgresConn::quotedIdentifier( newName ) ) );
-}
-
-QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
-{
-  checkCapability( Capability::ExecuteSql );
-  return execSqlPrivate( sql, true, feedback );
-}
-
-QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
-{
-  return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
-}
-
-QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
-{
-  if ( ! pgconn )
-  {
-    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
-  }
-
-  std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes );
-  QueryResult results( iterator );
-
-  // Check feedback first!
-  if ( feedback && feedback->isCanceled() )
-  {
-    return results;
-  }
-
-  QgsPostgresConn *conn = pgconn->get();
-
-  if ( ! conn )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
-  }
-  else
-  {
-
-    if ( feedback && feedback->isCanceled() )
-    {
-      return results;
-    }
-
-    // This is gross but I tried with both conn and a context QObject without success: the lambda is never called.
-    QMetaObject::Connection qtConnection;
-    if ( feedback )
-    {
-      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &pgconn ]
-      {
-        if ( pgconn )
-          pgconn->get()->PQCancel();
-      } );
-    }
-
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
-
-    if ( feedback )
-    {
-      QObject::disconnect( qtConnection );
-    }
-
-    QString errCause;
-    if ( conn->PQstatus() != CONNECTION_OK || ! res->result() )
-    {
-      errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
-                 .arg( sql ).arg( conn->PQstatus() )
-                 .arg( conn->PQerrorMessage() );
-    }
-    else
-    {
-      const QString err { conn->PQerrorMessage() };
-      if ( ! err.isEmpty() )
-      {
-        errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
-                   .arg( sql )
-                   .arg( conn->PQstatus() )
-                   .arg( err );
-      }
-    }
-
-    if ( ! errCause.isEmpty() )
-    {
-      throw QgsProviderConnectionException( errCause );
-    }
-
-    const qlonglong numRows { res->PQntuples() };
-
-    if ( numRows > 0 )
-    {
-
-      // Get column names
-      for ( int rowIdx = 0; rowIdx < res->PQnfields(); rowIdx++ )
-      {
-        results.appendColumn( res->PQfname( rowIdx ) );
-      }
-
-      // Try to convert value types at least for basic simple types that can be directly mapped to Python
-      const int numFields { res->PQnfields() };
-      if ( resolveTypes )
-      {
-        // Collect oids
-        QStringList oids;
-        oids.reserve( numFields );
-        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
-        {
-          if ( feedback && feedback->isCanceled() )
-          {
-            break;
-          }
-          const QString oidStr { QString::number( res->PQftype( rowIdx ) ) };
-          oids.push_back( oidStr );
-        }
-
-        const QList<QVariantList> typesResolved( executeSqlPrivate( QStringLiteral( "SELECT oid, typname FROM pg_type WHERE oid IN (%1)" ).arg( oids.join( ',' ) ), false, nullptr, pgconn ) );
-        QgsStringMap oidTypeMap;
-        for ( const auto &typeRes : std::as_const( typesResolved ) )
-        {
-          const QString oid { typeRes.constLast().toString() };
-          if ( ! oidTypeMap.contains( oid ) )
-          {
-            oidTypeMap.insert( typeRes.constFirst().toString(), typeRes.constLast().toString() );
-          }
-        }
-
-        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
-        {
-          static const QStringList intTypes = { QStringLiteral( "oid" ),
-                                                QStringLiteral( "int2" ),
-                                                QStringLiteral( "int4" ),
-                                                QStringLiteral( "int8" ),
-                                              };
-          static const QStringList floatTypes = { QStringLiteral( "float4" ),
-                                                  QStringLiteral( "float8" ),
-                                                  QStringLiteral( "numeric" )
-                                                };
-
-          const QString typName { oidTypeMap[ oids.at( rowIdx )] };
-          QVariant::Type vType { QVariant::Type::String };
-          if ( floatTypes.contains( typName ) )
-          {
-            vType = QVariant::Double;
-          }
-          else if ( intTypes.contains( typName ) )
-          {
-            vType = QVariant::LongLong;
-          }
-          else if ( typName == QLatin1String( "date" ) )
-          {
-            vType = QVariant::Date;
-          }
-          else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
-          {
-            vType = QVariant::DateTime;
-          }
-          else if ( typName == QLatin1String( "time" ) )
-          {
-            vType = QVariant::Time;
-          }
-          else if ( typName == QLatin1String( "bool" ) )
-          {
-            vType = QVariant::Bool;
-          }
-          else if ( typName == QLatin1String( "char" ) )
-          {
-            vType = QVariant::Char;
-          }
-          else
-          {
-            // Just a warning, usually ok
-            QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
-          }
-          static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[ rowIdx ] = vType;
-        }
-      }
-    }
-    if ( ! errCause.isEmpty() )
-    {
-      throw QgsProviderConnectionException( errCause );
-    }
-    static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->result = std::move( res );
-  }
-  return results;
-}
-
-
-QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
-{
-  // Get results
-  QVariantList row;
-
-  if ( !result || mRowIndex >= result->PQntuples() )
-  {
-    return row;
-  }
-
-  row.reserve( result->PQnfields() );
-
-  for ( int colIdx = 0; colIdx < result->PQnfields(); colIdx++ )
-  {
-    if ( mResolveTypes )
-    {
-      const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
-      QVariant val = result->PQgetvalue( mRowIndex, colIdx );
-      // Special case for bools: 'f' and 't'
-      if ( vType == QVariant::Bool )
-      {
-        const QString boolStrVal { val.toString() };
-        if ( ! boolStrVal.isEmpty() )
-        {
-          val = boolStrVal == 't';
-        }
-      }
-      else if ( val.canConvert( static_cast<int>( vType ) ) )
-      {
-        val.convert( static_cast<int>( vType ) );
-      }
-      row.push_back( val );
-    }
-    else
-    {
-      row.push_back( result->PQgetvalue( mRowIndex, colIdx ) );
-    }
-  }
-  ++mRowIndex;
-  return row;
-}
-
-bool QgsPostgresProviderResultIterator::hasNextRowPrivate() const
-{
-  return result && mRowIndex < result->PQntuples();
-}
-
-long long QgsPostgresProviderResultIterator::rowCountPrivate() const
-{
-  return result ? result->PQntuples() : static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
-}
-
-
-void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
-{
-  checkCapability( Capability::Vacuum );
-  executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
-                           QgsPostgresConn::quotedIdentifier( name ) ), false );
-}
-
-void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
-{
-  checkCapability( Capability::CreateSpatialIndex );
-
-  QString geometryColumnName { options.geometryColumnName };
-  if ( geometryColumnName.isEmpty() )
-  {
-    // Can we guess it?
-    try
-    {
-      const auto tp { table( schema, name ) };
-      geometryColumnName = tp.geometryColumn();
-    }
-    catch ( QgsProviderConnectionException & )
-    {
-      // pass
-    }
-  }
-
-  if ( geometryColumnName.isEmpty() )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
-  }
-
-  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
-  executeSqlPrivate( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
-                     .arg( QgsPostgresConn::quotedIdentifier( indexName ),
-                           QgsPostgresConn::quotedIdentifier( schema ),
-                           QgsPostgresConn::quotedIdentifier( name ),
-                           QgsPostgresConn::quotedIdentifier( geometryColumnName ) ), false );
-}
-
-bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
-{
-  checkCapability( Capability::SpatialIndexExists );
-
-  const QList<QVariantList> res = executeSql( QStringLiteral( R"""(SELECT COUNT(*)
-                                                              FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a
-                                                              WHERE
-                                                                  t.oid=ix.indrelid
-                                                                  AND t.relnamespace=ns.oid
-                                                                  AND i.oid=ix.indexrelid
-                                                                  AND a.attrelid=t.oid
-                                                                  AND a.attnum=ANY(ix.indkey)
-                                                                  AND t.relkind IN ('r', 'm')
-                                                                  AND ns.nspname=%1
-                                                                  AND t.relname=%2
-                                                                  AND a.attname=%3;
-                                                              )""" ).arg(
-                                    QgsPostgresConn::quotedValue( schema ),
-                                    QgsPostgresConn::quotedValue( name ),
-                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
-  return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
-}
-
-void QgsPostgresProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
-{
-  checkCapability( Capability::DeleteSpatialIndex );
-
-  const QList<QVariantList> res = executeSql( QStringLiteral( R"""(SELECT i.relname
-                                                                FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a
-                                                                WHERE
-                                                                    t.oid=ix.indrelid
-                                                                    AND t.relnamespace=ns.oid
-                                                                    AND i.oid=ix.indexrelid
-                                                                    AND a.attrelid=t.oid
-                                                                    AND a.attnum=ANY(ix.indkey)
-                                                                    AND t.relkind='r'
-                                                                    AND ns.nspname=%1
-                                                                    AND t.relname=%2
-                                                                    AND a.attname=%3;
-                                                                )""" ).arg(
-                                    QgsPostgresConn::quotedValue( schema ),
-                                    QgsPostgresConn::quotedValue( name ),
-                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
-  if ( res.isEmpty() )
-    throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2" ).arg( schema, name ) );
-
-  const QString indexName = res.at( 0 ).at( 0 ).toString();
-
-  executeSqlPrivate( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ),
-                     QgsPostgresConn::quotedIdentifier( indexName ) ), false );
-}
-
-void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const
-{
-  executeSqlPrivate( QStringLiteral( "COMMENT ON COLUMN %1.%2.%3 IS %4;" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
-                           QgsPostgresConn::quotedIdentifier( tableName ),
-                           QgsPostgresConn::quotedIdentifier( fieldName ),
-                           QgsPostgresConn::quotedValue( comment )
-                         ) );
-}
-
-QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderConnection::tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsPostgresProviderConnection::TableProperty> tables;
   QString errCause;
   // TODO: set flags from the connection if flags argument is 0
-  const QgsDataSourceUri dsUri { uri() };
+  const QgsDataSourceUri dsUri{uri()};
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ), -1, false, feedback );
   if ( feedback && feedback->isCanceled() )
     return {};
@@ -616,12 +235,33 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
   }
   else
   {
+    bool ok{false};
     QVector<QgsPostgresLayerProperty> properties;
-    const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
-    bool ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
-    if ( ! ok )
+    const bool aspatial{!flags || flags.testFlag( TableFlag::Aspatial )};
+    if ( !table.isEmpty() )
     {
-      errCause = QObject::tr( "Could not retrieve tables: %1" ).arg( uri() );
+      QgsPostgresLayerProperty property;
+      ok = conn->supportedLayer( property, schema, table );
+      if ( ok )
+      {
+        properties.push_back( property );
+      }
+    }
+    else
+    {
+      ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
+    }
+
+    if ( !ok )
+    {
+      if ( !table.isEmpty() )
+      {
+        errCause = QObject::tr( "Could not retrieve table '%2' from %1" ).arg( uri(), table );
+      }
+      else
+      {
+        errCause = QObject::tr( "Could not retrieve tables: %1" ).arg( uri() );
+      }
     }
     else
     {
@@ -659,18 +299,18 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
         }
         // Filter
-        if ( ! flags || ( prFlags & flags ) )
+        if ( !flags || ( prFlags & flags ) )
         {
           // retrieve layer types if needed
-          if ( ! dontResolveType && ( !pr.geometryColName.isNull() &&
-                                      ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
-                                        pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
+          if ( !dontResolveType && ( !pr.geometryColName.isNull() &&
+                                     ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
+                                       pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
             conn->retrieveLayerTypes( pr, useEstimatedMetadata, feedback );
           }
           QgsPostgresProviderConnection::TableProperty property;
           property.setFlags( prFlags );
-          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
+          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ); i++ )
           {
             property.addGeometryColumnType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
           }
@@ -683,24 +323,25 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           property.setComment( pr.tableComment );
 
           // Get PKs
-          if ( pr.relKind == Qgis::PostgresRelKind::View
-               || pr.relKind == Qgis::PostgresRelKind::MaterializedView
-               || pr.relKind == Qgis::PostgresRelKind::ForeignTable )
+          if ( pr.relKind == Qgis::PostgresRelKind::View || pr.relKind == Qgis::PostgresRelKind::MaterializedView || pr.relKind == Qgis::PostgresRelKind::ForeignTable )
           {
             // Set the candidates
             property.setPrimaryKeyColumns( pr.pkCols );
           }
-          else  // Fetch and set the real pks
+          else // Fetch and set the real pks
           {
             try
             {
               const QList<QVariantList> pks = executeSqlPrivate( QStringLiteral( R"(
               WITH pkrelid AS (
-              SELECT indexrelid AS idxri FROM pg_index WHERE indrelid=%1::regclass AND (indisprimary OR indisunique)
+              SELECT indexrelid AS idxri FROM pg_index WHERE indrelid='%1.%2'::regclass AND (indisprimary OR indisunique)
                 ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1)
               SELECT attname FROM pg_index,pg_attribute, pkrelid
               WHERE indexrelid=pkrelid.idxri AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey);
-             )" ).arg( QgsPostgresConn::quotedValue( QString( QgsPostgresConn::quotedIdentifier( pr.schemaName ) + "." + QgsPostgresConn::quotedIdentifier( pr.tableName ) ) ) ), false );
+             )" )
+                                              .arg( QgsPostgresConn::quotedIdentifier( pr.schemaName ),
+                                                    QgsPostgresConn::quotedIdentifier( pr.tableName ) ),
+                                              false );
               QStringList pkNames;
               for ( const QVariantList &pk : std::as_const( pks ) )
               {
@@ -720,19 +361,417 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
     }
     QgsPostgresConnPool::instance()->releaseConnection( conn );
   }
-  if ( ! errCause.isEmpty() )
+  if ( !errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( errCause );
   }
   return tables;
 }
 
-QStringList QgsPostgresProviderConnection::schemas( ) const
+void QgsPostgresProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameVectorTable );
+  renameTablePrivate( schema, name, newName );
+}
+
+void QgsPostgresProviderConnection::renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameRasterTable );
+  renameTablePrivate( schema, name, newName );
+}
+
+void QgsPostgresProviderConnection::createSchema( const QString &name ) const
+{
+  checkCapability( Capability::CreateSchema );
+  executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+}
+
+void QgsPostgresProviderConnection::dropSchema( const QString &name, bool force ) const
+{
+  checkCapability( Capability::DropSchema );
+  executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ),
+                           force ? QStringLiteral( "CASCADE" ) : QString() ) );
+}
+
+void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameSchema );
+  executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
+                     .arg( QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( newName ) ) );
+}
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
+{
+  checkCapability( Capability::ExecuteSql );
+  return execSqlPrivate( sql, true, feedback );
+}
+
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+{
+  return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
+}
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+{
+  if ( !pgconn )
+  {
+    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
+  }
+
+  std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes );
+  QueryResult results( iterator );
+
+  // Check feedback first!
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  QgsPostgresConn *conn = pgconn->get();
+
+  if ( !conn )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  }
+  else
+  {
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      return results;
+    }
+
+    // This is gross but I tried with both conn and a context QObject without success: the lambda is never called.
+    QMetaObject::Connection qtConnection;
+    if ( feedback )
+    {
+      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [&pgconn]
+      {
+        if ( pgconn )
+          pgconn->get()->PQCancel();
+      } );
+    }
+
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
+
+    if ( feedback )
+    {
+      QObject::disconnect( qtConnection );
+    }
+
+    QString errCause;
+    if ( conn->PQstatus() != CONNECTION_OK || !res->result() )
+    {
+      errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
+                 .arg( sql )
+                 .arg( conn->PQstatus() )
+                 .arg( conn->PQerrorMessage() );
+    }
+    else
+    {
+      const QString err{conn->PQerrorMessage()};
+      if ( !err.isEmpty() )
+      {
+        errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
+                   .arg( sql )
+                   .arg( conn->PQstatus() )
+                   .arg( err );
+      }
+    }
+
+    if ( !errCause.isEmpty() )
+    {
+      throw QgsProviderConnectionException( errCause );
+    }
+
+    const qlonglong numRows{res->PQntuples()};
+
+    if ( numRows > 0 )
+    {
+
+      // Get column names
+      for ( int rowIdx = 0; rowIdx < res->PQnfields(); rowIdx++ )
+      {
+        results.appendColumn( res->PQfname( rowIdx ) );
+      }
+
+      // Try to convert value types at least for basic simple types that can be directly mapped to Python
+      const int numFields{res->PQnfields()};
+      if ( resolveTypes )
+      {
+        // Collect oids
+        QStringList oids;
+        oids.reserve( numFields );
+        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
+        {
+          if ( feedback && feedback->isCanceled() )
+          {
+            break;
+          }
+          const QString oidStr{QString::number( res->PQftype( rowIdx ) )};
+          oids.push_back( oidStr );
+        }
+
+        const QList<QVariantList> typesResolved( executeSqlPrivate( QStringLiteral( "SELECT oid, typname FROM pg_type WHERE oid IN (%1)" ).arg( oids.join( ',' ) ), false, nullptr, pgconn ) );
+        QgsStringMap oidTypeMap;
+        for ( const auto &typeRes : std::as_const( typesResolved ) )
+        {
+          const QString oid{typeRes.constLast().toString()};
+          if ( !oidTypeMap.contains( oid ) )
+          {
+            oidTypeMap.insert( typeRes.constFirst().toString(), typeRes.constLast().toString() );
+          }
+        }
+
+        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
+        {
+          static const QStringList intTypes =
+          {
+            QStringLiteral( "oid" ),
+            QStringLiteral( "int2" ),
+            QStringLiteral( "int4" ),
+            QStringLiteral( "int8" ),
+          };
+          static const QStringList floatTypes = {QStringLiteral( "float4" ),
+                                                 QStringLiteral( "float8" ),
+                                                 QStringLiteral( "numeric" )
+                                                };
+
+          const QString typName{oidTypeMap[oids.at( rowIdx )]};
+          QVariant::Type vType{QVariant::Type::String};
+          if ( floatTypes.contains( typName ) )
+          {
+            vType = QVariant::Double;
+          }
+          else if ( intTypes.contains( typName ) )
+          {
+            vType = QVariant::LongLong;
+          }
+          else if ( typName == QLatin1String( "date" ) )
+          {
+            vType = QVariant::Date;
+          }
+          else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
+          {
+            vType = QVariant::DateTime;
+          }
+          else if ( typName == QLatin1String( "time" ) )
+          {
+            vType = QVariant::Time;
+          }
+          else if ( typName == QLatin1String( "bool" ) )
+          {
+            vType = QVariant::Bool;
+          }
+          else if ( typName == QLatin1String( "char" ) )
+          {
+            vType = QVariant::Char;
+          }
+          else
+          {
+            // Just a warning, usually ok
+            QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
+          }
+          static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[rowIdx] = vType;
+        }
+      }
+    }
+    if ( !errCause.isEmpty() )
+    {
+      throw QgsProviderConnectionException( errCause );
+    }
+    static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->result = std::move( res );
+  }
+  return results;
+}
+
+QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
+{
+  // Get results
+  QVariantList row;
+
+  if ( !result || mRowIndex >= result->PQntuples() )
+  {
+    return row;
+  }
+
+  row.reserve( result->PQnfields() );
+
+  for ( int colIdx = 0; colIdx < result->PQnfields(); colIdx++ )
+  {
+    if ( mResolveTypes )
+    {
+      const QVariant::Type vType{typeMap.value( colIdx, QVariant::Type::String )};
+      QVariant val = result->PQgetvalue( mRowIndex, colIdx );
+      // Special case for bools: 'f' and 't'
+      if ( vType == QVariant::Bool )
+      {
+        const QString boolStrVal{val.toString()};
+        if ( !boolStrVal.isEmpty() )
+        {
+          val = boolStrVal == 't';
+        }
+      }
+      else if ( val.canConvert( static_cast<int>( vType ) ) )
+      {
+        val.convert( static_cast<int>( vType ) );
+      }
+      row.push_back( val );
+    }
+    else
+    {
+      row.push_back( result->PQgetvalue( mRowIndex, colIdx ) );
+    }
+  }
+  ++mRowIndex;
+  return row;
+}
+
+bool QgsPostgresProviderResultIterator::hasNextRowPrivate() const
+{
+  return result && mRowIndex < result->PQntuples();
+}
+
+long long QgsPostgresProviderResultIterator::rowCountPrivate() const
+{
+  return result ? result->PQntuples() : static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
+}
+
+void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::Vacuum );
+  executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ) ),
+                     false );
+}
+
+void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+
+  QString geometryColumnName{options.geometryColumnName};
+  if ( geometryColumnName.isEmpty() )
+  {
+    // Can we guess it?
+    try
+    {
+      const auto tp{table( schema, name )};
+      geometryColumnName = tp.geometryColumn();
+    }
+    catch ( QgsProviderConnectionException & )
+    {
+      // pass
+    }
+  }
+
+  if ( geometryColumnName.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+  }
+
+  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
+  executeSqlPrivate( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
+                     .arg( QgsPostgresConn::quotedIdentifier( indexName ),
+                           QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( geometryColumnName ) ),
+                     false );
+}
+
+bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::SpatialIndexExists );
+
+  const QList<QVariantList> res = executeSql( QStringLiteral( R"""(SELECT COUNT(*)
+                                                              FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a
+                                                              WHERE
+                                                                  t.oid=ix.indrelid
+                                                                  AND t.relnamespace=ns.oid
+                                                                  AND i.oid=ix.indexrelid
+                                                                  AND a.attrelid=t.oid
+                                                                  AND a.attnum=ANY(ix.indkey)
+                                                                  AND t.relkind IN ('r', 'm')
+                                                                  AND ns.nspname=%1
+                                                                  AND t.relname=%2
+                                                                  AND a.attname=%3;
+                                                              )""" )
+                                  .arg(
+                                    QgsPostgresConn::quotedValue( schema ),
+                                    QgsPostgresConn::quotedValue( name ),
+                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
+  return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
+}
+
+void QgsPostgresProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::DeleteSpatialIndex );
+
+  const QList<QVariantList> res = executeSql( QStringLiteral( R"""(SELECT i.relname
+                                                                FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a
+                                                                WHERE
+                                                                    t.oid=ix.indrelid
+                                                                    AND t.relnamespace=ns.oid
+                                                                    AND i.oid=ix.indexrelid
+                                                                    AND a.attrelid=t.oid
+                                                                    AND a.attnum=ANY(ix.indkey)
+                                                                    AND t.relkind='r'
+                                                                    AND ns.nspname=%1
+                                                                    AND t.relname=%2
+                                                                    AND a.attname=%3;
+                                                                )""" )
+                                  .arg(
+                                    QgsPostgresConn::quotedValue( schema ),
+                                    QgsPostgresConn::quotedValue( name ),
+                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
+  if ( res.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2" ).arg( schema, name ) );
+
+  const QString indexName = res.at( 0 ).at( 0 ).toString();
+
+  executeSqlPrivate( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( indexName ) ), false );
+}
+
+void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const
+{
+  executeSqlPrivate( QStringLiteral( "COMMENT ON COLUMN %1.%2.%3 IS %4;" )
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( tableName ),
+                           QgsPostgresConn::quotedIdentifier( fieldName ),
+                           QgsPostgresConn::quotedValue( comment ) ) );
+}
+
+QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
+{
+  return tablesPrivate( schema, QString(), flags, feedback );
+}
+
+QgsAbstractDatabaseProviderConnection::TableProperty QgsPostgresProviderConnection::table( const QString &schema, const QString &table, QgsFeedback *feedback ) const
+{
+  const QList<QgsPostgresProviderConnection::TableProperty> properties{tablesPrivate( schema, table, TableFlags(), feedback )};
+  if ( !properties.empty() )
+  {
+    return properties.first();
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                          .arg( table, schema ) );
+  }
+}
+
+QStringList QgsPostgresProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
   QStringList schemas;
   QString errCause;
-  const QgsDataSourceUri dsUri { uri() };
+  const QgsDataSourceUri dsUri{uri()};
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
   {
@@ -743,7 +782,7 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
     QList<QgsPostgresSchemaProperty> schemaProperties;
     bool ok = conn->getSchemas( schemaProperties );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
-    if ( ! ok )
+    if ( !ok )
     {
       errCause = QObject::tr( "Could not retrieve schemas: %1" ).arg( uri() );
     }
@@ -755,13 +794,12 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
       }
     }
   }
-  if ( ! errCause.isEmpty() )
+  if ( !errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( errCause );
   }
   return schemas;
 }
-
 
 void QgsPostgresProviderConnection::store( const QString &name ) const
 {
@@ -774,9 +812,9 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
   settings.beginGroup( name );
 
   // From URI
-  const QgsDataSourceUri dsUri { uri() };
+  const QgsDataSourceUri dsUri{uri()};
   settings.setValue( "service", dsUri.service() );
-  settings.setValue( "host",  dsUri.host() );
+  settings.setValue( "host", dsUri.host() );
   settings.setValue( "port", dsUri.port() );
   settings.setValue( "database", dsUri.database() );
   settings.setValue( "username", dsUri.username() );
@@ -805,11 +843,10 @@ QIcon QgsPostgresProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 
-
 QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri{ uri() } .connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri{uri()}.connectionInfo( false ) );
   if ( conn )
   {
     types = conn->nativeTypes();
@@ -822,7 +859,6 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTy
   return types;
 }
 
-
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsPostgresProviderConnection::sqlOptions( const QString &layerSource )
 {
   SqlVectorLayerOptions options;
@@ -831,7 +867,7 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsPostgresProvider
   options.disableSelectAtId = tUri.selectAtIdDisabled();
   options.geometryColumn = tUri.geometryColumn();
   options.filter = tUri.sql();
-  const QString trimmedTable { tUri.table().trimmed() };
+  const QString trimmedTable{tUri.table().trimmed()};
   options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
   return options;
 }
@@ -849,41 +885,41 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
   }
 
-  QgsDataSourceUri tUri( uri( ) );
+  QgsDataSourceUri tUri( uri() );
 
   tUri.setSql( options.filter );
   tUri.disableSelectAtId( options.disableSelectAtId );
 
-  if ( ! options.primaryKeyColumns.isEmpty() )
+  if ( !options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
     tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
   }
   else
   {
-    int pkId { 0 };
+    int pkId{0};
     while ( options.sql.contains( QStringLiteral( "_uid%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      pkId ++;
+      pkId++;
     }
     tUri.setKeyColumn( QStringLiteral( "_uid%1_" ).arg( pkId ) );
 
-    int sqlId { 0 };
+    int sqlId{0};
     while ( options.sql.contains( QStringLiteral( "_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      sqlId ++;
+      sqlId++;
     }
     tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
   }
 
-  if ( ! options.geometryColumn.isEmpty() )
+  if ( !options.geometryColumn.isEmpty() )
   {
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
+  QgsVectorLayer::LayerOptions vectorLayerOptions{false, true};
   vectorLayerOptions.skipCrsValidation = true;
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+  return new QgsVectorLayer{tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions};
 }
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::sqlDictionary()
@@ -1762,7 +1798,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
         QStringLiteral( "ST_SymDifference" ),
         QStringLiteral( "ST_TPI" ),
         QStringLiteral( "ST_TRI" ),
-        QStringLiteral( "ST_Tesselate" ),  //#spellok
+        QStringLiteral( "ST_Tesselate" ), //#spellok
         QStringLiteral( "ST_Tile" ),
         QStringLiteral( "ST_TileEnvelope" ),
         QStringLiteral( "ST_Touches" ),
@@ -1824,8 +1860,7 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::
         QStringLiteral( "~(geometry,box2df)" ),
         QStringLiteral( "~=" ),
       }
-    }
-  } );
+    }} );
 }
 
 QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName, QgsFeedback *feedback ) const
@@ -1840,18 +1875,18 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
   {
     // This table might expose multiple geometry columns (different geom type or SRID)
     // but we are only interested in fields here, so let's pick the first one.
-    TableProperty tableInfo { table( schema, tableName, feedback ) };
+    TableProperty tableInfo{table( schema, tableName, feedback )};
     if ( feedback && feedback->isCanceled() )
       return QgsFields();
 
     try
     {
-      QgsDataSourceUri tUri { tableUri( schema, tableName ) };
+      QgsDataSourceUri tUri{tableUri( schema, tableName )};
 
-      if ( tableInfo.geometryColumnTypes().count( ) > 1 )
+      if ( tableInfo.geometryColumnTypes().count() > 1 )
       {
         const auto geomColTypes( tableInfo.geometryColumnTypes() );
-        TableProperty::GeometryColumnType geomCol { geomColTypes.first() };
+        TableProperty::GeometryColumnType geomCol{geomColTypes.first()};
         tUri.setGeometryColumn( tableInfo.geometryColumn() );
         tUri.setWkbType( geomCol.wkbType );
         tUri.setSrid( QString::number( geomCol.crs.postgisSrid() ) );
@@ -1864,10 +1899,10 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
       }
 
       tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
-      QgsVectorLayer::LayerOptions options { false, true };
+      QgsVectorLayer::LayerOptions options{false, true};
       options.skipCrsValidation = true;
 
-      QgsVectorLayer vl { tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options };
+      QgsVectorLayer vl{tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options};
 
       if ( vl.isValid() )
       {
