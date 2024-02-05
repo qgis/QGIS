@@ -15,6 +15,8 @@
 
 #include "qgstessellatedpolygongeometry.h"
 #include "qgsraycastingutils_p.h"
+#include "qgsmessagelog.h"
+
 #include <QMatrix4x4>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -97,6 +99,10 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
     QgsPolygon *polygon = polygons.at( i );
     const float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
     tessellator.addPolygon( *polygon, extr );
+  }
+  if ( !tessellator.error().isEmpty() )
+  {
+    QgsMessageLog::logMessage( tessellator.error(), QObject::tr( "3D" ) );
   }
 
   qDeleteAll( polygons );

@@ -89,6 +89,13 @@ class CORE_EXPORT QgsTessellator
      */
     float zMaximum() const { return mZMax; }
 
+    /**
+     * Returns a descriptive error string if the tessellation failed.
+     *
+     * \since QGIS 3.34
+     */
+    QString error() const { return mError; }
+
   private:
     void init();
 
@@ -103,6 +110,7 @@ class CORE_EXPORT QgsTessellator
     bool mNoZ = false;
     int mTessellatedFacade = 3;
     float mTextureRotation = 0.0f;
+    QString mError;
 
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = -std::numeric_limits<float>::max();
