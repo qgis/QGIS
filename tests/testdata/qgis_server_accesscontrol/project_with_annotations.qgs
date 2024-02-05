@@ -156,7 +156,7 @@
         </layer>
       </symbol>
       <ComposerLabel valign="32" marginY="1" htmlState="0" labelText="QGIS" marginX="1" halign="1">
-        <LabelFont style="" description="DejaVu Sans,10,-1,5,50,0,0,0,0,0"/>
+        <LabelFont style="Bold" description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0"/>
         <FontColor blue="0" red="0" green="0"/>
         <ComposerItem transparency="0" background="false" frameJoinStyle="miter" x="21.5381" blendMode="0" uuid="{df61fc2f-86dc-402e-a37a-bc577e6349cd}" zValue="4" page="1" excludeFromExports="0" lastValidViewScaleFactor="-1" outlineWidth="0.3" width="120.853" positionMode="0" visibility="1" positionLock="false" height="35.0992" pagey="157.547" frame="false" id="idtextbox" itemRotation="0" pagex="21.5381" y="157.547">
           <FrameColor blue="0" red="0" green="0" alpha="255"/>
@@ -260,7 +260,7 @@
         </ComposerItem>
       </ComposerMap>
       <ComposerLabel valign="32" marginY="1" htmlState="0" labelText="Welcome to our world...." marginX="1" halign="1">
-        <LabelFont style="" description="DejaVu Sans,12,-1,5,75,0,0,0,0,0"/>
+        <LabelFont style="Bold" description="QGIS Vera Sans,12,-1,5,75,0,0,0,0,0"/>
         <FontColor blue="0" red="0" green="0"/>
         <ComposerItem transparency="0" background="false" frameJoinStyle="miter" x="213.302" blendMode="0" uuid="{b3f8da1e-352d-4ea6-b8c1-c2464bfdd050}" zValue="2" page="1" excludeFromExports="0" lastValidViewScaleFactor="2.89262" outlineWidth="0.3" width="64.3016" positionMode="0" visibility="1" positionLock="false" height="11.0626" pagey="161.791" frame="false" id="" itemRotation="0" pagex="213.302" y="161.791">
           <FrameColor blue="0" red="0" green="0" alpha="255"/>
@@ -276,7 +276,7 @@
         </ComposerItem>
       </ComposerLabel>
       <ComposerLabel valign="32" marginY="1" htmlState="0" labelText="QGIS Mapserver" marginX="1" halign="1">
-        <LabelFont style="" description="DejaVu Sans,48,-1,5,75,0,0,0,0,0"/>
+        <LabelFont style="Bold" description="QGIS Vera Sans,48,-1,5,75,0,0,0,0,0"/>
         <FontColor blue="0" red="0" green="0"/>
         <ComposerItem transparency="0" background="false" frameJoinStyle="miter" x="49.9838" blendMode="0" uuid="{4f60a368-b33d-4bd1-950a-76a48f3c8695}" zValue="1" page="1" excludeFromExports="0" lastValidViewScaleFactor="2.89262" outlineWidth="0.3" width="215.03" positionMode="0" visibility="1" positionLock="false" height="28.0023" pagey="9.33411" frame="false" id="" itemRotation="0" pagex="49.9838" y="9.33411">
           <FrameColor blue="0" red="0" green="0" alpha="255"/>
@@ -416,7 +416,7 @@
               <property key="labeling/fitInPolygonOnly" value="false"/>
               <property key="labeling/fontBold" value="false"/>
               <property key="labeling/fontCapitals" value="0"/>
-              <property key="labeling/fontFamily" value="Sans Serif"/>
+              <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
               <property key="labeling/fontItalic" value="true"/>
               <property key="labeling/fontLetterSpacing" value="0"/>
               <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -448,7 +448,7 @@
               <property key="labeling/minFeatureSize" value="0"/>
               <property key="labeling/multilineAlign" value="0"/>
               <property key="labeling/multilineHeight" value="1"/>
-              <property key="labeling/namedStyle" value="Italic"/>
+              <property key="labeling/namedStyle" value="Oblique Bold"/>
               <property key="labeling/obstacle" value="true"/>
               <property key="labeling/obstacleFactor" value="1"/>
               <property key="labeling/obstacleType" value="0"/>
@@ -562,7 +562,7 @@
             <layerTransparency>0</layerTransparency>
             <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
               <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" angleOffset="1440" penWidth="0" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+08" backgroundAlpha="255" width="15" barWidth="5" lineSizeType="MM" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-                <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+                <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
                 <attribute color="#000000" label="" field=""/>
               </DiagramCategory>
               <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -730,7 +730,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="Sans Serif"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -762,7 +762,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Normal"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -876,7 +876,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -1112,7 +1112,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="Sans Serif"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -1141,7 +1141,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Normal"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -1237,7 +1237,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -1492,7 +1492,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="Sans Serif"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -1521,7 +1521,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Normal"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -1617,7 +1617,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="-4.65661e-10" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -1872,7 +1872,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="Sans Serif"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -1901,7 +1901,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Normal"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -1997,7 +1997,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -2247,7 +2247,7 @@ def my_form_open(dialog, layer, feature):
               <property key="labeling/fieldName" value=""/>
               <property key="labeling/fontBold" value="false"/>
               <property key="labeling/fontCapitals" value="0"/>
-              <property key="labeling/fontFamily" value="Sans Serif"/>
+              <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
               <property key="labeling/fontItalic" value="false"/>
               <property key="labeling/fontLetterSpacing" value="0"/>
               <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -2276,7 +2276,7 @@ def my_form_open(dialog, layer, feature):
               <property key="labeling/minFeatureSize" value="0"/>
               <property key="labeling/multilineAlign" value="0"/>
               <property key="labeling/multilineHeight" value="1"/>
-              <property key="labeling/namedStyle" value="Normal"/>
+              <property key="labeling/namedStyle" value="Bold"/>
               <property key="labeling/obstacle" value="true"/>
               <property key="labeling/placeDirectionSymbol" value="0"/>
               <property key="labeling/placement" value="0"/>
@@ -2367,7 +2367,7 @@ def my_form_open(dialog, layer, feature):
             <label>0</label>
             <labelattributes>
               <label fieldname="" text="Label"/>
-              <family fieldname="" name="DejaVu Sans"/>
+              <family fieldname="" name="QGIS Vera Sans"/>
               <size fieldname="" value="12" units="pt"/>
               <bold fieldname="" on="0"/>
               <italic fieldname="" on="0"/>
@@ -2386,7 +2386,7 @@ def my_form_open(dialog, layer, feature):
               <selectedonly on=""/>
             </labelattributes>
             <SingleCategoryDiagramRenderer diagramType="Pie">
-              <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" angleOffset="1440" penWidth="0" minScaleDenominator="-4.65661e-10" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+08" font="DejaVu Sans,11,-1,5,25,0,0,0,0,0" backgroundAlpha="255" width="15" barWidth="5" height="15" labelPlacementMethod="XHeight" enabled="0">
+              <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" angleOffset="1440" penWidth="0" minScaleDenominator="-4.65661e-10" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+08" font="QGIS Vera Sans,11,-1,5,25,0,0,0,0,0" style="Bold" backgroundAlpha="255" width="15" barWidth="5" height="15" labelPlacementMethod="XHeight" enabled="0">
                 <attribute color="#000000" label="" field=""/>
               </DiagramCategory>
             </SingleCategoryDiagramRenderer>
@@ -2500,7 +2500,7 @@ def my_form_open(dialog, layer, feature):
               <property key="labeling/fieldName" value=""/>
               <property key="labeling/fontBold" value="false"/>
               <property key="labeling/fontCapitals" value="0"/>
-              <property key="labeling/fontFamily" value="Sans Serif"/>
+              <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
               <property key="labeling/fontItalic" value="false"/>
               <property key="labeling/fontLetterSpacing" value="0"/>
               <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -2529,7 +2529,7 @@ def my_form_open(dialog, layer, feature):
               <property key="labeling/minFeatureSize" value="0"/>
               <property key="labeling/multilineAlign" value="0"/>
               <property key="labeling/multilineHeight" value="1"/>
-              <property key="labeling/namedStyle" value="Normal"/>
+              <property key="labeling/namedStyle" value="Bold"/>
               <property key="labeling/obstacle" value="true"/>
               <property key="labeling/placeDirectionSymbol" value="0"/>
               <property key="labeling/placement" value="0"/>
@@ -2620,7 +2620,7 @@ def my_form_open(dialog, layer, feature):
             <label>0</label>
             <labelattributes>
               <label fieldname="" text="Label"/>
-              <family fieldname="" name="DejaVu Sans"/>
+              <family fieldname="" name="QGIS Vera Sans"/>
               <size fieldname="" value="12" units="pt"/>
               <bold fieldname="" on="0"/>
               <italic fieldname="" on="0"/>
@@ -2639,7 +2639,7 @@ def my_form_open(dialog, layer, feature):
               <selectedonly on=""/>
             </labelattributes>
             <SingleCategoryDiagramRenderer diagramType="Pie">
-              <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" angleOffset="1440" penWidth="0" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+08" font="DejaVu Sans,11,-1,5,25,0,0,0,0,0" backgroundAlpha="255" width="15" barWidth="5" height="15" labelPlacementMethod="XHeight" enabled="0">
+              <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" angleOffset="1440" penWidth="0" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+08" font="QGIS Vera Sans,11,-1,5,25,0,0,0,0,0" style="Bold" backgroundAlpha="255" width="15" barWidth="5" height="15" labelPlacementMethod="XHeight" enabled="0">
                 <attribute color="#000000" label="" field=""/>
               </DiagramCategory>
             </SingleCategoryDiagramRenderer>
@@ -2737,7 +2737,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="Sans Serif"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -2766,7 +2766,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Normal"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -2857,7 +2857,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="-4.65661e-10" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -3131,7 +3131,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="Sans Serif"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -3160,7 +3160,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Normal"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -3251,7 +3251,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -3477,7 +3477,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/fitInPolygonOnly" value="false"/>
         <property key="labeling/fontBold" value="false"/>
         <property key="labeling/fontCapitals" value="0"/>
-        <property key="labeling/fontFamily" value="DejaVu Sans"/>
+        <property key="labeling/fontFamily" value="QGIS Vera Sans"/>
         <property key="labeling/fontItalic" value="false"/>
         <property key="labeling/fontLetterSpacing" value="0"/>
         <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -3506,7 +3506,7 @@ def my_form_open(dialog, layer, feature):
         <property key="labeling/minFeatureSize" value="0"/>
         <property key="labeling/multilineAlign" value="0"/>
         <property key="labeling/multilineHeight" value="1"/>
-        <property key="labeling/namedStyle" value="Regular"/>
+        <property key="labeling/namedStyle" value="Bold"/>
         <property key="labeling/obstacle" value="true"/>
         <property key="labeling/obstacleFactor" value="1"/>
         <property key="labeling/obstacleType" value="0"/>
@@ -3597,7 +3597,7 @@ def my_form_open(dialog, layer, feature):
       <layerTransparency>0</layerTransparency>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1" sizeLegend="0">
         <DiagramCategory transparency="0" scaleDependency="Area" diagramOrientation="Up" penWidth="0" angleOffset="1440" minScaleDenominator="0" backgroundColor="#ffffff" penColor="#000000" penAlpha="255" lineSizeScale="0,0,0,0,0,0" scaleBasedVisibility="0" minimumSize="0" sizeType="MM" maxScaleDenominator="1e+8" backgroundAlpha="255" width="15" lineSizeType="MM" barWidth="5" sizeScale="0,0,0,0,0,0" height="15" labelPlacementMethod="XHeight" enabled="0">
-          <fontProperties style="" description="DejaVu Sans,11,-1,5,50,0,0,0,0,0"/>
+          <fontProperties style="Bold" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0"/>
           <attribute color="#000000" field="" label=""/>
         </DiagramCategory>
         <symbol clip_to_extent="1" type="marker" name="sizeSymbol" alpha="1">
@@ -3864,7 +3864,7 @@ def my_form_open(dialog, layer, feature):
   </properties>
   <visibility-presets/>
   <Annotations>
-    <TextAnnotationItem document="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;>&#xa;&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>&#xa;p, li { white-space: pre-wrap; }&#xa;&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;>&#xa;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>    &lt;/p>&#xa;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>    Annotation 1&lt;/p>&#xa;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;br />&lt;/p>&lt;/body>&lt;/html>">
+    <TextAnnotationItem document="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;>&#xa;&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;style type=&quot;text/css&quot;>&#xa;p, li { white-space: pre-wrap; }&#xa;&lt;/style>&lt;/head>&lt;body style=&quot; font-family:'QGIS Vera Sans'; font-size:18pt; font-weight:400; font-style:Bold;&quot;>&#xa;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>    &lt;/p>&#xa;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>    Annotation 1&lt;/p>&#xa;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>&lt;br />&lt;/p>&lt;/body>&lt;/html>">
       <AnnotationItem mapPosX="2958834.80274702608585358" canvasPosY="0.49129755385676704" offsetX="-413" offsetY="-226" contentsMargin="" visible="1" frameWidth="214" mapPositionFixed="0" mapPosY="4326176.77604383230209351" frameHeight="61" canvasPosX="0.51449870080364157">
         <spatialrefsys>
           <proj4>+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs</proj4>
