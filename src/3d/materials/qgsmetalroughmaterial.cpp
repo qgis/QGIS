@@ -284,6 +284,9 @@ void QgsMetalRoughMaterial::updateFragmentShader()
   if ( mUsingNormalMap )
     defines += "NORMAL_MAP";
 
+  if ( mFlatShading )
+    defines += "FLAT_SHADING";
+
   QByteArray finalShaderCode = addDefinesToShaderCode( fragmentShaderCode, defines );
   mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
 }
@@ -291,6 +294,20 @@ void QgsMetalRoughMaterial::updateFragmentShader()
 void QgsMetalRoughMaterial::handleTextureScaleChanged( const QVariant &var )
 {
   emit textureScaleChanged( var.toFloat() );
+}
+
+bool QgsMetalRoughMaterial::flatShadingEnabled() const
+{
+  return mFlatShading;
+}
+
+void QgsMetalRoughMaterial::setFlatShadingEnabled( bool enabled )
+{
+  if ( enabled != mFlatShading )
+  {
+    mFlatShading = enabled;
+    updateFragmentShader();
+  }
 }
 
 ///@endcond PRIVATE

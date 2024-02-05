@@ -7,7 +7,10 @@
 
 uniform vec3 eyePosition;
 in vec3 worldPosition;
+
+#ifndef FLAT_SHADING
 in vec3 worldNormal;
+#endif
 
 #ifdef BASE_COLOR_MAP
 uniform sampler2D baseColorMap;
@@ -384,7 +387,14 @@ void main()
 #ifdef NORMAL_MAP
     vec3 n = normalize(((transpose(((calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent)))) * ((((texture(normalMap, texCoord).rgb * float(2.0))) - vec3(1.0))))));
 #else
+
+#ifdef FLAT_SHADING
+ vec3 fdx = dFdx(worldPosition);
+ vec3 fdy = dFdy(worldPosition);
+ vec3 n = normalize(cross(fdx, fdy));
+#else
     vec3 n = normalize(worldNormal);
+#endif
 #endif
 
     fragColor = metalRoughFunction(c, m, r, ao,

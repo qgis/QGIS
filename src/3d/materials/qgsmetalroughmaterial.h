@@ -61,6 +61,15 @@ class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     QVariant normal() const;
     float textureScale() const;
 
+    /**
+     * When flat shading is enabled, we do not use vertex normals from the geometry,
+     * and rather generate the normals on the fly in shader code.
+     *
+     * \note This is especially useful with some GLTF models that do not include normals,
+     * and the spec requires the viewer to use flat shading.
+     */
+    bool flatShadingEnabled() const;
+
   public slots:
     void setBaseColor( const QVariant &baseColor );
     void setMetalness( const QVariant &metalness );
@@ -68,6 +77,7 @@ class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     void setAmbientOcclusion( const QVariant &ambientOcclusion );
     void setNormal( const QVariant &normal );
     void setTextureScale( float textureScale );
+    void setFlatShadingEnabled( bool enabled );
 
   signals:
     void baseColorChanged( const QVariant &baseColor );
@@ -102,6 +112,7 @@ class QgsMetalRoughMaterial : public Qt3DRender::QMaterial
     bool mUsingRoughnessMap = false;
     bool mUsingAmbientOcclusionMap = false;
     bool mUsingNormalMap = false;
+    bool mFlatShading = false;
 
 };
 
