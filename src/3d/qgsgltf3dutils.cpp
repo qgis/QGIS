@@ -20,6 +20,7 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
+#include "qgsmetalroughmaterial.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -41,7 +42,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
-#include <Qt3DExtras/QMetalRoughMaterial>
 #include <Qt3DExtras/QTextureMaterial>
 
 #include <QFile>
@@ -297,7 +297,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
   if ( materialIndex < 0 )
   {
     // material unspecified - using default
-    Qt3DExtras::QMetalRoughMaterial *defaultMaterial = new Qt3DExtras::QMetalRoughMaterial;
+    QgsMetalRoughMaterial *defaultMaterial = new QgsMetalRoughMaterial;
     defaultMaterial->setMetalness( 1 );
     defaultMaterial->setRoughness( 1 );
     defaultMaterial->setBaseColor( QColor::fromRgbF( 1, 1, 1 ) );
@@ -330,7 +330,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
 
     if ( img.image.empty() )
     {
-      Qt3DExtras::QMetalRoughMaterial *pbrMaterial = new Qt3DExtras::QMetalRoughMaterial;
+      QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial;
       pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
       pbrMaterial->setRoughness( pbr.roughnessFactor );
       pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
@@ -367,7 +367,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
     return mat;
   }
 
-  Qt3DExtras::QMetalRoughMaterial *pbrMaterial = new Qt3DExtras::QMetalRoughMaterial;
+  QgsMetalRoughMaterial *pbrMaterial = new QgsMetalRoughMaterial;
   pbrMaterial->setMetalness( pbr.metallicFactor ); // [0..1] or texture
   pbrMaterial->setRoughness( pbr.roughnessFactor );
   pbrMaterial->setBaseColor( QColor::fromRgbF( pbr.baseColorFactor[0], pbr.baseColorFactor[1], pbr.baseColorFactor[2], pbr.baseColorFactor[3] ) );
