@@ -40,11 +40,6 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass() )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram() )
   , mFilterKey( new Qt3DRender::QFilterKey )
-  , mUsingBaseColorMap( false )
-  , mUsingMetalnessMap( false )
-  , mUsingRoughnessMap( false )
-  , mUsingAmbientOcclusionMap( false )
-  , mUsingNormalMap( false )
 {
   init();
 }
