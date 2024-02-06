@@ -1,6 +1,4 @@
 # The following has been generated automatically from src/core/symbology/qgsstylemodel.h
-QgsStyleModel.Name = QgsStyleModel.Column.Name
-QgsStyleModel.Tags = QgsStyleModel.Column.Tags
 QgsStyleModel.Role = QgsStyleModel.CustomRole
 # monkey patching scoped based enum
 QgsStyleModel.TypeRole = QgsStyleModel.CustomRole.Type

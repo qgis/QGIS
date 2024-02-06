@@ -96,7 +96,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
 
   if ( index.row() == 0 && mAllowEmpty )
   {
-    if ( role == RoleEmpty )
+    if ( role == static_cast< int >( CustomRole::Empty ) )
       return true;
 
     return QVariant();
@@ -105,12 +105,12 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
   const QString connectionName = mConnections.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
   switch ( role )
   {
-    case RoleEmpty:
+    case static_cast< int >( CustomRole::Empty ):
       return false;
 
     case Qt::DisplayRole:
     case Qt::EditRole:
-    case RoleConnectionName:
+    case static_cast< int >( CustomRole::ConnectionName ):
     {
       return connectionName;
     }
@@ -126,7 +126,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
       }
 
     case Qt::ToolTipRole:
-    case RoleUri:
+    case static_cast< int >( CustomRole::Uri ):
     {
       if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
       {
@@ -138,7 +138,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
       }
     }
 
-    case RoleConfiguration:
+    case static_cast< int >( CustomRole::Configuration ):
     {
       if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
       {
@@ -150,6 +150,8 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
       }
     }
 
+    default:
+      break;
   }
 
   return QVariant();

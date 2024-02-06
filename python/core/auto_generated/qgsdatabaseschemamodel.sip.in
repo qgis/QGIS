@@ -28,9 +28,10 @@ called.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole
     {
-      RoleEmpty,
+      Empty,
     };
 
     explicit QgsDatabaseSchemaModel( const QString &provider, const QString &connection, QObject *parent /TransferThis/ = 0 );

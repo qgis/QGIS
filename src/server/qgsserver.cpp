@@ -572,9 +572,9 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       {
         QgsMessageLog::logMessage( QStringLiteral( "Profile: %1%2, %3 : %4 ms" )
                                    .arg( level > 0 ? QString().fill( '-', level ) + ' ' : QString() )
-                                   .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Group ).toString() )
-                                   .arg( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Name ).toString() )
-                                   .arg( QString::number( QgsApplication::profiler()->data( idx, QgsRuntimeProfilerNode::Roles::Elapsed ).toDouble() * 1000.0 ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+                                   .arg( QgsApplication::profiler()->data( idx, static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString() )
+                                   .arg( QgsApplication::profiler()->data( idx, static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString() )
+                                   .arg( QString::number( QgsApplication::profiler()->data( idx, static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble() * 1000.0 ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
         for ( int subRow = 0; subRow < QgsApplication::profiler()->rowCount( idx ); subRow++ )
         {

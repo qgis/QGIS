@@ -302,12 +302,21 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
 
   public:
 
-    //! Custom model roles
-    enum Role
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProjectStyleDatabaseModel::Role
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProjectStyleDatabaseModel, Role ) : int
     {
-      StyleRole = Qt::UserRole + 1, //!< Style object
-      PathRole, //!< Style path
+      Style SIP_MONKEYPATCH_COMPAT_NAME(StyleRole)  = Qt::UserRole + 1, //!< Style object
+      Path SIP_MONKEYPATCH_COMPAT_NAME(PathRole), //!< Style path
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsProjectStyleDatabaseModel, showing the styles from the specified \a settings.

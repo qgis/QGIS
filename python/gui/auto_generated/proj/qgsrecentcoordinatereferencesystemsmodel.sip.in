@@ -23,10 +23,11 @@ A model for display of recently used coordinate reference systems.
 %End
   public:
 
-    enum Roles
+
+    enum class CustomRole
     {
-      RoleCrs,
-      RoleAuthId,
+      Crs,
+      AuthId,
     };
 
     QgsRecentCoordinateReferenceSystemsModel( QObject *parent /TransferThis/ = 0);

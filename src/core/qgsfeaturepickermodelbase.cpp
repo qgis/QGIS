@@ -157,22 +157,22 @@ QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) c
   {
     case Qt::DisplayRole:
     case Qt::EditRole:
-    case ValueRole:
+    case static_cast< int >( CustomRole::Value ):
       return mEntries.value( index.row() ).value;
 
-    case FeatureIdRole:
+    case static_cast< int >( CustomRole::FeatureId ):
       return mEntries.value( index.row() ).featureId;
 
-    case FeatureRole:
+    case static_cast< int >( CustomRole::Feature ):
       return mEntries.value( index.row() ).feature;
 
-    case IdentifierValueRole:
+    case static_cast< int >( CustomRole::IdentifierValue ):
     {
       const QVariantList values = mEntries.value( index.row() ).identifierFields;
       return values.value( 0 );
     }
 
-    case IdentifierValuesRole:
+    case static_cast< int >( CustomRole::IdentifierValues ):
       return mEntries.value( index.row() ).identifierFields;
 
     case Qt::BackgroundRole:

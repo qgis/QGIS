@@ -24,12 +24,3 @@ QgsBookmarkManagerModel.RoleRotation.__doc__ = "Bookmark map rotation"
 QgsBookmarkManagerModel.CustomRole.__doc__ = "Custom model roles.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as QgsBookmarkManagerModel.CustomRoles\n\n.. versionadded:: 3.36\n\n" + '* ``RoleExtent``: ' + QgsBookmarkManagerModel.CustomRole.Extent.__doc__ + '\n' + '* ``RoleName``: ' + QgsBookmarkManagerModel.CustomRole.Name.__doc__ + '\n' + '* ``RoleId``: ' + QgsBookmarkManagerModel.CustomRole.Id.__doc__ + '\n' + '* ``RoleGroup``: ' + QgsBookmarkManagerModel.CustomRole.Group.__doc__ + '\n' + '* ``RoleRotation``: ' + QgsBookmarkManagerModel.CustomRole.Rotation.__doc__
 # --
 QgsBookmarkManagerModel.CustomRole.baseClass = QgsBookmarkManagerModel
-QgsBookmarkManagerModel.ColumnName = QgsBookmarkManagerModel.Columns.ColumnName
-QgsBookmarkManagerModel.ColumnGroup = QgsBookmarkManagerModel.Columns.ColumnGroup
-QgsBookmarkManagerModel.ColumnXMin = QgsBookmarkManagerModel.Columns.ColumnXMin
-QgsBookmarkManagerModel.ColumnYMin = QgsBookmarkManagerModel.Columns.ColumnYMin
-QgsBookmarkManagerModel.ColumnXMax = QgsBookmarkManagerModel.Columns.ColumnXMax
-QgsBookmarkManagerModel.ColumnYMax = QgsBookmarkManagerModel.Columns.ColumnYMax
-QgsBookmarkManagerModel.ColumnRotation = QgsBookmarkManagerModel.Columns.ColumnRotation
-QgsBookmarkManagerModel.ColumnCrs = QgsBookmarkManagerModel.Columns.ColumnCrs
-QgsBookmarkManagerModel.ColumnStore = QgsBookmarkManagerModel.Columns.ColumnStore

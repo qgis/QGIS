@@ -227,18 +227,27 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
 
   public:
 
-    //! Custom roles used by the model
-    enum Roles
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsCoordinateReferenceSystemModel::Roles
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystemModel, Roles ) : int
     {
-      RoleNodeType = Qt::UserRole, //!< Corresponds to the node's type
-      RoleName = Qt::UserRole + 1, //!< The coordinate reference system name
-      RoleAuthId = Qt::UserRole + 2, //!< The coordinate reference system authority name and id
-      RoleDeprecated = Qt::UserRole + 3, //!< TRUE if the CRS is deprecated
-      RoleType = Qt::UserRole + 4, //!< The coordinate reference system type
-      RoleGroupId = Qt::UserRole + 5, //!< The node ID (for group nodes)
-      RoleWkt = Qt::UserRole + 6, //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
-      RoleProj = Qt::UserRole + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      NodeType SIP_MONKEYPATCH_COMPAT_NAME(RoleNodeType) = Qt::UserRole, //!< Corresponds to the node's type
+      Name SIP_MONKEYPATCH_COMPAT_NAME(RoleName) = Qt::UserRole + 1, //!< The coordinate reference system name
+      AuthId SIP_MONKEYPATCH_COMPAT_NAME(RoleAuthId) = Qt::UserRole + 2, //!< The coordinate reference system authority name and id
+      Deprecated SIP_MONKEYPATCH_COMPAT_NAME(RoleDeprecated) = Qt::UserRole + 3, //!< TRUE if the CRS is deprecated
+      Type SIP_MONKEYPATCH_COMPAT_NAME(RoleType)= Qt::UserRole + 4, //!< The coordinate reference system type
+      GroupId SIP_MONKEYPATCH_COMPAT_NAME(RoleGroupId) = Qt::UserRole + 5, //!< The node ID (for group nodes)
+      Wkt SIP_MONKEYPATCH_COMPAT_NAME(RoleWkt) = Qt::UserRole + 6, //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Proj SIP_MONKEYPATCH_COMPAT_NAME(RoleProj) = Qt::UserRole + 7, //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsCoordinateReferenceSystemModel, with the specified \a parent object.

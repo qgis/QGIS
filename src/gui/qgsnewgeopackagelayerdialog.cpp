@@ -146,7 +146,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
 
   QCompleter *completer = new QCompleter( this );
   completer->setModel( ogrProviderModel );
-  completer->setCompletionRole( QgsProviderConnectionModel::RoleUri );
+  completer->setCompletionRole( static_cast< int >( QgsProviderConnectionModel::CustomRole::Uri ) );
   completer->setCompletionMode( QCompleter::PopupCompletion );
   completer->setFilterMode( Qt::MatchContains );
   mDatabase->lineEdit()->setCompleter( completer );

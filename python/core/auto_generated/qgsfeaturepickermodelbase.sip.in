@@ -23,13 +23,14 @@ Features are fetched asynchronously.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole
     {
-      IdentifierValueRole,
-      IdentifierValuesRole,
-      ValueRole,
-      FeatureRole,
-      FeatureIdRole
+      IdentifierValue,
+      IdentifierValues,
+      Value,
+      Feature,
+      FeatureId
     };
 
     explicit QgsFeaturePickerModelBase( QObject *parent = 0 );

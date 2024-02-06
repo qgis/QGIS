@@ -38,7 +38,7 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
   //mTreeView->resizeColumnToContents( 0 );
   //mTreeView->resizeColumnToContents( 1 );
 
-  mTreeView->setItemDelegateForColumn( 1, new CostDelegate( QgsRuntimeProfilerNode::Elapsed, QgsRuntimeProfilerNode::ParentElapsed, mTreeView ) );
+  mTreeView->setItemDelegateForColumn( 1, new CostDelegate( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ), static_cast< int >( QgsRuntimeProfilerNode::CustomRole::ParentElapsed ), mTreeView ) );
 
   connect( mProfiler, &QgsRuntimeProfiler::groupAdded, this, [ = ]( const QString & group )
   {
@@ -87,7 +87,7 @@ void QgsProfilerProxyModel::setGroup( const QString &group )
 bool QgsProfilerProxyModel::filterAcceptsRow( int row, const QModelIndex &source_parent ) const
 {
   const QModelIndex index = sourceModel()->index( row, 0, source_parent );
-  return sourceModel()->data( index, QgsRuntimeProfilerNode::Group ).toString() == mGroup;
+  return sourceModel()->data( index, static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString() == mGroup;
 }
 
 

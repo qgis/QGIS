@@ -251,7 +251,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
       }
       break;
     }
-    case QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole:
+    case static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ):
     {
       if ( index.column() == 1 )
         return category.value();
@@ -507,10 +507,10 @@ QgsCategorizedRendererViewItemDelegate::QgsCategorizedRendererViewItemDelegate( 
 
 QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  QVariant::Type userType { index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ).type() };
+  QVariant::Type userType { index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) ).type() };
 
   // In case of new values the type is not known
-  if ( userType == QVariant::String && QgsVariantUtils::isNull( index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole ) ) )
+  if ( userType == QVariant::String && QgsVariantUtils::isNull( index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) ) ) )
   {
     bool isExpression;
     bool isValid;
@@ -547,7 +547,7 @@ QWidget *QgsCategorizedRendererViewItemDelegate::createEditor( QWidget *parent, 
     {
       editor = new QgsDoubleSpinBox( parent );
       bool ok;
-      const QVariant value = index.data( QgsCategorizedSymbolRendererWidget::CustomRoles::ValueRole );
+      const QVariant value = index.data( static_cast< int >( QgsCategorizedSymbolRendererWidget::CustomRole::Value ) );
       int decimals {2};
       if ( value.toDouble( &ok ); ok )
       {
