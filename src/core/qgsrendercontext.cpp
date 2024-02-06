@@ -598,7 +598,16 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       // Note: the default QgsCoordinateTransform() : authid() will return an empty String
       if ( !mCoordTransform.isShortCircuited() )
       {
-        pointCenter = mCoordTransform.transform( pointCenter );
+        try
+        {
+          pointCenter = mCoordTransform.transform( pointCenter );
+        }
+        catch ( const QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter" ) );
+          // what should we return;.. ?
+          return meters;
+        }
       }
 
       const int multiplier = meters < 0 ? -1 : 1;
