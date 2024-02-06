@@ -139,7 +139,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
     def id(self):
-        return 'grass7'
+        return 'grass'
 
     def helpId(self):
         return 'grass7'
