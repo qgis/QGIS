@@ -328,7 +328,9 @@ tests:
         type: raster
     results:
       imaginary:
-        hash: 94249384dd8b6019f0024501bc9a093cba9dd025c183d3fb46d77027
+        hash:
+        - 94249384dd8b6019f0024501bc9a093cba9dd025c183d3fb46d77027
+        - 126a6b129f703afb86cd895a89d762cb46930c22f0a126f8cbdfc4cb
         type: rasterhash
       real:
         hash: 09ab93c65aa2dde4da422b62a5ed3e38208e2da072cec2b0eb837a47
@@ -538,6 +540,7 @@ tests:
         - 9c1b3f3ee94c6360b7b04bc00ed5e08faefea4e0968c1eb644d689b9
         - d5e9f74a5f2490d39d735e94f8c08498df83ec1acbb252a50a9e62d4
         - 6e99ea04604a0695cbf0cc204cd4133b7a7783758be90d47437d0c66
+        - 844dfbde9aaf9c3738cf3943f789ac75e87479bb158305d1c77216f4
         type: rasterhash
 
   - algorithm: grass7:i.eb.hsebal01.coords
