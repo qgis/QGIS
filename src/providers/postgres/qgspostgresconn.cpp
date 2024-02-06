@@ -2354,7 +2354,11 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       switch ( zmFlags )
       {
         case 1:
-          typeString.append( 'M' );
+          // Unlike Geometry(Z), GeometryM contains already M suffix.
+          // It's useless to add M suffix here,
+          // since it will add a new name and the geometry type name will be something like GeometryMM.
+          // see: https://github.com/qgis/QGIS/issues/55223
+          //typeString.append( 'M' );
           break;
         case 2:
           typeString.append( 'Z' );
