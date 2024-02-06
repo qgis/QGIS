@@ -446,18 +446,31 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           QgsLayerMetadataProviderResult result{ layerMetadata };
 
           QgsRectangle extents;
+          bool extentsValid = false;
 
           const auto cExtents { layerMetadata.extent().spatialExtents() };
           for ( const auto &ext : std::as_const( cExtents ) )
           {
             QgsRectangle bbox {  ext.bounds.toRectangle()  };
             QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), searchContext.transformContext };
-            ct.transform( bbox );
+            try
+            {
+              ct.transform( bbox );
+            }
+            catch ( const QgsCsException & )
+            {
+              QgsDebugError( QStringLiteral( "Layer metadata extent failed to reproject to EPSG:4326" ) );
+              continue;
+            }
+            extentsValid = true;
             extents.combineExtentWith( bbox );
           }
 
           QgsPolygon poly;
-          poly.fromWkt( extents.asWktPolygon() );
+          if ( extentsValid )
+          {
+            poly.fromWkt( extents.asWktPolygon() );
+          }
 
           // Filters
           if ( ! geographicExtent.isEmpty() && ( poly.isEmpty() || ! geographicExtent.intersects( extents ) ) )
@@ -470,7 +483,10 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
             continue;
           }
 
-          result.setGeographicExtent( poly );
+          if ( extentsValid )
+          {
+            result.setGeographicExtent( poly );
+          }
           result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
           result.setDataProviderName( QStringLiteral( "ogr" ) );
           result.setAuthid( layerMetadata.crs().authid() );
