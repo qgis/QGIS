@@ -240,6 +240,10 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
+  mCanvas->snappingUtils()->locatorForLayer( mLayerTopoZ )->waitForIndexingFinished();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerLineZ )->waitForIndexingFinished();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerLine )->waitForIndexingFinished();
+
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 0, 5, Qt::LeftButton );
   utils.mouseClick( 10.1, 5, Qt::LeftButton );
