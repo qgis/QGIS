@@ -114,6 +114,7 @@ PyQgsSettingsEntry
 PyQgsSelectiveMasking
 PyQgsServerApi
 PyQgsServerWMSGetFeatureInfo
+PyQgsServerWMSGetMap
 PyQgsServerSettings
 PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
