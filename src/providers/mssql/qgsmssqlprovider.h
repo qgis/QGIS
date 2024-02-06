@@ -180,6 +180,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
   private:
 
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
+    bool execPreparedLogged( QSqlQuery &qry, const QString &queryOrigin = QString() ) const;
 
     //! Fields
     QgsFields mAttributeFields;
