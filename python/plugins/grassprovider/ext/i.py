@@ -134,9 +134,16 @@ def exportSigFile(alg, group, subgroup, dest, sigDir='sig'):
     to final destination
     """
     shortSigFile = os.path.basename(dest)
-    interSig = os.path.join(GrassUtils.grassMapsetFolder(),
-                            'PERMANENT', 'group', group, 'subgroup',
-                            subgroup, sigDir, shortSigFile)
+
+    grass_version = int(GrassUtils.installedVersion().split('.')[0])
+    if grass_version >= 8:
+        interSig = os.path.join(GrassUtils.grassMapsetFolder(),
+                                'PERMANENT', 'signatures',
+                                sigDir, shortSigFile, 'sig')
+    else:
+        interSig = os.path.join(GrassUtils.grassMapsetFolder(),
+                                'PERMANENT', 'group', group, 'subgroup',
+                                subgroup, sigDir, shortSigFile)
     moveFile(alg, interSig, dest)
     return interSig
 
