@@ -60,7 +60,6 @@ void QgsMapToolMeasureBearing::canvasMoveEvent( QgsMapMouseEvent *e )
 
       if ( !mResultDisplay->isVisible() )
       {
-        mResultDisplay->move( e->pos() - QPoint( 100, 100 ) );
         mResultDisplay->show();
       }
     }
