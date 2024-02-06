@@ -92,7 +92,7 @@ void QgsMapToolMeasureBearing::canvasReleaseEvent( QgsMapMouseEvent *e )
       mResultDisplay = new QgsDisplayAngle( this );
       mResultDisplay->setWindowFlags( mResultDisplay->windowFlags() | Qt::Tool );
       mResultDisplay->setWindowTitle( tr( "Bearing" ) );
-      connect( mResultDisplay, &QDialog::rejected, this, &QgsMapToolMeasureBearing::stopMeasuring );
+      connect( mResultDisplay, &QDialog::finished, this, &QgsMapToolMeasureBearing::stopMeasuring );
     }
     configureDistanceArea();
     createRubberBand();
