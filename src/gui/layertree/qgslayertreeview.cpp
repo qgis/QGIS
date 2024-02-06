@@ -26,6 +26,7 @@
 
 #include "qgsgui.h"
 
+#include <QApplication>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
@@ -42,8 +43,11 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
+  , mBlockDoubleClickTimer( new QTimer( this ) )
 
 {
+  mBlockDoubleClickTimer->setSingleShot( true );
+  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
   setHeaderHidden( true );
 
   setDragEnabled( true );
@@ -77,6 +81,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 QgsLayerTreeView::~QgsLayerTreeView()
 {
   delete mMenuProvider;
+  delete mBlockDoubleClickTimer;
 }
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
@@ -601,6 +606,14 @@ bool QgsLayerTreeView::showPrivateLayers()
   return mShowPrivateLayers;
 }
 
+void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  if ( mBlockDoubleClickTimer->isActive() )
+    event->accept();
+  else
+    QTreeView::mouseDoubleClickEvent( event );
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
@@ -730,6 +743,7 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
   if ( roles.contains( Qt::SizeHintRole ) )
     viewport()->update();
 
+  mBlockDoubleClickTimer->start();
   //checkModel();
 }
 
