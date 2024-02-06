@@ -122,8 +122,8 @@ class Processing:
             if QgsApplication.platform() == 'external':
                 # for external applications we must also load the builtin providers stored in separate plugins
                 try:
-                    from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-                    p = Grass7AlgorithmProvider()
+                    from grassprovider.grass_provider import GrassProvider
+                    p = GrassProvider()
                     if QgsApplication.processingRegistry().addProvider(p):
                         Processing.BASIC_PROVIDERS.append(p)
                 except ImportError:

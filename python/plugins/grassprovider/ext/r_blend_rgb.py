@@ -20,7 +20,7 @@ __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 
 
 def processInputs(alg, parameters, context, feedback):
@@ -47,6 +47,6 @@ def processOutputs(alg, parameters, context, feedback):
     for color in colors:
         fileName = os.path.normpath(
             alg.parameterAsOutputLayer(parameters, 'output_{}'.format(color), context))
-        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer('blended.{}'.format(color[0]),
                               fileName, True, outFormat, createOpt, metaOpt)

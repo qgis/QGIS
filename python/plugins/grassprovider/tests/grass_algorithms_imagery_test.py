@@ -1,7 +1,7 @@
 """
 ***************************************************************************
-    Grass7AlgorithmsRasterTestPt1.py
-    -----------------------------
+    grass_algorithms_imagery_test.py
+    ------------------------------
     Date                 : May 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : mederic dot ribreux at medspx dot fr
@@ -28,22 +28,21 @@ from qgis.core import QgsApplication
 from qgis.testing import (
     QgisTestCase,
     start_app
-
 )
-from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_provider import GrassProvider
+from grassprovider.grass_utils import GrassUtils
 
 
-class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGrass7AlgorithmsImageryTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
         start_app()
-        cls.provider = Grass7AlgorithmProvider()
+        cls.provider = GrassProvider()
         QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
 
-        assert Grass7Utils.installedVersion()
+        assert GrassUtils.installedVersion()
 
     @classmethod
     def tearDownClass(cls):
@@ -52,7 +51,7 @@ class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.Algorithms
             shutil.rmtree(path)
 
     def test_definition_file(self):
-        return 'grass7_algorithms_raster_tests1.yaml'
+        return 'grass7_algorithms_imagery_tests.yaml'
 
 
 if __name__ == '__main__':

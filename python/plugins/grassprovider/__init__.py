@@ -21,5 +21,5 @@ __copyright__ = '(C) 2021, Alexander Bruy'
 
 
 def classFactory(iface):
-    from grassprovider.GrassProviderPlugin import GrassProviderPlugin
+    from grassprovider.grass_plugin import GrassProviderPlugin
     return GrassProviderPlugin()
