@@ -286,12 +286,8 @@ void TestQgsVectorDataProvider::sourceExtent()
   QGSCOMPARENEAR( prLines3D->sourceExtent3D().xMaximum(), 322355.71, 0.01 );
   QGSCOMPARENEAR( prLines3D->sourceExtent3D().yMinimum(), 0.0, 0.01 );
   QGSCOMPARENEAR( prLines3D->sourceExtent3D().yMaximum(), 129791.26, 0.01 );
-  // TODO still nan as provider implementation is not done
-  QVERIFY( std::isnan( prLines3D->sourceExtent3D().zMinimum() ) );
-  QVERIFY( std::isnan( prLines3D->sourceExtent3D().zMaximum() ) );
-  // TODO as providers will have a extent3d implementation theses results are expected:
-  //  QGSCOMPARENEAR( prLines3D->sourceExtent3D().zMinimum(), -5.00, 0.01 );
-  //  QGSCOMPARENEAR( prLines3D->sourceExtent3D().zMaximum(), 15.0, 0.01 );
+  QGSCOMPARENEAR( prLines3D->sourceExtent3D().zMinimum(), -5.00, 0.01 );
+  QGSCOMPARENEAR( prLines3D->sourceExtent3D().zMaximum(), 15.0, 0.01 );
 
 
   QgsVectorDataProvider *prPoints3D = vlayerPoints3D->dataProvider();
@@ -305,12 +301,8 @@ void TestQgsVectorDataProvider::sourceExtent()
   QGSCOMPARENEAR( prPoints3D->sourceExtent3D().xMaximum(), 322342.3, 0.01 );
   QGSCOMPARENEAR( prPoints3D->sourceExtent3D().yMinimum(), 129147.09, 0.01 );
   QGSCOMPARENEAR( prPoints3D->sourceExtent3D().yMaximum(), 130554.6, 0.01 );
-  // TODO still nan as provider implementation is not done
-  QVERIFY( std::isnan( prPoints3D->sourceExtent3D().zMinimum() ) );
-  QVERIFY( std::isnan( prPoints3D->sourceExtent3D().zMaximum() ) );
-  // TODO as providers will have a extent3d implementation theses results are expected:
-  //  QGSCOMPARENEAR( prPoints3D->sourceExtent3D().zMinimum(), 64.9, 0.01 );
-  //  QGSCOMPARENEAR( prPoints3D->sourceExtent3D().zMaximum(), 105.6, 0.01 );
+  QGSCOMPARENEAR( prPoints3D->sourceExtent3D().zMinimum(), 64.9, 0.01 );
+  QGSCOMPARENEAR( prPoints3D->sourceExtent3D().zMaximum(), 105.6, 0.01 );
 }
 
 

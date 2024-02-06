@@ -3266,6 +3266,47 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(dp.addFeature(f))
         self.assertEqual(vl.featureCount(), 1)
 
+    def testExtent(self):
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.test_extent')
+        conn.executeSql('CREATE TABLE qgis_test.test_extent (id SERIAL PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("SELECT AddGeometryColumn('qgis_test', 'test_extent', 'geom', 4326, 'POINT', 2 )")
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\'srid=4326 type=POINT table="qgis_test"."test_extent" (geom) sql=')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+    def testExtent3D(self):
+        def test_table(dbconn, table_name, wkt):
+            vl = QgsVectorLayer(f'{dbconn} srid=4326 table="qgis_test".{table_name} (geom) sql=', "testgeom",
+                                "postgres")
+            self.assertTrue(vl.isValid())
+            self.assertEqual(str(vl.extent3D()), '<QgsBox3D(' + str(wkt)[1:-1] + ')>')
+
+        test_table(self.dbconn, 'p2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'p3d', [0, 0, 0, 1, 1, 0])
+        test_table(self.dbconn, 'triangle2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'triangle3d', [0, 0, 0, 1, 1, 0])
+        test_table(self.dbconn, 'tin2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'tin3d', [0, 0, 0, 1, 1, 0])
+        test_table(self.dbconn, 'ps2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'ps3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'mp3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'pt2d', [0, 0, float('nan'), 0, 0, float('nan')])
+        test_table(self.dbconn, 'pt3d', [0, 0, 0, 0, 0, 0])
+        test_table(self.dbconn, 'ls2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'ls3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'mpt2d', [0, 0, float('nan'), 1, 1, float('nan')])
+        test_table(self.dbconn, 'mpt3d', [0, 0, 0, 1, 1, 1])
+        test_table(self.dbconn, 'mls2d', [0, 0, float('nan'), 3, 3, float('nan')])
+        test_table(self.dbconn, 'mls3d', [0, 0, 0, 3, 3, 3])
+        test_table(self.dbconn, 'pt4d', [1, 2, 3, 1, 2, 3])
+
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 

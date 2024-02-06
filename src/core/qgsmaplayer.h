@@ -2357,8 +2357,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
-    //! Extent of the layer
-    mutable QgsBox3D mExtent;
+    //! 3D Extent of the layer
+    mutable QgsBox3D mExtent3D;
+
+    //! 2D Extent of the layer
+    mutable QgsRectangle mExtent2D;
 
     //! Extent of the layer in EPSG:4326
     mutable QgsRectangle mWgs84Extent;

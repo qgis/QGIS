@@ -26,6 +26,7 @@ email                : sherman at mrcc.com
 class QgsOgrLayer;
 class QgsOgrTransaction;
 class QgsProviderSublayerDetails;
+class QgsDataProviderElevationProperties;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -98,6 +99,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsRectangle extent() const override;
+    QgsBox3D extent3D() const override;
     QVariant defaultValue( int fieldId ) const override;
     QString defaultValueClause( int fieldIndex ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
@@ -212,7 +214,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable std::unique_ptr< OGREnvelope > mExtent;
+    mutable std::unique_ptr< OGREnvelope3D > mExtent2D;
+    mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
 
     QList<int> mPrimaryKeyAttrs;
@@ -221,7 +224,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
      * This member variable receives the same value as extent_
      * in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak.
     */
-    mutable QgsRectangle mExtentRect;
+    mutable QgsBox3D mExtentRect;
 
     /**
      * Current working layer - will point to either mOgrSqlLayer or mOgrOrigLayer depending

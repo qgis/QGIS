@@ -34,7 +34,7 @@ class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     std::unique_ptr< QgsExpression > mSubsetExpression;
     QgsExpressionContext mExpressionContext;
-    QgsRectangle mExtent;
+    QgsBox3D mExtent;
     bool mUseSpatialIndex;
     std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     bool mUseSubsetIndex;
