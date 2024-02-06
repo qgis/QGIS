@@ -6865,16 +6865,26 @@ void QgisApp::dxfExport()
     switch ( dxfExport.writeToFile( &dxfFile, d.encoding() ) )
     {
       case QgsDxfExport::ExportResult::Success:
-        visibleMessageBar()->pushMessage( tr( "DXF export" ),
-                                          tr( "Successfully exported DXF to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ),
-                                          Qgis::MessageLevel::Success, 0 );
+      {
+        QgsMessageBarItem *message = QgsMessageBar::createMessage( tr( "DXF export" ), tr( "Successfully exported DXF to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ), this );
+        message->setLevel( Qgis::MessageLevel::Success );
+        message->setDuration( 0 );
         if ( !dxfExport.feedbackMessage().isEmpty() )
         {
-          visibleMessageBar()->pushMessage( tr( "DXF export" ),
-                                            dxfExport.feedbackMessage(),
-                                            Qgis::MessageLevel::Info );
+          QPushButton *detailsButton = new QPushButton( tr( "More Info" ) );
+          const QString feedbackMessage = dxfExport.feedbackMessage();
+          connect( detailsButton, &QPushButton::clicked, this, [detailsButton, feedbackMessage]
+          {
+            QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+            dialog->setTitle( tr( "DXF Export" ) );
+            dialog->setMessageAsPlainText( feedbackMessage );
+            dialog->showMessage();
+          } );
+          message->layout()->addWidget( detailsButton );
         }
+        visibleMessageBar()->pushItem( message );
         break;
+      }
 
       case QgsDxfExport::ExportResult::DeviceNotWritableError:
         visibleMessageBar()->pushMessage( tr( "DXF export" ),
