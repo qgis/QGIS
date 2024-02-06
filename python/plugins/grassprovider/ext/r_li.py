@@ -31,7 +31,7 @@ if os.name == 'nt':
 
 
 def rliPath():
-    """Return r.li GRASS7 user dir"""
+    """Return r.li GRASS user dir"""
     if isWindows():
         homeDir = win32api.GetShortPathName(os.path.expanduser('~'))
         return os.path.join(homeDir, 'AppData', 'Roaming', 'GRASS7', 'r.li')
@@ -82,17 +82,17 @@ def configFile(alg, parameters, context, feedback, outputTxt=False):
     """Handle inline configuration
     :param parameters:
     """
-    # Where is the GRASS7 user directory ?
-    userGrass7Path = rliPath()
-    if not os.path.isdir(userGrass7Path):
-        mkdir(userGrass7Path)
-    if not os.path.isdir(os.path.join(userGrass7Path, 'output')):
-        mkdir(os.path.join(userGrass7Path, 'output'))
+    # Where is the GRASS user directory ?
+    user_grass_path = rliPath()
+    if not os.path.isdir(user_grass_path):
+        mkdir(user_grass_path)
+    if not os.path.isdir(os.path.join(user_grass_path, 'output')):
+        mkdir(os.path.join(user_grass_path, 'output'))
 
     # If we have a configuration file, we need to copy it into user dir
     if parameters['config']:
         fileName = alg.parameterAsString(parameters, 'config', context)
-        configFilePath = os.path.join(userGrass7Path, os.path.basename(fileName))
+        configFilePath = os.path.join(user_grass_path, os.path.basename(fileName))
         # Copy the file
         shutil.copy(parameters['config'], configFilePath)
         # Change the parameter value
@@ -101,7 +101,7 @@ def configFile(alg, parameters, context, feedback, outputTxt=False):
     elif parameters['config_txt']:
         # Creates a temporary txt file in user r.li directory
         tempConfig = os.path.basename(getTempFilename(context=context))
-        configFilePath = os.path.join(userGrass7Path, tempConfig)
+        configFilePath = os.path.join(user_grass_path, tempConfig)
         # Inject rules into temporary txt file
         with open(configFilePath, "w") as f:
             f.write(alg.parameterAsString(parameters, 'config_txt', context))
@@ -128,9 +128,9 @@ def configFile(alg, parameters, context, feedback, outputTxt=False):
 def moveOutputTxtFile(alg, parameters, context):
     # Find output file name:
     txtPath = alg.parameterAsString(parameters, 'output_txt', context)
-    userGrass7Path = rliPath()
+    user_grass_path = rliPath()
 
-    output = os.path.join(userGrass7Path, 'output',
+    output = os.path.join(user_grass_path, 'output',
                           alg.parameterAsString(parameters, 'output', context))
     # move the file
     if isWindows():

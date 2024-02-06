@@ -1,4 +1,4 @@
-# Here is a list of grass7 algorithms without test units
+# Here is a list of grass algorithms without test units
 
 ## Raster algorithms
 
@@ -99,4 +99,4 @@
 
 ## Vector algorithms
 
-We need to handle gml for output and input for GRASS7 algorithms before creating tests !
+We need to handle gml for output and input for GRASS algorithms before creating tests !

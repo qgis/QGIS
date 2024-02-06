@@ -117,7 +117,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         self._short_description = ''
         self._group = ''
         self._groupId = ''
-        self.grass7Name = ''
+        self.grass_name = ''
         self.params = []
         self.hardcodedStrings = []
         self.inputLayers = []
@@ -216,9 +216,9 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             return None
 
         if os.path.exists(helpPath):
-            return QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grass7Name))).toString()
+            return QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.grass_name))).toString()
         else:
-            return helpPath + '{}.html'.format(self.grass7Name)
+            return helpPath + '{}.html'.format(self.grass_name)
 
     def initAlgorithm(self, config=None):
         """
@@ -254,7 +254,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         """
         Create algorithm parameters and outputs from parsed description
         """
-        self.grass7Name = description.grass_command
+        self.grass_name = description.grass_command
         self._name = description.name
         self._short_description = description.short_description
         self._display_name = description.display_name
@@ -588,7 +588,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         # Add the default parameters commands
         self.commands.append(command)
 
-        QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass7', Qgis.MessageLevel.Info)
+        QgsMessageLog.logMessage(self.tr('processInputs end. Commands: {}').format(self.commands), 'Grass', Qgis.MessageLevel.Info)
 
     def processCommand(self, parameters, context, feedback, delOutputs=False):
         """
@@ -598,7 +598,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         :param delOutputs: do not add outputs to commands.
         """
         noOutputs = [o for o in self.parameterDefinitions() if o not in self.destinationParameterDefinitions()]
-        command = '{} '.format(self.grass7Name)
+        command = '{} '.format(self.grass_name)
         command += '{}'.join(self.hardcodedStrings)
 
         # Add algorithm command
@@ -743,7 +743,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
 
         command += ' --overwrite'
         self.commands.append(command)
-        QgsMessageLog.logMessage(self.tr('processCommands end. Commands: {}').format(self.commands), 'Grass7', Qgis.MessageLevel.Info)
+        QgsMessageLog.logMessage(self.tr('processCommands end. Commands: {}').format(self.commands), 'Grass', Qgis.MessageLevel.Info)
 
     def vectorOutputType(self, parameters, context):
         """Determine vector output types for outputs"""

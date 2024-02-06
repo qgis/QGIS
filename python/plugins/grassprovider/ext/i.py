@@ -103,7 +103,7 @@ def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=
     #         extFileName = new_parameters[ext]
     #         if extFileName:
     #             shortFileName = os.path.basename(extFileName)
-    #             destPath = os.path.join(Grass7Utils.grassMapsetFolder(),
+    #             destPath = os.path.join(GrassUtils.grassMapsetFolder(),
     #                                     'PERMANENT',
     #                                     'group', new_parameters[group.name()],
     #                                     'subgroup', new_parameters[subgroup.name()],
@@ -184,7 +184,7 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
 
 
 def createDestDir(alg, toFile):
-    """ Generates an mkdir command for GRASS7 script """
+    """ Generates an mkdir command for GRASS script """
     # Creates the destination directory
     command = "{} \"{}\"".format(
         "MD" if isWindows() else "mkdir -p",
@@ -194,7 +194,7 @@ def createDestDir(alg, toFile):
 
 
 def moveFile(alg, fromFile, toFile):
-    """ Generates a move command for GRASS7 script """
+    """ Generates a move command for GRASS script """
     createDestDir(alg, toFile)
     command = "{} \"{}\" \"{}\"".format(
         "MOVE /Y" if isWindows() else "mv -f",
@@ -205,7 +205,7 @@ def moveFile(alg, fromFile, toFile):
 
 
 def copyFile(alg, fromFile, toFile):
-    """ Generates a copy command for GRASS7 script """
+    """ Generates a copy command for GRASS script """
     createDestDir(alg, toFile)
     command = "{} \"{}\" \"{}\"".format(
         "COPY /Y" if isWindows() else "cp -f",

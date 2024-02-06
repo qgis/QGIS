@@ -47,7 +47,7 @@ from grassprovider.grass_utils import GrassUtils
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGrass7AlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -68,7 +68,7 @@ class TestGrass7AlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.Algorithms
             shutil.rmtree(path)
 
     def test_definition_file(self):
-        return 'grass7_algorithms_vector_tests.yaml'
+        return 'grass_algorithms_vector_tests.yaml'
 
     def testMemoryLayerInput(self):
         # create a memory layer and add to project and context
@@ -88,7 +88,7 @@ class TestGrass7AlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.Algorithms
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:v.buffer')
         self.assertIsNotNone(alg)
 
         temp_file = os.path.join(self.temp_dir, 'grass_output.shp')
@@ -148,7 +148,7 @@ class TestGrass7AlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.Algorithms
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:v.buffer')
         self.assertIsNotNone(alg)
         temp_file = os.path.join(self.temp_dir, 'grass_output_sel.shp')
         parameters = {'input': QgsProcessingFeatureSourceDefinition('testmem', True),
@@ -202,7 +202,7 @@ class TestGrass7AlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.Algorithms
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:v.buffer')
         self.assertIsNotNone(alg)
 
         temp_file = os.path.join(self.temp_dir, 'grass_output.gpkg')
