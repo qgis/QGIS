@@ -472,7 +472,7 @@
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
         <DiagramCategory penAlpha="255" penColor="#000000" barWidth="5" lineSizeScale="3x:0,0,0,0,0,0" spacingUnitScale="3x:0,0,0,0,0,0" opacity="1" minimumSize="0" penWidth="0" backgroundAlpha="255" spacing="5" rotationOffset="270" backgroundColor="#ffffff" height="15" labelPlacementMethod="XHeight" width="15" lineSizeType="MM" diagramOrientation="Up" maxScaleDenominator="1e+08" scaleDependency="Area" showAxis="1" scaleBasedVisibility="0" sizeScale="3x:0,0,0,0,0,0" minScaleDenominator="0" enabled="0" spacingUnit="MM" sizeType="MM" direction="0">
-          <fontProperties strikethrough="0" bold="0" style="" underline="0" italic="0" description="Sans Serif,9,-1,5,50,0,0,0,0,0"/>
+          <fontProperties strikethrough="0" bold="0" style="Bold" underline="0" italic="0" description="QGIS Vera Sans,9,-1,5,50,0,0,0,0,0"/>
           <attribute field="" label="" colorOpacity="1" color="#000000"/>
           <axisSymbol>
             <symbol is_animated="0" type="line" force_rhr="0" clip_to_extent="1" alpha="1" frame_rate="10" name="">
@@ -920,7 +920,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style fontFamily="QGIS Vera Sans" fontStrikeout="0" allowHtml="0" fontSizeUnit="Point" textOpacity="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" namedStyle="" fontWeight="75" forcedBold="0" fontWordSpacing="0" forcedItalic="0" fontUnderline="0" previewBkgrdColor="255,255,255,255" textColor="0,0,0,255" fontKerning="1" multilineHeight="1" fontItalic="0" fontLetterSpacing="0" capitalization="0" fontSize="20" textOrientation="horizontal" blendMode="0">
+        <text-style fontFamily="QGIS Vera Sans" fontStrikeout="0" allowHtml="0" fontSizeUnit="Point" textOpacity="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" namedStyle="Bold" fontWeight="75" forcedBold="0" fontWordSpacing="0" forcedItalic="0" fontUnderline="0" previewBkgrdColor="255,255,255,255" textColor="0,0,0,255" fontKerning="1" multilineHeight="1" fontItalic="0" fontLetterSpacing="0" capitalization="0" fontSize="20" textOrientation="horizontal" blendMode="0">
           <families/>
           <text-buffer bufferNoFill="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferDraw="0" bufferColor="255,255,255,255" bufferJoinStyle="128" bufferSize="1" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskEnabled="0" maskJoinStyle="128" maskedSymbolLayers="" maskSizeUnits="MM" maskType="0" maskOpacity="1"/>
@@ -1592,7 +1592,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style fontFamily="QGIS Vera Sans" fontStrikeout="0" allowHtml="0" fontSizeUnit="Point" textOpacity="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" namedStyle="" fontWeight="75" forcedBold="0" fontWordSpacing="0" forcedItalic="0" fontUnderline="0" previewBkgrdColor="255,255,255,255" textColor="0,0,0,255" fontKerning="1" multilineHeight="1" fontItalic="0" fontLetterSpacing="0" capitalization="0" fontSize="20" textOrientation="horizontal" blendMode="0">
+        <text-style fontFamily="QGIS Vera Sans" fontStrikeout="0" allowHtml="0" fontSizeUnit="Point" textOpacity="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" namedStyle="Bold" fontWeight="75" forcedBold="0" fontWordSpacing="0" forcedItalic="0" fontUnderline="0" previewBkgrdColor="255,255,255,255" textColor="0,0,0,255" fontKerning="1" multilineHeight="1" fontItalic="0" fontLetterSpacing="0" capitalization="0" fontSize="20" textOrientation="horizontal" blendMode="0">
           <families/>
           <text-buffer bufferNoFill="1" bufferSizeUnits="MM" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferDraw="0" bufferColor="255,255,255,255" bufferJoinStyle="128" bufferSize="1" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskSize="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskEnabled="0" maskJoinStyle="128" maskedSymbolLayers="" maskSizeUnits="MM" maskType="0" maskOpacity="1"/>
