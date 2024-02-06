@@ -448,7 +448,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     bool mShowPrivateLayers = false;
 
-    QTimer *mDoubleClickTimer = nullptr;
+    QTimer *mBlockDoubleClickTimer = nullptr;
     // For model  debugging
     // void checkModel( );
 

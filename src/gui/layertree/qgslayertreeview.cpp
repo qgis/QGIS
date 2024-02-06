@@ -43,11 +43,11 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
-  , mDoubleClickTimer( new QTimer( this ) )
+  , mBlockDoubleClickTimer( new QTimer( this ) )
 
 {
-  mDoubleClickTimer->setSingleShot( true );
-  mDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
+  mBlockDoubleClickTimer->setSingleShot( true );
+  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
   setHeaderHidden( true );
 
   setDragEnabled( true );
@@ -81,7 +81,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 QgsLayerTreeView::~QgsLayerTreeView()
 {
   delete mMenuProvider;
-  delete mDoubleClickTimer;
+  delete mBlockDoubleClickTimer;
 }
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
@@ -608,7 +608,7 @@ bool QgsLayerTreeView::showPrivateLayers()
 
 void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-  if ( mDoubleClickTimer->isActive() )
+  if ( mBlockDoubleClickTimer->isActive() )
     event->accept();
   else
     QTreeView::mouseDoubleClickEvent( event );
@@ -743,7 +743,7 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
   if ( roles.contains( Qt::SizeHintRole ) )
     viewport()->update();
 
-  mDoubleClickTimer->start();
+  mBlockDoubleClickTimer->start();
   //checkModel();
 }
 
