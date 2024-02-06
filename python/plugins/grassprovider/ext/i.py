@@ -21,7 +21,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
 from processing.tools.system import (isWindows, getTempFilename)
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsMessageLog
@@ -121,7 +121,7 @@ def importSigFile(alg, group, subgroup, src, sigDir='sig'):
     internal GRASSDB folder
     """
     shortSigFile = os.path.basename(src)
-    interSig = os.path.join(Grass7Utils.grassMapsetFolder(),
+    interSig = os.path.join(GrassUtils.grassMapsetFolder(),
                             'PERMANENT', 'group', group, 'subgroup',
                             subgroup, sigDir, shortSigFile)
     copyFile(alg, src, interSig)
@@ -134,7 +134,7 @@ def exportSigFile(alg, group, subgroup, dest, sigDir='sig'):
     to final destination
     """
     shortSigFile = os.path.basename(dest)
-    interSig = os.path.join(Grass7Utils.grassMapsetFolder(),
+    interSig = os.path.join(GrassUtils.grassMapsetFolder(),
                             'PERMANENT', 'group', group, 'subgroup',
                             subgroup, sigDir, shortSigFile)
     moveFile(alg, interSig, dest)
@@ -155,7 +155,7 @@ def exportInputRasters(alg, parameters, context, rasterDic):
         fileName = os.path.normpath(
             alg.parameterAsOutputLayer(parameters, outputName, context))
         grassName = alg.exportedLayers[inputName]
-        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)
 
 

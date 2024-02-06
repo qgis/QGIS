@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    Grass7AlgorithmsVectorTest.py
+    grass_algorithms_vector_test.py
     -----------------------------
     Date                 : April 2018
     Copyright            : (C) 2018 by Nyall Dawson
@@ -40,8 +40,8 @@ from qgis.testing import (
     QgisTestCase,
     start_app
 )
-from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_provider import GrassProvider
+from grassprovider.grass_utils import GrassUtils
 
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
@@ -52,14 +52,14 @@ class TestGrass7AlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.Algorithms
     @classmethod
     def setUpClass(cls):
         start_app()
-        cls.provider = Grass7AlgorithmProvider()
+        cls.provider = GrassProvider()
         QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
 
         cls.temp_dir = tempfile.mkdtemp()
         cls.cleanup_paths.append(cls.temp_dir)
 
-        assert Grass7Utils.installedVersion()
+        assert GrassUtils.installedVersion()
 
     @classmethod
     def tearDownClass(cls):

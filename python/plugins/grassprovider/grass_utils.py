@@ -51,7 +51,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder, isWindows, isMac, mkdir
 
 
-class Grass7Utils:
+class GrassUtils:
     GRASS_REGION_XMIN = 'GRASS7_REGION_XMIN'
     GRASS_REGION_YMIN = 'GRASS7_REGION_YMIN'
     GRASS_REGION_XMAX = 'GRASS7_REGION_XMAX'
@@ -87,7 +87,7 @@ class Grass7Utils:
         On GNU/Linux and MacOSX it will be executed by a shell.
         On MS-Windows, it will be executed by cmd.exe.
         """
-        gisdbase = Grass7Utils.grassDataFolder()
+        gisdbase = GrassUtils.grassDataFolder()
         if isWindows():
             batchFile = os.path.join(gisdbase, 'grass_batch_job.cmd')
         else:
@@ -112,10 +112,10 @@ class Grass7Utils:
         Returns the installed version of GRASS by
         launching the GRASS command with -v parameter.
         """
-        if Grass7Utils.isGrassInstalled and not run:
-            return Grass7Utils.version
+        if GrassUtils.isGrassInstalled and not run:
+            return GrassUtils.version
 
-        if Grass7Utils.grassBin() is None:
+        if GrassUtils.grassBin() is None:
             return None
 
         # Launch GRASS command with -v parameter
@@ -125,7 +125,7 @@ class Grass7Utils:
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
         with subprocess.Popen(
-            [Grass7Utils.command, '-v'],
+            [GrassUtils.command, '-v'],
             shell=False,
             stdout=subprocess.PIPE,
             stdin=subprocess.DEVNULL,
@@ -139,8 +139,8 @@ class Grass7Utils:
                     if "GRASS GIS " in line:
                         line = line.split(" ")[-1].strip()
                         if line.startswith("7.") or line.startswith("8."):
-                            Grass7Utils.version = line
-                            return Grass7Utils.version
+                            GrassUtils.version = line
+                            return GrassUtils.version
             except Exception:
                 pass
 
@@ -165,10 +165,10 @@ class Grass7Utils:
                             return os.path.join(root, cmd)
             return None
 
-        if Grass7Utils.command:
-            return Grass7Utils.command
+        if GrassUtils.command:
+            return GrassUtils.command
 
-        path = Grass7Utils.grassPath()
+        path = GrassUtils.grassPath()
         command = None
 
         vn = os.path.join(path, "etc", "VERSIONNUMBER")
@@ -213,9 +213,9 @@ class Grass7Utils:
                     break
 
         if command:
-            Grass7Utils.command = command
+            GrassUtils.command = command
             if path == '':
-                Grass7Utils.path = os.path.dirname(command)
+                GrassUtils.path = os.path.dirname(command)
 
         return command
 
@@ -225,8 +225,8 @@ class Grass7Utils:
         Find GRASS path on the operating system.
         Sets global variable Grass7Utils.path
         """
-        if Grass7Utils.path is not None:
-            return Grass7Utils.path
+        if GrassUtils.path is not None:
+            return GrassUtils.path
 
         if not isWindows() and not isMac():
             return ''
@@ -273,7 +273,7 @@ class Grass7Utils:
                                 break
 
         if folder is not None:
-            Grass7Utils.path = folder
+            GrassUtils.path = folder
 
         return folder or ''
 
@@ -294,7 +294,7 @@ class Grass7Utils:
         Note that the provider will load from these in sequence, so we put the userDescriptionFolder first
         to allow users to create modified versions of stock algorithms shipped with QGIS.
         """
-        return [Grass7Utils.userDescriptionFolder(),
+        return [GrassUtils.userDescriptionFolder(),
                 Path(__file__).parent.joinpath('description')]
 
     @staticmethod
@@ -308,14 +308,14 @@ class Grass7Utils:
 
     @staticmethod
     def createGrassBatchJobFileFromGrassCommands(commands):
-        with open(Grass7Utils.grassBatchJobFilename(), 'w') as fout:
+        with open(GrassUtils.grassBatchJobFilename(), 'w') as fout:
             if not isWindows():
                 fout.write('#!/bin/sh\n')
             else:
                 fout.write(
-                    'chcp {}>NUL\n'.format(Grass7Utils.getWindowsCodePage()))
+                    'chcp {}>NUL\n'.format(GrassUtils.getWindowsCodePage()))
             for command in commands:
-                Grass7Utils.writeCommand(fout, command)
+                GrassUtils.writeCommand(fout, command)
             fout.write('exit')
 
     @staticmethod
@@ -323,7 +323,7 @@ class Grass7Utils:
         """
         Creates and returns the GRASS temporary DB LOCATION directory.
         """
-        folder = os.path.join(Grass7Utils.grassDataFolder(), 'temp_location')
+        folder = os.path.join(GrassUtils.grassDataFolder(), 'temp_location')
         mkdir(folder)
         return folder
 
@@ -347,16 +347,16 @@ class Grass7Utils:
         projection will be set later, based on the projection of the first
         input image or vector
         """
-        folder = Grass7Utils.grassMapsetFolder()
+        folder = GrassUtils.grassMapsetFolder()
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
-        Grass7Utils.writeGrassWindow(
+        GrassUtils.writeGrassWindow(
             os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
         with open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w') as outfile:
             outfile.write(
                 'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
 
-        Grass7Utils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
+        GrassUtils.writeGrassWindow(os.path.join(folder, 'PERMANENT', 'WIND'))
         mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
         with open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w') as outfile:
             outfile.write('DB_DRIVER: sqlite\n')
@@ -394,27 +394,27 @@ class Grass7Utils:
         Prepare GRASS batch job in a script and
         returns it as a command ready for subprocess.
         """
-        if Grass7Utils.command is None:
-            Grass7Utils.grassBin()
+        if GrassUtils.command is None:
+            GrassUtils.grassBin()
 
         env = os.environ.copy()
         env['GRASS_MESSAGE_FORMAT'] = 'plain'
         if 'GISBASE' in env:
             del env['GISBASE']
-        Grass7Utils.createGrassBatchJobFileFromGrassCommands(commands)
-        os.chmod(Grass7Utils.grassBatchJobFilename(),
+        GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
+        os.chmod(GrassUtils.grassBatchJobFilename(),
                  stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-        command = [Grass7Utils.command,
-                   os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT'),
-                   '--exec', Grass7Utils.grassBatchJobFilename()]
+        command = [GrassUtils.command,
+                   os.path.join(GrassUtils.grassMapsetFolder(), 'PERMANENT'),
+                   '--exec', GrassUtils.grassBatchJobFilename()]
 
         return command, env
 
     @staticmethod
     def executeGrass(commands, feedback, outputCommands=None):
-        loglines = [Grass7Utils.tr('GRASS GIS 7 execution console output')]
+        loglines = [GrassUtils.tr('GRASS GIS 7 execution console output')]
         grassOutDone = False
-        command, grassenv = Grass7Utils.prepareGrassExecution(commands)
+        command, grassenv = GrassUtils.prepareGrassExecution(commands)
         # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
 
         # For MS-Windows, we need to hide the console window.
@@ -426,7 +426,7 @@ class Grass7Utils:
             kw['startupinfo'] = si
             if sys.version_info >= (3, 6):
                 kw['encoding'] = "cp{}".format(
-                    Grass7Utils.getWindowsCodePage())
+                    GrassUtils.getWindowsCodePage())
 
         def readline_with_recover(stdout):
             """A method wrapping stdout.readline() with try-except recovering.
@@ -467,15 +467,15 @@ class Grass7Utils:
                         feedback.reportError(line.strip())
                     elif 'Segmentation fault' in line:
                         feedback.reportError(line.strip())
-                        feedback.reportError('\n' + Grass7Utils.tr(
+                        feedback.reportError('\n' + GrassUtils.tr(
                             'GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.') + '\n')
                         if ProcessingConfig.getSetting(
-                                Grass7Utils.GRASS_USE_REXTERNAL):
-                            feedback.reportError(Grass7Utils.tr(
+                                GrassUtils.GRASS_USE_REXTERNAL):
+                            feedback.reportError(GrassUtils.tr(
                                 'Suggest disabling the experimental "use r.external" option from the Processing GRASS Provider options.') + '\n')
                         if ProcessingConfig.getSetting(
-                                Grass7Utils.GRASS_USE_VEXTERNAL):
-                            feedback.reportError(Grass7Utils.tr(
+                                GrassUtils.GRASS_USE_VEXTERNAL):
+                            feedback.reportError(GrassUtils.tr(
                                 'Suggest disabling the experimental "use v.external" option from the Processing GRASS Provider options.') + '\n')
                     elif line.strip():
                         feedback.pushConsoleInfo(line.strip())
@@ -486,7 +486,7 @@ class Grass7Utils:
         # are usually the output ones. If that is the case runs the output
         # commands again.
         if not grassOutDone and outputCommands:
-            command, grassenv = Grass7Utils.prepareGrassExecution(
+            command, grassenv = GrassUtils.prepareGrassExecution(
                 outputCommands)
             # For MS-Windows, we need to hide the console window.
             kw = {}
@@ -497,7 +497,7 @@ class Grass7Utils:
                 kw['startupinfo'] = si
                 if sys.version_info >= (3, 6):
                     kw['encoding'] = "cp{}".format(
-                        Grass7Utils.getWindowsCodePage())
+                        GrassUtils.getWindowsCodePage())
             with subprocess.Popen(
                 command,
                 shell=False,
@@ -523,7 +523,7 @@ class Grass7Utils:
                         loglines.append(line.strip())
                         feedback.pushConsoleInfo(line.strip())
 
-        if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
+        if ProcessingConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing',
                                      Qgis.MessageLevel.Info)
 
@@ -535,67 +535,67 @@ class Grass7Utils:
     # structure
     @staticmethod
     def startGrassSession():
-        if not Grass7Utils.sessionRunning:
-            Grass7Utils.createTempMapset()
-            Grass7Utils.sessionRunning = True
+        if not GrassUtils.sessionRunning:
+            GrassUtils.createTempMapset()
+            GrassUtils.sessionRunning = True
 
     # End session by removing the temporary GRASS mapset and all
     # the layers.
     @staticmethod
     def endGrassSession():
         # shutil.rmtree(Grass7Utils.grassMapsetFolder(), True)
-        Grass7Utils.sessionRunning = False
-        Grass7Utils.sessionLayers = {}
-        Grass7Utils.projectionSet = False
+        GrassUtils.sessionRunning = False
+        GrassUtils.sessionLayers = {}
+        GrassUtils.projectionSet = False
 
     @staticmethod
     def getSessionLayers():
-        return Grass7Utils.sessionLayers
+        return GrassUtils.sessionLayers
 
     @staticmethod
     def addSessionLayers(exportedLayers):
-        Grass7Utils.sessionLayers = dict(
-            list(Grass7Utils.sessionLayers.items()) +
+        GrassUtils.sessionLayers = dict(
+            list(GrassUtils.sessionLayers.items()) +
             list(exportedLayers.items()))
 
     @staticmethod
     def checkGrassIsInstalled(ignorePreviousState=False):
         if not ignorePreviousState:
-            if Grass7Utils.isGrassInstalled:
+            if GrassUtils.isGrassInstalled:
                 return
 
         # We check the version of Grass7
-        if Grass7Utils.installedVersion() is not None:
+        if GrassUtils.installedVersion() is not None:
             # For Ms-Windows, we check GRASS binaries
             if isWindows():
-                cmdpath = os.path.join(Grass7Utils.path, 'bin',
+                cmdpath = os.path.join(GrassUtils.path, 'bin',
                                        'r.out.gdal.exe')
                 if not os.path.exists(cmdpath):
-                    return Grass7Utils.tr(
+                    return GrassUtils.tr(
                         'The GRASS GIS folder "{}" does not contain a valid set '
                         'of GRASS modules.\nPlease, check that GRASS is correctly '
                         'installed and available on your system.'.format(
-                            os.path.join(Grass7Utils.path, 'bin')))
-            Grass7Utils.isGrassInstalled = True
+                            os.path.join(GrassUtils.path, 'bin')))
+            GrassUtils.isGrassInstalled = True
             return
         # Return error messages
         else:
             # MS-Windows or MacOSX
             if isWindows() or isMac():
-                if Grass7Utils.path is None:
-                    return Grass7Utils.tr(
+                if GrassUtils.path is None:
+                    return GrassUtils.tr(
                         'Could not locate GRASS GIS folder. Please make '
                         'sure that GRASS GIS is correctly installed before '
                         'running GRASS algorithms.')
-                if Grass7Utils.command is None:
-                    return Grass7Utils.tr(
+                if GrassUtils.command is None:
+                    return GrassUtils.tr(
                         'GRASS GIS 7 binary {} can\'t be found on this system from a shell. '
                         'Please install it or configure your PATH {} environment variable.'.format(
                             '(grass.bat)' if isWindows() else '(grass.sh)',
                             'or OSGEO4W_ROOT' if isWindows() else ''))
             # GNU/Linux
             else:
-                return Grass7Utils.tr(
+                return GrassUtils.tr(
                     'GRASS 7 can\'t be found on this system from a shell. '
                     'Please install it or configure your PATH environment variable.')
 
@@ -616,12 +616,12 @@ class Grass7Utils:
 
     @staticmethod
     def grassHelpPath():
-        helpPath = ProcessingConfig.getSetting(Grass7Utils.GRASS_HELP_URL)
+        helpPath = ProcessingConfig.getSetting(GrassUtils.GRASS_HELP_URL)
 
         if not helpPath:
             if isWindows() or isMac():
-                if Grass7Utils.path is not None:
-                    localPath = os.path.join(Grass7Utils.path, 'docs/html')
+                if GrassUtils.path is not None:
+                    localPath = os.path.join(GrassUtils.path, 'docs/html')
                     if os.path.exists(localPath):
                         helpPath = os.path.abspath(localPath)
             else:
@@ -635,8 +635,8 @@ class Grass7Utils:
 
         if helpPath:
             return helpPath
-        elif Grass7Utils.version:
-            version = Grass7Utils.version.replace('.', '')[:2]
+        elif GrassUtils.version:
+            version = GrassUtils.version.replace('.', '')[:2]
             return 'https://grass.osgeo.org/grass{}/manuals/'.format(version)
         else:
             # GRASS not available!

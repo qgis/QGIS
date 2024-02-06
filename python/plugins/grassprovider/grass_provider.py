@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    Grass7AlgorithmProvider.py
+    grass_provider.py
     ---------------------
     Date                 : April 2014
     Copyright            : (C) 2014 by Victor Olaya
@@ -30,11 +30,11 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
-from grassprovider.Grass7Utils import Grass7Utils
-from grassprovider.Grass7Algorithm import Grass7Algorithm
+from grassprovider.grass_utils import GrassUtils
+from grassprovider.grass_algorithm import GrassAlgorithm
 
 
-class Grass7AlgorithmProvider(QgsProcessingProvider):
+class GrassProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
@@ -44,15 +44,15 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             ProcessingConfig.settingIcons[self.name()] = self.icon()
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_LOG_COMMANDS,
+                GrassUtils.GRASS_LOG_COMMANDS,
                 self.tr('Log execution commands'), False))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_LOG_CONSOLE,
+                GrassUtils.GRASS_LOG_CONSOLE,
                 self.tr('Log console output'), False))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_HELP_URL,
+                GrassUtils.GRASS_HELP_URL,
                 self.tr('Location of GRASS docs'), ''))
             # Add settings for using r.external/v.external instead of r.in.gdal/v.in.ogr
             # but set them to False by default because the {r,v}.external implementations
@@ -61,12 +61,12 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             # For more info have a look at e.g. https://trac.osgeo.org/grass/ticket/3927
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_USE_REXTERNAL,
+                GrassUtils.GRASS_USE_REXTERNAL,
                 self.tr('For raster layers, use r.external (faster) instead of r.in.gdal'),
                 False))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
-                Grass7Utils.GRASS_USE_VEXTERNAL,
+                GrassUtils.GRASS_USE_VEXTERNAL,
                 self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
                 False))
             ProcessingConfig.readSettings()
@@ -75,11 +75,11 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
-        ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
-        ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_URL)
-        ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_REXTERNAL)
-        ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
+        ProcessingConfig.removeSetting(GrassUtils.GRASS_LOG_COMMANDS)
+        ProcessingConfig.removeSetting(GrassUtils.GRASS_LOG_CONSOLE)
+        ProcessingConfig.removeSetting(GrassUtils.GRASS_HELP_URL)
+        ProcessingConfig.removeSetting(GrassUtils.GRASS_USE_REXTERNAL)
+        ProcessingConfig.removeSetting(GrassUtils.GRASS_USE_VEXTERNAL)
 
     def parse_algorithms(self) -> List[QgsProcessingAlgorithm]:
         """
@@ -87,7 +87,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         algorithms.
         """
         algs = []
-        for folder in Grass7Utils.grassDescriptionFolders():
+        for folder in GrassUtils.grassDescriptionFolders():
             if (folder / 'algorithms.json').exists():
                 # fast approach -- use aggregated JSON summary of algorithms
                 with open(folder / 'algorithms.json', 'rt', encoding='utf8') as f_in:
@@ -96,7 +96,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                 algorithms_json = json.loads(algorithm_strings)
                 for algorithm_json in algorithms_json:
                     try:
-                        alg = Grass7Algorithm(
+                        alg = GrassAlgorithm(
                             json_definition=algorithm_json,
                             description_folder=folder)
                         if alg.name().strip() != '':
@@ -110,7 +110,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                 # slow approach - pass txt files one by one
                 for descriptionFile in folder.glob('*.txt'):
                     try:
-                        alg = Grass7Algorithm(
+                        alg = GrassAlgorithm(
                             description_file=descriptionFile)
                         if alg.name().strip() != '':
                             algs.append(alg)
@@ -122,7 +122,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return algs
 
     def loadAlgorithms(self):
-        version = Grass7Utils.installedVersion(True)
+        version = GrassUtils.installedVersion(True)
         if version is None:
             QgsMessageLog.logMessage(self.tr('Problem with GRASS installation: GRASS was not found or is not correctly installed'),
                                      self.tr('Processing'), Qgis.MessageLevel.Critical)
@@ -135,7 +135,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return 'GRASS'
 
     def longName(self):
-        version = Grass7Utils.installedVersion()
+        version = GrassUtils.installedVersion()
         return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
     def id(self):
@@ -173,10 +173,10 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsVectorFileWriter.supportedFormatExtensions()
 
     def supportedOutputRasterLayerExtensions(self):
-        return Grass7Utils.getSupportedOutputRasterExtensions()
+        return GrassUtils.getSupportedOutputRasterExtensions()
 
     def canBeActivated(self):
-        return not bool(Grass7Utils.checkGrassIsInstalled())
+        return not bool(GrassUtils.checkGrassIsInstalled())
 
     def tr(self, string, context=''):
         if context == '':

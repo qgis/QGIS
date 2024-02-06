@@ -19,7 +19,7 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 
 
 def processInputs(alg, parameters, context, feedback):
@@ -43,7 +43,7 @@ def processOutputs(alg, parameters, context, feedback):
 
     # We need to export the raster with all its bands and its color table
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
-    outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+    outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
     grassName = alg.exportedLayers['map']
     alg.exportRasterLayer(grassName, fileName, True,
                           outFormat, createOpt, metaOpt)

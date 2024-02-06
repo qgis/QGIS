@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    Grass7Algorithm.py
+    grass_algorithm.py
     ---------------------
     Date                 : February 2015
     Copyright            : (C) 2014-2015 by Victor Olaya
@@ -79,7 +79,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.parameters import getParameterFromString
 
 from grassprovider.parsed_description import ParsedDescription
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 
 from processing.tools.system import isWindows, getTempFilename
 
@@ -87,7 +87,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class Grass7Algorithm(QgsProcessingAlgorithm):
+class GrassAlgorithm(QgsProcessingAlgorithm):
     GRASS_OUTPUT_TYPE_PARAMETER = 'GRASS_OUTPUT_TYPE_PARAMETER'
     GRASS_MIN_AREA_PARAMETER = 'GRASS_MIN_AREA_PARAMETER'
     GRASS_SNAP_TOLERANCE_PARAMETER = 'GRASS_SNAP_TOLERANCE_PARAMETER'
@@ -211,7 +211,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         return QCoreApplication.translate(context, string)
 
     def helpUrl(self):
-        helpPath = Grass7Utils.grassHelpPath()
+        helpPath = GrassUtils.grassHelpPath()
         if helpPath == '':
             return None
 
@@ -447,7 +447,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, original_parameters, context, feedback):
         if isWindows():
-            path = Grass7Utils.grassPath()
+            path = GrassUtils.grassPath()
             if path == '':
                 raise QgsProcessingException(
                     self.tr('GRASS GIS 7 folder is not configured. Please '
@@ -465,11 +465,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # If GRASS session has been created outside of this algorithm then
         # get the list of layers loaded in GRASS otherwise start a new
         # session
-        existingSession = Grass7Utils.sessionRunning
+        existingSession = GrassUtils.sessionRunning
         if existingSession:
-            self.exportedLayers = Grass7Utils.getSessionLayers()
+            self.exportedLayers = GrassUtils.getSessionLayers()
         else:
-            Grass7Utils.startGrassSession()
+            GrassUtils.startGrassSession()
 
         # Handle default GRASS parameters
         self.grabDefaultGrassParameters(parameters, context)
@@ -487,17 +487,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for line in self.commands:
             feedback.pushCommandInfo(line)
             loglines.append(line)
-        if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
+        if ProcessingConfig.getSetting(GrassUtils.GRASS_LOG_COMMANDS):
             QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), Qgis.MessageLevel.Info)
 
-        Grass7Utils.executeGrass(self.commands, feedback, self.outputCommands)
+        GrassUtils.executeGrass(self.commands, feedback, self.outputCommands)
 
         # If the session has been created outside of this algorithm, add
         # the new GRASS GIS 7 layers to it otherwise finish the session
         if existingSession:
-            Grass7Utils.addSessionLayers(self.exportedLayers)
+            GrassUtils.addSessionLayers(self.exportedLayers)
         else:
-            Grass7Utils.endGrassSession()
+            GrassUtils.endGrassSession()
 
         # Return outputs map
         outputs = {}
@@ -801,7 +801,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param destName: force the destination name of the raster.
         """
         if external is None:
-            external = ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_REXTERNAL)
+            external = ProcessingConfig.getSetting(GrassUtils.GRASS_USE_REXTERNAL)
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer, context)
         if not destName:
@@ -829,7 +829,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         fileName = os.path.normpath(fileName)
         grassName = '{}{}'.format(name, self.uniqueSuffix)
-        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         createOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_OPT, context)
         metaOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_META, context)
         self.exportRasterLayer(grassName, fileName, colorTable, outFormat, createOpt, metaOpt)
@@ -850,7 +850,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param createOpt: creation options for format.
         :param metaOpt: metadata options for export.
         """
-        createOpt = createOpt or Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS.get(outFormat)
+        createOpt = createOpt or GrassUtils.GRASS_RASTER_FORMATS_CREATEOPTS.get(outFormat)
 
         for cmd in [self.commands, self.outputCommands]:
             # Adjust region to layer before exporting
@@ -949,7 +949,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # TODO: support multiple input formats
         if external is None:
             external = ProcessingConfig.getSetting(
-                Grass7Utils.GRASS_USE_VEXTERNAL)
+                GrassUtils.GRASS_USE_VEXTERNAL)
 
         source_parts = QgsProviderRegistry.instance().decodeUri('ogr', layer.source())
         file_path = source_parts.get('path')
@@ -1095,7 +1095,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         Set the projection from the project.
         We create a WKT definition which is transmitted to Grass
         """
-        if not Grass7Utils.projectionSet and iface:
+        if not GrassUtils.projectionSet and iface:
             self.setSessionProjection(
                 iface.mapCanvas().mapSettings().destinationCrs(),
                 context
@@ -1106,7 +1106,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         Set the projection from a QgsVectorLayer.
         We create a WKT definition which is transmitted to Grass
         """
-        if not Grass7Utils.projectionSet:
+        if not GrassUtils.projectionSet:
             self.setSessionProjection(layer.crs(), context)
 
     def setSessionProjection(self, crs, context: QgsProcessingContext):
@@ -1114,10 +1114,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         Set the session projection to the specified CRS
         """
         self.destination_crs = crs
-        file_name = Grass7Utils.exportCrsWktToFile(crs, context)
+        file_name = GrassUtils.exportCrsWktToFile(crs, context)
         command = 'g.proj -c wkt="{}"'.format(file_name)
         self.commands.append(command)
-        Grass7Utils.projectionSet = True
+        GrassUtils.projectionSet = True
 
     def convertToHtml(self, fileName):
         # Read HTML contents
@@ -1136,7 +1136,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 f.write('</p></body></html>')
 
     def canExecute(self):
-        message = Grass7Utils.checkGrassIsInstalled()
+        message = GrassUtils.checkGrassIsInstalled()
         return not message, message
 
     def checkParameterValues(self, parameters, context):

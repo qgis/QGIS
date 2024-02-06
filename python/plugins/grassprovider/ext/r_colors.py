@@ -20,7 +20,7 @@ __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
-from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.grass_utils import GrassUtils
 from processing.tools.system import getTempFilename
 
 
@@ -77,6 +77,6 @@ def processOutputs(alg, parameters, context, feedback):
     for idx, raster in enumerate(rasters):
         rasterName = 'map_{}'.format(idx)
         fileName = os.path.join(outputDir, rasterName)
-        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(alg.exportedLayers[rasterName], fileName, True,
                               outFormat, createOpt, metaOpt)

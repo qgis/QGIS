@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    GrassProviderPlugin.py
+    grass_plugin.py
     ---------------------
     Date                 : June 2021
     Copyright            : (C) 2021 by Alexander Bruy
@@ -23,13 +23,13 @@ __copyright__ = '(C) 2021, Alexander Bruy'
 from qgis.core import QgsApplication, QgsRuntimeProfiler
 
 with QgsRuntimeProfiler.profile('Import GRASS Provider'):
-    from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+    from grassprovider.grass_provider import GrassProvider
 
 
 class GrassProviderPlugin:
 
     def __init__(self):
-        self.provider = Grass7AlgorithmProvider()
+        self.provider = GrassProvider()
 
     def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
