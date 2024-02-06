@@ -325,6 +325,7 @@ tests:
         - 7596586771ae5836b141a05e109569c14290906f8215ecd6677e8769
         - 0e0a32123986032c00557ccf8a3b5a5ec26bff6987c353e02a2631fa
         - 61d6cea43ff284ea8909f071b3f13344e146430b7754ad25321a05af
+        - 702e4fbf8f35d9c4759f1a1e437c2680b45a84d5175d862d92db1f06
         type: rasterhash
 
   - algorithm: grass7:r.info
@@ -677,7 +678,9 @@ tests:
         - c193afe158c5bc50542a2ba1a93f5374a72ac7344a044e95102d7e44
         type: rasterhash
       stream_raster:
-        hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
+        hash:
+        - 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
+        - ca81f79b4f3a72770ce3c8bfc9c3795e0f50dc33f79b92b0500e38df
         type: rasterhash
 
   - algorithm: grass7:r.geomorphon
