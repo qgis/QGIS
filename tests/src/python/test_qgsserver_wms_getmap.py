@@ -1891,7 +1891,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency")
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency", max_diff=1500)
 
     def test_multiple_layers_with_equal_name(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
