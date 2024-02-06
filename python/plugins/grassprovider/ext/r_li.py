@@ -23,6 +23,8 @@ import shutil
 from qgis.core import QgsProcessingParameterString
 from processing.tools.system import (isWindows, mkdir,
                                      getTempFilename)
+from grassprovider.grass_utils import GrassUtils
+
 import os
 
 # for MS-Windows users who have MBCS chars in their name:
@@ -36,7 +38,8 @@ def rliPath():
         homeDir = win32api.GetShortPathName(os.path.expanduser('~'))
         return os.path.join(homeDir, 'AppData', 'Roaming', 'GRASS7', 'r.li')
     else:
-        return os.path.join(os.path.expanduser("~"), '.grass7', 'r.li')
+        grass_version = GrassUtils.installedVersion().split('.')[0]
+        return os.path.join(os.path.expanduser("~"), f'.grass{grass_version}', 'r.li')
 
 
 def removeConfigFile(alg, parameters, context):
