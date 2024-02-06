@@ -56,6 +56,25 @@ QgsAfsSharedData::QgsAfsSharedData( const QgsDataSourceUri &uri )
 {
 }
 
+std::shared_ptr< QgsAfsSharedData > QgsAfsSharedData::clone() const
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  std::shared_ptr< QgsAfsSharedData > copy = std::make_shared< QgsAfsSharedData >( mDataSource );
+  copy->mLimitBBox = mLimitBBox;
+  copy->mExtent = mExtent;
+  copy->mGeometryType = mGeometryType;
+  copy->mFields = mFields;
+  copy->mMaximumFetchObjectsCount = mMaximumFetchObjectsCount;
+  copy->mObjectIdFieldName = mObjectIdFieldName;
+  copy->mObjectIdFieldIdx = mObjectIdFieldIdx;
+  copy->mObjectIds = mObjectIds;
+  copy->mObjectIdToFeatureId = mObjectIdToFeatureId;
+  copy->mDeletedFeatureIds = mDeletedFeatureIds;
+  copy->mCache = mCache;
+  copy->mSourceCRS = mSourceCRS;
+  return copy;
+}
+
 QString QgsAfsSharedData::subsetString() const
 {
   return mDataSource.sql();
