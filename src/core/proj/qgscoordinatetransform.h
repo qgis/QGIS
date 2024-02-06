@@ -226,6 +226,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param point point to transform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
+     * \throws QgsCsException if the transformation fails
      */
     QgsPointXY transform( const QgsPointXY &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
@@ -237,8 +238,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param y y coordinate of point to transform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
+     * \throws QgsCsException if the transformation fails
      */
-    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
     /**
      * Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
@@ -247,9 +249,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param point coordinates of point to transform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
+     * \throws QgsCsException if the transformation fails
      * \since QGIS 3.18
      */
-    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms a rectangle from the source CRS to the destination CRS.
@@ -263,6 +266,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param handle180Crossover set to TRUE if destination CRS is geographic and handling of extents
      * crossing the 180 degree longitude line is required
      * \returns rectangle in destination CRS
+     * \throws QgsCsException if the transformation fails
      */
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
 
@@ -276,6 +280,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * \param direction transform direction (defaults to ForwardTransform)
+     * \throws QgsCsException if the transformation fails
      */
     void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
@@ -289,6 +294,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * \param direction transform direction (defaults to ForwardTransform)
+     * \throws QgsCsException if the transformation fails
      * \note not available in Python bindings
      */
     void transformInPlace( float &x, float &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_SKIP;
@@ -303,6 +309,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * \param direction transform direction (defaults to ForwardTransform)
+     * \throws QgsCsException if the transformation fails
      * \note not available in Python bindings
      */
     void transformInPlace( float &x, float &y, float &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_SKIP;
@@ -317,6 +324,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * \param direction transform direction (defaults to ForwardTransform)
+     * \throws QgsCsException if the transformation fails
      * \note not available in Python bindings
      */
     void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
@@ -332,6 +340,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
      * heights) and must be expressed in its vertical units (generally meters)
      * \param direction transform direction (defaults to ForwardTransform)
+     * \throws QgsCsException if the transformation fails
      * \note not available in Python bindings
      */
     void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
@@ -341,6 +350,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * Transforms a polygon to the destination coordinate system.
      * \param polygon polygon to transform (occurs in place)
      * \param direction transform direction (defaults to forward transformation)
+     * \throws QgsCsException if the transformation fails
      */
     void transformPolygon( QPolygonF &polygon, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
@@ -351,6 +361,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param rectangle rectangle to transform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed rectangle
+     * \throws QgsCsException if the transformation fails
      */
     QgsRectangle transform( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
@@ -363,6 +374,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param y array of y coordinates to transform
      * \param z array of z coordinates to transform
      * \param direction transform direction (defaults to ForwardTransform)
+     * \throws QgsCsException if the transformation fails
      */
     void transformCoords( int numPoint, double *x, double *y, double *z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
