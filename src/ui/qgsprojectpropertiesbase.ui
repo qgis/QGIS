@@ -2307,7 +2307,7 @@
                     </attribute>
                     <layout class="QGridLayout" name="gridLayout_25">
                      <item row="20" column="0" colspan="2">
-                      <widget class="QgsCollapsibleGroupBox" name="grpWMSMapLegendOptions">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSLegendMapOptions">
                        <property name="title">
                         <string>Map and Legend Options</string>
                        </property>
