@@ -42,7 +42,7 @@ from grassprovider.grass_utils import GrassUtils
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGrassAlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -63,13 +63,13 @@ class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.Algorithms
             shutil.rmtree(path)
 
     def test_definition_file(self):
-        return 'grass7_algorithms_raster_tests2.yaml'
+        return 'grass_algorithms_raster_tests2.yaml'
 
     def testNeighbors(self):
         context = QgsProcessingContext()
         input_raster = os.path.join(testDataPath, 'custom', 'grass7', 'float_raster.tif')
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:r.neighbors')
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:r.neighbors')
         self.assertIsNotNone(alg)
 
         temp_file = os.path.join(self.temp_dir, 'grass_output.tif')

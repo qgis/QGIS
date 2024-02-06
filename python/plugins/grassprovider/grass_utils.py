@@ -150,7 +150,7 @@ class GrassUtils:
     def grassBin():
         """
         Find GRASS binary path on the operating system.
-        Sets global variable Grass7Utils.command
+        Sets global variable GrassUtils.command
         """
 
         def searchFolder(folder):
@@ -223,7 +223,7 @@ class GrassUtils:
     def grassPath():
         """
         Find GRASS path on the operating system.
-        Sets global variable Grass7Utils.path
+        Sets global variable GrassUtils.path
         """
         if GrassUtils.path is not None:
             return GrassUtils.path
@@ -543,7 +543,7 @@ class GrassUtils:
     # the layers.
     @staticmethod
     def endGrassSession():
-        # shutil.rmtree(Grass7Utils.grassMapsetFolder(), True)
+        # shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
         GrassUtils.sessionRunning = False
         GrassUtils.sessionLayers = {}
         GrassUtils.projectionSet = False
@@ -564,7 +564,7 @@ class GrassUtils:
             if GrassUtils.isGrassInstalled:
                 return
 
-        # We check the version of Grass7
+        # We check the version of Grass
         if GrassUtils.installedVersion() is not None:
             # For Ms-Windows, we check GRASS binaries
             if isWindows():

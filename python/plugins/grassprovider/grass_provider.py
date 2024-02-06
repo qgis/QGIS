@@ -161,7 +161,7 @@ class GrassProvider(QgsProcessingProvider):
 
     def supportsNonFileBasedOutput(self):
         """
-        GRASS7 Provider doesn't support non file based outputs
+        GRASS Provider doesn't support non file based outputs
         """
         return False
 

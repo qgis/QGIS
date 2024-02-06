@@ -34,7 +34,7 @@ from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
 
 
-class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestGrassAlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     @classmethod
     def setUpClass(cls):
@@ -52,7 +52,7 @@ class TestGrass7AlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.Algorithms
             shutil.rmtree(path)
 
     def test_definition_file(self):
-        return 'grass7_algorithms_raster_tests1.yaml'
+        return 'grass_algorithms_raster_tests1.yaml'
 
 
 if __name__ == '__main__':
