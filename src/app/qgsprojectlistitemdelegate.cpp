@@ -249,9 +249,9 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   }
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
-               index.data( QgsNewsFeedModel::Title ).toString(),
-               index.data( QgsNewsFeedModel::Sticky ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-               index.data( QgsNewsFeedModel::Content ).toString() ) );
+               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Title ) ).toString(),
+               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
+               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Content ) ).toString() ) );
 
 
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
@@ -296,9 +296,9 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
   const int titleSize = QApplication::fontMetrics().height() * 1.1;
   const int textSize = titleSize * 0.85;
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
-               index.data( QgsNewsFeedModel::Title ).toString(),
-               index.data( QgsNewsFeedModel::Sticky ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-               index.data( QgsNewsFeedModel::Content ).toString() ) );
+               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Title ) ).toString(),
+               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
+               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Content ) ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( iconSize.height() ) ) + 2.5 * mRoundedRectSizePixels );

@@ -63,16 +63,21 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     };
     Q_ENUM( ColumnType )
 
+    // *INDENT-OFF*
+
     /**
      * The additional roles defined by this filter model.
      * The values of these roles start just after the roles defined by
      * QgsAttributeTableModel so they do not conflict.
+     * \note Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel::Role
+     * \since QGIS 3.36
      */
-    enum Role
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, Role ) : int
     {
-      TypeRole = QgsAttributeTableModel::UserRole //!< The type of a given column
+      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = static_cast< int >( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
     };
-
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Make sure, the master model is already loaded, so the selection will get synchronized.

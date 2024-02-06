@@ -37,18 +37,19 @@ instead.
       Tags,
     };
 
-    enum Role
+
+    enum class CustomRole
     {
-      TypeRole,
-      TagRole,
+      Type,
+      Tag,
       EntityName,
-      SymbolTypeRole,
-      IsFavoriteRole,
-      LayerTypeRole,
-      CompatibleGeometryTypesRole,
+      SymbolType,
+      IsFavorite,
+      LayerType,
+      CompatibleGeometryTypes,
       StyleName,
       StyleFileName,
-      IsTitleRole,
+      IsTitle,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );

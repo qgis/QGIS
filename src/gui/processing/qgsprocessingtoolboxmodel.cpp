@@ -344,7 +344,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
   if ( !index.isValid() )
     return QVariant();
 
-  if ( role == RoleNodeType )
+  if ( role == static_cast< int >( CustomRole::NodeType ) )
   {
     if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
       return node->nodeType();
@@ -433,7 +433,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       break;
     }
 
-    case RoleAlgorithmFlags:
+    case static_cast< int >( CustomRole::AlgorithmFlags ):
       switch ( index.column() )
       {
         case 0:
@@ -449,7 +449,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case RoleProviderFlags:
+    case static_cast< int >( CustomRole::ProviderFlags ):
       switch ( index.column() )
       {
         case 0:
@@ -458,8 +458,8 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return static_cast< int >( provider->flags() );
           else if ( algorithm && algorithm->provider() )
             return static_cast< int >( algorithm->provider()->flags() );
-          else if ( index.parent().data( RoleProviderFlags ).isValid() ) // group node
-            return static_cast< int >( index.parent().data( RoleProviderFlags ).toInt() );
+          else if ( index.parent().data( static_cast< int >( CustomRole::ProviderFlags ) ).isValid() ) // group node
+            return static_cast< int >( index.parent().data( static_cast< int >( CustomRole::ProviderFlags ) ).toInt() );
           else
             return QVariant();
         }
@@ -469,7 +469,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case RoleAlgorithmId:
+    case static_cast< int >( CustomRole::AlgorithmId ):
       switch ( index.column() )
       {
         case 0:
@@ -485,7 +485,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case RoleAlgorithmName:
+    case static_cast< int >( CustomRole::AlgorithmName ):
       switch ( index.column() )
       {
         case 0:
@@ -501,7 +501,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case RoleAlgorithmTags:
+    case static_cast< int >( CustomRole::AlgorithmTags ):
       switch ( index.column() )
       {
         case 0:
@@ -517,7 +517,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case RoleAlgorithmShortDescription:
+    case static_cast< int >( CustomRole::AlgorithmShortDescription ):
       switch ( index.column() )
       {
         case 0:
@@ -722,16 +722,16 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
-    const bool hasKnownIssues = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagKnownIssues;
+    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagKnownIssues;
     if ( hasKnownIssues && !( mFilters & FilterShowKnownIssues ) )
       return false;
 
     if ( !mFilterString.trimmed().isEmpty() )
     {
-      const QString algId = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmId ).toString();
-      const QString algName = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmName ).toString();
-      const QStringList algTags = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmTags ).toStringList();
-      const QString shortDesc = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmShortDescription ).toString();
+      const QString algId = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString();
+      const QString algName = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmName ) ).toString();
+      const QStringList algTags = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmTags ) ).toStringList();
+      const QString shortDesc = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmShortDescription ) ).toString();
 
       QStringList parentText;
       QModelIndex parent = sourceIndex.parent();
@@ -770,7 +770,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
     if ( mFilters & FilterInPlace )
     {
-      const bool supportsInPlace = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
       if ( !supportsInPlace )
         return false;
 
@@ -782,12 +782,12 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
     if ( mFilters & FilterModeler )
     {
-      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagHideFromModeler;
+      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagHideFromModeler;
       return !isHiddenFromModeler;
     }
     if ( mFilters & FilterToolbox )
     {
-      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagHideFromToolbox;
+      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagHideFromToolbox;
       return !isHiddenFromToolbox;
     }
     return true;
@@ -810,8 +810,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsProcessingToolboxModelNode::NodeType leftType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( left, QgsProcessingToolboxModel::RoleNodeType ).toInt() );
-  QgsProcessingToolboxModelNode::NodeType rightType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( right, QgsProcessingToolboxModel::RoleNodeType ).toInt() );
+  QgsProcessingToolboxModelNode::NodeType leftType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( left, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
+  QgsProcessingToolboxModelNode::NodeType rightType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( right, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
 
   if ( leftType == QgsProcessingToolboxModelNode::NodeRecent )
     return true;
@@ -834,7 +834,7 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   QModelIndex parent = left.parent();
   while ( parent.isValid() )
   {
-    if ( mModel->data( parent, QgsProcessingToolboxModel::RoleNodeType ).toInt() == QgsProcessingToolboxModelNode::NodeRecent )
+    if ( mModel->data( parent, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() == QgsProcessingToolboxModelNode::NodeRecent )
     {
       isRecentNode = true;
       break;
@@ -858,7 +858,7 @@ QVariant QgsProcessingToolboxProxyModel::data( const QModelIndex &index, int rol
   if ( role == Qt::ForegroundRole && !mFilterString.isEmpty() )
   {
     QModelIndex sourceIndex = mapToSource( index );
-    const QVariant flags = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleProviderFlags );
+    const QVariant flags = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::ProviderFlags ) );
     if ( flags.isValid() && flags.toInt() & QgsProcessingProvider::FlagDeemphasiseSearchResults )
     {
       QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );

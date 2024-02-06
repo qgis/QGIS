@@ -495,7 +495,7 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
       else
         return mSettings ? QDir::toNativeSeparators( mSettings->styles().at( styleRow )->fileName() ) : QVariant();
 
-    case StyleRole:
+    case static_cast< int >( CustomRole::Style ):
     {
       if ( isDefault )
         return QVariant::fromValue( QgsStyle::defaultStyle() );
@@ -507,7 +507,7 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
         return QVariant();
     }
 
-    case PathRole:
+    case static_cast< int >( CustomRole::Path ):
       if ( isDefault )
         return QgsStyle::defaultStyle()->fileName();
       else if ( isProjectStyle )
@@ -526,7 +526,7 @@ QgsStyle *QgsProjectStyleDatabaseModel::styleFromIndex( const QModelIndex &index
     return mProjectStyle;
   else if ( mShowDefault && ( ( index.row() == 0 && !mProjectStyle ) || ( index.row() == 1 && mProjectStyle ) ) )
     return QgsStyle::defaultStyle();
-  else if ( QgsStyle *style = qobject_cast< QgsStyle * >( qvariant_cast<QObject *>( data( index, StyleRole ) ) ) )
+  else if ( QgsStyle *style = qobject_cast< QgsStyle * >( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Style ) ) ) ) )
     return style;
   else
     return nullptr;
@@ -656,7 +656,7 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
 {
   if ( mFilters & Filter::FilterHideReadOnly )
   {
-    if ( const QgsStyle *style = qobject_cast< QgsStyle * >( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), QgsProjectStyleDatabaseModel::Role::StyleRole ).value< QObject * >() ) )
+    if ( const QgsStyle *style = qobject_cast< QgsStyle * >( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
     {
       if ( style->isReadOnly() )
         return false;

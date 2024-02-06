@@ -369,34 +369,34 @@ void TestQgsAttributeTable::testSelectedOnTop()
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
 
   dlg->mMainView->setSortExpression( "pk" );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   tempLayer->selectByIds( QgsFeatureIds() << 2 );
   dlg->mMainView->setSelectedOnTop( true );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   dlg->mMainView->setSelectedOnTop( false );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   tempLayer->selectByIds( QgsFeatureIds() << 3 );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
 
   dlg->mMainView->setSelectedOnTop( true );
 
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 3 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 1 ) );
-  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( QgsAttributeTableModel::FeatureIdRole ), QVariant( 2 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 0, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 3 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 1, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 1 ) );
+  QCOMPARE( dlg->mMainView->mFilterModel->index( 2, 0 ).data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ), QVariant( 2 ) );
 
 }
 
@@ -470,9 +470,9 @@ void TestQgsAttributeTable::testSortNumbers()
   QCOMPARE( model->data( model->index( 1, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "10,00010" ) );
   QCOMPARE( model->data( model->index( 0, 1 ), Qt::ItemDataRole::DisplayRole ).toString(), QString( "1.001,00000" ) );
 
-  QCOMPARE( model->data( model->index( 2, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 2.001 );
-  QCOMPARE( model->data( model->index( 1, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 10.0001 );
-  QCOMPARE( model->data( model->index( 0, 2 ), QgsAttributeTableModel::Role::SortRole ).toDouble(), 1001.0 );
+  QCOMPARE( model->data( model->index( 2, 2 ), static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ).toDouble(), 2.001 );
+  QCOMPARE( model->data( model->index( 1, 2 ), static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ).toDouble(), 10.0001 );
+  QCOMPARE( model->data( model->index( 0, 2 ), static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ).toDouble(), 1001.0 );
 
   QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorSection(), 1 );
   QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorOrder(), Qt::SortOrder::DescendingOrder );

@@ -99,7 +99,7 @@ QString QgsFieldComboBox::currentField() const
     return QString();
   }
 
-  QString name = mFieldProxyModel->data( proxyIndex, QgsFieldModel::FieldNameRole ).toString();
+  QString name = mFieldProxyModel->data( proxyIndex, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString();
   return name;
 }
 

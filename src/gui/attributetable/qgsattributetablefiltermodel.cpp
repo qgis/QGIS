@@ -42,7 +42,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
-  setSortRole( QgsAttributeTableModel::SortRole );
+  setSortRole( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) );
   connect( layer(), &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableFilterModel::selectionChanged );
 
   mReloadVisibleTimer.setSingleShot( true );
@@ -74,8 +74,8 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     return false;
   }
 
-  return qgsVariantLessThan( left.data( QgsAttributeTableModel::SortRole ),
-                             right.data( QgsAttributeTableModel::SortRole ) );
+  return qgsVariantLessThan( left.data( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ),
+                             right.data( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ) );
 }
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
@@ -99,15 +99,15 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
 {
   if ( mapColumnToSource( index.column() ) == -1 ) // actions
   {
-    if ( role == TypeRole )
+    if ( role == static_cast< int >( CustomRole::Type ) )
       return ColumnTypeActionButton;
-    else if ( role == QgsAttributeTableModel::FeatureIdRole )
+    else if ( role == static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) )
     {
       const QModelIndex fieldIndex = QSortFilterProxyModel::mapToSource( QSortFilterProxyModel::index( index.row(), 0, index.parent() ) );
-      return sourceModel()->data( fieldIndex, QgsAttributeTableModel::FeatureIdRole );
+      return sourceModel()->data( fieldIndex, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) );
     }
   }
-  else if ( role == TypeRole )
+  else if ( role == static_cast< int >( CustomRole::Type ) )
     return ColumnTypeField;
 
   return QSortFilterProxyModel::data( index, role );

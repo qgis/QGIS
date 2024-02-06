@@ -290,7 +290,7 @@ void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpressi
   if ( mSortByDisplayExpression )
     setInjectNull( false );
 
-  setSortRole( QgsAttributeTableModel::SortRole + 1 );
+  setSortRole( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) + 1 );
   setDynamicSortFilter( mSortByDisplayExpression );
   sort( 0, order );
 }

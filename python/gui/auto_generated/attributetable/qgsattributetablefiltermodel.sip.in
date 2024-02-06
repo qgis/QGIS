@@ -34,11 +34,11 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ColumnTypeActionButton
     };
 
-    enum Role
-    {
-      TypeRole
-    };
 
+    enum class CustomRole
+    {
+      Type
+    };
 
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 %Docstring

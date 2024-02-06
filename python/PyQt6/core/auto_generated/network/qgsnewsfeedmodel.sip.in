@@ -23,7 +23,8 @@ feeds from a https://github.com/elpaso/qgis-feed server instance.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole /BaseType=IntEnum/
     {
       Key,
       Title,

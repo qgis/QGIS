@@ -28,12 +28,13 @@ A model containing registered connection names for a specific data provider.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole
     {
-      RoleConnectionName,
-      RoleUri,
-      RoleConfiguration,
-      RoleEmpty,
+      ConnectionName,
+      Uri,
+      Configuration,
+      Empty,
     };
 
     explicit QgsProviderConnectionModel( const QString &provider, QObject *parent /TransferThis/ = 0 );

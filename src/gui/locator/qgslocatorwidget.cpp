@@ -206,7 +206,7 @@ void QgsLocatorWidget::showContextMenu( const QPoint &point )
   if ( !index.isValid() )
     return;
 
-  const QList<QgsLocatorResult::ResultAction> actions = mResultsView->model()->data( index, QgsLocatorModel::ResultActionsRole ).value<QList<QgsLocatorResult::ResultAction>>();
+  const QList<QgsLocatorResult::ResultAction> actions = mResultsView->model()->data( index, static_cast< int >( QgsLocatorModel::CustomRole::ResultActions ) ).value<QList<QgsLocatorResult::ResultAction>>();
   QMenu *contextMenu = new QMenu( mResultsView );
   for ( auto resultAction : actions )
   {

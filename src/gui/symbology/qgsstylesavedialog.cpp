@@ -166,7 +166,7 @@ QgsStyle::StyleEntity QgsStyleSaveDialog::selectedType() const
 
 QgsStyle *QgsStyleSaveDialog::destinationStyle()
 {
-  if ( QgsStyle *style = qobject_cast< QgsStyle * >( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), QgsProjectStyleDatabaseModel::StyleRole ).value< QObject * >() ) )
+  if ( QgsStyle *style = qobject_cast< QgsStyle * >( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
   {
     return style;
   }

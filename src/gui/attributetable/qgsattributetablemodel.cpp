@@ -677,20 +677,20 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != Qt::DisplayRole
          && role != Qt::ToolTipRole
          && role != Qt::EditRole
-         && role != FeatureIdRole
-         && role != FieldIndexRole
+         && role != static_cast< int >( CustomRole::FeatureId )
+         && role != static_cast< int >( CustomRole::FieldIndex )
          && role != Qt::BackgroundRole
          && role != Qt::ForegroundRole
          && role != Qt::DecorationRole
          && role != Qt::FontRole
-         && role < SortRole
+         && role < static_cast< int >( CustomRole::Sort )
        )
      )
     return QVariant();
 
   const QgsFeatureId rowId = rowToId( index.row() );
 
-  if ( role == FeatureIdRole )
+  if ( role == static_cast< int >( CustomRole::FeatureId ) )
     return rowId;
 
   if ( index.column() >= mFieldCount )
@@ -698,12 +698,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   const int fieldId = mAttributes.at( index.column() );
 
-  if ( role == FieldIndexRole )
+  if ( role == static_cast< int >( CustomRole::FieldIndex ) )
     return fieldId;
 
-  if ( role >= SortRole )
+  if ( role >= static_cast< int >( CustomRole::Sort ) )
   {
-    const unsigned long cacheIndex = role - SortRole;
+    const unsigned long cacheIndex = role - static_cast< int >( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
       return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
     else

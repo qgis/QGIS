@@ -223,7 +223,7 @@ void QgsWelcomePage::newsItemActivated( const QModelIndex &index )
   if ( !index.isValid() )
     return;
 
-  const QUrl link = index.data( QgsNewsFeedModel::Link ).toUrl();
+  const QUrl link = index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Link ) ).toUrl();
   QDesktopServices::openUrl( link );
 }
 
@@ -391,7 +391,7 @@ void QgsWelcomePage::showContextMenuForNews( QPoint point )
   if ( !index.isValid() )
     return;
 
-  const int key = index.data( QgsNewsFeedModel::Key ).toInt();
+  const int key = index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
 
   QMenu *menu = new QMenu();
 
@@ -459,7 +459,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
         const QPoint itemClickPoint = mouseEvent->pos() - mNewsFeedListView->visualRect( index ).topLeft();
         if ( QRect( mNewsDelegate->dismissRect().left(), mNewsDelegate->dismissRect().top(), mNewsDelegate->dismissRectSize().width(), mNewsDelegate->dismissRectSize().height() ).contains( itemClickPoint ) )
         {
-          mNewsFeedParser->dismissEntry( index.data( QgsNewsFeedModel::Key ).toInt() );
+          mNewsFeedParser->dismissEntry( index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt() );
         }
         return true;
       }

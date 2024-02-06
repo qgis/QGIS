@@ -152,6 +152,21 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
       Status = 2,
     };
 
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsTaskManagerModel::Roles
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTaskManagerModel, Roles ) : int
+    {
+      Status SIP_MONKEYPATCH_COMPAT_NAME(StatusRole) = Qt::UserRole, //!< Status role
+    };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
+
     /**
      * Constructor for QgsTaskManagerModel
      * \param manager task manager for model
@@ -173,12 +188,6 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
      * task was found.
      */
     QgsTask *indexToTask( const QModelIndex &index ) const;
-
-    //! Model roles
-    enum Roles
-    {
-      StatusRole = Qt::UserRole, //!< Status role
-    };
 
   private slots:
 

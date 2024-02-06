@@ -80,7 +80,7 @@ QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const
 {
   if ( const QListView *view = qobject_cast< const QListView * >( option.widget ) )
   {
-    if ( index.data( QgsStyleModel::IsTitleRole ).toBool() )
+    if ( index.data( static_cast< int >( QgsStyleModel::CustomRole::IsTitle ) ).toBool() )
     {
       // make titles take up full width of list view widgets
       QFont f = option.font;
@@ -98,7 +98,7 @@ QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const
   }
   else if ( qobject_cast< const QTreeView * >( option.widget ) )
   {
-    if ( index.data( QgsStyleModel::IsTitleRole ).toBool() )
+    if ( index.data( static_cast< int >( QgsStyleModel::CustomRole::IsTitle ) ).toBool() )
     {
       QSize defaultSize = QStyledItemDelegate::sizeHint( option, index );
       // add a little bit of vertical padding
@@ -111,7 +111,7 @@ QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const
 
 void QgsStyleModelDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  if ( index.data( QgsStyleModel::IsTitleRole ).toBool() )
+  if ( index.data( static_cast< int >( QgsStyleModel::CustomRole::IsTitle ) ).toBool() )
   {
     QStyleOptionViewItem titleOption( option );
     initStyleOption( &titleOption, index );
@@ -396,7 +396,7 @@ QgsStyle::StyleEntity QgsStyleItemsListWidget::currentEntityType() const
 
   const QModelIndex index = selection.at( 0 ).topLeft();
 
-  return static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
+  return static_cast< QgsStyle::StyleEntity >( mModel->data( index, static_cast< int >( QgsStyleModel::CustomRole::Type ) ).toInt() );
 }
 
 void QgsStyleItemsListWidget::showEvent( QShowEvent *event )
@@ -567,10 +567,10 @@ void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index )
   const QString symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ) ).toString();
   lblSymbolName->setText( symbolName );
 
-  const QString sourceName = mModel->data( mModel->index( index.row(), 0 ), QgsStyleModel::StyleFileName ).toString();
+  const QString sourceName = mModel->data( mModel->index( index.row(), 0 ), static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ) ).toString();
 
-  emit selectionChanged( symbolName, static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() ) );
-  emit selectionChangedWithStylePath( symbolName, static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() ), sourceName );
+  emit selectionChanged( symbolName, static_cast< QgsStyle::StyleEntity >( mModel->data( index, static_cast< int >( QgsStyleModel::CustomRole::Type ) ).toInt() ) );
+  emit selectionChangedWithStylePath( symbolName, static_cast< QgsStyle::StyleEntity >( mModel->data( index, static_cast< int >( QgsStyleModel::CustomRole::Type ) ).toInt() ), sourceName );
 }
 
 void QgsStyleItemsListWidget::groupsCombo_currentIndexChanged( int index )

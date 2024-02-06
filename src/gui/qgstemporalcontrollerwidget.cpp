@@ -231,7 +231,7 @@ void QgsTemporalControllerWidget::aboutToShowRangeMenu()
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
     const QModelIndex index = mMapLayerModel->index( i, 0 );
-    QgsMapLayer *currentLayer = mMapLayerModel->data( index, QgsMapLayerModel::LayerRole ).value<QgsMapLayer *>();
+    QgsMapLayer *currentLayer = mMapLayerModel->data( index, static_cast< int >( QgsMapLayerModel::CustomRole::Layer ) ).value<QgsMapLayer *>();
     if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
       continue;
 

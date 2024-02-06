@@ -238,6 +238,9 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         }
         case Tags:
           return mStyle->tagsOfSymbol( entityType, name ).join( QLatin1String( ", " ) );
+
+        default:
+          break;
       }
       return QVariant();
     }
@@ -414,20 +417,23 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
         case Tags:
           return QVariant();
+
+        default:
+          break;
       }
       return QVariant();
     }
 
-    case TypeRole:
+    case static_cast< int >( CustomRole::Type ):
       return entityType;
 
-    case TagRole:
+    case static_cast< int >( CustomRole::Tag ):
       return mStyle->tagsOfSymbol( entityType, name );
 
-    case IsFavoriteRole:
+    case static_cast< int >( CustomRole::IsFavorite ):
       return mStyle->isFavorite( entityType, name );
 
-    case SymbolTypeRole:
+    case static_cast< int >( CustomRole::SymbolType ):
     {
       switch ( entityType )
       {
@@ -451,7 +457,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case LayerTypeRole:
+    case static_cast< int >( CustomRole::LayerType ):
     {
       switch ( entityType )
       {
@@ -470,7 +476,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case CompatibleGeometryTypesRole:
+    case static_cast< int >( CustomRole::CompatibleGeometryTypes ):
     {
       switch ( entityType )
       {
@@ -498,13 +504,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case EntityName:
+    case static_cast< int >( CustomRole::EntityName ):
       return name;
 
-    case StyleName:
+    case static_cast< int >( CustomRole::StyleName ):
       return mStyle->name();
 
-    case StyleFileName:
+    case static_cast< int >( CustomRole::StyleFileName ):
       return mStyle->fileName();
 
     default:
@@ -543,6 +549,9 @@ bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, in
 
     case Tags:
       return false;
+
+    default:
+      break;
   }
 
   return false;
@@ -709,7 +718,7 @@ void QgsStyleModel::onFavoriteChanged( QgsStyle::StyleEntity type, const QString
 {
   const int offset = offsetForEntity( type );
   QModelIndex i = index( offset + mEntityNames[ type ].indexOf( name ), Name );
-  emit dataChanged( i, i, QVector< int >() << Role::IsFavoriteRole );
+  emit dataChanged( i, i, QVector< int >() << static_cast< int >( CustomRole::IsFavorite ) );
 }
 
 void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName )
@@ -891,17 +900,17 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
   const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
-  if ( sourceModel()->data( index, QgsStyleModel::IsTitleRole ).toBool() )
+  if ( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::IsTitle ) ).toBool() )
     return true;
 
   const QString name = sourceModel()->data( index ).toString();
-  const QStringList tags = sourceModel()->data( index, QgsStyleModel::TagRole ).toStringList();
+  const QStringList tags = sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::Tag ) ).toStringList();
 
-  QgsStyle::StyleEntity styleEntityType = static_cast< QgsStyle::StyleEntity >( sourceModel()->data( index, QgsStyleModel::TypeRole ).toInt() );
+  QgsStyle::StyleEntity styleEntityType = static_cast< QgsStyle::StyleEntity >( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::Type ) ).toInt() );
   if ( mEntityFilterEnabled && ( mEntityFilters.empty() || !mEntityFilters.contains( styleEntityType ) ) )
     return false;
 
-  Qgis::SymbolType symbolType = static_cast< Qgis::SymbolType >( sourceModel()->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+  Qgis::SymbolType symbolType = static_cast< Qgis::SymbolType >( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::SymbolType ) ).toInt() );
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
@@ -919,14 +928,14 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
       case QgsStyle::LabelSettingsEntity:
       {
-        if ( mLayerType != static_cast< Qgis::GeometryType >( sourceModel()->data( index, QgsStyleModel::LayerTypeRole ).toInt() ) )
+        if ( mLayerType != static_cast< Qgis::GeometryType >( sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::LayerType ) ).toInt() ) )
           return false;
         break;
       }
 
       case QgsStyle::Symbol3DEntity:
       {
-        const QVariantList types = sourceModel()->data( index, QgsStyleModel::CompatibleGeometryTypesRole ).toList();
+        const QVariantList types = sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::CompatibleGeometryTypes ) ).toList();
         if ( !types.empty() && !types.contains( QVariant::fromValue( mLayerType ) ) )
           return false;
         break;
@@ -943,7 +952,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( !mTagFilter.isEmpty() && !tags.contains( mTagFilter, Qt::CaseInsensitive ) )
     return false;
 
-  if ( mFavoritesOnly && !sourceModel()->data( index, QgsStyleModel::IsFavoriteRole ).toBool() )
+  if ( mFavoritesOnly && !sourceModel()->data( index, static_cast< int >( QgsStyleModel::CustomRole::IsFavorite ) ).toBool() )
     return false;
 
   if ( !mFilterString.isEmpty() )
@@ -979,13 +988,13 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
 bool QgsStyleProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  const QString leftSource = sourceModel()->data( left, QgsStyleModel::StyleFileName ).toString();
-  const QString rightSource = sourceModel()->data( right, QgsStyleModel::StyleFileName ).toString();
+  const QString leftSource = sourceModel()->data( left, static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ) ).toString();
+  const QString rightSource = sourceModel()->data( right, static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ) ).toString();
   if ( leftSource != rightSource )
     return QString::localeAwareCompare( leftSource, rightSource ) < 0;
 
-  const QString leftName = sourceModel()->data( left, QgsStyleModel::EntityName ).toString();
-  const QString rightName = sourceModel()->data( right, QgsStyleModel::EntityName ).toString();
+  const QString leftName = sourceModel()->data( left, static_cast< int >( QgsStyleModel::CustomRole::EntityName ) ).toString();
+  const QString rightName = sourceModel()->data( right, static_cast< int >( QgsStyleModel::CustomRole::EntityName ) ).toString();
   return QString::localeAwareCompare( leftName, rightName ) < 0;
 }
 

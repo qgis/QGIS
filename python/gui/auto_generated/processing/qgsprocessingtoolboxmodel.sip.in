@@ -248,15 +248,16 @@ of this model.
 %End
   public:
 
-    enum Roles
+
+      enum class CustomRole
     {
-      RoleNodeType,
-      RoleAlgorithmFlags,
-      RoleAlgorithmId,
-      RoleAlgorithmName,
-      RoleAlgorithmShortDescription,
-      RoleAlgorithmTags,
-      RoleProviderFlags,
+      NodeType,
+      AlgorithmFlags,
+      AlgorithmId,
+      AlgorithmName,
+      AlgorithmShortDescription,
+      AlgorithmTags,
+      ProviderFlags,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,

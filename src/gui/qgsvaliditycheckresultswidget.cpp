@@ -69,7 +69,7 @@ QVariant QgsValidityCheckResultsModel::data( const QModelIndex &index, int role 
     case Qt::ToolTipRole:
       return res.title;
 
-    case QgsValidityCheckResultsModel::DescriptionRole:
+    case static_cast< int >( QgsValidityCheckResultsModel::CustomRole::Description ):
       return res.detailedDescription;
 
     case Qt::DecorationRole:
@@ -208,6 +208,6 @@ bool QgsValidityCheckResultsWidget::runChecks( int type, const QgsValidityCheckC
 
 void QgsValidityCheckResultsWidget::selectionChanged( const QModelIndex &current, const QModelIndex & )
 {
-  const QString desc = mResultsModel->data( current, QgsValidityCheckResultsModel::DescriptionRole ).toString();
+  const QString desc = mResultsModel->data( current, static_cast< int >( QgsValidityCheckResultsModel::CustomRole::Description ) ).toString();
   mDetailedDescriptionTextBrowser->setHtml( desc );
 }
