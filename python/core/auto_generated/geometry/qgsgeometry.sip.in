@@ -3014,7 +3014,7 @@ geometry will retain the same dimensionality as the input geometry.
 
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) /Factory/;
 %Docstring
-Creates and returns a new geometry engine representing the specified ``geometry`` using ``precision`` on a grid.
+Creates and returns a new geometry engine representing the specified ``geometry`` using ``precision`` on a grid. The ``precision`` argument was added in 3.36.
 
 A geometry engine is a low-level representation of a :py:class:`QgsAbstractGeometry` object, optimised for use with external
 geometry libraries such as GEOS.
