@@ -3128,7 +3128,7 @@ class CORE_EXPORT QgsGeometry
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
-     * Creates and returns a new geometry engine representing the specified \a geometry using \a precision on a grid.
+     * Creates and returns a new geometry engine representing the specified \a geometry using \a precision on a grid. The \a precision argument was added in 3.36.
      *
      * A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
      * geometry libraries such as GEOS.
