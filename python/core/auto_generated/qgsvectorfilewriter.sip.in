@@ -390,6 +390,10 @@ Constructor
         QgsLayerMetadata layerMetadata;
 
         bool includeConstraints;
+
+        bool setFieldDomains;
+
+        const QgsAbstractDatabaseProviderConnection *sourceDatabaseProviderConnection;
     };
 
 
@@ -710,6 +714,7 @@ Returns whether there are among the attributes specified some that do not exist 
 %End
 
   protected:
+
 
 
 
