@@ -46,14 +46,12 @@ PyQgsBlockingProcess
 PyQgsBookmarkModel
 PyQgsCodeEditor
 PyQgsColorRampLegendNode
-PyQgsCombinedStyleModel
 PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsFieldFormattersTest
 PyQgsProject
-PyQgsProjectStyleSettings
 PyQgsFields
 PyQgsFieldModel
 PyQgsFloatingWidget
@@ -61,18 +59,13 @@ PyQgsGeometryTest
 PyQgsJsonUtils
 PyQgsLayerMetadata
 PyQgsLayerMetadataResultsModel
-PyQgsLayoutExporter
-PyQgsLayoutManagerModel
 PyQgsLayoutView
-PyQgsLayoutGuide
 PyQgsLayoutHtml
 PyQgsLayoutMarker
 PyQgsLayoutPolygon
 PyQgsLayoutPolyline
 PyQgsLineSymbolLayers
-PyQgsLocator
 PyQgsMapBoxGlStyleConverter
-PyQgsMapLayerModel
 PyQgsMetadataBase
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
@@ -80,7 +73,6 @@ PyQgsOGRProviderGpkg
 PyQgsPalLabelingPlacement
 PyQgsPlot
 PyQgsPointCloudAttributeModel
-PyQgsPointCloudClassifiedRenderer
 PyQgsProcessExecutablePt1
 PyQgsProcessExecutablePt2
 PyQgsProcessingInPlace
@@ -88,8 +80,6 @@ PyQgsProcessingAlgRunner
 PyQgsProcessingParameters
 PyQgsProcessingPackageLayersAlgorithm
 PyQgsProjectMetadata
-PyQgsProviderConnectionModel
-PyQgsSensorModel
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
@@ -101,7 +91,6 @@ PyQgsSymbolLayerReadSld
 PyQgsStringUtils
 PyQgsStyleModel
 PyQgsTextDocument
-PyQgsValidityResultsWidget
 PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
@@ -135,5 +124,4 @@ ProcessingGrassAlgorithmsImageryTest
 ProcessingGrassAlgorithmsRasterTestPt1
 ProcessingGrassAlgorithmsRasterTestPt2
 ProcessingGrassAlgorithmsVectorTest
-PyQgsCoordinateReferenceSystemModel
 PyQgsProviderRegistry
