@@ -652,6 +652,9 @@ bool QgsAfsProvider::setSubsetString( const QString &subset, bool )
   if ( trimmedSubset == mSharedData->subsetString() )
     return true;
 
+  // We must not change the subset string of the shared data used in another iterator/data provider ...
+  mSharedData = mSharedData->clone();
+
   mSharedData->setSubsetString( trimmedSubset );
 
   // Update datasource uri too
