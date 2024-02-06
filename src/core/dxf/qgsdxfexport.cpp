@@ -833,7 +833,15 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( job->renderer->usedAttributes( ctx ), job->featureSource.fields() );
   QgsCoordinateTransform ct( mMapSettings.destinationCrs(), job->crs, mMapSettings.transformContext() );
-  req.setFilterRect( ct.transform( mExtent ) );
+  try
+  {
+    req.setFilterRect( ct.transform( mMapSettings.extent() ) );
+  }
+  catch ( const QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "QgsDxfExport::writeEntitiesSymbolLevels(): extent reprojection failed" ) );
+    return;
+  }
 
   QgsFeatureIterator fit = job->featureSource.getFeatures( req );
 
