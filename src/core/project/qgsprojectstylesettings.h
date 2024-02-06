@@ -312,8 +312,8 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProjectStyleDatabaseModel, Role ) : int
     {
-      Style SIP_MONKEYPATCH_COMPAT_NAME(StyleRole)  = Qt::UserRole + 1, //!< Style object
-      Path SIP_MONKEYPATCH_COMPAT_NAME(PathRole), //!< Style path
+      Style SIP_MONKEYPATCH_COMPAT_NAME(StyleRole) = Qt::UserRole + 1, //!< Style object
+      Path SIP_MONKEYPATCH_COMPAT_NAME(PathRole) //!< Style path
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

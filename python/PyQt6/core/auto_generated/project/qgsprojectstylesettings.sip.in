@@ -254,7 +254,7 @@ List model representing the style databases associated with a :py:class:`QgsProj
     enum class CustomRole /BaseType=IntEnum/
     {
       Style,
-      Path,
+      Path
     };
 
     explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent /TransferThis/ = 0 );
