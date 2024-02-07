@@ -71,7 +71,7 @@ else()
   )
 
   if (WITH_GUI)
-    target_link_libraries(provider_delimitedtext_gui
+    target_link_libraries(provider_delimitedtext
       qgis_gui
     )
     add_dependencies(provider_delimitedtext ui)
