@@ -1256,22 +1256,19 @@ void QgsLayoutMapWidget::mCopyGridPushButton_clicked()
 
   QgsLayoutItemMapGrid *sourceGrid = mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
   int i = 0;
-  bool found = true;
   QString itemName = tr( "%1 - Copy" ).arg( sourceGrid->name() );
   QList< QgsLayoutItemMapGrid * > grids = mMapItem->grids()->asList();
-  while ( found )
+  while ( true )
   {
-    for ( const QgsLayoutItemMapGrid *grd : std::as_const( grids ) )
+    const auto it = std::find_if( grids.begin(), grids.end(), [&itemName]( const QgsLayoutItemMapGrid * grd ) { return grd->name() == itemName; } );
+    if ( it != grids.end() )
     {
-      if ( grd->name() == itemName )
-      {
-        i++;
-        itemName = tr( "%1 - Copy %2" ).arg( sourceGrid->name() ).arg( i );
-      }
+      i++;
+      itemName = tr( "%1 - Copy %2" ).arg( sourceGrid->name() ).arg( i );
+      continue;
     }
-    found = false;
+    break;
   }
-  //const QString itemName = tr( "Grid %1" ).arg( mMapItem->grids()->size() + 1 );
   QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( itemName, mMapItem );
   grid->copyProperties( sourceGrid );
 
