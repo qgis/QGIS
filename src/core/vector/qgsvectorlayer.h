@@ -1583,7 +1583,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
-     * \since 3.10
+     * \since QGIS 3.10
      */
     int addTopologicalPoints( const QgsPoint &p );
 
@@ -1601,7 +1601,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
-     * \since 3.16
+     * \since QGIS 3.16
      */
     int addTopologicalPoints( const QgsPointSequence &ps );
 

@@ -766,7 +766,7 @@ class CORE_EXPORT Qgis
 
     /**
      * Different methods of HTTP requests
-     * \since 3.22
+     * \since QGIS 3.22
      */
     enum class HttpMethod : int
     {
@@ -5120,7 +5120,7 @@ inline bool qgsNanCompatibleEquals( double a, double b )
  * \param a first number
  * \param b second number
  * \param epsilon maximum difference allowable between numbers
- * \since 3.36
+ * \since QGIS 3.36
  */
 template<typename T>
 inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )

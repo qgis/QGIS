@@ -2538,7 +2538,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Returns TRUE if point markers should be clipped to the polygon boundary.
      *
      * \see setClipPoints()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     bool clipPoints() const { return mClipPoints; }
 
@@ -2546,7 +2546,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether point markers should be \a clipped to the polygon boundary.
      *
      * \see clipPoints()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     void setClipPoints( bool clipPoints ) { mClipPoints = clipPoints; }
 
@@ -2554,7 +2554,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Returns TRUE if point markers should be clipped to the current part boundary only.
      *
      * \see setClipPoints()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     bool clipOnCurrentPartOnly() const { return mClipOnCurrentPartOnly; }
 
@@ -2562,7 +2562,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether point markers should be \a clipped to the current part boundary only.
      *
      * \see clipOnCurrentPartOnly()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly ) { mClipOnCurrentPartOnly = clipOnCurrentPartOnly; }
 

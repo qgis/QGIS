@@ -334,7 +334,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     /**
      * Tests a \a candidate string to see how likely it is a match for
      * a specified \a search string.
-     * \since 3.14
+     * \since QGIS 3.14
      */
     static double fuzzyScore( const QString &candidate, const QString &search );
 

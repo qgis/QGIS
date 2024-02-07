@@ -198,7 +198,7 @@ class SERVER_EXPORT QgsServerResponse
 
     /**
      * Returns the socket feedback if any
-     * \since 3.36
+     * \since QGIS 3.36
      */
     virtual QgsFeedback *feedback() const;
 };

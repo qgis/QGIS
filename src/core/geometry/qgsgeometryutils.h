@@ -261,7 +261,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
-     * \since 3.0
+     * \since QGIS 3.0
      */
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
                                QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * For line defined by points pt1 and pt3, find out on which side of the line is point pt2.
      * Returns -1 if pt2 on the left side, 1 if pt2 is on the right side or 0 if pt2 lies on the line.
-     * \since 3.0
+     * \since QGIS 3.0
      */
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
@@ -852,7 +852,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
-     * \since 3.0
+     * \since QGIS 3.0
      * \deprecated Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) SIP_DEPRECATED SIP_HOLDGIL

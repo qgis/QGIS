@@ -247,7 +247,7 @@ class CORE_EXPORT QgsStringUtils
      * \param search search term string
      * \return Normalized value of how likely is the \a search to be in the \a candidate
      * \note Use this function only to calculate the fuzzy score between two strings and later compare these values, but do not depend on the actual numbers. They are implementation detail that may change in a future release.
-     * \since 3.14
+     * \since QGIS 3.14
      */
     static double fuzzyScore( const QString &candidate, const QString &search );
 

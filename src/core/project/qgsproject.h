@@ -1731,7 +1731,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \brief Emitted when loading layers has produced some messages
      * \param layerName the layer name
      * \param messages a list of pairs of Qgis::MessageLevel and messages
-     * \since 3.2
+     * \since QGIS 3.2
      */
     void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 

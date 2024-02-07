@@ -280,7 +280,7 @@ class CORE_EXPORT QgsInterval
      *
      * Returns 0.0 if the original duration was not set.
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     double originalDuration() const { return mOriginalDuration; }
 
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see originalDuration()
      *
-     * \since 3.18
+     * \since QGIS 3.18
      */
     Qgis::TemporalUnit originalUnit() const { return mOriginalUnit; }
 

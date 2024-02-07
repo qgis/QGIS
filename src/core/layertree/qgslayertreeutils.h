@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLayerTreeUtils
 
     /**
      * Stores in a layer's originalXmlProperties the layer properties information
-     * \since 3.6
+     * \since QGIS 3.6
      */
     static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 
