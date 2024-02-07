@@ -307,7 +307,6 @@ class CORE_EXPORT QgsSymbolLayer
      * \see setColor()
      * \see setFillColor()
      *
-     * \since QGIS 2.1
     */
     virtual void setStrokeColor( const QColor &color );
 
@@ -321,7 +320,6 @@ class CORE_EXPORT QgsSymbolLayer
      * \see color()
      * \see fillColor()
      *
-     * \since QGIS 2.1
     */
     virtual QColor strokeColor() const;
 
@@ -334,7 +332,6 @@ class CORE_EXPORT QgsSymbolLayer
      * \see setColor()
      * \see setStrokeColor()
      *
-     * \since QGIS 2.1
     */
     virtual void setFillColor( const QColor &color );
 
@@ -348,7 +345,6 @@ class CORE_EXPORT QgsSymbolLayer
      * \see color()
      * \see strokeColor()
      *
-     * \since QGIS 2.1
     */
     virtual QColor fillColor() const;
 
@@ -588,7 +584,6 @@ class CORE_EXPORT QgsSymbolLayer
      * Returns the current paint effect for the layer.
      * \returns paint effect
      * \see setPaintEffect
-     * \since QGIS 2.9
      */
     QgsPaintEffect *paintEffect() const;
 
@@ -596,7 +591,6 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets the current paint effect for the layer.
      * \param effect paint effect. Ownership is transferred to the layer.
      * \see paintEffect
-     * \since QGIS 2.9
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
@@ -604,7 +598,6 @@ class CORE_EXPORT QgsSymbolLayer
      * Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
      * \param context symbol render context
-     * \since QGIS 2.12
      */
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
 
@@ -720,7 +713,6 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Copies paint effect of this layer to another symbol layer
      * \param destLayer destination layer
-     * \since QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
@@ -830,7 +822,6 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param lineAngle Angle in degrees clockwise from north, valid values are between 0 and 360
      * \see setAngle()
      * \see angle()
-     * \since QGIS 2.9
      */
     void setLineAngle( double lineAngle ) { mLineAngle = lineAngle; }
 
@@ -1007,7 +998,6 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * Returns the approximate bounding box of the marker symbol layer, taking into account
      * any data defined overrides and offsets which are set for the marker layer.
      * \returns approximate symbol bounds, in painter units
-     * \since QGIS 2.14
      */
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 

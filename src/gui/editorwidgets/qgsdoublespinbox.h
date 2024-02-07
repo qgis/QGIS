@@ -90,7 +90,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * \param enabled set to TRUE to allow expression entry
-     * \since QGIS 2.7
      */
     void setExpressionsEnabled( bool enabled );
 
@@ -98,7 +97,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * \returns TRUE if spin box allows expression entry
-     * \since QGIS 2.7
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 

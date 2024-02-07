@@ -14,8 +14,6 @@ class QgsShadowEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
 Base class for paint effects which offset, blurred shadows
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -300,8 +298,6 @@ class QgsDropShadowEffect : QgsShadowEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
 A paint effect which draws an offset and optionally blurred drop shadow
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -337,8 +333,6 @@ class QgsInnerShadowEffect : QgsShadowEffect /NoDefaultCtors/
 %Docstring(signature="appended")
 A paint effect which draws an offset and optionally blurred drop shadow
 within a picture.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode

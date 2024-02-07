@@ -261,8 +261,6 @@ Copy color ramp stops to a QGradient
 :param gradient: gradient to copy stops into
 :param opacity: opacity multiplier. Opacity of colors will be multiplied
                 by this factor before adding to the gradient.
-
-.. versionadded:: 2.1
 %End
 
     QColor::Spec colorSpec() const;
@@ -388,8 +386,6 @@ Returns the string identifier for QgsLimitedRandomColorRamp.
                                        int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
 %Docstring
 Gets a list of random colors
-
-.. versionadded:: 2.4
 %End
 
     void updateColors();
@@ -525,8 +521,6 @@ this method pregenerates a set of visually distinct colors which are returned
 by subsequent calls to :py:func:`~QgsRandomColorRamp.color`.
 
 :param colorCount: number of unique colors
-
-.. versionadded:: 2.5
 %End
 
     static QString typeString();

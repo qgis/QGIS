@@ -65,7 +65,6 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
 
     /**
      * SVG viewbox size.
-     * \since QGIS 2.14
      */
     QSizeF viewboxSize;
 
@@ -194,7 +193,6 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \warning The blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
      * application) or crashes will result. Only for use in external scripts or QGIS server.
      *
-     * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
@@ -234,7 +232,6 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \warning The \a blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
      * application) or crashes will result. Only for use in external scripts or QGIS server.
      *
-     * \since QGIS 2.14
      */
     void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
                          bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,

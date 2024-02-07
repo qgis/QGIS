@@ -565,8 +565,6 @@ Removes a vector layer join
     QgsVectorLayerJoinBuffer *joinBuffer();
 %Docstring
 Returns the join buffer object.
-
-.. versionadded:: 2.14.7
 %End
 
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
@@ -604,9 +602,6 @@ Add a new field which is calculated by the expression specified
 :param fld: The field to calculate
 
 :return: The index of the new field
-
-
-.. versionadded:: 2.9
 %End
 
     void removeExpressionField( int index );
@@ -614,8 +609,6 @@ Add a new field which is calculated by the expression specified
 Removes an expression field
 
 :param index: The index of the field
-
-.. versionadded:: 2.6
 %End
 
     QString expressionField( int index ) const;
@@ -625,9 +618,6 @@ Returns the expression used for a given expression field
 :param index: An index of an epxression based (virtual) field
 
 :return: The expression for the field at index
-
-
-.. versionadded:: 2.9
 %End
 
     void updateExpressionField( int index, const QString &exp );
@@ -637,8 +627,6 @@ Changes the expression used to define an expression based (virtual) field
 :param index: The index of the expression to change
 
 :param exp: The new expression to set
-
-.. versionadded:: 2.9
 %End
 
     QgsActionManager *actions();
@@ -684,8 +672,6 @@ Selects matching features using an expression.
 .. seealso:: :py:func:`selectByRect`
 
 .. seealso:: :py:func:`selectByIds`
-
-.. versionadded:: 2.16
 %End
 
     void selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
@@ -700,8 +686,6 @@ Selects matching features using a list of feature IDs. Will emit the
 .. seealso:: :py:func:`selectByRect`
 
 .. seealso:: :py:func:`selectByExpression`
-
-.. versionadded:: 2.16
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
@@ -802,8 +786,6 @@ Returns whether the layer contains labels which are enabled and should be drawn.
 :return: ``True`` if layer contains enabled labels
 
 .. seealso:: :py:func:`setLabelsEnabled`
-
-.. versionadded:: 2.9
 %End
 
     void setLabelsEnabled( bool enabled );
@@ -825,8 +807,6 @@ Sets whether labels should be ``enabled`` for the layer.
 Returns whether the layer contains diagrams which are enabled and should be drawn.
 
 :return: ``True`` if layer contains enabled diagrams
-
-.. versionadded:: 2.9
 %End
 
     void setDiagramRenderer( QgsDiagramRenderer *r /Transfer/ );
@@ -1221,8 +1201,6 @@ Deletes a vertex from a feature.
    by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
-
-.. versionadded:: 2.14
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0, QgsVectorLayer::DeleteContext *context = 0 );
@@ -1735,8 +1713,6 @@ Synchronises with changes in the datasource
 
 %Docstring
 Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
-
-.. versionadded:: 2.4
 %End
 
     virtual QgsRectangle extent() const ${SIP_FINAL};
@@ -1947,8 +1923,6 @@ Renames an attribute field  (but does not commit it).
    by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
    to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
-
-.. versionadded:: 2.16
 %End
 
     QString attributeAlias( int index ) const;
@@ -2490,8 +2464,6 @@ Currently any filtering expression provided will override filters in the Feature
 :param feedback: optional feedback argument for early cancellation (since QGIS 3.22)
 
 :return: calculated aggregate value
-
-.. versionadded:: 2.16
 %End
 
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -2509,15 +2481,11 @@ Returns the current blending mode for features
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
 Sets the simplification settings for fast rendering of features
-
-.. versionadded:: 2.2
 %End
 
     const QgsVectorSimplifyMethod &simplifyMethod() const;
 %Docstring
 Returns the simplification settings for fast rendering of features
-
-.. versionadded:: 2.2
 %End
 
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
@@ -2527,8 +2495,6 @@ Returns whether the VectorLayer can apply the specified simplification hint
 .. note::
 
    Do not use in 3rd party code - may be removed in future version!
-
-.. versionadded:: 2.2
 %End
 
     QgsConditionalLayerStyles *conditionalStyles() const;
@@ -2538,8 +2504,6 @@ used to render conditional formatting in the attribute table.
 
 :return: Return a :py:class:`QgsConditionalLayerStyles` object holding the conditional attribute
          style information. Style information is generic and can be used for anything.
-
-.. versionadded:: 2.12
 %End
 
     QgsAttributeTableConfig attributeTableConfig() const;
@@ -2565,8 +2529,6 @@ This defines the appearance of the attribute table.
 Returns the configuration of the form used to represent this vector layer.
 
 :return: The configuration of this layers' form
-
-.. versionadded:: 2.14
 %End
 
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );

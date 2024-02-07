@@ -15,8 +15,6 @@ class QgsUnitTypes
 {
 %Docstring(signature="appended")
 Helper functions for various unit types.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode

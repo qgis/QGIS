@@ -294,7 +294,6 @@ struct LabelRenderJob
  * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
  * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 {
@@ -460,7 +459,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     /**
      * Returns map settings with which this job was started.
      * \returns A QgsMapSettings instance with render settings
-     * \since QGIS 2.8
      */
     const QgsMapSettings &mapSettings() const;
 
@@ -691,7 +689,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
  *
  * The image can be queried even while the rendering is still in progress to get intermediate result
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob SIP_ABSTRACT
 {

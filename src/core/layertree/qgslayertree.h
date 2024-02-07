@@ -38,7 +38,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Check whether the node is a valid group node
      *
-     * \since QGIS 2.4
      */
     static inline bool isGroup( QgsLayerTreeNode *node )
     {
@@ -48,7 +47,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Check whether the node is a valid layer node
      *
-     * \since QGIS 2.4
      */
     static inline bool isLayer( const QgsLayerTreeNode *node )
     {
@@ -59,7 +57,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a group.
      *
      * \note Not available in Python bindings, because cast is automatic.
-     * \since QGIS 2.4
      */
     static inline QgsLayerTreeGroup *toGroup( QgsLayerTreeNode *node ) SIP_SKIP
     {
@@ -70,7 +67,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a layer.
      *
      * \note Not available in Python bindings, because cast is automatic.
-     * \since QGIS 2.4
      */
     static inline QgsLayerTreeLayer *toLayer( QgsLayerTreeNode *node ) SIP_SKIP
     {
@@ -81,7 +77,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a layer.
      *
      * \note Not available in Python bindings, because cast is automatic.
-     * \since QGIS 2.4
      */
     static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node ) SIP_SKIP
     {

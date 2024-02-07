@@ -68,31 +68,26 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Set combination of flags that will be used for rendering.
-     * \since QGIS 2.14
      */
     void setFlags( Qgis::RenderContextFlags flags );
 
     /**
      * Enable or disable a particular flag (other flags are not affected)
-     * \since QGIS 2.14
      */
     void setFlag( Qgis::RenderContextFlag flag, bool on = true );
 
     /**
      * Returns combination of flags used for rendering.
-     * \since QGIS 2.14
      */
     Qgis::RenderContextFlags flags() const;
 
     /**
      * Check whether a particular flag is enabled.
-     * \since QGIS 2.14
      */
     bool testFlag( Qgis::RenderContextFlag flag ) const;
 
     /**
      * create initialized QgsRenderContext instance from given QgsMapSettings
-     * \since QGIS 2.4
      */
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 
@@ -651,7 +646,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * The default is to use no simplification.
      *
      * \see setVectorSimplifyMethod()
-     * \since QGIS 2.4
      */
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
 
@@ -666,7 +660,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \see vectorSimplifyMethod()
      *
-     * \since QGIS 2.4
      */
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
@@ -674,7 +667,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Sets the expression context. This context is used for all expression evaluation
      * associated with this render context.
      * \see expressionContext()
-     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
@@ -682,7 +674,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets the expression context. This context should be used for all expression evaluation
      * associated with this render context.
      * \see setExpressionContext()
-     * \since QGIS 2.12
      */
     QgsExpressionContext &expressionContext() { return mExpressionContext; }
 
@@ -691,7 +682,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * associated with this render context.
      * \see setExpressionContext()
      * \note not available in Python bindings
-     * \since QGIS 2.12
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
 
@@ -704,7 +694,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Set a filter feature provider used for additional filtering of rendered features.
      * \param ffp the filter feature provider
      * \see featureFilterProvider()
-     * \since QGIS 2.14
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
@@ -712,7 +701,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets the filter feature provider used for additional filtering of rendered features.
      * \returns the filter feature provider
      * \see setFeatureFilterProvider()
-     * \since QGIS 2.14
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 

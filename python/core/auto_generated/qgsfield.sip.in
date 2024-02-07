@@ -220,8 +220,6 @@ Sets a metadata ``property`` to ``value``.
 %Docstring
 Returns if this field is numeric. Any integer or floating point type
 will return ``True`` for this.
-
-.. versionadded:: 2.18
 %End
 
     bool isDateOrTime() const;

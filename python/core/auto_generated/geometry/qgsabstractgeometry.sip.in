@@ -31,8 +31,6 @@ Abstract base class for all geometries
    methods for working with geodesic calculations and spatial operations on geometries,
    and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
    are required.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -705,8 +703,6 @@ Adds a z-dimension to the geometry, initialized to a preset value.
 .. seealso:: :py:func:`dropZValue`
 
 .. seealso:: :py:func:`addMValue`
-
-.. versionadded:: 2.12
 %End
 
     virtual bool addMValue( double mValue = 0 ) = 0;
@@ -720,8 +716,6 @@ Adds a measure to the geometry, initialized to a preset value.
 .. seealso:: :py:func:`dropMValue`
 
 .. seealso:: :py:func:`addZValue`
-
-.. versionadded:: 2.12
 %End
 
     virtual bool dropZValue() = 0;
@@ -733,8 +727,6 @@ Drops any z-dimensions which exist in the geometry.
 .. seealso:: :py:func:`addZValue`
 
 .. seealso:: :py:func:`dropMValue`
-
-.. versionadded:: 2.14
 %End
 
     virtual bool dropMValue() = 0;
@@ -746,8 +738,6 @@ Drops any measure values which exist in the geometry.
 .. seealso:: :py:func:`addMValue`
 
 .. seealso:: :py:func:`dropZValue`
-
-.. versionadded:: 2.14
 %End
 
     virtual void swapXy() = 0;
@@ -764,8 +754,6 @@ coordinates reversed.
 Converts the geometry to a specified type.
 
 :return: ``True`` if conversion was successful
-
-.. versionadded:: 2.14
 %End
 
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;

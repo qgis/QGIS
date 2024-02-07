@@ -33,7 +33,6 @@ class QgsVectorLayer;
  * (optionally associated with a vector layer).
  * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
- * \since QGIS 2.3
  */
 class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
 {

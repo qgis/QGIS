@@ -14,8 +14,6 @@ class QgsColorSwatchDelegate : QAbstractItemDelegate
 A delegate for showing a color swatch in a list
 
 .. seealso:: :py:class:`QgsColorSchemeList`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -39,8 +37,6 @@ class QgsColorSchemeModel: QAbstractItemModel
 A model for colors in a color scheme
 
 .. seealso:: :py:class:`QgsColorSchemeList`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -145,8 +141,6 @@ class QgsColorSchemeList: QTreeView
 An editable list of color swatches, taken from an associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorSchemeList`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode

@@ -166,13 +166,11 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
      *
-     * \since QGIS 2.18
      */
     bool showLabel() const;
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
-     * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
 
@@ -247,7 +245,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     /**
      * Should be implemented by subclasses to save type specific configuration.
      *
-     * \since QGIS 2.18
      */
     virtual void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const = 0;
 
@@ -261,7 +258,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * All subclasses need to overwrite this method and return a type specific identifier.
      * Needs to be XML key compatible.
      *
-     * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
 

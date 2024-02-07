@@ -127,7 +127,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Returns selected attributes that must be exported with their displayed values instead of their raw values.
      *
-     * \since QGIS 2.16
      */
     QgsAttributeList attributesAsDisplayedValues() const;
 

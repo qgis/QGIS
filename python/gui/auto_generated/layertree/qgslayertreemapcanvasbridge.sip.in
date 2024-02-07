@@ -24,8 +24,6 @@ to the layer tree will trigger just one update of canvas layers.
 Also allows the client to override the default order of layers. This is useful
 in advanced cases where the grouping in layer tree should be independent from the actual
 order in the canvas.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

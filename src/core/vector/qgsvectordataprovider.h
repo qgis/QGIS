@@ -130,7 +130,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
      *
      * \returns new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
-     * \since QGIS 2.4
      */
     virtual QgsAbstractFeatureSource *featureSource() const = 0 SIP_FACTORY;
 
@@ -253,7 +252,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param ok will be set to TRUE if calculation was successfully performed by the data provider
      * \param fids list of fids to filter, otherwise will use all fids
      * \returns calculated aggregate value
-     * \since QGIS 2.16
      */
     virtual QVariant aggregate( Qgis::Aggregate aggregate,
                                 int index,
@@ -320,7 +318,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * manually to ensure that the layer's field are correctly reported.
      * \param renamedAttributes map of attribute index to new attribute name
      * \returns TRUE in case of success and FALSE in case of failure
-     * \since QGIS 2.16
      */
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
 

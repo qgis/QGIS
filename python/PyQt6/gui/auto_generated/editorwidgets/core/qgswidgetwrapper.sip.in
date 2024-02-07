@@ -137,8 +137,6 @@ If it cannot be used this is a hint to the caller that he may try to find
 another suitable widget type instead.
 
 :return: Validity status of this widget.
-
-.. versionadded:: 2.12
 %End
 
 

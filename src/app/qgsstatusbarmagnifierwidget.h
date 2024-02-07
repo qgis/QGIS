@@ -29,7 +29,6 @@ class QgsDoubleSpinBox;
 /**
   * A widget which lets the user select the current level of magnification to
   * apply to the canvas.
-  * \since QGIS 2.16
   */
 class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
 {

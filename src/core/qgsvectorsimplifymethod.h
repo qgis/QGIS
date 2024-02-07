@@ -25,7 +25,6 @@
 /**
  * \ingroup core
  * \brief This class contains information how to simplify geometries fetched from a vector layer
- * \since QGIS 2.2
  */
 class CORE_EXPORT QgsVectorSimplifyMethod
 {

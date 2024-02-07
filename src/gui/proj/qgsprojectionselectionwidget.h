@@ -41,7 +41,6 @@ class CombinedCoordinateReferenceSystemsProxyModel;
  * \class QgsProjectionSelectionWidget
  * \ingroup gui
  * \brief A widget for selecting a projection.
- * \since QGIS 2.7
  */
 class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {

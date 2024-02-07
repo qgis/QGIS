@@ -40,7 +40,6 @@ typedef void *GDALDatasetH SIP_SKIP;
  * - cell size and raster size
  * - offset of the raster grid
  *
- * \since QGIS 2.12
  */
 class ANALYSIS_EXPORT QgsAlignRaster
 {

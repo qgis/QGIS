@@ -102,7 +102,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Loads field names and values from the specified map.
-     *  \since QGIS 2.12
      * \deprecated since QGIS 3.14 this will not do anything, use setLayer() instead
      */
     Q_DECL_DEPRECATED void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) SIP_DEPRECATED;
@@ -138,7 +137,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Returns the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \see setExpressionContext
-     * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const { return mExpressionContext; }
 
@@ -147,7 +145,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * preview result and to populate the list of available functions and variables.
      * \param context expression context
      * \see expressionContext
-     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );
 

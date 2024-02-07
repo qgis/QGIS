@@ -33,7 +33,6 @@ class QgsVectorLayer;
  * \class QgsGeometryEditUtils
  * \brief Convenience functions for geometry editing
  * \note not available in Python bindings
- * \since QGIS 2.10
  */
 class QgsGeometryEditUtils
 {

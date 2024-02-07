@@ -50,8 +50,6 @@ search mode.
 %Docstring
 Creates an expression matching the current search filter value and
 search properties represented in the widget.
-
-.. versionadded:: 2.16
 %End
 
 

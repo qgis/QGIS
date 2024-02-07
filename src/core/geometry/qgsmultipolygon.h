@@ -26,7 +26,6 @@ class QgsPolygon;
  * \ingroup core
  * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {

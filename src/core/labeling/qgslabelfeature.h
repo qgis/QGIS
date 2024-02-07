@@ -51,7 +51,6 @@ class QgsGeometry;
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
- * \since QGIS 2.12
  */
 class CORE_EXPORT QgsLabelFeature
 {
@@ -188,7 +187,6 @@ class CORE_EXPORT QgsLabelFeature
      * Returns the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
      * \see setZIndex()
-     * \since QGIS 2.14
      */
     double zIndex() const { return mZIndex; }
 
@@ -197,7 +195,6 @@ class CORE_EXPORT QgsLabelFeature
      * z-index labels.
      * \param zIndex z-index for label
      * \see zIndex()
-     * \since QGIS 2.14
      */
     void setZIndex( double zIndex ) { mZIndex = zIndex; }
 

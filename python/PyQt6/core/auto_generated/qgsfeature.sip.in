@@ -206,8 +206,6 @@ its attributes:
 .. seealso:: :py:func:`setAttributes`
 
 .. seealso:: :py:func:`attributeMap`
-
-.. versionadded:: 2.9
 %End
 
 
@@ -514,8 +512,6 @@ Assigns a field map with the feature to allow attribute access by attribute name
 :param initAttributes: If ``True``, attributes are initialized. Clears any data previously assigned.
 
 .. seealso:: :py:func:`fields`
-
-.. versionadded:: 2.9
 %End
 
     QgsFields fields() const;

@@ -38,7 +38,6 @@ class QgsProject;
  * \ingroup core
  * \brief Container class that allows storage of map themes consisting of visible
  *  map layers and layer styles.
- * \since QGIS 2.12
 */
 
 class CORE_EXPORT QgsMapThemeCollection : public QObject

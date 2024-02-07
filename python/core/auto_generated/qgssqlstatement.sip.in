@@ -13,8 +13,6 @@ class QgsSQLStatement
 {
 %Docstring(signature="appended")
 Class for parsing SQL statements.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

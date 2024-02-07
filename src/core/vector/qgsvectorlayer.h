@@ -701,7 +701,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the join buffer object.
-     * \since QGIS 2.14.7
      */
     QgsVectorLayerJoinBuffer *joinBuffer() { return mJoinBuffer; }
 
@@ -740,7 +739,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns The index of the new field
      *
-     * \since QGIS 2.9
      */
     int addExpressionField( const QString &exp, const QgsField &fld );
 
@@ -749,7 +747,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \param index The index of the field
      *
-     * \since QGIS 2.6
      */
     void removeExpressionField( int index );
 
@@ -760,7 +757,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns The expression for the field at index
      *
-     * \since QGIS 2.9
      */
     QString expressionField( int index ) const;
 
@@ -771,7 +767,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \param exp The new expression to set
      *
-     * \since QGIS 2.9
      */
     void updateExpressionField( int index, const QString &exp );
 
@@ -816,7 +811,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context since QGIS 3.26, specifies an optional expression context to use when selecting features. If not specified a default one will be built.
      * \see selectByRect()
      * \see selectByIds()
-     * \since QGIS 2.16
      */
     Q_INVOKABLE void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, QgsExpressionContext *context = nullptr );
 
@@ -828,7 +822,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * from selection, etc.
      * \see selectByRect()
      * \see selectByExpression()
-     * \since QGIS 2.16
      */
     Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
@@ -908,7 +901,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns TRUE if layer contains enabled labels
      *
      * \see setLabelsEnabled()
-     * \since QGIS 2.9
      */
     bool labelsEnabled() const;
 
@@ -926,7 +918,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns whether the layer contains diagrams which are enabled and should be drawn.
      * \returns TRUE if layer contains enabled diagrams
-     * \since QGIS 2.9
      */
     bool diagramsEnabled() const;
 
@@ -1278,7 +1269,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
-     * \since QGIS 2.14
      */
     Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
@@ -1669,7 +1659,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * \since QGIS 2.4
      */
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) FINAL SIP_FACTORY;
 
@@ -1843,7 +1832,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
-     * \since QGIS 2.16
      */
     bool renameAttribute( int index, const QString &newName );
 
@@ -2306,7 +2294,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param feedback optional feedback argument for early cancellation (since QGIS 3.22)
      * \param error optional storage for error messages (not available in Python bindings)
      * \returns calculated aggregate value
-     * \since QGIS 2.16
      */
     QVariant aggregate( Qgis::Aggregate aggregate,
                         const QString &fieldOrExpression,
@@ -2326,20 +2313,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Sets the simplification settings for fast rendering of features
-     * \since QGIS 2.2
      */
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod ) { mSimplifyMethod = simplifyMethod; }
 
     /**
      * Returns the simplification settings for fast rendering of features
-     * \since QGIS 2.2
      */
     inline const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
      * Returns whether the VectorLayer can apply the specified simplification hint
      * \note Do not use in 3rd party code - may be removed in future version!
-     * \since QGIS 2.2
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
@@ -2348,7 +2332,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * used to render conditional formatting in the attribute table.
      * \returns Return a QgsConditionalLayerStyles object holding the conditional attribute
      * style information. Style information is generic and can be used for anything.
-     * \since QGIS 2.12
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
 
@@ -2373,7 +2356,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns The configuration of this layers' form
      *
-     * \since QGIS 2.14
      */
     QgsEditFormConfig editFormConfig() const;
 

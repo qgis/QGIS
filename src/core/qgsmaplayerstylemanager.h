@@ -52,7 +52,6 @@ class QgsMapLayer;
  * The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
  * style followed by restoration of the original style (for example, when rendering a map with a different than current style).
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 {

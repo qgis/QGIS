@@ -220,7 +220,6 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * Ownership of \a fileNamesSubset is transferred. A \a fieldNameSubset of NULLPTR indicates that all fields should be used.
      *
      * \see joinFieldNamesSubset()
-     * \since QGIS 2.6
     */
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset SIP_TRANSFER ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
@@ -231,7 +230,6 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      *
      * \see setJoinFieldNamesSubset()
      *
-     * \since QGIS 2.6
     */
     QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
@@ -245,7 +243,6 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     /**
      * An optional prefix. If it is a Null string "{layername}_" will be used
-     * \since QGIS 2.8
      */
     QString mPrefix;
 

@@ -18,8 +18,6 @@ code autocompletion.
 .. note::
 
    may not be available in Python bindings, depending on platform support
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode

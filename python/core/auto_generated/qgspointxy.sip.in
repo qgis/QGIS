@@ -67,8 +67,6 @@ Create a point from x,y coordinates
 Create a point from a QPointF
 
 :param point: QPointF source
-
-.. versionadded:: 2.7
 %End
 
     QgsPointXY( QPoint point ) /HoldGIL/;
@@ -76,8 +74,6 @@ Create a point from a QPointF
 Create a point from a QPoint
 
 :param point: QPoint source
-
-.. versionadded:: 2.7
 %End
 
     QgsPointXY( const QgsPoint &point ) /HoldGIL/;
@@ -128,8 +124,6 @@ Gets the y value of the point
 Converts a point to a QPointF
 
 :return: QPointF with same x and y values
-
-.. versionadded:: 2.7
 %End
 
     QString toString( int precision = -1 ) const;
@@ -166,8 +160,6 @@ Returns the distance between this point and a specified x, y coordinate.
 :param y: y-coordinate
 
 .. seealso:: :py:func:`sqrDist`
-
-.. versionadded:: 2.16
 %End
 
     double distance( const QgsPointXY &other ) const /HoldGIL/;
@@ -177,8 +169,6 @@ Returns the distance between this point and another point.
 :param other: other point
 
 .. seealso:: :py:func:`sqrDist`
-
-.. versionadded:: 2.16
 %End
 
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
@@ -198,8 +188,6 @@ in a specified bearing.
 
 :param distance: distance to project
 :param bearing: angle to project in, clockwise in degrees starting from north
-
-.. versionadded:: 2.16
 %End
 
     bool isEmpty() const /HoldGIL/;
@@ -222,8 +210,6 @@ Compares this point with another point with a fuzzy tolerance
 :return: ``True`` if points are equal within specified tolerance
 
 .. seealso:: :py:func:`distanceCompare`
-
-.. versionadded:: 2.9
 %End
 
     bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;

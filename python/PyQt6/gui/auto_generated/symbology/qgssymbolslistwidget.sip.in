@@ -56,8 +56,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     const QgsVectorLayer *layer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
   public slots:

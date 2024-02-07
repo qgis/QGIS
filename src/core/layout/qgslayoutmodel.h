@@ -199,7 +199,6 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * from the composition is restored to the composition.
      * \param item to mark as restored to the composition
      * \see setItemRemoved
-     * \since QGIS 2.5
      */
     void setItemRestored( QgsComposerItem *item );
 #endif

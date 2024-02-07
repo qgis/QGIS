@@ -38,7 +38,6 @@ class QgsMapLayer;
  * however possible that temporarily a layer exists in one tree more than just
  * once, e.g. while reordering items with drag and drop.
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 {
@@ -230,7 +229,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     /**
      * Emitted when a previously available layer got unloaded (from layer registry).
-     * \since QGIS 2.6
      */
     void layerWillBeUnloaded();
 

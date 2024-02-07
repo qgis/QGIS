@@ -31,7 +31,6 @@ class QgsVectorLayer;
  * \class QgsHistogram
  * \brief Calculator for a numeric histogram from a list of values.
  *
- * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsHistogram

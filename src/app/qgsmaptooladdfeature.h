@@ -28,7 +28,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
     QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     /**
-     * \since QGIS 2.12
      * \deprecated Will be made in QGIS 4
      */
     QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
@@ -49,7 +48,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
 
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
-     * \since QGIS 2.12
     */
     bool mCheckGeometryType;
 };

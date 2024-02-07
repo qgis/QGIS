@@ -31,7 +31,6 @@ class QgsVectorLayer;
  * \ingroup gui
  * \brief This is a dialog to build and manage a list of order by clauses.
  *
- * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBase

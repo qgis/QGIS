@@ -30,7 +30,6 @@ class QgsLineString;
  * \ingroup core
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 {
@@ -169,7 +168,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     /**
      * Returns a reversed copy of the curve, where the direction of the curve has been flipped.
-     * \since QGIS 2.14
      */
     virtual QgsCurve *reversed() const = 0 SIP_FACTORY;
 

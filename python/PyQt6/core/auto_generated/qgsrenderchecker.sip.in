@@ -162,10 +162,6 @@ This method will return either the path set with :py:func:`~QgsRenderChecker.set
 %End
 
     void setMapSettings( const QgsMapSettings &mapSettings );
-%Docstring
-
-.. versionadded:: 2.4
-%End
 
     void setColorTolerance( unsigned int colorTolerance );
 %Docstring
@@ -174,8 +170,6 @@ Default value is 0.
 
 :param colorTolerance: is maximum difference for each color component
                        including alpha to be considered correct.
-
-.. versionadded:: 2.1
 %End
 
     void setSizeTolerance( int xTolerance, int yTolerance );
@@ -184,8 +178,6 @@ Sets the largest allowable difference in size between the rendered and the expec
 
 :param xTolerance: x tolerance in pixels
 :param yTolerance: y tolerance in pixels
-
-.. versionadded:: 2.12
 %End
 
     enum class Flag /BaseType=IntFlag/

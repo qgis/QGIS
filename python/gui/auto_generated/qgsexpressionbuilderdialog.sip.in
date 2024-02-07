@@ -58,8 +58,6 @@ Returns the expression context for the dialog. The context is used for the expre
 preview result and for populating the list of available functions and variables.
 
 .. seealso:: :py:func:`setExpressionContext`
-
-.. versionadded:: 2.12
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
@@ -70,8 +68,6 @@ preview result and for populating the list of available functions and variables.
 :param context: expression context
 
 .. seealso:: :py:func:`expressionContext`
-
-.. versionadded:: 2.12
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );

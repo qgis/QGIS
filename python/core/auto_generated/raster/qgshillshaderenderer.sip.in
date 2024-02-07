@@ -16,8 +16,6 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 {
 %Docstring(signature="appended")
 A renderer for generating live hillshade models.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

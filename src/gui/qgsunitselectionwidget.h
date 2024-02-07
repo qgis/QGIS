@@ -138,7 +138,6 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
      * Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
      * map scale from the canvas.
      * \param canvas map canvas
-     * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
@@ -184,7 +183,6 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     /**
      * Sets the units which the user can choose from in the combobox. Clears any existing units.
      * \param units list of valid units
-     * \since QGIS 2.9
      */
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
 
@@ -194,7 +192,6 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     /**
      * Returns the current predefined selected unit (if applicable).
      * \returns selected output unit, or QgsUnitTypes::RenderUnknownUnit if the widget was populated with custom unit types
-     * \since QGIS 2.9
      */
     Qgis::RenderUnit unit() const;
 
@@ -221,7 +218,6 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      * Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale from the canvas.
      * \param canvas map canvas
-     * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 

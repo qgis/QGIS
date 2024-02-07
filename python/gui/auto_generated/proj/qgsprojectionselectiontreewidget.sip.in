@@ -203,8 +203,6 @@ Notifies others that the widget is now fully initialized, including deferred sel
     void projectionDoubleClicked();
 %Docstring
 Emitted when a projection is double clicked in the list.
-
-.. versionadded:: 2.14
 %End
 
     void hasValidSelectionChanged( bool isValid );

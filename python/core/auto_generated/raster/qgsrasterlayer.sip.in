@@ -390,8 +390,6 @@ Sets the default contrast enhancement
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 %Docstring
 Draws a preview of the rasterlayer into a QImage
-
-.. versionadded:: 2.4
 %End
 
     virtual void setLayerOrder( const QStringList &layers );

@@ -15,8 +15,6 @@ class QgsCompoundColorWidget : QgsPanelWidget
 %Docstring(signature="appended")
 A custom QGIS widget for selecting a color, including options for selecting colors via
 hue wheel, color swatches, and a color sampler.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

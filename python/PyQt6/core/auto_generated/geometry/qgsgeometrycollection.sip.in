@@ -16,8 +16,6 @@ class QgsGeometryCollection: QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Geometry collection
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -351,8 +349,6 @@ when comparing against ``type``).
     virtual bool wktOmitChildType() const;
 %Docstring
 Returns whether child type names are omitted from Wkt representations of the collection
-
-.. versionadded:: 2.12
 %End
 
     bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );

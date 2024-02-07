@@ -38,8 +38,6 @@ Base class for all diagram types.
     virtual QgsDiagram *clone() const = 0 /Factory/;
 %Docstring
 Returns an instance that is equivalent to this one
-
-.. versionadded:: 2.4
 %End
 
     void clearCache();
@@ -50,8 +48,6 @@ Returns a prepared expression for the specified context.
 
 :param expression: expression string
 :param context: expression context
-
-.. versionadded:: 2.12
 %End
 
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) = 0;
@@ -79,8 +75,6 @@ Returns the size of the legend item for the diagram corresponding to a specified
 :param value: value to return legend item size for
 :param s: diagram settings
 :param is: interpolation settings
-
-.. versionadded:: 2.16
 %End
 
   protected:
@@ -139,8 +133,6 @@ Returns the scaled size of a diagram for a value, respecting the specified diagr
 :param value: value to calculate corresponding circular size for
 :param s: diagram settings
 :param is: interpolation settings
-
-.. versionadded:: 2.16
 %End
 
 };

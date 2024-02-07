@@ -26,8 +26,6 @@ for particular layers between the first render update and the moment the layer
 actually has partially rendered something in the resulting image.
 
 The class is thread-safe (multiple classes can access the same instance safely).
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

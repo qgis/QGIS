@@ -24,7 +24,6 @@ email                : marco.hugentobler at sourcepole dot com
  * \ingroup core
  * \class QgsMultiPoint
  * \brief Multi point geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 {

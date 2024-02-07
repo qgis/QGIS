@@ -30,7 +30,6 @@ class QgsProject;
 /**
  * \ingroup core
  * \brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
- * \since QGIS 2.3
  */
 class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
@@ -58,7 +57,6 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \see filters()
      *
-     * \since QGIS 2.3
      */
     QgsMapLayerProxyModel *setFilters( Qgis::LayerFilters filters );
 
@@ -75,7 +73,6 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \see setFilters()
      *
-     * \since QGIS 2.3
      */
     const Qgis::LayerFilters &filters() const { return mFilters; }
 

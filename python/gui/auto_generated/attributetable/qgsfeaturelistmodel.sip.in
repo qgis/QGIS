@@ -65,8 +65,6 @@ If ``True`` is specified, a NULL value will be injected
 .. note::
 
    If set to ``True``, the sort by display expression cannot be used
-
-.. versionadded:: 2.9
 %End
 
     bool injectNull();
@@ -74,8 +72,6 @@ If ``True`` is specified, a NULL value will be injected
 Returns the current state of null value injection
 
 :return: If a NULL value is added
-
-.. versionadded:: 2.9
 %End
 
     QgsAttributeTableModel *masterModel();

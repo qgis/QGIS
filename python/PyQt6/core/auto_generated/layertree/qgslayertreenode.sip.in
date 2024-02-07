@@ -58,8 +58,6 @@ Custom properties that have already been used within QGIS:
 .. seealso:: :py:class:`QgsLayerTreeLayer`
 
 .. seealso:: :py:class:`QgsLayerTreeGroup`
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

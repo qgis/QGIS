@@ -241,8 +241,6 @@ Sets the units for the tolerance distance.
 .. seealso:: :py:func:`setTolerance`
 
 .. seealso:: :py:func:`toleranceUnit`
-
-.. versionadded:: 2.12
 %End
 
     Qgis::RenderUnit toleranceUnit() const;
@@ -252,8 +250,6 @@ Returns the units for the tolerance distance.
 .. seealso:: :py:func:`tolerance`
 
 .. seealso:: :py:func:`setToleranceUnit`
-
-.. versionadded:: 2.12
 %End
 
     void setToleranceMapUnitScale( const QgsMapUnitScale &scale );

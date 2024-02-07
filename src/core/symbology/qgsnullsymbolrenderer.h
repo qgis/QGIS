@@ -26,7 +26,6 @@ class QgsSymbol;
  * \class QgsNullSymbolRenderer
  * \brief Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
  * and diagrams for the layer. Selected features will also be drawn with a default symbol.
- * \since QGIS 2.16
  */
 class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 {

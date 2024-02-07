@@ -257,7 +257,6 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      * \param gradient gradient to copy stops into
      * \param opacity opacity multiplier. Opacity of colors will be multiplied
      * by this factor before adding to the gradient.
-     * \since QGIS 2.1
      */
     void addStopsToGradient( QGradient *gradient, double opacity = 1 ) const;
 
@@ -381,7 +380,6 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 
     /**
      * Gets a list of random colors
-     * \since QGIS 2.4
      */
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
@@ -509,7 +507,6 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
      * this method pregenerates a set of visually distinct colors which are returned
      * by subsequent calls to color().
      * \param colorCount number of unique colors
-     * \since QGIS 2.5
      */
     virtual void setTotalColorCount( int colorCount );
 

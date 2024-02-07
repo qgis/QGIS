@@ -105,7 +105,6 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /**
      * Enumeration of flags that adjust the way the map tool operates
-     * \since QGIS 2.16
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -118,7 +117,6 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /**
      * Returns the flags for the map tool.
-     * \since QGIS 2.16
      */
     virtual Flags flags() const { return Flags(); }
 
@@ -207,7 +205,6 @@ class GUI_EXPORT QgsMapTool : public QObject
     /**
      * Emit map tool changed with the old tool
      * \see setToolName()
-     * \since QGIS 2.3
      */
     QString toolName() { return mToolName; }
 
@@ -215,21 +212,18 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Gets search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
-     *  \since QGIS 2.3
     */
     static double searchRadiusMM();
 
     /**
      * Gets search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
-     *  \since QGIS 2.3
     */
     static double searchRadiusMU( const QgsRenderContext &context );
 
     /**
      * Gets search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
-     *  \since QGIS 2.3
      */
     static double searchRadiusMU( QgsMapCanvas *canvas );
 

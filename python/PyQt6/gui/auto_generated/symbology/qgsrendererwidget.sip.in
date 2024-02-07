@@ -61,8 +61,6 @@ Returns the context in which the renderer widget is shown, e.g., the associated 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
     void applyChanges();
@@ -217,8 +215,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
   public slots:

@@ -42,7 +42,6 @@ class QgsMapCanvas;
  *
  * \see QgsExtentWidget
  *
- * \since QGIS 2.4
  */
 class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 {
@@ -141,14 +140,12 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
     /**
      * Sets the base part of \a title of the group box (will be appended with extent state)
      * \see titleBase()
-     * \since QGIS 2.12
      */
     void setTitleBase( const QString &title );
 
     /**
      * Returns the base part of title of the group box (will be appended with extent state).
      * \see setTitleBase()
-     * \since QGIS 2.12
      */
     QString titleBase() const;
 

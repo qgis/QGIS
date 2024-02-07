@@ -15,8 +15,6 @@ class QgsOrganizeTableColumnsDialog : QDialog
 {
 %Docstring(signature="appended")
 Dialog for organising (hiding and reordering) columns in the attributes table.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

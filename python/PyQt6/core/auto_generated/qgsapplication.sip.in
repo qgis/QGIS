@@ -215,8 +215,6 @@ but don't have commit access.
 Returns the path to the developers map file.
 The developers map was created by using leaflet framework,
 it shows the contributors.json file.
-
-.. versionadded:: 2.7
 %End
 
     static QString sponsorsFilePath();
@@ -405,8 +403,6 @@ Returns the short name regular expression for line edit validator
 Returns the user's operating system login account name.
 
 .. seealso:: :py:func:`userFullName`
-
-.. versionadded:: 2.14
 %End
 
     static QString userFullName();
@@ -414,8 +410,6 @@ Returns the user's operating system login account name.
 Returns the user's operating system login account full display name.
 
 .. seealso:: :py:func:`userLoginName`
-
-.. versionadded:: 2.14
 %End
 
     static QString osName();
@@ -423,8 +417,6 @@ Returns the user's operating system login account full display name.
 Returns a string name of the operating system QGIS is running on.
 
 .. seealso:: :py:func:`platform`
-
-.. versionadded:: 2.14
 %End
 
     static int systemMemorySizeMb();
@@ -441,8 +433,6 @@ This is only supported on some platforms, and will return -1 if not supported.
 Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
 
 .. seealso:: :py:func:`osName`
-
-.. versionadded:: 2.14
 %End
 
 
@@ -685,8 +675,6 @@ This writes the "gdal/skipList" setting.
     static int maxThreads();
 %Docstring
 Gets maximum concurrent thread count
-
-.. versionadded:: 2.4
 %End
 
     static void setMaxThreads( int maxThreads );
@@ -696,8 +684,6 @@ Set maximum concurrent thread count
 .. note::
 
    must be between 2 and \#cores, -1 means use all available cores
-
-.. versionadded:: 2.4
 %End
 
     static QgsTaskManager *taskManager();

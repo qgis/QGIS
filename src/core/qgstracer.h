@@ -39,7 +39,6 @@ class QgsRenderContext;
  * layers and provides shortest path search for tracing of existing
  * features.
  *
- * \since QGIS 2.14
  */
 class CORE_EXPORT QgsTracer : public QObject
 {
@@ -129,7 +128,6 @@ class CORE_EXPORT QgsTracer : public QObject
     /**
      * Whether there was an error during graph creation due to noding exception,
      * indicating some input data topology problems
-     * \since QGIS 2.16
      */
     bool hasTopologyProblem() const { return mHasTopologyProblem; }
 

@@ -142,13 +142,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     SIP_END
 #endif
 
-    //! \since QGIS 2.8
     Qgis::BrowserItemState state() const;
 
     /**
      * Set item state. It also take care about starting/stopping loading icon animation.
      * \param state
-     * \since QGIS 2.8
      */
     virtual void setState( Qgis::BrowserItemState state );
 

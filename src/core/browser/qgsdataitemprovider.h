@@ -40,7 +40,6 @@ typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
  *   of the following: QgsDataProvider::Dir or QgsDataProvider::File. Passed path is the file
  *   or directory being inspected, parent item is a valid QgsDirectoryItem
  *
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsDataItemProvider
 {

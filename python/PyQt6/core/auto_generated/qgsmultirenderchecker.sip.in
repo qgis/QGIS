@@ -39,8 +39,6 @@ For every control image there may be one or several randomly named anomaly image
 allowed anomalies.
 For every control image, the allowed mismatch and color tolerance values will be calculated
 individually.
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode

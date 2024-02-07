@@ -2999,8 +2999,6 @@ numbers of digits between thousand separators
 :return: string converted to double if possible
 
 .. seealso:: :py:func:`permissiveToInt`
-
-.. versionadded:: 2.9
 %End
 
 int qgsPermissiveToInt( QString string, bool &ok );
@@ -3014,8 +3012,6 @@ numbers of digits between thousand separators
 :return: string converted to int if possible
 
 .. seealso:: :py:func:`permissiveToDouble`
-
-.. versionadded:: 2.9
 %End
 
 qlonglong qgsPermissiveToLongLong( QString string, bool &ok );

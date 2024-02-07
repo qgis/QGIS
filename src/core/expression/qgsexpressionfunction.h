@@ -49,7 +49,6 @@ class CORE_EXPORT QgsExpressionFunction
     /**
      * \ingroup core
       * \brief Represents a single parameter passed to a function.
-      * \since QGIS 2.16
       */
     class CORE_EXPORT Parameter
     {
@@ -144,7 +143,6 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * Constructor for function which uses named parameter list.
-     * \since QGIS 2.16
      */
     QgsExpressionFunction( const QString &fnname,
                            const QgsExpressionFunction::ParameterList &params,
@@ -209,7 +207,6 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * Returns the list of named parameters for the function, if set.
-     * \since QGIS 2.16
     */
     const QgsExpressionFunction::ParameterList &parameters() const { return mParameterList; }
 
@@ -220,7 +217,6 @@ class CORE_EXPORT QgsExpressionFunction
      * Returns a list of possible aliases for the function. These include
      * other permissible names for the function, e.g., deprecated names.
      * \returns list of known aliases
-     * \since QGIS 2.9
      */
     virtual QStringList aliases() const;
 
@@ -265,7 +261,6 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * Returns whether the function is only available if provided by a QgsExpressionContext object.
-     * \since QGIS 2.12
      */
     bool isContextual() const { return mIsContextual; }
 

@@ -34,7 +34,6 @@ class QgsExpressionNode;
  * so that feature requests can take advantage of the provider's native filtering support.
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
- * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsSqlExpressionCompiler

@@ -85,8 +85,6 @@ Renames an attribute field (but does not commit it)
 
 :param attr: attribute index
 :param newName: new name of field
-
-.. versionadded:: 2.16
 %End
 
     virtual bool commitChanges( QStringList &commitErrors );
@@ -260,8 +258,6 @@ Emitted when an attribute has been renamed
 
 :param idx: attribute index
 :param newName: new attribute name
-
-.. versionadded:: 2.16
 %End
 
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
@@ -276,8 +272,6 @@ Emitted after committing an attribute rename
 
 :param layerId: ID of layer
 :param renamedAttributes: map of field index to new name
-
-.. versionadded:: 2.16
 %End
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
     void committedFeaturesRemoved( const QString &layerId, const QgsFeatureIds &deletedFeatureIds );

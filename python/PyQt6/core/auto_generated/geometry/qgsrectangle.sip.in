@@ -322,8 +322,6 @@ Test if the rectangle is null (holding no spatial information).
 A null rectangle is also an empty rectangle.
 
 .. seealso:: :py:func:`setNull`
-
-.. versionadded:: 2.4
 %End
 
     QString asWktCoordinates() const;

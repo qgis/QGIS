@@ -16,8 +16,6 @@ class QgsScopedExpressionFunction : QgsExpressionFunction
 Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
 standard :py:class:`QgsExpression`.Function in that it requires an implemented
 :py:func:`~clone` method.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -36,8 +34,6 @@ standard :py:class:`QgsExpression`.Function in that it requires an implemented
                                  bool isContextual = true );
 %Docstring
 Create a new QgsScopedExpressionFunction
-
-.. versionadded:: 2.12
 %End
 
     QgsScopedExpressionFunction( const QString &fnname,
@@ -85,8 +81,6 @@ the project file's location. :py:class:`QgsExpressionContextScope` can encapsula
 and functions(which are calculated only when an expression is evaluated).
 
 See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContextScope` objects.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -498,8 +492,6 @@ where scopes added later to the stack will override conflicting variables and fu
 lower in the stack.
 
 See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContext` objects.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -872,8 +864,6 @@ Sets the original value variable value for the context.
 
 :param value: value for original value variable. This usually represents an original widget
               value before any data defined overrides have been applied.
-
-.. versionadded:: 2.12
 %End
 
     void setCachedValue( const QString &key, const QVariant &value ) const;
@@ -890,8 +880,6 @@ expression context.
 .. seealso:: :py:func:`cachedValue`
 
 .. seealso:: :py:func:`clearCachedValues`
-
-.. versionadded:: 2.16
 %End
 
     bool hasCachedValue( const QString &key ) const;
@@ -905,8 +893,6 @@ Returns ``True`` if the expression context contains a cached value with a matchi
 .. seealso:: :py:func:`cachedValue`
 
 .. seealso:: :py:func:`clearCachedValues`
-
-.. versionadded:: 2.16
 %End
 
     QVariant cachedValue( const QString &key ) const;
@@ -923,8 +909,6 @@ of an expensive expression sub-calculation.
 .. seealso:: :py:func:`hasCachedValue`
 
 .. seealso:: :py:func:`clearCachedValues`
-
-.. versionadded:: 2.16
 %End
 
     void clearCachedValues() const;
@@ -936,8 +920,6 @@ Clears all cached values from the context.
 .. seealso:: :py:func:`hasCachedValue`
 
 .. seealso:: :py:func:`cachedValue`
-
-.. versionadded:: 2.16
 %End
 
     QList< QgsMapLayerStore * > layerStores() const;

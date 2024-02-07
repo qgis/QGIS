@@ -14,8 +14,6 @@ class QgsPolygon: QgsCurvePolygon
 {
 %Docstring(signature="appended")
 Polygon geometry type.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode

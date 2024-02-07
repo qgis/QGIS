@@ -98,7 +98,6 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
  * with a set of default actions that can be used when building context menu.
  *
  * \see QgsLayerTreeModel
- * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
@@ -233,7 +232,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     /**
      * Gets current legend node. May be NULLPTR if current node is not a legend node.
-     * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
@@ -340,13 +338,11 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     /**
      * Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
-     * \since QGIS 2.18
      */
     void expandAllNodes();
 
     /**
      * Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
-     * \since QGIS 2.18
      */
     void collapseAllNodes();
 
@@ -463,7 +459,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
  * instance to provide custom context menus (opened upon right-click).
  *
  * \see QgsLayerTreeView
- * \since QGIS 2.4
  */
 class GUI_EXPORT QgsLayerTreeViewMenuProvider
 {

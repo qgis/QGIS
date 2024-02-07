@@ -68,7 +68,6 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
     /**
      * Creates an expression matching the current search filter value and
      * search properties represented in the widget.
-     * \since QGIS 2.16
      */
     virtual QString currentFilterExpression() const;
 

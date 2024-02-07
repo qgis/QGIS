@@ -105,7 +105,6 @@ class CORE_EXPORT QgsFeatureRequest
      * for the features returned by the iterator but internally all features will be requested
      * from the provider.
      *
-     * \since QGIS 2.14
      */
     class CORE_EXPORT OrderByClause
     {
@@ -217,7 +216,6 @@ class CORE_EXPORT QgsFeatureRequest
      * \brief Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
-     * \since QGIS 2.14
      */
     class OrderBy : public QList<QgsFeatureRequest::OrderByClause>
     {
@@ -526,7 +524,6 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * Calling this method will automatically set filterType() to QgsFeatureRequest::FilterExpression.
      *
-     * \since QGIS 2.14
      */
     QgsFeatureRequest &combineFilterExpression( const QString &expression );
 
@@ -534,7 +531,6 @@ class CORE_EXPORT QgsFeatureRequest
      * Returns the expression context used to evaluate filter expressions.
      * \see setExpressionContext
      * \see filterExpression
-     * \since QGIS 2.12
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
@@ -542,7 +538,6 @@ class CORE_EXPORT QgsFeatureRequest
      * Sets the expression context used to evaluate filter expressions.
      * \see expressionContext
      * \see setFilterExpression
-     * \since QGIS 2.12
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -555,7 +550,6 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \returns The object the method is called on for chaining
      *
-     * \since QGIS 2.12
      */
     QgsFeatureRequest &disableFilter() { mFilter = Qgis::FeatureRequestFilterType::NoFilter; mFilterExpression.reset(); return *this; }
 
@@ -567,7 +561,6 @@ class CORE_EXPORT QgsFeatureRequest
      *                   If the order is ascending, by default nulls are last
      *                   If the order is descending, by default nulls are first
      *
-     * \since QGIS 2.14
      */
 
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending = true );
@@ -579,21 +572,18 @@ class CORE_EXPORT QgsFeatureRequest
      * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
      * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
      *
-     * \since QGIS 2.14
      */
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
      * Returns a list of order by clauses specified for this feature request.
      *
-     * \since QGIS 2.14
      */
     OrderBy orderBy() const;
 
     /**
      * Set a list of order by clauses.
      *
-     * \since QGIS 2.14
      */
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 
@@ -601,14 +591,12 @@ class CORE_EXPORT QgsFeatureRequest
      * Set the maximum number of features to request.
      * \param limit maximum number of features, or -1 to request all features.
      * \see limit()
-     * \since QGIS 2.14
      */
     QgsFeatureRequest &setLimit( long long limit );
 
     /**
      * Returns the maximum number of features to request, or -1 if no limit set.
      * \see setLimit
-     * \since QGIS 2.14
      */
 #ifndef SIP_RUN
     long long limit() const { return mLimit; }
@@ -710,7 +698,6 @@ class CORE_EXPORT QgsFeatureRequest
      * Set a simplification method for geometries that will be fetched.
      *
      * \see simplifyMethod()
-     * \since QGIS 2.2
      */
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 
@@ -718,7 +705,6 @@ class CORE_EXPORT QgsFeatureRequest
      * Returns the simplification method for geometries that will be fetched.
      *
      * \see setSimplifyMethod()
-     * \since QGIS 2.2
      */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
@@ -812,7 +798,6 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \returns TRUE, if the filter accepts the feature
      *
-     * \since QGIS 2.1
      */
     bool acceptFeature( const QgsFeature &feature );
 
@@ -973,7 +958,6 @@ class QgsAbstractFeatureIterator;
 /**
  * \ingroup core
  * \brief Base class that can be used for any class that is capable of returning features
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsAbstractFeatureSource
 {

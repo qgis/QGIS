@@ -14,8 +14,6 @@ class QgsColorButton : QToolButton
 A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
 Offers live updates to button from color chooser dialog. An attached drop-down menu allows for copying
 and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -220,8 +218,6 @@ Sets whether a set to null (clear) option is shown in the button's drop-down men
 .. seealso:: :py:func:`showNull`
 
 .. seealso:: :py:func:`isNull`
-
-.. versionadded:: 2.16
 %End
 
     bool showNull() const;
@@ -231,8 +227,6 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
 .. seealso:: :py:func:`setShowNull`
 
 .. seealso:: :py:func:`isNull`
-
-.. versionadded:: 2.16
 %End
 
     bool isNull() const;
@@ -242,8 +236,6 @@ Returns ``True`` if the current color is null.
 .. seealso:: :py:func:`setShowNull`
 
 .. seealso:: :py:func:`showNull`
-
-.. versionadded:: 2.16
 %End
 
     QString noColorString() const;
@@ -417,8 +409,6 @@ Sets color to null.
 .. seealso:: :py:func:`setToNoColor`
 
 .. seealso:: :py:func:`cleared`
-
-.. versionadded:: 2.16
 %End
 
     void unlink();

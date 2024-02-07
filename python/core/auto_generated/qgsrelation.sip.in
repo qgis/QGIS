@@ -139,8 +139,6 @@ which have a foreign key pointing to the provided feature.
 .. seealso:: :py:func:`getRelatedFeatures`
 
 .. seealso:: :py:func:`getRelatedFeaturesRequest`
-
-.. versionadded:: 2.16
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;

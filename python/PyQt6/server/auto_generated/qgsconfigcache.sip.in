@@ -16,8 +16,6 @@ class QgsConfigCache : QObject
 {
 %Docstring(signature="appended")
 Cache for server configuration.
-
-.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode

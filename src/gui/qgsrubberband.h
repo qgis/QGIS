@@ -154,7 +154,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Sets the fill color for the rubberband
      *  \param color  The color used to render this rubberband
-     *  \since QGIS 2.6
      */
     void setFillColor( const QColor &color );
 
@@ -166,7 +165,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Sets the stroke color for the rubberband
      *  \param color  The color used to render this rubberband
-     *  \since QGIS 2.6
      */
     void setStrokeColor( const QColor &color );
 
@@ -264,7 +262,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * \param doUpdate set to TRUE to update the map canvas immediately
      * \param geometryIndex The index of the feature part (in case of multipart geometries)
      * \param ringIndex     The index of the polygon ring (in case of polygons with holes)
-     * \since QGIS 2.16
      */
     void closePoints( bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 

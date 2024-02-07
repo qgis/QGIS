@@ -487,7 +487,6 @@ class CORE_EXPORT QgsRasterBlock
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  \param row row index
      *  \param column column index
-     *  \since QGIS 2.10
     */
     void setIsData( int row, int column ) SIP_HOLDGIL
     {
@@ -500,7 +499,6 @@ class CORE_EXPORT QgsRasterBlock
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  \param index data matrix index (long type in Python)
-     *  \since QGIS 2.10
     */
     void setIsData( qgssize index ) SIP_HOLDGIL
     {
@@ -581,7 +579,6 @@ class CORE_EXPORT QgsRasterBlock
      *  \param value the value to be printed
      *  \returns string representing the value
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     static QString printValue( float value ) SIP_SKIP;
 
@@ -613,7 +610,6 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * Apply band scale and offset to raster block values
-     * \since QGIS 2.3
     */
     void applyScaleOffset( double scale, double offset );
 
@@ -640,14 +636,12 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Returns the width (number of columns) of the raster block.
      * \see height
-     * \since QGIS 2.10
      */
     int width() const SIP_HOLDGIL { return mWidth; }
 
     /**
      * Returns the height (number of rows) of the raster block.
      * \see width
-     * \since QGIS 2.10
      */
     int height() const SIP_HOLDGIL { return mHeight; }
 

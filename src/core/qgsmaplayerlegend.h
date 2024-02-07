@@ -42,7 +42,6 @@ class QgsSymbol;
  * \brief The QgsMapLayerLegend class is abstract interface for implementations
  * of legends for one map layer.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
@@ -99,7 +98,6 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
  * \ingroup core
  * \brief Miscellaneous utility functions for handling of map layer legend
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapLayerLegendUtils
 {
@@ -231,7 +229,6 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 /**
  * \ingroup core
  * \brief Default legend implementation for vector layers
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
@@ -313,7 +310,6 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 /**
  * \ingroup core
  * \brief Default legend implementation for raster layers
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {

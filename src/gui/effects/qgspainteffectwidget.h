@@ -34,7 +34,6 @@ class QgsColorEffect;
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
  *
- * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsPaintEffectWidget : public QWidget

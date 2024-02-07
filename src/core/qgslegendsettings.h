@@ -33,7 +33,6 @@ class QgsExpressionContext;
  * for legend drawing with QgsLegendRenderer. The content of the legend is given
  * in QgsLegendModel class.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSettings
 {
@@ -297,7 +296,6 @@ class CORE_EXPORT QgsLegendSettings
      * \see setDrawRasterStroke()
      * \see rasterStrokeColor()
      * \see rasterStrokeWidth()
-     * \since QGIS 2.12
      */
     bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
@@ -307,7 +305,6 @@ class CORE_EXPORT QgsLegendSettings
      * \see drawRasterStroke()
      * \see setRasterStrokeColor()
      * \see setRasterStrokeWidth()
-     * \since QGIS 2.12
      */
     void setDrawRasterStroke( bool enabled ) { mRasterSymbolStroke = enabled; }
 
@@ -317,7 +314,6 @@ class CORE_EXPORT QgsLegendSettings
      * \see setRasterStrokeColor()
      * \see drawRasterStroke()
      * \see rasterStrokeWidth()
-     * \since QGIS 2.12
      */
     QColor rasterStrokeColor() const { return mRasterStrokeColor; }
 
@@ -328,7 +324,6 @@ class CORE_EXPORT QgsLegendSettings
      * \see rasterStrokeColor()
      * \see setDrawRasterStroke()
      * \see setRasterStrokeWidth()
-     * \since QGIS 2.12
      */
     void setRasterStrokeColor( const QColor &color ) { mRasterStrokeColor = color; }
 
@@ -338,7 +333,6 @@ class CORE_EXPORT QgsLegendSettings
      * \see setRasterStrokeWidth()
      * \see drawRasterStroke()
      * \see rasterStrokeColor()
-     * \since QGIS 2.12
      */
     double rasterStrokeWidth() const { return mRasterStrokeWidth; }
 
@@ -349,7 +343,6 @@ class CORE_EXPORT QgsLegendSettings
      * \see rasterStrokeWidth()
      * \see setDrawRasterStroke()
      * \see setRasterStrokeColor()
-     * \since QGIS 2.12
      */
     void setRasterStrokeWidth( double width ) { mRasterStrokeWidth = width; }
 

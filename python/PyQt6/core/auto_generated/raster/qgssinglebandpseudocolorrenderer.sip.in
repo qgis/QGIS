@@ -93,8 +93,6 @@ Creates a color ramp shader
     int band() const;
 %Docstring
 Returns the band used by the renderer
-
-.. versionadded:: 2.7
 %End
 
     void setBand( int bandNo );
@@ -102,8 +100,6 @@ Returns the band used by the renderer
 Sets the band used by the renderer.
 
 .. seealso:: :py:func:`band`
-
-.. versionadded:: 2.10
 %End
 
     double classificationMin() const;

@@ -69,7 +69,6 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Sets the original value variable value for data defined symbology
      * \param value value for original value variable. This usually represents the symbol property value
      * before any data defined overrides have been applied.
-     * \since QGIS 2.12
      */
     void setOriginalValueVariable( const QVariant &value );
 
@@ -161,31 +160,26 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Fields of the layer. Currently only available in startRender() calls
      * to allow symbols with data-defined properties prepare the expressions
      * (other times fields() returns an empty QgsFields object).
-     * \since QGIS 2.4
      */
     QgsFields fields() const { return mFields; }
 
     /**
      * Part count of current geometry
-     * \since QGIS 2.16
      */
     int geometryPartCount() const { return mGeometryPartCount; }
 
     /**
      * Sets the part count of current geometry
-     * \since QGIS 2.16
      */
     void setGeometryPartCount( int count ) { mGeometryPartCount = count; }
 
     /**
      * Part number of current geometry
-     * \since QGIS 2.16
      */
     int geometryPartNum() const { return mGeometryPartNum; }
 
     /**
      * Sets the part number of current geometry
-     * \since QGIS 2.16
      */
     void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
 

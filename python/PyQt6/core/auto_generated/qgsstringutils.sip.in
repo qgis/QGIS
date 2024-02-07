@@ -160,8 +160,6 @@ class QgsStringUtils
 {
 %Docstring(signature="appended")
 Utility functions for working with strings.
-
-.. versionadded:: 2.11
 %End
 
 %TypeHeaderCode

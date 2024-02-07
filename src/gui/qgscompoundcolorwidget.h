@@ -28,7 +28,6 @@ class QgsScreenHelper;
  * \class QgsCompoundColorWidget
  * \brief A custom QGIS widget for selecting a color, including options for selecting colors via
  * hue wheel, color swatches, and a color sampler.
- * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase

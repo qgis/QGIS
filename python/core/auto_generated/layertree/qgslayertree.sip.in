@@ -27,15 +27,11 @@ with the layer tree are in :py:class:`QgsLayerTreeUtils` class.
     static bool isGroup( QgsLayerTreeNode *node );
 %Docstring
 Check whether the node is a valid group node
-
-.. versionadded:: 2.4
 %End
 
     static bool isLayer( const QgsLayerTreeNode *node );
 %Docstring
 Check whether the node is a valid layer node
-
-.. versionadded:: 2.4
 %End
 
 

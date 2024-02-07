@@ -37,8 +37,6 @@ The following subclasses are available:
 - :py:class:`QgsMapRendererSequentialJob` - renders map in one background thread to an image
 - :py:class:`QgsMapRendererParallelJob` - renders map in multiple background threads to an image
 - :py:class:`QgsMapRendererCustomPainterJob` - renders map with given QPainter in one background thread
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -174,8 +172,6 @@ Returns the total time it took to finish the job (in milliseconds).
 Returns map settings with which this job was started.
 
 :return: A :py:class:`QgsMapSettings` instance with render settings
-
-.. versionadded:: 2.8
 %End
 
 
@@ -255,8 +251,6 @@ class QgsMapRendererQImageJob : QgsMapRendererJob /Abstract/
 Intermediate base class adding functionality that allows client to query the rendered image.
 
 The image can be queried even while the rendering is still in progress to get intermediate result
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

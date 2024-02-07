@@ -250,7 +250,6 @@ class CORE_EXPORT QgsFeature
      *
      * \see setAttributes()
      * \see attributeMap()
-     * \since QGIS 2.9
      */
     QgsAttributes attributes() const;
 
@@ -567,7 +566,6 @@ class CORE_EXPORT QgsFeature
      * \param fields The attribute fields which this feature holds
      * \param initAttributes If TRUE, attributes are initialized. Clears any data previously assigned.
      * \see fields()
-     * \since QGIS 2.9
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 

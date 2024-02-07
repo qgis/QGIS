@@ -18,8 +18,6 @@ The :py:class:`QgsLayerTreeViewDefaultActions` class serves as a factory of acti
 that can be used together with a layer tree view.
 
 .. seealso:: :py:class:`QgsLayerTreeView`
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -107,8 +105,6 @@ Action to zoom to selected features of a vector layer
     QAction *actionMutuallyExclusiveGroup( QObject *parent = 0 ) /Factory/;
 %Docstring
 Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
-
-.. versionadded:: 2.12
 %End
 
  void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated/;
@@ -203,8 +199,6 @@ or the bottom of the group if the layer/group is placed within a group.
     void mutuallyExclusiveGroup();
 %Docstring
 Slot to enable/disable mutually exclusive group flag
-
-.. versionadded:: 2.12
 %End
 
   protected:

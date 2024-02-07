@@ -221,7 +221,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Emitted when a projection is double clicked in the list.
-     * \since QGIS 2.14
      */
     void projectionDoubleClicked();
 

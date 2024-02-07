@@ -88,8 +88,6 @@ if it is possible that both feature source and provider may need reading/writing
 same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
 
 :return: new instance of :py:class:`QgsAbstractFeatureSource` (caller is responsible for deleting it)
-
-.. versionadded:: 2.4
 %End
 
     virtual QString storageType() const;
@@ -241,8 +239,6 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param fids: list of fids to filter, otherwise will use all fids
 
 :return: calculated aggregate value
-
-.. versionadded:: 2.16
 %End
 
     virtual void enumValues( int index, QStringList &enumList /Out/ ) const;
@@ -319,8 +315,6 @@ manually to ensure that the layer's field are correctly reported.
 :param renamedAttributes: map of attribute index to new attribute name
 
 :return: ``True`` in case of success and ``False`` in case of failure
-
-.. versionadded:: 2.16
 %End
 
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );

@@ -37,7 +37,6 @@ class QgsMapLayer;
  * - it is not possible to access them directly or modify them
  * - it is only possible to read or write layer's current style.
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsMapLayerStyle
 {

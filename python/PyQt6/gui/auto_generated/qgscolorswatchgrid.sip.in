@@ -14,8 +14,6 @@ A grid of color swatches, which allows for user selection. Colors are taken from
 associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorGridAction`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -129,8 +127,6 @@ class QgsColorSwatchGridAction: QWidgetAction
 A color swatch grid which can be embedded into a menu.
 
 .. seealso:: :py:class:`QgsColorSwatchGrid`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode
@@ -194,8 +190,6 @@ from the action's color widget.
                 stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`
-
-.. versionadded:: 2.14
 %End
 
     bool dismissOnColorSelection() const;
@@ -204,8 +198,6 @@ Returns whether the parent menu will be dismissed after a color is selected from
 action's color widget.
 
 .. seealso:: :py:func:`setDismissOnColorSelection`
-
-.. versionadded:: 2.14
 %End
 
   public slots:

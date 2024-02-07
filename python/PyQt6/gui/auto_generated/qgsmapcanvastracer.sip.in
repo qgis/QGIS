@@ -21,8 +21,6 @@ A simple registry of tracer instances associated to map canvas instances
 is kept for convenience. (Map tools do not need to create their local
 tracer instances and map canvas API is not "polluted" by this optional
 functionality).
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode

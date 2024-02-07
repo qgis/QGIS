@@ -52,8 +52,6 @@ Call to end the iteration. This frees any resources used by the iterator.
     CompileStatus compileStatus() const;
 %Docstring
 Returns the status of expression compilation for filter expression requests.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool isValid() const;
@@ -294,8 +292,6 @@ find out whether the iterator is still valid or closed already
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
 %Docstring
 Returns the status of expression compilation for filter expression requests.
-
-.. versionadded:: 2.16
 %End
 
     bool compileFailed() const;

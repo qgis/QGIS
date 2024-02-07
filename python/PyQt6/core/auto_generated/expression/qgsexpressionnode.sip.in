@@ -105,8 +105,6 @@ Takes ownership of the provided node
         void append( QgsExpressionNode::NamedNode *node /Transfer/ );
 %Docstring
 Adds a named node. Takes ownership of the provided node.
-
-.. versionadded:: 2.16
 %End
 
         int count() const;
@@ -124,8 +122,6 @@ Reserves size for the node list.
         bool hasNamedNodes() const;
 %Docstring
 Returns ``True`` if list contains any named nodes
-
-.. versionadded:: 2.16
 %End
 
         QList<QgsExpressionNode *> list();
@@ -143,8 +139,6 @@ Gets the node at position i in the list.
         QStringList names() const;
 %Docstring
 Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-
-.. versionadded:: 2.16
 %End
 
         QgsExpressionNode::NodeList *clone() const /Factory/;
@@ -181,8 +175,6 @@ the original expression, it's just guaranteed to behave the same way.
 Evaluate this node with the given context and parent.
 This will return a cached value if it has been determined to be static
 during the :py:func:`~QgsExpressionNode.prepare` execution.
-
-.. versionadded:: 2.12
 %End
 
     virtual QgsExpressionNode *clone() const = 0;
@@ -261,8 +253,6 @@ Prepare this node for evaluation.
 This will check if the node content is static and in this case cache the value.
 If it's not static it will call :py:func:`~QgsExpressionNode.prepareNode` to allow the node to do initialization
 work like for example resolving a column name to an attribute index.
-
-.. versionadded:: 2.12
 %End
 
     int parserFirstLine;

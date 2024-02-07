@@ -15,8 +15,6 @@ class QgsMapLayerComboBox : QComboBox
 {
 %Docstring(signature="appended")
 The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list of layers
-
-.. versionadded:: 2.3
 %End
 
 %TypeHeaderCode
@@ -185,8 +183,6 @@ Returns the layer currently shown at the specified index within the combo box.
 :param layerIndex: position of layer to return
 
 .. seealso:: :py:func:`currentLayer`
-
-.. versionadded:: 2.10
 %End
 
   public slots:

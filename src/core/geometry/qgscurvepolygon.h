@@ -30,7 +30,6 @@ class QgsPolygon;
  * \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 {

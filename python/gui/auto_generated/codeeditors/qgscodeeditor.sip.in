@@ -71,8 +71,6 @@ A text editor based on QScintilla2.
 .. note::
 
    may not be available in Python bindings, depending on platform support
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -115,8 +113,6 @@ Construct a new code editor.
 :param margin: ``False``: Enable margin for code editor (deprecated)
 :param flags: flags controlling behavior of code editor (since QGIS 3.28)
 :param mode: code editor mode (since QGIS 3.30)
-
-.. versionadded:: 2.6
 %End
 
     void setTitle( const QString &title );

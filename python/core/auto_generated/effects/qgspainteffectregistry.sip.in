@@ -20,8 +20,6 @@ Stores metadata about a paint effect class.
    It's necessary to implement the :py:func:`~createPaintEffect` function.
    In C++ you can use the :py:class:`QgsPaintEffectMetadata` convenience class to
    simplify creation of the metadata.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -88,8 +86,6 @@ Registry of available paint effects.
 
 :py:class:`QgsPaintEffectRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.paintEffectRegistry()`.
-
-.. versionadded:: 2.9
 %End
 
 %TypeHeaderCode
@@ -168,8 +164,6 @@ Tests whether a paint effect matches the default effects stack.
 :return: ``True`` if effect is default stack
 
 .. seealso:: :py:func:`defaultStack`
-
-.. versionadded:: 2.12
 %End
 
   private:

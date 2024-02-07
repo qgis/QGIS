@@ -93,7 +93,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     /**
      * Resets the widget to show no value (ie, an "unknown" state).
-     * \since QGIS 2.16
      */
     void setEmpty();
 

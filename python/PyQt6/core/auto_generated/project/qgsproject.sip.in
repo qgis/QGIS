@@ -89,8 +89,6 @@ Sets the project's title.
    Since QGIS 3.2 this is just a shortcut to setting the title in the project's :py:func:`~QgsProject.metadata`.
 
 .. seealso:: :py:func:`title`
-
-.. versionadded:: 2.4
 %End
 
     QString title() const;
@@ -381,8 +379,6 @@ from a source to destination coordinate reference system.
 Clears the project, removing all settings and resetting it back to an empty, default state.
 
 .. seealso:: :py:func:`cleared`
-
-.. versionadded:: 2.4
 %End
 
     bool read( const QString &filename, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
@@ -665,8 +661,6 @@ Returns an empty string if the matching layer is not embedded.
 Create layer group instance defined in an arbitrary project file.
 
 The optional ``flags`` argument can be used to control layer reading behavior.
-
-.. versionadded:: 2.4
 %End
 
     void setTopologicalEditing( bool enabled );
@@ -686,8 +680,6 @@ Convenience function to query default distance measurement units for project.
 .. seealso:: :py:func:`setDistanceUnits`
 
 .. seealso:: :py:func:`areaUnits`
-
-.. versionadded:: 2.14
 %End
 
     void setDistanceUnits( Qgis::DistanceUnit unit );
@@ -706,8 +698,6 @@ Sets the default distance measurement units for the project.
 Convenience function to query default area measurement units for project.
 
 .. seealso:: :py:func:`distanceUnits`
-
-.. versionadded:: 2.14
 %End
 
     void setAreaUnits( Qgis::AreaUnit unit );
@@ -849,15 +839,11 @@ to how a QgsProject should interact with a GPS device.
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
 Returns pointer to the root (invisible) node of the project's layer tree
-
-.. versionadded:: 2.4
 %End
 
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const;
 %Docstring
 Returns pointer to the helper class that synchronizes map layer registry with layer tree
-
-.. versionadded:: 2.4
 %End
 
     QgsMapThemeCollection *mapThemeCollection();
@@ -867,8 +853,6 @@ Returns pointer to the project's map theme collection.
 .. note::
 
    renamed in QGIS 3.0, formerly :py:class:`QgsVisibilityPresetCollection`
-
-.. versionadded:: 2.12
 %End
 
     QgsAnnotationManager *annotationManager();
@@ -909,8 +893,6 @@ Transactional editing means that on supported datasources (postgres databases) t
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
 
-.. versionadded:: 2.16
-
 .. deprecated::
    QGIS 3.26 use transactionMode instead
 %End
@@ -924,8 +906,6 @@ transaction.
 .. warning::
 
    Make sure that this is only called when all layers are not in edit mode.
-
-.. versionadded:: 2.16
 
 .. deprecated::
    QGIS 3.26 use setTransactionMode instead
@@ -2089,8 +2069,6 @@ be asked to save changes to the project before closing the current project.
 .. note::
 
    promoted to public slot in 2.16
-
-.. versionadded:: 2.4
 %End
 
     void setPresetHomePath( const QString &path );

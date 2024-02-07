@@ -27,8 +27,6 @@ A abstract base class for defining :py:class:`QgsExpression` functions.
 {
 %Docstring(signature="appended")
 Represents a single parameter passed to a function.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -111,8 +109,6 @@ Constructor for function which uses unnamed parameters and group list
                            bool isContextual = false );
 %Docstring
 Constructor for function which uses named parameter list.
-
-.. versionadded:: 2.16
 %End
 
     QgsExpressionFunction( const QString &fnname,
@@ -148,8 +144,6 @@ The minimum number of parameters this function takes.
     const QgsExpressionFunction::ParameterList &parameters() const;
 %Docstring
 Returns the list of named parameters for the function, if set.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const;
@@ -163,8 +157,6 @@ Returns a list of possible aliases for the function. These include
 other permissible names for the function, e.g., deprecated names.
 
 :return: list of known aliases
-
-.. versionadded:: 2.9
 %End
 
     bool lazyEval() const;
@@ -209,8 +201,6 @@ If in doubt this will return more fields than strictly required.
     bool isContextual() const;
 %Docstring
 Returns whether the function is only available if provided by a :py:class:`QgsExpressionContext` object.
-
-.. versionadded:: 2.12
 %End
 
     virtual bool isDeprecated() const;

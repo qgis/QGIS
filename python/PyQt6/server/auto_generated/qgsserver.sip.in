@@ -33,8 +33,6 @@ Set environment variable
 
 :param var: environment variable name
 :param val: value
-
-.. versionadded:: 2.14
 %End
 
     void handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project = 0 );

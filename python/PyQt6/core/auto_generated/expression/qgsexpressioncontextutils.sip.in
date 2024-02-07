@@ -15,8 +15,6 @@ class QgsExpressionContextUtils
 %Docstring(signature="appended")
 Contains utilities for working with :py:class:`QgsExpressionContext` objects, including methods
 for creating scopes for specific uses (e.g., project scopes, layer scopes).
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode
@@ -217,8 +215,6 @@ Updates a symbol scope related to a :py:class:`QgsSymbol` to an expression conte
 
 :param symbol: symbol to extract properties from
 :param symbolScope: pointer to an existing scope to update
-
-.. versionadded:: 2.14
 %End
 
     static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;

@@ -55,8 +55,6 @@ Sets extent of the layer
     void setSource( const QString &source );
 %Docstring
 Set source string. This is used for example in layer tree to show tooltip.
-
-.. versionadded:: 2.16
 %End
 
     virtual QgsDataProvider *dataProvider();

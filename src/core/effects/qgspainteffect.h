@@ -46,7 +46,6 @@ class QgsRenderContext;
  * and render the result to the render context's paint device.
  *
  * \see QgsPaintEffectRegistry
- * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
@@ -321,7 +320,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
  * supported, however these changes will force the resultant output to be rasterized.
  * If no alterations are performed then the original picture will be rendered as a vector.
  *
- * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS

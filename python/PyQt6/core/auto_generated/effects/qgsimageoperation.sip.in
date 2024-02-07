@@ -23,8 +23,6 @@ format.
 
 Operations are written to either modify an image in place or return a new image, depending
 on which is faster for the particular operation.
-
-.. versionadded:: 2.7
 %End
 
 %TypeHeaderCode
@@ -174,8 +172,6 @@ Calculates the non-transparent region of an image.
 :param center: return rectangle will be centered on the center of the original image if set to ``True``
 
 .. seealso:: :py:func:`cropTransparent`
-
-.. versionadded:: 2.9
 %End
 
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
@@ -187,8 +183,6 @@ Crop any transparent border from around an image.
                 cropped image is smaller than the minimum size, it will be centered
                 in the returned image.
 :param center: cropped image will be centered on the center of the original image if set to ``True``
-
-.. versionadded:: 2.9
 %End
 
       public:

@@ -54,7 +54,6 @@ class CORE_EXPORT QgsMapToPixel
      * \param widthPixels Output width, in pixels
      * \param heightPixels Output height, in pixels
      * \param rotation clockwise rotation in degrees
-     * \since QGIS 2.8
      */
     QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
@@ -237,7 +236,6 @@ class CORE_EXPORT QgsMapToPixel
      * The information is only known if setRotation was used.
      *
      * \see mapHeight()
-     * \since QGIS 2.8
      */
     int mapWidth() const { return mWidth; }
 
@@ -245,7 +243,6 @@ class CORE_EXPORT QgsMapToPixel
      * Returns current map height in pixels
      *
      * \see mapWidth()
-     * \since QGIS 2.8
      */
     int mapHeight() const { return mHeight; }
 
@@ -259,7 +256,6 @@ class CORE_EXPORT QgsMapToPixel
      * \param cy Y ordinate of map center in geographical units
      *
      * \see mapRotation()
-     * \since QGIS 2.8
      */
     void setMapRotation( double degrees, double cx, double cy );
 
@@ -267,7 +263,6 @@ class CORE_EXPORT QgsMapToPixel
      * Returns the current map rotation in degrees (clockwise).
      *
      * \see setMapRotation()
-     * \since QGIS 2.8
      */
     double mapRotation() const { return mRotation; }
 
@@ -284,7 +279,6 @@ class CORE_EXPORT QgsMapToPixel
      * \param rotation clockwise rotation in degrees
      *
      * \note if the specified parameters result in an invalid transform then no changes will be applied to the object
-     * \since QGIS 2.8
      */
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 

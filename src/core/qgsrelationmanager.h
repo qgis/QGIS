@@ -101,7 +101,6 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \param name relation name to search for. Searching is case insensitive.
      * \returns a list of matching relations
      * \see relation()
-     * \since QGIS 2.16
      */
     QList<QgsRelation> relationsByName( const QString &name ) const;
 
@@ -171,7 +170,6 @@ class CORE_EXPORT QgsRelationManager : public QObject
 
     /**
      * Emitted when relations are added or removed to the manager.
-     * \since QGIS 2.5
      */
     void changed();
 

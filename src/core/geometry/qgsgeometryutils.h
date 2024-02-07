@@ -33,7 +33,6 @@ class QgsLineString;
  * \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryUtils
 {
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param geom geometry
      * \param id vertex id to find distance to
      * \returns distance to vertex (following geometry)
-     * \since QGIS 2.16
      */
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
 
@@ -209,7 +207,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param tolerance The tolerance to use
      * \returns The list of self intersections
      * \note not available in Python bindings
-     * \since QGIS 2.12
      */
     static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 

@@ -31,8 +31,6 @@ The scenario will be:
 2. renderer job (still in GUI thread) stores the renderer for later use.
 3. renderer job (in worker thread) calls :py:func:`QgsMapLayerRenderer.render()`
 4. renderer job (again in GUI thread) will check :py:func:`~errors` and report them
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

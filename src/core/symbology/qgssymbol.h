@@ -162,7 +162,6 @@ class CORE_EXPORT QgsSymbol
      * \returns symbol layers list
      * \see symbolLayer
      * \see symbolLayerCount
-     * \since QGIS 2.7
      */
     QgsSymbolLayerList symbolLayers() const { return mLayers; }
 
@@ -172,7 +171,6 @@ class CORE_EXPORT QgsSymbol
      * Returns the symbol layer at the specified index
      * \see symbolLayers
      * \see symbolLayerCount
-     * \since QGIS 2.7
      */
     QgsSymbolLayer *symbolLayer( int layer );
 
@@ -192,7 +190,6 @@ class CORE_EXPORT QgsSymbol
      *
      * \see symbolLayers
      * \see symbolLayerCount
-     * \since QGIS 2.7
      */
     SIP_PYOBJECT symbolLayer( int layer ) SIP_TYPEHINT( QgsSymbolLayer );
     % MethodCode
@@ -214,7 +211,6 @@ class CORE_EXPORT QgsSymbol
      * \returns count of symbol layers
      * \see symbolLayers
      * \see symbolLayer
-     * \since QGIS 2.7
      */
     int symbolLayerCount() const { return mLayers.count(); }
 
@@ -382,7 +378,6 @@ class CORE_EXPORT QgsSymbol
      *
      * \see exportImage()
      * \see asImage()
-     * \since QGIS 2.6
      */
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
                           const QgsLegendPatchShape *patchShape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties() );
@@ -541,7 +536,6 @@ class CORE_EXPORT QgsSymbol
      * side effects for certain symbol types.
      * \param clipFeaturesToExtent set to TRUE to enable clipping (defaults to TRUE)
      * \see clipFeaturesToExtent
-     * \since QGIS 2.9
      */
     void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
 
@@ -552,7 +546,6 @@ class CORE_EXPORT QgsSymbol
      * side effects for certain symbol types.
      * \returns TRUE if features will be clipped
      * \see setClipFeaturesToExtent
-     * \since QGIS 2.9
      */
     bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
@@ -643,7 +636,6 @@ class CORE_EXPORT QgsSymbol
 
     /**
      * Returns whether the symbol utilizes any data defined properties.
-     * \since QGIS 2.12
      */
     bool hasDataDefinedProperties() const;
 
@@ -783,7 +775,6 @@ class CORE_EXPORT QgsSymbol
 
     /**
      * Render editing vertex marker at specified point
-     * \since QGIS 2.16
      */
     void renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize );
 

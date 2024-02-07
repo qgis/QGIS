@@ -15,8 +15,6 @@ class QgsGeometryUtils
 {
 %Docstring(signature="appended")
 Contains various geometry utility functions.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -51,8 +49,6 @@ Returns the distance along a geometry from its first vertex to the specified ver
 :param id: vertex id to find distance to
 
 :return: distance to vertex (following geometry)
-
-.. versionadded:: 2.16
 %End
 
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,

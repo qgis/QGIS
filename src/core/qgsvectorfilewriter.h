@@ -206,7 +206,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /**
      * \ingroup core
      * \brief Interface to convert raw field values to their user-friendly value.
-     * \since QGIS 2.16
      */
     class CORE_EXPORT FieldValueConverter
     {
@@ -386,7 +385,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      * \param newLayer QString pointer which will contain the new layer name created (in case it is different to the provided layer name) (added in QGIS 3.4, not available in python)
-     * \since QGIS 2.2
      * \deprecated Use writeAsVectorFormatV2() instead.
      */
 #else
@@ -414,7 +412,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param includeZ set to TRUE to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
-     * \since QGIS 2.2
      * \deprecated Use writeAsVectorFormatV2() instead.
      */
 #endif

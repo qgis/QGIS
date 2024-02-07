@@ -244,8 +244,6 @@ Sets the subset of fields to be used from joined layer.
 Ownership of ``fileNamesSubset`` is transferred. A ``fieldNameSubset`` of ``None`` indicates that all fields should be used.
 
 .. seealso:: :py:func:`joinFieldNamesSubset`
-
-.. versionadded:: 2.6
 %End
 
     QStringList *joinFieldNamesSubset() const;
@@ -255,8 +253,6 @@ Returns the subset of fields to be used from joined layer.
 All fields will be used if ``None`` is returned.
 
 .. seealso:: :py:func:`setJoinFieldNamesSubset`
-
-.. versionadded:: 2.6
 %End
 
   protected:

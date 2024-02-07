@@ -28,7 +28,6 @@ class QgsTextEditWidgetFactory;
  * \class QgsTextEditSearchWidgetWrapper
  * \brief Wraps a text edit widget for searching.
  * \note not available in Python bindings
- * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetWrapper

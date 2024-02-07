@@ -314,7 +314,6 @@ class CORE_EXPORT QgsExpression
     /**
      * Gets the expression ready for evaluation - find out column indexes.
      * \param context context for preparing expression
-     * \since QGIS 2.12
      */
     bool prepare( const QgsExpressionContext *context );
 
@@ -415,7 +414,6 @@ class CORE_EXPORT QgsExpression
     /**
      * Evaluate the feature and return the result.
      * \note this method does not expect that prepare() has been called on this instance
-     * \since QGIS 2.12
      */
     QVariant evaluate();
 
@@ -423,7 +421,6 @@ class CORE_EXPORT QgsExpression
      * Evaluate the expression against the specified context and return the result.
      * \param context context for evaluating expression
      * \note prepare() should be called before calling this method.
-     * \since QGIS 2.12
      */
     QVariant evaluate( const QgsExpressionContext *context );
 
@@ -438,7 +435,6 @@ class CORE_EXPORT QgsExpression
      * Checks whether an expression consists only of a single field reference
      *
      * \see expressionToLayerFieldIndex()
-     * \since QGIS 2.9
      */
     bool isField() const;
 
@@ -476,7 +472,6 @@ class CORE_EXPORT QgsExpression
      * \param context optional expression context
      * \param errorMessage will be filled with any error message from the validation
      * \returns TRUE if string is a valid expression
-     * \since QGIS 2.12
      */
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage SIP_OUT );
 
@@ -531,7 +526,6 @@ class CORE_EXPORT QgsExpression
      * \note distances are only converted when a geomCalculator() has been set
      * \see setDistanceUnits()
      * \see areaUnits()
-     * \since QGIS 2.14
      */
     Qgis::DistanceUnit distanceUnits() const;
 
@@ -542,7 +536,6 @@ class CORE_EXPORT QgsExpression
      * \note distances are only converted when a geomCalculator() has been set
      * \see distanceUnits()
      * \see setAreaUnits()
-     * \since QGIS 2.14
      */
     void setDistanceUnits( Qgis::DistanceUnit unit );
 
@@ -551,7 +544,6 @@ class CORE_EXPORT QgsExpression
      * \note areas are only converted when a geomCalculator() has been set
      * \see setAreaUnits()
      * \see distanceUnits()
-     * \since QGIS 2.14
      */
     Qgis::AreaUnit areaUnits() const;
 
@@ -562,7 +554,6 @@ class CORE_EXPORT QgsExpression
      * \note areas are only converted when a geomCalculator() has been set
      * \see areaUnits()
      * \see setDistanceUnits()
-     * \since QGIS 2.14
      */
     void setAreaUnits( Qgis::AreaUnit unit );
 
@@ -575,7 +566,6 @@ class CORE_EXPORT QgsExpression
      * \param context Expression context
      * \param distanceArea Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
      * and area conversion
-     * \since QGIS 2.12
      */
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
                                           const QgsDistanceArea *distanceArea = nullptr );
@@ -597,7 +587,6 @@ class CORE_EXPORT QgsExpression
      * \returns evaluated double value, or fallback value
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
-     * \since QGIS 2.7
      */
     static double evaluateToDouble( const QString &text, double fallbackValue );
 
@@ -636,7 +625,6 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Deletes all registered functions whose ownership have been transferred to the expression engine.
-     * \since QGIS 2.12
      */
     static void cleanRegisteredFunctions();
 
@@ -672,7 +660,6 @@ class CORE_EXPORT QgsExpression
      * \param value value to convert to a string representation
      * \see quotedString()
      * \see quotedColumnRef()
-     * \since QGIS 2.14
      */
     static QString quotedValue( const QVariant &value );
 
@@ -683,7 +670,6 @@ class CORE_EXPORT QgsExpression
      * \param type value type
      * \see quotedString()
      * \see quotedColumnRef()
-     * \since QGIS 2.14
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type );
 
@@ -729,7 +715,6 @@ class CORE_EXPORT QgsExpression
      * \param variableName name of variable
      * \see helpText()
      * \see addVariableHelpText()
-     * \since QGIS 2.12
      */
     static QString variableHelpText( const QString &variableName );
 
@@ -757,7 +742,6 @@ class CORE_EXPORT QgsExpression
      * \param htmlOutput set to TRUE to allow HTML formatting, or FALSE for plain text output
      * \param maximumPreviewLength define the maximum character length of the preview
      * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is TRUE
-     * \since QGIS 2.14
      */
     static QString formatPreviewString( const QVariant &value, bool htmlOutput = true, int maximumPreviewLength = 60 );
 

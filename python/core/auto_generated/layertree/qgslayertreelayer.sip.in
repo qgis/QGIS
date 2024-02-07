@@ -22,8 +22,6 @@ once the layer is loaded.
 A map layer is supposed to be present in one layer tree just once. It is
 however possible that temporarily a layer exists in one tree more than just
 once, e.g. while reordering items with drag and drop.
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -225,8 +223,6 @@ Emitted when a previously unavailable layer got loaded.
     void layerWillBeUnloaded();
 %Docstring
 Emitted when a previously available layer got unloaded (from layer registry).
-
-.. versionadded:: 2.6
 %End
 
   protected:

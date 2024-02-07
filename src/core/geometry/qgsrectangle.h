@@ -510,7 +510,6 @@ class CORE_EXPORT QgsRectangle
      *
      * \see setNull()
      *
-     * \since QGIS 2.4
      */
     bool isNull() const
     {

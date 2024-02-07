@@ -162,8 +162,6 @@ Returns a list of the active decorations.
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
 %Docstring
 Returns a pointer to the layer tree canvas bridge
-
-.. versionadded:: 2.12
 %End
 
     virtual QWidget *mainWindow() = 0;
@@ -197,8 +195,6 @@ Returns a reference font for initial qApp (may not be same as QgisApp)
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 %Docstring
 Advanced digitizing dock widget
-
-.. versionadded:: 2.12
 %End
 
 
@@ -285,8 +281,6 @@ Returns a reference to the main window "Create New Layer" menu.
     virtual QMenu *addLayerMenu() = 0;
 %Docstring
 Returns a reference to the main window "Add Layer" menu.
-
-.. versionadded:: 2.5
 %End
 
     virtual QMenu *settingsMenu() = 0;
@@ -1188,8 +1182,6 @@ Add toolbar with specified name
     virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 %Docstring
 Add a toolbar
-
-.. versionadded:: 2.3
 %End
 
     virtual void openMessageLog() = 0;
@@ -1430,8 +1422,6 @@ Register a new tab in the map layer properties dialog.
 .. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 
 .. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
-
-.. versionadded:: 2.16
 %End
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
@@ -1441,8 +1431,6 @@ Unregister a previously registered tab in the map layer properties dialog.
 .. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 
 .. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
-
-.. versionadded:: 2.16
 %End
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -1877,8 +1865,6 @@ Emitted when starting an entirely new project.
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 %Docstring
 Emitted when a layer has been saved using save as.
-
-.. versionadded:: 2.7
 %End
 
 };

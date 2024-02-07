@@ -35,7 +35,6 @@ class QgsProject;
  * \ingroup core
  * \brief Assorted functions for dealing with layer trees.
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeUtils
 {

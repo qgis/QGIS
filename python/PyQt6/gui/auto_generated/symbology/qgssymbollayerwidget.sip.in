@@ -52,8 +52,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-.. versionadded:: 2.12
 %End
 
   protected:
@@ -223,8 +221,6 @@ class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
 Widget for configuring :py:class:`QgsFilledMarkerSymbolLayer` symbol layers.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -937,8 +933,6 @@ Creates a new QgsFontMarkerSymbolLayerWidget.
     void setColorStroke( const QColor &color );
 %Docstring
 Set stroke color.
-
-.. versionadded:: 2.16
 %End
     void setSize( double size );
     void setAngle( double angle );

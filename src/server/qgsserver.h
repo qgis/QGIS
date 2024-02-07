@@ -58,7 +58,6 @@ class SERVER_EXPORT QgsServer
      * Set environment variable
      * \param var environment variable name
      * \param val value
-     * \since QGIS 2.14
      */
     void putenv( const QString &var, const QString &val );
 

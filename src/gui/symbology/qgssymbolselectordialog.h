@@ -178,7 +178,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     /**
      * Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-     * \since QGIS 2.14
      */
     void duplicateLayer();
 
@@ -355,7 +354,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     /**
      * Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-     * \since QGIS 2.14
      */
     void duplicateLayer();
 

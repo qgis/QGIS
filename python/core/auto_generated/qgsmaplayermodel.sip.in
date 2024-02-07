@@ -18,8 +18,6 @@ The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 .. seealso:: :py:class:`QgsMapLayerProxyModel`
 
 .. seealso:: :py:class:`QgsFieldModel`
-
-.. versionadded:: 2.3
 %End
 
 %TypeHeaderCode

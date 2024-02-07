@@ -349,8 +349,6 @@ Write a group code with a point
 .. note::
 
    available in Python bindings as writeGroupPointV2
-
-.. versionadded:: 2.15
 %End
 
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
@@ -412,8 +410,6 @@ Write a tuple of group code and a handle
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 %Docstring
 Write line (as a polyline)
-
-.. versionadded:: 2.15
 %End
 
     void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) /PyName=writePointV2/;
@@ -423,8 +419,6 @@ Write point
 .. note::
 
    available in Python bindings as writePointV2
-
-.. versionadded:: 2.15
 %End
 
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) /PyName=writeFillCircleV2/;
@@ -434,8 +428,6 @@ Write filled circle (as hatch)
 .. note::
 
    available in Python bindings as writePointV2
-
-.. versionadded:: 2.15
 %End
 
     void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) /PyName=writeCircleV2/;
@@ -445,8 +437,6 @@ Write circle (as polyline)
 .. note::
 
    available in Python bindings as writeCircleV2
-
-.. versionadded:: 2.15
 %End
 
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) /PyName=writeTextV2/;
@@ -456,8 +446,6 @@ Write text (TEXT)
 .. note::
 
    available in Python bindings as writeTextV2
-
-.. versionadded:: 2.15
 %End
 
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
@@ -467,8 +455,6 @@ Write mtext (MTEXT)
 .. note::
 
    available in Python bindings as writeMTextV2
-
-.. versionadded:: 2.15
 %End
 
     static double mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );

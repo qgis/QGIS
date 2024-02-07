@@ -91,7 +91,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     /**
      * \brief Named node
      * \ingroup core
-     * \since QGIS 2.16
      */
     struct NamedNode
     {
@@ -127,7 +126,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
         /**
          * Adds a named node. Takes ownership of the provided node.
-         * \since QGIS 2.16
         */
         void append( QgsExpressionNode::NamedNode *node SIP_TRANSFER );
 
@@ -145,7 +143,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
         /**
          * Returns TRUE if list contains any named nodes
-         * \since QGIS 2.16
          */
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
@@ -163,7 +160,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
         /**
          * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-         * \since QGIS 2.16
          */
         QStringList names() const { return mNameList; }
 
@@ -210,7 +206,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * This will return a cached value if it has been determined to be static
      * during the prepare() execution.
      *
-     * \since QGIS 2.12
      */
     QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
 
@@ -292,7 +287,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * If it's not static it will call prepareNode() to allow the node to do initialization
      * work like for example resolving a column name to an attribute index.
      *
-     * \since QGIS 2.12
      */
     bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
 

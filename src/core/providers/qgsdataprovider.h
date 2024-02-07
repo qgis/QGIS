@@ -471,7 +471,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     /**
      * Invalidate connections corresponding to specified name
-     * \since QGIS 2.16
      */
     virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ) }
 
@@ -495,7 +494,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \returns TRUE in case of success (or no-op implementation), FALSE in case of failure.
      *
-     * \since QGIS 2.16
      */
     virtual bool enterUpdateMode() { return true; }
 
@@ -514,7 +512,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \returns TRUE in case of success (or no-op implementation), FALSE in case of failure.
      *
-     * \since QGIS 2.16
      */
     virtual bool leaveUpdateMode() { return true; }
 
@@ -522,7 +519,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Allows setting arbitrary properties on the provider.
      * It depends on the provider which properties are supported.
      *
-     * \since QGIS 2.16
      */
     void setProviderProperty( ProviderProperty property, const QVariant &value );
 
@@ -530,7 +526,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Allows setting arbitrary properties on the provider.
      * It depends on the provider which properties are supported.
      *
-     * \since QGIS 2.16
      */
     void setProviderProperty( int property, const QVariant &value ); // SIP_SKIP
 
@@ -538,7 +533,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Gets the current value of a certain provider property.
      * It depends on the provider which properties are supported.
      *
-     * \since QGIS 2.16
      */
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 
@@ -546,7 +540,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Gets the current value of a certain provider property.
      * It depends on the provider which properties are supported.
      *
-     * \since QGIS 2.16
      */
     QVariant providerProperty( int property, const QVariant &defaultValue ) const; // SIP_SKIP
 

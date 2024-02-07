@@ -74,7 +74,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     /**
      * Sets the page with the specified widget name as the current page
-     * \since QGIS 2.1
      */
     void setCurrentPage( const QString &pageWidgetName );
 

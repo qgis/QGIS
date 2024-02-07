@@ -48,9 +48,6 @@ Example
                print('feature intersects the polygon!')
 
 :py:class:`QgsGeometryEngine` operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
-
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode
@@ -257,8 +254,6 @@ relationship between the geometries.
 :param errorMsg: destination storage for any error message
 
 :return: DE-9IM string for relationship, or an empty string if an error occurred
-
-.. versionadded:: 2.12
 %End
 
     virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = 0 ) const = 0;
@@ -271,8 +266,6 @@ pattern.
 :param errorMsg: destination storage for any error message
 
 :return: ``True`` if geometry relationship matches with pattern
-
-.. versionadded:: 2.14
 %End
 
     virtual double area( QString *errorMsg = 0 ) const = 0;

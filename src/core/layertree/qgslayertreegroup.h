@@ -35,7 +35,6 @@ class QgsGroupLayer;
  * While a layer tree group is typically used for hierarchical organisation of a QgsProject,
  * they can optionally be associated with a QgsGroupLayer for map rendering purposes.
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
@@ -230,7 +229,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     /**
      * Returns whether the group is mutually exclusive (only one child can be checked at a time)
-     * \since QGIS 2.12
      */
     bool isMutuallyExclusive() const;
 
@@ -238,7 +236,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Set whether the group is mutually exclusive (only one child can be checked at a time).
      * The initial child index determines which child should be initially checked. The default value
      * of -1 will determine automatically (either first one currently checked or none)
-     * \since QGIS 2.12
      */
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 

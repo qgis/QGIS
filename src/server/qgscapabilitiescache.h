@@ -56,7 +56,6 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     /**
      * Remove capabilities document
      * \param path the project file path
-     * \since QGIS 2.16
      */
     void removeCapabilitiesDocument( const QString &path );
 

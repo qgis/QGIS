@@ -150,7 +150,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Sets the widget to display in an indeterminate "mixed value" state.
-     * \since QGIS 2.16
      */
     virtual void showIndeterminateState() {}
 
@@ -159,7 +158,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param featureContext the feature to use to evaluate the constraint
      * \param constraintOrigin optional origin for constraints to check. This can be used to limit the constraints tested
      * to only provider or layer based constraints.
-     * \since QGIS 2.16
      */
     void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
@@ -189,7 +187,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * FALSE otherwise
      * \see constraintFailureReason()
      * \see isBlockingCommit()
-     * \since QGIS 2.16
      */
     bool isValidConstraint() const;
 
@@ -340,7 +337,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
      *
-     * \since QGIS 2.16
      */
     virtual void updateConstraintWidgetStatus();
 

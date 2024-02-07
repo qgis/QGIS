@@ -20,8 +20,6 @@ propagated to the assigned :py:class:`QgsLayerTreeMapCanvasBridge`. Also, any up
 to the layer tree cause refresh of the list.
 
 .. seealso:: :py:class:`QgsLayerTreeMapCanvasBridge`
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode

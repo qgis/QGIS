@@ -32,7 +32,6 @@ class QgsPoint;
  * \ingroup core
  * \class QgsGeometryCollection
  * \brief Geometry collection
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
@@ -417,7 +416,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     /**
      * Returns whether child type names are omitted from Wkt representations of the collection
-     * \since QGIS 2.12
      */
     virtual bool wktOmitChildType() const;
 

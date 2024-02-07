@@ -29,7 +29,6 @@
  * \ingroup core
  * \class QgsCircularString
  * \brief Circular string geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {

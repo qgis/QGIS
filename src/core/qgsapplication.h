@@ -294,7 +294,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the contributors.json file.
-     * \since QGIS 2.7
     */
     static QString developersMapFilePath();
 
@@ -442,21 +441,18 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the user's operating system login account name.
      * \see userFullName()
-     * \since QGIS 2.14
      */
     static QString userLoginName();
 
     /**
      * Returns the user's operating system login account full display name.
      * \see userLoginName()
-     * \since QGIS 2.14
      */
     static QString userFullName();
 
     /**
      * Returns a string name of the operating system QGIS is running on.
      * \see platform()
-     * \since QGIS 2.14
      */
     static QString osName();
 
@@ -472,7 +468,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
-     * \since QGIS 2.14
      */
     static QString platform();
 
@@ -666,14 +661,12 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Gets maximum concurrent thread count
-     * \since QGIS 2.4
     */
     static int maxThreads();
 
     /**
      * Set maximum concurrent thread count
      * \note must be between 2 and \#cores, -1 means use all available cores
-     * \since QGIS 2.4
     */
     static void setMaxThreads( int maxThreads );
 
@@ -1133,7 +1126,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static bool ABISYM( mRunningFromBuildDir );
 
     /**
-     * \since QGIS 2.4
     */
     static int ABISYM( sMaxThreads );
 

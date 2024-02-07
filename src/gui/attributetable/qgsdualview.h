@@ -115,7 +115,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Returns the current view mode.
      * \see setView()
-     * \since QGIS 2.16
      */
     ViewMode view() const;
 
@@ -256,14 +255,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * Sets whether multi edit mode is enabled.
-     * \since QGIS 2.16
      */
     void setMultiEditEnabled( bool enabled );
 
     /**
      * Toggles whether search mode should be enabled in the form.
      * \param enabled set to TRUE to switch on search mode
-     * \since QGIS 2.16
      */
     void toggleSearchMode( bool enabled );
 
@@ -305,7 +302,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Emitted when a filter expression is set using the view.
      * \param expression filter expression
      * \param type filter type
-     * \since QGIS 2.16
      */
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 

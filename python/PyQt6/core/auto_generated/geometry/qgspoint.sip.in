@@ -25,8 +25,6 @@ documentation for examples of situations where it is appropriate to use :py:clas
 instead of :py:class:`QgsPoint`.
 
 .. seealso:: :py:class:`QgsPointXY`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -217,8 +215,6 @@ Sets the point's m-value.
     QPointF toQPointF() const /HoldGIL/;
 %Docstring
 Returns the point as a QPointF.
-
-.. versionadded:: 2.14
 %End
 
     double distance( double x, double y ) const /HoldGIL/;

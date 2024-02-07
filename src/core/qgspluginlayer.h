@@ -59,7 +59,6 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 
     /**
      * Set source string. This is used for example in layer tree to show tooltip.
-     * \since QGIS 2.16
      */
     void setSource( const QString &source );
 

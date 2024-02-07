@@ -291,8 +291,6 @@ Adds a new smartgroup to the database and returns the id.
 Returns a list of all tags in the style database
 
 .. seealso:: :py:func:`addTag`
-
-.. versionadded:: 2.16
 %End
 
     void clear();

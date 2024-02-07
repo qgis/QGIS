@@ -44,7 +44,6 @@ class QgsPaintEffect;
  * \see QgsEffectStack
  * \see QgsEffectStackPropertiesDialog
  * \see QgsEffectStackCompactWidget
- * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private Ui::QgsEffectStackPropertiesWidgetBase
@@ -163,7 +162,6 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
  * \see QgsEffectStack
  * \see QgsEffectStackPropertiesWidget
  * \see QgsEffectStackCompactWidget
- * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
@@ -212,7 +210,6 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
  * \see QgsEffectStack
  * \see QgsEffectStackPropertiesWidget
  * \see QgsEffectStackPropertiesDialog
- * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget

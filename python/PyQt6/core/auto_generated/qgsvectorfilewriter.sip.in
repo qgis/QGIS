@@ -158,8 +158,6 @@ Constructor for MetaData
 {
 %Docstring(signature="appended")
 Interface to convert raw field values to their user-friendly value.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode
@@ -325,8 +323,6 @@ Writes a layer out to a vector file.
 :param includeZ: set to ``True`` to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
-
-.. versionadded:: 2.2
 
 .. deprecated::
    Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV2` instead.

@@ -30,7 +30,6 @@
  * \ingroup gui
  * \class QgsFieldConditionalFormatWidget
  * \brief A widget for customizing conditional formatting options.
- * \since QGIS 2.12
  */
 class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, private Ui::QgsFieldConditionalWidget
 {

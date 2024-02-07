@@ -33,7 +33,6 @@ class QgsRelationReferenceWidget;
  * \ingroup gui
  * \class QgsRelationReferenceSearchWidgetWrapper
  * \brief Wraps a relation reference search widget.
- * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidgetWrapper

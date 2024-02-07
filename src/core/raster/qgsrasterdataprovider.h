@@ -53,7 +53,6 @@ class QgsMapSettings;
 /**
  * \brief Handles asynchronous download of images
  * \ingroup core
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsImageFetcher : public QObject
 {
@@ -229,13 +228,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Read band scale for raster value
-     * \since QGIS 2.3
      */
     virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ) return 1.0; }
 
     /**
      * Read band offset for raster value
-     * \since QGIS 2.3
      */
     virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ) return 0.0; }
 
@@ -311,7 +308,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         to caller.
      *
      *
-     * \since QGIS 2.8
      */
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) SIP_FACTORY
     {
@@ -838,7 +834,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
-     * \since QGIS 2.14
      */
     void statusChanged( const QString & ) const;
 

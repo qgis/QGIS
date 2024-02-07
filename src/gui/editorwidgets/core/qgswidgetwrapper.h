@@ -174,7 +174,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \returns Validity status of this widget.
      *
-     * \since QGIS 2.12
      */
     virtual bool valid() const = 0;
 

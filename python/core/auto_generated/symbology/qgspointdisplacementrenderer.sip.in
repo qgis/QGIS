@@ -133,8 +133,6 @@ Returns the factor for label distance from the symbol.
 Returns the placement method used for dispersing the points.
 
 .. seealso:: :py:func:`setPlacement`
-
-.. versionadded:: 2.12
 %End
 
     void setPlacement( Placement placement );
@@ -144,8 +142,6 @@ Sets the placement method used for dispersing the points.
 :param placement: placement method
 
 .. seealso:: :py:func:`placement`
-
-.. versionadded:: 2.12
 %End
 
     QgsMarkerSymbol *centerSymbol();
@@ -169,8 +165,6 @@ Sets the center symbol for a displacement group.
 Creates a QgsPointDisplacementRenderer from an existing renderer.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
-
-.. versionadded:: 2.5
 %End
 
   private:

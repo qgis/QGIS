@@ -96,7 +96,6 @@ namespace SpatialIndex SIP_SKIP
  *
  * Works with one layer.
  *
- * \since QGIS 2.8
  */
 class CORE_EXPORT QgsPointLocator : public QObject
 {
@@ -121,25 +120,21 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     /**
      * Gets associated layer
-     * \since QGIS 2.14
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
     /**
      * Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
-     * \since QGIS 2.14
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
      * Gets extent of the area point locator covers - if NULLPTR then it caches the whole layer
-     * \since QGIS 2.14
      */
     const QgsRectangle *extent() const { return mExtent.get(); }
 
     /**
      * Configure extent - if not NULLPTR, it will index only that area
-     * \since QGIS 2.14
      */
     void setExtent( const QgsRectangle *extent );
 
@@ -454,7 +449,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     /**
      * Returns how many geometries are cached in the index
-     * \since QGIS 2.14
      */
     int cachedGeometryCount() const { return mGeoms.count(); }
 

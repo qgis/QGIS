@@ -16,8 +16,6 @@ class QgsMapThemeCollection : QObject
 %Docstring(signature="appended")
 Container class that allows storage of map themes consisting of visible
 map layers and layer styles.
-
-.. versionadded:: 2.12
 %End
 
 %TypeHeaderCode

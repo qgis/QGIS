@@ -109,8 +109,6 @@ Lock the current active symbol layer.
     void duplicateLayer();
 %Docstring
 Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-
-.. versionadded:: 2.14
 %End
 
     void layerChanged();
@@ -221,8 +219,6 @@ Returns a reference to the dialog's button box.
     void duplicateLayer();
 %Docstring
 Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-
-.. versionadded:: 2.14
 %End
 
     void layerChanged();

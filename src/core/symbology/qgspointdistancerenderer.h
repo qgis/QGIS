@@ -199,7 +199,6 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \param unit tolerance distance units
      * \see setTolerance()
      * \see toleranceUnit()
-     * \since QGIS 2.12
      */
     void setToleranceUnit( Qgis::RenderUnit unit ) { mToleranceUnit = unit; }
 
@@ -207,7 +206,6 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * Returns the units for the tolerance distance.
      * \see tolerance()
      * \see setToleranceUnit()
-     * \since QGIS 2.12
      */
     Qgis::RenderUnit toleranceUnit() const { return mToleranceUnit; }
 

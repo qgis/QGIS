@@ -74,8 +74,6 @@ Sets if the widget will allow entry of simple expressions, which are
 evaluated and then discarded.
 
 :param enabled: set to ``True`` to allow expression entry
-
-.. versionadded:: 2.7
 %End
 
     bool expressionsEnabled() const;
@@ -84,8 +82,6 @@ Returns whether the widget will allow entry of simple expressions, which are
 evaluated and then discarded.
 
 :return: ``True`` if spin box allows expression entry
-
-.. versionadded:: 2.7
 %End
 
     virtual void clear();

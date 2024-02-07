@@ -24,7 +24,6 @@ email                : marco.hugentobler at sourcepole dot com
  * \ingroup core
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 {
@@ -88,7 +87,6 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
     /**
      * Returns a copy of the multi curve, where each component curve has had its line direction reversed.
-     * \since QGIS 2.14
      */
     QgsMultiCurve *reversed() const SIP_FACTORY;
 

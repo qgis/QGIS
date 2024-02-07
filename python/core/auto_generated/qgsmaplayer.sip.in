@@ -198,8 +198,6 @@ Returns the layer's unique ID, which is used to access this layer from :py:class
 Set the display ``name`` of the layer.
 
 .. seealso:: :py:func:`name`
-
-.. versionadded:: 2.16
 %End
 
     QString name() const;
@@ -513,8 +511,6 @@ Synchronises with changes in the datasource
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 /Factory/;
 %Docstring
 Returns new instance of :py:class:`QgsMapLayerRenderer` that will be used for rendering of given context
-
-.. versionadded:: 2.4
 %End
 
     virtual QgsRectangle extent() const;
@@ -620,8 +616,6 @@ Returns ``True`` if the layer has been modified since last commit/save.
     virtual bool isSpatial() const;
 %Docstring
 Returns ``True`` if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool isTemporary() const;
@@ -1022,8 +1016,6 @@ Import the properties of this layer from a QDomDocument
 :param categories: the style categories to import
 
 :return: ``True`` on success
-
-.. versionadded:: 2.8
 %End
 
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, const QgsReadWriteContext &context = QgsReadWriteContext(),
@@ -1188,8 +1180,6 @@ Read the style for the current layer from the DOM node supplied.
 .. note::
 
    To be implemented in subclasses. Default implementation does nothing and returns ``False``.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
@@ -1230,8 +1220,6 @@ Write just the symbology information for the layer into the document
 .. note::
 
    There is a confusion of terms with the GUI. This method actually writes what is known as the symbology in the application.
-
-.. versionadded:: 2.16
 %End
 
 
@@ -1350,8 +1338,6 @@ Returns pointer to layer's undo stack
     QUndoStack *undoStackStyles();
 %Docstring
 Returns pointer to layer's style undo stack
-
-.. versionadded:: 2.16
 %End
 
     void setLegendUrl( const QString &legendUrl );
@@ -1379,22 +1365,16 @@ Returns the format for a URL based layer legend.
 Assign a legend controller to the map layer. The object will be responsible for providing legend items.
 
 :param legend: Takes ownership of the object. Can be ``None``.
-
-.. versionadded:: 2.6
 %End
 
     QgsMapLayerLegend *legend() const;
 %Docstring
 Can be ``None``.
-
-.. versionadded:: 2.6
 %End
 
     QgsMapLayerStyleManager *styleManager() const;
 %Docstring
 Gets access to the layer's style manager. Style manager allows switching between multiple styles.
-
-.. versionadded:: 2.8
 %End
 
     void setRenderer3D( QgsAbstract3DRenderer *renderer /Transfer/ );
@@ -1423,8 +1403,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 .. seealso:: :py:func:`maximumScale`
 
 .. seealso:: :py:func:`hasScaleBasedVisibility`
-
-.. versionadded:: 2.16
 %End
 
     double minimumScale() const;
@@ -1820,8 +1798,6 @@ Will emit a :py:func:`~QgsMapLayer.request3DUpdate` signal.
     void emitStyleChanged();
 %Docstring
 Triggers an emission of the :py:func:`~QgsMapLayer.styleChanged` signal.
-
-.. versionadded:: 2.16
 %End
 
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
@@ -1892,8 +1868,6 @@ Emit a signal with status (e.g. to be caught by QgisApp and display a msg on sta
     void nameChanged();
 %Docstring
 Emitted when the name has been changed
-
-.. versionadded:: 2.16
 %End
 
     void crsChanged();
@@ -1959,15 +1933,11 @@ mode or layer opacity changes.
    to ensure that the signal is only emitted when appropriate.
 
 .. seealso:: :py:func:`rendererChanged`
-
-.. versionadded:: 2.16
 %End
 
     void legendChanged();
 %Docstring
 Signal emitted when legend of the layer has changed
-
-.. versionadded:: 2.6
 %End
 
     void renderer3DChanged();

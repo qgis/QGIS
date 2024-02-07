@@ -41,7 +41,6 @@ class QgsPathResolver;
  * \class QgsSimpleMarkerSymbolLayerBase
  * \brief Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
  * leaves the actual drawing of the symbols to subclasses.
- * \since QGIS 2.16
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 {
@@ -258,7 +257,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \see setStrokeStyle()
      * \see strokeColor()
      * \see penJoinStyle()
-     * \since QGIS 2.4
     */
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
 
@@ -268,7 +266,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \see strokeStyle()
      * \see setStrokeColor()
      * \see setPenJoinStyle()
-     * \since QGIS 2.4
     */
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
@@ -278,7 +275,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \see penCapStyle()
      * \see strokeColor()
      * \see strokeStyle()
-     * \since QGIS 2.16
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
@@ -289,7 +285,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \see setPenCapStyle()
      * \see setStrokeColor()
      * \see setStrokeStyle()
-     * \since QGIS 2.16
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
@@ -430,7 +425,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
  * \class QgsFilledMarkerSymbolLayer
  * \brief Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbol. This allows
  * the symbol to support advanced styling of the interior and stroke of the shape.
- * \since QGIS 2.16
  */
 class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {
@@ -964,7 +958,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see strokeWidthUnit()
      * \see strokeWidthMapUnitScale()
      *
-     * \since QGIS 2.16
     */
     double strokeWidth() const { return mStrokeWidth; }
 
@@ -975,7 +968,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see setStrokeWidthUnit()
      * \see setStrokeWidthMapUnitScale()
      *
-     * \since QGIS 2.16
     */
     void setStrokeWidth( double width ) { mStrokeWidth = width; }
 
@@ -986,7 +978,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see strokeWidth()
      * \see strokeWidthMapUnitScale()
      *
-     * \since QGIS 2.16
     */
     Qgis::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
@@ -996,7 +987,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see strokeWidthUnit()
      * \see setStrokeWidth()
      * \see setStrokeWidthMapUnitScale()
-     * \since QGIS 2.16
     */
     void setStrokeWidthUnit( Qgis::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
@@ -1007,7 +997,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see strokeWidth()
      * \see strokeWidthUnit()
      *
-     * \since QGIS 2.16
     */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
@@ -1018,7 +1007,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see setStrokeWidth()
      * \see setStrokeWidthUnit()
      *
-     * \since QGIS 2.16
      */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
 
@@ -1027,7 +1015,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      *
      * \see setPenJoinStyle()
      *
-     * \since QGIS 2.16
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
@@ -1036,7 +1023,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      *
      * \see penJoinStyle()
      *
-     * \since QGIS 2.16
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 

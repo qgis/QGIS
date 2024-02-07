@@ -204,7 +204,6 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
-     * \since QGIS 2.12
      */
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
 
@@ -229,7 +228,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Advanced digitizing dock widget
-     * \since QGIS 2.12
      */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 
@@ -310,7 +308,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns a reference to the main window "Add Layer" menu.
-     * \since QGIS 2.5
      */
     virtual QMenu *addLayerMenu() = 0;
 
@@ -1047,7 +1044,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add a toolbar
-     * \since QGIS 2.3
      */
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
@@ -1239,7 +1235,6 @@ class GUI_EXPORT QgisInterface : public QObject
      *       be unregistered when plugin is unloaded.
      * \see QgsMapLayerConfigWidgetFactory
      * \see unregisterMapLayerConfigWidgetFactory()
-     * \since QGIS 2.16
      */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
@@ -1247,7 +1242,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * Unregister a previously registered tab in the map layer properties dialog.
      * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
-     * \since QGIS 2.16
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
@@ -1591,7 +1585,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Emitted when a layer has been saved using save as.
-     * \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 

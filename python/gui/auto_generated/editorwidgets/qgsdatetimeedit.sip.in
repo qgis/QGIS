@@ -101,8 +101,6 @@ Set the current date as NULL.
     void setEmpty();
 %Docstring
 Resets the widget to show no value (ie, an "unknown" state).
-
-.. versionadded:: 2.16
 %End
 
     QString nullRepresentation() const;

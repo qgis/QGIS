@@ -42,7 +42,6 @@ class QgsLayoutMultiFrame;
  * \class QgsExpressionContextUtils
  * \brief Contains utilities for working with QgsExpressionContext objects, including methods
  * for creating scopes for specific uses (e.g., project scopes, layer scopes).
- * \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsExpressionContextUtils
@@ -203,7 +202,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Updates a symbol scope related to a QgsSymbol to an expression context.
      * \param symbol symbol to extract properties from
      * \param symbolScope pointer to an existing scope to update
-     * \since QGIS 2.14
      */
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
 

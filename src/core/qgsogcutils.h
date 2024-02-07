@@ -106,7 +106,6 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Exports the geometry to GML
       * \returns QDomElement
-      * \since QGIS 2.16
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
                                       QgsOgcUtils::GMLVersion gmlVersion,
@@ -136,7 +135,6 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Exports the rectangle to GML2 Box
      * \returns QDomElement
-     * \since QGIS 2.16
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
                                           const QString &srsName,
@@ -152,7 +150,6 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Exports the rectangle to GML3 Envelope
      * \returns QDomElement
-     * \since QGIS 2.16
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
         const QString &srsName,
@@ -199,7 +196,6 @@ class CORE_EXPORT QgsOgcUtils
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
@@ -251,7 +247,6 @@ class CORE_EXPORT QgsOgcUtils
      * \ingroup core
      * \brief Layer properties. Used by SQLStatementToOgcFilter().
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     class LayerProperties
     {
@@ -288,7 +283,6 @@ class CORE_EXPORT QgsOgcUtils
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      * \note not available in Python bindings
-     * \since QGIS 2.16
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,

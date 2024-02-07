@@ -85,7 +85,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Renames an attribute field (but does not commit it)
      * \param attr attribute index
      * \param newName new name of field
-     * \since QGIS 2.16
     */
     virtual bool renameAttribute( int attr, const QString &newName );
 
@@ -238,7 +237,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Emitted when an attribute has been renamed
      * \param idx attribute index
      * \param newName new attribute name
-     * \since QGIS 2.16
      */
     void attributeRenamed( int idx, const QString &newName );
 
@@ -250,7 +248,6 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Emitted after committing an attribute rename
      * \param layerId ID of layer
      * \param renamedAttributes map of field index to new name
-     * \since QGIS 2.16
      */
     void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );

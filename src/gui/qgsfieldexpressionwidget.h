@@ -125,7 +125,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Returns the currently selected field or expression. If a field is currently selected, the returned
      * value will be converted to a valid expression referencing this field (ie enclosing the field name with
      * appropriate quotations).
-     * \since QGIS 2.14
      */
     QString asExpression() const;
 

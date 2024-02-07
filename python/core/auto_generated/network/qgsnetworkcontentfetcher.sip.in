@@ -20,8 +20,6 @@ and converting the content to standard formats. Url redirects are automatically
 handled.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcherTask`
-
-.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode

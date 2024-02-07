@@ -98,8 +98,6 @@ The caller takes ownership of the returned renderer.
 Creates a new single symbol renderer from an existing ``renderer``.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
-
-.. versionadded:: 2.5
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );

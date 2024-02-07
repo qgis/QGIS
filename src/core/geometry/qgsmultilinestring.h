@@ -26,7 +26,6 @@ class QgsLineString;
  * \ingroup core
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {

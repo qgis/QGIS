@@ -32,7 +32,6 @@ class QgsProject;
  * \brief The QgsMapLayerModel class is a model to display layers in widgets.
  * \see QgsMapLayerProxyModel to sort and/filter the layers
  * \see QgsFieldModel to combine in with a field selector.
- * \since QGIS 2.3
  */
 class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 {

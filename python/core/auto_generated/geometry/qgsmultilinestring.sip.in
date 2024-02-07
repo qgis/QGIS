@@ -13,8 +13,6 @@ class QgsMultiLineString: QgsMultiCurve
 {
 %Docstring(signature="appended")
 Multi line string geometry collection.
-
-.. versionadded:: 2.10
 %End
 
 %TypeHeaderCode

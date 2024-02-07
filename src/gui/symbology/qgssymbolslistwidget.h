@@ -68,7 +68,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
     /**
      * Returns the vector layer associated with the widget.
-     * \since QGIS 2.12
      */
     const QgsVectorLayer *layer() const { return mLayer; }
 

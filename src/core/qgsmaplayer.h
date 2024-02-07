@@ -265,7 +265,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Set the display \a name of the layer.
      * \see name()
-     * \since QGIS 2.16
      */
     void setName( const QString &name );
 
@@ -537,7 +536,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 SIP_FACTORY;
 
@@ -622,7 +620,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns TRUE if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
-     * \since QGIS 2.16
      */
     virtual bool isSpatial() const;
 
@@ -1137,7 +1134,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * during the execution of readSymbology
      * \param categories the style categories to import
      * \returns TRUE on success
-     * \since QGIS 2.8
      */
     virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT,
                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
@@ -1273,7 +1269,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param categories the style categories to be read
      * \returns TRUE in case of success.
      * \note To be implemented in subclasses. Default implementation does nothing and returns FALSE.
-     * \since QGIS 2.16
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
                             QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
@@ -1301,7 +1296,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \returns TRUE in case of success.
      *  \note To be implemented in subclasses. Default implementation does nothing and returns FALSE.
      *  \note There is a confusion of terms with the GUI. This method actually writes what is known as the symbology in the application.
-     *  \since QGIS 2.16
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                              StyleCategories categories = AllStyleCategories ) const;
@@ -1410,7 +1404,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns pointer to layer's style undo stack
-     *  \since QGIS 2.16
      */
     QUndoStack *undoStackStyles();
 
@@ -1437,19 +1430,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
      * \param legend Takes ownership of the object. Can be NULLPTR.
-     * \since QGIS 2.6
      */
     void setLegend( QgsMapLayerLegend *legend SIP_TRANSFER );
 
     /**
      * Can be NULLPTR.
-     * \since QGIS 2.6
      */
     QgsMapLayerLegend *legend() const;
 
     /**
      * Gets access to the layer's style manager. Style manager allows switching between multiple styles.
-     * \since QGIS 2.8
      */
     QgsMapLayerStyleManager *styleManager() const;
 
@@ -1472,7 +1462,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see minimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
-     * \since QGIS 2.16
      */
     bool isInScaleRange( double scale ) const;
 
@@ -1787,7 +1776,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Triggers an emission of the styleChanged() signal.
-     * \since QGIS 2.16
      */
     void emitStyleChanged();
 
@@ -1856,7 +1844,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Emitted when the name has been changed
      *
-     * \since QGIS 2.16
      */
     void nameChanged();
 
@@ -1905,13 +1892,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * to ensure that the signal is only emitted when appropriate.
      *
      * \see rendererChanged()
-     * \since QGIS 2.16
     */
     void styleChanged();
 
     /**
      * Signal emitted when legend of the layer has changed
-     * \since QGIS 2.6
      */
     void legendChanged();
 

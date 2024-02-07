@@ -318,8 +318,6 @@ method. This method has no effect for raster blocks with an explicit no data val
 
 :param row: row index
 :param column: column index
-
-.. versionadded:: 2.10
 %End
 
     void setIsData( qgssize index ) /HoldGIL/;
@@ -330,8 +328,6 @@ In this case it is possible to reset a pixel to flag it as having valid data usi
 method. This method has no effect for raster blocks with an explicit no data value set.
 
 :param index: data matrix index (long type in Python)
-
-.. versionadded:: 2.10
 %End
 
     QByteArray data() const;
@@ -403,8 +399,6 @@ Sets the block data via an ``image``.
     void applyScaleOffset( double scale, double offset );
 %Docstring
 Apply band scale and offset to raster block values
-
-.. versionadded:: 2.3
 %End
 
     QgsError error() const;
@@ -438,8 +432,6 @@ The output rect has x oriented from left to right and y from top to bottom
 Returns the width (number of columns) of the raster block.
 
 .. seealso:: :py:func:`height`
-
-.. versionadded:: 2.10
 %End
 
     int height() const /HoldGIL/;
@@ -447,8 +439,6 @@ Returns the width (number of columns) of the raster block.
 Returns the height (number of rows) of the raster block.
 
 .. seealso:: :py:func:`width`
-
-.. versionadded:: 2.10
 %End
 
 };

@@ -93,15 +93,11 @@ Finds the vector join for a layer field index.
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 %Docstring
 Find out what is the first index of the join within fields. Returns -1 if join is not present
-
-.. versionadded:: 2.6
 %End
 
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 %Docstring
 Returns a vector of indices for use in join based on field names from the layer
-
-.. versionadded:: 2.6
 %End
 
     static QVector<int> joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset );
@@ -157,8 +153,6 @@ Returns ``True`` if the join information is about auxiliary layer, ``False`` oth
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
 %Docstring
 Create a copy of the join buffer
-
-.. versionadded:: 2.6
 %End
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
@@ -247,8 +241,6 @@ in a parameter are those coming from the target layer.
     void joinedFieldsChanged();
 %Docstring
 Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
-
-.. versionadded:: 2.6
 %End
 
 };

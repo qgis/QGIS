@@ -20,8 +20,6 @@ code autocompletion.
 .. note::
 
    may not be available in Python bindings, depending on platform support
-
-.. versionadded:: 2.6
 %End
 
 %TypeHeaderCode
@@ -39,8 +37,6 @@ Construct a new Python editor.
 :param filenames: The list of apis files to load for the Python lexer
 :param mode: code editor mode (since QGIS 3.30)
 :param flags: code editor flags (since QGIS 3.32)
-
-.. versionadded:: 2.6
 %End
 
     virtual Qgis::ScriptLanguage language() const;

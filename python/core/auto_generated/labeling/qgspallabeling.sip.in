@@ -400,15 +400,11 @@ Registers a feature for labeling.
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Read settings from a DOM element
-
-.. versionadded:: 2.12
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Write settings into a DOM element
-
-.. versionadded:: 2.12
 %End
 
     QgsPropertyCollection &dataDefinedProperties();
@@ -632,8 +628,6 @@ PAL labeling utilities.
     static bool staticWillUseLayer( const QgsMapLayer *layer );
 %Docstring
 Called to find out whether a specified ``layer`` is used for labeling.
-
-.. versionadded:: 2.4
 %End
 
 
@@ -648,8 +642,6 @@ Prepares a geometry for registration with PAL. Handles reprojection, rotation, c
 :param mergeLines: ``True`` if touching lines from this layer will be merged and treated as single features during labeling
 
 :return: prepared geometry
-
-.. versionadded:: 2.9
 %End
 
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
@@ -663,8 +655,6 @@ Checks whether a geometry requires preparation before registration with PAL
 :param mergeLines: ``True`` if touching lines from this layer will be merged and treated as single features during labeling
 
 :return: ``True`` if geometry requires preparation
-
-.. versionadded:: 2.9
 %End
 
     static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
@@ -677,8 +667,6 @@ wrap text to (automatic wrapping is disabled if ``autoWrapLength`` is 0). This a
 after processing wrapping using ``wrapCharacter``. When auto wrapping is enabled, the ``useMaxLineLengthWhenAutoWrapping``
 argument controls whether the lines should be wrapped to an ideal maximum of ``autoWrapLength`` characters, or
 if ``False`` then the lines are wrapped to an ideal minimum length of ``autoWrapLength`` characters.
-
-.. versionadded:: 2.9
 %End
 
     static QStringList splitToGraphemes( const QString &text );
@@ -690,8 +678,6 @@ allowed to be split apart (e.g., Arabic and Indic based scripts)
 :param text: string to split
 
 :return: list of graphemes
-
-.. versionadded:: 2.10
 %End
 
 };

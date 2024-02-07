@@ -65,14 +65,12 @@ class CORE_EXPORT QgsDistanceArea
      * Returns whether calculations will use the ellipsoid. Calculations will only use the
      * ellipsoid if a valid ellipsoid() has been set.
      * \see ellipsoid()
-     * \since QGIS 2.14
      */
     bool willUseEllipsoid() const;
 
     /**
      * Sets source spatial reference system \a crs.
      * \see sourceCrs()
-     * \since QGIS 2.2
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
@@ -152,7 +150,6 @@ class CORE_EXPORT QgsDistanceArea
      * \see measureLength()
      * \see measurePerimeter()
      * \see areaUnits()
-     * \since QGIS 2.12
      */
     double measureArea( const QgsGeometry &geometry ) const;
 
@@ -164,7 +161,6 @@ class CORE_EXPORT QgsDistanceArea
      * \see lengthUnits()
      * \see measureArea()
      * \see measurePerimeter()
-     * \since QGIS 2.12
      */
     double measureLength( const QgsGeometry &geometry ) const;
 
@@ -176,7 +172,6 @@ class CORE_EXPORT QgsDistanceArea
      * \see lengthUnits()
      * \see measureArea()
      * \see measurePerimeter()
-     * \since QGIS 2.12
      */
     double measurePerimeter( const QgsGeometry &geometry ) const;
 
@@ -216,14 +211,12 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Returns the units of distance for length calculations made by this object.
      * \see areaUnits()
-     * \since QGIS 2.14
      */
     Qgis::DistanceUnit lengthUnits() const;
 
     /**
      * Returns the units of area for areal calculations made by this object.
      * \see lengthUnits()
-     * \since QGIS 2.14
      */
     Qgis::AreaUnit areaUnits() const;
 
@@ -248,7 +241,6 @@ class CORE_EXPORT QgsDistanceArea
      * kilometers
      * \returns formatted distance string
      * \see formatArea()
-     * \since QGIS 2.16
      */
     static QString formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit = false );
 
@@ -261,7 +253,6 @@ class CORE_EXPORT QgsDistanceArea
      * square kilometers
      * \returns formatted area string
      * \see formatDistance()
-     * \since QGIS 2.14
      */
     static QString formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit = false );
 
@@ -273,7 +264,6 @@ class CORE_EXPORT QgsDistanceArea
      * \param toUnits distance unit to convert measurement to
      * \returns converted distance
      * \see convertAreaMeasurement()
-     * \since QGIS 2.14
      */
     double convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const;
 
@@ -285,7 +275,6 @@ class CORE_EXPORT QgsDistanceArea
      * \param toUnits area unit to convert measurement to
      * \returns converted area
      * \see convertLengthMeasurement()
-     * \since QGIS 2.14
      */
     double convertAreaMeasurement( double area, Qgis::AreaUnit toUnits ) const;
 

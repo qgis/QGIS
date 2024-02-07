@@ -34,7 +34,6 @@ class QgsDataItemProvider;
  * QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
  * QgsApplication::dataItemProviderRegistry().
  *
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 {

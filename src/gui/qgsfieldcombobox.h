@@ -33,7 +33,6 @@ class QgsFields;
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.
  * \see QgsMapLayerComboBox
- * \since QGIS 2.3
  */
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
 {

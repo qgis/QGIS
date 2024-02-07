@@ -177,7 +177,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
     *
     * \see title()
-    * \since QGIS 2.4
     */
     void setTitle( const QString &title );
 
@@ -429,7 +428,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Clears the project, removing all settings and resetting it back to an empty, default state.
      * \see cleared()
-     * \since QGIS 2.4
      */
     void clear();
 
@@ -685,7 +683,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * The optional \a flags argument can be used to control layer reading behavior.
      *
-     * \since QGIS 2.4
      */
     QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 
@@ -699,7 +696,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Convenience function to query default distance measurement units for project.
      * \see setDistanceUnits()
      * \see areaUnits()
-     * \since QGIS 2.14
      */
     Qgis::DistanceUnit distanceUnits() const { return mDistanceUnits; }
 
@@ -714,7 +710,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Convenience function to query default area measurement units for project.
      * \see distanceUnits()
-     * \since QGIS 2.14
      */
     Qgis::AreaUnit areaUnits() const { return mAreaUnits; }
 
@@ -914,20 +909,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
-     * \since QGIS 2.4
      */
     QgsLayerTree *layerTreeRoot() const;
 
     /**
      * Returns pointer to the helper class that synchronizes map layer registry with layer tree
-     * \since QGIS 2.4
      */
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
     /**
      * Returns pointer to the project's map theme collection.
      * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
-     * \since QGIS 2.12
      */
     QgsMapThemeCollection *mapThemeCollection();
 
@@ -966,7 +958,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * \since QGIS 2.16
      * \deprecated QGIS 3.26 use transactionMode instead
      */
     Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
@@ -978,7 +969,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \warning Make sure that this is only called when all layers are not in edit mode.
      *
-     * \since QGIS 2.16
      * \deprecated QGIS 3.26 use setTransactionMode instead
      */
     Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
@@ -1008,7 +998,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * QPair( providerKey, connString ) -> transactionGroup
      *
      * \note Not available in Python bindings
-     * \since QGIS 2.16
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
@@ -1208,7 +1197,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note not available in Python bindings
      * \see mapLayers()
-     * \since QGIS 2.16
      */
     template <typename T>
     QVector<T> layers() const
@@ -2078,7 +2066,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * be asked to save changes to the project before closing the current project.
      *
      * \note promoted to public slot in 2.16
-     * \since QGIS 2.4
      */
     void setDirty( bool b = true );
 

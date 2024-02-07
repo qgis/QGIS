@@ -188,7 +188,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! \note available in Python bindings as symbol2
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
-        //! \since QGIS 2.6
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
 
         /**
@@ -261,13 +260,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         /**
          * Unique rule identifier (for identification of rule within renderer)
-         * \since QGIS 2.6
          */
         QString ruleKey() const { return mRuleKey; }
 
         /**
          * Override the assigned rule key (should be used just internally by rule-based renderer)
-         * \since QGIS 2.6
          */
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
@@ -366,7 +363,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         /**
          * Returns which legend keys match the feature
-         * \since QGIS 2.14
          */
         QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
@@ -439,7 +435,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         /**
          * Try to find a rule given its unique key
-         * \since QGIS 2.6
          */
         QgsRuleBasedRenderer::Rule *findRuleByKey( const QString &key );
 
@@ -574,7 +569,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      * Since QGIS 3.20, the optional \a layer parameter is required for conversions of some renderer types.
      *
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
-     * \since QGIS 2.5
      */
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
 

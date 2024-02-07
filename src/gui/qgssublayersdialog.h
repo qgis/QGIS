@@ -72,7 +72,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * A structure that defines layers for the purpose of this dialog
-     * \since QGIS 2.16
      */
     struct LayerDefinition
     {
@@ -98,7 +97,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * List of layer definitions for the purpose of this dialog
-     * \since QGIS 2.16
      */
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
@@ -125,13 +123,11 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * Populate the table with layers
-     * \since QGIS 2.16
      */
     void populateLayerTable( const LayerDefinitionList &list );
 
     /**
      * Returns list of selected layers
-     * \since QGIS 2.16
      */
     LayerDefinitionList selection();
 

@@ -72,7 +72,6 @@ class QgsMapLayer;
  * \see QgsLayerTree
  * \see QgsLayerTreeLayer
  * \see QgsLayerTreeGroup
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeNode : public QObject
 {

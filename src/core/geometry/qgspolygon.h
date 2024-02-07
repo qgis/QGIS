@@ -28,7 +28,6 @@ class QgsLineString;
  * \ingroup core
  * \class QgsPolygon
  * \brief Polygon geometry type.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {

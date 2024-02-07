@@ -113,18 +113,12 @@ Create children. Children are not expected to have parent set.
 %End
 
     Qgis::BrowserItemState state() const;
-%Docstring
-
-.. versionadded:: 2.8
-%End
 
     virtual void setState( Qgis::BrowserItemState state );
 %Docstring
 Set item state. It also take care about starting/stopping loading icon animation.
 
 :param state:
-
-.. versionadded:: 2.8
 %End
 
     virtual void addChildItem( QgsDataItem *child /Transfer/, bool refresh = false );

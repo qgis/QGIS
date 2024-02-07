@@ -50,7 +50,6 @@ class QgsLayout;
  * For every control image, the allowed mismatch and color tolerance values will be calculated
  * individually.
  *
- * \since QGIS 2.8
  */
 
 class CORE_EXPORT QgsMultiRenderChecker

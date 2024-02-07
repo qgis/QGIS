@@ -42,7 +42,6 @@
  *
  * The class is thread-safe (multiple classes can access the same instance safely).
  *
- * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCache : public QObject
 {

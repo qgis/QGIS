@@ -38,7 +38,6 @@ class CORE_EXPORT QgsRaster
      * \param value
      * \param dataType
      *  \note not available in Python bindings
-     * \since QGIS 2.16
      */
     static bool isRepresentableValue( double value, Qgis::DataType dataType ) SIP_SKIP;
 
@@ -49,7 +48,6 @@ class CORE_EXPORT QgsRaster
      * representable in the output data type. This can be checked with isRepresentableValue().
      * \param value
      * \param dataType
-     * \since QGIS 2.1
      */
     static double representableValue( double value, Qgis::DataType dataType );
 };

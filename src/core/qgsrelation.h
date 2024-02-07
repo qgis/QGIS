@@ -203,7 +203,6 @@ class CORE_EXPORT QgsRelation
      * \returns expression filter string for all the referencing features
      * \see getRelatedFeatures()
      * \see getRelatedFeaturesRequest()
-     * \since QGIS 2.16
      */
     QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 

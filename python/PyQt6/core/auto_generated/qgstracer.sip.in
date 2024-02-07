@@ -17,8 +17,6 @@ class QgsTracer : QObject
 Utility class that construct a planar graph from the input vector
 layers and provides shortest path search for tracing of existing
 features.
-
-.. versionadded:: 2.14
 %End
 
 %TypeHeaderCode
@@ -129,8 +127,6 @@ Whether the internal data structures have been initialized
 %Docstring
 Whether there was an error during graph creation due to noding exception,
 indicating some input data topology problems
-
-.. versionadded:: 2.16
 %End
 
     enum PathError /BaseType=IntEnum/

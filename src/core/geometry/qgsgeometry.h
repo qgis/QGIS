@@ -183,7 +183,6 @@ class CORE_EXPORT QgsGeometry
     /**
      * Creates a geometry from an abstract geometry object. Ownership of
      * geom is transferred.
-     * \since QGIS 2.10
      */
     explicit QgsGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
 
@@ -243,7 +242,6 @@ class CORE_EXPORT QgsGeometry
      * \see get
      * \see constGet()
      * \see isEmpty()
-     * \since QGIS 2.10
      */
     bool isNull() const SIP_HOLDGIL;
 
@@ -751,7 +749,6 @@ class CORE_EXPORT QgsGeometry
      * \returns distance to vertex (following geometry), or -1 for invalid vertex numbers
      * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the distance
      * returned by this method is calculated using strictly Cartesian mathematics.
-     * \since QGIS 2.16
      */
     double distanceToVertex( int vertex ) const;
 
@@ -863,7 +860,6 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the nearest (closest) point on this geometry to another geometry.
      * \see shortestLine()
-     * \since QGIS 2.14
      */
     QgsGeometry nearestPoint( const QgsGeometry &other ) const;
 
@@ -875,7 +871,6 @@ class CORE_EXPORT QgsGeometry
      * returned by this method is calculated using strictly Cartesian mathematics. See QgsDistanceArea
      * for similar methods which account for the curvature of an ellipsoidal body such as the Earth.
      *
-     * \since QGIS 2.14
      */
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
 
@@ -1525,7 +1520,6 @@ class CORE_EXPORT QgsGeometry
      *
      * \see singleSidedBuffer()
      * \see taperedBuffer()
-     * \since QGIS 2.4
      */
     QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
 
@@ -1535,7 +1529,6 @@ class CORE_EXPORT QgsGeometry
      * \param segments    for round joins, number of segments to approximate quarter-circle
      * \param joinStyle   join style for corners in geometry
      * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
-     * \since QGIS 2.4
      */
     QgsGeometry offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit ) const;
 
@@ -1957,7 +1950,6 @@ class CORE_EXPORT QgsGeometry
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
      * \see lineLocatePoint()
-     * \since QGIS 2.0
      */
     QgsGeometry interpolate( double distance ) const;
 
@@ -2233,7 +2225,6 @@ class CORE_EXPORT QgsGeometry
      * between geometry types, and is recommended instead of this method. This method force drops
      * curves and any z or m values present in the geometry.
      *
-     * \since QGIS 2.2
      */
     QgsGeometry convertToType( Qgis::GeometryType destType, bool destMultipart = false ) const;
 
@@ -2516,7 +2507,6 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
      * otherwise returns a null QPointF.
-     * \since QGIS 2.7
      */
     QPointF asQPointF() const SIP_HOLDGIL;
 
@@ -2530,7 +2520,6 @@ class CORE_EXPORT QgsGeometry
      * If the geometry is a multi-part geometry, then only the first part will
      * be considered when converting to a QPolygonF.
      *
-     * \since QGIS 2.7
      */
     QPolygonF asQPolygonF() const SIP_HOLDGIL;
 
@@ -2829,7 +2818,6 @@ class CORE_EXPORT QgsGeometry
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      * \see requiresConversionToStraightSegments
-     * \since QGIS 2.10
      */
     void convertToStraightSegment( double tolerance = M_PI / 180., QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle );
 
@@ -2837,21 +2825,18 @@ class CORE_EXPORT QgsGeometry
      * Returns TRUE if the geometry is a curved geometry type which requires conversion to
      * display as straight line segments.
      * \see convertToStraightSegment
-     * \since QGIS 2.10
      */
     bool requiresConversionToStraightSegments() const;
 
     /**
      * Transforms the geometry from map units to pixels in place.
      * \param mtp map to pixel transform
-     * \since QGIS 2.10
      */
     void mapToPixel( const QgsMapToPixel &mtp );
 
     /**
      * Draws the geometry onto a QPainter
      * \param p destination QPainter
-     * \since QGIS 2.10
      */
     void draw( QPainter &p ) const;
 
@@ -2863,7 +2848,6 @@ class CORE_EXPORT QgsGeometry
      * Returns TRUE if vertex was found.
      *
      * \see vertexNrFromVertexId()
-     * \since QGIS 2.10
      */
     bool vertexIdFromVertexNr( int number, QgsVertexId &id SIP_OUT ) const;
 
@@ -2876,7 +2860,6 @@ class CORE_EXPORT QgsGeometry
      * Returns -1 if a corresponding vertex could not be found.
      *
      * \see vertexIdFromVertexNr()
-     * \since QGIS 2.10
      */
     int vertexNrFromVertexId( QgsVertexId id ) const;
 
@@ -2919,7 +2902,6 @@ class CORE_EXPORT QgsGeometry
     /**
      * Construct geometry from a QPointF
      * \param point source QPointF
-     * \since QGIS 2.7
      */
     static QgsGeometry fromQPointF( QPointF point ) SIP_HOLDGIL;
 
@@ -2928,7 +2910,6 @@ class CORE_EXPORT QgsGeometry
      * the resultant geometry will be a polygon, if it is open than the
      * geometry will be a polyline.
      * \param polygon source QPolygonF
-     * \since QGIS 2.7
      */
     static QgsGeometry fromQPolygonF( const QPolygonF &polygon );
 
@@ -2959,7 +2940,6 @@ class CORE_EXPORT QgsGeometry
      * \param epsilon maximum difference for coordinates between the polylines
      * \returns TRUE if polylines have the same number of points and all
      * points are equal within the specified tolerance
-     * \since QGIS 2.9
      */
     static bool compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
@@ -2971,7 +2951,6 @@ class CORE_EXPORT QgsGeometry
      * \param epsilon maximum difference for coordinates between the polygons
      * \returns TRUE if polygons have the same number of rings, and each ring has the same
      * number of points and all points are equal within the specified tolerance
-     * \since QGIS 2.9
      */
     static bool compare( const QgsPolygonXY &p1, const QgsPolygonXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
@@ -2984,7 +2963,6 @@ class CORE_EXPORT QgsGeometry
      * \returns TRUE if multipolygons have the same number of polygons, the polygons have the same number
      * of rings, and each ring has the same number of points and all points are equal within the specified
      * tolerance
-     * \since QGIS 2.9
      */
     static bool compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
@@ -3007,7 +2985,6 @@ class CORE_EXPORT QgsGeometry
      *   of rings, and each ring has the same number of points and all points are equal
      *   within the specified tolerance
      *
-     * \since QGIS 2.9
      */
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
     % MethodCode
@@ -3122,7 +3099,6 @@ class CORE_EXPORT QgsGeometry
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
-     * \since QGIS 2.9
      */
     QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;

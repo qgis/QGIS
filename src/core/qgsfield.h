@@ -251,7 +251,6 @@ class CORE_EXPORT QgsField
      * Returns if this field is numeric. Any integer or floating point type
      * will return TRUE for this.
      *
-     * \since QGIS 2.18
      */
     bool isNumeric() const;
 

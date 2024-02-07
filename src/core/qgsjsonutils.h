@@ -39,7 +39,6 @@ class QTextCodec;
  *
  * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
  * if either the source vector layer or source CRS is set.
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsJsonExporter
@@ -298,7 +297,6 @@ class CORE_EXPORT QgsJsonExporter
  * \ingroup core
  * \class QgsJsonUtils
  * \brief Helper utilities for working with JSON and GeoJSON conversions.
- * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsJsonUtils

@@ -37,7 +37,6 @@ class LoadLayerFunction;
  * \brief Expression function for use within a QgsExpressionContextScope. This differs from a
  * standard QgsExpression::Function in that it requires an implemented
  * clone() method.
- * \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
@@ -47,7 +46,6 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
     /**
      * Create a new QgsScopedExpressionFunction
      *
-     * \since QGIS 2.12
      */
     QgsScopedExpressionFunction( const QString &fnname,
                                  int params,
@@ -111,7 +109,6 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
  *
  * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContextScope objects.
  *
- * \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsExpressionContextScope
@@ -475,7 +472,6 @@ class CORE_EXPORT QgsExpressionContextScope
  *
  * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContext objects.
  *
- * \since QGIS 2.12
  */
 class CORE_EXPORT QgsExpressionContext
 {
@@ -802,7 +798,6 @@ class CORE_EXPORT QgsExpressionContext
      * Sets the original value variable value for the context.
      * \param value value for original value variable. This usually represents an original widget
      * value before any data defined overrides have been applied.
-     * \since QGIS 2.12
      */
     void setOriginalValueVariable( const QVariant &value );
 
@@ -815,7 +810,6 @@ class CORE_EXPORT QgsExpressionContext
      * \see hasCachedValue()
      * \see cachedValue()
      * \see clearCachedValues()
-     * \since QGIS 2.16
      */
     void setCachedValue( const QString &key, const QVariant &value ) const;
 
@@ -825,7 +819,6 @@ class CORE_EXPORT QgsExpressionContext
      * \see setCachedValue()
      * \see cachedValue()
      * \see clearCachedValues()
-     * \since QGIS 2.16
      */
     bool hasCachedValue( const QString &key ) const;
 
@@ -837,7 +830,6 @@ class CORE_EXPORT QgsExpressionContext
      * \see setCachedValue()
      * \see hasCachedValue()
      * \see clearCachedValues()
-     * \since QGIS 2.16
      */
     QVariant cachedValue( const QString &key ) const;
 
@@ -846,7 +838,6 @@ class CORE_EXPORT QgsExpressionContext
      * \see setCachedValue()
      * \see hasCachedValue()
      * \see cachedValue()
-     * \since QGIS 2.16
      */
     void clearCachedValues() const;
 

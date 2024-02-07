@@ -141,7 +141,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Returns the current mode of the form.
      * \see setMode()
-     * \since QGIS 2.16
      */
     QgsAttributeEditorContext::Mode mode() const { return mMode; }
 
@@ -149,7 +148,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Sets the current mode of the form.
      * \param mode form mode
      * \see mode()
-     * \since QGIS 2.16
      */
     void setMode( QgsAttributeEditorContext::Mode mode );
 
@@ -173,7 +171,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Sets all feature IDs which are to be edited if the form is in multiedit mode
      * \param fids feature ID list
-     * \since QGIS 2.16
      */
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 
@@ -181,7 +178,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * \param messageBar target message bar
-     * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
 
@@ -249,7 +245,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Emitted when a filter expression is set using the form.
      * \param expression filter expression
      * \param type filter type
-     * \since QGIS 2.16
      */
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
@@ -261,7 +256,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Emitted when the user selects the close option from the form's button bar.
-     * \since QGIS 2.16
      */
     void closed();
 
@@ -333,7 +327,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Resets the search/filter form values.
-     * \since QGIS 2.16
      */
     void resetSearch();
 

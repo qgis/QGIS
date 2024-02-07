@@ -44,7 +44,6 @@
  * instead of QgsPoint.
  *
  * \see QgsPointXY
- * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 {
@@ -379,7 +378,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the point as a QPointF.
-     * \since QGIS 2.14
      */
     QPointF toQPointF() const SIP_HOLDGIL
     {

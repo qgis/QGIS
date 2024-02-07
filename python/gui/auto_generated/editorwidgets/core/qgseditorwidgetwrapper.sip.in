@@ -135,8 +135,6 @@ By default this will enable or disable the whole widget
     virtual void showIndeterminateState();
 %Docstring
 Sets the widget to display in an indeterminate "mixed value" state.
-
-.. versionadded:: 2.16
 %End
 
     void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
@@ -146,8 +144,6 @@ Update constraint.
 :param featureContext: the feature to use to evaluate the constraint
 :param constraintOrigin: optional origin for constraints to check. This can be used to limit the constraints tested
                          to only provider or layer based constraints.
-
-.. versionadded:: 2.16
 %End
 
     void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
@@ -184,8 +180,6 @@ Gets the current constraint status.
 .. seealso:: :py:func:`constraintFailureReason`
 
 .. seealso:: :py:func:`isBlockingCommit`
-
-.. versionadded:: 2.16
 %End
 
     bool isBlockingCommit() const;
@@ -349,8 +343,6 @@ background color to red.
 
 This can be overwritten in subclasses to allow individual widgets to
 change the visual cue.
-
-.. versionadded:: 2.16
 %End
 
 

@@ -38,7 +38,6 @@ class QgsLayoutItemLegend;
  *
  * Overrides some functionality of QgsLayerTreeModel to better fit the needs of layout legends.
  *
- * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 {

@@ -30,7 +30,6 @@ class QColor;
  * \class QgsColorDialog
  * \brief A custom QGIS dialog for selecting a color. Has many improvements over the standard Qt color picker dialog, including
  * hue wheel supports, color swatches, and a color sampler.
- * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase

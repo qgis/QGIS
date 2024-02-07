@@ -177,7 +177,6 @@ class CORE_EXPORT QgsStringReplacementCollection
  * \ingroup core
  * \class QgsStringUtils
  * \brief Utility functions for working with strings.
- * \since QGIS 2.11
  */
 
 class CORE_EXPORT QgsStringUtils

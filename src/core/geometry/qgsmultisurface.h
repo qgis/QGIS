@@ -27,7 +27,6 @@ class QgsSurface;
  * \ingroup core
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {

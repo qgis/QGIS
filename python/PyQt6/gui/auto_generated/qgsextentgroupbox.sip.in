@@ -22,8 +22,6 @@ original extent or extent defined by the current view in map canvas.
 When using the group box, make sure to call :py:func:`~setOriginalExtent`, :py:func:`~setCurrentExtent` and :py:func:`~setOutputCrs` during initialization.
 
 .. seealso:: :py:class:`QgsExtentWidget`
-
-.. versionadded:: 2.4
 %End
 
 %TypeHeaderCode
@@ -136,8 +134,6 @@ Returns the currently selected state for the widget's extent.
 Sets the base part of ``title`` of the group box (will be appended with extent state)
 
 .. seealso:: :py:func:`titleBase`
-
-.. versionadded:: 2.12
 %End
 
     QString titleBase() const;
@@ -145,8 +141,6 @@ Sets the base part of ``title`` of the group box (will be appended with extent s
 Returns the base part of title of the group box (will be appended with extent state).
 
 .. seealso:: :py:func:`setTitleBase`
-
-.. versionadded:: 2.12
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption = true );

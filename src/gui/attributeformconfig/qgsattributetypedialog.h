@@ -177,26 +177,22 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     /**
      * Setter for constraint expression description
      * \param desc the expression description
-     * \since QGIS 2.16
      */
     void setConstraintExpressionDescription( const QString &desc );
 
     /**
      * Getter for constraint expression description
      * \returns the expression description
-     * \since QGIS 2.16
      */
     QString constraintExpressionDescription();
 
     /**
      * Getter for the constraint expression
-     * \since QGIS 2.16
      */
     QString constraintExpression() const;
 
     /**
      * Setter for the constraint expression
-     * \since QGIS 2.16
      */
     void setConstraintExpression( const QString &str );
 

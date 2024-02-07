@@ -115,15 +115,11 @@ Sets the multi value classes to ``setMultiValueClasses``.
     QString label( double idx ) const;
 %Docstring
 Returns optional category label
-
-.. versionadded:: 2.1
 %End
 
     void setLabel( double idx, const QString &label );
 %Docstring
 Set category label
-
-.. versionadded:: 2.1
 %End
 
     int band() const;

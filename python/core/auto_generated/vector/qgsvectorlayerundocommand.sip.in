@@ -219,8 +219,6 @@ class QgsVectorLayerUndoCommandRenameAttribute : QgsVectorLayerUndoCommand
 {
 %Docstring(signature="appended")
 Undo command for renaming an existing attribute of a vector layer.
-
-.. versionadded:: 2.16
 %End
 
 %TypeHeaderCode

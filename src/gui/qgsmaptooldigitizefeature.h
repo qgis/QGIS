@@ -122,7 +122,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
 
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
-     * \since QGIS 2.12
     */
     bool mCheckGeometryType;
 

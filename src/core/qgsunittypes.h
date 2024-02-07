@@ -33,7 +33,6 @@
  * \ingroup core
  * \class QgsUnitTypes
  * \brief Helper functions for various unit types.
- * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsUnitTypes

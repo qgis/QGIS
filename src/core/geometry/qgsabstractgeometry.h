@@ -75,7 +75,6 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
  * are required.
  *
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
@@ -708,7 +707,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE on success
      * \see dropZValue()
      * \see addMValue()
-     * \since QGIS 2.12
      */
     virtual bool addZValue( double zValue = 0 ) = 0;
 
@@ -718,7 +716,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE on success
      * \see dropMValue()
      * \see addZValue()
-     * \since QGIS 2.12
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
 
@@ -727,7 +724,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE if Z values were present and have been removed
      * \see addZValue()
      * \see dropMValue()
-     * \since QGIS 2.14
      */
     virtual bool dropZValue() = 0;
 
@@ -736,7 +732,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns TRUE if m-values were present and have been removed
      * \see addMValue()
      * \see dropZValue()
-     * \since QGIS 2.14
      */
     virtual bool dropMValue() = 0;
 
@@ -751,7 +746,6 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Converts the geometry to a specified type.
      * \returns TRUE if conversion was successful
-     * \since QGIS 2.14
      */
     virtual bool convertTo( Qgis::WkbType type );
 

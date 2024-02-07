@@ -26,7 +26,6 @@
  * \ingroup core
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type
- * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 {

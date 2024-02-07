@@ -29,7 +29,6 @@ class QgsColorRamp;
  * \ingroup core
  * \class QgsHeatmapRenderer
  * \brief A renderer which draws points as a live heatmap
- * \since QGIS 2.7
  */
 class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 {

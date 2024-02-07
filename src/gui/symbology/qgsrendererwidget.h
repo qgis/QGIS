@@ -73,7 +73,6 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     /**
      * Returns the vector layer associated with the widget.
-     * \since QGIS 2.12
      */
     const QgsVectorLayer *vectorLayer() const { return mLayer; }
 
@@ -245,7 +244,6 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
 
     /**
      * Returns the vector layer associated with the widget.
-     * \since QGIS 2.12
      */
     const QgsVectorLayer *vectorLayer() const { return mLayer; }
 

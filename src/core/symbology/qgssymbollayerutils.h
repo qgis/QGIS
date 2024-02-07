@@ -292,7 +292,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param symbol symbol
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
-     * \param customContext render context to use when rendering symbol (since QGIS 2.6)
      * \param selected set to TRUE to render the symbol in a selected state (since QGIS 3.10)
      * \param expressionContext optional custom expression context (since QGIS 3.10)
      * \param shape optional legend patch shape to use for rendering the preview icon (since QGIS 3.14)
@@ -313,7 +312,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param parentSymbolType since QGIS 3.22, can be used to specify the parent symbol type so that geometry generator preview icons are correctly calculated
      * \returns QPicture containing symbol layer preview
      * \see symbolLayerPreviewIcon()
-     * \since QGIS 2.9
      */
     static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
 
@@ -407,7 +405,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
-     * \since QGIS 2.12
      */
     static QString symbolProperties( QgsSymbol *symbol );
 
@@ -616,7 +613,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Returns a friendly display name for a color
      * \param color source color
      * \returns display name for color
-     * \since QGIS 2.5
      */
     static QString colorToName( const QColor &color );
 
@@ -625,7 +621,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * codes, rgb and rgba strings.
      * \param colorStr string representing the color list
      * \returns list of parsed colors
-     * \since QGIS 2.5
      */
     static QList< QColor > parseColorList( const QString &colorStr );
 
@@ -634,7 +629,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * mime data's text with the color's hex code.
      * \param color color to encode as mime data
      * \see colorFromMimeData
-     * \since QGIS 2.5
      */
     static QMimeData *colorToMimeData( const QColor &color ) SIP_FACTORY;
 
@@ -644,7 +638,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param hasAlpha will be set to TRUE if mime data was interpreted as a color containing
      * an explicit alpha value
      * \returns valid color if mimedata could be interpreted as a color, otherwise an invalid color
-     * \since QGIS 2.5
      */
     static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha SIP_OUT );
 
@@ -652,7 +645,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse mime data as a list of named colors
      * \param data mime data to parse
      * \returns list of parsed colors
-     * \since QGIS 2.5
      */
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
 
@@ -661,7 +653,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param colorList list of named colors
      * \param allFormats set to TRUE to include additional mime formats, include text/plain and application/x-color
      * \returns mime data containing encoded colors
-     * \since QGIS 2.5
      */
     static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) SIP_FACTORY;
 
@@ -691,7 +682,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param colorStr string representing the color
      * \param strictEval set to TRUE for stricter color parsing rules
      * \returns parsed color
-     * \since QGIS 2.3
      */
     static QColor parseColor( const QString &colorStr, bool strictEval = false );
 
@@ -702,7 +692,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to TRUE
      * \param strictEval set to TRUE for stricter color parsing rules
      * \returns parsed color
-     * \since QGIS 2.3
      */
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
 
@@ -716,7 +705,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
-     * \since QGIS 2.3
      */
     static void premultiplyColor( QColor &rgb, int alpha );
 
@@ -812,7 +800,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns NULLPTR.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
-     * \since QGIS 2.2
      */
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) SIP_FACTORY;
 
@@ -821,7 +808,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  Returns full expression string if the expression is more complex than just one field.
      *  Using just expression->expression() method may return quoted field name, but that is not
      *  wanted for saving (due to backward compatibility) or display in GUI.
-     * \since QGIS 2.2
      */
     static QString fieldOrExpressionFromExpression( QgsExpression *expression );
 
@@ -829,7 +815,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Computes a sequence of about 'classes' equally spaced round values
      *  which cover the range of values from 'minimum' to 'maximum'.
      *  The values are chosen so that they are 1, 2 or 5 times a power of 10.
-     * \since QGIS 2.10
      */
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
