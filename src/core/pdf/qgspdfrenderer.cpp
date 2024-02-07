@@ -27,26 +27,80 @@
 #endif
 
 #ifdef HAVE_PDF4QT
-bool QgsPdfRenderer::render( const QString &path, QPainter *painter, const QRectF &rectangle, int pageIndex )
+class PdfDocumentContainer
 {
-  // LOTS of incorrect shortcuts here!
+  public:
+    PdfDocumentContainer( const QString &path )
+      : reader( nullptr, []( bool * )->QString {return QString(); }, true, false )
+      , document( reader.readFromFile( path ) )
+      , modifiedDocument( &document, nullptr )
+      , fontCache( 1000, 1000 )
+    {
+      fontCache.setDocument( modifiedDocument );
+      renderer = std::make_unique< pdf::PDFRenderer >( &document,
+                 &fontCache,
+                 &pdfCms,
+                 nullptr,
+                 pdf::PDFRenderer::Features(),
+                 meshQualitySettings );
+    }
+    pdf::PDFDocumentReader reader;
+    pdf::PDFDocument document;
+    pdf::PDFModifiedDocument modifiedDocument;
+    pdf::PDFFontCache fontCache;
+    pdf::PDFCMSGeneric pdfCms;
+    pdf::PDFMeshQualitySettings  meshQualitySettings;
+    std::unique_ptr< pdf::PDFRenderer > renderer;
+};
+#endif
 
-  pdf::PDFDocumentReader reader( nullptr, []( bool * )->QString {return QString(); }, true, false );
-  pdf::PDFDocument document = reader.readFromFile( path );
-  pdf::PDFModifiedDocument modifiedDocument( &document, nullptr );
+QgsPdfRenderer::QgsPdfRenderer( const QString &path )
+  : mPath( path )
+{
+#ifdef HAVE_PDF4QT
+  mDocumentContainer = std::make_unique< PdfDocumentContainer >( path );
+#endif
+}
 
-  pdf::PDFFontCache fontCache( 1000, 1000 );
-  fontCache.setDocument( modifiedDocument );
+QgsPdfRenderer::~QgsPdfRenderer() = default;
 
-  pdf::PDFCMSGeneric pdfCms;
-  pdf::PDFMeshQualitySettings meshQualitySettings;
+#ifdef HAVE_PDF4QT
+int QgsPdfRenderer::pageCount() const
+{
+  const pdf::PDFCatalog *catalog = mDocumentContainer->document.getCatalog();
+  return catalog->getPageCount();
+}
+#else
+int QgsPdfRenderer::pageCount() const
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
+}
+#endif
 
-  pdf::PDFRenderer renderer( &document, &fontCache, &pdfCms, nullptr, pdf::PDFRenderer::Features(), meshQualitySettings );
-  renderer.render( painter, rectangle, pageIndex );
+#ifdef HAVE_PDF4QT
+QRectF QgsPdfRenderer::pageMediaBox( int pageNumber ) const
+{
+  if ( pageNumber < 0 || pageNumber >= pageCount() )
+    return QRectF();
+
+  const pdf::PDFCatalog *catalog = mDocumentContainer->document.getCatalog();
+  return catalog->getPage( pageNumber )->getMediaBox();
+}
+#else
+QRectF QgsPdfRenderer::pageMediaBox( int pageNumber ) const
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
+}
+#endif
+
+#ifdef HAVE_PDF4QT
+bool QgsPdfRenderer::render( QPainter *painter, const QRectF &rectangle, int pageIndex )
+{
+  mDocumentContainer->renderer->render( painter, rectangle, pageIndex );
   return true;
 }
 #else
-bool QgsPdfRenderer::render( const QString &, QPainter *, const QRectF &, int )
+bool QgsPdfRenderer::render( QPainter *, const QRectF &, int )
 {
   throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
 }
