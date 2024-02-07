@@ -94,6 +94,8 @@ my $DOXY_INSIDE_SIP_RUN = 0;
 my $HAS_PUSHED_FORCE_INT = 0;
 
 my @ALLOWED_NON_CLASS_ENUMS = (
+  "QgsSipifyHeader::MyEnum",
+  "QgsSipifyHeader::OneLiner",
   "CadConstraint::LockMode",
   "ColorrampTable",
   "ElementType",
