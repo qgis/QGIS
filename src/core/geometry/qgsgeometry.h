@@ -403,7 +403,6 @@ class CORE_EXPORT QgsGeometry
      * \note Comparing two null geometries will return FALSE.
      *
      * \see isGeosEqual()
-     * \since QGIS 1.5
      */
     bool equals( const QgsGeometry &geometry ) const;
 
@@ -421,7 +420,6 @@ class CORE_EXPORT QgsGeometry
      * \note Comparing two null geometries will return FALSE.
      *
      * \see equals()
-     * \since QGIS 1.5
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
@@ -430,7 +428,6 @@ class CORE_EXPORT QgsGeometry
      *
      * The \a flags parameter indicates optional flags which control the type of validity checking performed.
      *
-     * \since QGIS 1.5
      */
     bool isGeosValid( Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
@@ -469,7 +466,6 @@ class CORE_EXPORT QgsGeometry
      * celestial body).
      *
      * \see length()
-     * \since QGIS 1.5
      */
     double area() const;
 
@@ -485,7 +481,6 @@ class CORE_EXPORT QgsGeometry
      * celestial body).
      *
      * \see area()
-     * \since QGIS 1.5
      */
     double length() const;
 
@@ -1453,7 +1448,6 @@ class CORE_EXPORT QgsGeometry
      * faster than calling contains() directly. See createGeometryEngine() for details on how to use the
      * QgsGeometryEngine class.
      *
-     * \since QGIS 1.5
      */
     bool contains( const QgsGeometry &geometry ) const;
 
@@ -1465,7 +1459,6 @@ class CORE_EXPORT QgsGeometry
      * faster than calling disjoint() directly. See createGeometryEngine() for details on how to use the
      * QgsGeometryEngine class.
      *
-     * \since QGIS 1.5
      */
     bool disjoint( const QgsGeometry &geometry ) const;
 
@@ -1477,7 +1470,6 @@ class CORE_EXPORT QgsGeometry
      * faster than calling touches() directly. See createGeometryEngine() for details on how to use the
      * QgsGeometryEngine class.
      *
-     * \since QGIS 1.5
      */
     bool touches( const QgsGeometry &geometry ) const;
 
@@ -1489,7 +1481,6 @@ class CORE_EXPORT QgsGeometry
      * faster than calling overlaps() directly. See createGeometryEngine() for details on how to use the
      * QgsGeometryEngine class.
      *
-     * \since QGIS 1.5
      */
     bool overlaps( const QgsGeometry &geometry ) const;
 
@@ -1501,7 +1492,6 @@ class CORE_EXPORT QgsGeometry
      * faster than calling within() directly. See createGeometryEngine() for details on how to use the
      * QgsGeometryEngine class.
      *
-     * \since QGIS 1.5
      */
     bool within( const QgsGeometry &geometry ) const;
 
@@ -1513,7 +1503,6 @@ class CORE_EXPORT QgsGeometry
      * faster than calling crosses() directly. See createGeometryEngine() for details on how to use the
      * QgsGeometryEngine class.
      *
-     * \since QGIS 1.5
      */
     bool crosses( const QgsGeometry &geometry ) const;
 
@@ -2521,7 +2510,6 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns contents of the geometry as a list of geometries
-     * \since QGIS 1.1
      */
     QVector<QgsGeometry> asGeometryCollection() const;
 
@@ -2550,14 +2538,12 @@ class CORE_EXPORT QgsGeometry
      * Deletes a ring in polygon or multipolygon.
      * Ring 0 is outer ring and can't be deleted.
      * \returns TRUE on success
-     * \since QGIS 1.2
      */
     bool deleteRing( int ringNum, int partNum = 0 );
 
     /**
      * Deletes part identified by the part number
      * \returns TRUE on success
-     * \since QGIS 1.2
      */
     bool deletePart( int partNum );
 
@@ -2619,7 +2605,6 @@ class CORE_EXPORT QgsGeometry
      *          2 if avoid intersection would change the geometry type,
      *          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
      *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
-     * \since QGIS 1.5
      * \deprecated QGIS 3.34
      */
     Q_DECL_DEPRECATED int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
@@ -2805,7 +2790,6 @@ class CORE_EXPORT QgsGeometry
      *
      * The \a flags parameter indicates optional flags which control the type of validity checking performed.
      *
-     * \since QGIS 1.5
      */
     void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 

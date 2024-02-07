@@ -358,8 +358,6 @@ equality test performed by :py:func:`~QgsGeometry.isGeosEqual`.
    Comparing two null geometries will return ``False``.
 
 .. seealso:: :py:func:`isGeosEqual`
-
-.. versionadded:: 1.5
 %End
 
     bool isGeosEqual( const QgsGeometry & ) const;
@@ -379,8 +377,6 @@ by :py:func:`~QgsGeometry.equals` instead.
    Comparing two null geometries will return ``False``.
 
 .. seealso:: :py:func:`equals`
-
-.. versionadded:: 1.5
 %End
 
     bool isGeosValid( Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
@@ -388,8 +384,6 @@ by :py:func:`~QgsGeometry.equals` instead.
 Checks validity of the geometry using GEOS.
 
 The ``flags`` parameter indicates optional flags which control the type of validity checking performed.
-
-.. versionadded:: 1.5
 %End
 
     bool isSimple() const;
@@ -434,8 +428,6 @@ Returns the planar, 2-dimensional area of the geometry.
    celestial body).
 
 .. seealso:: :py:func:`length`
-
-.. versionadded:: 1.5
 %End
 
     double length() const;
@@ -453,8 +445,6 @@ If the geometry is a polygon geometry then the perimeter of the polygon will be 
    celestial body).
 
 .. seealso:: :py:func:`area`
-
-.. versionadded:: 1.5
 %End
 
     double distance( const QgsGeometry &geom ) const;
@@ -1383,8 +1373,6 @@ Returns ``True`` if the geometry completely contains another ``geometry``.
    geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
    faster than calling :py:func:`~QgsGeometry.contains` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
    :py:class:`QgsGeometryEngine` class.
-
-.. versionadded:: 1.5
 %End
 
     bool disjoint( const QgsGeometry &geometry ) const;
@@ -1397,8 +1385,6 @@ Returns ``True`` if the geometry is disjoint of another ``geometry``.
    geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
    faster than calling :py:func:`~QgsGeometry.disjoint` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
    :py:class:`QgsGeometryEngine` class.
-
-.. versionadded:: 1.5
 %End
 
     bool touches( const QgsGeometry &geometry ) const;
@@ -1411,8 +1397,6 @@ Returns ``True`` if the geometry touches another ``geometry``.
    geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
    faster than calling :py:func:`~QgsGeometry.touches` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
    :py:class:`QgsGeometryEngine` class.
-
-.. versionadded:: 1.5
 %End
 
     bool overlaps( const QgsGeometry &geometry ) const;
@@ -1425,8 +1409,6 @@ Returns ``True`` if the geometry overlaps another ``geometry``.
    geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
    faster than calling :py:func:`~QgsGeometry.overlaps` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
    :py:class:`QgsGeometryEngine` class.
-
-.. versionadded:: 1.5
 %End
 
     bool within( const QgsGeometry &geometry ) const;
@@ -1439,8 +1421,6 @@ Returns ``True`` if the geometry is completely within another ``geometry``.
    geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
    faster than calling :py:func:`~QgsGeometry.within` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
    :py:class:`QgsGeometryEngine` class.
-
-.. versionadded:: 1.5
 %End
 
     bool crosses( const QgsGeometry &geometry ) const;
@@ -1453,8 +1433,6 @@ Returns ``True`` if the geometry crosses another ``geometry``.
    geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
    faster than calling :py:func:`~QgsGeometry.crosses` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
    :py:class:`QgsGeometryEngine` class.
-
-.. versionadded:: 1.5
 %End
 
     QgsGeometry buffer( double distance, int segments ) const;
@@ -2412,8 +2390,6 @@ This method works only with multi-polygon (or multi-curve polygon) geometry type
     QVector<QgsGeometry> asGeometryCollection() const;
 %Docstring
 Returns contents of the geometry as a list of geometries
-
-.. versionadded:: 1.1
 %End
 
     QPointF asQPointF() const /HoldGIL/;
@@ -2444,8 +2420,6 @@ Deletes a ring in polygon or multipolygon.
 Ring 0 is outer ring and can't be deleted.
 
 :return: ``True`` on success
-
-.. versionadded:: 1.2
 %End
 
     bool deletePart( int partNum );
@@ -2453,8 +2427,6 @@ Ring 0 is outer ring and can't be deleted.
 Deletes part identified by the part number
 
 :return: ``True`` on success
-
-.. versionadded:: 1.2
 %End
 
     bool convertToMultiType();
@@ -2519,8 +2491,6 @@ Modifies geometry to avoid intersections with the layers specified in project pr
          2 if avoid intersection would change the geometry type,
          3 at least one geometry intersected is invalid. The algorithm may not work and return the same geometry as the input. You must fix your intersecting geometries.
          4 if the geometry is not intersected by one of the geometries present in the provided layers.
-
-.. versionadded:: 1.5
 
 .. deprecated::
    QGIS 3.34
@@ -2727,8 +2697,6 @@ Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
 
 The ``flags`` parameter indicates optional flags which control the type of validity checking performed.
-
-.. versionadded:: 1.5
 %End
 
     void normalize();

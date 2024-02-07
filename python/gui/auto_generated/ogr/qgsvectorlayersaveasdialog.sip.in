@@ -13,8 +13,6 @@ class QgsVectorLayerSaveAsDialog : QDialog
 {
 %Docstring(signature="appended")
 Class to select destination file, type and CRS for ogr layers
-
-.. versionadded:: 1.0
 %End
 
 %TypeHeaderCode

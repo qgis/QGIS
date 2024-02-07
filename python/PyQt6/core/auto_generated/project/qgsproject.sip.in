@@ -1164,8 +1164,6 @@ The :py:func:`~QgsProject.legendLayersAdded` signal is emitted only if addToLege
    take ownership
 
 .. seealso:: :py:func:`addMapLayer`
-
-.. versionadded:: 1.8
 %End
 
     QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
@@ -1222,8 +1220,6 @@ of any layers these layers will also be deleted.
 .. seealso:: :py:func:`removeMapLayer`
 
 .. seealso:: :py:func:`removeAllMapLayers`
-
-.. versionadded:: 1.8
 %End
 
 

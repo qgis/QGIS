@@ -1272,7 +1272,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
      * \see addMapLayer()
-     * \since QGIS 1.8
      */
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers SIP_TRANSFER,
                                        bool addToLegend = true,
@@ -1321,7 +1320,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note As a side-effect the QgsProject instance is marked dirty.
      * \see removeMapLayer()
      * \see removeAllMapLayers()
-     * \since QGIS 1.8
      */
     void removeMapLayers( const QStringList &layerIds );
 

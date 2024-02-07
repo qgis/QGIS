@@ -822,8 +822,6 @@ after accessing data by :py:func:`~QgsMapLayer.draw` etc.
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the layer's spatial reference system.
-
-.. versionadded:: 1.4
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );

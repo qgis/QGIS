@@ -244,8 +244,6 @@ Toggles whether search mode should be enabled in the form.
     void copyCellContent() const;
 %Docstring
 Copy the content of the selected cell in the clipboard.
-
-.. versionadded:: 1.16
 %End
 
     void cancelProgress( );

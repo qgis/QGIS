@@ -269,7 +269,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * Copy the content of the selected cell in the clipboard.
-     * \since QGIS 1.16
      */
     void copyCellContent() const;
 
