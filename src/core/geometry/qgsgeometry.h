@@ -1829,9 +1829,25 @@ class CORE_EXPORT QgsGeometry
      * If \a edgesOnly is TRUE than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
+     *
+     * \see constrainedDelaunayTriangulation()
      * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
+     * Returns a constrained Delaunay triangulation for the vertices of the geometry.
+     *
+     * An empty geometry will be returned if the triangulation could not be calculated.
+     *
+     * This method requires a QGIS build based on GEOS 3.11 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see delaunayTriangulation()
+     *
+     * \since QGIS 3.34
+     */
+    QgsGeometry constrainedDelaunayTriangulation() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
