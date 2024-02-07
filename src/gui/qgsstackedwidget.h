@@ -52,7 +52,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
 
     /**
      * Constructor for QgsStackedWidget.
-     * SizeMode defaults to SizeMode::ConsiderAllPages #spellok
+     * SizeMode defaults to Consider All Pages, same as QStackedWidget
      */
     explicit QgsStackedWidget( QWidget *parent = nullptr );
 
