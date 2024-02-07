@@ -114,8 +114,6 @@ Sets a secondary stroke color for the rubberband which will be drawn under the m
 Set to an invalid color to avoid drawing the secondary stroke.
 
 :param color: The color used to render a secondary stroke color to this rubberband
-
-.. versionadded:: 3.0
 %End
 
     QColor secondaryStrokeColor() const;
@@ -306,8 +304,6 @@ to the canvas CRS.
 
 If additional geometries are to be added then set ``doUpdate`` to ``False`` to defer costly repaint and bounding rectangle calculations for better performance.
 After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
-
-.. versionadded:: 3.0
 %End
 
     void setTranslationOffset( double dx, double dy );

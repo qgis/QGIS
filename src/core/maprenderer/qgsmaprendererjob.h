@@ -334,7 +334,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * If so, any previously stored labeling results (see takeLabelingResults())
      * should be retained.
      * \see takeLabelingResults()
-     * \since QGIS 3.0
      */
     virtual bool usedCachedLabels() const = 0;
 
@@ -369,14 +368,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * each LayerRenderJob.
      * Ownership is not transferred and the provider must not be deleted
      * before the render job.
-     * \since QGIS 3.0
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
     /**
      * Returns the feature filter provider used by the QgsRenderContext of
      * each LayerRenderJob.
-     * \since QGIS 3.0
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
@@ -438,7 +435,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     /**
      * Returns the render time (in ms) per layer.
      * \note Not available in Python bindings.
-     * \since QGIS 3.0
      */
     QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
 
@@ -494,7 +490,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * Rendering labels is not yet done. If the fully rendered layer including labels is required use
      * finished() instead.
      *
-     * \since QGIS 3.0
      */
     void renderingLayersFinished();
 
@@ -574,7 +569,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     /**
      * Prepares a labeling job.
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true ) SIP_SKIP;
 
@@ -627,7 +621,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * Handles clean up tasks for a label job, including deletion of images and storing cached
      * label results.
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 

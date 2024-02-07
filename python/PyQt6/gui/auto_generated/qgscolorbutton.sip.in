@@ -64,8 +64,6 @@ for the color. Defaults to ``False``.
 :param allowOpacity: set to ``True`` to allow opacity modification
 
 .. seealso:: :py:func:`allowOpacity`
-
-.. versionadded:: 3.0
 %End
 
     bool allowOpacity() const;
@@ -76,8 +74,6 @@ for the color.
 :return: ``True`` if opacity modification is allowed
 
 .. seealso:: :py:func:`setAllowOpacity`
-
-.. versionadded:: 3.0
 %End
 
     void setColorDialogTitle( const QString &title );

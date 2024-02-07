@@ -36,7 +36,6 @@ class QgsLayout;
  * QgsLayoutAtlas object. Instead, the atlas attached to the print layout
  * should be used. This can be retrieved by calling QgsPrintLayout::atlas().
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject, public QgsExpressionContextGenerator
 {

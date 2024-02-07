@@ -103,7 +103,6 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      * Should be used by qgsgeometry_cast<QgsMultiLineString *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsMultiLineString *cast( const QgsAbstractGeometry *geom )
     {

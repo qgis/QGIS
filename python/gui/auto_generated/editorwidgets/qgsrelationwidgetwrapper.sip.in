@@ -203,8 +203,6 @@ If it's empty it takes the relation id as label
     QgsRelation relation() const;
 %Docstring
 The relation for which this wrapper is created.
-
-.. versionadded:: 3.0
 %End
 
     void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );

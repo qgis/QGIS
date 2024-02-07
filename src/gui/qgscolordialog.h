@@ -64,7 +64,6 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * Sets whether opacity modification (transparency) is permitted
      * for the color dialog. Defaults to TRUE.
      * \param allowOpacity set to FALSE to disable opacity modification
-     * \since QGIS 3.0
      */
     void setAllowOpacity( bool allowOpacity );
 

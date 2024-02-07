@@ -58,8 +58,6 @@ Returns a new QgsMapToPixel created using a specified ``scale`` and distance uni
 :param mapUnits: map units
 
 :return: matching QgsMapToPixel
-
-.. versionadded:: 3.0
 %End
 
     bool isValid() const;
@@ -219,8 +217,6 @@ Returns a QTransform encapsulating the map to pixel conversion.
 Returns the center x-coordinate for the transform.
 
 .. seealso:: :py:func:`yCenter`
-
-.. versionadded:: 3.0
 %End
 
     double yCenter() const;
@@ -228,8 +224,6 @@ Returns the center x-coordinate for the transform.
 Returns the center y-coordinate for the transform.
 
 .. seealso:: :py:func:`xCenter`
-
-.. versionadded:: 3.0
 %End
 
     bool operator==( const QgsMapToPixel &other ) const;

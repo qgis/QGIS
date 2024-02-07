@@ -27,7 +27,6 @@ class QTransform;
  * \ingroup core
  * \brief Contains miscellaneous painting utility functions.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPainting
 {

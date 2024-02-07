@@ -17,8 +17,6 @@ The :py:class:`QgsFieldFormatterRegistry` manages registered classes of :py:clas
 
 A reference to the :py:class:`QgsFieldFormatterRegistry` can be obtained from
 :py:func:`QgsApplication.fieldFormatterRegistry()`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

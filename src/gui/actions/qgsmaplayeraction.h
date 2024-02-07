@@ -60,7 +60,6 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     /**
      * Layer behavior flags.
-     * \since QGIS 3.0
      */
     Qgis::MapLayerActionFlags flags() const;
 
@@ -129,7 +128,6 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     /**
      * Returns TRUE if the action is only enabled for layers in editable mode.
-     * \since QGIS 3.0
      */
     bool isEnabledOnlyWhenEditable() const;
 

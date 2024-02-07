@@ -55,7 +55,6 @@ class QgsPoint;
  * - Storage of coordinates for a geometry. Since QgsPointXY is strictly 2-dimensional it should never be used to store coordinates for vector geometries, as this will involve a loss of any z or m values present in the geometry.
  *
  * \see QgsPoint
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPointXY
 {
@@ -106,7 +105,6 @@ class CORE_EXPORT QgsPointXY
      * Create a new point.
      * Z and M values will be dropped.
      *
-     * \since QGIS 3.0
      */
     QgsPointXY( const QgsPoint &point ) SIP_HOLDGIL;
 

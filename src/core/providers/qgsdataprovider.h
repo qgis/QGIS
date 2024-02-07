@@ -183,7 +183,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Set the data source specification.
      *
-     * \since QGIS 3.0
      */
     void setUri( const QgsDataSourceUri &uri )
     {
@@ -203,7 +202,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Gets the data source specification.
      *
-     * \since QGIS 3.0
      */
     QgsDataSourceUri uri() const
     {
@@ -551,7 +549,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \see notify
      *
-     * \since QGIS 3.0
      */
     virtual void setListening( bool isListening );
 
@@ -560,7 +557,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Stores settings related to the context in which a preview job runs.
      * \note Not available in Python bindings
-     * \since QGIS 3.0
      */
     struct PreviewContext
     {
@@ -582,7 +578,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      *
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
 
@@ -592,7 +587,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Individual data providers must implement this method if they support collecting metadata.
      *
      * \see writeLayerMetadata()
-     * \since QGIS 3.0
     */
     virtual QgsLayerMetadata layerMetadata() const { return QgsLayerMetadata(); }
 
@@ -602,7 +596,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Returns TRUE if metadata was successfully written to the data provider.
      * \see layerMetadata()
-     * \since QGIS 3.0
     */
     virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
 
@@ -671,7 +664,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \see setListening
      *
-     * \since QGIS 3.0
      */
     void notify( const QString &msg );
 

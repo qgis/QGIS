@@ -20,8 +20,6 @@ and millimeters. This widget is designed to allow users to edit the properties o
 .. seealso:: :py:class:`QgsMapUnitScaleDialog`
 
 .. seealso:: :py:class:`QgsUnitSelectionWidget`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

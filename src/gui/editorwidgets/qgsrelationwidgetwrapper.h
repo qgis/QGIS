@@ -181,7 +181,6 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     /**
      * The relation for which this wrapper is created.
      *
-     * \since QGIS 3.0
      */
     QgsRelation relation() const;
 

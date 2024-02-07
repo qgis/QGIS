@@ -134,7 +134,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Maplayer has a style and a metadata property
-     * \since QGIS 3.0
      */
     enum PropertyType
     {
@@ -208,7 +207,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns a new instance equivalent to this one except for the id which
      *  is still unique.
      * \returns a new layer instance
-     * \since QGIS 3.0
      */
     virtual QgsMapLayer *clone() const = 0;
 
@@ -255,7 +253,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the extension of a Property.
      * \returns The extension
-     * \since QGIS 3.0
      */
     static QString extensionPropertyType( PropertyType type );
 
@@ -689,14 +686,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
-     * \since QGIS 3.0
      */
     virtual void resolveReferences( QgsProject *project );
 
     /**
      * Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
      * \see customProperty()
-     * \since QGIS 3.0
      */
     Q_INVOKABLE QStringList customPropertyKeys() const;
 
@@ -715,7 +710,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Set custom properties for layer. Current properties are dropped.
-     * \since QGIS 3.0
      */
     void setCustomProperties( const QgsObjectCustomProperties &properties );
 
@@ -748,7 +742,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param styleId the provider's layer_styles table id of the style to delete
      * \param msgError will be set to a descriptive error message if any occurs
      * \returns TRUE in case of success
-     * \since QGIS 3.0
      */
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
@@ -986,7 +979,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * A convenience function to capitalize and format a layer \a name.
      *
-     * \since QGIS 3.0
      */
     static QString formatLayerName( const QString &name );
 
@@ -995,7 +987,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * (either as a .qmd file on disk or as a
      * record in the users style table in their personal qgis.db)
      * \returns a QString with the metadata file name
-     * \since QGIS 3.0
      */
     virtual QString metadataUri() const;
 
@@ -1003,7 +994,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Export the current metadata of this layer as named metadata in a QDomDocument
      * \param doc the target QDomDocument
      * \param errorMsg this QString will be initialized on error
-     * \since QGIS 3.0
      */
     void exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const;
 
@@ -1014,7 +1004,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default metadata.
      * \returns a QString with any status messages
-     * \since QGIS 3.0
      */
     virtual QString saveDefaultMetadata( bool &resultFlag SIP_OUT );
 
@@ -1030,7 +1019,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default metadata.
      * \returns a QString with any status messages
-     * \since QGIS 3.0
      */
     QString saveNamedMetadata( const QString &uri, bool &resultFlag );
 
@@ -1046,7 +1034,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default metadata.
      * \returns a QString with any status messages
-     * \since QGIS 3.0
      */
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
 
@@ -1057,7 +1044,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to load the default metadata.
      * \returns a QString with any status messages
-     * \since QGIS 3.0
      */
     virtual QString loadDefaultMetadata( bool &resultFlag );
 
@@ -1067,7 +1053,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param uri uri for table
      * \param qmd will be set to QMD xml metadata content from database
      * \returns TRUE if style was successfully loaded
-     * \since QGIS 3.0
      */
     bool loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd );
 
@@ -1076,7 +1061,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param document source QDomDocument
      * \param errorMessage this QString will be initialized on error
      * \returns TRUE on success
-     * \since QGIS 3.0
      */
     bool importNamedMetadata( QDomDocument &document, QString &errorMessage );
 
@@ -1445,13 +1429,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets 3D renderer for the layer. Takes ownership of the renderer.
-     * \since QGIS 3.0
      */
     void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER );
 
     /**
      * Returns 3D renderer associated with the layer. May be NULLPTR.
-     * \since QGIS 3.0
      */
     QgsAbstract3DRenderer *renderer3D() const;
 
@@ -1520,7 +1502,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * auto refresh is only active when hasAutoRefreshEnabled() is TRUE.
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
-     * \since QGIS 3.0
      */
     int autoRefreshInterval() const;
 
@@ -1533,7 +1514,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * canvas must be refreshed separately in order to view the refreshed layer.
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
-     * \since QGIS 3.0
      */
     void setAutoRefreshInterval( int interval );
 
@@ -1557,7 +1537,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns a reference to the layer's metadata store.
      * \see setMetadata()
      * \see metadataChanged()
-     * \since QGIS 3.0
      */
     virtual const QgsLayerMetadata &metadata() const;
 
@@ -1565,13 +1544,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the layer's \a metadata store.
      * \see metadata()
      * \see metadataChanged()
-     * \since QGIS 3.0
      */
     virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Obtain a formatted HTML string containing assorted metadata for this layer.
-     * \since QGIS 3.0
      */
     virtual QString htmlMetadata() const;
 
@@ -1583,21 +1560,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * as well as dependencies given by the provider
      *
      * \returns a set of QgsMapLayerDependency
-     * \since QGIS 3.0
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
     /**
      * Returns the message that should be notified by the provider to triggerRepaint
      *
-     * \since QGIS 3.0
      */
     QString refreshOnNotifyMessage() const { return mRefreshOnNofifyMessage; }
 
     /**
      * Returns TRUE if the refresh on provider nofification is enabled
      *
-     * \since QGIS 3.0
      */
     bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
 
@@ -1685,7 +1659,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * It may also contain embedded expressions.
      *
-     * \note this method was only available for vector layers since QGIS 3.0
      * \since QGIS 3.30
      */
     QString mapTipTemplate() const;
@@ -1695,7 +1668,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * It may also contain embedded expressions.
      *
-     * \note this method was only available for vector layers since QGIS 3.0
      * \since QGIS 3.30
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
@@ -1785,14 +1757,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
      * \returns FALSE if a dependency cycle has been detected
-     * \since QGIS 3.0
      */
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 
     /**
      * Set whether provider notification is connected to triggerRepaint
      *
-     * \since QGIS 3.0
      */
     void setRefreshOnNotifyEnabled( bool enabled );
 
@@ -1801,7 +1771,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * If refresh on notification is enabled, the notification will triggerRepaint only
      * if the notification message is equal to \param message
      *
-     * \since QGIS 3.0
      */
     void setRefreshOnNofifyMessage( const QString &message ) { mRefreshOnNofifyMessage = message; }
 
@@ -1902,7 +1871,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Signal emitted when 3D renderer associated with the layer has changed.
-     * \since QGIS 3.0
      */
     void renderer3DChanged();
 
@@ -1928,14 +1896,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Emitted in the destructor when the layer is about to be deleted,
      * but it is still in a perfectly valid state: the last chance for
      * other pieces of code for some cleanup if they use the layer.
-     * \since QGIS 3.0
      */
     void willBeDeleted();
 
     /**
      * Emitted when the auto refresh interval changes.
      * \see setAutoRefreshInterval()
-     * \since QGIS 3.0
      */
     void autoRefreshIntervalChanged( int interval );
 
@@ -1943,7 +1909,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Emitted when the layer's metadata is changed.
      * \see setMetadata()
      * \see metadata()
-     * \since QGIS 3.0
      */
     void metadataChanged();
 
@@ -2006,7 +1971,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Emitted when the map tip template changes
      *
-     * \note this method was only available for vector layers since QGIS 3.0
      * \since QGIS 3.30
      */
     void mapTipTemplateChanged();
@@ -2045,7 +2009,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Copies attributes like name, short name, ... into another layer.
      * \param layer The copy recipient
-     * \since QGIS 3.0
      */
     void clone( QgsMapLayer *layer ) const;
 
@@ -2117,7 +2080,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Write style data common to all layer types
-     * \since QGIS 3.0
      */
     void writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
                            const QgsReadWriteContext &context,
@@ -2125,7 +2087,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Read style data common to all layer types
-     * \since QGIS 3.0
      */
     void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                           StyleCategories categories = AllStyleCategories );
@@ -2384,14 +2345,12 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::ReadFlags )
 /**
  * Weak pointer for QgsMapLayer
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
 
 /**
  * A list of weak pointers to QgsMapLayers.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 #endif

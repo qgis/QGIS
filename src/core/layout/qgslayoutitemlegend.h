@@ -107,7 +107,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 /**
  * \ingroup core
  * \brief A layout item subclass for map legends.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 {

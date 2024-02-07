@@ -57,14 +57,12 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
      * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
-     * \since QGIS 3.0
      */
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
     /**
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
-     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
@@ -79,7 +77,6 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions
      * and help text for the associated property.
-     * \since QGIS 3.0
      */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 

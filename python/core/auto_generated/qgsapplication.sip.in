@@ -120,8 +120,6 @@ Constructor for QgsApplication.
     static QgsApplication *instance();
 %Docstring
 Returns the singleton instance of the QgsApplication.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -250,8 +248,6 @@ Returns the path to the translation directory.
     static QString metadataPath();
 %Docstring
 Returns the path to the metadata directory.
-
-.. versionadded:: 3.0
 %End
 
     static QString qgisMasterDatabaseFilePath();
@@ -304,8 +300,6 @@ Returns the paths to svg directories.
     static QStringList layoutTemplatePaths();
 %Docstring
 Returns the paths to layout template directories.
-
-.. versionadded:: 3.0
 %End
 
     static QMap<QString, QString> systemEnvVars();
@@ -453,8 +447,6 @@ By default it is equal to :py:func:`~QgsApplication.applicationName`+' '+:py:fun
     static QString locale();
 %Docstring
 Returns the QGIS locale.
-
-.. versionadded:: 3.0
 %End
 
     static void setLocale( const QLocale &locale );
@@ -690,8 +682,6 @@ Set maximum concurrent thread count
 %Docstring
 Returns the application's task manager, used for managing application
 wide background task handling.
-
-.. versionadded:: 3.0
 %End
 
  static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated/;
@@ -707,22 +697,16 @@ Returns the application's settings registry, used for managing application setti
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color schemes.
-
-.. versionadded:: 3.0
 %End
 
     static QgsPaintEffectRegistry *paintEffectRegistry() /KeepReference/;
 %Docstring
 Returns the application's paint effect registry, used for managing paint effects.
-
-.. versionadded:: 3.0
 %End
 
     static QgsRendererRegistry *rendererRegistry() /KeepReference/;
 %Docstring
 Returns the application's renderer registry, used for managing vector layer renderers.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -744,8 +728,6 @@ Returns the application's tiled scene renderer registry, used for managing tiled
 %Docstring
 Returns the application's data item provider registry, which keeps a list of data item
 providers that may add items to the browser tree.
-
-.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() /KeepReference/;
@@ -762,8 +744,6 @@ Returns the application's SVG cache, used for caching SVG images and handling pa
 within SVG files.
 
 .. seealso:: :py:func:`imageCache`
-
-.. versionadded:: 3.0
 %End
 
     static QgsImageCache *imageCache();
@@ -799,8 +779,6 @@ Returns the application's validity check registry, used for managing validity ch
     static QgsSymbolLayerRegistry *symbolLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's symbol layer registry, used for managing symbol layers.
-
-.. versionadded:: 3.0
 %End
 
     static QgsCalloutRegistry *calloutRegistry() /KeepReference/;
@@ -813,8 +791,6 @@ Returns the application's callout registry, used for managing callout types.
     static QgsLayoutItemRegistry *layoutItemRegistry() /KeepReference/;
 %Docstring
 Returns the application's layout item registry, used for layout item types.
-
-.. versionadded:: 3.0
 %End
 
     static QgsAnnotationItemRegistry *annotationItemRegistry() /KeepReference/;
@@ -827,8 +803,6 @@ Returns the application's annotation item registry, used for annotation item typ
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
 %Docstring
 Returns the application's GPS connection registry, used for managing GPS connections.
-
-.. versionadded:: 3.0
 %End
 
     static QgsBabelFormatRegistry *gpsBabelFormatRegistry() /KeepReference/;
@@ -841,8 +815,6 @@ Returns the application's GPSBabel format registry, used for managing GPSBabel f
     static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's plugin layer registry, used for managing plugin layer types.
-
-.. versionadded:: 3.0
 %End
 
     static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
@@ -900,8 +872,6 @@ Returns the application's sensor registry, used for sensor types.
     static QgsMessageLog *messageLog();
 %Docstring
 Returns the application's message log.
-
-.. versionadded:: 3.0
 %End
 
     static QgsAuthManager *authManager();
@@ -913,31 +883,23 @@ Returns the application's authentication manager instance
    this can be ``None`` if called before initQgis
 
 .. seealso:: :py:func:`initQgis`
-
-.. versionadded:: 3.0
 %End
 
     static QgsProcessingRegistry *processingRegistry();
 %Docstring
 Returns the application's processing registry, used for managing processing providers,
 algorithms, and various parameters and outputs.
-
-.. versionadded:: 3.0
 %End
 
     static QgsPageSizeRegistry *pageSizeRegistry() /KeepReference/;
 %Docstring
 Returns the application's page size registry, used for managing layout page sizes.
-
-.. versionadded:: 3.0
 %End
 
 
     static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
 Returns the action scope registry.
-
-.. versionadded:: 3.0
 %End
 
     static QgsConnectionRegistry *connectionRegistry();
@@ -950,8 +912,6 @@ Returns the application's connection registry, used for managing saved data prov
     static QgsRuntimeProfiler *profiler();
 %Docstring
 Returns the application runtime profiler.
-
-.. versionadded:: 3.0
 %End
 
     static QgsNumericFormatRegistry *numericFormatRegistry() /KeepReference/;
@@ -969,8 +929,6 @@ Gets the registry of available field formatters.
     static Qgs3DRendererRegistry *renderer3DRegistry() /KeepReference/;
 %Docstring
 Returns registry of available 3D renderers.
-
-.. versionadded:: 3.0
 %End
 
     static Qgs3DSymbolRegistry *symbol3DRegistry() /KeepReference/;
@@ -1040,8 +998,6 @@ Custom expression variables for this application.
 This does not include generated variables (like system name, user name etc.)
 
 .. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
-
-.. versionadded:: 3.0
 %End
 
     static void setCustomVariables( const QVariantMap &customVariables );
@@ -1050,15 +1006,11 @@ Custom expression variables for this application.
 Do not include generated variables (like system name, user name etc.)
 
 .. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
-
-.. versionadded:: 3.0
 %End
 
     static void setCustomVariable( const QString &name, const QVariant &value );
 %Docstring
 Set a single custom expression variable.
-
-.. versionadded:: 3.0
 %End
 
     static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
@@ -1119,8 +1071,6 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
     void customVariablesChanged();
 %Docstring
 Emitted whenever a custom global variable changes.
-
-.. versionadded:: 3.0
 %End
 
 

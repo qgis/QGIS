@@ -26,7 +26,6 @@
  * A value relation field formatter looks up the values from
  * features on another layer.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 {

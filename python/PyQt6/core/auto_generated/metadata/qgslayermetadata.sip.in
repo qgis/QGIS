@@ -33,8 +33,6 @@ within the QGIS source code.
 Metadata can be validated through the use of :py:class:`QgsLayerMetadataValidator`
 subclasses. E.g. validating against the native QGIS metadata schema can be performed
 using :py:class:`QgsNativeMetadataValidator`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

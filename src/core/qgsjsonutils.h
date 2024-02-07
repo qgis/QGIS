@@ -362,7 +362,6 @@ class CORE_EXPORT QgsJsonUtils
      * \param type optional variant type of the elements, if specified (and not Invalid),
      *        the array items will be converted to the type, and discarded if
      *        the conversion is not possible.
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QVariantList parseArray( const QString &json, QVariant::Type type = QVariant::Invalid );
 

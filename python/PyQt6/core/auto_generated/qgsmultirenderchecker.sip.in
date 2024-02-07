@@ -109,8 +109,6 @@ Sets the largest allowable difference in size between the rendered and the expec
 
 :param xTolerance: x tolerance in pixels
 :param yTolerance: y tolerance in pixels
-
-.. versionadded:: 3.0
 %End
 
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
@@ -168,8 +166,6 @@ class QgsLayoutChecker : QgsMultiRenderChecker
 {
 %Docstring(signature="appended")
 Renders a layout to an image and compares with an expected output
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

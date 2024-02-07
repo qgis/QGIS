@@ -133,25 +133,21 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * Set if we should display the add to group checkbox
-     * \since QGIS 3.0
      */
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox ) { mShowAddToGroupCheckbox = showAddToGroupCheckbox; }
 
     /**
      * If we should display the add to group checkbox
-     * \since QGIS 3.0
      */
     bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
 
     /**
      * If we should add layers in a group
-     * \since QGIS 3.0
      */
     bool addToGroupCheckbox() const { return mCbxAddToGroup->isChecked(); }
 
     /**
      * Returns column with count or -1
-     * \since QGIS 3.0
      */
     int countColumn() const { return mShowCount ? 2 : -1; }
 

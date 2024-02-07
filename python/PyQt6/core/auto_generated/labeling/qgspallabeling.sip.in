@@ -217,8 +217,6 @@ such as blend modes, which require output in raster formats to be fully respecte
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the labeling property definitions.
-
-.. versionadded:: 3.0
 %End
 
     bool drawLabels;
@@ -412,8 +410,6 @@ Write settings into a DOM element
 Returns a reference to the label's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -426,8 +422,6 @@ Sets the label's property collection, used for data defined overrides.
 .. seealso:: :py:func:`dataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
     const QgsTextFormat &format() const;
@@ -435,8 +429,6 @@ Sets the label's property collection, used for data defined overrides.
 Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
 
 .. seealso:: :py:func:`setFormat`
-
-.. versionadded:: 3.0
 %End
 
     void setFormat( const QgsTextFormat &format );
@@ -446,8 +438,6 @@ Sets the label text formatting settings, e.g., font settings, buffer settings, e
 :param format: label text format
 
 .. seealso:: :py:func:`format`
-
-.. versionadded:: 3.0
 %End
 
     QgsCallout *callout() const;

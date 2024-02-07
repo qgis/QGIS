@@ -202,8 +202,6 @@ Erases the associated gpl palette file from the users "palettes" folder
 Sets whether a this scheme should be shown in color button menus.
 
 :param show: set to ``True`` to show in color button menus, or ``False`` to hide from menus
-
-.. versionadded:: 3.0
 %End
 
   protected:
@@ -256,8 +254,6 @@ Adds a color to the list of recent colors.
 Returns the most recently used color.
 
 .. seealso:: :py:func:`addRecentColor`
-
-.. versionadded:: 3.0
 %End
 };
 

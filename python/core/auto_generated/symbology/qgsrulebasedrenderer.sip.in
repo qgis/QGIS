@@ -170,8 +170,6 @@ A scale of 0 indicates no maximum scale visibility.
 .. seealso:: :py:func:`minimumScale`
 
 .. seealso:: :py:func:`setMaximumScale`
-
-.. versionadded:: 3.0
 %End
 
         double minimumScale() const;
@@ -183,8 +181,6 @@ A scale of 0 indicates no minimum scale visibility.
 .. seealso:: :py:func:`maximumScale`
 
 .. seealso:: :py:func:`setMinimumScale`
-
-.. versionadded:: 3.0
 %End
 
         QgsExpression *filter() const;

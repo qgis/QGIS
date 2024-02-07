@@ -85,7 +85,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Data definable properties.
-     * \since QGIS 3.0
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDiagramLayerSettings, Property ) : int
       {
@@ -106,7 +105,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Returns the diagram property definitions.
-     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -272,7 +270,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Prepares the diagrams for a specified expression context. Calling prepare before rendering
      * multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
      * Returns TRUE if preparation was successful.
-     * \since QGIS 3.0
      */
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
@@ -285,7 +282,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Returns a reference to the diagram's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
-     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
@@ -294,7 +290,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see setDataDefinedProperties()
      * \see Property
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
@@ -303,7 +298,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -438,7 +432,6 @@ class CORE_EXPORT QgsDiagramSettings
 
     /**
      * Rotation offset, in degrees clockwise from horizontal.
-     * \since QGIS 3.0
      */
     double rotationOffset = 270;
 
@@ -861,14 +854,12 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     /**
      * Returns the field name used for interpolating the diagram size.
      * \see setClassificationField()
-     * \since QGIS 3.0
      */
     QString classificationField() const { return mInterpolationSettings.classificationField; }
 
     /**
      * Sets the field name used for interpolating the diagram size.
      * \see classificationField()
-     * \since QGIS 3.0
      */
     void setClassificationField( const QString &field ) { mInterpolationSettings.classificationField = field; }
 
@@ -885,13 +876,11 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     /**
      * Configures appearance of legend. Takes ownership of the passed settings objects.
-     * \since QGIS 3.0
      */
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
      * Returns configuration of appearance of legend. Will return NULLPTR if no configuration has been set.
-     * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 

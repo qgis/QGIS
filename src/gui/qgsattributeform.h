@@ -58,8 +58,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       will add a new feature when the form is accepted. */
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
-      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
-      IdentifyMode //!< Identify the feature \since QGIS 3.0
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode
+      IdentifyMode //!< Identify the feature
     };
 
     //! Filter types
@@ -186,7 +186,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * In this case it will return a combined expression according to the chosen filters
      * on all attribute widgets.
      *
-     * \since QGIS 3.0
      */
     QString aggregateFilter() const;
 
@@ -222,7 +221,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
      * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
-     * \since QGIS 3.0.1
      */
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
@@ -261,13 +259,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Emitted when the user chooses to zoom to a filtered set of features.
-     * \since QGIS 3.0
      */
     void zoomToFeatures( const QString &filter );
 
     /**
      * Emitted when the user chooses to flash a filtered set of features.
-     * \since QGIS 3.0
      */
     void flashFeatures( const QString &filter );
 

@@ -15,8 +15,6 @@ class QgsLayoutItemPage : QgsLayoutItem
 {
 %Docstring(signature="appended")
 Item representing the paper in a layout.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

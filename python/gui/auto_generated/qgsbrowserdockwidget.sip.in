@@ -12,8 +12,6 @@ class QgsBrowserDockWidget : QgsDockWidget
 {
 %Docstring(signature="appended")
 A dock widget containing a :py:class:`QgsBrowserWidget` for navigating and managing data sources.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

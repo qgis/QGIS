@@ -17,8 +17,6 @@ This allows for manage different user profiles per machine vs the single default
 past.
 
 A user profile is all settings and anything that used to be found in .qgis3 in the users home folder.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

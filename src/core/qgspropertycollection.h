@@ -35,7 +35,6 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
  * \ingroup core
  * \class QgsAbstractPropertyCollection
  * \brief Abstract base class for QgsPropertyCollection like objects.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsAbstractPropertyCollection
@@ -339,7 +338,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
  * \see QgsDiagramLayerSettings::Property
  * \see QgsPalLayerSettings::Property
  * \see QgsWidgetWrapper::Property
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
@@ -485,7 +483,6 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
  * \class QgsPropertyCollectionStack
  * \brief An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
  * priority over earlier collections.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollection

@@ -139,7 +139,6 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Data definable properties.
-     * \since QGIS 3.0
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbolLayer, Property ) : int
     {
@@ -218,7 +217,6 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns the symbol layer property definitions.
-     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -240,7 +238,6 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Returns TRUE if symbol layer is enabled and will be drawn.
      * \see setEnabled()
-     * \since QGIS 3.0
      */
     bool enabled() const { return mEnabled; }
 
@@ -249,7 +246,6 @@ class CORE_EXPORT QgsSymbolLayer
      * layers are not drawn, but remain part of the symbol and can be re-enabled
      * when desired.
      * \see enabled()
-     * \since QGIS 3.0
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
@@ -546,7 +542,6 @@ class CORE_EXPORT QgsSymbolLayer
      * will be overwritten.
      * \see dataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
 
@@ -605,14 +600,12 @@ class CORE_EXPORT QgsSymbolLayer
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /**
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
-     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
@@ -620,7 +613,6 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets the symbol layer's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
-     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -700,7 +692,6 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Restores older data defined properties from string map.
-     * \since QGIS 3.0
      */
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 

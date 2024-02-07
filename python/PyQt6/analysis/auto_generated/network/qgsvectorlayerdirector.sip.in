@@ -14,8 +14,6 @@ class QgsVectorLayerDirector : QgsGraphDirector
 {
 %Docstring(signature="appended")
 Determine making the graph from vector line layer
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

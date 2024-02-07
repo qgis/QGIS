@@ -122,8 +122,6 @@ Set map settings and assign layer name attributes
 Sets the export flags.
 
 .. seealso:: :py:func:`flags`
-
-.. versionadded:: 3.0
 %End
 
     QgsDxfExport::Flags flags() const;
@@ -131,8 +129,6 @@ Sets the export flags.
 Returns the export flags.
 
 .. seealso:: :py:func:`setFlags`
-
-.. versionadded:: 3.0
 %End
 
     void addLayers( const QList< QgsDxfExport::DxfLayer > &layers );
@@ -159,8 +155,6 @@ Set reference ``scale`` for output.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`symbologyScale`
-
-.. versionadded:: 3.0
 %End
 
     double symbologyScale() const;
@@ -169,8 +163,6 @@ Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setSymbologyScale`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::DistanceUnit mapUnits() const;
@@ -185,8 +177,6 @@ Retrieve map units
 Set destination CRS
 
 .. seealso:: :py:func:`destinationCrs`
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -194,8 +184,6 @@ Set destination CRS
 Returns the destination CRS, or an invalid CRS if no reprojection will be done.
 
 .. seealso:: :py:func:`setDestinationCrs`
-
-.. versionadded:: 3.0
 %End
 
     void setSymbologyExport( Qgis::FeatureSymbologyExport e );

@@ -119,7 +119,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * that of the spatial index construction.
 
      *
-     * \since QGIS 3.0
      */
     explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 
@@ -294,7 +293,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * \param id will be set to feature's ID
      * \returns TRUE if feature info was successfully retrieved and the feature can be added to
      * the index
-     * \since QGIS 3.0
      */
     static bool featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id );
 

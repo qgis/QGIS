@@ -128,8 +128,6 @@ Returns number of items
     QStringList names() const;
 %Docstring
 Returns a list with field names
-
-.. versionadded:: 3.0
 %End
 
     bool exists( int i ) const;
@@ -289,8 +287,6 @@ name of the field.
 :return: The field index if found or -1 in case it cannot be found.
 
 .. seealso:: :py:func:`lookupField`
-
-.. versionadded:: 3.0
 %End
 
     int lookupField( const QString &fieldName ) const;

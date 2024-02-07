@@ -29,7 +29,6 @@
 /**
  * \brief Represents an input parameter used by the model.
  * \ingroup core
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelComponent
 {

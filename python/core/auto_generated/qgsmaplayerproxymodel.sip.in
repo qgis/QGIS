@@ -177,8 +177,6 @@ Returns the blocklist of layer IDs which are excluded from the model.
 Sets a blocklist of data providers which should be excluded from the model.
 
 .. seealso:: :py:func:`excludedProviders`
-
-.. versionadded:: 3.0
 %End
 
     QStringList excludedProviders() const;
@@ -186,8 +184,6 @@ Sets a blocklist of data providers which should be excluded from the model.
 Returns the blocklist of data providers which are excluded from the model.
 
 .. seealso:: :py:func:`setExcludedProviders`
-
-.. versionadded:: 3.0
 %End
 
     QString filterString() const;

@@ -132,8 +132,6 @@ Gets a list of all the nodes.
         QgsExpressionNode *at( int i );
 %Docstring
 Gets the node at position i in the list.
-
-.. versionadded:: 3.0
 %End
 
         QStringList names() const;
@@ -243,8 +241,6 @@ Returns ``True`` if this node can be evaluated for a static value. This is used 
 the :py:func:`~QgsExpressionNode.prepare` step and in case it returns ``True``, the value of this node will already
 be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
 to :py:func:`~QgsExpressionNode.eval`). In case this returns ``True``, :py:func:`~QgsExpressionNode.prepareNode` will never be called.
-
-.. versionadded:: 3.0
 %End
 
     bool prepare( QgsExpression *parent, const QgsExpressionContext *context );

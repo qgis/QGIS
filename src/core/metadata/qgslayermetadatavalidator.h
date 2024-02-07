@@ -30,7 +30,6 @@ class QgsLayerMetadata;
  * \ingroup core
  * \class QgsAbstractMetadataBaseValidator
  * \brief Abstract base class for metadata validators.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsAbstractMetadataBaseValidator
@@ -41,7 +40,6 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
     /**
      * \ingroup core
      * \brief Contains the parameters describing a metadata validation failure.
-     * \since QGIS 3.0
      */
     class ValidationResult
     {
@@ -125,7 +123,6 @@ class CORE_EXPORT QgsNativeMetadataBaseValidator : public QgsAbstractMetadataBas
  * \ingroup core
  * \class QgsNativeMetadataValidator
  * \brief A validator for the native QGIS layer metadata schema definition.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsNativeMetadataValidator : public QgsNativeMetadataBaseValidator

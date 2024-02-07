@@ -103,8 +103,6 @@ The ``options`` argument specifies generic provider options and since QGIS 3.16 
     virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
 %Docstring
 Returns flags containing the supported capabilities of the data provider.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
@@ -386,8 +384,6 @@ Checks whether the provider is in editing mode, i.e. raster write operations wil
 By default providers are not editable. Use :py:func:`~QgsRasterDataProvider.setEditable` method to enable/disable editing.
 
 .. seealso:: :py:func:`setEditable`
-
-.. versionadded:: 3.0
 %End
 
     virtual bool setEditable( bool enabled );
@@ -404,8 +400,6 @@ to overwrite data of the provider using :py:func:`~QgsRasterDataProvider.writeBl
    value whether the operation was successful.
 
 .. seealso:: :py:func:`isEditable`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -431,8 +425,6 @@ in order to allow write operations.
 .. seealso:: :py:func:`isEditable`
 
 :return: ``True`` on success
-
-.. versionadded:: 3.0
 %End
 
     static QgsRasterDataProvider *create( const QString &providerKey,
@@ -561,8 +553,6 @@ Converts a raster identify ``format`` to a capability.
 Step width for raster iterations.
 
 .. seealso:: :py:func:`stepHeight`
-
-.. versionadded:: 3.0
 %End
 
     virtual int stepHeight() const;
@@ -570,8 +560,6 @@ Step width for raster iterations.
 Step height for raster iterations.
 
 .. seealso:: :py:func:`stepWidth`
-
-.. versionadded:: 3.0
 %End
 
     virtual QList< double > nativeResolutions() const;

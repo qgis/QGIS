@@ -44,7 +44,6 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * A combination of distance value and unit.
      *
-     * \since QGIS 3.0
      */
     struct DistanceValue
     {
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * A combination of area value and unit.
      *
-     * \since QGIS 3.0
      */
     struct AreaValue
     {
@@ -137,7 +135,6 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit to convert to string
      * \see stringToDistanceUnit()
      *
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString toAbbreviatedString( Qgis::DistanceUnit unit );
 
@@ -194,7 +191,6 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit to convert to string
      * \see stringToAreaUnit()
      *
-     * \since QGIS 3.0
      */
     static QString toAbbreviatedString( Qgis::AreaUnit unit );
 
@@ -413,7 +409,6 @@ class CORE_EXPORT QgsUnitTypes
      * The value will also be rounded to \a decimals (be prepared that the returned value is still a double so it will require
      * further formatting when converting to a string).
      *
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QgsUnitTypes::DistanceValue scaledDistance( double distance, Qgis::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 
@@ -424,7 +419,6 @@ class CORE_EXPORT QgsUnitTypes
      * The value will also be rounded to \a decimals (be prepared that the returned value is still a double so it will require
      * further formatting when converting to a string).
      *
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QgsUnitTypes::AreaValue scaledArea( double area, Qgis::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 
@@ -437,7 +431,6 @@ class CORE_EXPORT QgsUnitTypes
      * kilometers
      * \returns formatted distance string
      * \see formatArea()
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit = false );
 
@@ -450,7 +443,6 @@ class CORE_EXPORT QgsUnitTypes
      * square kilometers
      * \returns formatted area string
      * \see formatDistance()
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit = false );
 
@@ -476,7 +468,6 @@ class CORE_EXPORT QgsUnitTypes
 
     /**
      * Returns a translated string representing a render \a unit.
-     * \since QGIS 3.0
      */
     static QString toString( Qgis::RenderUnit unit );
 
@@ -496,7 +487,6 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit to encode
      * \returns encoded string
      * \see decodeLayoutUnit()
-     * \since QGIS 3.0
      */
     static QString encodeUnit( Qgis::LayoutUnit unit );
 
@@ -506,28 +496,24 @@ class CORE_EXPORT QgsUnitTypes
      * \param ok optional boolean, will be set to TRUE if string was converted successfully
      * \returns decoded units
      * \see encodeUnit()
-     * \since QGIS 3.0
      */
     Q_INVOKABLE static Qgis::LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the type for a unit of measurement.
      *
-     * \since QGIS 3.0
     */
     Q_INVOKABLE static Qgis::LayoutUnitType unitType( Qgis::LayoutUnit units );
 
     /**
      * Returns a translated abbreviation representing a layout \a unit (e.g. "mm").
      *
-     * \since QGIS 3.0
      */
     static QString toAbbreviatedString( Qgis::LayoutUnit unit );
 
     /**
      * Returns a translated string representing a layout \a unit.
      *
-     * \since QGIS 3.0
      */
     static QString toString( Qgis::LayoutUnit unit );
 

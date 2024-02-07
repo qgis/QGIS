@@ -159,7 +159,6 @@ class CORE_EXPORT QgsFeatureRequest
          *
          * \see QgsExpression::prepare
          *
-         * \since QGIS 3.0
          */
         bool prepare( QgsExpressionContext *context );
 
@@ -452,14 +451,12 @@ class CORE_EXPORT QgsFeatureRequest
      * \note Invalid geometry checking is not performed when retrieving features
      * directly from a QgsVectorDataProvider.
      * \see invalidGeometryCheck()
-     * \since QGIS 3.0
      */
     QgsFeatureRequest &setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check );
 
     /**
      * Returns the invalid geometry checking behavior.
      * \see setInvalidGeometryCheck()
-     * \since QGIS 3.0
      */
     Qgis::InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
 
@@ -468,7 +465,6 @@ class CORE_EXPORT QgsFeatureRequest
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
      * \see invalidGeometryCallback()
-     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
@@ -495,7 +491,6 @@ class CORE_EXPORT QgsFeatureRequest
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid.
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
-     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
@@ -714,7 +709,6 @@ class CORE_EXPORT QgsFeatureRequest
      * and all features will be left with their original geometry.
      * \see setDestinationCrs()
      * \see transformContext()
-     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
@@ -723,7 +717,6 @@ class CORE_EXPORT QgsFeatureRequest
      * and reprojection is required
      * \see setDestinationCrs()
      * \see destinationCrs()
-     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -748,7 +741,6 @@ class CORE_EXPORT QgsFeatureRequest
      * any destination CRS transform present in the feature request.
      *
      * \see destinationCrs()
-     * \since QGIS 3.0
      */
     QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
@@ -758,7 +750,6 @@ class CORE_EXPORT QgsFeatureRequest
      * called using the feature which encountered the transform error as a parameter.
      * \see transformErrorCallback()
      * \see setDestinationCrs()
-     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
@@ -786,7 +777,6 @@ class CORE_EXPORT QgsFeatureRequest
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      * \see destinationCrs()
-     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 
@@ -808,7 +798,6 @@ class CORE_EXPORT QgsFeatureRequest
      * \note Only works if the provider supports this option.
      *
      * \deprecated Use timeout() instead.
-     * \since QGIS 3.0
      */
     Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
 
@@ -819,7 +808,6 @@ class CORE_EXPORT QgsFeatureRequest
      * \note Only works if the provider supports this option.
      *
      * \deprecated Use setTimeout() instead.
-     * \since QGIS 3.0
      */
     Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
 

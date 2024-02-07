@@ -54,8 +54,6 @@ Associates overview canvas with the bridge, so the overview will be updated when
     QgsMapOverviewCanvas *overviewCanvas() const;
 %Docstring
 Returns associated overview canvas (may be ``None``)
-
-.. versionadded:: 3.0
 %End
 
     void setAutoSetupOnFirstLayer( bool enabled );
@@ -76,8 +74,6 @@ force update of canvas layers from the layer tree. Normally this should not be n
 %Docstring
 Emitted when the set of layers (or order of layers) visible in the
 canvas changes.
-
-.. versionadded:: 3.0
 %End
 
 };

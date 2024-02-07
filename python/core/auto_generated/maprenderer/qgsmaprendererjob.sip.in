@@ -84,8 +84,6 @@ If so, any previously stored labeling results (see :py:func:`~QgsMapRendererJob.
 should be retained.
 
 .. seealso:: :py:func:`takeLabelingResults`
-
-.. versionadded:: 3.0
 %End
 
     QStringList layersRedrawnFromCache() const;
@@ -121,16 +119,12 @@ Set the feature filter provider used by the :py:class:`QgsRenderContext` of
 each LayerRenderJob.
 Ownership is not transferred and the provider must not be deleted
 before the render job.
-
-.. versionadded:: 3.0
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
 Returns the feature filter provider used by the :py:class:`QgsRenderContext` of
 each LayerRenderJob.
-
-.. versionadded:: 3.0
 %End
 
     struct Error
@@ -185,8 +179,6 @@ Returns map settings with which this job was started.
 Emitted when the layers are rendered.
 Rendering labels is not yet done. If the fully rendered layer including labels is required use
 :py:func:`~QgsMapRendererJob.finished` instead.
-
-.. versionadded:: 3.0
 %End
 
 

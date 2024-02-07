@@ -13,8 +13,6 @@ class QgsSourceSelectProvider
 {
 %Docstring(signature="appended")
 This is the interface for those who want to add entries to the :py:class:`QgsDataSourceManagerDialog`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -13,8 +13,6 @@ class QgsLayoutItemLabel: QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for text labels.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

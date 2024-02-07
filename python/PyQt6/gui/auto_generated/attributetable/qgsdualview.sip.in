@@ -243,8 +243,6 @@ Copy the content of the selected cell in the clipboard.
     void cancelProgress( );
 %Docstring
 Cancel the progress dialog (if any)
-
-.. versionadded:: 3.0
 %End
 
     void parentFormValueChanged( const QString &attribute, const QVariant &value );
@@ -311,8 +309,6 @@ class QgsAttributeTableAction : QAction
     QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx );
 %Docstring
 Create a new attribute table action.
-
-.. versionadded:: 3.0
 %End
 
   public slots:

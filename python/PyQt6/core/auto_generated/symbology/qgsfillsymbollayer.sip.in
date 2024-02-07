@@ -911,8 +911,6 @@ ownership of the returned object.
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
     virtual QString layerType() const;
@@ -1295,8 +1293,6 @@ ownership of the returned object.
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
 

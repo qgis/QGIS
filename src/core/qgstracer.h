@@ -82,14 +82,12 @@ class CORE_EXPORT QgsTracer : public QObject
     /**
      * Gets offset in map units that should be applied to the traced paths returned from findShortestPath().
      * Positive offset for right side, negative offset for left side.
-     * \since QGIS 3.0
      */
     double offset() const { return mOffset; }
 
     /**
      * Set offset in map units that should be applied to the traced paths returned from findShortestPath().
      * Positive offset for right side, negative offset for left side.
-     * \since QGIS 3.0
      */
     void setOffset( double offset );
 
@@ -97,7 +95,6 @@ class CORE_EXPORT QgsTracer : public QObject
 
     /**
      * Gets extra parameters for offset curve algorithm (used when offset is non-zero)
-     * \since QGIS 3.0
      */
     void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
 
@@ -105,7 +102,6 @@ class CORE_EXPORT QgsTracer : public QObject
 
     /**
      * Set extra parameters for offset curve algorithm (used when offset is non-zero)
-     * \since QGIS 3.0
      */
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 

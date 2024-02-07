@@ -212,8 +212,6 @@ This will return one of the following strings:
 - Unknown Geometry
 - No Geometry
 - Invalid Geometry
-
-.. versionadded:: 3.0
 %End
 
     static bool hasZ( Qgis::WkbType type ) /HoldGIL/;

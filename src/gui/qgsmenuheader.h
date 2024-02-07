@@ -27,7 +27,6 @@
  * \class QgsMenuHeader
  * \brief Custom widget for displaying subheaders within a QMenu in a standard style.
  * \see QgsMenuHeaderWidgetAction()
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMenuHeader : public QWidget
 {
@@ -60,7 +59,6 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
  * \class QgsMenuHeaderWidgetAction
  * \brief Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
  * \see QgsMenuHeader()
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMenuHeaderWidgetAction: public QWidgetAction
 {

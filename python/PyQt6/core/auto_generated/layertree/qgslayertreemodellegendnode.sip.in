@@ -664,8 +664,6 @@ class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
 Produces legend node with a marker symbol
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

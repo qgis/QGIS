@@ -165,7 +165,6 @@ class CORE_EXPORT  QgsFields
 
     /**
      * Returns a list with field names
-     * \since QGIS 3.0
      */
     QStringList names() const;
 
@@ -367,7 +366,6 @@ class CORE_EXPORT  QgsFields
      *
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
-     * \since QGIS 3.0
      */
     int indexOf( const QString &fieldName ) const;
 

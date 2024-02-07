@@ -346,8 +346,6 @@ Parse a simple array (depth=1)
 :param type: optional variant type of the elements, if specified (and not Invalid),
              the array items will be converted to the type, and discarded if
              the conversion is not possible.
-
-.. versionadded:: 3.0
 %End
 
 

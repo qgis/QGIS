@@ -40,22 +40,16 @@ Constructor
     QString connectionName() const;
 %Docstring
 Returns the connection name.
-
-.. versionadded:: 3.0
 %End
 
     QString connectionInfo() const;
 %Docstring
 Returns connection info string.
-
-.. versionadded:: 3.0
 %End
 
     QString service() const;
 %Docstring
 Returns a string representing the service type, e.g. "WMS".
-
-.. versionadded:: 3.0
 %End
 
     QgsDataSourceUri uri() const;
@@ -67,8 +61,6 @@ Returns the connection uri.
 %Docstring
 Adds uri parameters relating to the settings for a WMS or WCS connection to a :py:class:`QgsDataSourceUri` ``uri``.
 Connection settings are taken from the specified QSettings ``settingsKey``.
-
-.. versionadded:: 3.0
 
 .. deprecated:: QGIS 3.26
    use addWmsWcsConnectionSettings with service and connection name parameters
@@ -86,8 +78,6 @@ Connection settings are taken from the specified ``servcie`` and ``connName``
 %Docstring
 Adds uri parameters relating to the settings for a WFS connection to a :py:class:`QgsDataSourceUri` ``uri``.
 Connection settings are taken from the specified QSettings ``settingsKey``.
-
-.. versionadded:: 3.0
 
 .. deprecated:: QGIS 3.26
    use addWfsConnectionSettings with service and connection name parameters

@@ -150,7 +150,6 @@ class CORE_EXPORT QgsExpressionContextUtils
 
     /**
      * Creates a list of three scopes: global, layer's project and layer.
-     * \since QGIS 3.0
      */
     static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer ) SIP_FACTORY;
 
@@ -185,7 +184,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Sets the expression context variables which are available for expressions triggered by
      * a map tool capture like add feature.
      *
-     * \since QGIS 3.0
      */
     static QgsExpressionContextScope *mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches ) SIP_FACTORY;
 
@@ -208,7 +206,6 @@ class CORE_EXPORT QgsExpressionContextUtils
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayout \a layout.
      * For instance, number of pages and page sizes.
-     * \since QGIS 3.0
      */
     static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) SIP_FACTORY;
 
@@ -220,7 +217,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param value variable value
      * \see setLayoutVariables()
      * \see layoutScope()
-     * \since QGIS 3.0
      */
     static void setLayoutVariable( QgsLayout *layout, const QString &name, const QVariant &value );
 
@@ -231,7 +227,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param variables new set of layer variables
      * \see setLayoutVariable()
      * \see layoutScope()
-     * \since QGIS 3.0
      */
     static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
 
@@ -247,7 +242,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, item size and position.
      * \see setLayoutItemVariable()
      * \see setLayoutItemVariables()
-     * \since QGIS 3.0
      */
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) SIP_FACTORY;
 
@@ -257,7 +251,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * layoutItemScope().
      * \see setLayoutItemVariables()
      * \see layoutItemScope()
-     * \since QGIS 3.0
      */
     static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
 
@@ -266,7 +259,6 @@ class CORE_EXPORT QgsExpressionContextUtils
      * with the \a variables specified.
      * \see setLayoutItemVariable()
      * \see layoutItemScope()
-     * \since QGIS 3.0
      */
     static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
 

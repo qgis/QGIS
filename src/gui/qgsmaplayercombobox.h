@@ -69,14 +69,12 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     /**
      * Sets a list of data providers which should be excluded from the combobox.
      * \see excludedProviders()
-     * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 
     /**
      * Returns the list of data providers which are excluded from the combobox.
      * \see setExcludedProviders()
-     * \since QGIS 3.0
      */
     QStringList excludedProviders() const;
 
@@ -96,28 +94,24 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * Since QGIS 3.20, the optional \a text and \a icon arguments allows the text and icon for the empty layer item to be set.
      *
      * \see allowEmptyLayer()
-     * \since QGIS 3.0
      */
     void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 
     /**
      * Returns TRUE if the combo box allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
-     * \since QGIS 3.0
      */
     bool allowEmptyLayer() const;
 
     /**
      * Sets whether the CRS of layers is also included in the combo box text.
      * \see showCrs()
-     * \since QGIS 3.0
      */
     void setShowCrs( bool showCrs );
 
     /**
      * Returns TRUE if the combo box shows the layer's CRS.
      * \see setShowCrs()
-     * \since QGIS 3.0
      */
     bool showCrs() const;
 
@@ -126,14 +120,12 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * These may represent additional layers such as layers which are not included in the map
      * layer registry, or paths to layers which have not yet been loaded into QGIS.
      * \see additionalItems()
-     * \since QGIS 3.0
      */
     void setAdditionalItems( const QStringList &items );
 
     /**
      * Returns the list of additional (non map layer) items included at the end of the combo box.
      * \see setAdditionalItems()
-     * \since QGIS 3.0
      */
     QStringList additionalItems() const;
 

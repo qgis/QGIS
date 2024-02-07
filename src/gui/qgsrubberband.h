@@ -116,13 +116,11 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
 
       /**
        * A diamond is used to highlight points (◇)
-       * \since QGIS 3.0
        */
       ICON_DIAMOND,
 
       /**
        * A diamond is used to highlight points (◆)
-       * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
 
@@ -177,7 +175,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
      * Set to an invalid color to avoid drawing the secondary stroke.
      *  \param color  The color used to render a secondary stroke color to this rubberband
-     *  \since QGIS 3.0
      */
     void setSecondaryStrokeColor( const QColor &color );
 
@@ -357,7 +354,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * If additional geometries are to be added then set \a doUpdate to FALSE to defer costly repaint and bounding rectangle calculations for better performance.
      * After adding the final geometry updatePosition() should be called.
      *
-     * \since QGIS 3.0
      */
     void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool doUpdate = true );
 

@@ -166,8 +166,6 @@ mode to display the count of selected features.
 The aggregate filter is only useful if the form is in AggregateFilter mode.
 In this case it will return a combined expression according to the chosen filters
 on all attribute widgets.
-
-.. versionadded:: 3.0
 %End
 
     void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
@@ -206,8 +204,6 @@ Notifies about changes of attributes
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
 :param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
-
-.. versionadded:: 3.0.1
 %End
 
 
@@ -239,15 +235,11 @@ Emitted when the user selects the close option from the form's button bar.
     void zoomToFeatures( const QString &filter );
 %Docstring
 Emitted when the user chooses to zoom to a filtered set of features.
-
-.. versionadded:: 3.0
 %End
 
     void flashFeatures( const QString &filter );
 %Docstring
 Emitted when the user chooses to flash a filtered set of features.
-
-.. versionadded:: 3.0
 %End
 
     void openFilteredFeaturesAttributeTable( const QString &filter );

@@ -69,7 +69,6 @@ class CORE_EXPORT QgsMapToPixel
      * \param dpi screen DPI
      * \param mapUnits map units
      * \returns matching QgsMapToPixel
-     * \since QGIS 3.0
      */
     static QgsMapToPixel fromScale( double scale, Qgis::DistanceUnit mapUnits, double dpi = 96 );
 
@@ -312,14 +311,12 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Returns the center x-coordinate for the transform.
      * \see yCenter()
-     * \since QGIS 3.0
      */
     double xCenter() const { return mXCenter; }
 
     /**
      * Returns the center y-coordinate for the transform.
      * \see xCenter()
-     * \since QGIS 3.0
      */
     double yCenter() const { return mYCenter; }
 

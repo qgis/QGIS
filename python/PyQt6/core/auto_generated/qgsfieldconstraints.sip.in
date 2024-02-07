@@ -14,8 +14,6 @@ class QgsFieldConstraints
 {
 %Docstring(signature="appended")
 Stores information about constraints which may be present on a field.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

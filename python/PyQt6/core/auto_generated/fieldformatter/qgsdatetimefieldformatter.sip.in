@@ -14,8 +14,6 @@ Field formatter for a date time field.
 
 This represents a date, time or datetime value based on
 the field configuration.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

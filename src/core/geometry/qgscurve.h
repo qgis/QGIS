@@ -42,7 +42,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     /**
      * Checks whether this curve exactly equals another curve.
-     * \since QGIS 3.0
      */
     virtual bool equals( const QgsCurve &other ) const = 0;
 
@@ -303,7 +302,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsCurve *cast( const QgsAbstractGeometry *geom )
     {

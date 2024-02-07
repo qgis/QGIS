@@ -37,7 +37,6 @@ class QgsFeedback;
 
 /**
  * Interpolation data for an individual source vertex.
- * \since QGIS 3.0
  */
 struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 {

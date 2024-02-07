@@ -21,8 +21,6 @@ a child widget during a scroll event.
 
 All QGIS code and plugins should use :py:class:`QgsScrollArea` in place
 of QScrollArea.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

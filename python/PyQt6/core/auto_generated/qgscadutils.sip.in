@@ -15,8 +15,6 @@ class QgsCadUtils
 {
 %Docstring(signature="appended")
 The :py:class:`QgsCadUtils` class provides routines for CAD editing.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -28,8 +26,6 @@ The :py:class:`QgsCadUtils` class provides routines for CAD editing.
 {
 %Docstring(signature="appended")
 Structure with details of one constraint
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -51,8 +47,6 @@ Constructor for AlignMapPointConstraint.
 {
 %Docstring(signature="appended")
 Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -78,8 +72,6 @@ Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method
 {
 %Docstring(signature="appended")
 Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()` method.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

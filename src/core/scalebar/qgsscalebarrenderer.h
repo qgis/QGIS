@@ -33,7 +33,6 @@ class QgsScaleBarSettings;
  * Scalebar renderer subclasses implement custom drawing logic, with the possibility to implement
  * custom labeling.
  *
- * \since QGIS 3.0
 */
 class CORE_EXPORT QgsScaleBarRenderer
 {

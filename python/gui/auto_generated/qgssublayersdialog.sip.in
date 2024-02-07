@@ -90,29 +90,21 @@ Returns list of selected layers
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox );
 %Docstring
 Set if we should display the add to group checkbox
-
-.. versionadded:: 3.0
 %End
 
     bool showAddToGroupCheckbox() const;
 %Docstring
 If we should display the add to group checkbox
-
-.. versionadded:: 3.0
 %End
 
     bool addToGroupCheckbox() const;
 %Docstring
 If we should add layers in a group
-
-.. versionadded:: 3.0
 %End
 
     int countColumn() const;
 %Docstring
 Returns column with count or -1
-
-.. versionadded:: 3.0
 %End
 
   public slots:

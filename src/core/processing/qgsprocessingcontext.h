@@ -38,7 +38,6 @@ class QgsProcessingLayerPostProcessorInterface;
  *
  * Contextual information includes settings such as the associated project, and
  * expression context.
- * \since QGIS 3.0
 */
 
 class CORE_EXPORT QgsProcessingContext
@@ -247,7 +246,6 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * \brief Details for layers to load into projects.
      * \ingroup core
-     * \since QGIS 3.0
      */
     class CORE_EXPORT LayerDetails
     {
@@ -425,7 +423,6 @@ class CORE_EXPORT QgsProcessingContext
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
      * \see invalidGeometryCallback()
-     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; mUseDefaultInvalidGeometryCallback = false; }
@@ -450,7 +447,6 @@ class CORE_EXPORT QgsProcessingContext
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
-     * \since QGIS 3.0
      */
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback( QgsFeatureSource *source = nullptr ) const;
 
@@ -466,7 +462,6 @@ class CORE_EXPORT QgsProcessingContext
      * features. This function will be
      * called using the feature which encountered the transform error as a parameter.
      * \see transformErrorCallback()
-     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     void setTransformErrorCallback( const std::function< void( const QgsFeature & ) > &callback ) { mTransformErrorCallback = callback; }
@@ -491,7 +486,6 @@ class CORE_EXPORT QgsProcessingContext
      * features.
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
-     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 

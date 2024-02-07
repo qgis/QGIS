@@ -35,7 +35,6 @@ class QgsSymbolRenderContext;
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
  * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
  * in the desired style.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer

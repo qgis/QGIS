@@ -37,7 +37,6 @@
  * \ingroup core
  * \brief Feedback object tailored for raster block reading.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {

@@ -775,7 +775,6 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 /**
  * \ingroup core
  * \brief Produces legend node with a marker symbol
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
 {

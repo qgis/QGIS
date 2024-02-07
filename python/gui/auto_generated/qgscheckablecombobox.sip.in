@@ -16,8 +16,6 @@ class QgsCheckableComboBox : QComboBox
 {
 %Docstring(signature="appended")
 QComboBox subclass which allows selecting multiple items.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

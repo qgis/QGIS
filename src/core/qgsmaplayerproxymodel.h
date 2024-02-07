@@ -174,14 +174,12 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * Sets a blocklist of data providers which should be excluded from the model.
      * \see excludedProviders()
-     * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 
     /**
      * Returns the blocklist of data providers which are excluded from the model.
      * \see setExcludedProviders()
-     * \since QGIS 3.0
      */
     QStringList excludedProviders() const { return mExcludedProviders; }
 

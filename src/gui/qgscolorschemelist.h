@@ -202,7 +202,6 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     /**
      * Returns the scheme currently selected in the list.
      * \see setScheme()
-     * \since QGIS 3.0
      */
     QgsColorScheme *scheme();
 
@@ -245,14 +244,12 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     /**
      * Displays a file picker dialog allowing users to import colors into the list from a file.
      * \see showExportColorsDialog()
-     * \since QGIS 3.0
      */
     void showImportColorsDialog();
 
     /**
      * Displays a file picker dialog allowing users to export colors from the list into a file.
      * \see showImportColorsDialog()
-     * \since QGIS 3.0
      */
     void showExportColorsDialog();
 

@@ -58,8 +58,6 @@ the first symbol layer.
 Set data defined angle for whole symbol (including all symbol layers).
 
 .. seealso:: :py:func:`dataDefinedAngle`
-
-.. versionadded:: 3.0
 %End
 
     QgsProperty dataDefinedAngle() const;
@@ -70,8 +68,6 @@ Returns data defined angle for whole symbol (including all symbol layers).
          at the marker level.
 
 .. seealso:: :py:func:`setDataDefinedAngle`
-
-.. versionadded:: 3.0
 %End
 
     void setLineAngle( double lineAngle ) const;
@@ -189,8 +185,6 @@ for the first symbol layer.
 Set data defined size for whole symbol (including all symbol layers).
 
 .. seealso:: :py:func:`dataDefinedSize`
-
-.. versionadded:: 3.0
 %End
 
     QgsProperty dataDefinedSize() const;
@@ -201,8 +195,6 @@ Returns data defined size for whole symbol (including all symbol layers).
          at the marker level.
 
 .. seealso:: :py:func:`setDataDefinedSize`
-
-.. versionadded:: 3.0
 %End
 
     void setScaleMethod( Qgis::ScaleMethod scaleMethod ) const;

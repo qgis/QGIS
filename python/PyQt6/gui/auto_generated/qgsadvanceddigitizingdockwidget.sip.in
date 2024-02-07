@@ -232,8 +232,6 @@ apply the CAD constraints. The will modify the position of the map event in map 
 %Docstring
 align to segment for between line constraint.
 If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
-
-.. versionadded:: 3.0
 %End
 
     void releaseLocks( bool releaseRepeatingLocks = true );
@@ -241,8 +239,6 @@ If between line constraints are used, this will determine the angle to be locked
 unlock all constraints
 
 :param releaseRepeatingLocks: set to ``False`` to preserve the lock for any constraints set to repeating lock mode
-
-.. versionadded:: 3.0
 %End
 
     void clear();
@@ -375,15 +371,11 @@ Removes all points from the locked snap vertex list
     void clearPoints();
 %Docstring
 Removes all points from the CAD point list
-
-.. versionadded:: 3.0
 %End
 
     void addPoint( const QgsPointXY &point );
 %Docstring
 Adds point to the CAD point list
-
-.. versionadded:: 3.0
 %End
 
     void removePreviousPoint();
@@ -406,8 +398,6 @@ Configures list of current CAD points
 
 Some map tools may find it useful to override list of CAD points that is otherwise
 automatically populated when user clicks with left mouse button on map canvas.
-
-.. versionadded:: 3.0
 %End
 
     QgsPoint currentPointV2( bool *exists  = 0 ) const;
@@ -503,8 +493,6 @@ Disable the widget. Normally done automatically from :py:func:`QgsMapToolAdvance
     void updateCadPaintItem();
 %Docstring
 Updates canvas item that displays constraints on the ma
-
-.. versionadded:: 3.0
 %End
 
     void setX( const QString &value, WidgetSetMode mode );

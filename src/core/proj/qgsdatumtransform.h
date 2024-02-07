@@ -37,7 +37,6 @@ typedef struct PJconsts PJ;
  * \see QgsCoordinateTransformContext
  * \see QgsCoordinateTransform
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDatumTransform
 {
@@ -47,7 +46,6 @@ class CORE_EXPORT QgsDatumTransform
     /**
      * Contains datum transform information.
      * \deprecated Not used for builds based on Proj >= 6.0
-     * \since QGIS 3.0
      */
     struct TransformPair
     {

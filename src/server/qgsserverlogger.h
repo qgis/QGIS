@@ -44,14 +44,12 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
     /**
      * Gets the current log level
      * \returns the log level
-     * \since QGIS 3.0
      */
     Qgis::MessageLevel logLevel() const { return mLogLevel; }
 
     /**
       * Set the current log level
       * \param level the log level
-      * \since QGIS 3.0
       */
     void setLogLevel( Qgis::MessageLevel level );
 

@@ -360,7 +360,6 @@ class CORE_EXPORT QgsLabelingEngine
 
     /**
      * Returns a list of layers with providers in the engine.
-     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > participatingLayers() const;
 

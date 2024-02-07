@@ -32,7 +32,6 @@
  * \ingroup core
  * \class QgsStringReplacement
  * \brief A representation of a single string replacement.
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsStringReplacement
@@ -109,7 +108,6 @@ class CORE_EXPORT QgsStringReplacement
  * \ingroup core
  * \class QgsStringReplacementCollection
  * \brief A collection of string replacements (specified using QgsStringReplacement objects).
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsStringReplacementCollection
@@ -188,7 +186,6 @@ class CORE_EXPORT QgsStringUtils
      * \param string input string
      * \param capitalization capitalization type to apply
      * \returns capitalized string
-     * \since QGIS 3.0
      */
     static QString capitalize( const QString &string, Qgis::Capitalization capitalization );
 
@@ -260,7 +257,6 @@ class CORE_EXPORT QgsStringUtils
      * \param string string to insert links into
      * \param foundLinks if specified, will be set to TRUE if any links were inserted into the string
      * \returns string with inserted links
-     * \since QGIS 3.0
      */
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
 

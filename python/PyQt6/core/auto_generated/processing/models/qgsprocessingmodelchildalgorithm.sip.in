@@ -15,8 +15,6 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 {
 %Docstring(signature="appended")
 Child algorithm representing a single component of a :py:class:`QgsProcessingModelAlgorithm`.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

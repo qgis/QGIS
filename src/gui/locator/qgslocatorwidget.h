@@ -41,7 +41,6 @@ class QgsLocatorLineEdit;
  * \brief A special locator widget which allows searching for matching results from a QgsLocator
  * and presenting them to users for selection.
  * \see QgsLocator
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLocatorWidget : public QWidget
 {
@@ -157,7 +156,6 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
  * \class QgsLocatorResultsView
  * \ingroup gui
  * \brief Custom QTreeView designed for showing the results in a QgsLocatorWidget.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLocatorResultsView : public QTreeView
 {

@@ -209,8 +209,6 @@ Returns the closure of the combinatorial boundary of the geometry (ie the topolo
 For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
 
 :return: boundary for geometry. May be ``None`` for some geometry types.
-
-.. versionadded:: 3.0
 %End
 
     virtual void normalize() = 0;
@@ -271,8 +269,6 @@ The optional ``flags`` argument specifies flags controlling WKB export behavior 
 .. seealso:: :py:func:`asGml3`
 
 .. seealso:: :py:func:`asJson`
-
-.. versionadded:: 3.0
 %End
 
     virtual QString asWkt( int precision = 17 ) const = 0;
@@ -402,8 +398,6 @@ The vertex numbers start at 0, so a return value of 0 corresponds
 to the first vertex.
 
 Returns -1 if a corresponding vertex could not be found.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
@@ -420,8 +414,6 @@ Returns next vertex id and coordinates
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
 %Docstring
 Returns the vertices adjacent to a specified ``vertex`` within a geometry.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const = 0;
@@ -557,8 +549,6 @@ Returns the length of the segment of the geometry which begins at ``startVertex`
 
    QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
    returned by this method are calculated using strictly Cartesian mathematics.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsPoint centroid() const;
@@ -658,8 +648,6 @@ a multipoint geometry with overlapping points will not be changed by this method
 
 The function will return ``True`` if nodes were removed, or ``False`` if no duplicate nodes
 were found.
-
-.. versionadded:: 3.0
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const = 0;
@@ -870,8 +858,6 @@ Example
 
 
 .. seealso:: :py:func:`parts`
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
@@ -915,8 +901,6 @@ Returns whether the geometry has any child geometries (``False`` for point / cur
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
     virtual int childCount() const;
@@ -926,8 +910,6 @@ Returns number of child geometries (for geometries with child geometries) or chi
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
@@ -937,8 +919,6 @@ Returns pointer to child geometry (for geometries with child geometries - i.e. g
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsPoint childPoint( int index ) const;
@@ -948,8 +928,6 @@ Returns point at index (for geometries without child geometries - i.e. curve / p
 .. note::
 
    used for vertex_iterator implementation
-
-.. versionadded:: 3.0
 %End
 
   protected:
@@ -988,8 +966,6 @@ class QgsVertexIterator
 {
 %Docstring(signature="appended")
 Java-style iterator for traversal of vertices of a geometry
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

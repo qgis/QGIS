@@ -109,7 +109,6 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
  * \class QgsPropertyAssistantWidget
  * \ingroup gui
  * \brief Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui::PropertyAssistantBase
 {

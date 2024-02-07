@@ -80,8 +80,6 @@ Remove action for layers in the layer tree previously added with :py:func:`~Qgis
     virtual QList< QgsMapCanvas * > mapCanvases() = 0;
 %Docstring
 Returns a list of all map canvases open in the app.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
@@ -89,8 +87,6 @@ Returns a list of all map canvases open in the app.
 Create a new map canvas with the specified unique ``name``.
 
 .. seealso:: :py:func:`closeMapCanvas`
-
-.. versionadded:: 3.0
 %End
 
     virtual void closeMapCanvas( const QString &name ) = 0;
@@ -98,8 +94,6 @@ Create a new map canvas with the specified unique ``name``.
 Closes the additional map canvas with matching ``name``.
 
 .. seealso:: :py:func:`createNewMapCanvas`
-
-.. versionadded:: 3.0
 %End
 
     virtual QList< Qgs3DMapCanvas * > mapCanvases3D() = 0;
@@ -177,8 +171,6 @@ Returns the message bar of the main app
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
 %Docstring
 Returns all currently open layout designers.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -394,8 +386,6 @@ Returns a reference to the main window "Advanced Digitizing" toolbar.
     virtual QToolBar *shapeDigitizeToolBar() = 0;
 %Docstring
 Returns a reference to the main window "Shape Digitizing" toolbar.
-
-.. versionadded:: 3.0
 %End
 
     virtual QToolBar *attributesToolBar() = 0;
@@ -709,8 +699,6 @@ Returns the native Add ArcGIS REST Server action.
     virtual QAction *actionOpenStatisticalSummary() = 0;
 %Docstring
 Statistical summary action.
-
-.. versionadded:: 3.0
 %End
 
     virtual QAction *actionToggleEditing() = 0;
@@ -749,8 +737,6 @@ Returns the Toggle Selected Layers Independently action.
     virtual QAction *actionHideDeselectedLayers() = 0;
 %Docstring
 Returns the Hide Deselected Layers action.
-
-.. versionadded:: 3.0
 %End
     virtual QAction *actionShowSelectedLayers() = 0;
 
@@ -915,8 +901,6 @@ Returns the timeout for timed messages: default of 5 seconds
 Returns a pointer to the app's status bar interface. This should be
 used for interacting and adding widgets and messages to the app's
 status bar (do not use the native Qt :py:func:`~QgisInterface.statusBar` method).
-
-.. versionadded:: 3.0
 %End
 
     virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
@@ -1045,8 +1029,6 @@ Triggered when connections have changed.
 This calls reloadConnections in the main application and triggers a signal that is
 forwarded to the GUI elements that needs to be updated (i.e. the source
 select dialogs and the browser widgets)
-
-.. versionadded:: 3.0
 %End
 
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
@@ -1058,15 +1040,11 @@ returns ``True`` if the layer exists, ``False`` otherwise
     virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
 %Docstring
 Copy selected features from the layer to clipboard
-
-.. versionadded:: 3.0
 %End
 
     virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
 %Docstring
 Paste features from clipboard to the layer
-
-.. versionadded:: 3.0
 %End
 
     virtual int addToolBarIcon( QAction *qAction ) = 0;
@@ -1197,8 +1175,6 @@ Adds a widget to the user input tool bar.
     virtual void showLayoutManager() = 0;
 %Docstring
 Opens the layout manager dialog.
-
-.. versionadded:: 3.0
 %End
 
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
@@ -1206,16 +1182,12 @@ Opens the layout manager dialog.
 Opens a new layout designer dialog for the specified ``layout``, or
 brings an already open designer window to the foreground if one
 is already created for the layout.
-
-.. versionadded:: 3.0
 %End
 
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 %Docstring
 Opens the options dialog. The ``currentPage`` argument can be used to force
 the dialog to open at a specific page.
-
-.. versionadded:: 3.0
 %End
 
     virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
@@ -1445,8 +1417,6 @@ Register a new tab in the options dialog.
 .. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
-
-.. versionadded:: 3.0
 %End
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -1456,8 +1426,6 @@ Unregister a previously registered tab in the options dialog.
 .. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
-
-.. versionadded:: 3.0
 %End
 
     virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -1573,8 +1541,6 @@ Register a new custom drop ``handler``.
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
 .. seealso:: :py:func:`unregisterCustomDropHandler`
-
-.. versionadded:: 3.0
 %End
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
@@ -1584,8 +1550,6 @@ Unregister a previously registered custom drop ``handler``.
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomDropHandler`
-
-.. versionadded:: 3.0
 %End
 
     virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
@@ -1627,8 +1591,6 @@ Register a new custom drop ``handler`` for layout windows.
 .. seealso:: :py:class:`QgsLayoutCustomDropHandler`
 
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
-
-.. versionadded:: 3.0
 %End
 
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
@@ -1638,8 +1600,6 @@ Unregister a previously registered custom drop ``handler`` for layout windows.
 .. seealso:: :py:class:`QgsLayoutCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -1713,8 +1673,6 @@ locator.
    :py:func:`~QgisInterface.deregisterLocatorFilter` and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterLocatorFilter`
-
-.. versionadded:: 3.0
 %End
 
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
@@ -1726,8 +1684,6 @@ Plugins which register filters to the locator bar must take care to correctly ca
 :py:func:`~QgisInterface.deregisterLocatorFilter` to deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`registerLocatorFilter`
-
-.. versionadded:: 3.0
 %End
 
     virtual void invalidateLocatorResults() = 0;
@@ -1797,8 +1753,6 @@ The pointer to layer can be ``None`` if no layer is selected.
 %Docstring
 Emitted when the current ``theme`` is changed so plugins
 can change their tool button icons.
-
-.. versionadded:: 3.0
 %End
 
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
@@ -1806,8 +1760,6 @@ can change their tool button icons.
 Emitted when a new layout ``designer`` has been opened.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
-
-.. versionadded:: 3.0
 %End
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
@@ -1818,8 +1770,6 @@ and deleted.
 .. seealso:: :py:func:`layoutDesignerClosed`
 
 .. seealso:: :py:func:`layoutDesignerOpened`
-
-.. versionadded:: 3.0
 %End
 
     void layoutDesignerClosed();
@@ -1829,8 +1779,6 @@ Emitted after a layout designer window is closed.
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
 .. seealso:: :py:func:`layoutDesignerOpened`
-
-.. versionadded:: 3.0
 %End
 
     void initializationCompleted();

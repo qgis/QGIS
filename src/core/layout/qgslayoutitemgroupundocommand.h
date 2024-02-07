@@ -28,7 +28,6 @@
 /**
  * \ingroup core
  * \brief A layout undo command class for grouping / ungrouping layout items.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemGroupUndoCommand: public QObject, public QUndoCommand
 {

@@ -32,7 +32,6 @@ class QgsNetworkContentFetcher;
 /**
  * \ingroup core
  * \brief A layout multiframe subclass for HTML content.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 {

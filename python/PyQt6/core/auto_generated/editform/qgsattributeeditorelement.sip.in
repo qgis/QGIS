@@ -96,8 +96,6 @@ The type of this element
     QgsAttributeEditorElement *parent() const;
 %Docstring
 Gets the parent of this element.
-
-.. versionadded:: 3.0
 %End
 
     QDomElement toDomElement( QDomDocument &doc ) const;
@@ -112,8 +110,6 @@ Gets the XML Dom element to save this element.
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 /Factory/;
 %Docstring
 Returns a clone of this element. To be implemented by subclasses.
-
-.. versionadded:: 3.0
 %End
 
     bool showLabel() const;

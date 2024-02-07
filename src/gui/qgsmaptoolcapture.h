@@ -122,7 +122,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Clear capture curve.
      *
-     * \since QGIS 3.0
      */
     void clearCurve( );
 
@@ -136,7 +135,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Returns a list of matches for each point on the captureCurve.
      *
-     * \since QGIS 3.0
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
@@ -176,7 +174,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * \returns a point with ZM support if necessary
      *
-     * \since QGIS 3.0
      */
     QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 
@@ -188,7 +185,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * \returns a point with ZM support if necessary
      *
-     * \since QGIS 3.0
      */
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 

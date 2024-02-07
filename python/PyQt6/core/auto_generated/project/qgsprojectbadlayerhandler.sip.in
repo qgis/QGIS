@@ -28,8 +28,6 @@ dialog.
 
 The default implementation will dismiss all bad layers and write information to the
 log.
-
-.. versionadded:: 3.0
 %End
     virtual ~QgsProjectBadLayerHandler();
 
@@ -57,8 +55,6 @@ log.
 Returns data type associated with the given :py:class:`QgsProject` file Dom node
 
 The Dom node should represent the state associated with a specific layer.
-
-.. versionadded:: 3.0
 %End
 
     QString dataSource( const QDomNode &layerNode );
@@ -68,8 +64,6 @@ Returns the data source for the given layer
 The QDomNode is a :py:class:`QgsProject` Dom node corresponding to a map layer state.
 
 Essentially dumps datasource tag.
-
-.. versionadded:: 3.0
 %End
 
     ProviderType providerType( const QDomNode &layerNode );
@@ -86,15 +80,11 @@ provider tag.  It will always have an associated file.
 If the layer doesn't fall into either of the previous two categories, then
 it's either a database or URL.  If the datasource tag has "url=", then it's
 URL based and if it has "dbname=">, then the layer data is in a database.
-
-.. versionadded:: 3.0
 %End
 
     void setDataSource( QDomNode &layerNode, const QString &dataSource );
 %Docstring
 Set the datasource element to the new value
-
-.. versionadded:: 3.0
 %End
 };
 

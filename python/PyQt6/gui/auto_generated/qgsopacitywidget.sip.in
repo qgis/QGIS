@@ -13,8 +13,6 @@ class QgsOpacityWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget for setting an opacity value.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

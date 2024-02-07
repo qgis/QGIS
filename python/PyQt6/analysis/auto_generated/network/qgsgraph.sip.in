@@ -16,8 +16,6 @@ class QgsGraphEdge
 {
 %Docstring(signature="appended")
 This class implements a graph edge
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -65,8 +63,6 @@ class QgsGraphVertex
 {
 %Docstring(signature="appended")
 This class implements a graph vertex
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -111,8 +107,6 @@ class QgsGraph
 {
 %Docstring(signature="appended")
 Mathematical graph representation
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -398,8 +398,6 @@ Emitted when a hit test for visible legend items completes.
     void nodeNameChanged( QgsLayerTreeNode *node, const QString &name );
 %Docstring
 Updates model when node's name has changed
-
-.. versionadded:: 3.0
 %End
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );

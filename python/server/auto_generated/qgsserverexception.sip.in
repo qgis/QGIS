@@ -17,8 +17,6 @@ class QgsServerException
 {
 %Docstring(signature="appended")
 Exception base class for server exceptions.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -56,8 +54,6 @@ Exception base class for service exceptions.
 
 Note that this exception is associated with a default return code 200 which may be
 not appropriate in some situations.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

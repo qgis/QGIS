@@ -36,8 +36,6 @@ Unzip a zip file in an output directory.
 :return: - ``False`` if the zip filename does not exist, the output directory
          - files: The absolute path of unzipped files
          does not exist or is not writable.
-
-.. versionadded:: 3.0
 %End
 
   bool zip( const QString &zip, const QStringList &files );
@@ -48,8 +46,6 @@ also returned.
 
 :param zip: The zip filename
 :param files: The absolute path to files to embed within the zip
-
-.. versionadded:: 3.0
 %End
 
 

@@ -28,9 +28,6 @@ Abstract base class for 3D symbols that are used by VectorLayer3DRenderer object
 .. note::
 
    Prior to QGIS 3.16 this was available through the QGIS 3D library.
-
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

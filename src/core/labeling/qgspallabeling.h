@@ -284,7 +284,6 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Returns the labeling property definitions.
-     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -700,7 +699,6 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
-     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
@@ -709,7 +707,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * \see setDataDefinedProperties()
      * \see Property
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
@@ -718,14 +715,12 @@ class CORE_EXPORT QgsPalLayerSettings
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
      * \see Property
-     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
      * Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \see setFormat()
-     * \since QGIS 3.0
      */
     const QgsTextFormat &format() const { return mFormat; }
 
@@ -733,7 +728,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \param format label text format
      * \see format()
-     * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
 
@@ -898,7 +892,6 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Reads labeling configuration from layer's custom properties to support loading of simple labeling from QGIS 2.x projects.
-     * \since QGIS 3.0
      */
     void readFromLayerCustomProperties( QgsVectorLayer *layer );
 

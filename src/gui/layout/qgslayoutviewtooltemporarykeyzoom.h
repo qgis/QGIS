@@ -25,7 +25,6 @@
 /**
  * \ingroup gui
  * \brief Layout view tool for temporarily zooming a layout while a key is depressed.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolTemporaryKeyZoom : public QgsLayoutViewToolZoom
 {

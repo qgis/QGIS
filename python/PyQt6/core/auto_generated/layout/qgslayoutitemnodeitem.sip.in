@@ -14,8 +14,6 @@ class QgsLayoutNodesItem: QgsLayoutItem
 %Docstring(signature="appended")
 An abstract layout item that provides generic methods for node based
 shapes such as polygon or polylines.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

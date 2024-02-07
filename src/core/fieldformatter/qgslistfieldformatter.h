@@ -26,7 +26,6 @@
  * This represents a list type value.
  * Values will be represented as a comma-separated list.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsListFieldFormatter : public QgsFieldFormatter
 {

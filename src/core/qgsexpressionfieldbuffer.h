@@ -71,7 +71,6 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      * \param index The index of the expression to change
      * \param name   New name for field
      *
-     * \since QGIS 3.0
      */
     void renameExpression( int index, const QString &name );
 

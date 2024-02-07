@@ -58,7 +58,6 @@ class QgsOptionsDialogHighlightWidgetEventFilter : public QObject
  * If the widget type is handled, it is valid.
  * It can perform a text search in the widget and highlight it in case of success.
  * This uses stylesheets.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsOptionsDialogHighlightWidget
 {

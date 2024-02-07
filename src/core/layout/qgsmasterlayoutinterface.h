@@ -37,7 +37,6 @@ class QgsStyleEntityVisitorInterface;
  * \ingroup core
  * \class QgsMasterLayoutInterface
  * \brief Interface for master layout type objects, such as print layouts and reports.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsMasterLayoutInterface
 {

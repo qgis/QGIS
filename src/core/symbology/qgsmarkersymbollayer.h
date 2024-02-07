@@ -507,7 +507,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
-     * \since QGIS 3.0
      */
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
@@ -700,7 +699,6 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
-     * \since QGIS 3.0
      */
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 

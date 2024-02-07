@@ -28,7 +28,6 @@
  * \class QgsPostgresListener
  * \brief Launch a thread to listen on postgres notifications on the "qgis" channel, the notify signal is emitted on postgres notify.
  *
- * \since QGIS 3.0
  */
 
 class QgsPostgresListener : public QThread

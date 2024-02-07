@@ -14,8 +14,6 @@ class QgsRuleBasedLabeling : QgsAbstractVectorLayerLabeling
 {
 %Docstring(signature="appended")
 Rule based labeling for a vector layer.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -29,8 +27,6 @@ Rule based labeling for a vector layer.
 {
 %Docstring(signature="appended")
 A child rule for QgsRuleBasedLabeling.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -72,8 +68,6 @@ A scale of 0 indicates no maximum scale visibility.
 .. seealso:: :py:func:`minimumScale`
 
 .. seealso:: :py:func:`setMaximumScale`
-
-.. versionadded:: 3.0
 %End
 
         double minimumScale() const;
@@ -85,8 +79,6 @@ A scale of 0 indicates no minimum scale visibility.
 .. seealso:: :py:func:`maximumScale`
 
 .. seealso:: :py:func:`setMinimumScale`
-
-.. versionadded:: 3.0
 %End
 
         QString filterExpression() const;
@@ -310,8 +302,6 @@ Set pal settings for a specific provider (takes ownership).
 
 :param settings: Pal layer settings
 :param providerId: The id of the provider
-
-.. versionadded:: 3.0
 %End
     virtual bool requiresAdvancedEffects() const;
 

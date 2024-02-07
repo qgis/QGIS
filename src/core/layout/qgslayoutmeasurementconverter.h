@@ -35,7 +35,6 @@
  * dots per inch (DPI) property for the converter. Converters default to using
  * 300 DPI.
  * \see QgsLayoutMeasurement
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutMeasurementConverter
 {

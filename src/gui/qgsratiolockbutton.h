@@ -29,7 +29,6 @@ class QDoubleSpinBox;
  * \ingroup gui
  * \class QgsRatioLockButton
  * \brief A cross platform button subclass used to represent a locked / unlocked ratio state.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsRatioLockButton : public QToolButton
 {

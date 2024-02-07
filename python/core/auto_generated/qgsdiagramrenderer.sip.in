@@ -66,8 +66,6 @@ Stores the settings for rendering of all diagrams for a layer.
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the diagram property definitions.
-
-.. versionadded:: 3.0
 %End
 
     QgsDiagramLayerSettings();
@@ -264,8 +262,6 @@ Writes the diagram settings to a DOM element.
 Prepares the diagrams for a specified expression context. Calling prepare before rendering
 multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
 Returns ``True`` if preparation was successful.
-
-.. versionadded:: 3.0
 %End
 
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -280,8 +276,6 @@ Returns the set of any fields referenced by the layer's diagrams.
 Returns a reference to the diagram's property collection, used for data defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
-
-.. versionadded:: 3.0
 %End
 
 
@@ -294,8 +288,6 @@ Sets the diagram's property collection, used for data defined overrides.
 .. seealso:: :py:func:`dataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
 };
@@ -836,8 +828,6 @@ Returns list with all diagram settings in the renderer
 Returns the field name used for interpolating the diagram size.
 
 .. seealso:: :py:func:`setClassificationField`
-
-.. versionadded:: 3.0
 %End
 
     void setClassificationField( const QString &field );
@@ -845,8 +835,6 @@ Returns the field name used for interpolating the diagram size.
 Sets the field name used for interpolating the diagram size.
 
 .. seealso:: :py:func:`classificationField`
-
-.. versionadded:: 3.0
 %End
 
     QString classificationAttributeExpression() const;
@@ -866,15 +854,11 @@ Sets the field name used for interpolating the diagram size.
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
 Configures appearance of legend. Takes ownership of the passed settings objects.
-
-.. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
 Returns configuration of appearance of legend. Will return ``None`` if no configuration has been set.
-
-.. versionadded:: 3.0
 %End
 
   protected:

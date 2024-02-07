@@ -124,8 +124,6 @@ Discover all the relations available from the current layers.
 :param layers: the current layers
 
 :return: the list of discovered relations
-
-.. versionadded:: 3.0
 %End
 
     QMap<QString, QgsPolymorphicRelation> polymorphicRelations() const;

@@ -29,7 +29,6 @@ class QgsRasterDataProvider;
  * \class QgsRasterBandComboBox
  * \ingroup gui
  * \brief A combobox widget which displays the bands present in a raster layer.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
 {

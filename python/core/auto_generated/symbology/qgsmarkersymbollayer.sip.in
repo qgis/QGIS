@@ -557,8 +557,6 @@ Creates the symbol
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -770,8 +768,6 @@ Creates a raster marker symbol layer from a string map of properties.
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
-
-.. versionadded:: 3.0
 %End
 
 

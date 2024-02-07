@@ -158,7 +158,6 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Sets cell value that will be considered as "no data".
      * \see noDataValue(), hasNoDataValue(), resetNoDataValue()
-     * \since QGIS 3.0
      */
     void setNoDataValue( double noDataValue ) SIP_HOLDGIL;
 
@@ -166,7 +165,6 @@ class CORE_EXPORT QgsRasterBlock
      * Reset no data value: if there was a no data value previously set,
      * it will be discarded.
      * \see noDataValue(), hasNoDataValue(), setNoDataValue()
-     * \since QGIS 3.0
      */
     void resetNoDataValue() SIP_HOLDGIL;
 
@@ -529,7 +527,6 @@ class CORE_EXPORT QgsRasterBlock
      * still exists. Writing to the returned QByteArray will not affect the original data:
      * a deep copy of the data will be made and only the local copy will be modified.
      * \note in Python the method returns ordinary bytes object as the
-     * \since QGIS 3.0
      */
     QByteArray data() const;
 
@@ -540,7 +537,6 @@ class CORE_EXPORT QgsRasterBlock
      * array, only the initial data from the input array will be used.
      * Optionally it is possible to set non-zero offset (in bytes) if the input data should
      * overwrite data somewhere in the middle of the internal buffer.
-     * \since QGIS 3.0
      */
     void setData( const QByteArray &data, int offset = 0 );
 

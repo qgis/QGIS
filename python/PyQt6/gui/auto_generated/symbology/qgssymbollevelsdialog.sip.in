@@ -15,8 +15,6 @@ class QgsSymbolLevelsWidget : QgsPanelWidget
 A widget which allows the user to modify the rendering order of symbol layers.
 
 .. seealso:: :py:class:`QgsSymbolLevelsDialog`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

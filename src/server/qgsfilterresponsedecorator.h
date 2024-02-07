@@ -30,7 +30,6 @@
  * \ingroup server
  * \class QgsFilterResponseDecorator
  * \brief Class defining decorator for calling filter's hooks
- * \since QGIS 3.0
  */
 class QgsFilterResponseDecorator: public QgsServerResponse
 {

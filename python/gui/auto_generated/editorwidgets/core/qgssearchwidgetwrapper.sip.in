@@ -167,24 +167,18 @@ and the specified filter flags.
 Gets a field name or expression to use as field comparison.
 If in SearchMode returns a quoted field identifier.
 If in AggregateSearchMode returns an appropriate aggregate expression.
-
-.. versionadded:: 3.0
 %End
 
     QString aggregate() const;
 %Docstring
 If in AggregateSearch mode, which aggregate should be used to construct
 the filter expression. Is a Null String if none.
-
-.. versionadded:: 3.0
 %End
 
     void setAggregate( const QString &aggregate );
 %Docstring
 If in AggregateSearch mode, which aggregate should be used to construct
 the filter expression. Is a Null String if none.
-
-.. versionadded:: 3.0
 %End
 
     int fieldIndex() const;

@@ -204,7 +204,6 @@ class CORE_EXPORT QgsDistanceArea
      * \see sourceCrs()
      * \see computeSpheroidProject()
      * \note The input Point must be in the coordinate reference system being used
-     * \since QGIS 3.0
      */
     double measureLineProjected( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2, QgsPointXY *projectedPoint SIP_OUT = nullptr ) const;
 
@@ -287,7 +286,6 @@ class CORE_EXPORT QgsDistanceArea
      * \param azimuth - azimuth in radians, clockwise from North
      * \return p2 - location of projected point as longitude/latitude.
      *
-     * \since QGIS 3.0
      */
     QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2 ) const;
 

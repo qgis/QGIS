@@ -64,8 +64,6 @@ Changed an attribute value (but does not commit it)
 Changes values of attributes (but does not commit it).
 
 :return: ``True`` if attributes are well updated, ``False`` otherwise
-
-.. versionadded:: 3.0
 %End
 
     virtual bool addAttribute( const QgsField &field );
@@ -131,8 +129,6 @@ Returns ``True`` if the specified feature ID has been added but not committed.
 :param id: feature ID
 
 .. seealso:: :py:func:`addedFeatures`
-
-.. versionadded:: 3.0
 %End
 
     QgsChangedAttributesMap changedAttributeValues() const;
@@ -149,8 +145,6 @@ Returns ``True`` if the specified feature ID has had an attribute changed but no
 :param id: feature ID
 
 .. seealso:: :py:func:`changedAttributeValues`
-
-.. versionadded:: 3.0
 %End
 
     QgsAttributeList deletedAttributeIds() const;
@@ -167,8 +161,6 @@ Returns ``True`` if the specified attribute has been deleted but not committed.
 :param index: attribute index
 
 .. seealso:: :py:func:`deletedAttributeIds`
-
-.. versionadded:: 3.0
 %End
 
     QList<QgsField> addedAttributes() const;
@@ -190,8 +182,6 @@ Returns ``True`` if the specified feature ID has had its geometry changed but no
 :param id: feature ID
 
 .. seealso:: :py:func:`changedGeometries`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureIds deletedFeatureIds() const;
@@ -208,8 +198,6 @@ Returns ``True`` if the specified feature ID has been deleted but not committed.
 :param id: feature ID
 
 .. seealso:: :py:func:`deletedFeatureIds`
-
-.. versionadded:: 3.0
 %End
 
 

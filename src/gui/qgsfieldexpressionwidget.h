@@ -135,7 +135,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *
      * Alias for asExpression()
      *
-     * \since QGIS 3.0
      */
     QString expression() const;
 
@@ -150,7 +149,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * an expression context for the widget.
      * \param generator A QgsExpressionContextGenerator class that will be used to
      *                  create an expression context when required.
-     * \since QGIS 3.0
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
@@ -158,7 +156,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
      * provide an expression context of which we are sure it's completely populated.
      *
-     * \since QGIS 3.0
      */
     bool allowEvalErrors() const;
 
@@ -166,7 +163,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
      * provide an expression context of which we are sure it's completely populated.
      *
-     * \since QGIS 3.0
      */
     void setAllowEvalErrors( bool allowEvalErrors );
 
@@ -199,7 +195,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
      * provide an expression context of which we are sure it's completely populated.
      *
-     * \since QGIS 3.0
      */
     void allowEvalErrorsChanged();
 
@@ -234,7 +229,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Sets the current expression text and if applicable also the field.
      * Alias for setField.
      *
-     * \since QGIS 3.0
      */
     void setExpression( const QString &expression );
 

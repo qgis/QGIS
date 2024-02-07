@@ -61,8 +61,6 @@ create initialized QgsRenderContext instance from given :py:class:`QgsMapSetting
 Creates a default render context given a pixel based QPainter destination.
 If no painter is specified or the painter has no device, then a default
 DPI of 88 will be assumed.
-
-.. versionadded:: 3.0
 %End
 
 
@@ -203,8 +201,6 @@ a map layer render, then an invalid coordinate transformation is returned.
     const QgsDistanceArea &distanceArea() const;
 %Docstring
 A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransformContext transformContext() const;
@@ -214,8 +210,6 @@ information regarding which datum transforms should be used when transforming po
 from a source to destination coordinate reference system.
 
 .. seealso:: :py:func:`setTransformContext`
-
-.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -225,8 +219,6 @@ information regarding which datum transforms should be used when transforming po
 from a source to destination coordinate reference system.
 
 .. seealso:: :py:func:`transformContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsPathResolver &pathResolver() const;
@@ -235,8 +227,6 @@ Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`setPathResolver`
-
-.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -245,8 +235,6 @@ Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`pathResolver`
-
-.. versionadded:: 3.0
 %End
 
     const QgsRectangle &extent() const;
@@ -500,8 +488,6 @@ rendering should be canceled immediately.
 %Docstring
 A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
 Will be used to convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
-
-.. versionadded:: 3.0
 %End
 
     void setScaleFactor( double factor );
@@ -738,8 +724,6 @@ is used in some contexts to refine the converted size. For example, a :py:class:
 property will be limited to a suitably fast range when the render context has the :py:class:`Qgis`.RenderContextFlag.RenderSymbolPreview set.
 
 .. seealso:: :py:func:`convertToMapUnits`
-
-.. versionadded:: 3.0
 %End
 
     double convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
@@ -748,8 +732,6 @@ Converts a size from the specified units to map units. The conversion respects t
 specified by the optional scale parameter.
 
 .. seealso:: :py:func:`convertToPainterUnits`
-
-.. versionadded:: 3.0
 %End
 
     double convertFromMapUnits( double sizeInMapUnits, Qgis::RenderUnit outputUnit ) const;
@@ -757,8 +739,6 @@ specified by the optional scale parameter.
 Converts a size from map units to the specified units.
 
 .. seealso:: :py:func:`convertToMapUnits`
-
-.. versionadded:: 3.0
 %End
 
     double convertMetersToMapUnits( double meters ) const;
@@ -766,8 +746,6 @@ Converts a size from map units to the specified units.
 Convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
 \note
 When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the Extent will be used
-
-.. versionadded:: 3.0
 %End
 
     Qgis::TextRenderFormat textRenderFormat() const;

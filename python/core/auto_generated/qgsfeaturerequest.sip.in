@@ -143,8 +143,6 @@ The expression
 Prepare the expression with the given context.
 
 .. seealso:: :py:func:`QgsExpression.prepare`
-
-.. versionadded:: 3.0
 %End
 
         bool ascending() const;
@@ -444,8 +442,6 @@ Sets invalid geometry checking behavior.
    directly from a :py:class:`QgsVectorDataProvider`.
 
 .. seealso:: :py:func:`invalidGeometryCheck`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
@@ -453,8 +449,6 @@ Sets invalid geometry checking behavior.
 Returns the invalid geometry checking behavior.
 
 .. seealso:: :py:func:`setInvalidGeometryCheck`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
@@ -464,8 +458,6 @@ Sets a callback function to use when encountering an invalid geometry and
 called using the feature with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
-
-.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -718,8 +710,6 @@ and all features will be left with their original geometry.
 .. seealso:: :py:func:`setDestinationCrs`
 
 .. seealso:: :py:func:`transformContext`
-
-.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransformContext transformContext() const;
@@ -730,8 +720,6 @@ and reprojection is required
 .. seealso:: :py:func:`setDestinationCrs`
 
 .. seealso:: :py:func:`destinationCrs`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -756,8 +744,6 @@ original geometry in the source CRS, so these values are not affected by
 any destination CRS transform present in the feature request.
 
 .. seealso:: :py:func:`destinationCrs`
-
-.. versionadded:: 3.0
 %End
 
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
@@ -769,8 +755,6 @@ called using the feature which encountered the transform error as a parameter.
 .. seealso:: :py:func:`transformErrorCallback`
 
 .. seealso:: :py:func:`setDestinationCrs`
-
-.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -809,8 +793,6 @@ at this moment. A negative value (which is set by default) will wait forever.
 
 .. deprecated::
    Use :py:func:`~QgsFeatureRequest.timeout` instead.
-
-.. versionadded:: 3.0
 %End
 
  QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated/;
@@ -824,8 +806,6 @@ at this moment. A negative value (which is set by default) will wait forever.
 
 .. deprecated::
    Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
-
-.. versionadded:: 3.0
 %End
 
     int timeout() const;

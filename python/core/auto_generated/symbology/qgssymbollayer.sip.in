@@ -172,8 +172,6 @@ class QgsSymbolLayer
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the symbol layer property definitions.
-
-.. versionadded:: 3.0
 %End
 
     virtual ~QgsSymbolLayer();
@@ -192,8 +190,6 @@ Returns flags which control the symbol layer's behavior.
 Returns ``True`` if symbol layer is enabled and will be drawn.
 
 .. seealso:: :py:func:`setEnabled`
-
-.. versionadded:: 3.0
 %End
 
     void setEnabled( bool enabled );
@@ -203,8 +199,6 @@ layers are not drawn, but remain part of the symbol and can be re-enabled
 when desired.
 
 .. seealso:: :py:func:`enabled`
-
-.. versionadded:: 3.0
 %End
 
     Qgis::SymbolLayerUserFlags userFlags() const;
@@ -532,8 +526,6 @@ will be overwritten.
 .. seealso:: :py:func:`dataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
@@ -619,8 +611,6 @@ Returns a reference to the symbol layer's property collection, used for data def
 .. seealso:: :py:func:`setDataDefinedProperties`
 
 .. seealso:: Property
-
-.. versionadded:: 3.0
 %End
 
 
@@ -631,8 +621,6 @@ Sets the symbol layer's property collection, used for data defined overrides.
 :param collection: property collection. Existing properties will be replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
-
-.. versionadded:: 3.0
 %End
 
     virtual bool hasDataDefinedProperties() const;
@@ -698,8 +686,6 @@ Constructor for QgsSymbolLayer.
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
-
-.. versionadded:: 3.0
 %End
 
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;

@@ -74,8 +74,6 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsCurv
 Returns the distance from a point to the boundary of the polygon (either the
 exterior ring or any closer interior rings). The returned distance will be
 negative if the point lies outside the polygon.
-
-.. versionadded:: 3.0
 %End
 
 

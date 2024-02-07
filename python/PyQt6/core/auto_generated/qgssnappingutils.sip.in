@@ -211,8 +211,6 @@ The snapping configuration controls the behavior of this object
     void toggleEnabled();
 %Docstring
 Toggles the state of snapping
-
-.. versionadded:: 3.0
 %End
 
   signals:

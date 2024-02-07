@@ -81,7 +81,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      *
      * If you want to check if the iterator successfully completed, better use QgsFeatureIterator::isClosed().
      *
-     * \since QGIS 3.0
      */
     virtual bool isValid() const
     {
@@ -149,7 +148,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * has no effect and will be shortcut.
      * Iterators should call this method before returning features to ensure that any
      * QgsFeatureRequest::destinationCrs() set on the request is respected.
-     * \since QGIS 3.0
      */
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 
@@ -161,7 +159,6 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Iterators should call this method and use the returned rectangle for filtering
      * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
      * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
-     * \since QGIS 3.0
      */
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
@@ -348,7 +345,6 @@ class CORE_EXPORT QgsFeatureIterator
      *
      * \see isClosed to check if the iterator successfully completed and returned all the features.
      *
-     * \since QGIS 3.0
      */
     bool isValid() const;
 

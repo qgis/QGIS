@@ -145,7 +145,6 @@ class CORE_EXPORT QgsFontUtils
      * Returns new mime data representing the specified \a font settings.
      * Caller takes responsibility for deleting the returned object.
      * \see fromMimeData()
-     * \since QGIS 3.0
      */
     static QMimeData *toMimeData( const QFont &font ) SIP_FACTORY;
 
@@ -153,7 +152,6 @@ class CORE_EXPORT QgsFontUtils
      * Attempts to parse the provided mime \a data as a QFont.
      * If data can be parsed as a QFont, \a ok will be set to TRUE.
      * \see toMimeData()
-     * \since QGIS 3.0
      */
     static QFont fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
 
@@ -187,14 +185,12 @@ class CORE_EXPORT QgsFontUtils
     /**
      * Adds a font \a family to the list of recently used font families.
      * \see recentFontFamilies()
-     * \since QGIS 3.0
      */
     static void addRecentFontFamily( const QString &family );
 
     /**
      * Returns a list of recently used font families.
      * \see addRecentFontFamily()
-     * \since QGIS 3.0
      */
     static QStringList recentFontFamilies();
 

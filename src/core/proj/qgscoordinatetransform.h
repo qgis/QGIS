@@ -87,7 +87,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * based on the current code context, or use the constructor variant which
      * accepts a QgsProject argument instead.
      *
-     * \since QGIS 3.0
      */
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
@@ -118,7 +117,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \warning Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
      * between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
      * however dynamic CRS to dynamic CRS transformations are not currently supported.
-     * \since QGIS 3.0
      */
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,
@@ -131,7 +129,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * datum transforms (see QgsDatumTransform).
      *
      * \deprecated will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
-     * \since QGIS 3.0
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
@@ -167,7 +164,6 @@ class CORE_EXPORT QgsCoordinateTransform
     /**
      * Returns TRUE if the coordinate transform is valid, ie both the source and destination
      * CRS have been set and are valid.
-     * \since QGIS 3.0
      */
     bool isValid() const;
 
@@ -191,7 +187,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * Sets the \a context in which the coordinate transform should be
      * calculated.
      * \see context()
-     * \since QGIS 3.0
      */
     void setContext( const QgsCoordinateTransformContext &context );
 
@@ -589,7 +584,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * If \a disableCache is TRUE then the inbuilt cache will be completely disabled. This
      * argument is for internal use only.
      *
-     * \since QGIS 3.0
      */
     static void invalidateCache( bool disableCache = false );
 #else
@@ -599,7 +593,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * This should be called whenever the srs database has
      * been modified in order to ensure that outdated CRS transforms are not created.
      *
-     * \since QGIS 3.0
      */
     static void invalidateCache( bool disableCache SIP_PYARGREMOVE = false );
 #endif

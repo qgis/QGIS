@@ -14,8 +14,6 @@ class QgsArchive
 {
 %Docstring(signature="appended")
 Class allowing to manage the zip/unzip actions
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -101,8 +99,6 @@ class QgsProjectArchive : QgsArchive
 {
 %Docstring(signature="appended")
 Class allowing to manage the zip/unzip actions on project file
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

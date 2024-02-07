@@ -91,7 +91,6 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Copy constructor
      *
-     * \since QGIS 3.0
      */
     QgsEditFormConfig( const QgsEditFormConfig &o );
     ~QgsEditFormConfig();

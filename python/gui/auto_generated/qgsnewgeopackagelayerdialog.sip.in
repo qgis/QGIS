@@ -35,29 +35,21 @@ Constructor
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the ``crs`` value for the new layer in the dialog.
-
-.. versionadded:: 3.0
 %End
 
     QString databasePath() const;
 %Docstring
 Returns the database path
-
-.. versionadded:: 3.0
 %End
 
     void setDatabasePath( const QString &path );
 %Docstring
 Sets the initial database ``path``
-
-.. versionadded:: 3.0
 %End
 
     void lockDatabasePath();
 %Docstring
 Sets the database path widgets to a locked and read-only mode.
-
-.. versionadded:: 3.0
 %End
 
     void setOverwriteBehavior( OverwriteBehavior behavior );
@@ -65,8 +57,6 @@ Sets the database path widgets to a locked and read-only mode.
 Sets the ``behavior`` to use when a path to an existing geopackage file is used.
 
 The default behavior is to prompt the user for an action to take.
-
-.. versionadded:: 3.0
 %End
 
     void setAddToProject( bool addToProject );

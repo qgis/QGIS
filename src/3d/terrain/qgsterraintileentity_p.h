@@ -38,7 +38,6 @@ class QgsTerrainTextureImage;
  * \brief Base class for 3D entities representing one tile of terrain.
  * It contains pointer to tile's texture image.
  *
- * \since QGIS 3.0
  */
 class QgsTerrainTileEntity : public Qt3DCore::QEntity
 {

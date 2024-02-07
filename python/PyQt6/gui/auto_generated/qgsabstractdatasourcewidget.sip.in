@@ -22,8 +22,6 @@ and add layers.
 
 The implementation is generic enough to handle other layer search and
 selection widgets.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

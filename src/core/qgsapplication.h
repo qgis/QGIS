@@ -214,7 +214,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the singleton instance of the QgsApplication.
      *
-     * \since QGIS 3.0
      */
     static QgsApplication *instance();
 
@@ -321,7 +320,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the path to the metadata directory.
-    * \since QGIS 3.0
     */
     static QString metadataPath();
 
@@ -358,7 +356,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the paths to layout template directories.
-     * \since QGIS 3.0
      */
     static QStringList layoutTemplatePaths();
 
@@ -487,7 +484,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the QGIS locale.
-     * \since QGIS 3.0
      */
     static QString locale();
 
@@ -673,7 +669,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's task manager, used for managing application
      * wide background task handling.
-     * \since QGIS 3.0
      */
     static QgsTaskManager *taskManager();
 
@@ -686,26 +681,22 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
-     * \since QGIS 3.0
      */
     static QgsColorSchemeRegistry *colorSchemeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's paint effect registry, used for managing paint effects.
-     * \since QGIS 3.0
      */
     static QgsPaintEffectRegistry *paintEffectRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's renderer registry, used for managing vector layer renderers.
-     * \since QGIS 3.0
      */
     static QgsRendererRegistry *rendererRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
@@ -724,7 +715,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's data item provider registry, which keeps a list of data item
      * providers that may add items to the browser tree.
-     * \since QGIS 3.0
      */
     static QgsDataItemProviderRegistry *dataItemProviderRegistry() SIP_KEEPREFERENCE;
 
@@ -741,7 +731,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * within SVG files.
      *
      * \see imageCache()
-     * \since QGIS 3.0
      */
     static QgsSvgCache *svgCache();
 
@@ -774,7 +763,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
-     * \since QGIS 3.0
      */
     static QgsSymbolLayerRegistry *symbolLayerRegistry() SIP_KEEPREFERENCE;
 
@@ -786,7 +774,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's layout item registry, used for layout item types.
-     * \since QGIS 3.0
      */
     static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
 
@@ -798,7 +785,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
-     * \since QGIS 3.0
      */
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() SIP_KEEPREFERENCE;
 
@@ -810,7 +796,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
-     * \since QGIS 3.0
      */
     static QgsPluginLayerRegistry *pluginLayerRegistry() SIP_KEEPREFERENCE;
 
@@ -870,7 +855,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's message log.
-     * \since QGIS 3.0
      */
     static QgsMessageLog *messageLog();
 
@@ -878,34 +862,29 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's authentication manager instance
      * \note this can be NULLPTR if called before initQgis
      * \see initQgis
-     * \since QGIS 3.0
      */
     static QgsAuthManager *authManager();
 
     /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
-     * \since QGIS 3.0
      */
     static QgsProcessingRegistry *processingRegistry();
 
     /**
      * Returns the application's page size registry, used for managing layout page sizes.
-     * \since QGIS 3.0
      */
     static QgsPageSizeRegistry *pageSizeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
 
     /**
      * Returns the action scope registry.
      *
-     * \since QGIS 3.0
      */
     static QgsActionScopeRegistry *actionScopeRegistry() SIP_KEEPREFERENCE;
 
@@ -917,7 +896,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application runtime profiler.
-     * \since QGIS 3.0
      */
     static QgsRuntimeProfiler *profiler();
 
@@ -935,7 +913,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns registry of available 3D renderers.
-     * \since QGIS 3.0
      */
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
@@ -999,7 +976,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * This does not include generated variables (like system name, user name etc.)
      *
      * \see QgsExpressionContextUtils::globalScope().
-     * \since QGIS 3.0
      */
     static QVariantMap customVariables();
 
@@ -1008,14 +984,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Do not include generated variables (like system name, user name etc.)
      *
      * \see QgsExpressionContextUtils::globalScope().
-     * \since QGIS 3.0
      */
     static void setCustomVariables( const QVariantMap &customVariables );
 
     /**
      * Set a single custom expression variable.
      *
-     * \since QGIS 3.0
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
 
@@ -1088,7 +1062,6 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Emitted whenever a custom global variable changes.
-     * \since QGIS 3.0
      */
     void customVariablesChanged();
 

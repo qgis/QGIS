@@ -41,7 +41,6 @@ class QgsBrowserModel;
  * The implementation is generic enough to handle other layer search and
  * selection widgets.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 {

@@ -13,8 +13,6 @@ class QgsEllipsoidUtils
 {
 %Docstring(signature="appended")
 Contains utility functions for working with ellipsoids and querying the ellipsoid database.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

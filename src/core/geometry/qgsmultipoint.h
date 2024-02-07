@@ -351,7 +351,6 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
      * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsMultiPoint *cast( const QgsAbstractGeometry *geom )
     {

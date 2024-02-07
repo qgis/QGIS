@@ -51,7 +51,6 @@ class QgsMapLayer;
  * subclasses. E.g. validating against the native QGIS metadata schema can be performed
  * using QgsNativeMetadataValidator.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
 {

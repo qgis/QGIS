@@ -26,8 +26,6 @@ Annotations with a fixed map position also have a corresponding
 
 Derived classes should implement their custom painting routines within
 a :py:func:`~renderAnnotation` override.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

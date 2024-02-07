@@ -18,8 +18,6 @@ Object that keeps configuration of appearance of marker symbol's data-defined si
 
 For example: the list of classes (size values), whether the classes should appear in separate
 legend nodes or whether to collapse them into one legend node.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

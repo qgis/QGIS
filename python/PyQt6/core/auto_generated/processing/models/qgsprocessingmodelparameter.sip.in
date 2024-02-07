@@ -15,8 +15,6 @@ class QgsProcessingModelParameter : QgsProcessingModelComponent
 {
 %Docstring(signature="appended")
 Represents an input parameter used by the model.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

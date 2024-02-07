@@ -105,15 +105,11 @@ Sets extra information about data-defined size. If set, this item should be conv
 rather than :py:class:`QgsSymbolLegendNode` instance as usual. Passing ``None`` removes any data-defined size legend settings.
 
 Takes ownership of the settings object.
-
-.. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 %Docstring
 Returns extra information for data-defined size legend rendering. Normally it returns ``None``.
-
-.. versionadded:: 3.0
 %End
 
 };

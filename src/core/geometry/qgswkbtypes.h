@@ -961,7 +961,6 @@ class CORE_EXPORT QgsWkbTypes
      * - No Geometry
      * - Invalid Geometry
      *
-     * \since QGIS 3.0
      */
     static QString geometryDisplayString( Qgis::GeometryType type ) SIP_HOLDGIL;
 

@@ -34,7 +34,6 @@
  * An ellipse is defined by a center point with a semi-major axis, a semi-minor axis and an azimuth.
  * The azimuth is the north angle to the first quadrant (always oriented on the semi-major axis), in degrees. By default, the semi-major axis is oriented to the east (90 degrees).
  * The semi-minor axis is always smaller than the semi-major axis. If it is set larger, it will be swapped and the azimuth will increase by 90 degrees.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsEllipse
 {

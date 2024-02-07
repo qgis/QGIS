@@ -60,14 +60,12 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      * Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
-     * \since QGIS 3.0
      */
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
     /**
      * Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
-     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
@@ -139,7 +137,6 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     /**
      * Creates widget to setup data-defined size legend.
      * Returns newly created panel - may be NULLPTR if it could not be opened. Ownership is transferred to the caller.
-     * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) SIP_FACTORY;
 
@@ -231,14 +228,12 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
-     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /**
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
-     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 

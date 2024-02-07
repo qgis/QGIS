@@ -63,7 +63,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /**
      * Set data defined angle for whole symbol (including all symbol layers).
      * \see dataDefinedAngle()
-     * \since QGIS 3.0
      */
     void setDataDefinedAngle( const QgsProperty &property );
 
@@ -72,7 +71,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \returns data defined angle, or invalid property if angle is not set
      * at the marker level.
      * \see setDataDefinedAngle()
-     * \since QGIS 3.0
      */
     QgsProperty dataDefinedAngle() const;
 
@@ -163,7 +161,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /**
      * Set data defined size for whole symbol (including all symbol layers).
      * \see dataDefinedSize()
-     * \since QGIS 3.0
      */
     void setDataDefinedSize( const QgsProperty &property ) const;
 
@@ -172,7 +169,6 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \returns data defined size, or invalid property if size is not set
      * at the marker level.
      * \see setDataDefinedSize
-     * \since QGIS 3.0
      */
     QgsProperty dataDefinedSize() const;
 

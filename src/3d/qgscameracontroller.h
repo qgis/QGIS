@@ -54,7 +54,6 @@ class QgsCameraController4Test;
  * \ingroup 3d
  * \brief Object that controls camera movement based on user input
  * \note Not available in Python bindings
- * \since QGIS 3.0
  */
 #ifndef SIP_RUN
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity

@@ -209,7 +209,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      *   -> returns empty (toString) or invalid (fromString) values
     *
     * \note not available in Python bindings
-    * \since QGIS 3.0
     */
     void setMinimumEditDateTime();
 

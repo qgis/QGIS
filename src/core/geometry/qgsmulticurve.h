@@ -99,7 +99,6 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
      * Should be used by qgsgeometry_cast<QgsMultiCurve *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsMultiCurve *cast( const QgsAbstractGeometry *geom )
     {

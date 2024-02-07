@@ -142,7 +142,6 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * Sets the geometry type for the original feature geometry being rendered.
      * \see originalGeometryType()
-     * \since QGIS 3.0
      */
     void setOriginalGeometryType( Qgis::GeometryType type ) { mOriginalGeometryType = type; }
 
@@ -152,7 +151,6 @@ class CORE_EXPORT QgsSymbolRenderContext
      * simple line style will look different if the simple line is rendering a polygon feature
      * (a closed buffer) vs a line feature (an unclosed offset line).
      * \see originalGeometryType()
-     * \since QGIS 3.0
      */
     Qgis::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
 

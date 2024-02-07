@@ -402,7 +402,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * This will first perform a pointInPolygon and return first result.
      * If no match is found and tolerance is not 0, it will return nearestEdge.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
-     * \since QGIS 3.0
      */
     Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 

@@ -52,8 +52,8 @@ class GUI_EXPORT QgsAttributeEditorContext
       FixAttributeMode, //!< Fix feature mode, for modifying the feature attributes without saving. The updated feature is available via `feature()` after `save()`
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
-      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
-      IdentifyMode //!< Identify the feature \since QGIS 3.0
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode
+      IdentifyMode //!< Identify the feature
     };
     Q_ENUM( Mode )
 

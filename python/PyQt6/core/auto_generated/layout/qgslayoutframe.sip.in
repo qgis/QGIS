@@ -13,8 +13,6 @@ class QgsLayoutFrame: QgsLayoutItem
 {
 %Docstring(signature="appended")
 Base class for frame items, which form a layout multiframe item.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -44,7 +44,6 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
      * Point values are weighted by 1 / ( distance ^ coefficient ).
      *
      * \see distanceCoefficient()
-     * \since QGIS 3.0
     */
     void setDistanceCoefficient( double coefficient ) { mDistanceCoefficient = coefficient;}
 
@@ -56,7 +55,6 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
      * Point values are weighted by 1 / ( distance ^ coefficient ).
      *
      * \see setDistanceCoefficient()
-     * \since QGIS 3.0
     */
     double distanceCoefficient() const { return mDistanceCoefficient; }
 

@@ -198,7 +198,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Encodes a QSizeF to a string.
      * \see decodeSize()
      * \see encodePoint()
-     * \since QGIS 3.0
      */
     static QString encodeSize( QSizeF size );
 
@@ -206,7 +205,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Decodes a QSizeF from a string.
      * \see encodeSize()
      * \see decodePoint()
-     * \since QGIS 3.0
      */
     static QSizeF decodeSize( const QString &string );
 
@@ -256,7 +254,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param uom The uom attribute from SLD 1.1 version
      * \param size The original size
      * \returns the size in pixels
-     * \since QGIS 3.0
      */
     static double sizeInPixelsFromSldUom( const QString &uom, double size );
 
@@ -563,7 +560,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * This also sets the mime color data to match the symbol's color, so that copied symbols
      * can be paste in places where a color is expected.
      * \see symbolFromMimeData()
-     * \since QGIS 3.0
      */
     static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) SIP_FACTORY;
 
@@ -571,7 +567,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
      * if the data was successfully converted to a symbol.
      * \see symbolToMimeData()
-     * \since QGIS 3.0
      */
     static QgsSymbol *symbolFromMimeData( const QMimeData *data ) SIP_FACTORY;
 
@@ -821,33 +816,28 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Rescales the given size based on the uomScale found in the props, if any is found, otherwise
      *  returns the value un-modified
-     * \since QGIS 3.0
      */
     static double rescaleUom( double size, Qgis::RenderUnit unit, const QVariantMap &props );
 
     /**
      * Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
-     * \since QGIS 3.0
      */
     static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescalePointUom );
 
     /**
      * Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
-     * \since QGIS 3.0
      */
     static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) SIP_PYNAME( rescaleArrayUom );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
-     * \since QGIS 3.0
      */
     static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props );
 
     /**
       * Merges the local scale limits, if any, with the ones already in the map, if any
-      * \since QGIS 3.0
       */
     static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props );
 
@@ -855,7 +845,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
      * a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
      * that cannot do SVG at all
-     * \since QGIS 3.0
      */
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
                                     const QString &path,
@@ -863,7 +852,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
-     * \since QGIS 3.0
      */
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 

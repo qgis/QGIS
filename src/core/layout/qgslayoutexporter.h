@@ -46,7 +46,6 @@ class QgsSettingsEntryBool;
  * \ingroup core
  * \class QgsLayoutExporter
  * \brief Handles rendering and exports of layouts to various formats.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutExporter
 {

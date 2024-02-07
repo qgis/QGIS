@@ -20,8 +20,6 @@ QGIS interface.
 .. seealso:: :py:class:`QgsVectorFileWriterTask`
 
 .. seealso:: :py:class:`QgsVectorFileExporterTask`
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -15,8 +15,6 @@ class QgsMetadataWidget : QWidget
 {
 %Docstring(signature="appended")
 A wizard to edit metadata on a map layer.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

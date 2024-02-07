@@ -27,7 +27,6 @@
  * Only generally useful routines should be here. Miscellaneous utility functions for work
  * with the layer tree are in QgsLayerTreeUtils class.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 {
@@ -106,7 +105,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see layerOrder
      * \see hasCustomLayerOrder
      *
-     * \since QGIS 3.0
      */
     QList<QgsMapLayer *> customLayerOrder() const;
 
@@ -119,7 +117,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see layerOrder
      * \see hasCustomLayerOrder
      *
-     * \since QGIS 3.0
      */
     void setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder );
 
@@ -132,7 +129,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see layerOrder
      * \see hasCustomLayerOrder
      *
-     * \since QGIS 3.0
      */
     void setCustomLayerOrder( const QStringList &customLayerOrder ) SIP_PYNAME( setCustomLayerOrderByIds );
 
@@ -144,7 +140,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \see customLayerOrder
      *
-     * \since QGIS 3.0
      */
     QList<QgsMapLayer *> layerOrder() const;
 
@@ -154,7 +149,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \see customLayerOrder
      *
-     * \since QGIS 3.0
      */
     bool hasCustomLayerOrder() const;
 
@@ -164,7 +158,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \see setCustomLayerOrder
      *
-     * \since QGIS 3.0
      */
     void setHasCustomLayerOrder( bool hasCustomLayerOrder );
 
@@ -174,7 +167,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * resolveReferences() needs to be called after loading the layers and
      * before using the tree.
      *
-     * \since QGIS 3.0
      */
     static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
 
@@ -182,7 +174,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Load the layer order from an XML element.
      * Make sure that this is only called after the layers are loaded.
      *
-     * \since QGIS 3.0
      */
     void readLayerOrderFromXml( const QDomElement &doc );
 
@@ -193,7 +184,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Clear any information from this layer tree.
      *
-     * \since QGIS 3.0
      */
     void clear();
 
@@ -202,14 +192,12 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Emitted when the custom layer order has changed.
      *
-     * \since QGIS 3.0
      */
     void customLayerOrderChanged();
 
     /**
      * Emitted when the layer order has changed.
      *
-     * \since QGIS 3.0
      */
     void layerOrderChanged();
 
@@ -218,7 +206,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \see hasCustomLayerOrder
      *
-     * \since QGIS 3.0
      */
     void hasCustomLayerOrderChanged( bool hasCustomLayerOrder );
 

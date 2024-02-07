@@ -68,8 +68,6 @@ Returns the map layer associated with this node.
 Returns the layer's name.
 
 .. seealso:: :py:func:`setName`
-
-.. versionadded:: 3.0
 %End
 
     virtual void setName( const QString &n );
@@ -78,8 +76,6 @@ Returns the layer's name.
 Sets the layer's name.
 
 .. seealso:: :py:func:`name`
-
-.. versionadded:: 3.0
 %End
 
     void setUseLayerName( bool use = true );
@@ -107,8 +103,6 @@ Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeLayer
 %Docstring
 Read layer node from XML. Returns new instance.
 Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeLayer.resolveReferences` internally).
-
-.. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -124,8 +118,6 @@ Also resolves textual references to layers from the project (calls :py:func:`~Qg
 
 %Docstring
 Resolves reference to layer from stored layer ID (if it has not been resolved already)
-
-.. versionadded:: 3.0
 %End
 
     void setLabelExpression( const QString &expression );

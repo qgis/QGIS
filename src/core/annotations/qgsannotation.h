@@ -47,7 +47,6 @@ class QgsFillSymbol;
  * Derived classes should implement their custom painting routines within
  * a renderAnnotation() override.
  *
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsAnnotation : public QObject

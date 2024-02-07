@@ -123,8 +123,6 @@ it does not need to be re-parsed.
     QgsExpression();
 %Docstring
 Create an empty expression.
-
-.. versionadded:: 3.0
 %End
 
     ~QgsExpression();
@@ -135,8 +133,6 @@ Create an empty expression.
 %Docstring
 Checks if this expression is valid.
 A valid expression could be parsed but does not necessarily evaluate properly.
-
-.. versionadded:: 3.0
 %End
 
     bool hasParserError() const;
@@ -151,8 +147,6 @@ Returns parser error
     QList<QgsExpression::ParserError> parserErrors() const;
 %Docstring
 Returns parser error details including location of error.
-
-.. versionadded:: 3.0
 %End
 
     const QgsExpressionNode *rootNode() const;
@@ -204,8 +198,6 @@ which is determined at runtime.
    In contrast to the :py:func:`~QgsExpression.referencedColumns` function this method
    is not affected by any previous calls to :py:func:`QgsExpression.prepare()`,
    or :py:func:`QgsExpressionNode.prepare()`.
-
-.. versionadded:: 3.0
 %End
 
     QSet<QString> referencedFunctions() const;
@@ -235,8 +227,6 @@ Returns a list of field name indexes obtained from the provided fields.
    pre-calculated nodes, regardless of their actual referenced columns.
    If you are seeking to use these functions to introspect an expression you must
    take care to do this with an unprepared expression.
-
-.. versionadded:: 3.0
 %End
 
     bool needsGeometry() const;
@@ -329,8 +319,6 @@ Tests whether a string is a valid expression.
     void setExpression( const QString &expression );
 %Docstring
 Set the expression string, will reset the whole internal structure.
-
-.. versionadded:: 3.0
 %End
 
     QString expression() const;
@@ -636,8 +624,6 @@ Returns formatted help text for a variable.
 .. seealso:: :py:func:`helpText`
 
 .. seealso:: :py:func:`variableHelpText`
-
-.. versionadded:: 3.0
 %End
 
     static QString group( const QString &group );
@@ -669,8 +655,6 @@ value. The value may be null.
 :param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
 
 :return: the expression to evaluate field equality
-
-.. versionadded:: 3.0
 %End
 
     static bool isFieldEqualityExpression( const QString &expression, QString &field /Out/, QVariant &value /Out/ );

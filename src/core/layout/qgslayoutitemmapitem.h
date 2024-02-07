@@ -28,7 +28,6 @@ class QgsLayoutItemMap;
  * \ingroup core
  * \class QgsLayoutItemMapItem
  * \brief An item which is drawn inside a QgsLayoutItemMap, e.g., a grid or map overview.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
 {
@@ -225,7 +224,6 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
  * QgsLayoutItemMap. The item stack controls which items are drawn and the
  * order they are drawn in.
  * \see QgsLayoutItemMapItem
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapItemStack
 {

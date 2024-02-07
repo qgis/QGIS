@@ -16,8 +16,6 @@ A dialog for configuring properties like the size and position of layout items.
 
 This is usually used only when constructing new layout items, allowing users to precisely
 enter their sizes and positions.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -117,8 +117,6 @@ Not the difference between this method and :py:func:`~QgsRasterBlock.hasNoDataVa
 Sets cell value that will be considered as "no data".
 
 .. seealso:: :py:func:`noDataValue`
-
-.. versionadded:: 3.0
 %End
 
     void resetNoDataValue() /HoldGIL/;
@@ -127,8 +125,6 @@ Reset no data value: if there was a no data value previously set,
 it will be discarded.
 
 .. seealso:: :py:func:`noDataValue`
-
-.. versionadded:: 3.0
 %End
 
     double noDataValue() const /HoldGIL/;
@@ -341,8 +337,6 @@ a deep copy of the data will be made and only the local copy will be modified.
 .. note::
 
    in Python the method returns ordinary bytes object as the
-
-.. versionadded:: 3.0
 %End
 
     void setData( const QByteArray &data, int offset = 0 );
@@ -353,8 +347,6 @@ pixels at the end will stay untouched. If the data array is longer than the inte
 array, only the initial data from the input array will be used.
 Optionally it is possible to set non-zero offset (in bytes) if the input data should
 overwrite data somewhere in the middle of the internal buffer.
-
-.. versionadded:: 3.0
 %End
 
 

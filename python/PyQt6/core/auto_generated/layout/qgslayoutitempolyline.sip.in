@@ -14,8 +14,6 @@ class QgsLayoutItemPolyline: QgsLayoutNodesItem
 {
 %Docstring(signature="appended")
 Layout item for node based polyline shapes.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

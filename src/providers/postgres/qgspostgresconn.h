@@ -448,7 +448,6 @@ class QgsPostgresConn : public QObject
     /**
      * Returns the underlying database.
      *
-     * \since QGIS 3.0
      */
     QString currentDatabase() const;
 

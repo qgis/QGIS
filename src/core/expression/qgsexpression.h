@@ -193,7 +193,6 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Details about any parser errors that were found when parsing the expression.
-     * \since QGIS 3.0
      */
     struct CORE_EXPORT ParserError
     {
@@ -264,14 +263,12 @@ class CORE_EXPORT QgsExpression
     /**
      * Automatically convert this expression to a string where requested.
      *
-     * \since QGIS 3.0
      */
     operator QString() const SIP_SKIP;
 
     /**
      * Create an empty expression.
      *
-     * \since QGIS 3.0
      */
     QgsExpression();
 
@@ -281,7 +278,6 @@ class CORE_EXPORT QgsExpression
      * Compares two expressions. The operator returns TRUE
      * if the expression string is equal.
      *
-     * \since QGIS 3.0
      */
     bool operator==( const QgsExpression &other ) const;
 
@@ -289,7 +285,6 @@ class CORE_EXPORT QgsExpression
      * Checks if this expression is valid.
      * A valid expression could be parsed but does not necessarily evaluate properly.
      *
-     * \since QGIS 3.0
      */
     bool isValid() const;
 
@@ -300,7 +295,6 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Returns parser error details including location of error.
-     * \since QGIS 3.0
      */
     QList<QgsExpression::ParserError> parserErrors() const;
 
@@ -345,7 +339,6 @@ class CORE_EXPORT QgsExpression
      * is not affected by any previous calls to QgsExpression::prepare(),
      * or QgsExpressionNode::prepare().
      *
-     * \since QGIS 3.0
      */
     QSet<QString> referencedVariables() const;
 
@@ -402,7 +395,6 @@ class CORE_EXPORT QgsExpression
      * If you are seeking to use these functions to introspect an expression you must
      * take care to do this with an unprepared expression.
      *
-     * \since QGIS 3.0
      */
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 
@@ -478,7 +470,6 @@ class CORE_EXPORT QgsExpression
     /**
      * Set the expression string, will reset the whole internal structure.
      *
-     * \since QGIS 3.0
      */
     void setExpression( const QString &expression );
 
@@ -725,7 +716,6 @@ class CORE_EXPORT QgsExpression
      * \param value current value of variable to show in help text
      * \see helpText()
      * \see variableHelpText()
-     * \since QGIS 3.0
      */
     static QString formatVariableHelp( const QString &description, bool showValue = true, const QVariant &value = QVariant() );
 
@@ -752,7 +742,6 @@ class CORE_EXPORT QgsExpression
      * \param value the value of the field
      * \param fieldType the type of the field on the left side used to quote the value. If not given, the value type is used instead
      * \returns the expression to evaluate field equality
-     * \since QGIS 3.0
      */
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType = QVariant::Type::Invalid );
 

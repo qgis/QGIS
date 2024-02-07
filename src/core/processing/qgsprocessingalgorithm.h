@@ -46,7 +46,6 @@ class QgsPointCloudLayer;
  * \class QgsProcessingAlgorithm
  * \ingroup core
  * \brief Abstract base class for processing algorithms.
-  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingAlgorithm
 {
@@ -1133,7 +1132,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
  * (for instance allowing automatic multi-thread processing of the algorithm, or use of the
  * algorithm in "chains", avoiding the need for temporary outputs in multi-step models).
  *
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgorithm

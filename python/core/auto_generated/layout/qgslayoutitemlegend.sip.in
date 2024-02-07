@@ -63,8 +63,6 @@ class QgsLayoutItemLegend : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for map legends.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

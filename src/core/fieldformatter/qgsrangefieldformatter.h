@@ -23,7 +23,6 @@
  * \ingroup core
  * \brief Field formatter for a range (double) field with precision and locale.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRangeFieldFormatter : public QgsFieldFormatter
 {

@@ -14,8 +14,6 @@ class QgsTinInterpolator: QgsInterpolator
 {
 %Docstring(signature="appended")
 Interpolation in a triangular irregular network
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -47,8 +45,6 @@ These fields should be used when creating
 a suitable feature sink for :py:func:`~QgsTinInterpolator.setTriangulationSink`
 
 .. seealso:: :py:func:`setTriangulationSink`
-
-.. versionadded:: 3.0
 %End
 
     void setTriangulationSink( QgsFeatureSink *sink );
@@ -59,8 +55,6 @@ The sink must be setup to accept LineString features, with fields matching
 those returned by :py:func:`~QgsTinInterpolator.triangulationFields`.
 
 .. seealso:: :py:func:`triangulationFields`
-
-.. versionadded:: 3.0
 %End
 
 };

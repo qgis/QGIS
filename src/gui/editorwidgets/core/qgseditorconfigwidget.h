@@ -83,7 +83,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
 
     /**
      * Emitted when the configuration of the widget is changed.
-     * \since QGIS 3.0
      */
     void changed();
 

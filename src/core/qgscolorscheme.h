@@ -201,7 +201,6 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     /**
      * Sets whether a this scheme should be shown in color button menus.
      * \param show set to TRUE to show in color button menus, or FALSE to hide from menus
-     * \since QGIS 3.0
      */
     void setShowSchemeInMenu( bool show );
 
@@ -250,7 +249,6 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     /**
      * Returns the most recently used color.
      * \see addRecentColor()
-     * \since QGIS 3.0
      */
     static QColor lastUsedColor();
 };

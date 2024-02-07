@@ -39,7 +39,6 @@ class QgsMapCanvas;
  * QgsMapUnitScale object.
  * \see QgsMapUnitScaleDialog
  * \see QgsUnitSelectionWidget
- * \since QGIS 3.0
 */
 class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsMapUnitScaleWidgetBase
 {

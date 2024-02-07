@@ -1296,13 +1296,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Reload connections emitting the connectionsChanged signal
-     * \since QGIS 3.0
      */
     void reloadConnections();
 
     /**
      * Shows the layout manager dialog.
-     * \since QGIS 3.0
      */
     void showLayoutManager();
 
@@ -2159,7 +2157,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
-     * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
@@ -2168,7 +2165,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
-     * \since QGIS 3.0
      */
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
@@ -2176,7 +2172,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
-     * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 

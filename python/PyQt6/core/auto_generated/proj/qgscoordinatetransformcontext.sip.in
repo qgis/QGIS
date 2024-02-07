@@ -33,9 +33,6 @@ system.
 .. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:class:`QgsCoordinateTransform`
-
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

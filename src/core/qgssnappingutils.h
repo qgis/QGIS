@@ -239,7 +239,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Toggles the state of snapping
      *
-     * \since QGIS 3.0
      */
     void toggleEnabled();
 

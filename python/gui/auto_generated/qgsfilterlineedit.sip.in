@@ -51,8 +51,6 @@ Constructor for QgsFilterLineEdit.
 Returns ``True`` if the widget's clear button is visible.
 
 .. seealso:: :py:func:`setShowClearButton`
-
-.. versionadded:: 3.0
 %End
 
     void setShowClearButton( bool visible );
@@ -62,8 +60,6 @@ Sets whether the widget's clear button is visible.
 :param visible: set to ``False`` to hide the clear button
 
 .. seealso:: :py:func:`showClearButton`
-
-.. versionadded:: 3.0
 %End
 
     ClearMode clearMode() const;
@@ -72,8 +68,6 @@ Returns the clear mode for the widget. The clear mode defines the behavior of th
 widget when its value is cleared. This defaults to ClearToNull.
 
 .. seealso:: :py:func:`setClearMode`
-
-.. versionadded:: 3.0
 %End
 
     void setClearMode( ClearMode mode );
@@ -82,8 +76,6 @@ Sets the clear mode for the widget. The clear mode defines the behavior of the
 widget when its value is cleared. This defaults to ClearToNull.
 
 .. seealso:: :py:func:`clearMode`
-
-.. versionadded:: 3.0
 %End
 
     void setNullValue( const QString &nullValue );
@@ -112,16 +104,12 @@ Define if a search icon shall be shown on the left of the image
 when no text is entered
 
 :param visible: set to ``False`` to hide the search icon
-
-.. versionadded:: 3.0
 %End
 
     bool showSearchIcon() const;
 %Docstring
 Returns if a search icon shall be shown on the left of the image
 when no text is entered
-
-.. versionadded:: 3.0
 %End
 
     void setDefaultValue( const QString &defaultValue );
@@ -135,8 +123,6 @@ is equal to ClearToDefault.
 .. seealso:: :py:func:`defaultValue`
 
 .. seealso:: :py:func:`clearMode`
-
-.. versionadded:: 3.0
 %End
 
     QString defaultValue() const;
@@ -148,8 +134,6 @@ is equal to ClearToDefault.
 .. seealso:: :py:func:`setDefaultValue`
 
 .. seealso:: :py:func:`clearMode`
-
-.. versionadded:: 3.0
 %End
 
     void setValue( const QString &value );
@@ -186,30 +170,22 @@ Determine if the current text represents null.
 %Docstring
 Show a spinner icon. This can be used for search boxes to indicate that
 something is going on in the background.
-
-.. versionadded:: 3.0
 %End
 
     void setShowSpinner( bool showSpinner );
 %Docstring
 Show a spinner icon. This can be used for search boxes to indicate that
 something is going on in the background.
-
-.. versionadded:: 3.0
 %End
 
     bool selectOnFocus() const;
 %Docstring
 Will select all text when this widget receives the focus.
-
-.. versionadded:: 3.0
 %End
 
     void setSelectOnFocus( bool selectOnFocus );
 %Docstring
 Will select all text when this widget receives the focus.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool event( QEvent *event );
@@ -217,8 +193,6 @@ Will select all text when this widget receives the focus.
 %Docstring
 Reimplemented to enable/disable the clear action
 depending on read-only status
-
-.. versionadded:: 3.0.1
 %End
 
     bool hasStateStored() const;
@@ -235,8 +209,6 @@ Returns if a state is already saved
 Clears the widget and resets it to the null value.
 
 .. seealso:: :py:func:`nullValue`
-
-.. versionadded:: 3.0
 %End
 
     void storeState();
@@ -273,16 +245,12 @@ Same as :py:func:`~QgsFilterLineEdit.textChanged` but with support for null valu
 %Docstring
 Show a spinner icon. This can be used for search boxes to indicate that
 something is going on in the background.
-
-.. versionadded:: 3.0
 %End
 
 
     void selectOnFocusChanged();
 %Docstring
 Will select all text when this widget receives the focus.
-
-.. versionadded:: 3.0
 %End
 
   protected:

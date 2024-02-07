@@ -50,8 +50,6 @@ class QgsEncodingSelectionDialog: QDialog
 {
 %Docstring(signature="appended")
 A dialog which presents the user with a choice of file encodings.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

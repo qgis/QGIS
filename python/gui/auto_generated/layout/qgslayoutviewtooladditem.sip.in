@@ -12,8 +12,6 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 {
 %Docstring(signature="appended")
 Layout view tool for adding items to a layout.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -125,7 +125,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * empty string before setLayers() calls can be made.
      *
      * \see layers()
-     * \since QGIS 3.0
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
@@ -167,7 +166,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Resets the \a flags for the canvas' map settings.
-     * \since QGIS 3.0
      */
     void setMapSettingsFlags( Qgis::MapSettingsFlags flags );
 
@@ -237,7 +235,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * until the rendering job is complete. It's included in API solely for
      * unit testing and standalone Python scripts.
      *
-     * \since QGIS 3.0
      */
     void waitWhileRendering();
 
@@ -399,7 +396,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \note If the features or geometries are already available, flashGeometries() is much more efficient.
      *
      * \see flashGeometries()
-     * \since QGIS 3.0
      */
     void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
@@ -415,7 +411,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \a flashes and \a duration of each flash (in milliseconds).
      *
      * \see flashFeatureIds()
-     * \since QGIS 3.0
      */
     void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
@@ -463,7 +458,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Returns color for selected features
-     * \since QGIS 3.0
      */
     QColor selectionColor() const;
 
@@ -570,14 +564,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * If an empty string is passed then the current theme association will be
      * cleared.
      * \see theme()
-     * \since QGIS 3.0
      */
     void setTheme( const QString &theme );
 
     /**
      * Returns the map's theme shown in the canvas, if set.
      * \see setTheme()
-     * \since QGIS 3.0
      */
     QString theme() const { return mTheme; }
 
@@ -760,33 +752,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Returns a list of all annotation items in the canvas.
-     * \since QGIS 3.0
      */
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
 
     /**
      * Returns TRUE if annotations are visible within the map canvas.
      * \see setAnnotationsVisible()
-     * \since QGIS 3.0
      */
     bool annotationsVisible() const { return mAnnotationsVisible; }
 
     /**
      * Sets whether annotations are \a visible in the canvas.
      * \see annotationsVisible()
-     * \since QGIS 3.0
      */
     void setAnnotationsVisible( bool visible );
 
     /**
      * Sets global labeling engine settings in the internal map settings
-     * \since QGIS 3.0
      */
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
 
     /**
      * Returns global labeling engine settings from the internal map settings
-     * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
@@ -796,7 +783,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * out-of-canvas areas when panning or zooming out the map) are enabled
      * for the canvas.
      * \see setPreviewJobsEnabled()
-     * \since QGIS 3.0
      */
     bool previewJobsEnabled() const;
 
@@ -806,7 +792,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * out-of-canvas areas when panning or zooming out the map) are \a enabled
      * for the canvas.
      * \see previewJobsEnabled()
-     * \since QGIS 3.0
      */
     void setPreviewJobsEnabled( bool enabled );
 
@@ -1064,7 +1049,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Emitted when canvas background color changes
-     * \since QGIS 3.0
      */
     void canvasColorChanged();
 
@@ -1130,7 +1114,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     /**
      * Emitted when the canvas transform context is changed.
-     * \since QGIS 3.0
      */
     void transformContextChanged();
 
@@ -1147,7 +1130,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     /**
      * Emitted when the canvas has been assigned a different map theme.
      * \see setTheme()
-     * \since QGIS 3.0
      */
     void themeChanged( const QString &theme );
 

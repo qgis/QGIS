@@ -19,8 +19,6 @@ Current context for a report section.
 
    This is not considered stable API, and may change in future QGIS releases. It is
    exposed to the Python bindings for unit testing purposes only.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -44,8 +42,6 @@ An abstract base class for :py:class:`QgsReport` subsections.
 
    This is not considered stable API, and may change in future QGIS releases. It is
    exposed to the Python bindings for unit testing purposes only.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

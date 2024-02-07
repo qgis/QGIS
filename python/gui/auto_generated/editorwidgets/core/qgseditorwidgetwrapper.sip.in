@@ -156,8 +156,6 @@ Update constraint on a feature coming from a specific layer.
 :param constraintOrigin: Optional origin for constraints to check. This
                          can be used to limit the constraints tested to only provider or layer
                          based constraints.
-
-.. versionadded:: 3.0
 %End
 
     void updateConstraint( QgsEditorWidgetWrapper::ConstraintResult constraintResult, const QString &constraintFailureReason );
@@ -188,8 +186,6 @@ Returns ``True`` if the widget is preventing the feature from being committed. T
 of attribute values failing enforced field constraints.
 
 .. seealso:: :py:func:`isValidConstraint`
-
-.. versionadded:: 3.0
 %End
 
     QString constraintFailureReason() const;
@@ -198,8 +194,6 @@ Returns the reason why a constraint check has failed (or an empty string
 if constraint check was successful).
 
 .. seealso:: :py:func:`isValidConstraint`
-
-.. versionadded:: 3.0
 %End
 
     virtual void setHint( const QString &hintText );
@@ -207,16 +201,12 @@ if constraint check was successful).
 Add a hint text on the widget
 
 :param hintText: The hint text to display
-
-.. versionadded:: 3.0
 %End
 
     ConstraintResult constraintResult() const;
 %Docstring
 Returns the constraint result, which is the current result of the constraint
 on the widget influencing its visualization.
-
-.. versionadded:: 3.0
 %End
 
     bool constraintResultVisible() const;
@@ -225,8 +215,6 @@ Returns whether the constraint result is visible.
 
 Returns ``True`` if the constraint result will be visualized on the widget (with color).
 This will be disabled when the form is not editable.
-
-.. versionadded:: 3.0
 %End
 
     void setConstraintResultVisible( bool constraintResultVisible );
@@ -237,8 +225,6 @@ Controls if the constraint result should be visualized on the widget (with color
 This will be disabled when the form is not editable.
 
 :param constraintResultVisible: if constraintResult should be displayed (mostly editable status)
-
-.. versionadded:: 3.0
 %End
 
   signals:

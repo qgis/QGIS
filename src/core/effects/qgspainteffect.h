@@ -388,7 +388,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
  * \class QgsEffectPainter
  * \brief A class to manager painter saving and restoring required for effect drawing
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsEffectPainter
 {
@@ -398,7 +397,6 @@ class CORE_EXPORT QgsEffectPainter
      * QgsEffectPainter constructor
      *
      * \param renderContext the QgsRenderContext object
-     * \since QGIS 3.0
      */
     QgsEffectPainter( QgsRenderContext &renderContext );
 
@@ -407,7 +405,6 @@ class CORE_EXPORT QgsEffectPainter
      *
      * \param renderContext the QgsRenderContext object
      * \param effect the QgsPaintEffect object
-     * \since QGIS 3.0
      */
     QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect );
     ~QgsEffectPainter();
@@ -424,7 +421,6 @@ class CORE_EXPORT QgsEffectPainter
     /**
      * Access to the painter object
      *
-     * \since QGIS 3.0
      */
     QPainter *operator->() { return mPainter; }
     ///@endcond

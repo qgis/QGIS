@@ -184,8 +184,6 @@ Encodes a QSizeF to a string.
 .. seealso:: :py:func:`decodeSize`
 
 .. seealso:: :py:func:`encodePoint`
-
-.. versionadded:: 3.0
 %End
 
     static QSizeF decodeSize( const QString &string );
@@ -195,8 +193,6 @@ Decodes a QSizeF from a string.
 .. seealso:: :py:func:`encodeSize`
 
 .. seealso:: :py:func:`decodePoint`
-
-.. versionadded:: 3.0
 %End
 
     static QSizeF toSize( const QVariant &value, bool *ok /Out/ = 0 );
@@ -257,8 +253,6 @@ Returns the size scaled in pixels according to the uom attribute.
 :param size: The original size
 
 :return: the size in pixels
-
-.. versionadded:: 3.0
 %End
 
     static QString encodeScaleMethod( Qgis::ScaleMethod scaleMethod );
@@ -580,8 +574,6 @@ This also sets the mime color data to match the symbol's color, so that copied s
 can be paste in places where a color is expected.
 
 .. seealso:: :py:func:`symbolFromMimeData`
-
-.. versionadded:: 3.0
 %End
 
     static QgsSymbol *symbolFromMimeData( const QMimeData *data ) /Factory/;
@@ -590,8 +582,6 @@ Attempts to parse ``mime`` data as a symbol. A new symbol instance will be retur
 if the data was successfully converted to a symbol.
 
 .. seealso:: :py:func:`symbolToMimeData`
-
-.. versionadded:: 3.0
 %End
 
     static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
@@ -886,38 +876,28 @@ The values are chosen so that they are 1, 2 or 5 times a power of 10.
 %Docstring
 Rescales the given size based on the uomScale found in the props, if any is found, otherwise
 returns the value un-modified
-
-.. versionadded:: 3.0
 %End
 
     static QPointF rescaleUom( QPointF point, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescalePointUom/;
 %Docstring
 Rescales the given point based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
-
-.. versionadded:: 3.0
 %End
 
     static QVector<qreal> rescaleUom( const QVector<qreal> &array, Qgis::RenderUnit unit, const QVariantMap &props ) /PyName=rescaleArrayUom/;
 %Docstring
 Rescales the given array based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
-
-.. versionadded:: 3.0
 %End
 
     static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props );
 %Docstring
 Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
-
-.. versionadded:: 3.0
 %End
 
     static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props );
 %Docstring
 Merges the local scale limits, if any, with the ones already in the map, if any
-
-.. versionadded:: 3.0
 %End
 
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
@@ -927,15 +907,11 @@ Merges the local scale limits, if any, with the ones already in the map, if any
 Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
 a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
 that cannot do SVG at all
-
-.. versionadded:: 3.0
 %End
 
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 %Docstring
 Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
-
-.. versionadded:: 3.0
 %End
 
  static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( const QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );

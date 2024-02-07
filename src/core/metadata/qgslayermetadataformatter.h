@@ -28,7 +28,6 @@
  * \ingroup core
  * \class QgsLayerMetadataFormatter
  * \brief Class for metadata formatter.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayerMetadataFormatter
 {

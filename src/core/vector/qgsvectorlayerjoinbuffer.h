@@ -73,7 +73,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Resolves layer IDs of joined layers using given project's available layers
-     * \since QGIS 3.0
      */
     void resolveReferences( QgsProject *project );
 
@@ -111,7 +110,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * Returns joins where the field of a target layer is considered as an id.
      * \param field the field of a target layer
      * \returns a list of vector joins
-     * \since QGIS 3.0
      */
     QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;
 
@@ -119,7 +117,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * Returns the joined feature corresponding to the feature.
      * \param info the vector join information
      * \param feature the feature of the target layer
-     * \since QGIS 3.0
      */
     QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
@@ -127,7 +124,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * Returns the targeted feature corresponding to the joined feature.
      * \param info the vector join information
      * \param feature the feature of the joined layer
-     * \since QGIS 3.0
      */
     QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
@@ -138,7 +134,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \returns TRUE if the join information is about auxiliary layer, FALSE otherwise
      *
-     * \since QGIS 3.0
      */
     bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
 
@@ -159,7 +154,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
-     * \since QGIS 3.0
      */
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
@@ -176,7 +170,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
-     * \since QGIS 3.0
      */
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
@@ -192,7 +185,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
-     * \since QGIS 3.0
      */
     bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
 
@@ -205,7 +197,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
-     * \since QGIS 3.0
      */
     bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = nullptr ) const;
 
@@ -218,7 +209,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
-     * \since QGIS 3.0
      */
     bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = nullptr ) const;
 

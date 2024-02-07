@@ -218,7 +218,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * A scale of 0 indicates no maximum scale visibility.
          * \see minimumScale()
          * \see setMaximumScale()
-         * \since QGIS 3.0
         */
         double maximumScale() const { return mMaximumScale; }
 
@@ -228,7 +227,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * A scale of 0 indicates no minimum scale visibility.
          * \see maximumScale()
          * \see setMinimumScale()
-         * \since QGIS 3.0
         */
         double minimumScale() const { return mMinimumScale; }
 

@@ -271,7 +271,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * Cancel the progress dialog (if any)
-     * \since QGIS 3.0
      */
     void cancelProgress( );
 
@@ -466,7 +465,6 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     /**
      * Create a new attribute table action.
      *
-     * \since QGIS 3.0
      */
     QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx )
       : QAction( name, dualView )

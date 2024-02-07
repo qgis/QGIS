@@ -16,8 +16,6 @@ class QgsHtmlAnnotation: QgsAnnotation
 {
 %Docstring(signature="appended")
 An annotation item that embeds HTML content.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -4848,7 +4848,6 @@ class CORE_EXPORT Qgis
     /**
      * Default Z coordinate value.
      * This value have to be assigned to the Z coordinate for the vertex.
-     * \since QGIS 3.0
      */
     static const double DEFAULT_Z_COORDINATE;
 
@@ -4862,19 +4861,16 @@ class CORE_EXPORT Qgis
     /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
      * to account for differences in the default font sizes across different platforms.
-     *  \since QGIS 3.0
      */
     static const double UI_SCALE_FACTOR;
 
     /**
      * Default snapping distance tolerance.
-     *  \since QGIS 3.0
      */
     static const double DEFAULT_SNAP_TOLERANCE;
 
     /**
      * Default snapping distance units.
-     *  \since QGIS 3.0
      */
     static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
 
@@ -5185,7 +5181,6 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 /**
  * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
  *
- * \since QGIS 3.0
  */
 inline double qgsRound( double number, int places )
 {

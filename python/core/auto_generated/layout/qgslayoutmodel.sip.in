@@ -26,8 +26,6 @@ The second list contains only items which are currently displayed in the layout'
 It is used as a cache of the last known stacking order, so that the model can compare the current
 stacking of items in the layout to the last known state, and emit the corresponding signals
 as required.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -99,8 +97,6 @@ class QgsLayoutProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 Allows for filtering a QgsLayoutModel by item type.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

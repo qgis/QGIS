@@ -22,8 +22,6 @@ class QgsNetworkStrategy
 take into account travel distance, amount of time or money. Currently there are two strategies
 implemented in the analysis library: :py:class:`QgsNetworkDistanceStrategy` and :py:class:`QgsNetworkSpeedStrategy`.
 :py:class:`QgsNetworkStrategy` implemented using "strategy" design pattern.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -38,7 +38,6 @@ class QgsStyleEntityVisitorInterface;
  * \ingroup core
  * \class QgsLayoutItemRenderContext
  * \brief Contains settings and helpers relating to a render of a QgsLayoutItem.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemRenderContext
 {
@@ -106,7 +105,6 @@ class CORE_EXPORT QgsLayoutItemRenderContext
  * \ingroup core
  * \class QgsLayoutItem
  * \brief Base class for graphical items within a QgsLayout.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {

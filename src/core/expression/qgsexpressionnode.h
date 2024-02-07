@@ -154,7 +154,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         /**
          * Gets the node at position i in the list.
          *
-         * \since QGIS 3.0
          */
         QgsExpressionNode *at( int i ) { return mList.at( i ); }
 
@@ -277,7 +276,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
      * to eval()). In case this returns TRUE, prepareNode() will never be called.
      *
-     * \since QGIS 3.0
      */
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
 
@@ -376,7 +374,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * \note Not available in python bindings, QgsExpression::Node is not
      * going to be subclassed from python. If that's what you are looking
      * for, look into writing a custom python expression function.
-     * \since QGIS 3.0
      */
     void cloneTo( QgsExpressionNode *target ) const SIP_SKIP;
 
@@ -414,14 +411,12 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     /**
      * Abstract virtual preparation method
      * Errors are reported to the parent
-     * \since QGIS 3.0
      */
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
     /**
      * Abstract virtual eval method
      * Errors are reported to the parent
-     * \since QGIS 3.0
      */
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 

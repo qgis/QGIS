@@ -81,7 +81,6 @@ class CORE_EXPORT QgsDataItemProvider
      *
      * The default implementation returns FALSE for all paths.
      *
-     * \since QGIS 3.0
      */
     virtual bool handlesDirectoryPath( const QString &path );
 };

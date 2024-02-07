@@ -13,8 +13,6 @@ class QgsGradientStop
 {
 %Docstring(signature="appended")
 Represents a color stop within a :py:class:`QgsGradientColorRamp` color ramp.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -99,8 +97,6 @@ class QgsGradientColorRamp : QgsColorRamp
 %Docstring(signature="appended")
 Gradient color ramp, which smoothly interpolates between two colors and also
 supports optional extra color stops.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -325,8 +321,6 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
 Constrained random color ramp, which returns random colors based on preset parameters.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -491,8 +485,6 @@ class QgsRandomColorRamp: QgsColorRamp
 %Docstring(signature="appended")
 Totally random color ramp. Returns colors generated at random, but constrained
 to some hardcoded saturation and value ranges to prevent ugly color generation.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -549,8 +541,6 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
 {
 %Docstring(signature="appended")
 A scheme based color ramp consisting of a list of predefined colors.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -634,8 +624,6 @@ class QgsColorBrewerColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
 Color ramp utilising "Color Brewer" preset color schemes.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

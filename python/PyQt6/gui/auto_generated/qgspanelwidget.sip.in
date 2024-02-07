@@ -113,8 +113,6 @@ widget.
 :param widget: widget which may be contained within a panel widget
 
 :return: parent panel widget if found, otherwise ``None``
-
-.. versionadded:: 3.0
 %End
 
     virtual QString menuButtonTooltip() const;

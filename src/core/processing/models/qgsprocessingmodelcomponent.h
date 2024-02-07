@@ -31,7 +31,6 @@ class QgsProcessingModelComment;
 /**
  * \brief Represents a component of a model algorithm.
  * \ingroup core
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelComponent
 {

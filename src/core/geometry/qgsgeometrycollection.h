@@ -313,7 +313,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * Should be used by qgsgeometry_cast<QgsGeometryCollection *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     * \since QGIS 3.0
      */
     inline static const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom )
     {

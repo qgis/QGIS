@@ -95,7 +95,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Creates a default render context given a pixel based QPainter destination.
      * If no painter is specified or the painter has no device, then a default
      * DPI of 88 will be assumed.
-     * \since QGIS 3.0
      */
     static QgsRenderContext fromQPainter( QPainter *painter );
 
@@ -235,7 +234,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * \since QGIS 3.0
      */
     const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
@@ -245,7 +243,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * from a source to destination coordinate reference system.
      *
      * \see setTransformContext()
-     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -255,7 +252,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * from a source to destination coordinate reference system.
      *
      * \see transformContext()
-     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -264,7 +260,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see setPathResolver()
-     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -273,7 +268,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see pathResolver()
-     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
@@ -515,7 +509,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
      * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \since QGIS 3.0
      */
     void setDistanceArea( const QgsDistanceArea &distanceArea ) {mDistanceArea = distanceArea ;}
 
@@ -743,7 +736,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * property will be limited to a suitably fast range when the render context has the Qgis::RenderContextFlag::RenderSymbolPreview set.
      *
      * \see convertToMapUnits()
-     * \since QGIS 3.0
      */
     double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 
@@ -751,14 +743,12 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Converts a size from the specified units to map units. The conversion respects the limits
      * specified by the optional scale parameter.
      * \see convertToPainterUnits()
-     * \since QGIS 3.0
      */
     double convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
     /**
      * Converts a size from map units to the specified units.
      * \see convertToMapUnits()
-     * \since QGIS 3.0
      */
     double convertFromMapUnits( double sizeInMapUnits, Qgis::RenderUnit outputUnit ) const;
 
@@ -766,7 +756,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      * \note
       * When the sourceCrs() is geographic, the center of the Extent will be used
-     * \since QGIS 3.0
      */
     double convertMetersToMapUnits( double meters ) const;
 
@@ -1158,7 +1147,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
      * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \since QGIS 3.0
      */
     QgsDistanceArea mDistanceArea;
 

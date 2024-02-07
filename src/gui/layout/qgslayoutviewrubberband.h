@@ -32,7 +32,6 @@ class QgsLayout;
  * \ingroup gui
  * \brief QgsLayoutViewRubberBand is an abstract base class for temporary rubber band items
  * in various shapes, for use within QgsLayoutView widgets.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
 {
@@ -154,7 +153,6 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
 /**
  * \ingroup gui
  * \brief QgsLayoutViewRectangularRubberBand is rectangular rubber band for use within QgsLayoutView widgets.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubberBand
 {
@@ -187,7 +185,6 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
 /**
  * \ingroup gui
  * \brief QgsLayoutViewEllipseRubberBand is elliptical rubber band for use within QgsLayoutView widgets.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberBand
 {
@@ -220,7 +217,6 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
 /**
  * \ingroup gui
  * \brief QgsLayoutViewTriangleRubberBand is triangular rubber band for use within QgsLayoutView widgets.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBand
 {

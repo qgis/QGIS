@@ -91,7 +91,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * for the color. Defaults to FALSE.
      * \param allowOpacity set to TRUE to allow opacity modification
      * \see allowOpacity()
-     * \since QGIS 3.0
      */
     void setAllowOpacity( bool allowOpacity );
 
@@ -100,7 +99,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * for the color.
      * \returns TRUE if opacity modification is allowed
      * \see setAllowOpacity()
-     * \since QGIS 3.0
      */
     bool allowOpacity() const { return mAllowOpacity; }
 

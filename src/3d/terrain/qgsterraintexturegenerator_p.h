@@ -51,7 +51,6 @@ class Qgs3DMapSettings;
  * signal will be emitted. Handles multiple rendering requests at a time - each request gets
  * a unique job ID assigned.
  *
- * \since QGIS 3.0
  */
 class QgsTerrainTextureGenerator : public QObject
 {

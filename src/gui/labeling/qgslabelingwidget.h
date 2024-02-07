@@ -51,7 +51,6 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
     /**
      * Returns the labeling gui widget or NULLPTR if none.
      *
-     * \since QGIS 3.0
      */
     QgsLabelingGui *labelingGui();
 

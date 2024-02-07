@@ -26,7 +26,6 @@
  * This represents a date, time or datetime value based on
  * the field configuration.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {

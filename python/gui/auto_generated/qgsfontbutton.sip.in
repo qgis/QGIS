@@ -23,8 +23,6 @@ The button can be used in two different :py:func:`~modes`. The default behavior 
 all settings used for configuring :py:class:`QgsTextFormat`/:py:class:`QgsTextRenderer` classes. A cut down
 mode (without settings for color) is also available when the resultant font is
 used only in a QFont object.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

@@ -45,7 +45,6 @@ class CORE_EXPORT QgsAggregateCalculator
     /**
      * Structured information about the available aggregates.
      *
-     * \since QGIS 3.0
      */
     struct AggregateInfo
     {

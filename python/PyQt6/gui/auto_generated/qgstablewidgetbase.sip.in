@@ -15,8 +15,6 @@ Base widget allowing to edit a collection, using a table.
 
 This widget includes buttons to add and remove rows.
 Child classes must call init(QAbstractTableModel*) from their constructor.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

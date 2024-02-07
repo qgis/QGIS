@@ -97,7 +97,6 @@ class CORE_EXPORT QgsMapLayerRenderer
 
     /**
      * Access to feedback object of the layer renderer (may be NULLPTR)
-     * \since QGIS 3.0
      */
     virtual QgsFeedback *feedback() const;
 

@@ -74,7 +74,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param nextVertex will be set to next vertex ID
      * \returns TRUE if vertices were successfully retrieved
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
-     * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
                                     double distance,
@@ -372,7 +371,6 @@ class CORE_EXPORT QgsGeometryUtils
      *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZM (3 4 1 1)'
      * \endcode
-     * \since QGIS 3.0
      */
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
@@ -387,7 +385,6 @@ class CORE_EXPORT QgsGeometryUtils
      * is extrapolated from the supplied line.
      *
      * \see interpolatePointOnLineByValue()
-     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction ) SIP_HOLDGIL;
 
@@ -405,7 +402,6 @@ class CORE_EXPORT QgsGeometryUtils
      * and present in the returned point.
      *
      * \see interpolatePointOnLineByValue()
-     * \since QGIS 3.0.2
      */
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction ) SIP_HOLDGIL;
 
@@ -419,7 +415,6 @@ class CORE_EXPORT QgsGeometryUtils
      * the target \a value.
      *
      * \see interpolatePointOnLine()
-     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value ) SIP_HOLDGIL;
 
@@ -428,7 +423,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns The gradient of this linear entity, or infinity if vertical
-     * \since QGIS 3.0
      */
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
@@ -439,7 +433,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param a Output parameter, a coefficient of the equation.
      * \param b Output parameter, b coefficient of the equation.
      * \param c Output parameter, c coefficient of the equation.
-     * \since QGIS 3.0
      */
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
                               double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT ) SIP_HOLDGIL;
@@ -466,7 +459,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \warning This method does not copy the z value of the coordinate from the
      * points whose z value is closest to the original x/y point, but only the first one found.
      *
-     * \since QGIS 3.0
      * \deprecated since QGIS 3.20 use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead
      */
     Q_DECL_DEPRECATED static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) SIP_DEPRECATED

@@ -31,7 +31,6 @@ class QDomElement;
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
  *
- * \since QGIS 3.0
  */
 class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 {

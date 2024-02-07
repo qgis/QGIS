@@ -37,8 +37,6 @@ In order to be readable from project files, they should set these attributes in 
 Returns a new instance equivalent to this one.
 
 :return: a new layer instance
-
-.. versionadded:: 3.0
 %End
 
     QString pluginLayerType();

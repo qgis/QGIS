@@ -181,7 +181,6 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If in SearchMode returns a quoted field identifier.
      * If in AggregateSearchMode returns an appropriate aggregate expression.
      *
-     * \since QGIS 3.0
      */
     QString createFieldIdentifier() const;
 
@@ -189,7 +188,6 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If in AggregateSearch mode, which aggregate should be used to construct
      * the filter expression. Is a Null String if none.
      *
-     * \since QGIS 3.0
      */
     QString aggregate() const;
 
@@ -197,7 +195,6 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * If in AggregateSearch mode, which aggregate should be used to construct
      * the filter expression. Is a Null String if none.
      *
-     * \since QGIS 3.0
      */
     void setAggregate( const QString &aggregate );
 

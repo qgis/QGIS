@@ -41,7 +41,6 @@ class QgsLayoutItemBaseWidget;
  * the components related to the GUI behavior of a layout item.
  *
  * \note In C++ you can use QgsLayoutItemGuiMetadata convenience class.
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 {
@@ -178,7 +177,6 @@ typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutIt
  * \ingroup gui
  * \brief Convenience metadata class that uses static functions to handle layout item GUI behavior.
  * \note not available in Python bindings
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
@@ -311,7 +309,6 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
  * For instance, the various basic shape creation tools would use QgsLayoutItemGuiGroup
  * to display grouped within designer dialogs.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemGuiGroup
 {
@@ -355,7 +352,6 @@ class GUI_EXPORT QgsLayoutItemGuiGroup
  * This acts as a companion to QgsLayoutItemRegistry, handling only
  * the components related to the GUI behavior of layout items.
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 {

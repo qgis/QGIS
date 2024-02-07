@@ -371,7 +371,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the project's native coordinate reference system.
      * \see setCrs()
      * \see ellipsoid()
-     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -382,7 +381,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \see crs()
      * \see setEllipsoid()
-     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 
@@ -390,7 +388,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * \see setEllipsoid()
      * \see crs()
-     * \since QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -398,7 +395,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * \see ellipsoid()
      * \see setCrs()
-     * \since QGIS 3.0
      */
     void setEllipsoid( const QString &ellipsoid );
 
@@ -410,7 +406,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \see setTransformContext()
      * \see transformContextChanged()
-     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -421,7 +416,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \see transformContext()
      * \see transformContextChanged()
-     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -466,7 +460,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \returns TRUE if project was written successfully
      * \note calling this implicitly sets the project's filename (see setFileName() )
      * \note isDirty() will be set to FALSE if project is successfully written
-     * \since QGIS 3.0
      */
     bool write( const QString &filename );
 
@@ -635,7 +628,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns path resolver object with considering whether the project uses absolute
      * or relative paths and using current project's path.
-     * \since QGIS 3.0
      */
     QgsPathResolver pathResolver() const;
 
@@ -703,7 +695,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the default distance measurement units for the project.
      * \see distanceUnits()
      * \see setAreaUnits()
-     * \since QGIS 3.0
      */
     void setDistanceUnits( Qgis::DistanceUnit unit );
 
@@ -717,7 +708,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the default area measurement units for the project.
      * \see areaUnits()
      * \see setDistanceUnits()
-     * \since QGIS 3.0
      */
     void setAreaUnits( Qgis::AreaUnit unit );
 
@@ -755,14 +745,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
     /**
      * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
-     * \since QGIS 3.0
      */
     QgsLayoutManager *layoutManager();
 
@@ -925,13 +913,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns pointer to the project's annotation manager.
-     * \since QGIS 3.0
      */
     QgsAnnotationManager *annotationManager();
 
     /**
      * Returns a const pointer to the project's annotation manager.
-     * \since QGIS 3.0
      */
     const QgsAnnotationManager *annotationManager() const SIP_SKIP;
 
@@ -1037,14 +1023,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * The snapping configuration for this project.
      *
-     * \since QGIS 3.0
      */
     QgsSnappingConfig snappingConfig() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
-     * \since QGIS 3.0
      */
     QList<QgsVectorLayer *> avoidIntersectionsLayers() const;
 
@@ -1052,7 +1036,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the list of layers with which intersections should be avoided.
      * Only used if the avoid intersection mode is set to advanced.
      *
-     * \since QGIS 3.0
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 
@@ -1085,13 +1068,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets project's global labeling engine settings
-     * \since QGIS 3.0
      */
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
 
     /**
      * Returns project's global labeling engine settings
-     * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
@@ -1101,13 +1082,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns a pointer to the project's internal layer store.
-     * /since QGIS 3.0
      */
     QgsMapLayerStore *layerStore();
 
     /**
      * Returns a pointer to the project's internal layer store.
-     * /since QGIS 3.0
      */
     SIP_SKIP const QgsMapLayerStore *layerStore() const;
 
@@ -1363,7 +1342,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * layer will be returned without deleting it. The caller takes ownership of
      * the layer and is responsible for deleting it.
      * \see removeMapLayer()
-     * \since QGIS 3.0
      */
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) SIP_TRANSFERBACK;
 
@@ -1433,14 +1411,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the current const auxiliary storage.
      *
-     * \since QGIS 3.0
      */
     const QgsAuxiliaryStorage *auxiliaryStorage() const SIP_SKIP;
 
     /**
      * Returns the current auxiliary storage.
      *
-     * \since QGIS 3.0
      */
     QgsAuxiliaryStorage *auxiliaryStorage();
 
@@ -1790,14 +1766,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Emitted whenever the expression variables stored in the project have been changed.
-     * \since QGIS 3.0
      */
     void customVariablesChanged();
 
     /**
      * Emitted when the CRS of the project has changed.
      *
-     * \since QGIS 3.0
      */
     void crsChanged();
 
@@ -1806,7 +1780,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \see setEllipsoid()
      * \see ellipsoid()
-     * \since QGIS 3.0
      */
     void ellipsoidChanged( const QString &ellipsoid );
 
@@ -1830,13 +1803,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when the project transformContext() is changed.
      *
      * \see transformContext()
-     * \since QGIS 3.0
      */
     void transformContextChanged();
 
     /**
      * Emitted when datum transforms stored in the project are not available locally.
-     * \since QGIS 3.0
      */
     void missingDatumTransforms( const QStringList &missingTransforms );
 
@@ -1844,21 +1815,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted whenever a new transaction group has been created or a
      * transaction group has been removed.
      *
-     * \since QGIS 3.0
      */
     void transactionGroupsChanged();
 
     /**
      * Emitted when the topological editing flag has changed.
      *
-     * \since QGIS 3.0
      */
     void topologicalEditingChanged();
 
     /**
      * Emitted whenever avoidIntersectionsLayers has changed.
      *
-     * \since QGIS 3.0
      */
     void avoidIntersectionsLayersChanged();
 
@@ -1871,13 +1839,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * if you want to be notified about new map themes being added and
      * map themes being removed.
      *
-     * \since QGIS 3.0
      */
     void mapThemeCollectionChanged();
 
     /**
      * Emitted when global configuration of the labeling engine changes.
-     * \since QGIS 3.0
      */
     void labelingEngineSettingsChanged();
 
@@ -2055,7 +2021,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * The snapping configuration for this project.
      *
-     * \since QGIS 3.0
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 

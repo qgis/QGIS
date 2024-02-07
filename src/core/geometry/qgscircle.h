@@ -36,7 +36,6 @@ class QgsPoint;
  *
  * A circle is defined by a center point with a radius and an azimuth.
  * The azimuth is the north angle to the semi-major axis, in degrees. By default, the semi-major axis is oriented to the north (0 degrees).
- * \since QGIS 3.0
  */
 
 

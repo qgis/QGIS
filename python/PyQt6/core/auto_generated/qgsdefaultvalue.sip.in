@@ -29,8 +29,6 @@ Usual values for such an expression are
 :py:class:`QgsDefaultValue` also has a `applyOnUpdate` flag which will indicate that a
 default value should also be applied when a feature is updated. If this is
 not set, the default value will only be used when a feature is created.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

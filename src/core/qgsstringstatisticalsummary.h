@@ -176,7 +176,6 @@ class CORE_EXPORT QgsStringStatisticalSummary
 
     /**
       * Returns the mean length of strings.
-      * \since QGIS 3.0
       */
     double meanLength() const { return mMeanLength; }
 

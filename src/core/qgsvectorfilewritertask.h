@@ -30,7 +30,6 @@
  * QGIS interface.
  * \see QgsVectorLayerExporterTask
  * \see QgsRasterFileWriterTask
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 {

@@ -118,7 +118,6 @@ class QgsAttributes : public QVector<QVariant>
      * Returns a QgsAttributeMap of the attribute values. Null values are
      * excluded from the map.
      * \note not available in Python bindings
-     * \since QGIS 3.0
      */
     CORE_EXPORT QgsAttributeMap toMap() const SIP_SKIP;
 

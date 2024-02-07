@@ -69,8 +69,6 @@ population of directory items for the path will be avoided and it is left to the
 provider to correctly populate relevant entries for the path.
 
 The default implementation returns ``False`` for all paths.
-
-.. versionadded:: 3.0
 %End
 };
 

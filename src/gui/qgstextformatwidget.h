@@ -44,7 +44,6 @@ class QgsCharacterSelectorDialog;
  * subclassing QgsTextFormatWidget and calling the protected constructor with a mode
  * of Labeling.
  *
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
@@ -100,7 +99,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      *
      * \param key The property key to deactivate
      *
-     * \since QGIS 3.0
      */
     void deactivateField( QgsPalLayerSettings::Property key );
 
@@ -327,7 +325,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
  * using QgsTextRenderer. The dialog includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatDialog : public QDialog
@@ -382,7 +379,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
  * using QgsTextRenderer. The dialog includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
- * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper

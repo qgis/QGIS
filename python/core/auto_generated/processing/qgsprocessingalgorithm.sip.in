@@ -18,8 +18,6 @@ class QgsProcessingAlgorithm
 {
 %Docstring(signature="appended")
 Abstract base class for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -1132,8 +1130,6 @@ shortcutting much of the common algorithm code for handling iterating over sourc
 features to output sinks. It also allows the algorithm execution to be optimised in future
 (for instance allowing automatic multi-thread processing of the algorithm, or use of the
 algorithm in "chains", avoiding the need for temporary outputs in multi-step models).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

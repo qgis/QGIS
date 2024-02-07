@@ -57,14 +57,12 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
     /**
      * Access to action that user may use to toggle snapping on/off. May be NULLPTR if no action was associated.
-     * \since QGIS 3.0
      */
     QAction *actionEnableSnapping() const { return mActionEnableSnapping; }
 
     /**
      * Assign "enable snapping" checkable action to the tracer.
      * The action is used to determine whether snapping is currently enabled by the user.
-     * \since QGIS 3.0
      */
     void setActionEnableSnapping( QAction *action ) { mActionEnableSnapping = action; }
 

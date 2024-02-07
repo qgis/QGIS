@@ -40,7 +40,6 @@ class QgsPropertyPrivate;
  * handles descriptive names and help text for using the property. Definitions
  * can use one of the predefined standard templates to simplify definition of
  * commonly used property types, such as colors and blend modes.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPropertyDefinition
 {
@@ -223,7 +222,6 @@ class CORE_EXPORT QgsPropertyDefinition
  *
  * QgsProperty objects are implicitly shared and can be inexpensively copied.
  *
- * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsProperty

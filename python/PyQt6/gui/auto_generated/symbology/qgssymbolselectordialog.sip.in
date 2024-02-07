@@ -57,8 +57,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -66,8 +64,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbol *symbol();
@@ -178,8 +174,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
@@ -187,8 +181,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
-
-.. versionadded:: 3.0
 %End
 
     QgsSymbol *symbol();

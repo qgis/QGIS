@@ -55,7 +55,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Result of constraint checks.
-     * \since QGIS 3.0
      */
     enum ConstraintResult
     {
@@ -169,7 +168,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param constraintOrigin Optional origin for constraints to check. This
      * can be used to limit the constraints tested to only provider or layer
      * based constraints.
-     * \since QGIS 3.0
      */
     void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
@@ -194,7 +192,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns TRUE if the widget is preventing the feature from being committed. This may be TRUE as a result
      * of attribute values failing enforced field constraints.
      * \see isValidConstraint()
-     * \since QGIS 3.0
      */
     bool isBlockingCommit() const;
 
@@ -202,14 +199,12 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns the reason why a constraint check has failed (or an empty string
      * if constraint check was successful).
      * \see isValidConstraint()
-     * \since QGIS 3.0
      */
     QString constraintFailureReason() const;
 
     /**
      * Add a hint text on the widget
      * \param hintText The hint text to display
-     * \since QGIS 3.0
      */
     virtual void setHint( const QString &hintText );
 
@@ -217,7 +212,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns the constraint result, which is the current result of the constraint
      * on the widget influencing its visualization.
      *
-     * \since QGIS 3.0
      */
     ConstraintResult constraintResult() const;
 
@@ -227,7 +221,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns TRUE if the constraint result will be visualized on the widget (with color).
      * This will be disabled when the form is not editable.
      *
-     * \since QGIS 3.0
      */
     bool constraintResultVisible() const;
 
@@ -238,7 +231,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * This will be disabled when the form is not editable.
      *
      * \param constraintResultVisible if constraintResult should be displayed (mostly editable status)
-     * \since QGIS 3.0
      */
     void setConstraintResultVisible( bool constraintResultVisible );
 

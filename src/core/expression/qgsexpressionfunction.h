@@ -122,7 +122,6 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * Constructor for function which uses unnamed parameters and group list
-     * \since QGIS 3.0
      */
     QgsExpressionFunction( const QString &fnname,
                            int params,
@@ -163,7 +162,6 @@ class CORE_EXPORT QgsExpressionFunction
 
     /**
      * Constructor for function which uses named parameter list and group list.
-     * \since QGIS 3.0
      */
     QgsExpressionFunction( const QString &fnname,
                            const QgsExpressionFunction::ParameterList &params,
@@ -235,7 +233,6 @@ class CORE_EXPORT QgsExpressionFunction
      * By default this will return TRUE, if all arguments that have been passed to the function
      * are also static.
      *
-     * \since QGIS 3.0
      */
     virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 
@@ -245,7 +242,6 @@ class CORE_EXPORT QgsExpressionFunction
      * This can be used by functions to do any preparation steps that might help to speedup the upcoming
      * evaluation.
      *
-     * \since QGIS 3.0
      */
     virtual bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 
@@ -255,7 +251,6 @@ class CORE_EXPORT QgsExpressionFunction
      * attributes are required.
      * If in doubt this will return more fields than strictly required.
      *
-     * \since QGIS 3.0
      */
     virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const;
 
@@ -267,7 +262,6 @@ class CORE_EXPORT QgsExpressionFunction
     /**
      * Returns TRUE if the function is deprecated and should not be presented as a valid option
      * to users in expression builders.
-     * \since QGIS 3.0
      */
     virtual bool isDeprecated() const;
 
@@ -280,7 +274,6 @@ class CORE_EXPORT QgsExpressionFunction
     /**
      * Returns a list of the groups the function belongs to.
      * \see group()
-     * \since QGIS 3.0
     */
     QStringList groups() const { return mGroups; }
 
@@ -320,7 +313,6 @@ class CORE_EXPORT QgsExpressionFunction
      * This can be used as callback for custom implementations of subclasses. It is the default for implementation
      * for StaticFunction::isStatic.
      *
-     * \since QGIS 3.0
      */
     static bool allParamsStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 
@@ -577,7 +569,6 @@ class QgsArrayFilterExpressionFunction : public QgsExpressionFunction
  *
  * \ingroup core
  * \note Not available in Python bindings
- * \since QGIS 3.0
  */
 class QgsWithVariableExpressionFunction : public QgsExpressionFunction
 {

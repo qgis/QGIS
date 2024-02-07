@@ -353,7 +353,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
      * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
-     * \since QGIS 3.0
      */
     bool setEllipsoid( const QString &ellipsoid );
 
@@ -361,7 +360,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if a valid ellipsoid has been set.
      * \see setEllipsoid()
-     * \since QGIS 3.0
      */
     QString ellipsoid() const { return mEllipsoid; }
 
@@ -481,7 +479,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * from a source to destination coordinate reference system.
      *
      * \see setTransformContext()
-     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -491,7 +488,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * from a source to destination coordinate reference system.
      *
      * \see transformContext()
-     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -500,7 +496,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see setPathResolver()
-     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -509,7 +504,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
      * \see pathResolver()
-     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
@@ -637,7 +631,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * \see labelingEngineSettings()
      *
-     * \since QGIS 3.0
      */
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings )
     {
@@ -650,7 +643,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * \see setLabelingEngineSettings()
      *
-     * \since QGIS 3.0
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const { return mLabelingEngineSettings; }
 

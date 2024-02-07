@@ -145,7 +145,6 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Creates a deep copy of this element. To be implemented by subclasses.
      *
-     * \since QGIS 3.0
      */
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
@@ -154,7 +153,6 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * show or hide this container based on an expression incorporating
      * the field value controlled by editor widgets.
      *
-     * \since QGIS 3.0
      */
     QgsOptionalExpression visibilityExpression() const;
 
@@ -163,7 +161,6 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * show or hide this container based on an expression incorporating
      * the field value controlled by editor widgets.
      *
-     * \since QGIS 3.0
      */
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 

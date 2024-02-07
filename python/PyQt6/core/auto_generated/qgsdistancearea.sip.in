@@ -245,8 +245,6 @@ otherwise :py:func:`QgsPoint.project()` will be called after :py:func:`QgsUnitTy
 .. note::
 
    The input Point must be in the coordinate reference system being used
-
-.. versionadded:: 3.0
 %End
 
     Qgis::DistanceUnit lengthUnits() const;
@@ -343,8 +341,6 @@ location of the projected point.
 :param azimuth: - azimuth in radians, clockwise from North
 
 :return: p2 - location of projected point as longitude/latitude.
-
-.. versionadded:: 3.0
 %End
 
     QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;

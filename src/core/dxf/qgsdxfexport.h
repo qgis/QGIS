@@ -179,14 +179,12 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     /**
      * Sets the export flags.
      * \see flags()
-     * \since QGIS 3.0
      */
     void setFlags( QgsDxfExport::Flags flags );
 
     /**
      * Returns the export flags.
      * \see setFlags()
-     * \since QGIS 3.0
      */
     QgsDxfExport::Flags flags() const;
 
@@ -215,7 +213,6 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * Set reference \a scale for output.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see symbologyScale()
-     * \since QGIS 3.0
      */
     void setSymbologyScale( double scale ) { mSymbologyScale = scale; }
 
@@ -223,7 +220,6 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * Returns the reference scale for output.
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see setSymbologyScale()
-     * \since QGIS 3.0
      */
     double symbologyScale() const { return mSymbologyScale; }
 
@@ -236,14 +232,12 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     /**
      * Set destination CRS
      * \see destinationCrs()
-     * \since QGIS 3.0
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns the destination CRS, or an invalid CRS if no reprojection will be done.
      * \see setDestinationCrs()
-     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 

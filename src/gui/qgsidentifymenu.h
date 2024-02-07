@@ -120,14 +120,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     /**
      * Sets an expression context scope used to resolve underlying actions.
      *
-     * \since QGIS 3.0
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 
     /**
      * Returns an expression context scope used to resolve underlying actions.
      *
-     * \since QGIS 3.0
      */
     QgsExpressionContextScope expressionContextScope() const;
 

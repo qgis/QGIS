@@ -406,8 +406,6 @@ class QgsEffectPainter
 {
 %Docstring(signature="appended")
 A class to manager painter saving and restoring required for effect drawing
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -420,8 +418,6 @@ A class to manager painter saving and restoring required for effect drawing
 QgsEffectPainter constructor
 
 :param renderContext: the :py:class:`QgsRenderContext` object
-
-.. versionadded:: 3.0
 %End
 
     QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect );
@@ -430,8 +426,6 @@ QgsEffectPainter constructor alternative if no painter translation is needed
 
 :param renderContext: the :py:class:`QgsRenderContext` object
 :param effect: the :py:class:`QgsPaintEffect` object
-
-.. versionadded:: 3.0
 %End
     ~QgsEffectPainter();
 

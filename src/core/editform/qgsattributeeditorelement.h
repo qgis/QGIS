@@ -143,7 +143,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     /**
      * Gets the parent of this element.
      *
-     * \since QGIS 3.0
      */
     QgsAttributeEditorElement *parent() const { return mParent; }
 
@@ -159,7 +158,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     /**
      * Returns a clone of this element. To be implemented by subclasses.
      *
-     * \since QGIS 3.0
      */
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 SIP_FACTORY;
 

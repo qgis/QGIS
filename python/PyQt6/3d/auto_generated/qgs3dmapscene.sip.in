@@ -22,8 +22,6 @@ Entity that encapsulates our 3D scene - contains all other entities (such as ter
 .. note::
 
    Not available in Python bindings
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

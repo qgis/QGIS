@@ -138,21 +138,18 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns a list of all map canvases open in the app.
-     * \since QGIS 3.0
      */
     virtual QList< QgsMapCanvas * > mapCanvases() = 0;
 
     /**
      * Create a new map canvas with the specified unique \a name.
      * \see closeMapCanvas()
-     * \since QGIS 3.0
      */
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
 
     /**
      * Closes the additional map canvas with matching \a name.
      * \see createNewMapCanvas()
-     * \since QGIS 3.0
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
 
@@ -215,7 +212,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns all currently open layout designers.
-     * \since QGIS 3.0
      */
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
 
@@ -421,7 +417,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns a reference to the main window "Shape Digitizing" toolbar.
-     * \since QGIS 3.0
      */
     virtual QToolBar *shapeDigitizeToolBar() = 0;
 
@@ -638,7 +633,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Statistical summary action.
-     * \since QGIS 3.0
      */
     virtual QAction *actionOpenStatisticalSummary() = 0;
 
@@ -675,7 +669,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns the Hide Deselected Layers action.
-     * \since QGIS 3.0
      */
     virtual QAction *actionHideDeselectedLayers() = 0;
     virtual QAction *actionShowSelectedLayers() = 0;
@@ -810,7 +803,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a pointer to the app's status bar interface. This should be
      * used for interacting and adding widgets and messages to the app's
      * status bar (do not use the native Qt statusBar() method).
-     * \since QGIS 3.0
      */
     virtual QgsStatusBar *statusBarIface() = 0;
 
@@ -937,7 +929,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * This calls reloadConnections in the main application and triggers a signal that is
      * forwarded to the GUI elements that needs to be updated (i.e. the source
      * select dialogs and the browser widgets)
-     * \since QGIS 3.0
      */
     virtual void reloadConnections( ) = 0;
 
@@ -949,13 +940,11 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Copy selected features from the layer to clipboard
-     * \since QGIS 3.0
      */
     virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
 
     /**
      * Paste features from clipboard to the layer
-     * \since QGIS 3.0
      */
     virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
 
@@ -1057,7 +1046,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Opens the layout manager dialog.
-     * \since QGIS 3.0
      */
     virtual void showLayoutManager() = 0;
 
@@ -1065,14 +1053,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * Opens a new layout designer dialog for the specified \a layout, or
      * brings an already open designer window to the foreground if one
      * is already created for the layout.
-     * \since QGIS 3.0
      */
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 
     /**
      * Opens the options dialog. The \a currentPage argument can be used to force
      * the dialog to open at a specific page.
-     * \since QGIS 3.0
      */
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
@@ -1251,7 +1237,6 @@ class GUI_EXPORT QgisInterface : public QObject
      *       be unregistered when plugin is unloaded.
      * \see QgsOptionsWidgetFactory
      * \see unregisterOptionsWidgetFactory()
-     * \since QGIS 3.0
      */
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
@@ -1259,7 +1244,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * Unregister a previously registered tab in the options dialog.
      * \see QgsOptionsWidgetFactory
      * \see registerOptionsWidgetFactory()
-     * \since QGIS 3.0
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
@@ -1343,7 +1327,6 @@ class GUI_EXPORT QgisInterface : public QObject
      *       be unregistered when plugin is unloaded.
      * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
-     * \since QGIS 3.0
      */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
@@ -1351,7 +1334,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * Unregister a previously registered custom drop \a handler.
      * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
-     * \since QGIS 3.0
      */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
@@ -1379,7 +1361,6 @@ class GUI_EXPORT QgisInterface : public QObject
      *       be unregistered when plugin is unloaded.
      * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()
-     * \since QGIS 3.0
      */
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
@@ -1387,7 +1368,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * Unregister a previously registered custom drop \a handler for layout windows.
      * \see QgsLayoutCustomDropHandler
      * \see registerCustomLayoutDropHandler()
-     * \since QGIS 3.0
      */
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
@@ -1455,7 +1435,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * \warning Plugins which register filters to the locator bar must take care to correctly call
      * deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
      * \see deregisterLocatorFilter()
-     * \since QGIS 3.0
      */
     virtual void registerLocatorFilter( QgsLocatorFilter *filter SIP_TRANSFER ) = 0;
 
@@ -1467,7 +1446,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
      *
      * \see registerLocatorFilter()
-     * \since QGIS 3.0
      */
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
 
@@ -1532,14 +1510,12 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Emitted when the current \a theme is changed so plugins
      * can change their tool button icons.
-     * \since QGIS 3.0
     */
     void currentThemeChanged( const QString &theme );
 
     /**
      * Emitted when a new layout \a designer has been opened.
      * \see layoutDesignerWillBeClosed()
-     * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
@@ -1548,7 +1524,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * and deleted.
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
-     * \since QGIS 3.0
      */
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
@@ -1556,7 +1531,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * Emitted after a layout designer window is closed.
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
-     * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 

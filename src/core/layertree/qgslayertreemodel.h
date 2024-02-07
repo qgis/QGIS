@@ -373,7 +373,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Updates model when node's name has changed
-     * \since QGIS 3.0
      */
     void nodeNameChanged( QgsLayerTreeNode *node, const QString &name );
 

@@ -57,7 +57,6 @@ class QgsMasterLayoutInterface;
  * If you are creating a new QgsLayoutItem configuration widget, you should instead
  * inherit from QgsLayoutItemBaseWidget (rather then directly working with QgsLayoutConfigObject).
  *
- * \since QGIS 3.0
 */
 class GUI_EXPORT QgsLayoutConfigObject: public QObject
 {
@@ -117,7 +116,6 @@ class GUI_EXPORT QgsLayoutConfigObject: public QObject
  * this base class.
  *
  *
- * \since QGIS 3.0
 */
 class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
 {
@@ -212,7 +210,6 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
  * \ingroup gui
  * \brief A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
  * This widget can be embedded into other layout item widgets.
- * \since QGIS 3.0
 */
 class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsLayoutItemWidgetBase
 {

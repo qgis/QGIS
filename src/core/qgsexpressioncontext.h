@@ -64,7 +64,6 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
     /**
      * Create a new QgsScopedExpressionFunction using named parameters.
      *
-     * \since QGIS 3.0
      */
     QgsScopedExpressionFunction( const QString &fnname,
                                  const QgsExpressionFunction::ParameterList &params,
@@ -244,7 +243,6 @@ class CORE_EXPORT QgsExpressionContextScope
      * Tests whether the variable with the specified \a name is static and can
      * be cached.
      *
-     * \since QGIS 3.0
      */
     bool isStatic( const QString &name ) const;
 
@@ -252,7 +250,6 @@ class CORE_EXPORT QgsExpressionContextScope
      * Returns the translated description for the variable with the specified \a name
      * (if set).
      *
-     * \since QGIS 3.0
      */
     QString description( const QString &name ) const;
 
@@ -298,7 +295,6 @@ class CORE_EXPORT QgsExpressionContextScope
     /**
      * Returns TRUE if the scope has a feature associated with it.
      * \see feature()
-     * \since QGIS 3.0
      */
     bool hasFeature() const { return mHasFeature; }
 
@@ -306,7 +302,6 @@ class CORE_EXPORT QgsExpressionContextScope
      * Sets the feature associated with the scope.
      * \see setFeature()
      * \see hasFeature()
-     * \since QGIS 3.0
      */
     QgsFeature feature() const { return mFeature; }
 
@@ -323,7 +318,6 @@ class CORE_EXPORT QgsExpressionContextScope
      * Removes any feature associated with the scope.
      * \see setFeature()
      * \see hasFeature()
-     * \since QGIS 3.0
      */
     void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
 
@@ -483,7 +477,6 @@ class CORE_EXPORT QgsExpressionContext
     /**
      * Initializes the context with given list of scopes.
      * Ownership of the scopes is transferred to the stack.
-     * \since QGIS 3.0
      */
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
@@ -521,7 +514,6 @@ class CORE_EXPORT QgsExpressionContext
     /**
      * Returns a map of variable name to value representing all the expression variables
      * contained by the context.
-     * \since QGIS 3.0
      */
     QVariantMap variablesToMap() const;
 
@@ -624,7 +616,6 @@ class CORE_EXPORT QgsExpressionContext
      * Returns the index of the first scope with a matching name within the context.
      * \param scopeName name of scope to find
      * \returns index of scope, or -1 if scope was not found within the context.
-     * \since QGIS 3.0
      */
     int indexOfScope( const QString &scopeName ) const;
 
@@ -660,7 +651,6 @@ class CORE_EXPORT QgsExpressionContext
      * If no specific description has been provided for the variable, the value from
      * QgsExpression::variableHelpText() will be returned.
      *
-     * \since QGIS 3.0
      */
     QString description( const QString &name ) const;
 
@@ -707,7 +697,6 @@ class CORE_EXPORT QgsExpressionContext
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scopes is transferred to the stack.
      * \param scopes scopes to append to context
-     * \since QGIS 3.0
      */
     void appendScopes( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
@@ -722,7 +711,6 @@ class CORE_EXPORT QgsExpressionContext
      * Ownership is transferred to the caller.
      *
      * \note Not available in Python
-     * \since QGIS 3.0
      */
     QList<QgsExpressionContextScope *> takeScopes() SIP_SKIP;
 
@@ -745,7 +733,6 @@ class CORE_EXPORT QgsExpressionContext
     /**
      * Returns TRUE if the context has a feature associated with it.
      * \see feature()
-     * \since QGIS 3.0
      */
     bool hasFeature() const;
 

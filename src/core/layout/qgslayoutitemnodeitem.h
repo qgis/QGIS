@@ -24,7 +24,6 @@
  * \ingroup core
  * \brief An abstract layout item that provides generic methods for node based
  * shapes such as polygon or polylines.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
 {

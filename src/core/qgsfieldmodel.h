@@ -95,14 +95,12 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.
      * \see allowEmptyFieldName()
-     * \since QGIS 3.0
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns TRUE if the model allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
-     * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const { return mAllowEmpty; }
 
@@ -143,7 +141,6 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     /**
      * Returns a HTML formatted tooltip string for a \a field, containing details
      * like the field name, alias and type.
-     * \since QGIS 3.0
      */
     static QString fieldToolTip( const QgsField &field );
 

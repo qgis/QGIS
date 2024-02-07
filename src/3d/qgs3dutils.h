@@ -51,7 +51,6 @@ namespace Qt3DExtras
  * \ingroup 3d
  * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
- * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DUtils
 {

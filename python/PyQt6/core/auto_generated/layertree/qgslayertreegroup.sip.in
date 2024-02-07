@@ -112,8 +112,6 @@ Remove all child nodes. The nodes will be deleted.
     QgsLayerTreeLayer *findLayer( QgsMapLayer *layer ) const;
 %Docstring
 Find layer node representing the map layer. Searches recursively the whole sub-tree.
-
-.. versionadded:: 3.0
 %End
 
     QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
@@ -171,8 +169,6 @@ Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeGroup
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
 Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeGroup.resolveReferences` internally).
-
-.. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -203,8 +199,6 @@ Returns a clone of the group. The children are cloned too.
 
 %Docstring
 Calls :py:func:`~QgsLayerTreeGroup.resolveReferences` on child tree nodes
-
-.. versionadded:: 3.0
 %End
 
     virtual void setItemVisibilityCheckedRecursive( bool checked );

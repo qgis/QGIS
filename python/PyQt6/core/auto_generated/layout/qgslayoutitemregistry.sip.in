@@ -20,8 +20,6 @@ GUI behavior of :py:class:`QgsLayoutItems`.
 .. note::
 
    In C++ you can use :py:class:`QgsLayoutItemMetadata` convenience class.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -89,8 +87,6 @@ GUI behavior of :py:class:`QgsLayoutMultiFrames`.
 .. note::
 
    In C++ you can use :py:class:`QgsLayoutMultiFrameMetadata` convenience class.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -152,8 +148,6 @@ Registry of available layout item types.
 
 A companion class, :py:class:`QgsLayoutItemGuiRegistry`, handles the GUI behavior
 of layout items.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

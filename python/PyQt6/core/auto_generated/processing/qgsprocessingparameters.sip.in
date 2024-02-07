@@ -16,8 +16,6 @@ class QgsProcessingFeatureSourceDefinition
 %Docstring(signature="appended")
 
 Encapsulates settings relating to a feature source input to a processing algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -110,8 +108,6 @@ class QgsProcessingOutputLayerDefinition
 %Docstring(signature="appended")
 
 Encapsulates settings relating to a feature sink or output raster layer for a processing algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -215,8 +211,6 @@ Base class for the definition of processing parameters.
 
 Parameter definitions encapsulate properties regarding the behavior of parameters,
 their acceptable ranges, defaults, etc.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -811,8 +805,6 @@ directly, and instead the high level API provided through :py:class:`QgsProcessi
 Parameters are evaluated using a provided :py:class:`QgsProcessingContext`, allowing
 the evaluation to understand available map layers and expression contexts
 (for expression based parameters).
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -1685,8 +1677,6 @@ class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A boolean parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -1722,8 +1712,6 @@ class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A coordinate reference system parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -1764,8 +1752,6 @@ class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A rectangular map extent parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -1807,8 +1793,6 @@ class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A point parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -1924,8 +1908,6 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition, QgsFileFilt
 {
 %Docstring(signature="appended")
 An input file or folder parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2037,8 +2019,6 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A table (matrix) parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2136,8 +2116,6 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition, Q
 {
 %Docstring(signature="appended")
 A parameter for processing algorithms which accepts multiple map layers.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2231,8 +2209,6 @@ shown in the parameter's widget can be specified by setting the parameter's meta
        param.setMetadata( {'widget_wrapper':
          { 'decimals': 2 }
        })
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2514,8 +2490,6 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A numeric range parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2575,8 +2549,6 @@ class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition, QgsF
 {
 %Docstring(signature="appended")
 A raster layer parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2630,8 +2602,6 @@ set to a list of QIcon values.
        param.setMetadata( {'widget_wrapper':
          { 'icons': [QIcon('integer.svg'), QIcon('string.svg')] }
        })
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2750,8 +2720,6 @@ means. Algorithms should gracefully handle other values accordingly.)
        param.setMetadata( {'widget_wrapper':
          { 'value_hints': ['Inkjet printer', 'Laser printer'] }
        })
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2854,8 +2822,6 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 An expression parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2933,8 +2899,6 @@ class QgsProcessingParameterLimitedDataTypes
 {
 %Docstring(signature="appended")
 Can be inherited by parameters which require limits to their acceptable data types.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -2970,8 +2934,6 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsP
 %Docstring(signature="appended")
 A vector layer (with or without geometry) parameter for processing algorithms. Consider using
 the more versatile :py:class:`QgsProcessingParameterFeatureSource` wherever possible.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3069,8 +3031,6 @@ class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition, QgsProc
 {
 %Docstring(signature="appended")
 A map layer parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3123,8 +3083,6 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A vector layer or feature source field parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3243,8 +3201,6 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition, Qg
 {
 %Docstring(signature="appended")
 An input feature source (such as vector layers) parameter for processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3298,8 +3254,6 @@ class QgsProcessingDestinationParameter : QgsProcessingParameterDefinition, QgsF
 %Docstring(signature="appended")
 Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
 which are used for the destination for layers output by an algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3416,8 +3370,6 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 A feature sink output for processing algorithms.
 
 A parameter which represents the destination feature sink for features created by an algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3534,8 +3486,6 @@ created by the algorithm.
 
    Consider using the more flexible QgsProcessingParameterFeatureSink wherever
    possible.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3621,8 +3571,6 @@ class QgsProcessingParameterRasterDestination : QgsProcessingDestinationParamete
 %Docstring(signature="appended")
 A raster layer destination parameter, for specifying the destination path for a raster layer
 created by the algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3692,8 +3640,6 @@ the widget wrapper metadata "dontconfirmoverwrite" option:
        param.setMetadata( {'widget_wrapper':
          { 'dontconfirmoverwrite': True }
        })
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3765,8 +3711,6 @@ class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParamete
 %Docstring(signature="appended")
 A folder destination parameter, for specifying the destination path for a folder created
 by the algorithm or used for creating new files within the algorithm.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -3807,8 +3751,6 @@ class QgsProcessingParameterBand : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A raster band parameter for Processing algorithms.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

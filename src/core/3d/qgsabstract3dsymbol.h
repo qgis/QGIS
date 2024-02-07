@@ -41,7 +41,6 @@ namespace Qt3DCore SIP_SKIP { class QEntity; }
  *
  * \note Prior to QGIS 3.16 this was available through the QGIS 3D library.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAbstract3DSymbol
 {

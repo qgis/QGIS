@@ -30,7 +30,6 @@ class QWidget;
  * \ingroup gui
  * \brief This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
  *
- * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSourceSelectProvider
 {

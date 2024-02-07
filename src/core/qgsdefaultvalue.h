@@ -43,7 +43,6 @@
  * default value should also be applied when a feature is updated. If this is
  * not set, the default value will only be used when a feature is created.
  *
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDefaultValue
 {

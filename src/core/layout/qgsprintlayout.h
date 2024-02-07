@@ -25,7 +25,6 @@ class QgsLayoutAtlas;
  * \ingroup core
  * \class QgsPrintLayout
  * \brief Print layout, a QgsLayout subclass for static or atlas-based layouts.
- * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInterface
 {

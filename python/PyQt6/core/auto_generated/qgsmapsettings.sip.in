@@ -367,8 +367,6 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 :return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
-
-.. versionadded:: 3.0
 %End
 
     QString ellipsoid() const;
@@ -377,8 +375,6 @@ Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
 
 .. seealso:: :py:func:`setEllipsoid`
-
-.. versionadded:: 3.0
 %End
 
     void setBackgroundColor( const QColor &color );
@@ -515,8 +511,6 @@ information regarding which datum transforms should be used when transforming po
 from a source to destination coordinate reference system.
 
 .. seealso:: :py:func:`setTransformContext`
-
-.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -526,8 +520,6 @@ information regarding which datum transforms should be used when transforming po
 from a source to destination coordinate reference system.
 
 .. seealso:: :py:func:`transformContext`
-
-.. versionadded:: 3.0
 %End
 
     const QgsPathResolver &pathResolver() const;
@@ -536,8 +528,6 @@ Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`setPathResolver`
-
-.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -546,8 +536,6 @@ Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`pathResolver`
-
-.. versionadded:: 3.0
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -713,9 +701,6 @@ Sets the global configuration of the labeling engine.
    text render format from the label engine ``settings``.
 
 .. seealso:: :py:func:`labelingEngineSettings`
-
-
-.. versionadded:: 3.0
 %End
 
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
@@ -723,8 +708,6 @@ Sets the global configuration of the labeling engine.
 Returns the global configuration of the labeling engine.
 
 .. seealso:: :py:func:`setLabelingEngineSettings`
-
-.. versionadded:: 3.0
 %End
 
     QgsGeometry labelBoundaryGeometry() const;

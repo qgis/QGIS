@@ -417,7 +417,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Setting options for loading vector layers.
-     * \since QGIS 3.0
      */
     struct LayerOptions
     {
@@ -595,7 +594,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  are cloned too. Moreover, each attributes (transparency, extent, selected
      *  features and so on) are identical.
      * \returns a new layer instance
-     * \since QGIS 3.0
      */
     QgsVectorLayer *clone() const override SIP_FACTORY;
 
@@ -718,7 +716,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
      * \returns FALSE if a dependency cycle has been detected
-     * \since QGIS 3.0
      */
     bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) FINAL;
 
@@ -727,7 +724,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * as well as dependencies given by the provider
      *
      * \returns a set of QgsMapLayerDependency
-     * \since QGIS 3.0
      */
     QSet<QgsMapLayerDependency> dependencies() const FINAL;
 
@@ -1010,7 +1006,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Resolves references to other layers (kept as layer IDs after reading XML) into layer objects.
-     * \since QGIS 3.0
      */
     void resolveReferences( QgsProject *project ) FINAL;
 
@@ -1025,7 +1020,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns TRUE if the auxiliary layer is well loaded, FALSE otherwise
      *
-     * \since QGIS 3.0
      */
     bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
 
@@ -1036,21 +1030,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * transferred.
      *
      *
-     * \since QGIS 3.0
      */
     void setAuxiliaryLayer( QgsAuxiliaryLayer *layer SIP_TRANSFER = nullptr );
 
     /**
      * Returns the current auxiliary layer.
      *
-     * \since QGIS 3.0
      */
     QgsAuxiliaryLayer *auxiliaryLayer();
 
     /**
      * Returns the current const auxiliary layer.
      *
-     * \since QGIS 3.0
      */
     const QgsAuxiliaryLayer *auxiliaryLayer() const SIP_SKIP;
 
@@ -1115,7 +1106,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *       NULLPTR is returned. If you need to wait for the results,
      *       you can call waitForFinished() on the feature counter.
      *
-     * \since This is asynchronous since QGIS 3.0
      */
     QgsVectorLayerFeatureCounter *countSymbolFeatures( bool storeSymbolFids = false );
 
@@ -1619,7 +1609,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Access to const labeling configuration. May be NULLPTR if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
-     * \since QGIS 3.0
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
@@ -1627,13 +1616,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Access to labeling configuration. May be NULLPTR if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
-     * \since QGIS 3.0
      */
     QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
 
     /**
      * Sets labeling configuration. Takes ownership of the object.
-     * \since QGIS 3.0
      */
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling SIP_TRANSFER );
 
@@ -1650,7 +1637,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns TRUE if the field comes from the auxiliary layer,
      * FALSE otherwise.
      *
-     * \since QGIS 3.0
      */
     bool isAuxiliaryField( int index, int &srcIndex ) const;
 
@@ -1795,7 +1781,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see updateFeature()
      * \see changeAttributeValue()
      *
-     * \since QGIS 3.0
      */
     bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
 
@@ -1813,14 +1798,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Sets an alias (a display name) for attributes to display in dialogs
      *
-     * \since QGIS 3.0
      */
     void setFieldAlias( int index, const QString &aliasString );
 
     /**
      * Removes an alias (a display name) for attributes to display in dialogs
      *
-     * \since QGIS 3.0
      */
     void removeFieldAlias( int index );
 
@@ -2073,7 +2056,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * specified, a default context will be created
      * \returns calculated default value
      * \see setDefaultValueDefinition()
-     * \since QGIS 3.0
      */
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = nullptr ) const;
@@ -2087,7 +2069,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see defaultValue()
      * \see defaultValueDefinition()
-     * \since QGIS 3.0
      */
     void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 
@@ -2099,7 +2080,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * empty string if no default is set
      * \see defaultValue()
      * \see setDefaultValueDefinition()
-     * \since QGIS 3.0
      */
     QgsDefaultValue defaultValueDefinition( int index ) const;
 
@@ -2108,14 +2088,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * field index. These constraints may be inherited from the layer's data provider
      * or may be set manually on the vector layer from within QGIS.
      * \see setFieldConstraint()
-     * \since QGIS 3.0
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
      * Returns a map of constraint with their strength for a specific field of the layer.
      * \param fieldIndex field index
-     * \since QGIS 3.0
      */
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
 
@@ -2125,7 +2103,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * constraints to be added on top of the existing provider constraints.
      * \see fieldConstraints()
      * \see removeFieldConstraint()
-     * \since QGIS 3.0
      */
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
 
@@ -2134,7 +2111,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * data provider will be kept intact and cannot be removed.
      * \see fieldConstraints()
      * \see setFieldConstraint()
-     * \since QGIS 3.0
      */
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
 
@@ -2143,7 +2119,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see fieldConstraints()
      * \see constraintDescription()
      * \see setConstraintExpression()
-     * \since QGIS 3.0
      */
     QString constraintExpression( int index ) const;
 
@@ -2152,7 +2127,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see fieldConstraints()
      * \see constraintExpression()
      * \see setConstraintExpression()
-     * \since QGIS 3.0
      */
     QString constraintDescription( int index ) const;
 
@@ -2162,7 +2136,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see constraintExpression()
      * \see constraintDescription()
      * \see fieldConstraints()
-     * \since QGIS 3.0
      */
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
 
@@ -2195,7 +2168,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * The editor widget setup defines which QgsFieldFormatter and editor widget will be used
      * for the field at `index`.
      *
-     * \since QGIS 3.0
      */
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 
@@ -2363,7 +2335,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Sets the \a editFormConfig (configuration) of the form used to represent this vector layer.
      *
      * \see editFormConfig()
-     * \since QGIS 3.0
      */
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 
@@ -2372,7 +2343,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * document when data source has no metadata or if the data provider has
      * to determine it.
      *
-     * \since QGIS 3.0
      */
     void setReadExtentFromXml( bool readExtentFromXml );
 
@@ -2381,14 +2351,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * source has no metadata, FALSE if it's the data provider which determines
      * it.
      *
-     * \since QGIS 3.0
      */
     bool readExtentFromXml() const;
 
     /**
      * Tests if an edit command is active
      *
-     * \since QGIS 3.0
      */
     bool isEditCommandActive() const { return mEditCommandActive; }
 
@@ -2743,7 +2711,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the display expression changes
      *
-     * \since QGIS 3.0
      */
     void displayExpressionChanged();
 
@@ -2755,7 +2722,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Will be emitted whenever the edit form configuration of this layer changes.
      *
-     * \since QGIS 3.0
      */
     void editFormConfigChanged();
 
@@ -2765,7 +2731,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see setReadOnly()
      *
-     * \since QGIS 3.0
      */
     void readOnlyChanged();
 
@@ -2779,7 +2744,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the feature count for symbols on this layer has been recalculated.
      *
-     * \since QGIS 3.0
      */
     void symbolFeatureCountMapChanged();
 

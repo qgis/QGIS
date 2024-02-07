@@ -16,8 +16,6 @@ class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
 Definition of the world.
-
-.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -125,8 +123,6 @@ Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`setPathResolver`
-
-.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -135,8 +131,6 @@ Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
 .. seealso:: :py:func:`pathResolver`
-
-.. versionadded:: 3.0
 %End
 
     QgsMapThemeCollection *mapThemeCollection() const;
