@@ -25,7 +25,6 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
 #include "qgssymbollayer.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -592,13 +591,12 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
     noneActive = noneActive && !cat.renderState();
     allActive = allActive && cat.renderState();
 
-    QVariant::Type valType = isExpression ? cat.value().type() : fields.at( attrNum ).type();
     const bool isList = cat.value().type() == QVariant::List;
-    QString value = QgsExpression::quotedValue( cat.value(), valType );
+    QString value = QgsExpression::quotedValue( cat.value(), cat.value().type() );
 
     if ( !cat.renderState() )
     {
-      if ( cat.value() != "" )
+      if ( value != "" )
       {
         if ( isList )
         {
@@ -622,7 +620,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
     }
     else
     {
-      if ( cat.value() != "" )
+      if ( value != "" )
       {
         if ( isList )
         {
@@ -1521,4 +1519,3 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
 
   return cats;
 }
-
