@@ -50,9 +50,7 @@ PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
-PyQgsFieldFormattersTest
 PyQgsProject
-PyQgsFields
 PyQgsFieldModel
 PyQgsFloatingWidget
 PyQgsGeometryTest
@@ -94,7 +92,6 @@ PyQgsTextDocument
 PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
-PyQgsVectorLayerUtils
 PyQgsLayerDefinition
 PyQgsWFSProvider
 PyQgsSettings
