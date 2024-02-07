@@ -973,8 +973,6 @@ if (WITH_INTERNAL_POLY2TRI)
     ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
   )
   include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
-else ()
-  include_directories(${Poly2Tri_INCLUDE_DIR})
 endif ()
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
@@ -2347,7 +2345,7 @@ if(ENABLE_MODELTEST)
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
-   target_link_libraries(qgis_core ${Poly2Tri_LIBRARY})
+   target_link_libraries(qgis_core poly2tri::poly2tri)
 endif()
 
 if(HAVE_OPENCL)
