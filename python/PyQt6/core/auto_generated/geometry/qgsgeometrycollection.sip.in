@@ -321,6 +321,21 @@ Iterates through all geometries in the collection.
     sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
 %End
 
+    QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const /Factory/;
+%Docstring
+Returns a new QgsGeometryCollection subclass which consists of the parts of this collection
+which match the specified WKB ``type``.
+
+For instance, if ``type`` is :py:class:`Qgis`.WkbType.Polygon, then the returned object will be a :py:class:`QgsMultiPolygon`
+object containing just the polygons from this collection.
+
+If ``useFlatType`` is ``True``, then the WKB types of component geometries from this collection will
+be flattened prior to comparing with ``type``. (I.e. the presence of Z / M dimensions will be ignored
+when comparing against ``type``).
+
+.. versionadded:: 3.36
+%End
+
     virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
 
 
