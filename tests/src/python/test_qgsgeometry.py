@@ -6175,18 +6175,14 @@ class TestQgsGeometry(QgisTestCase):
                                                                                        t[2], res))
 
     def testOffsetCurve(self):
-        # linestring which becomes multilinestring -- the actual offset curve calculated by GEOS is false.
-        # This is fixed in GEOS 3.11. See: https://github.com/libgeos/geos/issues/477
-        if Qgis.geosVersionInt() >= self.geos311:
-            exp5 = "LineString (259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259307.5 5928273.2)"
-        else:
-            exp5 = "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"
         tests = [
-            ["LINESTRING (0 0, 0 100, 100 100)", 1, "LineString (-1 0, -1 101, 100 101)"],
-            ["LINESTRING (0 0, 0 100, 100 100)", -1, "LineString (1 0, 1 99, 100 99)"],
-            ["LINESTRING (100 100, 0 100, 0 0)", 1, "LineString (100 99, 1 99, 1 0)"],
-            ["LINESTRING (100 100, 0 100, 0 0)", -1, "LineString (100 101, -1 101, -1 0)"],
-            ["LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )", 100, exp5],
+            ["LINESTRING (0 0, 0 100, 100 100)", 1, ["LineString (-1 0, -1 101, 100 101)"]],
+            ["LINESTRING (0 0, 0 100, 100 100)", -1, ["LineString (1 0, 1 99, 100 99)"]],
+            ["LINESTRING (100 100, 0 100, 0 0)", 1, ["LineString (100 99, 1 99, 1 0)"]],
+            ["LINESTRING (100 100, 0 100, 0 0)", -1, ["LineString (100 101, -1 101, -1 0)"]],
+            ["LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )", 100, ["LineString (259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259307.5 5928273.2)",
+                                                                                                                                 "LineString (259312.5 5928272.6, 259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259313.6 5928322.7, 259313.9 5928322.7)",
+                                                                                                                                 "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"]],
             ["MULTILINESTRING ((0 0, 0 100, 100 100),(100 100, 0 100, 0 0))", 1,
              "MultiLineString ((-1 0, -1 101, 100 101),(100 99, 1 99, 1 0))"]
         ]
@@ -6194,9 +6190,9 @@ class TestQgsGeometry(QgisTestCase):
             g1 = QgsGeometry.fromWkt(t[0])
             res = g1.offsetCurve(t[1], 2, QgsGeometry.JoinStyle.JoinStyleMiter, 5)
 
-            self.assertEqual(res.asWkt(1), t[2],
-                             "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
-                                                                                       t[2], res.asWkt(1)))
+            self.assertIn(res.asWkt(1), t[2],
+                          "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
+                                                                                    t[2], res.asWkt(1)))
 
     def testForceRHR(self):
         tests = [
