@@ -152,7 +152,10 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // we are working with XYZ tiles
     // no need to get capabilities, the whole definition is in URI
     // so we just generate a dummy WMTS definition
-    setupXyzCapabilities( uri );
+    if ( !setupXyzCapabilities( uri ) )
+    {
+      return;
+    }
   }
   else
   {
@@ -1762,7 +1765,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 }
 
 
-void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent, int sourceMinZoom, int sourceMaxZoom, double sourceTilePixelRatio )
+bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent, int sourceMinZoom, int sourceMaxZoom, double sourceTilePixelRatio )
 {
   QgsDataSourceUri parsedUri;
   parsedUri.setEncodedUri( uri );
@@ -1775,8 +1778,18 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
   QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * std::atan( std::sinh( M_PI ) ) );
   QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * std::atan( std::sinh( -M_PI ) ) );
-  QgsPointXY topLeft = ct.transform( topLeftLonLat );
-  QgsPointXY bottomRight = ct.transform( bottomRightLonLat );
+  QgsPointXY topLeft;
+  QgsPointXY bottomRight;
+  try
+  {
+    topLeft = ct.transform( topLeftLonLat );
+    bottomRight = ct.transform( bottomRightLonLat );
+  }
+  catch ( const QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "setupXyzCapabilities: failed to reproject corner coordinates" ) );
+    return false;
+  }
   double xspan = ( bottomRight.x() - topLeft.x() );
 
   QgsWmsBoundingBoxProperty bbox;
@@ -1879,6 +1892,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
       tmsLinkRef.limits[tm.identifier] = limits;
     }
   }
+  return true;
 }
 
 bool QgsWmsProvider::setupMBTilesCapabilities( const QString &uri )
@@ -1927,8 +1941,7 @@ bool QgsWmsProvider::setupMBTilesCapabilities( const QString &uri )
   // MBTiles spec does not say anything about resolutions...
   double sourceTilePixelRatio = 1;
 
-  setupXyzCapabilities( uri, sourceExtent, sourceMinZoom, sourceMaxZoom, sourceTilePixelRatio );
-  return true;
+  return setupXyzCapabilities( uri, sourceExtent, sourceMinZoom, sourceMaxZoom, sourceTilePixelRatio );
 }
 
 

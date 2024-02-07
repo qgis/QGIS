@@ -241,9 +241,11 @@ otherwise points are transformed from destination to source CRS.
 :param direction: transform direction (defaults to ForwardTransform)
 
 :return: transformed point
+
+:raises QgsCsException: if the transformation fails
 %End
 
-    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform the point specified by x,y from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -254,9 +256,11 @@ otherwise points are transformed from destination to source CRS.
 :param direction: transform direction (defaults to ForwardTransform)
 
 :return: transformed point
+
+:raises QgsCsException: if the transformation fails
 %End
 
-    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -266,6 +270,8 @@ otherwise points are transformed from destination to source CRS.
 :param direction: transform direction (defaults to ForwardTransform)
 
 :return: transformed point
+
+:raises QgsCsException: if the transformation fails
 
 .. versionadded:: 3.18
 %End
@@ -285,6 +291,8 @@ the returned rectangle.
                            crossing the 180 degree longitude line is required
 
 :return: rectangle in destination CRS
+
+:raises QgsCsException: if the transformation fails
 %End
 
     void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
@@ -299,6 +307,8 @@ otherwise points are transformed from destination to source CRS.
           must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
           heights) and must be expressed in its vertical units (generally meters)
 :param direction: transform direction (defaults to ForwardTransform)
+
+:raises QgsCsException: if the transformation fails
 %End
 
 
@@ -311,6 +321,8 @@ Transforms a polygon to the destination coordinate system.
 
 :param polygon: polygon to transform (occurs in place)
 :param direction: transform direction (defaults to forward transformation)
+
+:raises QgsCsException: if the transformation fails
 %End
 
     QgsRectangle transform( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
@@ -323,6 +335,8 @@ otherwise points are transformed from destination to source CRS.
 :param direction: transform direction (defaults to ForwardTransform)
 
 :return: transformed rectangle
+
+:raises QgsCsException: if the transformation fails
 %End
 
     void transformCoords( int numPoint, double *x, double *y, double *z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
@@ -336,6 +350,8 @@ otherwise points are transformed from destination to source CRS.
 :param y: array of y coordinates to transform
 :param z: array of z coordinates to transform
 :param direction: transform direction (defaults to ForwardTransform)
+
+:raises QgsCsException: if the transformation fails
 %End
 
     bool isShortCircuited() const;
