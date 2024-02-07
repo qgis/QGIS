@@ -55,7 +55,6 @@ PyQgsProject
 PyQgsFields
 PyQgsFieldModel
 PyQgsFloatingWidget
-PyQgsGeometryTest
 PyQgsJsonUtils
 PyQgsLayerMetadata
 PyQgsLayerMetadataResultsModel
