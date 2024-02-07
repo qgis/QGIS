@@ -26,6 +26,9 @@
 #include <QObject>
 #endif
 
+#include <QRectF>
+#include <QPainter>
+
 #ifdef HAVE_PDF4QT
 class PdfDocumentContainer
 {
