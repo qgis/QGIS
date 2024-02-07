@@ -289,6 +289,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param symbol symbol
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
+     * \param customContext custom rendering context
      * \param selected set to TRUE to render the symbol in a selected state (since QGIS 3.10)
      * \param expressionContext optional custom expression context (since QGIS 3.10)
      * \param shape optional legend patch shape to use for rendering the preview icon (since QGIS 3.14)
