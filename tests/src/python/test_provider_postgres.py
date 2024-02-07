@@ -3307,6 +3307,50 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         test_table(self.dbconn, 'mls3d', [0, 0, 0, 3, 3, 3])
         test_table(self.dbconn, 'pt4d', [1, 2, 3, 1, 2, 3])
 
+    # See: https://github.com/qgis/QGIS/issues/55856
+    def testPktLowerCase(self):
+        # check that primary key creation correctly works
+        # when exporting a vector layer to postgresql with
+        # lowercaseFieldNames option set to True
+
+        # create an empty vector layer
+        pk_key = "DEP"
+        input_uri = f"NoGeometry?crs=&field={pk_key}:string(255,0)&field=REG:string(255,0)&field=Number:integer(10,0)"
+        layer = QgsVectorLayer(input_uri, "lowercase", "memory")
+        self.assertTrue(layer.isValid())
+
+        # export the vector layer to postgresql with lowercase field names
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.pk_lowercase')
+        output_uri = f'{self.dbconn} table="qgis_test"."pk_lowercase" key=\'{pk_key.lower()}\''
+        err = QgsVectorLayerExporter.exportLayer(layer, output_uri, "postgres", layer.crs(), False, {'lowercaseFieldNames': True})
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
+                         f'unexpected import error {err}')
+
+        # retrieve the columns and type and check them
+        cur = self.con.cursor()
+        sql_cols = (
+            "SELECT column_name, data_type FROM information_schema.columns "
+            "WHERE table_name = 'pk_lowercase' AND table_schema = 'qgis_test';"
+        )
+        cur.execute(sql_cols)
+        expected_cols = [
+            ('dep', 'character varying'),
+            ('reg', 'character varying'),
+            ('number', 'integer')]
+        self.assertEqual(cur.fetchall(), expected_cols)
+
+        # Retrieve the primary key and check its name and type
+        sql_pk = (
+            "SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type "
+            "FROM   pg_index i "
+            "JOIN   pg_attribute a ON a.attrelid = i.indrelid "
+            "AND a.attnum = ANY(i.indkey) "
+            "WHERE  i.indrelid = 'qgis_test.pk_lowercase'::regclass "
+            "AND    i.indisprimary;"
+        )
+        cur.execute(sql_pk)
+        self.assertEqual(cur.fetchall(), [('dep', 'character varying')])
+
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 

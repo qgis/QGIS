@@ -4644,13 +4644,15 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   {
     pkList = parseUriKey( primaryKey );
     const auto constPkList = pkList;
+    const bool lowercaseFieldNames = options && options->value( QStringLiteral( "lowercaseFieldNames" ), false ).toBool();
     for ( const QString &col : constPkList )
     {
       // search for the passed field
       QString type;
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == col )
+        const QString fieldName = lowercaseFieldNames ? fields[fldIdx].name().toLower() : fields[fldIdx].name();
+        if ( fieldName == col )
         {
           // found, get the field type
           QgsField fld = fields[fldIdx];
