@@ -37,8 +37,7 @@ from qgis.core import (
     QgsValueMapFieldFormatter,
     QgsValueRelationFieldFormatter,
     QgsVectorFileWriter,
-    QgsVectorLayer,
-)
+    QgsVectorLayer, NULL)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
@@ -469,7 +468,7 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
         config['TextDisplayMethod'] = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowTrueFalse
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, True), 'true')
         self.assertEqual(field_formatter.representValue(layer, 2, config, None, False), 'false')
-        self.assertEqual(field_formatter.representValue(layer, 2, config, None, QVariant(QVariant.Bool)), 'NULL')
+        self.assertEqual(field_formatter.representValue(layer, 2, config, None, NULL), 'NULL')
 
 
 class TestQgsFallbackFieldFormatter(QgisTestCase):
@@ -596,13 +595,13 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
             self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, None), 'NULL')
 
             # Check NULLs (this is what happens in real life inside QGIS)
-            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, QVariant(QVariant.String)),
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, NULL),
                              'NULL')
-            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, QVariant(QVariant.String)),
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, NULL),
                              'NULL')
-            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, QVariant(QVariant.String)),
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, NULL),
                              'NULL')
-            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, QVariant(QVariant.String)),
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, NULL),
                              'NULL')
 
         memory_layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long&field=string:string",
@@ -666,7 +665,7 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
 
         QLocale.setDefault(QLocale('en'))
 
-        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, QVariant(QVariant.Int)),
+        self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, NULL),
                          'NULL')
         self.assertEqual(fieldFormatter.representValue(vl, 1, {}, None, 4),
                          '4')

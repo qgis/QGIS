@@ -124,7 +124,7 @@ class TestQgsFields(QgisTestCase):
         self.assertTrue(vl.fields()[0].convertCompatible(123))
         # Check NULL/invalid
         self.assertIsNone(vl.fields()[0].convertCompatible(None))
-        self.assertEqual(vl.fields()[0].convertCompatible(QVariant(QVariant.Int)), NULL)
+        self.assertEqual(vl.fields()[0].convertCompatible(NULL), NULL)
         # Not valid
         with self.assertRaises(ValueError) as cm:
             vl.fields()[0].convertCompatible('QGIS Rocks!')
