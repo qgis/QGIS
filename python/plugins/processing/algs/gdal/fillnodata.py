@@ -77,6 +77,7 @@ class fillnodata(GdalAlgorithm):
         if GdalUtils.version() >= 3040000:
             nomask_param.setFlags(nomask_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
         self.addParameter(nomask_param)
+
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
                                                             self.tr('Validity mask'),
                                                             optional=True))
@@ -144,7 +145,7 @@ class fillnodata(GdalAlgorithm):
         if self.parameterAsBoolean(parameters, self.NO_MASK, context):
             if GdalUtils.version() >= 3040000:
                 # The -nomask option is no longer supported since GDAL 3.4.0 https://github.com/OSGeo/gdal/pull/4201
-                feedback.pushInfo(self.tr('The -nomask option is no longer supported since GDAL 3.4.0'))
+                raise QgsProcessingException(self.tr('The -nomask option is no longer supported since GDAL 3.4.0'))
             else:
                 arguments.append('-nomask')
 
