@@ -960,6 +960,76 @@ void QgsGeometryCollection::transformVertices( const std::function<QgsPoint( con
   clearCache();
 }
 
+QgsGeometryCollection *QgsGeometryCollection::extractPartsByType( Qgis::WkbType type, bool useFlatType ) const
+{
+  // be tolerant if caller passed a multi type as type argument
+  const Qgis::WkbType filterSinglePartType = useFlatType ? QgsWkbTypes::flatType( QgsWkbTypes::singleType( type ) ) : QgsWkbTypes::singleType( type );
+
+  std::unique_ptr< QgsGeometryCollection > res;
+  switch ( QgsWkbTypes::geometryType( type ) )
+  {
+    case Qgis::GeometryType::Point:
+    {
+      if ( useFlatType )
+      {
+        // potential shortcut if we're already a matching subclass of QgsGeometryCollection
+        if ( const QgsMultiPoint *mp = qgsgeometry_cast< const QgsMultiPoint *>( this ) )
+          return mp->clone();
+      }
+
+      res = std::make_unique< QgsMultiPoint >();
+      break;
+    }
+    case Qgis::GeometryType::Line:
+    {
+      if ( useFlatType )
+      {
+        // potential shortcut if we're already a matching subclass of QgsGeometryCollection
+        if ( const QgsMultiLineString *ml = qgsgeometry_cast< const QgsMultiLineString *>( this ) )
+          return ml->clone();
+      }
+
+      res = std::make_unique< QgsMultiLineString >();
+      break;
+    }
+    case Qgis::GeometryType::Polygon:
+    {
+      if ( useFlatType )
+      {
+        // potential shortcut if we're already a matching subclass of QgsGeometryCollection
+        if ( const QgsMultiPolygon *mp = qgsgeometry_cast< const QgsMultiPolygon *>( this ) )
+          return mp->clone();
+      }
+
+      res = std::make_unique< QgsMultiPolygon>();
+      break;
+    }
+
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
+      return nullptr;
+  }
+
+  // assume that the collection consists entirely of matching parts (ie optimize for a pessimistic scenario)
+  res->reserve( mGeometries.size() );
+
+  for ( const QgsAbstractGeometry *part : mGeometries )
+  {
+    if ( !part )
+      continue;
+
+    const QgsAbstractGeometry *simplifiedPartType = part->simplifiedTypeRef();
+
+    const Qgis::WkbType thisPartType = useFlatType ? QgsWkbTypes::flatType( simplifiedPartType->wkbType() ) : simplifiedPartType->wkbType();
+    if ( thisPartType == filterSinglePartType )
+    {
+      res->addGeometry( part->clone() );
+    }
+  }
+
+  return res.release();
+}
+
 void QgsGeometryCollection::swapXy()
 {
   for ( QgsAbstractGeometry *geom : std::as_const( mGeometries ) )

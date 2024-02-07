@@ -390,6 +390,21 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     % End
 #endif
 
+    /**
+     * Returns a new QgsGeometryCollection subclass which consists of the parts of this collection
+     * which match the specified WKB \a type.
+     *
+     * For instance, if \a type is Qgis::WkbType::Polygon, then the returned object will be a QgsMultiPolygon
+     * object containing just the polygons from this collection.
+     *
+     * If \a useFlatType is TRUE, then the WKB types of component geometries from this collection will
+     * be flattened prior to comparing with \a type. (I.e. the presence of Z / M dimensions will be ignored
+     * when comparing against \a type).
+     *
+     * \since QGIS 3.36
+    */
+    QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const SIP_FACTORY;
+
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
 
   protected:
