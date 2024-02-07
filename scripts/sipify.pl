@@ -1605,7 +1605,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if (defined $py_enum_type and $py_enum_type eq "IntFlag") {
           push @ENUM_INTFLAG_TYPES, $enum_cpp_name;
         }
-        if ( defined $enum_type and $enum_type eq "int" ) {
+        if (defined $enum_type and ($enum_type eq "int" or $enum_type eq "quint32")) {
           push @ENUM_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
           if ( $is_qt6 eq 1 ) {
             if (defined $py_enum_type) {
@@ -1614,9 +1614,9 @@ while ($LINE_IDX < $LINE_COUNT){
               $enum_decl .= " /BaseType=IntEnum/"
             }
           }
-        }
-        elsif (defined $isclass)
-        {
+        } elsif (defined $enum_type) {
+          exit_with_error("Unhandled enum type $enum_type for $enum_cpp_name");
+        } elsif (defined $isclass) {
           push @ENUM_CLASS_NON_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
         }
 

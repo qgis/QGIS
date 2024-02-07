@@ -109,7 +109,7 @@ The development version
     typedef QFlags<Qgis::LayerFilter> LayerFilters;
 
 
-    enum class WkbType
+    enum class WkbType /BaseType=IntEnum/
       {
       Unknown,
       Point,
