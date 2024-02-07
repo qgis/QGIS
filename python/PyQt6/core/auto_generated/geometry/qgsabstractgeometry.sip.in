@@ -626,8 +626,6 @@ In this case, it can be thought like rounding the x and y of all the points/vert
 :param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
 :param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
 :param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
-
-.. versionadded:: 3.0
 %End
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
@@ -866,8 +864,6 @@ Creates a new geometry with the same class and same WKB type as the original and
 To create it, the geometry is default constructed and then the WKB is changed.
 
 .. seealso:: :py:func:`clone`
-
-.. versionadded:: 3.0
 %End
 
   protected:
