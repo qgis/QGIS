@@ -184,7 +184,7 @@ Then create methods using the respective names:
 
 If there is a Python file with the algorithm name in the ext directory, these methods will be imported from the file. 
 In the case of processCommand, processInputs, processOutputs and convertToHtml these will override the "standard" versions of these methods in the code of the GRASS provider. 
-You will need to read (and understand) the code for the standard methods in python/plugins/grassprovider/Grass7Algorithm.py.
+You will need to read (and understand) the code for the standard methods in python/plugins/grassprovider/grass_algorithm.py.
 checkParameterValuesBeforeExecuting will override the standard checkParameterValues method from QgsProcessingAlgorithm.
 
 If we take the example of v.what.rast, there is an ext file: ext/v_what_rast.py.
