@@ -738,6 +738,18 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
         return val;
       }
     }
+    else if ( valueType == QLatin1String( "bool" ) )
+    {
+      if ( value.toLower() == QStringLiteral( "false" ) )
+        return false;
+      if ( value.toLower() == QStringLiteral( "true" ) )
+        return true;
+    }
+    else if ( valueType == QLatin1String( "NULL" ) )
+    {
+      // This is the default ("fallback") category
+      return QVariant();
+    }
     return value;
   };
 
@@ -751,7 +763,6 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
       if ( catElem.hasAttribute( QStringLiteral( "value" ) ) )
       {
         value = valueFromString( catElem.attribute( QStringLiteral( "value" ) ), catElem.attribute( QStringLiteral( "type" ), QString() ) ) ;
-
       }
       else
       {
@@ -855,7 +866,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
 
   // String for type
-  // We just need string and three numeric types: double, ulong and long for unsigned, signed and float/double
+  // We just need string, bool, and three numeric types: double, ulong and long for unsigned, signed and float/double
   const auto stringForType = []( const QVariant::Type type ) -> QString
   {
     if ( type == QVariant::Char || type == QVariant::Int || type == QVariant::LongLong )
@@ -869,6 +880,10 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
     else if ( type == QVariant::Double )
     {
       return QStringLiteral( "double" ) ;
+    }
+    else if ( type == QVariant::Bool )
+    {
+      return QStringLiteral( "bool" );
     }
     else // Default: string
     {
@@ -903,8 +918,17 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
       }
       else
       {
-        catElem.setAttribute( QStringLiteral( "value" ), cat.value().toString() );
-        catElem.setAttribute( QStringLiteral( "type" ), stringForType( cat.value().type() ) );
+        if ( QgsVariantUtils::isNull( cat.value() ) )
+        {
+          // We need to save NULL value as specific kind, it is the default ("fallback") category
+          catElem.setAttribute( QStringLiteral( "value" ), "NULL" );
+          catElem.setAttribute( QStringLiteral( "type" ), "NULL" );
+        }
+        else
+        {
+          catElem.setAttribute( QStringLiteral( "value" ), cat.value().toString() );
+          catElem.setAttribute( QStringLiteral( "type" ), stringForType( cat.value().type() ) );
+        }
       }
       catElem.setAttribute( QStringLiteral( "symbol" ), symbolName );
       catElem.setAttribute( QStringLiteral( "label" ), cat.label() );
@@ -1149,7 +1173,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
       // Numeric NULL cat value is stored as an empty string
       if ( QgsVariantUtils::isNull( value ) && ( value.type() == QVariant::Double || value.type() == QVariant::Int ||
            value.type() == QVariant::UInt || value.type() == QVariant::LongLong ||
-           value.type() == QVariant::ULongLong ) )
+           value.type() == QVariant::ULongLong || value.type() == QVariant::Bool ) )
       {
         match = cat.value().toString().isEmpty();
       }
