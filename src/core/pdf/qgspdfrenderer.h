@@ -21,10 +21,15 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsconfig.h"
+#include <QString>
+
+#ifdef HAVE_PDF4QT
+#endif
 
 class QPainter;
 class QRectF;
-class QString;
+class PdfDocumentContainer;
+
 
 /**
  * \class QgsPdfRenderer
@@ -42,12 +47,56 @@ class CORE_EXPORT QgsPdfRenderer
   public:
 
     /**
-     * Renders the PDF from the specified \a path to a \a painter.
+     * Constructs a PDF renderer for the file at the specified \a path.
+     */
+    QgsPdfRenderer( const QString &path );
+    ~QgsPdfRenderer();
+
+    //! QgsPdfRenderer cannot be copied
+    QgsPdfRenderer( const QgsPdfRenderer &other ) = delete;
+    //! QgsPdfRenderer cannot be copied
+    QgsPdfRenderer &operator=( const QgsPdfRenderer &other ) = delete;
+
+    /**
+     * Returns the file path of the associated PDF file.
+     */
+    QString path() const { return mPath; }
+
+    /**
+     * Returns the number of pages in the PDF.
      *
      * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
      */
-    static bool render( const QString &path, QPainter *painter, const QRectF &rectangle, int pageIndex ) SIP_THROW( QgsNotSupportedException );
+    int pageCount() const SIP_THROW( QgsNotSupportedException );
 
+    /**
+     * Returns the media box for the specified page. Units are in PDF points.
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     */
+    QRectF pageMediaBox( int pageNumber ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Renders the PDF from the specified \a path to a \a painter.
+     *
+     * The \a painterRect argument specifies the target rectangle for the PDF page in
+     * \a painter coordinates.
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     */
+    bool render( QPainter *painter, const QRectF &painterRect, int pageIndex ) SIP_THROW( QgsNotSupportedException );
+
+  private:
+
+#ifdef SIP_RUN
+    QgsPdfRenderer( const QgsPdfRenderer &other );
+#endif
+
+    QString mPath;
+
+#ifdef HAVE_PDF4QT
+    std::unique_ptr< PdfDocumentContainer> mDocumentContainer;
+#endif
 };
 
 #endif // QGSPDFRENDERER_H
