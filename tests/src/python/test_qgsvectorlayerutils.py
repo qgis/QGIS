@@ -780,7 +780,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         features_data.append(
             QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'),
-                                                                {0: 'test_3', 1: QVariant(QVariant.Int)}))
+                                                                {0: 'test_3', 1: NULL}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_4'}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
@@ -795,7 +795,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: None}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: QVariant()}))
         features_data.append(
-            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: QVariant(QVariant.String)}))
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: NULL}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 

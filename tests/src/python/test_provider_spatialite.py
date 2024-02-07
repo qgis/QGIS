@@ -38,8 +38,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
-    QgsWkbTypes,
-)
+    QgsWkbTypes, NULL)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from qgis.utils import spatialite_connect
@@ -1869,7 +1868,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         f.setGeometry(g)
         f.fields()
         f.fields().names()
-        f.setAttribute(1, QVariant(QVariant.String))
+        f.setAttribute(1, NULL)
         f.setAttribute(0, 'Autogenerate')
         self.assertTrue(layer.addFeatures([f]))
         self.assertFalse(layer.commitChanges())
