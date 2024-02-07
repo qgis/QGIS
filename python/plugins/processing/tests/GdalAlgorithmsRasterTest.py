@@ -2315,7 +2315,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                                             'NO_MASK': True,
                                             'OUTPUT': outsource}, context, feedback),
                     ['gdal_fillnodata.py',
-                    f'{source} {outsource} -md 10 -b 1 -nomask -of GTiff'])
+                     f'{source} {outsource} -md 10 -b 1 -nomask -of GTiff'])
 
             # creation options
             self.assertEqual(
