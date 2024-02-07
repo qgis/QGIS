@@ -137,6 +137,16 @@ class TestQgsGeometryCollection(QgisTestCase):
         )
         self.assertEqual(
             empty_collection.extractPartsByType(
+                Qgis.WkbType.MultiPointM).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            empty_collection.extractPartsByType(
+                Qgis.WkbType.MultiPointZM).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            empty_collection.extractPartsByType(
                 Qgis.WkbType.LineString).asWkt(),
             'MultiLineString EMPTY'
         )
@@ -172,9 +182,24 @@ class TestQgsGeometryCollection(QgisTestCase):
                 Qgis.WkbType.MultiPointZ).asWkt(),
             'MultiPoint ((1 2),(11 22),(3 4))'
         )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.MultiPointM).asWkt(),
+            'MultiPoint ((1 2),(11 22),(3 4))'
+        )
         # strict dimension check
         self.assertEqual(
             point_collection.extractPartsByType(Qgis.WkbType.MultiPointZ,
+                                                useFlatType=False).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointM,
+                                                useFlatType=False).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointZM,
                                                 useFlatType=False).asWkt(),
             'MultiPoint EMPTY'
         )
@@ -214,6 +239,91 @@ class TestQgsGeometryCollection(QgisTestCase):
         )
         self.assertEqual(
             point_collection.extractPartsByType(Qgis.WkbType.MultiPointZM,
+                                                useFlatType=False).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.LineString).asWkt(),
+            'MultiLineString EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.Polygon).asWkt(),
+            'MultiPolygon EMPTY'
+        )
+
+        # with m
+        point_collection = QgsGeometryCollection()
+        point_collection.addGeometry(QgsPoint(1, 2, m=3))
+        point_collection.addGeometry(QgsPoint(11, 22, m=33))
+        point_collection.addGeometry(QgsPoint(3, 4, m=5))
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.Point).asWkt(),
+            'MultiPointM ((1 2 3),(11 22 33),(3 4 5))'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.MultiPoint).asWkt(),
+            'MultiPointM ((1 2 3),(11 22 33),(3 4 5))'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.MultiPointM).asWkt(),
+            'MultiPointM ((1 2 3),(11 22 33),(3 4 5))'
+        )
+        # strict dimension check
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointM,
+                                                useFlatType=False).asWkt(),
+            'MultiPointM ((1 2 3),(11 22 33),(3 4 5))'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointZM,
+                                                useFlatType=False).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.LineString).asWkt(),
+            'MultiLineString EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.Polygon).asWkt(),
+            'MultiPolygon EMPTY'
+        )
+
+        # with z and m
+        point_collection = QgsGeometryCollection()
+        point_collection.addGeometry(QgsPoint(1, 2, 3, 4))
+        point_collection.addGeometry(QgsPoint(11, 22, 33, 44))
+        point_collection.addGeometry(QgsPoint(3, 4, 5, 55))
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.Point).asWkt(),
+            'MultiPointZM ((1 2 3 4),(11 22 33 44),(3 4 5 55))'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.MultiPoint).asWkt(),
+            'MultiPointZM ((1 2 3 4),(11 22 33 44),(3 4 5 55))'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(
+                Qgis.WkbType.MultiPointM).asWkt(),
+            'MultiPointZM ((1 2 3 4),(11 22 33 44),(3 4 5 55))'
+        )
+        # strict dimension check
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointZM,
+                                                useFlatType=False).asWkt(),
+            'MultiPointZM ((1 2 3 4),(11 22 33 44),(3 4 5 55))'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointZ,
+                                                useFlatType=False).asWkt(),
+            'MultiPoint EMPTY'
+        )
+        self.assertEqual(
+            point_collection.extractPartsByType(Qgis.WkbType.MultiPointM,
                                                 useFlatType=False).asWkt(),
             'MultiPoint EMPTY'
         )
