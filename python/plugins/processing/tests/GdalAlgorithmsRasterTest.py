@@ -2305,16 +2305,17 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ['gdal_fillnodata.py',
                  f'{source} {outsource} -md 10 -b 1 -of GTiff'])
 
-            # nomask true
-            self.assertEqual(
-                alg.getConsoleCommands({'INPUT': source,
-                                        'BAND': 1,
-                                        'DISTANCE': 10,
-                                        'ITERATIONS': 0,
-                                        'NO_MASK': True,
-                                        'OUTPUT': outsource}, context, feedback),
-                ['gdal_fillnodata.py',
-                 f'{source} {outsource} -md 10 -b 1 -nomask -of GTiff'])
+            if not GdalUtils.version() >= 3040000:
+                # nomask true
+                self.assertEqual(
+                    alg.getConsoleCommands({'INPUT': source,
+                                            'BAND': 1,
+                                            'DISTANCE': 10,
+                                            'ITERATIONS': 0,
+                                            'NO_MASK': True,
+                                            'OUTPUT': outsource}, context, feedback),
+                    ['gdal_fillnodata.py',
+                    f'{source} {outsource} -md 10 -b 1 -nomask -of GTiff'])
 
             # creation options
             self.assertEqual(
