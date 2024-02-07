@@ -90,7 +90,7 @@ QRectF QgsPdfRenderer::pageMediaBox( int pageNumber ) const
   return catalog->getPage( pageNumber )->getMediaBox();
 }
 #else
-QRectF QgsPdfRenderer::pageMediaBox( int pageNumber ) const
+QRectF QgsPdfRenderer::pageMediaBox( int ) const
 {
   throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
 }
