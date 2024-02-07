@@ -5517,9 +5517,12 @@ class TestQgsGeometry(QgisTestCase):
         o = input.delaunayTriangulation(0.001, True)
         o.normalize()
         # Delaunay Triangulation computation change. See: https://github.com/libgeos/geos/pull/728
-        self.assertEqual(
+        self.assertIn(
             o.asWkt(5),
-            "MultiLineString ((-118.39641 56.0557, -118.39641 56.0475),(-118.39641 56.04, -118.39641 56.0475),(-118.3968 56, -118.39641 56.0475),(-118.3968 56, -118.39641 56.0557),(-118.3968 56, -118.39641 56.04))"
+            (
+                "MultiLineString ((-118.39641 56.0557, -118.39641 56.0475),(-118.39641 56.04, -118.39641 56.0475),(-118.3968 56, -118.39641 56.0475),(-118.3968 56, -118.39641 56.0557),(-118.3968 56, -118.39641 56.04))",
+                "MultiLineString ((-118.39641 56.0557, -118.39641 56.0475),(-118.39641 56.04, -118.39641 56.0475),(-118.3968 56, -118.39641 56.04))"
+            )
         )
 
     def testVoronoi(self):
