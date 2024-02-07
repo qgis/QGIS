@@ -2641,6 +2641,20 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   return result;
 }
 
+QgsGeometry QgsGeometry::constrainedDelaunayTriangulation() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.constrainedDelaunayTriangulation() );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::unionCoverage() const
 {
   if ( !d->geometry )

@@ -1807,7 +1807,24 @@ If ``edgesOnly`` is ``True`` than line string boundary geometries will be return
 instead of polygons.
 An empty geometry will be returned if the diagram could not be calculated.
 
+.. seealso:: :py:func:`constrainedDelaunayTriangulation`
+
 .. versionadded:: 3.0
+%End
+
+    QgsGeometry constrainedDelaunayTriangulation() const throw( QgsNotSupportedException );
+%Docstring
+Returns a constrained Delaunay triangulation for the vertices of the geometry.
+
+An empty geometry will be returned if the triangulation could not be calculated.
+
+This method requires a QGIS build based on GEOS 3.11 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or earlier.
+
+.. seealso:: :py:func:`delaunayTriangulation`
+
+.. versionadded:: 3.36
 %End
 
     Qgis::CoverageValidityResult validateCoverage( double gapWidth, QgsGeometry *invalidEdges /Out/ = 0 ) const throw( QgsNotSupportedException );
