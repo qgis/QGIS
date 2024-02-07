@@ -321,7 +321,7 @@ class CORE_EXPORT QgsProcessingUtils
      * Converts a variant to a Python literal.
      *
      * \see stringToPythonLiteral()
-     * \since QGSIS 3.6
+     * \since QGIS 3.6
      */
     static QString variantToPythonLiteral( const QVariant &value );
 
