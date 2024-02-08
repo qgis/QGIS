@@ -880,10 +880,10 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
       return QStringLiteral( "QgsProcessingParameterVectorDestination" );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 
@@ -940,10 +940,10 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
       return QStringLiteral( "QgsProcessingParameterFileDestination" );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 
@@ -1000,10 +1000,10 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
       return QStringLiteral( "QgsProcessingParameterFolderDestination" );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 
@@ -1059,10 +1059,10 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
       return QStringLiteral( "QgsProcessingParameterRasterDestination" );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 
@@ -1565,10 +1565,10 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
       return new QgsProcessingParameterFeatureSink( name );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 
@@ -2225,10 +2225,10 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudDestination : public QgsPr
       return QStringLiteral( "QgsProcessingParameterPointCloudDestination" );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 
@@ -2337,10 +2337,10 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileDestination : public QgsPr
       return QStringLiteral( "QgsProcessingParameterVectorTileDestination" );
     }
 
-    ParameterFlags flags() const override
+    Qgis::ProcessingParameterTypeFlags flags() const override
     {
-      ParameterFlags flags = QgsProcessingParameterType::flags();
-      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+      Qgis::ProcessingParameterTypeFlags flags = QgsProcessingParameterType::flags();
+      flags.setFlag( Qgis::ProcessingParameterTypeFlag::ExposeToModeler, false );
       return flags;
     }
 

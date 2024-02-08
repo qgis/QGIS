@@ -27,7 +27,7 @@ QString QgsPointToLayerAlgorithm::name() const
 void QgsPointToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPoint( QStringLiteral( "INPUT" ), QObject::tr( "Point" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Point" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Point" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsPointToLayerAlgorithm::shortHelpString() const

@@ -655,13 +655,6 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
 %End
   public:
 
-    enum Flag
-    {
-      FlagSkipGeometryValidityChecks,
-    };
-    typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
-
-
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
                                 long long featureLimit = -1, const QString &filterExpression = QString() );
 %Docstring
@@ -679,7 +672,7 @@ Since QGIS 3.32, the optional ``filterExpression`` can be used to specify an exp
 
     ~QgsProcessingFeatureSource();
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Qgis::ProcessingFeatureSourceFlags flags ) const;
 %Docstring
 Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
 An optional ``request`` can be used to optimise the returned

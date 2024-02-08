@@ -57,7 +57,7 @@ Qgis::WkbType QgsMinimumEnclosingCircleAlgorithm::outputWkbType( Qgis::WkbType )
 
 void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), QgsProcessingParameterNumber::Integer,
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), Qgis::ProcessingNumberParameterType::Integer,
                 72, false, 8, 100000 ) );
 }
 

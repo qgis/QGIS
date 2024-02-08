@@ -67,7 +67,7 @@ QgsGeometryByExpressionAlgorithm *QgsGeometryByExpressionAlgorithm::createInstan
 
 QList<int> QgsGeometryByExpressionAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << QgsProcessing::TypeVector;
+  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
 }
 
 Qgis::WkbType QgsGeometryByExpressionAlgorithm::outputWkbType( Qgis::WkbType ) const
@@ -75,9 +75,9 @@ Qgis::WkbType QgsGeometryByExpressionAlgorithm::outputWkbType( Qgis::WkbType ) c
   return mWkbType;
 }
 
-QgsProcessingFeatureSource::Flag QgsGeometryByExpressionAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsGeometryByExpressionAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )

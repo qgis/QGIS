@@ -58,12 +58,12 @@ QString QgsProjectPointCartesianAlgorithm::shortHelpString() const
 
 QList<int> QgsProjectPointCartesianAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPoint;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
 }
 
-QgsProcessing::SourceType QgsProjectPointCartesianAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsProjectPointCartesianAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPoint;
+  return Qgis::ProcessingSourceType::VectorPoint;
 }
 
 QgsProjectPointCartesianAlgorithm *QgsProjectPointCartesianAlgorithm::createInstance() const
@@ -73,7 +73,7 @@ QgsProjectPointCartesianAlgorithm *QgsProjectPointCartesianAlgorithm::createInst
 
 void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > bearing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), QgsProcessingParameterNumber::Double, 0, false );
+  std::unique_ptr< QgsProcessingParameterNumber > bearing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
   bearing->setIsDynamic( true );
   bearing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Bearing" ), QObject::tr( "Bearing (degrees from North)" ), QgsPropertyDefinition::Double ) );
   bearing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -86,9 +86,9 @@ void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
   addParameter( distance.release() );
 }
 
-QgsProcessingFeatureSource::Flag QgsProjectPointCartesianAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsProjectPointCartesianAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 bool QgsProjectPointCartesianAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

@@ -50,7 +50,7 @@ class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingFeatureBasedAlgori
 
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

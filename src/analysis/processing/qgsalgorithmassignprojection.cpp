@@ -73,9 +73,9 @@ void QgsAssignProjectionAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Assigned CRS" ), QStringLiteral( "EPSG:4326" ) ) );
 }
 
-QgsProcessingFeatureSource::Flag QgsAssignProjectionAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsAssignProjectionAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

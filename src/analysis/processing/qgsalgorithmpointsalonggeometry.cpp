@@ -68,12 +68,12 @@ QString QgsPointsAlongGeometryAlgorithm::shortDescription() const
 
 QList<int> QgsPointsAlongGeometryAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
-QgsProcessing::SourceType QgsPointsAlongGeometryAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsPointsAlongGeometryAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPoint;
+  return Qgis::ProcessingSourceType::VectorPoint;
 }
 
 Qgis::WkbType QgsPointsAlongGeometryAlgorithm::outputWkbType( Qgis::WkbType inputType ) const
@@ -133,10 +133,10 @@ QString QgsPointsAlongGeometryAlgorithm::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmExtractVertices.svg" ) );
 }
 
-QgsProcessingFeatureSource::Flag QgsPointsAlongGeometryAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsPointsAlongGeometryAlgorithm::sourceFlags() const
 {
   // skip geometry checks - this algorithm doesn't care about invalid geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureSink::SinkFlags QgsPointsAlongGeometryAlgorithm::sinkFlags() const

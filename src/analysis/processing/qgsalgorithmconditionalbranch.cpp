@@ -45,9 +45,9 @@ QString QgsConditionalBranchAlgorithm::groupId() const
   return QStringLiteral( "modelertools" );
 }
 
-QgsProcessingAlgorithm::Flags QgsConditionalBranchAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsConditionalBranchAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsConditionalBranchAlgorithm::shortHelpString() const

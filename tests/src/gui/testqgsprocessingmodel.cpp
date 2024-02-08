@@ -34,7 +34,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
   public:
 
     DummyAlgorithm( const QString &name, const QString &group,
-                    QgsProcessingAlgorithm::Flags flags = QgsProcessingAlgorithm::Flags(),
+                    Qgis::ProcessingAlgorithmFlags flags = Qgis::ProcessingAlgorithmFlags(),
                     const QString &tags = QString(),
                     const QString &shortDescription = QString(),
                     const QString &displayName = QString() )
@@ -47,7 +47,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     {}
 
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override {}
-    QgsProcessingAlgorithm::Flags flags() const override { return mFlags; }
+    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
     QString name() const override { return mName; }
     QString displayName() const override { return mDisplayName.isEmpty() ? mName : mDisplayName; }
     QString group() const override { return mGroup; }
@@ -61,7 +61,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     QString mName;
     QString mDisplayName;
     QString mGroup;
-    QgsProcessingAlgorithm::Flags mFlags = QgsProcessingAlgorithm::Flags();
+    Qgis::ProcessingAlgorithmFlags mFlags = Qgis::ProcessingAlgorithmFlags();
     QStringList mTags;
     QString mShortDescription;
 
@@ -202,8 +202,8 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( !model.data( model.index( 3, 0, QModelIndex() ), Qt::ToolTipRole ).isValid() );
 
   // provider with algs and groups
-  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", QgsProcessingAlgorithm::FlagHideFromModeler, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
-  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", QgsProcessingAlgorithm::FlagHideFromToolbox );
+  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", Qgis::ProcessingAlgorithmFlag::HideFromModeler, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
+  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
   DummyProvider *p3 = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << a1 << a2 );
   registry.addProvider( p3 );
 
@@ -236,7 +236,7 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( !model.providerForIndex( alg1Index ) );
   QCOMPARE( model.data( alg1Index, Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
   QCOMPARE( model.data( alg1Index, Qt::ToolTipRole ).toString(), QStringLiteral( u"<p><b>a1</b></p><p>short desc a</p><p>Algorithm ID: \u2018<i>p3:a1</i>\u2019</p>" ) );
-  QCOMPARE( model.data( alg1Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt(), static_cast< int >( QgsProcessingAlgorithm::FlagHideFromModeler ) );
+  QCOMPARE( model.data( alg1Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt(), static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromModeler ) );
   QCOMPARE( model.data( alg1Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p3:a1" ) );
   QCOMPARE( model.data( alg1Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmName ) ).toString(), QStringLiteral( "a1" ) );
   QCOMPARE( model.data( alg1Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmTags ) ).toStringList().join( ',' ), QStringLiteral( "tag1,tag2" ) );
@@ -250,7 +250,7 @@ void TestQgsProcessingModel::testModel()
   QModelIndex alg2Index = model.index( 0, 0, group2Index );
   QCOMPARE( model.data( alg2Index, Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
   QCOMPARE( model.data( alg2Index, Qt::ToolTipRole ).toString(), QStringLiteral( u"<p><b>a2</b></p><p>Algorithm ID: \u2018<i>p3:a2</i>\u2019</p>" ) );
-  QCOMPARE( model.data( alg2Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt(), static_cast< int >( QgsProcessingAlgorithm::FlagHideFromToolbox ) );
+  QCOMPARE( model.data( alg2Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt(), static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromToolbox ) );
   QCOMPARE( model.data( alg2Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString(), QStringLiteral( "p3:a2" ) );
   QCOMPARE( model.data( alg2Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmName ) ).toString(), QStringLiteral( "a2" ) );
   QCOMPARE( model.data( alg2Index, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmTags ) ).toStringList().join( ',' ), QString() );
@@ -399,11 +399,11 @@ void TestQgsProcessingModel::testProxyModel()
 #endif
 
   // add a provider
-  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group2", QgsProcessingAlgorithm::FlagHideFromModeler );
+  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group2", Qgis::ProcessingAlgorithmFlag::HideFromModeler );
   DummyProvider *p1 = new DummyProvider( "p2", "provider2", QList< QgsProcessingAlgorithm * >() << a1 );
   registry.addProvider( p1 );
   // second provider
-  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", QgsProcessingAlgorithm::FlagHideFromModeler,
+  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", Qgis::ProcessingAlgorithmFlag::HideFromModeler,
       QStringLiteral( "buffer,vector" ), QStringLiteral( "short desc" ), QStringLiteral( "algorithm2" ) );
   DummyProvider *p2 = new DummyProvider( "p1", "provider1", QList< QgsProcessingAlgorithm * >() << a2 );
   registry.addProvider( p2 );
@@ -412,8 +412,8 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
 
   // top level groups come first
-  DummyAlgorithm *qgisA1 = new DummyAlgorithm( "a1", "group2", QgsProcessingAlgorithm::FlagHideFromModeler );
-  DummyAlgorithm *qgisA2 = new DummyAlgorithm( "a2", "group1", QgsProcessingAlgorithm::FlagHideFromToolbox );
+  DummyAlgorithm *qgisA1 = new DummyAlgorithm( "a1", "group2", Qgis::ProcessingAlgorithmFlag::HideFromModeler );
+  DummyAlgorithm *qgisA2 = new DummyAlgorithm( "a2", "group1", Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
   DummyProvider *qgisP = new DummyProvider( "qgis", "qgis_provider", QList< QgsProcessingAlgorithm * >() << qgisA1 << qgisA2 );
   registry.addProvider( qgisP );
 
@@ -572,11 +572,11 @@ void TestQgsProcessingModel::testView()
   QVERIFY( !view.algorithmForIndex( QModelIndex() ) );
 
   // add a provider
-  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group2", QgsProcessingAlgorithm::FlagHideFromToolbox );
+  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group2", Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
   DummyProvider *p1 = new DummyProvider( "p2", "provider2", QList< QgsProcessingAlgorithm * >() << a1 );
   registry.addProvider( p1 );
   // second provider
-  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", QgsProcessingAlgorithm::FlagHideFromModeler,
+  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", Qgis::ProcessingAlgorithmFlag::HideFromModeler,
       QStringLiteral( "buffer,vector" ), QStringLiteral( "short desc" ), QStringLiteral( "algorithm2" ) );
   DummyProvider *p2 = new DummyProvider( "p1", "provider1", QList< QgsProcessingAlgorithm * >() << a2 );
   registry.addProvider( p2 );
@@ -661,8 +661,8 @@ void TestQgsProcessingModel::testKnownIssues()
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
   const QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
-  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", QgsProcessingAlgorithm::FlagKnownIssues, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
-  DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", QgsProcessingAlgorithm::Flags(), QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
+  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", Qgis::ProcessingAlgorithmFlag::KnownIssues, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
+  DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", Qgis::ProcessingAlgorithmFlags(), QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
   DummyProvider *p = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << a1 << a2 );
   registry.addProvider( p );
 

@@ -70,11 +70,11 @@ QgsGltfToVectorFeaturesAlgorithm *QgsGltfToVectorFeaturesAlgorithm::createInstan
 
 void QgsGltfToVectorFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input GLTF" ), QgsProcessingParameterFile::File,
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input GLTF" ), Qgis::ProcessingFileParameterBehavior::File,
                 QStringLiteral( "gltf" ), QVariant(), false, QStringLiteral( "GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)" ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_POLYGONS" ), QObject::tr( "Output polygons" ), QgsProcessing::TypeVectorPolygon, QVariant(), true, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Output lines" ), QgsProcessing::TypeVectorLine, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_POLYGONS" ), QObject::tr( "Output polygons" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Output lines" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
 }
 
 std::unique_ptr< QgsAbstractGeometry > extractTriangles(

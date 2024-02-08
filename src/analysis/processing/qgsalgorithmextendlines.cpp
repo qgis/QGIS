@@ -63,12 +63,12 @@ QString QgsExtendLinesAlgorithm::shortDescription() const
 
 QList<int> QgsExtendLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
-QgsProcessing::SourceType QgsExtendLinesAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsExtendLinesAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 QgsExtendLinesAlgorithm *QgsExtendLinesAlgorithm::createInstance() const
@@ -93,10 +93,10 @@ void QgsExtendLinesAlgorithm::initParameters( const QVariantMap & )
   addParameter( endDistance.release() );
 }
 
-QgsProcessingFeatureSource::Flag QgsExtendLinesAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsExtendLinesAlgorithm::sourceFlags() const
 {
   // skip geometry checks - this algorithm doesn't care about invalid geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 bool QgsExtendLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

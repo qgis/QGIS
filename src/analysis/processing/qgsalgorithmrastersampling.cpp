@@ -63,11 +63,11 @@ QgsRasterSamplingAlgorithm *QgsRasterSamplingAlgorithm::createInstance() const
 
 void QgsRasterSamplingAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "RASTERCOPY" ), QObject::tr( "Raster layer" ) ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "SAMPLE_" ), false, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Sampled" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Sampled" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 bool QgsRasterSamplingAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

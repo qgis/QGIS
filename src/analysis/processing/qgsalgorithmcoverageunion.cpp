@@ -50,8 +50,8 @@ QString QgsCoverageUnionAlgorithm::groupId() const
 
 void QgsCoverageUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 QString QgsCoverageUnionAlgorithm::shortDescription() const

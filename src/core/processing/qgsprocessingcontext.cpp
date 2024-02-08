@@ -137,12 +137,12 @@ QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
 }
 
-QgsProcessingContext::LogLevel QgsProcessingContext::logLevel() const
+Qgis::ProcessingLogLevel QgsProcessingContext::logLevel() const
 {
   return mLogLevel;
 }
 
-void QgsProcessingContext::setLogLevel( LogLevel level )
+void QgsProcessingContext::setLogLevel( Qgis::ProcessingLogLevel level )
 {
   mLogLevel = level;
 }

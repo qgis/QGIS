@@ -48,8 +48,8 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
 
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPolygon; }
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override { return Qgis::ProcessingSourceType::VectorPolygon; }
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override { Q_UNUSED( inputWkbType ) return Qgis::WkbType::MultiPolygon; }
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

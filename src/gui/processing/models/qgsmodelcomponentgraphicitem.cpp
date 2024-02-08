@@ -27,6 +27,7 @@
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgroupboxdefinitionwidget.h"
+#include "qgsmessagelog.h"
 
 #include <QSvgRenderer>
 #include <QPicture>
@@ -962,7 +963,7 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
         params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition * param )
         {
-          return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
+          return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination();
         } ), params.end() );
         return params.size();
       }
@@ -1012,7 +1013,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
         params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition * param )
         {
-          return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
+          return param->flags() & Qgis::ProcessingParameterFlag::Hidden || param->isDestination();
         } ), params.end() );
 
         if ( index >= params.length() )

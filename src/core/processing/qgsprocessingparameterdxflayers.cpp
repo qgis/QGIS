@@ -35,7 +35,7 @@ QString QgsProcessingParameterDxfLayers::type() const
 bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+    return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) ) )
   {
@@ -45,7 +45,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
   if ( input.type() == QVariant::String )
   {
     if ( input.toString().isEmpty() )
-      return mFlags & FlagOptional;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
     if ( !context )
       return true;
@@ -56,7 +56,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
   else if ( input.type() == QVariant::List )
   {
     if ( input.toList().isEmpty() )
-      return mFlags & FlagOptional;;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
     const QVariantList layerList = input.toList();
     for ( const QVariant &variantLayer : layerList )
@@ -106,7 +106,7 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
   {
     const auto constToStringList = input.toStringList();
     if ( constToStringList.isEmpty() )
-      return mFlags & FlagOptional;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
     if ( !context )
       return true;

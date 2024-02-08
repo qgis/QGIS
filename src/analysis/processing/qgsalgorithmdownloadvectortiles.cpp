@@ -84,10 +84,10 @@ QgsDownloadVectorTilesAlgorithm *QgsDownloadVectorTilesAlgorithm::createInstance
 
 void QgsDownloadVectorTilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QVariant(), false, QList<int>() << QgsProcessing::TypeVectorTile ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QVariant(), false, QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorTile ) ) );
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), QgsProcessingParameterNumber::Integer, 10, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_LIMIT" ), QObject::tr( "Tile limit" ), QgsProcessingParameterNumber::Integer, 100, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level to download" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_LIMIT" ), QObject::tr( "Tile limit" ), Qgis::ProcessingNumberParameterType::Integer, 100, false, 0 ) );
   addParameter( new QgsProcessingParameterVectorTileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ) ) );
 }
 

@@ -116,7 +116,7 @@ the given ``format``.
 .. versionadded:: 3.2
 %End
 
-    QgsProcessingContext::LogLevel logLevel() const;
+    Qgis::ProcessingLogLevel logLevel() const;
 %Docstring
 Returns the logging level to use when running algorithms from the dialog.
 
@@ -125,7 +125,7 @@ Returns the logging level to use when running algorithms from the dialog.
 .. versionadded:: 3.20
 %End
 
-    void setLogLevel( QgsProcessingContext::LogLevel level );
+    void setLogLevel( Qgis::ProcessingLogLevel level );
 %Docstring
 Sets the logging ``level`` to use when running algorithms from the dialog.
 

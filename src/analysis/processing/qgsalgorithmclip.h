@@ -47,7 +47,7 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
     QgsClipAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
-    QgsProcessingAlgorithm::Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,

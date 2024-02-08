@@ -59,11 +59,11 @@ QgsVoronoiPolygonsAlgorithm *QgsVoronoiPolygonsAlgorithm::createInstance() const
 
 void QgsVoronoiPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "BUFFER" ), QObject::tr( "Buffer region (% of extent)" ), QgsProcessingParameterNumber::Double, 0, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double, 0, true, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "BUFFER" ), QObject::tr( "Buffer region (% of extent)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "COPY_ATTRIBUTES" ), QObject::tr( "Copy attributes from input features" ), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Voronoi polygons" ), QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Voronoi polygons" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
 bool QgsVoronoiPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -111,7 +111,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsFeatureRequest request;
-  QgsFeatureIterator it = mSource->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = mSource->getFeatures( request, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
   QgsGeometry allPoints;
   QHash< QgsFeatureId, QgsAttributes > attributeCache;
@@ -208,7 +208,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
 
   long long i = 0;
   const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
-  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setNoAttributes(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {

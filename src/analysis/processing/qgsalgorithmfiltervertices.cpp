@@ -50,14 +50,14 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
   auto min = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN" ),
-             QObject::tr( "Minimum" ), QgsProcessingParameterNumber::Double, QVariant(), true );
+             QObject::tr( "Minimum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   min->setIsDynamic( true );
   min->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Minimum" ), QObject::tr( "Minimum value" ), QgsPropertyDefinition::Double ) );
   min->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( min.release() );
 
   auto max = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX" ),
-             QObject::tr( "Maximum" ), QgsProcessingParameterNumber::Double, QVariant(), true );
+             QObject::tr( "Maximum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   max->setIsDynamic( true );
   max->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Maximum" ), QObject::tr( "Maximum value" ), QgsPropertyDefinition::Double ) );
   max->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

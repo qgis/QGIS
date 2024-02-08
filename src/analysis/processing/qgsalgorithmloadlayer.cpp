@@ -24,9 +24,9 @@ QString QgsLoadLayerAlgorithm::name() const
   return QStringLiteral( "loadlayer" );
 }
 
-QgsProcessingAlgorithm::Flags QgsLoadLayerAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsLoadLayerAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | FlagNotAvailableInStandaloneTool;
+  return Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool;
 }
 
 QString QgsLoadLayerAlgorithm::displayName() const

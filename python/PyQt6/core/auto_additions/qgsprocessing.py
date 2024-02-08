@@ -1,17 +1,4 @@
 # The following has been generated automatically from src/core/processing/qgsprocessing.h
-QgsProcessing.TypeMapLayer = QgsProcessing.SourceType.TypeMapLayer
-QgsProcessing.TypeVectorAnyGeometry = QgsProcessing.SourceType.TypeVectorAnyGeometry
-QgsProcessing.TypeVectorPoint = QgsProcessing.SourceType.TypeVectorPoint
-QgsProcessing.TypeVectorLine = QgsProcessing.SourceType.TypeVectorLine
-QgsProcessing.TypeVectorPolygon = QgsProcessing.SourceType.TypeVectorPolygon
-QgsProcessing.TypeRaster = QgsProcessing.SourceType.TypeRaster
-QgsProcessing.TypeFile = QgsProcessing.SourceType.TypeFile
-QgsProcessing.TypeVector = QgsProcessing.SourceType.TypeVector
-QgsProcessing.TypeMesh = QgsProcessing.SourceType.TypeMesh
-QgsProcessing.TypePlugin = QgsProcessing.SourceType.TypePlugin
-QgsProcessing.TypePointCloud = QgsProcessing.SourceType.TypePointCloud
-QgsProcessing.TypeAnnotation = QgsProcessing.SourceType.TypeAnnotation
-QgsProcessing.TypeVectorTile = QgsProcessing.SourceType.TypeVectorTile
 # monkey patching scoped based enum
 QgsProcessing.PythonQgsProcessingAlgorithmSubclass = QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass
 QgsProcessing.PythonQgsProcessingAlgorithmSubclass.is_monkey_patched = True

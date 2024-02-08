@@ -49,8 +49,8 @@ QString QgsLineDensityAlgorithm::groupId() const
 
 void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Numeric, false, true ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false ) );
 

@@ -70,7 +70,7 @@ QgsDensifyGeometriesByCountAlgorithm *QgsDensifyGeometriesByCountAlgorithm::crea
 
 QList<int> QgsDensifyGeometriesByCountAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &configuration )
@@ -78,7 +78,7 @@ void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &co
   Q_UNUSED( configuration )
   std::unique_ptr<QgsProcessingParameterNumber> verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ),
       QObject::tr( "Number of vertices to add" ),
-      QgsProcessingParameterNumber::Integer,
+      Qgis::ProcessingNumberParameterType::Integer,
       1, false, 1, 10000000 );
   verticesCnt->setIsDynamic( true );
   verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );

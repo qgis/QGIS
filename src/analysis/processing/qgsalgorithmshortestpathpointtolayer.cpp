@@ -52,9 +52,9 @@ void QgsShortestPathPointToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addCommonParams();
   addParameter( new QgsProcessingParameterPoint( QStringLiteral( "START_POINT" ), QObject::tr( "Start point" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "END_POINTS" ), QObject::tr( "Vector layer with end points" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "END_POINTS" ), QObject::tr( "Vector layer with end points" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest path" ), QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
 }
 
 QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

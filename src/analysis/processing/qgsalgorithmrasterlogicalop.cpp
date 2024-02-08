@@ -43,18 +43,18 @@ QString QgsRasterBooleanLogicAlgorithmBase::groupId() const
 void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layers" ), QgsProcessing::TypeRaster ) );
+                QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NODATA_AS_FALSE" ), QObject::tr( "Treat NoData values as false" ), false ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
-      QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999 );
-  noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+      QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
+  noDataValueParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( noDataValueParam.release() );
 
   std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
-  typeChoice->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  typeChoice->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( typeChoice.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),

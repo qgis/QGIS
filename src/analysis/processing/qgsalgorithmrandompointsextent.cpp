@@ -53,15 +53,15 @@ void QgsRandomPointsExtentAlgorithm::initAlgorithm( const QVariantMap & )
 {
 
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Input extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MIN_DISTANCE" ), QObject::tr( "Minimum distance between points" ), 0, QStringLiteral( "TARGET_CRS" ), true, 0 ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ), false ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_ATTEMPTS" ), QObject::tr( "Maximum number of search attempts given the minimum distance" ), QgsProcessingParameterNumber::Integer, 200, true, 1 );
-  maxAttempts_param->setFlags( maxAttempts_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_ATTEMPTS" ), QObject::tr( "Maximum number of search attempts given the minimum distance" ), Qgis::ProcessingNumberParameterType::Integer, 200, true, 1 );
+  maxAttempts_param->setFlags( maxAttempts_param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maxAttempts_param.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsRandomPointsExtentAlgorithm::shortHelpString() const

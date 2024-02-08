@@ -79,7 +79,7 @@ class QgsProcessingExec
     Q_DECLARE_FLAGS( Flags, Flag )
 
     QgsProcessingExec();
-    int run( const QStringList &args, QgsProcessingContext::LogLevel logLevel, Flags flags );
+    int run( const QStringList &args, Qgis::ProcessingLogLevel logLevel, Flags flags );
     static void showUsage( const QString &appName );
     static void showVersionInformation();
 
@@ -95,7 +95,7 @@ class QgsProcessingExec
                  const QString &ellipsoid,
                  Qgis::DistanceUnit distanceUnit,
                  Qgis::AreaUnit areaUnit,
-                 QgsProcessingContext::LogLevel logLevel,
+                 Qgis::ProcessingLogLevel logLevel,
                  const QString &projectPath = QString() );
 
     void addVersionInformation( QVariantMap &json );

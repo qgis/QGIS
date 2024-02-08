@@ -39,17 +39,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
   public:
 
     /**
-     * Flags indicating how and when an provider operates and should be exposed to users
-     * \since QGIS 3.14
-     */
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagDeemphasiseSearchResults = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
-      FlagCompatibleWithVirtualRaster = 1 << 2, //!< The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
-    /**
      * Constructor for QgsProcessingProvider.
      */
     QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS = nullptr );
@@ -78,7 +67,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Default is no flags.
      * \since QGIS 3.14
      */
-    virtual Flags flags() const SIP_HOLDGIL;
+    virtual Qgis::ProcessingProviderFlags flags() const SIP_HOLDGIL;
 
     /**
      * Returns the unique provider id, used for identifying the provider. This string
@@ -369,8 +358,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     QgsProcessingProvider( const QgsProcessingProvider &other );
 #endif
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingProvider::Flags )
 
 #endif // QGSPROCESSINGPROVIDER_H
 

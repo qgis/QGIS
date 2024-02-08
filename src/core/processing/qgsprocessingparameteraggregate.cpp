@@ -35,7 +35,7 @@ QString QgsProcessingParameterAggregate::type() const
 bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
-    return mFlags & FlagOptional;
+    return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
   if ( input.type() != QVariant::List )
     return false;
@@ -77,7 +77,7 @@ QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOu
       if ( !mParentLayerParameterName.isEmpty() )
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
-      if ( mFlags & FlagOptional )
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
         code += QLatin1String( ", optional=True" );
       code += ')';
       return code;

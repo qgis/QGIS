@@ -77,13 +77,13 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
         0
       );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
-  methodParam->setFlags( methodParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  methodParam->setFlags( methodParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( methodParam.release() );
 
   std::unique_ptr< QgsProcessingParameterString > dataParam = std::make_unique < QgsProcessingParameterString >(
         QStringLiteral( "DATA" ), tr( "Data" ), QVariant(), false, true );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
-  dataParam->setFlags( dataParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  dataParam->setFlags( dataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dataParam.release() );
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ),

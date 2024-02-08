@@ -60,7 +60,7 @@ QgsPdalThinByDecimateAlgorithm *QgsPdalThinByDecimateAlgorithm::createInstance()
 void QgsPdalThinByDecimateAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points to skip" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points to skip" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
   createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Thinned (by decimation)" ) ) );
 }

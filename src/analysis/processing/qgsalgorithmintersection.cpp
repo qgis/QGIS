@@ -62,21 +62,21 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterField(
                   QStringLiteral( "INPUT_FIELDS" ),
                   QObject::tr( "Input fields to keep (leave empty to keep all fields)" ), QVariant(),
-                  QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
+                  QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
   addParameter( new QgsProcessingParameterField(
                   QStringLiteral( "OVERLAY_FIELDS" ),
                   QObject::tr( "Overlay fields to keep (leave empty to keep all fields)" ), QVariant(),
-                  QStringLiteral( "OVERLAY" ), QgsProcessingParameterField::Any, true, true ) );
+                  QStringLiteral( "OVERLAY" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
-  prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  prefix->setFlags( prefix->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( prefix.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
-      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
-  gridSize->setFlags( gridSize->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+      QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }
 

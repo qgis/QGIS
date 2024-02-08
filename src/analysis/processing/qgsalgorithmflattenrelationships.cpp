@@ -59,17 +59,17 @@ QString QgsFlattenRelationshipsAlgorithm::shortHelpString() const
                       "the attributes for the related features." );
 }
 
-QgsProcessingAlgorithm::Flags QgsFlattenRelationshipsAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsFlattenRelationshipsAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 void QgsFlattenRelationshipsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
+                QObject::tr( "Input layer" ), QList< int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), QgsProcessing::TypeVectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
 
 QgsFlattenRelationshipsAlgorithm *QgsFlattenRelationshipsAlgorithm::createInstance() const
@@ -121,7 +121,7 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
 
   // Create output vector layer with additional attributes
   const double step = input->featureCount() > 0 ? 100.0 / input->featureCount() : 1;
-  QgsFeatureIterator features = input->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator features = input->getFeatures( QgsFeatureRequest(), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   long long i = 0;
   QgsFeature feat;
   while ( features.nextFeature( feat ) )

@@ -45,7 +45,7 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsSumLineLengthAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QList<int> inputLayerTypes() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
 
 

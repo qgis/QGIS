@@ -49,7 +49,7 @@ void QgsFillNoDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QStringLiteral( "Raster input" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band Number" ), 1, QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FILL_VALUE" ), QObject::tr( "Fill value" ), QgsProcessingParameterNumber::Double, 1, false ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FILL_VALUE" ), QObject::tr( "Fill value" ), Qgis::ProcessingNumberParameterType::Double, 1, false ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
 }
 

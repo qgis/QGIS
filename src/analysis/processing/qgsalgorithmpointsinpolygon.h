@@ -46,7 +46,7 @@ class QgsPointsInPolygonAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortDescription() const override;
     QgsPointsInPolygonAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
-    QgsProcessing::SourceType outputLayerType() const override;
+    Qgis::ProcessingSourceType outputLayerType() const override;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
 
 

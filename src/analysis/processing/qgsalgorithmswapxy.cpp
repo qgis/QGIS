@@ -73,10 +73,10 @@ bool QgsSwapXYAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   return layer->isSpatial();
 }
 
-QgsProcessingFeatureSource::Flag QgsSwapXYAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsSwapXYAlgorithm::sourceFlags() const
 {
   // this algorithm doesn't care about invalid geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureList QgsSwapXYAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )

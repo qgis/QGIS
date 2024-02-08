@@ -65,10 +65,10 @@ QgsExtractBinaryFieldAlgorithm *QgsExtractBinaryFieldAlgorithm::createInstance()
 void QgsExtractBinaryFieldAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
+                QObject::tr( "Input layer" ), QList< int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
 
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Binary field" ), QVariant(),
-                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any ) );
+                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any ) );
 
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME" ), QObject::tr( "File name" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
@@ -105,7 +105,7 @@ QVariantMap QgsExtractBinaryFieldAlgorithm::processAlgorithm( const QVariantMap 
   if ( !filenameExpression.needsGeometry() )
     request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
-  QgsFeatureIterator features = input->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  QgsFeatureIterator features = input->getFeatures( request, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   const double step = input->featureCount() > 0 ? 100.0 / input->featureCount() : 1;
   int i = 0;
   QgsFeature feat;

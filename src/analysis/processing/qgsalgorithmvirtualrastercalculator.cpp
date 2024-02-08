@@ -20,9 +20,9 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsVirtualRasterCalculatorAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsVirtualRasterCalculatorAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | FlagHideFromModeler;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::HideFromModeler;
 }
 
 QString QgsVirtualRasterCalculatorAlgorithm::name() const
@@ -62,12 +62,12 @@ QgsVirtualRasterCalculatorAlgorithm *QgsVirtualRasterCalculatorAlgorithm::create
 
 void QgsVirtualRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::SourceType::TypeRaster ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(),  QStringLiteral( "LAYERS" ), false, Qgis::ExpressionType::RasterCalculator ) );
   std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
   addParameter( extentParam.release() );
-  std::unique_ptr<QgsProcessingParameterNumber> cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0.0 );
+  std::unique_ptr<QgsProcessingParameterNumber> cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
   cellSizeParam->setHelp( QObject::tr( "Cell size of the output layer. If not specified, the smallest cell size from the input layers will be used" ) );
   addParameter( cellSizeParam.release() );
   std::unique_ptr<QgsProcessingParameterCrs> crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
@@ -180,9 +180,9 @@ QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVarian
   return outputs;
 }
 
-QgsProcessingAlgorithm::Flags QgsVirtualRasterCalculatorModelerAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsVirtualRasterCalculatorModelerAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | FlagHideFromToolbox;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::HideFromToolbox;
 }
 
 QString QgsVirtualRasterCalculatorModelerAlgorithm::name() const

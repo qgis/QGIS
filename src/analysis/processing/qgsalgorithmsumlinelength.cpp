@@ -76,12 +76,12 @@ QgsSumLineLengthAlgorithm *QgsSumLineLengthAlgorithm::createInstance() const
 
 QList<int> QgsSumLineLengthAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << QgsProcessing::TypeVectorPolygon;
+  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
-QgsProcessing::SourceType QgsSumLineLengthAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsSumLineLengthAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 QgsCoordinateReferenceSystem QgsSumLineLengthAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
@@ -111,13 +111,13 @@ void QgsSumLineLengthAlgorithm::initParameters( const QVariantMap &configuration
   mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
 
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
-                QObject::tr( "Lines" ), QList< int > () << QgsProcessing::TypeVectorLine ) );
+                QObject::tr( "Lines" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
   if ( mIsInPlace )
   {
     addParameter( new QgsProcessingParameterField( QStringLiteral( "LEN_FIELD" ),
-                  QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ), inputParameterName(), QgsProcessingParameterField::Any, false, true ) );
+                  QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
     addParameter( new QgsProcessingParameterField( QStringLiteral( "COUNT_FIELD" ),
-                  QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ), inputParameterName(), QgsProcessingParameterField::Any, false, true ) );
+                  QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   }
   else
   {

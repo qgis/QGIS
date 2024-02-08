@@ -957,8 +957,8 @@ void TestQgsProcessingAlgsPt1::featureFilterAlg()
   QCOMPARE( outputDef->type(), QStringLiteral( "outputVector" ) );
 
   auto outputParamDef = filterAlg->parameterDefinition( "OUTPUT_test" );
-  Q_ASSERT( outputParamDef->flags() & QgsProcessingParameterDefinition::FlagIsModelOutput );
-  Q_ASSERT( outputParamDef->flags() & QgsProcessingParameterDefinition::FlagHidden );
+  Q_ASSERT( outputParamDef->flags() & Qgis::ProcessingParameterFlag::IsModelOutput );
+  Q_ASSERT( outputParamDef->flags() & Qgis::ProcessingParameterFlag::Hidden );
 
   QVariantMap output2;
   output2.insert( QStringLiteral( "name" ), QStringLiteral( "nonmodeloutput" ) );
@@ -978,8 +978,8 @@ void TestQgsProcessingAlgsPt1::featureFilterAlg()
   QCOMPARE( outputDef2->type(), QStringLiteral( "outputVector" ) );
 
   auto outputParamDef2 = filterAlg2->parameterDefinition( "OUTPUT_nonmodeloutput" );
-  Q_ASSERT( !outputParamDef2->flags().testFlag( QgsProcessingParameterDefinition::FlagIsModelOutput ) );
-  Q_ASSERT( outputParamDef2->flags() & QgsProcessingParameterDefinition::FlagHidden );
+  Q_ASSERT( !outputParamDef2->flags().testFlag( Qgis::ProcessingParameterFlag::IsModelOutput ) );
+  Q_ASSERT( outputParamDef2->flags() & Qgis::ProcessingParameterFlag::Hidden );
 }
 
 void TestQgsProcessingAlgsPt1::transformAlg()

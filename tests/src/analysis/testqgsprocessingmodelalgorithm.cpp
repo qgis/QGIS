@@ -42,12 +42,12 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
     QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
-    Flags flags() const override { return mFlags; }
+    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
     DummyAlgorithm2 *createInstance() const override { return new DummyAlgorithm2( name() ); }
 
     QString mName;
 
-    Flags mFlags;
+    Qgis::ProcessingAlgorithmFlags mFlags;
 
 };
 
@@ -1069,11 +1069,11 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QVERIFY( alg7.destinationParameterDefinitions().at( 0 )->defaultValue().isNull() );
-  QVERIFY( !( alg7.destinationParameterDefinitions().at( 0 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( alg7.destinationParameterDefinitions().at( 0 )->flags() & Qgis::ProcessingParameterFlag::Optional ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "my_output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->defaultValue().toString(), QStringLiteral( "my value" ) );
-  QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & Qgis::ProcessingParameterFlag::Optional ) );
   QCOMPARE( alg7.outputDefinitions().count(), 2 );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
@@ -1103,10 +1103,10 @@ void TestQgsProcessingModelAlgorithm::modelerAlgorithm()
   alg7c3outputs.insert( QStringLiteral( "my_output3" ), alg7c3out1 );
   alg7c3.setModelOutputs( alg7c3outputs );
   alg7.addChildAlgorithm( alg7c3 );
-  QVERIFY( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( alg7.destinationParameterDefinitions().at( 1 )->flags() & Qgis::ProcessingParameterFlag::Optional );
   alg7.childAlgorithm( alg7c3.childId() ).modelOutput( QStringLiteral( "my_output3" ) ).setMandatory( true );
   alg7.updateDestinationParameters();
-  QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( alg7.destinationParameterDefinitions().at( 1 )->flags() & Qgis::ProcessingParameterFlag::Optional ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelExecution()
@@ -1140,9 +1140,9 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QgsProcessingModelParameter sourceParam( "SOURCE_LAYER" );
   sourceParam.comment()->setDescription( QStringLiteral( "an input" ) );
   model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), sourceParam );
-  model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), QgsProcessingParameterNumber::Double ), QgsProcessingModelParameter( "DIST" ) );
+  model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), Qgis::ProcessingNumberParameterType::Double ), QgsProcessingModelParameter( "DIST" ) );
   QgsProcessingParameterCrs *p = new QgsProcessingParameterCrs( "CRS", QString(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
-  p->setFlags( p->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  p->setFlags( p->flags() | Qgis::ProcessingParameterFlag::Advanced );
   model2.addModelParameter( p, QgsProcessingModelParameter( "CRS" ) );
   QgsProcessingModelChildAlgorithm alg2c1;
   QgsExpressionContext expContext;
@@ -1742,72 +1742,72 @@ void TestQgsProcessingModelAlgorithm::modelVectorOutputIsCompatibleType()
   // if there's doubt then we default to returning true.
 
   // empty acceptable type list = all are compatible
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), QgsProcessing::TypeVectorLine ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), QgsProcessing::TypeMapLayer ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( QList<int>(), Qgis::ProcessingSourceType::MapLayer ) );
 
   // accept any vector
   QList< int > dataTypes;
-  dataTypes << QgsProcessing::TypeVector;
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorLine ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeMapLayer ) );
+  dataTypes << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::MapLayer ) );
 
   // accept any vector with geometry
   dataTypes.clear();
-  dataTypes << QgsProcessing::TypeVectorAnyGeometry;
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorLine ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeMapLayer ) );
+  dataTypes << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::MapLayer ) );
 
   // accept any point vector
   dataTypes.clear();
-  dataTypes << QgsProcessing::TypeVectorPoint;
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorLine ) );
-  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeMapLayer ) );
+  dataTypes << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::MapLayer ) );
 
   // accept any line vector
   dataTypes.clear();
-  dataTypes << QgsProcessing::TypeVectorLine;
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorLine ) );
-  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeMapLayer ) );
+  dataTypes << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::MapLayer ) );
 
   // accept any polygon vector
   dataTypes.clear();
-  dataTypes << QgsProcessing::TypeVectorPolygon;
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorLine ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeMapLayer ) );
+  dataTypes << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( !QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::MapLayer ) );
 
   // accept any map layer
   dataTypes.clear();
-  dataTypes << QgsProcessing::TypeMapLayer;
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVector ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorAnyGeometry ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPoint ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorLine ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeVectorPolygon ) );
-  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, QgsProcessing::TypeMapLayer ) );
+  dataTypes << static_cast< int >( Qgis::ProcessingSourceType::MapLayer );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::Vector ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPoint ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorLine ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::VectorPolygon ) );
+  QVERIFY( QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( dataTypes, Qgis::ProcessingSourceType::MapLayer ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelAcceptableValues()
@@ -1899,19 +1899,19 @@ void TestQgsProcessingModelAlgorithm::modelAcceptableValues()
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
@@ -1919,25 +1919,25 @@ void TestQgsProcessingModelAlgorithm::modelAcceptableValues()
   // inputs are limited to vector layers
   m2.removeModelParameter( vlInput.parameterName() );
   m2.removeModelParameter( fsInput.parameterName() );
-  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << QgsProcessing::TypeVector ), vlInput );
-  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << QgsProcessing::TypeVector ), fsInput );
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ), vlInput );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ), fsInput );
   sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
@@ -1945,25 +1945,25 @@ void TestQgsProcessingModelAlgorithm::modelAcceptableValues()
   // inputs are limited to vector layers with geometries
   m2.removeModelParameter( vlInput.parameterName() );
   m2.removeModelParameter( fsInput.parameterName() );
-  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ), vlInput );
-  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ), fsInput );
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ), vlInput );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ), fsInput );
   sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
@@ -1971,29 +1971,29 @@ void TestQgsProcessingModelAlgorithm::modelAcceptableValues()
   // inputs are limited to vector layers with lines
   m2.removeModelParameter( vlInput.parameterName() );
   m2.removeModelParameter( fsInput.parameterName() );
-  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << QgsProcessing::TypeVectorLine ), vlInput );
-  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << QgsProcessing::TypeVectorLine ), fsInput );
+  m2.addModelParameter( new QgsProcessingParameterVectorLayer( "vl", QString(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ), vlInput );
+  m2.addModelParameter( new QgsProcessingParameterFeatureSource( "fs", QString(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ), fsInput );
   sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source" );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPoint );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) );
   QCOMPARE( sources.count(), 0 );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorPolygon );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) );
   QCOMPARE( sources.count(), 0 );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorLine );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVector );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeVectorAnyGeometry );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
-  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << QgsProcessing::TypeMapLayer );
+  sources = m2.availableSourcesForChild( QString(), QStringList() << "vector" << "source", QStringList(), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::MapLayer ) );
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );

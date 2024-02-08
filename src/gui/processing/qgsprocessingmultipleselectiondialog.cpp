@@ -339,7 +339,7 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
 
 void QgsProcessingMultipleInputPanelWidget::setProject( QgsProject *project )
 {
-  if ( mParameter->layerType() != QgsProcessing::TypeFile )
+  if ( mParameter->layerType() != Qgis::ProcessingSourceType::File )
     populateFromProject( project );
 }
 
@@ -528,10 +528,10 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 
   switch ( mParameter->layerType() )
   {
-    case QgsProcessing::TypeFile:
+    case Qgis::ProcessingSourceType::File:
       break;
 
-    case QgsProcessing::TypeRaster:
+    case Qgis::ProcessingSourceType::Raster:
     {
       const QList<QgsRasterLayer *> options = QgsProcessingUtils::compatibleRasterLayers( project, false );
       for ( const QgsRasterLayer *layer : options )
@@ -541,7 +541,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypeMesh:
+    case Qgis::ProcessingSourceType::Mesh:
     {
       const QList<QgsMeshLayer *> options = QgsProcessingUtils::compatibleMeshLayers( project, false );
       for ( const QgsMeshLayer *layer : options )
@@ -552,7 +552,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypePlugin:
+    case Qgis::ProcessingSourceType::Plugin:
     {
       const QList<QgsPluginLayer *> options = QgsProcessingUtils::compatiblePluginLayers( project, false );
       for ( const QgsPluginLayer *layer : options )
@@ -563,7 +563,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypeAnnotation:
+    case Qgis::ProcessingSourceType::Annotation:
     {
       const QList<QgsAnnotationLayer *> options = QgsProcessingUtils::compatibleAnnotationLayers( project, false );
       for ( const QgsAnnotationLayer *layer : options )
@@ -574,7 +574,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypePointCloud:
+    case Qgis::ProcessingSourceType::PointCloud:
     {
       const QList<QgsPointCloudLayer *> options = QgsProcessingUtils::compatiblePointCloudLayers( project, false );
       for ( const QgsPointCloudLayer *layer : options )
@@ -585,7 +585,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypeVectorTile:
+    case Qgis::ProcessingSourceType::VectorTile:
     {
       const QList<QgsVectorTileLayer *> options = QgsProcessingUtils::compatibleVectorTileLayers( project, false );
       for ( const QgsVectorTileLayer *layer : options )
@@ -596,8 +596,8 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypeVector:
-    case QgsProcessing::TypeVectorAnyGeometry:
+    case Qgis::ProcessingSourceType::Vector:
+    case Qgis::ProcessingSourceType::VectorAnyGeometry:
     {
       const QList<QgsVectorLayer *> options = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() );
       for ( const QgsVectorLayer *layer : options )
@@ -608,7 +608,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypeMapLayer:
+    case Qgis::ProcessingSourceType::MapLayer:
     {
       const QList<QgsVectorLayer *> vectors = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() );
       for ( const QgsVectorLayer *layer : vectors )
@@ -644,11 +644,11 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
-    case QgsProcessing::TypeVectorPoint:
-    case QgsProcessing::TypeVectorLine:
-    case QgsProcessing::TypeVectorPolygon:
+    case Qgis::ProcessingSourceType::VectorPoint:
+    case Qgis::ProcessingSourceType::VectorLine:
+    case Qgis::ProcessingSourceType::VectorPolygon:
     {
-      const QList<QgsVectorLayer *> vectors = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() << mParameter->layerType() );
+      const QList<QgsVectorLayer *> vectors = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() << static_cast< int >( mParameter->layerType() ) );
       for ( const QgsVectorLayer *layer : vectors )
       {
         addLayer( layer );

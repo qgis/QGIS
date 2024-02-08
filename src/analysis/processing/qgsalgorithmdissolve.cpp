@@ -24,7 +24,7 @@
 //
 
 QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-    const std::function<QgsGeometry( const QVector< QgsGeometry >& )> &collector, int maxQueueLength, QgsProcessingFeatureSource::Flags sourceFlags, bool separateDisjoint )
+    const std::function<QgsGeometry( const QVector< QgsGeometry >& )> &collector, int maxQueueLength, Qgis::ProcessingFeatureSourceFlags sourceFlags, bool separateDisjoint )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -230,11 +230,11 @@ void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Dissolve field(s)" ), QVariant(),
-                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
+                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   std::unique_ptr< QgsProcessingParameterBoolean > disjointParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SEPARATE_DISJOINT" ),
       QObject::tr( "Keep disjoint features separate" ), false );
-  disjointParam->setFlags( disjointParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  disjointParam->setFlags( disjointParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( disjointParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
@@ -290,7 +290,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
         throw QgsProcessingException( QObject::tr( "The algorithm returned no output." ) );
     }
     return result;
-  }, 10000, QgsProcessingFeatureSource::Flags(), separateDisjoint );
+  }, 10000, Qgis::ProcessingFeatureSourceFlags(), separateDisjoint );
 }
 
 //
@@ -327,7 +327,7 @@ QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters
   return processCollection( parameters, context, feedback, []( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
     return QgsGeometry::collectGeometry( parts );
-  }, 0, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+  }, 0, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 }
 
 
@@ -335,7 +335,7 @@ void QgsCollectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
-                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
+                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Collected" ) ) );
 }

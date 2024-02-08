@@ -38,7 +38,7 @@ class QgsRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -63,7 +63,7 @@ class QgsRasterCalculatorModelerAlgorithm : public QgsRasterCalculatorAlgorithm
   public:
 
     QgsRasterCalculatorModelerAlgorithm() = default;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

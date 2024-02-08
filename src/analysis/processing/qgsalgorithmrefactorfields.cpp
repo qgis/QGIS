@@ -63,12 +63,12 @@ QString QgsRefactorFieldsAlgorithm::outputName() const
 
 QList<int> QgsRefactorFieldsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVector;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
 }
 
-QgsProcessingFeatureSource::Flag QgsRefactorFieldsAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsRefactorFieldsAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsRefactorFieldsAlgorithm *QgsRefactorFieldsAlgorithm::createInstance() const

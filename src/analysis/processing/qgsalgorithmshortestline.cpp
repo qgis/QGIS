@@ -74,12 +74,12 @@ QgsShortestLineAlgorithm *QgsShortestLineAlgorithm::createInstance() const
 
 void QgsShortestLineAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Distance to Nearest Point on feature" << "Distance to Feature Centroid", false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum distance" ), QVariant(), QString( "SOURCE" ), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ), QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ), Qgis::ProcessingSourceType::VectorLine ) );
 }
 
 bool QgsShortestLineAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

@@ -74,13 +74,13 @@ QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const
 
 QList<int> QgsSmoothAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > iterations = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ITERATIONS" ),
-      QObject::tr( "Iterations" ), QgsProcessingParameterNumber::Integer,
+      QObject::tr( "Iterations" ), Qgis::ProcessingNumberParameterType::Integer,
       1, false, 1, 10 );
   iterations->setIsDynamic( true );
   iterations->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ITERATIONS" ), QObject::tr( "Iterations" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
@@ -88,7 +88,7 @@ void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
   addParameter( iterations.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > offset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OFFSET" ),
-      QObject::tr( "Offset" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Offset" ), Qgis::ProcessingNumberParameterType::Double,
       0.25, false, 0.0, 0.5 );
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsPropertyDefinition::Double0To1 ) );
@@ -96,7 +96,7 @@ void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
   addParameter( offset.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > maxAngle = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_ANGLE" ),
-      QObject::tr( "Maximum node angle to smooth" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Maximum node angle to smooth" ), Qgis::ProcessingNumberParameterType::Double,
       180.0, false, 0.0, 180.0 );
   maxAngle->setIsDynamic( true );
   maxAngle->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MAX_ANGLE" ), QObject::tr( "Maximum node angle to smooth" ), QgsPropertyDefinition::Rotation ) );
@@ -151,9 +151,9 @@ QgsFeatureList QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, Qg
   return QgsFeatureList() << f;
 }
 
-QgsProcessingFeatureSource::Flag QgsSmoothAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsSmoothAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 ///@endcond

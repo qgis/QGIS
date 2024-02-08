@@ -26,7 +26,7 @@ QgsCombineStylesAlgorithm::~QgsCombineStylesAlgorithm() = default;
 
 void QgsCombineStylesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input databases" ), QgsProcessing::TypeFile ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input databases" ), Qgis::ProcessingSourceType::File ) );
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ),
                 QObject::tr( "Style files (*.xml)" ) ) );
