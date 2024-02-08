@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QPageLayout>
+#include <QSize>
 #include <memory>
 
 SIP_IF_MODULE( HAVE_WEBENGINE_SIP )
@@ -62,27 +63,48 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      *
      * The \a baseUrl is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
      *
-     * The html is loaded immediately; external objects are loaded asynchronously.
+     * If \a blocking is TRUE then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+     *
+     * \warning Setting \a blocking to TRUE involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+     *
+     * \returns TRUE if loading was successful
      */
-    void setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl() );
+    bool setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl(), bool blocking = false );
 
     /**
      * Sets the content of this page to \a html.
      *
      * The \a baseUrl is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
      *
-     * The html is loaded immediately; external objects are loaded asynchronously.
+     * If \a blocking is TRUE then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
      *
      * \note This function works only for HTML, for other mime types (such as XHTML and SVG) setContent() should be used instead.
+     *
+     * \warning Setting \a blocking to TRUE involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+     *
+     * \returns TRUE if loading was successful
      */
-    void setHtml( const QString &html, const QUrl &baseUrl = QUrl() );
+    bool setHtml( const QString &html, const QUrl &baseUrl = QUrl(), bool blocking = false );
 
     /**
      * Sets the \a url of the web page to be displayed.
      *
      * Setting this property clears the page and loads the URL.
+     *
+     * If \a blocking is TRUE then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+     *
+     * \warning Setting \a blocking to TRUE involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+     *
+     * \returns TRUE if loading was successful
      */
-    void setUrl( const QUrl &url );
+    bool setUrl( const QUrl &url, bool blocking = false );
+
+    /**
+     * Returns the size of the page document, in pixels.
+     *
+     * \warning If the page content was NOT loaded using a blocking method, then this method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+     */
+    QSize documentSize() const;
 
     /**
      * Renders the web page contents to a \a painter. Content will be rendered as vector objects.
@@ -124,7 +146,10 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
 
   private:
 
+    void handlePostBlockingLoadOperations();
+
     std::unique_ptr< QWebEnginePage > mPage;
+    mutable QSize mCachedSize;
 };
 
 #endif // QGSWEBENGINEPAGE_H

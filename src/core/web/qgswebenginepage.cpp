@@ -18,6 +18,7 @@
 #include "qgswebenginepage.h"
 #include "qgsconfig.h"
 #include <QWebEnginePage>
+#include <QSizeF>
 
 #ifdef HAVE_PDF4QT
 #include "qgspdfrenderer.h"
@@ -44,19 +45,145 @@ QWebEnginePage *QgsWebEnginePage::page()
   return mPage.get();
 }
 
-void QgsWebEnginePage::setContent( const QByteArray &data, const QString &mimeType, const QUrl &baseUrl )
+bool QgsWebEnginePage::setContent( const QByteArray &data, const QString &mimeType, const QUrl &baseUrl, bool blocking )
 {
-  mPage->setContent( data, mimeType, baseUrl );
+  mCachedSize = QSize();
+  if ( blocking )
+  {
+    QEventLoop loop;
+    bool finished = false;
+    bool result = true;
+    connect( mPage.get(), &QWebEnginePage::loadFinished, &loop, [&loop, &finished, &result]( bool ok )
+    {
+      finished = true;
+      result = ok;
+      loop.exit();
+    } );
+    mPage->setContent( data, mimeType, baseUrl );
+    if ( !finished )
+    {
+      loop.exec( QEventLoop::ExcludeUserInputEvents );
+    }
+    if ( result )
+      handlePostBlockingLoadOperations();
+    return result;
+  }
+  else
+  {
+    mPage->setContent( data, mimeType, baseUrl );
+    return true;
+  }
 }
 
-void QgsWebEnginePage::setHtml( const QString &html, const QUrl &baseUrl )
+bool QgsWebEnginePage::setHtml( const QString &html, const QUrl &baseUrl, bool blocking )
 {
-  mPage->setHtml( html, baseUrl );
+  mCachedSize = QSize();
+  if ( blocking )
+  {
+    QEventLoop loop;
+    bool finished = false;
+    bool result = true;
+    connect( mPage.get(), &QWebEnginePage::loadFinished, &loop, [&loop, &finished, &result]( bool ok )
+    {
+      finished = true;
+      result = ok;
+      loop.exit();
+    } );
+    mPage->setHtml( html, baseUrl );
+    if ( !finished )
+    {
+      loop.exec( QEventLoop::ExcludeUserInputEvents );
+    }
+    if ( result )
+      handlePostBlockingLoadOperations();
+
+    return result;
+  }
+  else
+  {
+    mPage->setHtml( html, baseUrl );
+    return true;
+  }
 }
 
-void QgsWebEnginePage::setUrl( const QUrl &url )
+bool QgsWebEnginePage::setUrl( const QUrl &url, bool blocking )
 {
-  mPage->setUrl( url );
+  mCachedSize = QSize();
+  if ( blocking )
+  {
+    QEventLoop loop;
+    bool finished = false;
+    bool result = true;
+    connect( mPage.get(), &QWebEnginePage::loadFinished, &loop, [&loop, &finished, &result]( bool ok )
+    {
+      finished = true;
+      result = ok;
+      loop.exit();
+    } );
+    mPage->setUrl( url );
+    if ( !finished )
+    {
+      loop.exec( QEventLoop::ExcludeUserInputEvents );
+    }
+    if ( result )
+      handlePostBlockingLoadOperations();
+
+    return result;
+  }
+  else
+  {
+    mPage->setUrl( url );
+    return true;
+  }
+}
+
+QSize QgsWebEnginePage::documentSize() const
+{
+  if ( mCachedSize.isValid() )
+    return mCachedSize;
+
+  QEventLoop loop;
+  int width = -1;
+  int height = -1;
+  bool finished = false;
+  mPage->runJavaScript( "[document.documentElement.scrollWidth, document.documentElement.scrollHeight];", [&width, &height, &loop, &finished]( QVariant result )
+  {
+    width = result.toList().value( 0 ).toInt();
+    height = result.toList().value( 1 ).toInt();
+    finished = true;
+    loop.exit();
+  } );
+  if ( !finished )
+  {
+    loop.exec( QEventLoop::ExcludeUserInputEvents );
+  }
+
+
+  mCachedSize = QSize( width, height );
+  return mCachedSize;
+}
+
+void QgsWebEnginePage::handlePostBlockingLoadOperations()
+{
+  // Following a blocking content load, do some other quick calculations which involve local event loops.
+  // This allows callers to avoid having to make another later call to a method which would other involve a local event loop.
+  QEventLoop loop;
+  int width = 0;
+  int height = 0;
+  bool finished = false;
+  mPage->runJavaScript( "[document.documentElement.scrollWidth, document.documentElement.scrollHeight];", [&width, &height, &loop, &finished]( QVariant result )
+  {
+    width = result.toList().value( 0 ).toInt();
+    height = result.toList().value( 1 ).toInt();
+    finished = true;
+    loop.exit();
+  } );
+  if ( !finished )
+  {
+    loop.exec( QEventLoop::ExcludeUserInputEvents );
+  }
+
+  mCachedSize = QSize( width, height );
 }
 
 #ifdef HAVE_PDF4QT

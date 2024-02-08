@@ -11,8 +11,8 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import unittest
 
-from PyQt5.QtCore import Qt
 from qgis.PyQt.QtCore import (
+    Qt,
     QRectF
 )
 from qgis.PyQt.QtGui import (
@@ -55,7 +55,7 @@ class TestQgsPdfRenderer(QgisTestCase):
         renderer = QgsPdfRenderer(pdf_path)
 
         image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
         painter = QPainter(image)
         renderer.render(
             painter,
@@ -75,7 +75,7 @@ class TestQgsPdfRenderer(QgisTestCase):
         # reuse same renderer for second page, to test that reusing a renderer
         # object works
         image = QImage(423, 600, QImage.Format.Format_ARGB32_Premultiplied)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
         painter = QPainter(image)
         renderer.render(
             painter,

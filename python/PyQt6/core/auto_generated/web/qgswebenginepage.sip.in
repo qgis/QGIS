@@ -35,33 +35,63 @@ Constructor for QgsWebEnginePage, with the specified ``parent`` widget.
     ~QgsWebEnginePage();
 
 
-    void setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl() );
+    bool setContent( const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl(), bool blocking = false );
 %Docstring
 Sets the content of the web page to ``data``. If the ``mimeType`` argument is empty, it is assumed that the content is text/plain,charset=US-ASCII
 
 The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
 
-The html is loaded immediately; external objects are loaded asynchronously.
+If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+
+.. warning::
+
+   Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+:return: ``True`` if loading was successful
 %End
 
-    void setHtml( const QString &html, const QUrl &baseUrl = QUrl() );
+    bool setHtml( const QString &html, const QUrl &baseUrl = QUrl(), bool blocking = false );
 %Docstring
 Sets the content of this page to ``html``.
 
 The ``baseUrl`` is optional and used to resolve relative URLs in the document, such as referenced images or stylesheets.
 
-The html is loaded immediately; external objects are loaded asynchronously.
+If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
 
 .. note::
 
    This function works only for HTML, for other mime types (such as XHTML and SVG) :py:func:`~QgsWebEnginePage.setContent` should be used instead.
+
+.. warning::
+
+   Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+
+:return: ``True`` if loading was successful
 %End
 
-    void setUrl( const QUrl &url );
+    bool setUrl( const QUrl &url, bool blocking = false );
 %Docstring
 Sets the ``url`` of the web page to be displayed.
 
 Setting this property clears the page and loads the URL.
+
+If ``blocking`` is ``True`` then the call will block while the HTML is loaded. Otherwise the html is loaded immediately; external objects are loaded asynchronously.
+
+.. warning::
+
+   Setting ``blocking`` to ``True`` involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+:return: ``True`` if loading was successful
+%End
+
+    QSize documentSize() const;
+%Docstring
+Returns the size of the page document, in pixels.
+
+.. warning::
+
+   If the page content was NOT loaded using a blocking method, then this method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
 %End
 
     bool render( QPainter *painter, const QRectF &painterRect ) throw( QgsNotSupportedException );
