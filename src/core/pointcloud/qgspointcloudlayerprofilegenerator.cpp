@@ -591,7 +591,8 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerProfileGenerator::traverseTree(
   if ( !mSearchGeometryInLayerCrsGeometryEngine->intersects( nodeMapGeometry.constGet() ) )
     return nodes;
 
-  nodes.append( n );
+  if ( pc->nodePointCount( n ) > 0 )
+    nodes.append( n );
 
   double childrenErrorPixels = nodeErrorPixels / 2.0;
   if ( childrenErrorPixels < maxErrorPixels )

@@ -35,6 +35,9 @@ QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const IndexedPoint
   : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect ),
     mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazInfo( lazInfo )
 {
+  // an empty block size will create an invalid range, causing a full request to the server
+  Q_ASSERT( mBlockSize > 0 );
+
   QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
   QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsCopcPointCloudBlockRequest" ) );
   QgsSetRequestInitiatorId( nr, node.toString() );
