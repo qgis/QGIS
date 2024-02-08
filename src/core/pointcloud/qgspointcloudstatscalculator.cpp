@@ -58,6 +58,9 @@ struct StatsProcessor
 
     QgsPointCloudStatistics operator()( IndexedPointCloudNode node )
     {
+      if ( mIndex->nodePointCount( node ) < 1 )
+        return QgsPointCloudStatistics();
+
       std::unique_ptr<QgsPointCloudBlock> block = nullptr;
       if ( mIndex->accessType() == QgsPointCloudIndex::Local )
       {
