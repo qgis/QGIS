@@ -53,9 +53,9 @@ QString QgsTessellateAlgorithm::outputName() const
   return QObject::tr( "Tessellated" );
 }
 
-QgsProcessing::SourceType QgsTessellateAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsTessellateAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 Qgis::WkbType QgsTessellateAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
@@ -72,7 +72,7 @@ QString QgsTessellateAlgorithm::shortHelpString() const
 
 QList<int> QgsTessellateAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const

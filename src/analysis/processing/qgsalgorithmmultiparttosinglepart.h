@@ -49,7 +49,7 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgori
 
   protected:
 
-    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
     QgsFeatureList processFeature( const QgsFeature &feature,
                                    QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

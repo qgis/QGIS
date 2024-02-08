@@ -231,7 +231,7 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
     case QgsProcessingGui::Modeler:
     {
       QString description = mParameterDefinition->description();
-      if ( parameterDefinition()->flags() & QgsProcessingParameterDefinition::FlagOptional )
+      if ( parameterDefinition()->flags() & Qgis::ProcessingParameterFlag::Optional )
         description = QObject::tr( "%1 [optional]" ).arg( description );
       std::unique_ptr< QLabel > label = std::make_unique< QLabel >( description );
       label->setToolTip( mParameterDefinition->toolTip() );

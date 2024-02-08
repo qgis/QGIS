@@ -64,7 +64,7 @@ QgsRotateFeaturesAlgorithm *QgsRotateFeaturesAlgorithm::createInstance() const
 void QgsRotateFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > rotation = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
-      QObject::tr( "Rotation (degrees clockwise)" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Rotation (degrees clockwise)" ), Qgis::ProcessingNumberParameterType::Double,
       0.0 );
   rotation->setIsDynamic( true );
   rotation->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Rotation (degrees clockwise)" ), QgsPropertyDefinition::Rotation ) );

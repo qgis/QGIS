@@ -66,20 +66,20 @@ QgsReverseLineDirectionAlgorithm  *QgsReverseLineDirectionAlgorithm ::createInst
   return new QgsReverseLineDirectionAlgorithm();
 }
 
-QgsProcessing::SourceType QgsReverseLineDirectionAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsReverseLineDirectionAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 QList<int> QgsReverseLineDirectionAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
-QgsProcessingFeatureSource::Flag QgsReverseLineDirectionAlgorithm ::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsReverseLineDirectionAlgorithm ::sourceFlags() const
 {
   // this algorithm doesn't care about invalid geometries
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )

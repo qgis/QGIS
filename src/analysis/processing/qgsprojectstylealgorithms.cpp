@@ -110,7 +110,7 @@ QgsStyleFromProjectAlgorithm::~QgsStyleFromProjectAlgorithm() = default;
 
 void QgsStyleFromProjectAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input project (leave blank to use current)" ), QgsProcessingParameterFile::File,
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input project (leave blank to use current)" ), Qgis::ProcessingFileParameterBehavior::File,
                 QString(), QVariant(), true, QObject::tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS)" ) ) );
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ),

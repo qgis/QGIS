@@ -82,9 +82,9 @@ Qgis::WkbType QgsPromoteToMultipartAlgorithm::outputWkbType( Qgis::WkbType input
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
-QgsProcessingFeatureSource::Flag QgsPromoteToMultipartAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsPromoteToMultipartAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QgsFeatureList QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )

@@ -40,7 +40,7 @@ class QgsAttributeIndexAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString shortHelpString() const override;
     QgsAttributeIndexAlgorithm *createInstance() const override SIP_FACTORY;
 

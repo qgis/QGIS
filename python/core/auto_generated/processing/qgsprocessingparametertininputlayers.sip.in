@@ -29,17 +29,10 @@ if -1, the Z coordinates of features are used
 %End
   public:
 
-    enum Type
-    {
-      Vertices,
-      StructureLines,
-      BreakLines
-    };
-
     struct InputLayer
     {
       QString source; //!The source of the input layer
-      Type type; //!The type of the input layer (see Type)
+      Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
       int attributeIndex; //! The attribute index used for Z value of vertices
     };
 

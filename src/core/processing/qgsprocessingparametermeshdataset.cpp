@@ -41,7 +41,7 @@ QString QgsProcessingParameterMeshDatasetGroups::type() const
 bool QgsProcessingParameterMeshDatasetGroups::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   Q_UNUSED( context );
-  return valueIsAcceptable( input, mFlags & FlagOptional );
+  return valueIsAcceptable( input, mFlags & Qgis::ProcessingParameterFlag::Optional );
 }
 
 QString QgsProcessingParameterMeshDatasetGroups::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
@@ -82,7 +82,7 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
         code += ']';
       }
 
-      if ( mFlags & FlagOptional )
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
         code += QLatin1String( ", optional=True" );
       code += ')';
       return code;
@@ -206,7 +206,7 @@ QString QgsProcessingParameterMeshDatasetTime::type() const
 bool QgsProcessingParameterMeshDatasetTime::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   Q_UNUSED( context );
-  return valueIsAcceptable( input, mFlags & FlagOptional );
+  return valueIsAcceptable( input, mFlags & Qgis::ProcessingParameterFlag::Optional );
 }
 
 QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
@@ -253,7 +253,7 @@ QString QgsProcessingParameterMeshDatasetTime::asPythonString( QgsProcessing::Py
       if ( !mDatasetGroupParameterName.isEmpty() )
         code += QStringLiteral( ", datasetGroupParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mDatasetGroupParameterName ) );
 
-      if ( mFlags & FlagOptional )
+      if ( mFlags & Qgis::ProcessingParameterFlag::Optional )
         code += QLatin1String( ", optional=True" );
       code += ')';
       return code;

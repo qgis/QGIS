@@ -73,9 +73,9 @@ bool QgsSetMValueAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   return QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( l ) && QgsWkbTypes::hasM( layer->wkbType() );
 }
 
-QgsProcessingFeatureSource::Flag QgsSetMValueAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsSetMValueAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 Qgis::WkbType QgsSetMValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
@@ -85,7 +85,7 @@ Qgis::WkbType QgsSetMValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetMValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto mValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsProcessingParameterNumber::Double, 0.0 );
+  auto mValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mValueParam->setIsDynamic( true );
   mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
   mValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

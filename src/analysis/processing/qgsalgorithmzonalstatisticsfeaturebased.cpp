@@ -70,7 +70,7 @@ QString QgsZonalStatisticsFeatureBasedAlgorithm::shortHelpString() const
 
 QList<int> QgsZonalStatisticsFeatureBasedAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsZonalStatisticsFeatureBasedAlgorithm *QgsZonalStatisticsFeatureBasedAlgorithm::createInstance() const

@@ -275,9 +275,9 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
   return true;
 }
 
-QgsProcessingProvider::Flags QgsNativeAlgorithms::flags() const
+Qgis::ProcessingProviderFlags QgsNativeAlgorithms::flags() const
 {
-  return QgsProcessingProvider::Flag::FlagCompatibleWithVirtualRaster;
+  return Qgis::ProcessingProviderFlag::CompatibleWithVirtualRaster;
 }
 
 void QgsNativeAlgorithms::loadAlgorithms()

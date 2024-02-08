@@ -47,9 +47,9 @@ QString QgsForceRHRAlgorithm::groupId() const
   return QStringLiteral( "vectorgeometry" );
 }
 
-QgsProcessingFeatureSource::Flag QgsForceRHRAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsForceRHRAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QString QgsForceRHRAlgorithm::outputName() const
@@ -71,7 +71,7 @@ QString QgsForceRHRAlgorithm::shortDescription() const
 
 QList<int> QgsForceRHRAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsForceRHRAlgorithm *QgsForceRHRAlgorithm::createInstance() const

@@ -62,7 +62,7 @@ QString QgsAddXYFieldsAlgorithm::outputName() const
 
 QList<int> QgsAddXYFieldsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorPoint;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 QgsAddXYFieldsAlgorithm *QgsAddXYFieldsAlgorithm::createInstance() const
@@ -70,9 +70,9 @@ QgsAddXYFieldsAlgorithm *QgsAddXYFieldsAlgorithm::createInstance() const
   return new QgsAddXYFieldsAlgorithm();
 }
 
-QgsProcessingFeatureSource::Flag QgsAddXYFieldsAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsAddXYFieldsAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 void QgsAddXYFieldsAlgorithm::initParameters( const QVariantMap &configuration )

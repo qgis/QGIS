@@ -452,16 +452,6 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
   public:
 
-    //! Parameter flags
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagAdvanced = 1 << 1, //!< Parameter is an advanced parameter which should be hidden from users by default
-      FlagHidden = 1 << 2, //!< Parameter is hidden and should not be shown to users
-      FlagOptional = 1 << 3, //!< Parameter is optional
-      FlagIsModelOutput = 1 << 4, //!< Destination parameter is final output. The parameter name will be used.
-    };
-    Q_DECLARE_FLAGS( Flags, Flag )
-
     /**
      * Constructor for QgsProcessingParameterDefinition.
      */
@@ -598,13 +588,13 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Returns any flags associated with the parameter.
      * \see setFlags()
      */
-    Flags flags() const { return mFlags; }
+    Qgis::ProcessingParameterFlags flags() const { return mFlags; }
 
     /**
      * Sets the \a flags associated with the parameter.
      * \see flags()
      */
-    void setFlags( Flags flags ) { mFlags = flags; }
+    void setFlags( Qgis::ProcessingParameterFlags flags ) { mFlags = flags; }
 
     /**
      * Checks whether the specified \a input value is acceptable for the
@@ -908,7 +898,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     QVariant mGuiDefault;
 
     //! Parameter flags
-    Flags mFlags;
+    Qgis::ProcessingParameterFlags mFlags;
 
     //! Freeform metadata for parameter. Mostly used by widget wrappers to customize their appearance and behavior.
     QVariantMap mMetadata;
@@ -932,8 +922,6 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     friend class QgsProcessingAlgorithm;
 
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterDefinition::Flags )
 
 #ifndef SIP_RUN
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterDefinition::ValueAsStringFlags )
@@ -1988,13 +1976,6 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 {
   public:
 
-    //! Parameter behavior
-    enum Behavior
-    {
-      File = 0, //!< Parameter is a single file
-      Folder, //!< Parameter is a folder
-    };
-
     /**
      * Constructor for QgsProcessingParameterFile.
      *
@@ -2002,7 +1983,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
      * for a more flexible approach which allows for multiple file extensions. Only one of \a extension or \a fileFilter should be specified,
      * if both are specified then \a fileFilter takes precedence.
      */
-    QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Behavior behavior = File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Qgis::ProcessingFileParameterBehavior behavior = Qgis::ProcessingFileParameterBehavior::File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
                                 bool optional = false, const QString &fileFilter = QString() );
 
     /**
@@ -2020,13 +2001,13 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
      * Returns the parameter behavior (e.g. File or Folder).
      * \see setBehavior()
      */
-    Behavior behavior() const { return mBehavior; }
+    Qgis::ProcessingFileParameterBehavior behavior() const { return mBehavior; }
 
     /**
      * Sets the parameter \a behavior (e.g. File or Folder).
      * \see behavior()
      */
-    void setBehavior( Behavior behavior ) { mBehavior = behavior; }
+    void setBehavior( Qgis::ProcessingFileParameterBehavior behavior ) { mBehavior = behavior; }
 
     /**
      * Returns any specified file extension for the parameter.
@@ -2073,11 +2054,11 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
     /**
      * Creates a new parameter using the definition from a script code.
      */
-    static QgsProcessingParameterFile *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition, Behavior behavior = File ) SIP_FACTORY;
+    static QgsProcessingParameterFile *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition, Qgis::ProcessingFileParameterBehavior behavior = Qgis::ProcessingFileParameterBehavior::File ) SIP_FACTORY;
 
   private:
 
-    Behavior mBehavior = File;
+    Qgis::ProcessingFileParameterBehavior mBehavior = Qgis::ProcessingFileParameterBehavior::File;
     QString mExtension;
     QString mFileFilter;
 };
@@ -2181,7 +2162,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     /**
      * Constructor for QgsProcessingParameterMultipleLayers.
      */
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::SourceType layerType = QgsProcessing::TypeVectorAnyGeometry,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType layerType = Qgis::ProcessingSourceType::VectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 
@@ -2203,13 +2184,13 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * Returns the layer type for layers acceptable by the parameter.
      * \see setLayerType()
      */
-    QgsProcessing::SourceType layerType() const;
+    Qgis::ProcessingSourceType layerType() const;
 
     /**
      * Sets the layer \a type for layers acceptable by the parameter.
      * \see layerType()
      */
-    void setLayerType( QgsProcessing::SourceType type );
+    void setLayerType( Qgis::ProcessingSourceType type );
 
     /**
      * Returns the minimum number of layers required for the parameter. If the return value is < 1
@@ -2235,7 +2216,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
 
   private:
 
-    QgsProcessing::SourceType mLayerType = QgsProcessing::TypeVectorAnyGeometry;
+    Qgis::ProcessingSourceType mLayerType = Qgis::ProcessingSourceType::VectorAnyGeometry;
     int mMinimumNumberInputs = 0;
 
 };
@@ -2262,18 +2243,11 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 {
   public:
 
-    //! Numeric data type
-    enum Type
-    {
-      Integer, //!< Integer values
-      Double, //!< Double/float values
-    };
-
     /**
      * Constructor for QgsProcessingParameterNumber.
      */
     explicit QgsProcessingParameterNumber( const QString &name, const QString &description = QString(),
-                                           Type type = Integer,
+                                           Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
                                            double minValue = std::numeric_limits<double>::lowest() + 1,
@@ -2319,13 +2293,13 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      * Returns the acceptable data type for the parameter.
      * \see setDataType()
      */
-    Type dataType() const;
+    Qgis::ProcessingNumberParameterType dataType() const;
 
     /**
      * Sets the acceptable data \a type for the parameter.
      * \see dataType()
      */
-    void setDataType( Type type );
+    void setDataType( Qgis::ProcessingNumberParameterType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2339,7 +2313,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 
     double mMin = std::numeric_limits<double>::lowest() + 1;
     double mMax = std::numeric_limits<double>::max();
-    Type mDataType = Integer;
+    Qgis::ProcessingNumberParameterType mDataType = Qgis::ProcessingNumberParameterType::Integer;
 };
 
 /**
@@ -2529,7 +2503,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Constructor for QgsProcessingParameterRange.
      */
     QgsProcessingParameterRange( const QString &name, const QString &description = QString(),
-                                 QgsProcessingParameterNumber::Type type = QgsProcessingParameterNumber::Integer,
+                                 Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer,
                                  const QVariant &defaultValue = QVariant(),
                                  bool optional = false );
 
@@ -2547,13 +2521,13 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Returns the acceptable data type for the range.
      * \see setDataType()
      */
-    QgsProcessingParameterNumber::Type dataType() const;
+    Qgis::ProcessingNumberParameterType dataType() const;
 
     /**
      * Sets the acceptable data \a type for the range.
      * \see dataType()
      */
-    void setDataType( QgsProcessingParameterNumber::Type dataType );
+    void setDataType( Qgis::ProcessingNumberParameterType dataType );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2565,7 +2539,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
 
   private:
 
-    QgsProcessingParameterNumber::Type mDataType = QgsProcessingParameterNumber::Integer;
+    Qgis::ProcessingNumberParameterType mDataType = Qgis::ProcessingNumberParameterType::Integer;
 };
 
 /**
@@ -3047,23 +3021,12 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 {
   public:
 
-    //! Field data types
-    enum DataType
-    {
-      Any = -1, //!< Accepts any field
-      Numeric = 0, //!< Accepts numeric fields
-      String = 1, //!< Accepts string fields
-      DateTime = 2, //!< Accepts datetime fields
-      Binary = 3, //!< Accepts binary fields, since QGIS 3.34
-      Boolean = 4, //!< Accepts boolean fields, since QGIS 3.34
-    };
-
     /**
      * Constructor for QgsProcessingParameterField.
      */
     QgsProcessingParameterField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                  const QString &parentLayerParameterName = QString(),
-                                 DataType type = Any,
+                                 Qgis::ProcessingFieldParameterDataType type = Qgis::ProcessingFieldParameterDataType::Any,
                                  bool allowMultiple = false,
                                  bool optional = false,
                                  bool defaultToAllFields = false );
@@ -3096,13 +3059,13 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      * Returns the acceptable data type for the field.
      * \see setDataType()
      */
-    DataType dataType() const;
+    Qgis::ProcessingFieldParameterDataType dataType() const;
 
     /**
      * Sets the acceptable data \a type for the field.
      * \see dataType()
      */
-    void setDataType( DataType type );
+    void setDataType( Qgis::ProcessingFieldParameterDataType type );
 
     /**
      * Returns whether multiple field selections are permitted.
@@ -3149,7 +3112,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
   private:
 
     QString mParentLayerParameterName;
-    DataType mDataType = Any;
+    Qgis::ProcessingFieldParameterDataType mDataType = Qgis::ProcessingFieldParameterDataType::Any;
     bool mAllowMultiple = false;
     bool mDefaultToAllFields = false;
 
@@ -3336,7 +3299,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      */
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
                                        bool optional = false, bool createByDefault = true, bool supportsAppend = false );
 
     /**
@@ -3364,7 +3327,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * Returns the layer type for sinks associated with the parameter.
      * \see setDataType()
      */
-    QgsProcessing::SourceType dataType() const;
+    Qgis::ProcessingSourceType dataType() const;
 
     /**
      * Returns TRUE if sink is likely to include geometries. In cases were presence of geometry
@@ -3376,7 +3339,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::SourceType type );
+    void setDataType( Qgis::ProcessingSourceType type );
 
     /**
      * Returns TRUE if the sink supports appending features to an existing table.
@@ -3409,7 +3372,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
 
   private:
 
-    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
+    Qgis::ProcessingSourceType mDataType = Qgis::ProcessingSourceType::VectorAnyGeometry;
     bool mSupportsAppend = false;
 };
 
@@ -3434,7 +3397,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * If \a createByDefault is FALSE and the parameter is \a optional, then this destination
      * output will not be created by default.
      */
-    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
         bool optional = false, bool createByDefault = true );
 
     /**
@@ -3462,7 +3425,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * Returns the layer type for this created vector layer.
      * \see setDataType()
      */
-    QgsProcessing::SourceType dataType() const;
+    Qgis::ProcessingSourceType dataType() const;
 
     /**
      * Returns TRUE if the created layer is likely to include geometries. In cases were presence of geometry
@@ -3474,7 +3437,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * Sets the layer \a type for the created vector layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::SourceType type );
+    void setDataType( Qgis::ProcessingSourceType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -3487,7 +3450,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
 
   private:
 
-    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
+    Qgis::ProcessingSourceType mDataType = Qgis::ProcessingSourceType::VectorAnyGeometry;
 };
 
 /**
@@ -4059,19 +4022,11 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
 {
   public:
 
-    //! Datetime data type
-    enum Type
-    {
-      DateTime, //!< Datetime values
-      Date, //!< Date values
-      Time, //!< Time values
-    };
-
     /**
      * Constructor for QgsProcessingParameterDateTime.
      */
     explicit QgsProcessingParameterDateTime( const QString &name, const QString &description = QString(),
-        Type type = DateTime,
+        Qgis::ProcessingDateTimeParameterDataType type = Qgis::ProcessingDateTimeParameterDataType::DateTime,
         const QVariant &defaultValue = QVariant(),
         bool optional = false,
         const QDateTime &minValue = QDateTime(),
@@ -4137,13 +4092,13 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
      * Returns the acceptable data type for the parameter.
      * \see setDataType()
      */
-    Type dataType() const;
+    Qgis::ProcessingDateTimeParameterDataType dataType() const;
 
     /**
      * Sets the acceptable data \a type for the parameter.
      * \see dataType()
      */
-    void setDataType( Type type );
+    void setDataType( Qgis::ProcessingDateTimeParameterDataType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -4157,7 +4112,7 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
 
     QDateTime mMin;
     QDateTime mMax;
-    Type mDataType = DateTime;
+    Qgis::ProcessingDateTimeParameterDataType mDataType = Qgis::ProcessingDateTimeParameterDataType::DateTime;
 };
 
 

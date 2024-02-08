@@ -51,9 +51,9 @@ QStringList QgsExtractLabelsAlgorithm::tags() const
   return QObject::tr( "map themes,font,position" ).split( ',' );
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractLabelsAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsExtractLabelsAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QString QgsExtractLabelsAlgorithm::group() const
@@ -91,15 +91,15 @@ void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
   std::unique_ptr<QgsProcessingParameterNumber> dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
         QStringLiteral( "DPI" ),
         QObject::tr( "Map resolution (in DPI)" ),
-        QgsProcessingParameterNumber::Double,
+        Qgis::ProcessingNumberParameterType::Double,
         QVariant( 96.0 ), true );
-  dpiParameter->setFlags( dpiParameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  dpiParameter->setFlags( dpiParameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParameter.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink(
                   QStringLiteral( "OUTPUT" ),
                   QObject::tr( "Extracted labels" ),
-                  QgsProcessing::TypeVectorPoint ) );
+                  Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsExtractLabelsAlgorithm::shortDescription() const

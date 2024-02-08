@@ -327,7 +327,7 @@ QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgor
            algorithm->displayName(),
            !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(),
            QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ),
-           ( algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
+           ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
          );
 }
 
@@ -398,7 +398,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
 
     case Qt::ForegroundRole:
     {
-      if ( algorithm && algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+      if ( algorithm && algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
         return QBrush( QColor( Qt::red ) );
       else
         return QVariant();
@@ -414,7 +414,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return provider->icon();
           else if ( algorithm )
           {
-            if ( algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+            if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
               return QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
             return algorithm->icon();
           }
@@ -722,7 +722,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
-    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagKnownIssues;
+    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::KnownIssues );
     if ( hasKnownIssues && !( mFilters & FilterShowKnownIssues ) )
       return false;
 
@@ -770,7 +770,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
     if ( mFilters & FilterInPlace )
     {
-      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits );
       if ( !supportsInPlace )
         return false;
 
@@ -782,12 +782,12 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
     if ( mFilters & FilterModeler )
     {
-      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagHideFromModeler;
+      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromModeler );
       return !isHiddenFromModeler;
     }
     if ( mFilters & FilterToolbox )
     {
-      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & QgsProcessingAlgorithm::FlagHideFromToolbox;
+      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
       return !isHiddenFromToolbox;
     }
     return true;
@@ -859,7 +859,7 @@ QVariant QgsProcessingToolboxProxyModel::data( const QModelIndex &index, int rol
   {
     QModelIndex sourceIndex = mapToSource( index );
     const QVariant flags = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::ProviderFlags ) );
-    if ( flags.isValid() && flags.toInt() & QgsProcessingProvider::FlagDeemphasiseSearchResults )
+    if ( flags.isValid() && flags.toInt() & static_cast< int >( Qgis::ProcessingProviderFlag::DeemphasiseSearchResults ) )
     {
       QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
       QColor fadedTextColor = brush.color();

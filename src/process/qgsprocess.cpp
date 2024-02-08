@@ -36,6 +36,7 @@
 #include "qgsgeos.h"
 #include "qgsunittypes.h"
 #include "qgsjsonutils.h"
+#include "qgsmessagelog.h"
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
 #include "sigwatch.h"
@@ -245,7 +246,7 @@ QgsProcessingExec::QgsProcessingExec()
 
 }
 
-int QgsProcessingExec::run( const QStringList &args, QgsProcessingContext::LogLevel logLevel, Flags flags )
+int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel logLevel, Flags flags )
 {
   mFlags = flags;
 
@@ -616,12 +617,12 @@ void QgsProcessingExec::listAlgorithms()
     const QList<const QgsProcessingAlgorithm *> algorithms = provider->algorithms();
     for ( const QgsProcessingAlgorithm *algorithm : algorithms )
     {
-      if ( algorithm->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+      if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool )
         continue;
 
       if ( !( mFlags & Flag::UseJson ) )
       {
-        if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDeprecated )
+        if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::Deprecated )
           continue;
         std::cout << "\t" << algorithm->id().toLocal8Bit().constData() << "\t" << algorithm->displayName().toLocal8Bit().constData() << "\n";
       }
@@ -822,7 +823,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
     }
   }
 
-  if ( alg->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+  if ( alg->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool )
   {
     std::cerr << QStringLiteral( "The \"%1\" algorithm is not available for use outside of the QGIS desktop application\n" ).arg( id ).toLocal8Bit().constData();
     return 1;
@@ -891,7 +892,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *p : defs )
   {
-    if ( p->flags() & QgsProcessingParameterDefinition::FlagHidden )
+    if ( p->flags() & Qgis::ProcessingParameterFlag::Hidden )
       continue;
 
     QVariantMap parameterJson;
@@ -899,7 +900,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
     if ( !( mFlags & Flag::UseJson ) )
     {
       QString line = QStringLiteral( "%1: %2" ).arg( p->name(), p->description() );
-      if ( p->flags() & QgsProcessingParameterDefinition::FlagOptional )
+      if ( p->flags() & Qgis::ProcessingParameterFlag::Optional )
         line += QLatin1String( " (optional)" );
       std::cout << QStringLiteral( "%1\n" ).arg( line ).toLocal8Bit().constData();
 
@@ -933,8 +934,8 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
 
       parameterJson.insert( QStringLiteral( "is_destination" ), p->isDestination() );
       parameterJson.insert( QStringLiteral( "default_value" ), p->defaultValue() );
-      parameterJson.insert( QStringLiteral( "optional" ), bool( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
-      parameterJson.insert( QStringLiteral( "is_advanced" ), bool( p->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+      parameterJson.insert( QStringLiteral( "optional" ), bool( p->flags() & Qgis::ProcessingParameterFlag::Optional ) );
+      parameterJson.insert( QStringLiteral( "is_advanced" ), bool( p->flags() & Qgis::ProcessingParameterFlag::Advanced ) );
 
       parameterJson.insert( QStringLiteral( "raw_definition" ), p->toVariantMap() );
     }
@@ -1025,7 +1026,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &inputs, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, Qgis::ProcessingLogLevel logLevel, const QString &projectPath )
 {
   QVariantMap json;
   if ( mFlags & Flag::UseJson )
@@ -1080,27 +1081,27 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
       return 1;
     }
 
-    if ( alg->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+    if ( alg->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool )
     {
       std::cerr << QStringLiteral( "The \"%1\" algorithm is not available for use outside of the QGIS desktop application\n" ).arg( id ).toLocal8Bit().constData();
       return 1;
     }
 
-    if ( !( mFlags & Flag::UseJson ) && alg->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+    if ( !( mFlags & Flag::UseJson ) && alg->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
     {
       std::cout << "\n****************\n";
       std::cout << "Warning: this algorithm contains known issues and the results may be unreliable!\n";
       std::cout << "****************\n\n";
     }
 
-    if ( !( mFlags & Flag::UseJson ) && alg->flags() & QgsProcessingAlgorithm::FlagDeprecated )
+    if ( !( mFlags & Flag::UseJson ) && alg->flags() & Qgis::ProcessingAlgorithmFlag::Deprecated )
     {
       std::cout << "\n****************\n";
       std::cout << "Warning: this algorithm is deprecated and may be removed in a future QGIS version!\n";
       std::cout << "****************\n\n";
     }
 
-    if ( alg->flags() & QgsProcessingAlgorithm::FlagRequiresProject && projectPath.isEmpty() )
+    if ( alg->flags() & Qgis::ProcessingAlgorithmFlag::RequiresProject && projectPath.isEmpty() )
     {
       std::cerr << QStringLiteral( "The \"%1\" algorithm requires a QGIS project to execute. Specify a path to an existing project with the \"--PROJECT_PATH=xxx\" argument.\n" ).arg( id ).toLocal8Bit().constData();
       return 1;
@@ -1190,7 +1191,7 @@ int QgsProcessingExec::execute( const QString &inputId, const QVariantMap &input
   {
     if ( !p->checkValueIsAcceptable( params.value( p->name() ), &context ) )
     {
-      if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+      if ( !( p->flags() & Qgis::ProcessingParameterFlag::Optional ) && !params.contains( p->name() ) )
       {
         missingParams << p;
       }
@@ -1315,10 +1316,10 @@ void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, con
   algorithmJson.insert( QStringLiteral( "tags" ), algorithm->tags() );
   algorithmJson.insert( QStringLiteral( "help_url" ), algorithm->helpUrl() );
   algorithmJson.insert( QStringLiteral( "group" ), algorithm->group() );
-  algorithmJson.insert( QStringLiteral( "can_cancel" ), bool( algorithm->flags() & QgsProcessingAlgorithm::FlagCanCancel ) );
-  algorithmJson.insert( QStringLiteral( "requires_matching_crs" ), bool( algorithm->flags() & QgsProcessingAlgorithm::FlagRequiresMatchingCrs ) );
-  algorithmJson.insert( QStringLiteral( "has_known_issues" ), bool( algorithm->flags() & QgsProcessingAlgorithm::FlagKnownIssues ) );
-  algorithmJson.insert( QStringLiteral( "deprecated" ), bool( algorithm->flags() & QgsProcessingAlgorithm::FlagDeprecated ) );
+  algorithmJson.insert( QStringLiteral( "can_cancel" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::CanCancel ) );
+  algorithmJson.insert( QStringLiteral( "requires_matching_crs" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::RequiresMatchingCrs ) );
+  algorithmJson.insert( QStringLiteral( "has_known_issues" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) );
+  algorithmJson.insert( QStringLiteral( "deprecated" ), bool( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::Deprecated ) );
 }
 
 void QgsProcessingExec::addProviderInformation( QVariantMap &providerJson, QgsProcessingProvider *provider )

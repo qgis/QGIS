@@ -29,23 +29,6 @@ and parameters.
 
   public:
 
-    enum SourceType
-    {
-      TypeMapLayer,
-      TypeVectorAnyGeometry,
-      TypeVectorPoint,
-      TypeVectorLine,
-      TypeVectorPolygon,
-      TypeRaster,
-      TypeFile,
-      TypeVector,
-      TypeMesh,
-      TypePlugin,
-      TypePointCloud,
-      TypeAnnotation,
-      TypeVectorTile
-    };
-
     enum class PythonOutputType
     {
       PythonQgsProcessingAlgorithmSubclass,
@@ -58,7 +41,7 @@ and parameters.
     typedef QFlags<QgsProcessing::LayerOptionsFlag> LayerOptionsFlags;
 
 
-    static QString sourceTypeToString( SourceType type );
+    static QString sourceTypeToString( Qgis::ProcessingSourceType type );
 %Docstring
 Converts a source ``type`` to a string representation.
 

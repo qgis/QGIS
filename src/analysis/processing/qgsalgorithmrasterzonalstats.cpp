@@ -61,11 +61,11 @@ void QgsRasterLayerZonalStatsAlgorithm::initAlgorithm( const QVariantMap & )
 
   std::unique_ptr< QgsProcessingParameterEnum > refParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ),
       QStringList() << QObject::tr( "Input layer" ) << QObject::tr( "Zones layer" ), false, 0 );
-  refParam->setFlags( refParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  refParam->setFlags( refParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( refParam.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_TABLE" ),
-                QObject::tr( "Statistics" ), QgsProcessing::TypeVector ) );
+                QObject::tr( "Statistics" ), Qgis::ProcessingSourceType::Vector ) );
 
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );

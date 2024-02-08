@@ -60,12 +60,12 @@ QString QgsExplodeAlgorithm::shortHelpString() const
 
 QList<int> QgsExplodeAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
-QgsProcessing::SourceType QgsExplodeAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsExplodeAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 QgsExplodeAlgorithm *QgsExplodeAlgorithm::createInstance() const

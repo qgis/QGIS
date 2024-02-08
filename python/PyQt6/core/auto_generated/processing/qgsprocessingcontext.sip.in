@@ -37,13 +37,6 @@ expression context.
     typedef QFlags<QgsProcessingContext::Flag> Flags;
 
 
-    enum LogLevel
-    {
-      DefaultLevel,
-      Verbose,
-      ModelDebug,
-    };
-
     QgsProcessingContext();
 %Docstring
 Constructor for QgsProcessingContext.
@@ -574,7 +567,7 @@ function will be used when creating these outputs.
 .. versionadded:: 3.10
 %End
 
-    LogLevel logLevel() const /HoldGIL/;
+    Qgis::ProcessingLogLevel logLevel() const /HoldGIL/;
 %Docstring
 Returns the logging level for algorithms to use when pushing feedback messages to users.
 
@@ -583,7 +576,7 @@ Returns the logging level for algorithms to use when pushing feedback messages t
 .. versionadded:: 3.20
 %End
 
-    void setLogLevel( LogLevel level ) /HoldGIL/;
+    void setLogLevel( Qgis::ProcessingLogLevel level ) /HoldGIL/;
 %Docstring
 Sets the logging ``level`` for algorithms to use when pushing feedback messages to users.
 

@@ -297,7 +297,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
     connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
     {
       mCopyAsQgisProcessCommand->setEnabled( algorithm()
-                                             && !( algorithm()->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool ) );
+                                             && !( algorithm()->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool ) );
       mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
     } );
   }
@@ -331,7 +331,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
 {
   mAlgorithm.reset( algorithm );
   QString title;
-  if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
+  if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::DisplayNameIsLiteral ) )
   {
     title = QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase );
   }
@@ -597,12 +597,12 @@ void QgsProcessingAlgorithmDialogBase::urlClicked( const QUrl &url )
     QDesktopServices::openUrl( url );
 }
 
-QgsProcessingContext::LogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
+Qgis::ProcessingLogLevel QgsProcessingAlgorithmDialogBase::logLevel() const
 {
   return mLogLevel;
 }
 
-void QgsProcessingAlgorithmDialogBase::setLogLevel( QgsProcessingContext::LogLevel level )
+void QgsProcessingAlgorithmDialogBase::setLogLevel( Qgis::ProcessingLogLevel level )
 {
   mLogLevel = level;
 }
@@ -985,9 +985,9 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   mTemporaryFolderWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mTemporaryFolderWidget->lineEdit()->setPlaceholderText( tr( "Default" ) );
 
-  mLogLevelComboBox->addItem( tr( "Default" ), QgsProcessingContext::LogLevel::DefaultLevel );
-  mLogLevelComboBox->addItem( tr( "Verbose" ), QgsProcessingContext::LogLevel::Verbose );
-  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), QgsProcessingContext::LogLevel::ModelDebug );
+  mLogLevelComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::ProcessingLogLevel::DefaultLevel ) );
+  mLogLevelComboBox->addItem( tr( "Verbose" ), static_cast< int >( Qgis::ProcessingLogLevel::Verbose ) );
+  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), static_cast< int >( Qgis::ProcessingLogLevel::ModelDebug ) );
 
   mDistanceUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::DistanceUnit::Unknown ) );
   for ( Qgis::DistanceUnit unit :
@@ -1092,14 +1092,14 @@ int QgsProcessingContextOptionsWidget::maximumThreads() const
   return mThreadsSpinBox->value();
 }
 
-void QgsProcessingContextOptionsWidget::setLogLevel( QgsProcessingContext::LogLevel level )
+void QgsProcessingContextOptionsWidget::setLogLevel( Qgis::ProcessingLogLevel level )
 {
   whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( level ) ) );
 }
 
-QgsProcessingContext::LogLevel QgsProcessingContextOptionsWidget::logLevel() const
+Qgis::ProcessingLogLevel QgsProcessingContextOptionsWidget::logLevel() const
 {
-  return static_cast< QgsProcessingContext::LogLevel >( mLogLevelComboBox->currentData().toInt() );
+  return static_cast< Qgis::ProcessingLogLevel >( mLogLevelComboBox->currentData().toInt() );
 }
 
 ///@endcond

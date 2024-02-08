@@ -20,7 +20,6 @@
 
 #include "qgis_core.h"
 #include "qgsfeedback.h"
-#include "qgsmessagelog.h"
 
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;

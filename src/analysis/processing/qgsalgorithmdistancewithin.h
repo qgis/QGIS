@@ -67,7 +67,7 @@ class QgsSelectWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSelectDistance.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSelectDistance.svg" ) ); }
     QString name() const override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;

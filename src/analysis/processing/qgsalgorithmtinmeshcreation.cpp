@@ -106,8 +106,8 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
       continue;
     const QVariantMap layerMap = layer.toMap();
     const QString layerSource = layerMap.value( QStringLiteral( "source" ) ).toString();
-    const QgsProcessingParameterTinInputLayers::Type type =
-      static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
+    const Qgis::ProcessingTinInputLayerType type =
+      static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
     const int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
 
     std::unique_ptr<QgsProcessingFeatureSource> featureSource( QgsProcessingUtils::variantToSource( layerSource, context ) );
@@ -119,10 +119,10 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     const long long featureCount = featureSource->featureCount();
     switch ( type )
     {
-      case QgsProcessingParameterTinInputLayers::Vertices:
+      case Qgis::ProcessingTinInputLayerType::Vertices:
         mVerticesLayer.append( {featureSource->getFeatures(), transform, attributeIndex, featureCount} );
         break;
-      case QgsProcessingParameterTinInputLayers::BreakLines:
+      case Qgis::ProcessingTinInputLayerType::BreakLines:
         mBreakLinesLayer.append( {featureSource->getFeatures(), transform, attributeIndex, featureCount} );
         break;
       default:

@@ -50,8 +50,8 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   addAlgorithmParams();
 
   std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
-      QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999 );
-  noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+      QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999 );
+  noDataValueParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( noDataValueParam.release() );
 
   std::unique_ptr< QgsProcessingParameterEnum > boundsHandling = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "RANGE_BOUNDARIES" ),
@@ -60,16 +60,16 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
       << QObject::tr( "min <= value <= max" )
       << QObject::tr( "min < value < max" ),
       false, 0 );
-  boundsHandling->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  boundsHandling->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( boundsHandling.release() );
 
   std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
       QObject::tr( "Use NoData when no range matches value" ), false, false );
-  missingValuesParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  missingValuesParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( missingValuesParam.release() );
 
   std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
-  typeChoice->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  typeChoice->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( typeChoice.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reclassified raster" ) ) );
@@ -188,13 +188,13 @@ QgsReclassifyByLayerAlgorithm *QgsReclassifyByLayerAlgorithm::createInstance() c
 void QgsReclassifyByLayerAlgorithm::addAlgorithmParams()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_TABLE" ),
-                QObject::tr( "Layer containing class breaks" ), QList< int >() << QgsProcessing::TypeVector ) );
+                QObject::tr( "Layer containing class breaks" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "MIN_FIELD" ),
-                QObject::tr( "Minimum class value field" ), QVariant(), QStringLiteral( "INPUT_TABLE" ), QgsProcessingParameterField::Numeric ) );
+                QObject::tr( "Minimum class value field" ), QVariant(), QStringLiteral( "INPUT_TABLE" ), Qgis::ProcessingFieldParameterDataType::Numeric ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "MAX_FIELD" ),
-                QObject::tr( "Maximum class value field" ), QVariant(), QStringLiteral( "INPUT_TABLE" ), QgsProcessingParameterField::Numeric ) );
+                QObject::tr( "Maximum class value field" ), QVariant(), QStringLiteral( "INPUT_TABLE" ), Qgis::ProcessingFieldParameterDataType::Numeric ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "VALUE_FIELD" ),
-                QObject::tr( "Output value field" ), QVariant(), QStringLiteral( "INPUT_TABLE" ), QgsProcessingParameterField::Numeric ) );
+                QObject::tr( "Output value field" ), QVariant(), QStringLiteral( "INPUT_TABLE" ), Qgis::ProcessingFieldParameterDataType::Numeric ) );
 }
 
 bool QgsReclassifyByLayerAlgorithm::_prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

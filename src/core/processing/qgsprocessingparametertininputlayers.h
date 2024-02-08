@@ -37,19 +37,11 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
 {
   public:
 
-    //! Defines the type of input layer
-    enum Type
-    {
-      Vertices, //!< Input that adds only vertices
-      StructureLines, //!< Input that adds add structure lines
-      BreakLines //!< Input that adds vertices and break lines
-    };
-
     //! Used to store input layer Id and other associated parameters
     struct InputLayer
     {
       QString source; //!The source of the input layer
-      Type type; //!The type of the input layer (see Type)
+      Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
       int attributeIndex; //! The attribute index used for Z value of vertices
     };
 

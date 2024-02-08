@@ -334,16 +334,6 @@ their acceptable ranges, defaults, etc.
 %End
   public:
 
-    enum Flag
-    {
-      FlagAdvanced,
-      FlagHidden,
-      FlagOptional,
-      FlagIsModelOutput,
-    };
-    typedef QFlags<QgsProcessingParameterDefinition::Flag> Flags;
-
-
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       bool optional = false, const QString &help = QString() );
 %Docstring
@@ -490,14 +480,14 @@ override that.
 .. versionadded:: 3.18
 %End
 
-    Flags flags() const;
+    Qgis::ProcessingParameterFlags flags() const;
 %Docstring
 Returns any flags associated with the parameter.
 
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void setFlags( Flags flags );
+    void setFlags( Qgis::ProcessingParameterFlags flags );
 %Docstring
 Sets the ``flags`` associated with the parameter.
 
@@ -802,9 +792,6 @@ Default gui value for an algorithm parameter from settings
 
 
 };
-
-QFlags<QgsProcessingParameterDefinition::Flag> operator|(QgsProcessingParameterDefinition::Flag f1, QFlags<QgsProcessingParameterDefinition::Flag> f2);
-
 
 
 typedef QList< const QgsProcessingParameterDefinition * > QgsProcessingParameterDefinitions;
@@ -1946,13 +1933,7 @@ An input file or folder parameter for processing algorithms.
 %End
   public:
 
-    enum Behavior
-    {
-      File,
-      Folder,
-    };
-
-    QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Behavior behavior = File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Qgis::ProcessingFileParameterBehavior behavior = Qgis::ProcessingFileParameterBehavior::File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
                                 bool optional = false, const QString &fileFilter = QString() );
 %Docstring
 Constructor for QgsProcessingParameterFile.
@@ -1978,14 +1959,14 @@ Returns the type name for the parameter class.
     virtual QString createFileFilter() const;
 
 
-    Behavior behavior() const;
+    Qgis::ProcessingFileParameterBehavior behavior() const;
 %Docstring
 Returns the parameter behavior (e.g. File or Folder).
 
 .. seealso:: :py:func:`setBehavior`
 %End
 
-    void setBehavior( Behavior behavior );
+    void setBehavior( Qgis::ProcessingFileParameterBehavior behavior );
 %Docstring
 Sets the parameter ``behavior`` (e.g. File or Folder).
 
@@ -2045,7 +2026,7 @@ Calling this method resets any existing :py:func:`~QgsProcessingParameterFile.ex
     virtual bool fromVariantMap( const QVariantMap &map );
 
 
-    static QgsProcessingParameterFile *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition, Behavior behavior = File ) /Factory/;
+    static QgsProcessingParameterFile *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition, Qgis::ProcessingFileParameterBehavior behavior = Qgis::ProcessingFileParameterBehavior::File ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
@@ -2164,7 +2145,7 @@ A parameter for processing algorithms which accepts multiple map layers.
 %End
   public:
 
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::SourceType layerType = QgsProcessing::TypeVectorAnyGeometry,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType layerType = Qgis::ProcessingSourceType::VectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 %Docstring
@@ -2193,14 +2174,14 @@ Returns the type name for the parameter class.
     virtual QString createFileFilter() const;
 
 
-    QgsProcessing::SourceType layerType() const;
+    Qgis::ProcessingSourceType layerType() const;
 %Docstring
 Returns the layer type for layers acceptable by the parameter.
 
 .. seealso:: :py:func:`setLayerType`
 %End
 
-    void setLayerType( QgsProcessing::SourceType type );
+    void setLayerType( Qgis::ProcessingSourceType type );
 %Docstring
 Sets the layer ``type`` for layers acceptable by the parameter.
 
@@ -2259,14 +2240,8 @@ shown in the parameter's widget can be specified by setting the parameter's meta
 %End
   public:
 
-    enum Type
-    {
-      Integer,
-      Double,
-    };
-
     explicit QgsProcessingParameterNumber( const QString &name, const QString &description = QString(),
-                                           Type type = Integer,
+                                           Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
                                            double minValue = -DBL_MAX + 1,
@@ -2320,14 +2295,14 @@ Sets the ``maximum`` value acceptable by the parameter.
 .. seealso:: :py:func:`maximum`
 %End
 
-    Type dataType() const;
+    Qgis::ProcessingNumberParameterType dataType() const;
 %Docstring
 Returns the acceptable data type for the parameter.
 
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( Type type );
+    void setDataType( Qgis::ProcessingNumberParameterType type );
 %Docstring
 Sets the acceptable data ``type`` for the parameter.
 
@@ -2549,7 +2524,7 @@ A numeric range parameter for processing algorithms.
   public:
 
     QgsProcessingParameterRange( const QString &name, const QString &description = QString(),
-                                 QgsProcessingParameterNumber::Type type = QgsProcessingParameterNumber::Integer,
+                                 Qgis::ProcessingNumberParameterType type = Qgis::ProcessingNumberParameterType::Integer,
                                  const QVariant &defaultValue = QVariant(),
                                  bool optional = false );
 %Docstring
@@ -2570,14 +2545,14 @@ Returns the type name for the parameter class.
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
-    QgsProcessingParameterNumber::Type dataType() const;
+    Qgis::ProcessingNumberParameterType dataType() const;
 %Docstring
 Returns the acceptable data type for the range.
 
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( QgsProcessingParameterNumber::Type dataType );
+    void setDataType( Qgis::ProcessingNumberParameterType dataType );
 %Docstring
 Sets the acceptable data ``type`` for the range.
 
@@ -3157,19 +3132,9 @@ A vector layer or feature source field parameter for processing algorithms.
 %End
   public:
 
-    enum DataType
-    {
-      Any,
-      Numeric,
-      String,
-      DateTime,
-      Binary,
-      Boolean,
-    };
-
     QgsProcessingParameterField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                  const QString &parentLayerParameterName = QString(),
-                                 DataType type = Any,
+                                 Qgis::ProcessingFieldParameterDataType type = Qgis::ProcessingFieldParameterDataType::Any,
                                  bool allowMultiple = false,
                                  bool optional = false,
                                  bool defaultToAllFields = false );
@@ -3209,14 +3174,14 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
 .. seealso:: :py:func:`parentLayerParameterName`
 %End
 
-    DataType dataType() const;
+    Qgis::ProcessingFieldParameterDataType dataType() const;
 %Docstring
 Returns the acceptable data type for the field.
 
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( DataType type );
+    void setDataType( Qgis::ProcessingFieldParameterDataType type );
 %Docstring
 Sets the acceptable data ``type`` for the field.
 
@@ -3460,7 +3425,7 @@ A parameter which represents the destination feature sink for features created b
 %End
   public:
 
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
                                        bool optional = false, bool createByDefault = true, bool supportsAppend = false );
 %Docstring
 Constructor for QgsProcessingParameterFeatureSink.
@@ -3500,7 +3465,7 @@ Returns a list of the vector format file extensions supported by this parameter.
 .. versionadded:: 3.2
 %End
 
-    QgsProcessing::SourceType dataType() const;
+    Qgis::ProcessingSourceType dataType() const;
 %Docstring
 Returns the layer type for sinks associated with the parameter.
 
@@ -3513,7 +3478,7 @@ Returns ``True`` if sink is likely to include geometries. In cases were presence
 cannot be reliably determined in advance, this method will default to returning ``True``.
 %End
 
-    void setDataType( QgsProcessing::SourceType type );
+    void setDataType( Qgis::ProcessingSourceType type );
 %Docstring
 Sets the layer ``type`` for the sinks associated with the parameter.
 
@@ -3578,7 +3543,7 @@ created by the algorithm.
 %End
   public:
 
-    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry, const QVariant &defaultValue = QVariant(),
         bool optional = false, bool createByDefault = true );
 %Docstring
 Constructor for QgsProcessingParameterVectorDestination.
@@ -3618,7 +3583,7 @@ Returns a list of the vector format file extensions supported by this parameter.
 .. versionadded:: 3.2
 %End
 
-    QgsProcessing::SourceType dataType() const;
+    Qgis::ProcessingSourceType dataType() const;
 %Docstring
 Returns the layer type for this created vector layer.
 
@@ -3631,7 +3596,7 @@ Returns ``True`` if the created layer is likely to include geometries. In cases 
 cannot be reliably determined in advance, this method will default to returning ``True``.
 %End
 
-    void setDataType( QgsProcessing::SourceType type );
+    void setDataType( Qgis::ProcessingSourceType type );
 %Docstring
 Sets the layer ``type`` for the created vector layer.
 
@@ -4309,15 +4274,8 @@ which will return a date time value.
 %End
   public:
 
-    enum Type
-    {
-      DateTime,
-      Date,
-      Time,
-    };
-
     explicit QgsProcessingParameterDateTime( const QString &name, const QString &description = QString(),
-        Type type = DateTime,
+        Qgis::ProcessingDateTimeParameterDataType type = Qgis::ProcessingDateTimeParameterDataType::DateTime,
         const QVariant &defaultValue = QVariant(),
         bool optional = false,
         const QDateTime &minValue = QDateTime(),
@@ -4387,14 +4345,14 @@ values to the specified maximum value, only the time component will be considere
 .. seealso:: :py:func:`maximum`
 %End
 
-    Type dataType() const;
+    Qgis::ProcessingDateTimeParameterDataType dataType() const;
 %Docstring
 Returns the acceptable data type for the parameter.
 
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( Type type );
+    void setDataType( Qgis::ProcessingDateTimeParameterDataType type );
 %Docstring
 Sets the acceptable data ``type`` for the parameter.
 

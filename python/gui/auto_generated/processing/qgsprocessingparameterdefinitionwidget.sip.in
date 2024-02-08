@@ -46,7 +46,7 @@ Additionally, the optional ``algorithm`` parameter may be used to specify the al
 associated with the parameter.
 %End
 
-    virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const = 0 /Factory/;
+    virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const = 0 /Factory/;
 %Docstring
 Returns a new instance of a parameter definition, using the current settings defined in the dialog.
 

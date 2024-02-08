@@ -28,9 +28,9 @@ QString QgsRaiseExceptionAlgorithm::name() const
   return QStringLiteral( "raiseexception" );
 }
 
-QgsProcessingAlgorithm::Flags QgsRaiseExceptionAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsRaiseExceptionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagCustomException | FlagSkipGenericModelLogging;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::CustomException | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsRaiseExceptionAlgorithm::displayName() const
@@ -107,9 +107,9 @@ QString QgsRaiseWarningAlgorithm::name() const
   return QStringLiteral( "raisewarning" );
 }
 
-QgsProcessingAlgorithm::Flags QgsRaiseWarningAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsRaiseWarningAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsRaiseWarningAlgorithm::displayName() const
@@ -187,9 +187,9 @@ QString QgsRaiseMessageAlgorithm::name() const
   return QStringLiteral( "raisemessage" );
 }
 
-QgsProcessingAlgorithm::Flags QgsRaiseMessageAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsRaiseMessageAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagSkipGenericModelLogging;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::HideFromToolbox | Qgis::ProcessingAlgorithmFlag::SkipGenericModelLogging;
 }
 
 QString QgsRaiseMessageAlgorithm::displayName() const

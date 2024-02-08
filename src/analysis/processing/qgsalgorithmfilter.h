@@ -47,7 +47,7 @@ class QgsFilterAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString shortHelpString() const override;
     QgsFilterAlgorithm *createInstance() const override SIP_FACTORY;
 

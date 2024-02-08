@@ -61,7 +61,7 @@ class QgsFilterByLayerTypeAlgorithm : public QgsProcessingAlgorithm
   public:
 
     QgsFilterByLayerTypeAlgorithm() = default;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;

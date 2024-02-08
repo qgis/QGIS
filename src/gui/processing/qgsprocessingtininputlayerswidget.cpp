@@ -45,7 +45,7 @@ QVariant QgsProcessingTinInputLayersWidget::value() const
   {
     QVariantMap layerMap;
     layerMap[QStringLiteral( "source" )] = layer.source;
-    layerMap[QStringLiteral( "type" )] = layer.type;
+    layerMap[QStringLiteral( "type" )] = static_cast< int >( layer.type );
     layerMap[QStringLiteral( "attributeIndex" )] = layer.attributeIndex;
     list.append( layerMap );
   }
@@ -68,7 +68,7 @@ void QgsProcessingTinInputLayersWidget::setValue( const QVariant &value )
     const QVariantMap layerMap = layerValue.toMap();
     QgsProcessingParameterTinInputLayers::InputLayer layer;
     layer.source = layerMap.value( QStringLiteral( "source" ) ).toString();
-    layer.type = static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
+    layer.type = static_cast<Qgis::ProcessingTinInputLayerType >( layerMap.value( QStringLiteral( "type" ) ).toInt() );
     layer.attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
     mInputLayersModel.addLayer( layer );
   }
@@ -109,11 +109,11 @@ void QgsProcessingTinInputLayersWidget::onCurrentLayerAdded()
   switch ( currentLayer->geometryType() )
   {
     case Qgis::GeometryType::Point:
-      layer.type = QgsProcessingParameterTinInputLayers::Vertices;
+      layer.type = Qgis::ProcessingTinInputLayerType::Vertices;
       break;
     case Qgis::GeometryType::Line:
     case Qgis::GeometryType::Polygon:
-      layer.type = QgsProcessingParameterTinInputLayers::BreakLines;
+      layer.type = Qgis::ProcessingTinInputLayerType::BreakLines;
       break;
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:
@@ -177,10 +177,10 @@ QVariant QgsProcessingTinInputLayersModel::data( const QModelIndex &index, int r
         case 1:
           switch ( mInputLayers.at( index.row() ).type )
           {
-            case QgsProcessingParameterTinInputLayers::Vertices:
+            case Qgis::ProcessingTinInputLayerType::Vertices:
               return tr( "Vertices" );
               break;
-            case QgsProcessingParameterTinInputLayers::BreakLines:
+            case Qgis::ProcessingTinInputLayerType::BreakLines:
               return tr( "Break Lines" );
               break;
             default:
@@ -225,7 +225,7 @@ QVariant QgsProcessingTinInputLayersModel::data( const QModelIndex &index, int r
       break;
     case Type:
       if ( index.column() == 1 )
-        return mInputLayers.at( index.row() ).type;
+        return static_cast< int >( mInputLayers.at( index.row() ).type );
       break;
     default:
       break;
@@ -237,7 +237,7 @@ bool QgsProcessingTinInputLayersModel::setData( const QModelIndex &index, const 
 {
   if ( index.column() == 1 && role == Qt::EditRole )
   {
-    mInputLayers[index.row()].type = static_cast<QgsProcessingParameterTinInputLayers::Type>( value.toInt() );
+    mInputLayers[index.row()].type = static_cast<Qgis::ProcessingTinInputLayerType>( value.toInt() );
     emit dataChanged( QAbstractTableModel::index( index.row(), 1 ), QAbstractTableModel::index( index.row(), 1 ) );
     return true;
   }
@@ -315,8 +315,8 @@ QWidget *QgsProcessingTinInputLayersDelegate::createEditor( QWidget *parent, con
   Q_UNUSED( option );
   Q_UNUSED( index );
   QComboBox *comboType = new QComboBox( parent );
-  comboType->addItem( tr( "Vertices" ), QgsProcessingParameterTinInputLayers::Vertices );
-  comboType->addItem( tr( "Break Lines" ), QgsProcessingParameterTinInputLayers::BreakLines );
+  comboType->addItem( tr( "Vertices" ), static_cast< int >( Qgis::ProcessingTinInputLayerType::Vertices ) );
+  comboType->addItem( tr( "Break Lines" ), static_cast< int >( Qgis::ProcessingTinInputLayerType::BreakLines ) );
   return comboType;
 }
 
@@ -324,9 +324,9 @@ void QgsProcessingTinInputLayersDelegate::setEditorData( QWidget *editor, const 
 {
   QComboBox *comboType = qobject_cast<QComboBox *>( editor );
   Q_ASSERT( comboType );
-  const QgsProcessingParameterTinInputLayers::Type type =
-    static_cast<QgsProcessingParameterTinInputLayers::Type>( index.data( QgsProcessingTinInputLayersModel::Type ).toInt() );
-  const int comboIndex = comboType->findData( type );
+  const Qgis::ProcessingTinInputLayerType type =
+    static_cast<Qgis::ProcessingTinInputLayerType>( index.data( QgsProcessingTinInputLayersModel::Type ).toInt() );
+  const int comboIndex = comboType->findData( static_cast< int >( type ) );
   if ( comboIndex >= 0 )
     comboType->setCurrentIndex( comboIndex );
   else

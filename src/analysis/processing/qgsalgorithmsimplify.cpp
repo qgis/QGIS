@@ -64,7 +64,7 @@ QgsSimplifyAlgorithm *QgsSimplifyAlgorithm::createInstance() const
 
 QList<int> QgsSimplifyAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
@@ -132,9 +132,9 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
   return QgsFeatureList() << f;
 }
 
-QgsProcessingFeatureSource::Flag QgsSimplifyAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsSimplifyAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 ///@endcond

@@ -27,5 +27,3 @@ QgsProcessingUtils.LayerHint.TiledScene.__doc__ = "Tiled scene layer type, since
 QgsProcessingUtils.LayerHint.__doc__ = "Layer type hints.\n\n.. versionadded:: 3.4\n\n" + '* ``UnknownType``: ' + QgsProcessingUtils.LayerHint.UnknownType.__doc__ + '\n' + '* ``Vector``: ' + QgsProcessingUtils.LayerHint.Vector.__doc__ + '\n' + '* ``Raster``: ' + QgsProcessingUtils.LayerHint.Raster.__doc__ + '\n' + '* ``Mesh``: ' + QgsProcessingUtils.LayerHint.Mesh.__doc__ + '\n' + '* ``PointCloud``: ' + QgsProcessingUtils.LayerHint.PointCloud.__doc__ + '\n' + '* ``Annotation``: ' + QgsProcessingUtils.LayerHint.Annotation.__doc__ + '\n' + '* ``VectorTile``: ' + QgsProcessingUtils.LayerHint.VectorTile.__doc__ + '\n' + '* ``TiledScene``: ' + QgsProcessingUtils.LayerHint.TiledScene.__doc__
 # --
 QgsProcessingUtils.LayerHint.baseClass = QgsProcessingUtils
-QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks = QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks
-QgsProcessingFeatureSource.Flags = lambda flags=0: QgsProcessingFeatureSource.Flag(flags)

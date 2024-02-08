@@ -37,6 +37,7 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsscreenhelper.h"
+#include "qgsmessagelog.h"
 
 #include <QShortcut>
 #include <QKeySequence>
@@ -1070,7 +1071,7 @@ void QgsModelDesignerDialog::fillInputsTree()
 
   for ( QgsProcessingParameterType *param : std::as_const( available ) )
   {
-    if ( param->flags() & QgsProcessingParameterType::ExposeToModeler )
+    if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
     {
       std::unique_ptr< QTreeWidgetItem > paramItem = std::make_unique< QTreeWidgetItem >();
       paramItem->setText( 0, param->name() );

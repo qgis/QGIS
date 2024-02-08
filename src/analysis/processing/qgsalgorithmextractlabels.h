@@ -33,7 +33,7 @@ class QgsExtractLabelsAlgorithm : public QgsProcessingAlgorithm
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
-    Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;

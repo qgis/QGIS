@@ -95,14 +95,14 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
   vlayout->addSpacing( 20 );
   mRequiredCheckBox = new QCheckBox( tr( "Mandatory" ) );
   if ( definition )
-    mRequiredCheckBox->setChecked( !( definition->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+    mRequiredCheckBox->setChecked( !( definition->flags() & Qgis::ProcessingParameterFlag::Optional ) );
   else
     mRequiredCheckBox->setChecked( true );
   vlayout->addWidget( mRequiredCheckBox );
 
   mAdvancedCheckBox = new QCheckBox( tr( "Advanced" ) );
   if ( definition )
-    mAdvancedCheckBox->setChecked( definition->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+    mAdvancedCheckBox->setChecked( definition->flags() & Qgis::ProcessingParameterFlag::Advanced );
   else
     mAdvancedCheckBox->setChecked( false );
   vlayout->addWidget( mAdvancedCheckBox );
@@ -114,12 +114,12 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
 QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
 {
   std::unique_ptr< QgsProcessingParameterDefinition > param;
-  QgsProcessingParameterDefinition::Flags flags = QgsProcessingParameterDefinition::Flags();
+  Qgis::ProcessingParameterFlags flags;
 
   if ( !mRequiredCheckBox->isChecked() )
-    flags |= QgsProcessingParameterDefinition::FlagOptional;
+    flags |= Qgis::ProcessingParameterFlag::Optional;
   if ( mAdvancedCheckBox->isChecked() )
-    flags |= QgsProcessingParameterDefinition::FlagAdvanced;
+    flags |= Qgis::ProcessingParameterFlag::Advanced;
 
   if ( mDefinitionWidget )
   {

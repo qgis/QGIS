@@ -175,9 +175,9 @@ QString QgsRasterPixelsToPolygonsAlgorithm::outputName() const
   return QObject::tr( "Vector polygons" );
 }
 
-QgsProcessing::SourceType QgsRasterPixelsToPolygonsAlgorithm::outputType() const
+Qgis::ProcessingSourceType QgsRasterPixelsToPolygonsAlgorithm::outputType() const
 {
-  return QgsProcessing::TypeVectorPolygon;
+  return Qgis::ProcessingSourceType::VectorPolygon;
 }
 
 Qgis::WkbType QgsRasterPixelsToPolygonsAlgorithm::sinkType() const
@@ -234,9 +234,9 @@ QString QgsRasterPixelsToPointsAlgorithm::outputName() const
   return QObject::tr( "Vector points" );
 }
 
-QgsProcessing::SourceType QgsRasterPixelsToPointsAlgorithm::outputType() const
+Qgis::ProcessingSourceType QgsRasterPixelsToPointsAlgorithm::outputType() const
 {
-  return QgsProcessing::TypeVectorPoint;
+  return Qgis::ProcessingSourceType::VectorPoint;
 }
 
 Qgis::WkbType QgsRasterPixelsToPointsAlgorithm::sinkType() const

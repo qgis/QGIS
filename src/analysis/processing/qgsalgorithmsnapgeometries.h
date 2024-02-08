@@ -41,7 +41,7 @@ class QgsSnapGeometriesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsProcessingAlgorithm::Flags flags() const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsSnapGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
 

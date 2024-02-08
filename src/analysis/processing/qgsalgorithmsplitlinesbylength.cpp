@@ -63,12 +63,12 @@ QString QgsSplitLinesByLengthAlgorithm::shortDescription() const
 
 QList<int> QgsSplitLinesByLengthAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << QgsProcessing::TypeVectorLine;
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
-QgsProcessing::SourceType QgsSplitLinesByLengthAlgorithm::outputLayerType() const
+Qgis::ProcessingSourceType QgsSplitLinesByLengthAlgorithm::outputLayerType() const
 {
-  return QgsProcessing::TypeVectorLine;
+  return Qgis::ProcessingSourceType::VectorLine;
 }
 
 QgsSplitLinesByLengthAlgorithm *QgsSplitLinesByLengthAlgorithm::createInstance() const
@@ -144,9 +144,9 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
   }
 }
 
-QgsProcessingFeatureSource::Flag QgsSplitLinesByLengthAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsSplitLinesByLengthAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 

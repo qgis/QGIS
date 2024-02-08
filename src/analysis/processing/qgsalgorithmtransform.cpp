@@ -32,7 +32,7 @@ void QgsTransformAlgorithm::initParameters( const QVariantMap & )
   // Optional coordinate operation
   auto crsOpParam = std::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
                     QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "TARGET_CRS" ), QVariant(), QVariant(), true );
-  crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 }
 
@@ -46,9 +46,9 @@ QString QgsTransformAlgorithm::outputName() const
   return QObject::tr( "Reprojected" );
 }
 
-QgsProcessingFeatureSource::Flag QgsTransformAlgorithm::sourceFlags() const
+Qgis::ProcessingFeatureSourceFlags QgsTransformAlgorithm::sourceFlags() const
 {
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+  return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
 }
 
 QString QgsTransformAlgorithm::name() const

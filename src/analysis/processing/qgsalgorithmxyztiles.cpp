@@ -98,22 +98,22 @@ QString QgsXyzTilesBaseAlgorithm::groupId() const
   return QStringLiteral( "rastertools" );
 }
 
-QgsProcessingAlgorithm::Flags QgsXyzTilesBaseAlgorithm::flags() const
+Qgis::ProcessingAlgorithmFlags QgsXyzTilesBaseAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagRequiresProject;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 void QgsXyzTilesBaseAlgorithm::createCommonParameters()
 {
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ZOOM_MIN" ), QObject::tr( "Minimum zoom" ), QgsProcessingParameterNumber::Integer, 12, false, 0, 25 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ZOOM_MAX" ), QObject::tr( "Maximum zoom" ), QgsProcessingParameterNumber::Integer, 12, false, 0, 25 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DPI" ), QObject::tr( "DPI" ), QgsProcessingParameterNumber::Integer, 96, false, 48, 600 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ZOOM_MIN" ), QObject::tr( "Minimum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ZOOM_MAX" ), QObject::tr( "Maximum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DPI" ), QObject::tr( "DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 48, 600 ) );
   addParameter( new QgsProcessingParameterColor( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TILE_FORMAT" ), QObject::tr( "Tile format" ), QStringList() << QStringLiteral( "PNG" ) << QStringLiteral( "JPG" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "QUALITY" ), QObject::tr( "Quality (JPG only)" ), QgsProcessingParameterNumber::Integer, 75, false, 1, 100 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "METATILESIZE" ), QObject::tr( "Metatile size" ), QgsProcessingParameterNumber::Integer, 4, false, 1, 20 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "QUALITY" ), QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "METATILESIZE" ), QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 ) );
 }
 
 bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -250,18 +250,18 @@ QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() c
 void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   createCommonParameters();
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_WIDTH" ), QObject::tr( "Tile width" ), QgsProcessingParameterNumber::Integer, 256, false, 1, 4096 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_HEIGHT" ), QObject::tr( "Tile height" ), QgsProcessingParameterNumber::Integer, 256, false, 1, 4096 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_WIDTH" ), QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_HEIGHT" ), QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TMS_CONVENTION" ), QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false, true ) );
 
   std::unique_ptr< QgsProcessingParameterString > titleParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "HTML_TITLE" ), QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
-  titleParam->setFlags( titleParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  titleParam->setFlags( titleParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( titleParam.release() );
   std::unique_ptr< QgsProcessingParameterString > attributionParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "HTML_ATTRIBUTION" ), QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
-  attributionParam->setFlags( attributionParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  attributionParam->setFlags( attributionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( attributionParam.release() );
   std::unique_ptr< QgsProcessingParameterBoolean > osmParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "HTML_OSM" ), QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false, true );
-  osmParam->setFlags( osmParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  osmParam->setFlags( osmParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( osmParam.release() );
 
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIRECTORY" ), QObject::tr( "Output directory" ) ) );
