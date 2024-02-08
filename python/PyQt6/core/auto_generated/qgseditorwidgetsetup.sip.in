@@ -49,6 +49,8 @@ Constructor for QgsEditorWidgetSetup
 :return: ``True`` if there is no widget configured.
 %End
 
+    bool operator==( const QgsEditorWidgetSetup &other ) const;
+
 };
 
 /************************************************************************
