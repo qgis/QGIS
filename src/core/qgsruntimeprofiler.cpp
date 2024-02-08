@@ -42,8 +42,8 @@ QStringList QgsRuntimeProfilerNode::fullParentPath() const
   if ( mParent )
   {
     res = mParent->fullParentPath();
-    const QString parentName = mParent->data( Name ).toString();
-    const QString parentId = mParent->data( Id ).toString();
+    const QString parentName = mParent->data( static_cast< int >( CustomRole::Name ) ).toString();
+    const QString parentId = mParent->data( static_cast< int >( CustomRole::Id ) ).toString();
     if ( !parentId.isEmpty() )
       res << parentId;
     else if ( !parentName.isEmpty() )
@@ -58,19 +58,19 @@ QVariant QgsRuntimeProfilerNode::data( int role ) const
   {
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
-    case Name:
+    case static_cast< int >( CustomRole::Name ):
       return mName;
 
-    case Group:
+    case static_cast< int >( CustomRole::Group ):
       return mGroup;
 
-    case Id:
+    case static_cast< int >( CustomRole::Id ):
       return mId;
 
-    case Elapsed:
+    case static_cast< int >( CustomRole::Elapsed ):
       return mElapsed;
 
-    case ParentElapsed:
+    case static_cast< int >( CustomRole::ParentElapsed ):
       return mParent ? ( mParent->elapsed() > 0 ? mParent->elapsed() : mParent->totalElapsedTimeForChildren( mGroup ) ) : 0;
   }
   return QVariant();
@@ -103,9 +103,9 @@ QgsRuntimeProfilerNode *QgsRuntimeProfilerNode::child( const QString &group, con
 {
   for ( auto &it : mChildren )
   {
-    if ( it->data( Group ).toString() == group
-         && ( ( !id.isEmpty() && it->data( Id ) == id )
-              || ( id.isEmpty() && !name.isEmpty() && it->data( Name ).toString() == name ) ) )
+    if ( it->data( static_cast< int >( CustomRole::Group ) ).toString() == group
+         && ( ( !id.isEmpty() && it->data( static_cast< int >( CustomRole::Id ) ) == id )
+              || ( id.isEmpty() && !name.isEmpty() && it->data( static_cast< int >( CustomRole::Name ) ).toString() == name ) ) )
       return it.get();
   }
   return nullptr;
@@ -153,7 +153,7 @@ double QgsRuntimeProfilerNode::totalElapsedTimeForChildren( const QString &group
   double total = 0;
   for ( auto &it : mChildren )
   {
-    if ( it->data( Group ).toString() == group )
+    if ( it->data( static_cast< int >( CustomRole::Group ) ).toString() == group )
       total += it->elapsed();
   }
   return total;
@@ -206,8 +206,8 @@ QStringList QgsRuntimeProfiler::childGroups( const QString &parent, const QStrin
   for ( int i = 0; i < parentNode->childCount(); ++i )
   {
     QgsRuntimeProfilerNode *child = parentNode->childAt( i );
-    if ( child->data( QgsRuntimeProfilerNode::Group ).toString() == group )
-      res << child->data( QgsRuntimeProfilerNode::Name ).toString();
+    if ( child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString() == group )
+      res << child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString();
   }
   return res;
 }
@@ -267,7 +267,7 @@ void QgsRuntimeProfiler::end( const QString &group )
     parentIndex = parentIndex.parent();
   }
 
-  emit ended( group, node->fullParentPath(), node->data( QgsRuntimeProfilerNode::Name ).toString(), node->data( QgsRuntimeProfilerNode::Id ).toString(), node->data( QgsRuntimeProfilerNode::Elapsed ).toDouble() );
+  emit ended( group, node->fullParentPath(), node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString(), node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Id ) ).toString(), node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble() );
 }
 
 void QgsRuntimeProfiler::record( const QString &name, double time, const QString &group, const QString &id )
@@ -293,7 +293,7 @@ void QgsRuntimeProfiler::record( const QString &name, double time, const QString
 
   emit started( group, child->fullParentPath(), name, id );
   child->setElapsed( time );
-  emit ended( group, child->fullParentPath(), child->data( QgsRuntimeProfilerNode::Name ).toString(), child->data( QgsRuntimeProfilerNode::Id ).toString(), child->data( QgsRuntimeProfilerNode::Elapsed ).toDouble() );
+  emit ended( group, child->fullParentPath(), child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Name ) ).toString(), child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Id ) ).toString(), child->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble() );
 
   if ( !mGroups.contains( group ) )
   {
@@ -308,14 +308,14 @@ double QgsRuntimeProfiler::profileTime( const QString &name, const QString &grou
   if ( !node )
     return 0;
 
-  return node->data( QgsRuntimeProfilerNode::Elapsed ).toDouble();
+  return node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) ).toDouble();
 }
 
 void QgsRuntimeProfiler::clear( const QString &group )
 {
   for ( int row = mRootNode->childCount() - 1; row >= 0; row-- )
   {
-    if ( mRootNode->childAt( row )->data( QgsRuntimeProfilerNode::Group ).toString() == group )
+    if ( mRootNode->childAt( row )->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString() == group )
     {
       beginRemoveRows( QModelIndex(), row, row );
       mRootNode->removeChildAt( row );
@@ -412,7 +412,7 @@ QVariant QgsRuntimeProfiler::data( const QModelIndex &index, int role ) const
       {
         case Qt::DisplayRole:
         case Qt::InitialSortOrderRole:
-          return node->data( QgsRuntimeProfilerNode::Elapsed );
+          return node->data( static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Elapsed ) );
 
         default:
           break;
@@ -641,7 +641,7 @@ void QgsRuntimeProfiler::extractModelAsText( QStringList &lines, const QString &
   for ( int r = 0; r < rc; r++ )
   {
     QModelIndex rowIndex = index( r, 0, parent );
-    if ( data( rowIndex, QgsRuntimeProfilerNode::Group ).toString() != group )
+    if ( data( rowIndex, static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString() != group )
       continue;
 
     QStringList cells;

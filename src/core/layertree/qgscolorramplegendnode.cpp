@@ -173,7 +173,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
     }
     return mPixmap;
   }
-  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::ColorRampLegend;
   }

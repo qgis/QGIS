@@ -27,6 +27,7 @@
 
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudstatistics.h"
+#include "qgslogger.h"
 
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
@@ -86,6 +87,31 @@ uint qHash( IndexedPointCloudNode id )
 }
 
 ///@cond PRIVATE
+
+//
+// QgsPointCloudCacheKey
+//
+
+QgsPointCloudCacheKey::QgsPointCloudCacheKey( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+  : mNode( n )
+  , mUri( uri )
+  , mRequest( request )
+  , mFilterExpression( expression )
+{
+}
+
+bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) const
+{
+  return mNode == other.mNode &&
+         mUri == other.mUri &&
+         mRequest == other.mRequest &&
+         mFilterExpression == other.mFilterExpression;
+}
+
+uint qHash( const QgsPointCloudCacheKey &key )
+{
+  return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.filterExpression() );
+}
 
 //
 // QgsPointCloudDataBounds
@@ -152,6 +178,9 @@ QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const
 //
 // QgsPointCloudIndex
 //
+
+QMutex QgsPointCloudIndex::sBlockCacheMutex;
+QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> QgsPointCloudIndex::sBlockCache( 200'000'000 ); // 200MB of cached points
 
 QgsPointCloudIndex::QgsPointCloudIndex() = default;
 
@@ -286,21 +315,21 @@ QString QgsPointCloudIndex::subsetString() const
   return mFilterExpression;
 }
 
-QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
 {
-  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "X" ) && statistic == Qgis::Statistic::Min )
     return mExtent.xMinimum();
-  if ( attribute == QLatin1String( "X" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "X" ) && statistic == Qgis::Statistic::Max )
     return mExtent.xMaximum();
 
-  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "Y" ) && statistic == Qgis::Statistic::Min )
     return mExtent.yMinimum();
-  if ( attribute == QLatin1String( "Y" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "Y" ) && statistic == Qgis::Statistic::Max )
     return mExtent.yMaximum();
 
-  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Min )
+  if ( attribute == QLatin1String( "Z" ) && statistic == Qgis::Statistic::Min )
     return mZMin;
-  if ( attribute == QLatin1String( "Z" ) && statistic == QgsStatisticalSummary::Max )
+  if ( attribute == QLatin1String( "Z" ) && statistic == Qgis::Statistic::Max )
     return mZMax;
 
   return QVariant();
@@ -312,7 +341,7 @@ QVariantList QgsPointCloudIndex::metadataClasses( const QString &attribute ) con
   return QVariantList();
 }
 
-QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
 {
   Q_UNUSED( attribute );
   Q_UNUSED( value );
@@ -327,10 +356,10 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
   {
     QString name = attribute.name();
     QgsPointCloudAttributeStatistics s;
-    QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
-    QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
-    QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Mean );
-    QVariant stDev = metadataStatistic( name, QgsStatisticalSummary::StDev );
+    QVariant min = metadataStatistic( name, Qgis::Statistic::Min );
+    QVariant max = metadataStatistic( name, Qgis::Statistic::Max );
+    QVariant mean = metadataStatistic( name, Qgis::Statistic::Mean );
+    QVariant stDev = metadataStatistic( name, Qgis::Statistic::StDev );
     if ( !min.isValid() )
       continue;
 
@@ -338,11 +367,11 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
     s.maximum = max.toDouble();
     s.mean = mean.toDouble();
     s.stDev = stDev.toDouble();
-    s.count = metadataStatistic( name, QgsStatisticalSummary::Count ).toInt();
+    s.count = metadataStatistic( name, Qgis::Statistic::Count ).toInt();
     QVariantList classes = metadataClasses( name );
     for ( QVariant c : classes )
     {
-      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, QgsStatisticalSummary::Count ).toInt();
+      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, Qgis::Statistic::Count ).toInt();
     }
     statsMap[ name ] = s;
   }
@@ -352,6 +381,7 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
 void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination ) const
 {
   // Base QgsPointCloudIndex fields
+  destination->mUri = mUri;
   destination->mExtent = mExtent;
   destination->mZMin = mZMin;
   destination->mZMax = mZMax;
@@ -362,4 +392,32 @@ void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination )
   destination->mAttributes = mAttributes;
   destination->mSpan = mSpan;
   destination->mFilterExpression = mFilterExpression;
+}
+
+QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const IndexedPointCloudNode &node, const QgsPointCloudRequest &request )
+{
+  QgsPointCloudCacheKey key( node, request, mFilterExpression, mUri );
+
+  QMutexLocker l( &sBlockCacheMutex );
+  QgsPointCloudBlock *cached = sBlockCache.object( key );
+  return cached ? cached->clone() : nullptr;
+}
+
+void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request )
+{
+  storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
+}
+
+void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+{
+  if ( !data )
+    return;
+
+  QgsPointCloudCacheKey key( node, request, expression, uri );
+
+  const int cost = data->pointCount() * data->pointRecordSize();
+
+  QMutexLocker l( &sBlockCacheMutex );
+  QgsDebugMsgLevel( QStringLiteral( "(%1/%2): Caching node %3 of %4" ).arg( sBlockCache.totalCost() ).arg( sBlockCache.maxCost() ).arg( key.node().toString() ).arg( key.uri() ), 4 );
+  sBlockCache.insert( key, data->clone(), cost );
 }

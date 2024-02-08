@@ -206,7 +206,7 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
             return QVariant();
         }
 
-      case StatusRole:
+      case static_cast< int >( CustomRole::Status ):
         return static_cast<int>( task->status() );
 
       case Qt::ToolTipRole:

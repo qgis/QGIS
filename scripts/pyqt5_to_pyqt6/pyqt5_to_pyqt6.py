@@ -208,7 +208,24 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     sys.stderr.write(
                         f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: fragile call to addAction. Use my_action = QAction(...), obj.addAction(my_action) instead.\n')
 
-        if isinstance(_node.func, ast.Name) and _node.func.id == 'QDateTime':
+        if isinstance(_node.func, ast.Name) and _node.func.id == 'QVariant':
+            if len(_node.args) == 1 and isinstance(_node.args[0], ast.Attribute) and isinstance(_node.args[0].value, ast.Name) and _node.args[0].value.id == 'QVariant':
+                extra_imports['qgis.core'].update({'NULL'})
+
+                def _fix_null_qvariant(start_index: int, tokens):
+                    assert tokens[start_index].src == 'QVariant'
+                    assert tokens[start_index + 1].src == '('
+                    assert tokens[start_index + 2].src == 'QVariant'
+                    assert tokens[start_index + 3].src == '.'
+                    assert tokens[start_index + 5].src == ')'
+
+                    tokens[start_index] = tokens[start_index]._replace(src='NULL')
+                    for i in range(start_index + 1, start_index + 6):
+                        tokens[i] = tokens[i]._replace(src='')
+
+                custom_updates[Offset(_node.lineno,
+                                      _node.col_offset)] = _fix_null_qvariant
+        elif isinstance(_node.func, ast.Name) and _node.func.id == 'QDateTime':
             if len(_node.args) == 8:
                 # QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts) doesn't work anymore,
                 # so port to more reliable QDateTime(QDate, QTime, ts) form
@@ -234,7 +251,27 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     assert tokens[i].src == ','
                     tokens[i] = tokens[i]._replace(src='),')
 
-                custom_updates[Offset(node.lineno, node.col_offset)] = _fix_qdatetime_construct
+                custom_updates[Offset(_node.lineno, _node.col_offset)] = _fix_qdatetime_construct
+            elif len(_node.args) == 1 and isinstance(_node.args[0], ast.Call) and _node.args[0].func.id == 'QDate':
+                # QDateTime(QDate(..)) doesn't work anymore,
+                # so port to more reliable QDateTime(QDate(...), QTime(0,0,0)) form
+                extra_imports['qgis.PyQt.QtCore'].update({'QTime'})
+
+                def _fix_qdatetime_construct(start_index: int, tokens):
+                    assert tokens[start_index].src == 'QDateTime'
+                    assert tokens[start_index + 1].src == '('
+                    assert tokens[start_index + 2].src == 'QDate'
+                    assert tokens[start_index + 3].src == '('
+                    i = start_index + 4
+                    while tokens[i].offset < Offset(_node.args[0].end_lineno,
+                                                    _node.args[0].end_col_offset):
+                        i += 1
+
+                    assert tokens[i - 1].src == ')'
+                    tokens[i - 1] = tokens[i - 1]._replace(src='), QTime(0, 0, 0)')
+
+                custom_updates[Offset(_node.lineno,
+                                      _node.col_offset)] = _fix_qdatetime_construct
 
     def visit_attribute(_node: ast.Attribute, _parent):
         if isinstance(_node.value, ast.Name):
@@ -256,15 +293,23 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
 
+    def visit_import(_node: ast.ImportFrom, _parent):
+        import_offsets[Offset(node.lineno, node.col_offset)] = (
+            node.module, set(name.name for name in node.names), node.end_lineno,
+            node.end_col_offset)
+        imported_modules.add(node.module)
+        for name in node.names:
+            if name.name in import_warnings:
+                print(f'{filename}: {import_warnings[name.name]}')
+        if _node.module == 'qgis.PyQt.Qt':
+            extra_imports['qgis.PyQt.QtCore'].update({'Qt'})
+            removed_imports['qgis.PyQt.Qt'].update({'Qt'})
+
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
         for node in ast.iter_child_nodes(parent):
             if isinstance(node, ast.ImportFrom):
-                import_offsets[Offset(node.lineno, node.col_offset)] = (node.module, set(name.name for name in node.names), node.end_lineno, node.end_col_offset)
-                imported_modules.add(node.module)
-                for name in node.names:
-                    if name.name in import_warnings:
-                        print(f'{filename}: {import_warnings[name.name]}')
+                visit_import(node, parent)
 
             if (not qgis3_compat and isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
                     and node.value.id == "QVariant"):
@@ -369,6 +414,41 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                                 prev_token_index -= 1
                             else:
                                 break
+
+                        none_forward = True
+                        current_index = prev_token_index + 1
+                        while True:
+                            if tokens[current_index].src in ('\n', ')'):
+                                break
+                            elif tokens[current_index].src.strip():
+                                none_forward = False
+                                break
+                            current_index += 1
+
+                        none_backward = True
+                        current_index = prev_token_index
+                        while True:
+                            if tokens[current_index].src in ('import',):
+                                break
+                            elif tokens[current_index].src.strip():
+                                none_backward = False
+                                break
+                            current_index -= 1
+                        if none_backward and none_forward:
+                            # no more imports from this module, remove whole import
+                            while True:
+                                if tokens[current_index].src in ('from',):
+                                    break
+                                current_index -= 1
+
+                            while True:
+                                if tokens[current_index].src in ('\n',):
+                                    tokens[current_index] = tokens[
+                                        current_index]._replace(src='')
+                                    break
+                                tokens[current_index] = tokens[current_index]._replace(src='')
+                                current_index += 1
+
                     else:
                         current_imports.add(import_)
 

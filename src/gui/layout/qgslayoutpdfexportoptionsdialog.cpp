@@ -256,7 +256,7 @@ QStringList QgsLayoutPdfExportOptionsDialog::geoPdfLayerOrder() const
   QStringList order;
   for ( int row = 0; row < mGeoPdfStructureProxyModel->rowCount(); ++row )
   {
-    order << mGeoPdfStructureProxyModel->data( mGeoPdfStructureProxyModel->index( row, 0 ), QgsGeoPdfLayerTreeModel::LayerIdRole ).toString();
+    order << mGeoPdfStructureProxyModel->data( mGeoPdfStructureProxyModel->index( row, 0 ), static_cast< int >( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
   }
   return order;
 }

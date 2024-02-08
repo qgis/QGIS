@@ -398,6 +398,26 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         table_info = conn.table('qgis_test', 'gh_43268_test_zm')
         self.assertEqual(sorted([QgsWkbTypes.displayString(col.wkbType) for col in table_info.geometryColumnTypes()]), ['LineStringZ', 'PointZ', 'PolygonZ'])
 
+    def test_m(self):
+        """Test regression GH #55223"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.gh_55223_test_m;
+        CREATE TABLE qgis_test.gh_55223_test_m AS
+        WITH test_measure AS (
+            SELECT ST_GeomFromText('LINESTRING M (796091.2 6313188.3 0,796089 6313175 13.480726983172712,796087 6313166.1 22.602678529121157,796083.6 6313156.5 32.786980173957)', 2154) AS xym
+        )
+        select
+            xym,
+            ST_Force2D(xym) as xy
+        FROM test_measure;
+        """
+        conn.executeSql(sql)
+        geom_types = [t.geometryColumnTypes()[0] for t in conn.tables() if t.tableName() == 'gh_55223_test_m']
+        self.assertEqual(sorted([QgsWkbTypes.displayString(col.wkbType) for col in geom_types]), ['LineString', 'LineStringM'])
+
     def test_table_scan(self):
         """Test that with use estimated metadata disabled all geometry column
         types can be identified, test for GH #43186 """

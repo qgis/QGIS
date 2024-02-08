@@ -104,7 +104,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     QByteArray fetchCopcStatisticsEvlrData();
 
     bool mIsValid = false;
-    QString mFileName;
     mutable std::ifstream mCopcFile;
     mutable lazperf::copc_info_vlr mCopcInfoVlr;
     mutable QHash<IndexedPointCloudNode, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC

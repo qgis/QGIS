@@ -2410,7 +2410,7 @@ int QgsPostgresRasterProvider::yBlockSize() const
   }
 }
 
-QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback )
+QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( feedback )
   QgsRasterBandStats rasterBandStats;

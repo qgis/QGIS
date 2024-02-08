@@ -129,7 +129,7 @@ QgsFeatureIds QgsFeatureListView::currentEditSelection()
   const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
   for ( const QModelIndex &idx : selectedIndexes )
   {
-    selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+    selection << idx.data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).value<QgsFeatureId>();
   }
   return selection;
 }

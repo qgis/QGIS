@@ -35,7 +35,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterRasterDestination)
+                       QgsProcessingParameterRasterDestination, NULL)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -106,7 +106,7 @@ class rasterize(GdalAlgorithm):
                                                    self.tr('Assign a specified NoData value to output bands'),
                                                    type=QgsProcessingParameterNumber.Type.Double,
                                                    optional=True)
-        nodataParam.setGuiDefaultValueOverride(QVariant(QVariant.Double))
+        nodataParam.setGuiDefaultValueOverride(NULL)
         self.addParameter(nodataParam)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,

@@ -82,6 +82,13 @@ Returns maximal Z value of the data (in world coordinates)
 .. versionadded:: 3.12
 %End
 
+    QString error() const;
+%Docstring
+Returns a descriptive error string if the tessellation failed.
+
+.. versionadded:: 3.34
+%End
+
 };
 
 /************************************************************************

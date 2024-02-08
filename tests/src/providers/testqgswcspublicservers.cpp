@@ -438,7 +438,7 @@ void TestQgsWcsPublicServers::test()
             {
               myLog << provider + "_srcType:" + qgsEnumValueToKey< Qgis::DataType >( myLayer->dataProvider()->sourceDataType( 1 ) );
 
-              QgsRasterBandStats myStats = myLayer->dataProvider()->bandStatistics( 1, QgsRasterBandStats::All, QgsRectangle(), myWidth * myHeight );
+              QgsRasterBandStats myStats = myLayer->dataProvider()->bandStatistics( 1, Qgis::RasterBandStatistic::All, QgsRectangle(), myWidth * myHeight );
               myLog << provider + "_min:" + QString::number( myStats.minimumValue );
               myLog << provider + "_max:" + QString::number( myStats.maximumValue );
             }

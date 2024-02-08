@@ -123,7 +123,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
           {
             if ( vLayer->renderer() )
             {
-              const QString ruleKey { legendNodes.at( 0 )->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+              const QString ruleKey { legendNodes.at( 0 )->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
               if ( ! ruleKey.isEmpty() )
               {
                 bool ok;
@@ -155,7 +155,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
             {
               if ( vLayer->renderer() )
               {
-                const QString ruleKey { legendNode->data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+                const QString ruleKey { legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
                 if ( ! ruleKey.isEmpty() )
                 {
                   bool ok;

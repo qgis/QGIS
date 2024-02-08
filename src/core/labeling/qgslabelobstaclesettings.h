@@ -39,16 +39,11 @@ class CORE_EXPORT QgsLabelObstacleSettings
      * Valid obstacle types, which affect how features within the layer will act as obstacles
      * for labels.
      */
-    enum ObstacleType
-    {
-      PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
-       outside or just slightly inside polygon) */
-      PolygonBoundary, /*!< avoid placing labels over boundary of polygon (prefer placing outside or
-       completely inside polygon) */
-      PolygonWhole /*!< avoid placing labels over ANY part of polygon. Where PolygonInterior will prefer
-       to place labels with the smallest area of intersection between the label and the polygon,
-       PolygonWhole will penalise any label which intersects with the polygon by an equal amount, so that
-       placing labels over any part of the polygon is avoided.*/
+    enum class ObstacleType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelObstacleSettings, ObstacleType ) : int
+      {
+      PolygonInterior, //!< Avoid placing labels over interior of polygon (prefer placing labels totally outside or just slightly inside polygon)
+      PolygonBoundary, //!< Avoid placing labels over boundary of polygon (prefer placing outside or completely inside polygon)
+      PolygonWhole //!< Avoid placing labels over ANY part of polygon. Where PolygonInterior will prefer to place labels with the smallest area of intersection between the label and the polygon, PolygonWhole will penalise any label which intersects with the polygon by an equal amount, so that placing labels over any part of the polygon is avoided
     };
 
     /**
@@ -147,7 +142,7 @@ class CORE_EXPORT QgsLabelObstacleSettings
 
     bool mIsObstacle = true;
     double mObstacleFactor = 1.0;
-    ObstacleType mObstacleType = PolygonBoundary;
+    ObstacleType mObstacleType = ObstacleType::PolygonBoundary;
 
     //! Optional geometry to use for label obstacles
     QgsGeometry mObstacleGeometry;

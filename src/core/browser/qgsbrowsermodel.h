@@ -66,14 +66,25 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     ~QgsBrowserModel() override;
 
-    enum ItemDataRole
-    {
-      PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
-      CommentRole = Qt::UserRole + 1, //!< Item comment
-      SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
-      ProviderKeyRole, //!< Data item provider key that created the item, see QgsDataItem::providerKey() \since QGIS 3.12
-      LayerMetadataRole, //! Data item layer metadata for layer items
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsBrowserModel::ItemDataRole
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsBrowserModel, ItemDataRole ): int
+      {
+      Path SIP_MONKEYPATCH_COMPAT_NAME( PathRole ) = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
+      Comment SIP_MONKEYPATCH_COMPAT_NAME( CommentRole ) = Qt::UserRole + 1, //!< Item comment
+      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ), //!< Custom sort role, see QgsDataItem::sortKey()
+      ProviderKey SIP_MONKEYPATCH_COMPAT_NAME( ProviderKeyRole ), //!< Data item provider key that created the item, see QgsDataItem::providerKey() \since QGIS 3.12
+      LayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( LayerMetadataRole ), //! Data item layer metadata for layer items
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
+
     // implemented methods from QAbstractItemModel for read-only access
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;

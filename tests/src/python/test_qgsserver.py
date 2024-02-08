@@ -1,7 +1,5 @@
 """QGIS Unit tests for QgsServer.
 
-Set the env var ENCODED_OUTPUT to enable printing the base64 encoded image diff
-
 FIXME: keep here only generic server tests and move specific services
        tests to test_qgsserver_<service>.py
 
@@ -49,7 +47,7 @@ from qgis.core import (
     QgsMultiRenderChecker,
 )
 from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QImage
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
@@ -231,7 +229,7 @@ class QgsServerTestBase(QgisTestCase):
 
         return data[1], headers
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG'):
+    def _img_diff(self, image: str, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG') -> bool:
 
         if outputFormat == 'PNG':
             extFile = 'png'
@@ -248,17 +246,20 @@ class QgsServerTestBase(QgisTestCase):
             f.write(image)
 
         if outputFormat != 'PNG':
-            return (True, "QgsRenderChecker can only be used for PNG")
+            # TODO fix this, it's not actually testing anything..!
+            return True
 
-        control = QgsMultiRenderChecker()
-        control.setControlPathPrefix("qgis_server")
-        control.setControlName(control_image)
-        control.setRenderedImage(temp_image)
-        if max_size_diff.isValid():
-            control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.runTest(control_image, max_diff), control.report()
+        return self.image_check(
+            control_image,
+            control_image,
+            QImage(temp_image),
+            control_image,
+            allowed_mismatch=max_diff,
+            control_path_prefix="qgis_server",
+            size_tolerance=max_size_diff
+        )
 
-    def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputFormat='PNG'):
+    def _img_diff_error(self, response, headers, test_name: str, max_diff=100, max_size_diff=QSize(), outputFormat='PNG'):
         """
         :param outputFormat: PNG, JPG or WEBP
         """
@@ -275,36 +276,18 @@ class QgsServerTestBase(QgisTestCase):
         else:
             raise RuntimeError('Yeah, new format implemented')
 
-        reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.' + extFile
-        self.store_reference(reference_path, response)
+        if self.regenerate_reference:
+            reference_path = unitTestDataPath(
+                'control_images') + '/qgis_server/' + test_name + '/' + test_name + '.' + extFile
+            self.store_reference(reference_path, response)
 
         self.assertEqual(
             headers.get("Content-Type"), contentType,
             f"Content type is wrong: {headers.get('Content-Type')} instead of {contentType}\n{response}")
 
-        test, report = self._img_diff(response, image, max_diff, max_size_diff, outputFormat)
-
-        with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
-            encoded_rendered_file = base64.b64encode(rendered_file.read())
-            if not os.environ.get('ENCODED_OUTPUT'):
-                message = f"Image is wrong: rendered file {tempfile.gettempdir()}/{image}_result.{extFile}"
-            else:
-                message = "Image is wrong\n{}\nImage:\necho '{}' | base64 -d >{}/{}_result.{}".format(
-                    report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
-                )
-
-        # If the failure is in image sizes the diff file will not exists.
-        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
-            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
-                if not os.environ.get('ENCODED_OUTPUT'):
-                    message = f"Image is wrong: diff file {tempfile.gettempdir()}/{image}_result_diff.{extFile}"
-                else:
-                    encoded_diff_file = base64.b64encode(diff_file.read())
-                    message += "\nDiff:\necho '{}' | base64 -d > {}/{}_result_diff.{}".format(
-                        encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
-                    )
-
-        self.assertTrue(test, message)
+        self.assertTrue(
+            self._img_diff(response, test_name, max_diff, max_size_diff, outputFormat)
+        )
 
     def _execute_request(self, qs, requestMethod=QgsServerRequest.GetMethod, data=None, request_headers=None):
         request = QgsBufferServerRequest(qs, requestMethod, request_headers or {}, data)

@@ -68,7 +68,7 @@ unique value.
       EmptyExtentError
     };
 
-    enum class VAlign /BaseType=IntFlag/
+    enum class VAlign /BaseType=IntEnum/
     {
       VBaseLine,
       VBottom,
@@ -77,7 +77,7 @@ unique value.
       Undefined
     };
 
-    enum class HAlign /BaseType=IntFlag/
+    enum class HAlign /BaseType=IntEnum/
     {
       HLeft,
       HCenter,
@@ -145,6 +145,13 @@ Add layers to export
 %End
 
     ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+
+    const QString feedbackMessage() const;
+%Docstring
+Returns any feedback message produced while export to dxf file.
+
+.. versionadded:: 3.36
+%End
 
     void setSymbologyScale( double scale );
 %Docstring

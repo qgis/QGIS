@@ -74,7 +74,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Used in browser model to understand which items for which providers should be populated
      */
-    enum DataCapability
+    enum DataCapability SIP_ENUM_BASETYPE( IntFlag )
     {
       NoDataCapabilities  = 0,
       File                = 1,
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Flags which control dataprovider construction.
      * \since QGIS 3.16
      */
-    enum ReadFlag
+    enum ReadFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagTrustDataSource = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
       SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.

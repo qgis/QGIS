@@ -114,7 +114,7 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
   {
     if ( index.isValid() )
     {
-      QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( mSensorModel->data( index, QgsSensorModel::Sensor ).value<QgsAbstractSensor *>(), this );
+      QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( mSensorModel->data( index, static_cast< int >( QgsSensorModel::CustomRole::Sensor ) ).value<QgsAbstractSensor *>(), this );
       showPanel( settingsWidget );
     }
   } );
@@ -124,9 +124,9 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
     const QModelIndex index = mSensorTable->currentIndex();
     if ( index.isValid() )
     {
-      if ( id == mSensorModel->data( index, QgsSensorModel::SensorId ).toString() )
+      if ( id == mSensorModel->data( index, static_cast< int >( QgsSensorModel::CustomRole::SensorId ) ).toString() )
       {
-        QgsAbstractSensor *sensor = mSensorModel->data( index, QgsSensorModel::Sensor ).value<QgsAbstractSensor *>();
+        QgsAbstractSensor *sensor = mSensorModel->data( index, static_cast< int >( QgsSensorModel::CustomRole::Sensor ) ).value<QgsAbstractSensor *>();
         if ( sensor )
         {
           if ( sensor->status() == Qgis::DeviceConnectionStatus::Disconnected )
@@ -147,7 +147,7 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
     mActionConnection->setEnabled( current.isValid() );
     mActionRemoveSensor->setEnabled( current.isValid() );
     mActionEditSensor->setEnabled( current.isValid() );
-    if ( current.isValid() && mSensorModel->data( current, QgsSensorModel::SensorStatus ).value<Qgis::DeviceConnectionStatus>() == Qgis::DeviceConnectionStatus::Connected )
+    if ( current.isValid() && mSensorModel->data( current, static_cast< int >( QgsSensorModel::CustomRole::SensorStatus ) ).value<Qgis::DeviceConnectionStatus>() == Qgis::DeviceConnectionStatus::Connected )
     {
       mActionConnection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStop.svg" ) ) );
     }
@@ -162,7 +162,7 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
     const QModelIndex index = mSensorTable->currentIndex();
     if ( index.isValid() )
     {
-      QgsAbstractSensor *sensor = mSensorModel->data( index, QgsSensorModel::Sensor ).value<QgsAbstractSensor *>();
+      QgsAbstractSensor *sensor = mSensorModel->data( index, static_cast< int >( QgsSensorModel::CustomRole::Sensor ) ).value<QgsAbstractSensor *>();
       if ( sensor )
       {
         if ( sensor->status() == Qgis::DeviceConnectionStatus::Disconnected )
@@ -192,7 +192,7 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
     const QModelIndex index = mSensorTable->currentIndex();
     if ( index.isValid() )
     {
-      QgsProject::instance()->sensorManager()->removeSensor( mSensorModel->data( index, QgsSensorModel::SensorId ).toString() );
+      QgsProject::instance()->sensorManager()->removeSensor( mSensorModel->data( index, static_cast< int >( QgsSensorModel::CustomRole::SensorId ) ).toString() );
     }
   } );
 
@@ -201,7 +201,7 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
     const QModelIndex index = mSensorTable->currentIndex();
     if ( index.isValid() )
     {
-      QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( mSensorModel->data( index, QgsSensorModel::Sensor ).value<QgsAbstractSensor *>(), this );
+      QgsSensorSettingsWidget *settingsWidget = new QgsSensorSettingsWidget( mSensorModel->data( index, static_cast< int >( QgsSensorModel::CustomRole::Sensor ) ).value<QgsAbstractSensor *>(), this );
       showPanel( settingsWidget );
     }
   } );

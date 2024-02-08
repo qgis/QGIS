@@ -145,9 +145,9 @@ void TestQgsRuntimeProfiler::threading()
   QCOMPARE( QgsApplication::profiler()->rowCount(), 2 );
   const int row1 = QgsApplication::profiler()->data( QgsApplication::profiler()->index( 0, 0 ) ).toString() == QLatin1String( "launch thread" ) ? 0 : 1;
   QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ) ).toString(), QStringLiteral( "launch thread" ) );
-  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ), QgsRuntimeProfilerNode::Group ).toString(), QStringLiteral( "main" ) );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ), static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString(), QStringLiteral( "main" ) );
   QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ) ).toString(), QStringLiteral( "in thread" ) );
-  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ), QgsRuntimeProfilerNode::Group ).toString(), QStringLiteral( "bg" ) );
+  QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ), static_cast< int >( QgsRuntimeProfilerNode::CustomRole::Group ) ).toString(), QStringLiteral( "bg" ) );
 }
 
 

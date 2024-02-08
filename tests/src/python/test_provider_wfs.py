@@ -23,6 +23,7 @@ os.environ['QT_HASH_SEED'] = '1'
 
 from providertestbase import ProviderTestCase
 from qgis.core import (
+    NULL,
     Qgis,
     QgsApplication,
     QgsExpression,
@@ -43,10 +44,13 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,
+    QDate,
     QDateTime,
     QEventLoop,
     QObject,
-    Qt, QTime, QDate)
+    Qt,
+    QTime,
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from utilities import compareWkt, unitTestDataPath
@@ -4674,21 +4678,21 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         got_f = [f for f in vl.getFeatures()]
-        self.assertEqual(str(got_f[0]['type']), 'NULL')
-        self.assertEqual(str(got_f[0]['elevation']), 'NULL')
+        self.assertEqual(got_f[0]['type'], NULL)
+        self.assertEqual(got_f[0]['elevation'], NULL)
         self.assertEqual(str(got_f[0]['name']), 'Xxx')
         self.assertEqual(str(got_f[1]['type']), '0')
-        self.assertEqual(str(got_f[1]['elevation']), 'NULL')
+        self.assertEqual(got_f[1]['elevation'], NULL)
         self.assertEqual(str(got_f[1]['name']), 'sdf')
 
         # Now iterate ! Regression #20961
         ids = [f.id() for f in got_f]
         got_f2 = [vl.getFeature(id) for id in ids]
-        self.assertEqual(str(got_f2[0]['type']), 'NULL')
-        self.assertEqual(str(got_f2[0]['elevation']), 'NULL')
+        self.assertEqual(got_f2[0]['type'], NULL)
+        self.assertEqual(got_f2[0]['elevation'], NULL)
         self.assertEqual(str(got_f2[0]['name']), 'Xxx')
         self.assertEqual(str(got_f2[1]['type']), '0')
-        self.assertEqual(str(got_f2[1]['elevation']), 'NULL')
+        self.assertEqual(got_f2[1]['elevation'], NULL)
         self.assertEqual(str(got_f2[1]['name']), 'sdf')
 
     def testFilteredFeatureRequests(self):

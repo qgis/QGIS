@@ -173,14 +173,25 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
   public:
 
     //! Model roles
-    enum Roles
+
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsLayoutGuideCollection::Roles
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutGuideCollection, Roles ) : int
     {
-      OrientationRole = Qt::UserRole, //!< Guide orientation role
-      PositionRole, //!< Guide position role
-      UnitsRole, //!< Guide position units role
-      PageRole, //!< Guide page role
-      LayoutPositionRole, //!< Guide position in layout coordinates
+      Orientation SIP_MONKEYPATCH_COMPAT_NAME(OrientationRole) = Qt::UserRole, //!< Guide orientation role
+      Position SIP_MONKEYPATCH_COMPAT_NAME(PositionRole), //!< Guide position role
+      Units SIP_MONKEYPATCH_COMPAT_NAME(UnitsRole), //!< Guide position units role
+      Page SIP_MONKEYPATCH_COMPAT_NAME(PageRole), //!< Guide page role
+      LayoutPosition SIP_MONKEYPATCH_COMPAT_NAME(LayoutPositionRole), //!< Guide position in layout coordinates
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsLayoutGuideCollection belonging to the specified layout,

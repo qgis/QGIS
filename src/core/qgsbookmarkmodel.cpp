@@ -54,19 +54,19 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
 
   switch ( role )
   {
-    case RoleExtent:
+    case static_cast< int >( CustomRole::Extent ):
       return b.extent();
 
-    case RoleRotation:
+    case static_cast< int >( CustomRole::Rotation ):
       return b.rotation();
 
-    case RoleName:
+    case static_cast< int >( CustomRole::Name ):
       return b.name();
 
-    case RoleId:
+    case static_cast< int >( CustomRole::Id ):
       return b.id();
 
-    case RoleGroup:
+    case static_cast< int >( CustomRole::Group ):
       return b.group();
 
     case Qt::DecorationRole:

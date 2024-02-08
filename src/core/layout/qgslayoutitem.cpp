@@ -1288,11 +1288,11 @@ void QgsLayoutItem::drawRefreshingOverlay( QPainter *painter, const QStyleOption
 {
   const QgsScopedQPainterState painterState( painter );
   bool fitsInCache = false;
-  const int xSize = QFontMetrics( QFont() ).horizontalAdvance( 'X' );
+  const int xSize = std::floor( static_cast<double>( QFontMetrics( QFont() ).horizontalAdvance( 'X' ) ) * painter->device()->devicePixelRatioF() );
   const QImage refreshingImage = QgsApplication::svgCache()->svgAsImage( QStringLiteral( ":/images/composer/refreshing_item.svg" ), xSize * 3, QColor(), QColor(), 1, 1, fitsInCache );
 
   const double previewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
-  painter->scale( 1.0 / previewScaleFactor, 1.0 / previewScaleFactor );
+  painter->scale( 1.0 / previewScaleFactor / painter->device()->devicePixelRatioF(), 1.0 / previewScaleFactor / painter->device()->devicePixelRatioF() );
   painter->drawImage( xSize, xSize, refreshingImage );
 }
 

@@ -66,7 +66,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
                          && mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt;
 
     // If request doesn't overlap extents, then nothing to return
-    if ( ! mFilterRect.intersects( mSource->mExtent ) && !mTestSubset )
+    if ( ! mFilterRect.intersects( mSource->mExtent.toRectangle() ) && !mTestSubset )
     {
       QgsDebugMsgLevel( QStringLiteral( "Rectangle outside layer extents - no features to return" ), 4 );
       mMode = FeatureIds;
@@ -74,7 +74,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     // If the request extents include the entire layer, then revert to
     // a file scan
 
-    else if ( mFilterRect.contains( mSource->mExtent ) && !mTestSubset )
+    else if ( mFilterRect.contains( mSource->mExtent.toRectangle() ) && !mTestSubset )
     {
       QgsDebugMsgLevel( QStringLiteral( "Rectangle contains layer extents - bypass spatial filter" ), 4 );
       mTestGeometry = false;

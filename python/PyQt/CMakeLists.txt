@@ -6,6 +6,7 @@ set(PYQT_COMPAT_FILES
   QtWidgets.py
   QtCore.py
   QtGui.py
+  QtSerialPort.py
   QtPrintSupport.py
   QtWebKit.py
   QtWebKitWidgets.py

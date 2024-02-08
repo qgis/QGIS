@@ -68,7 +68,6 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
 
     if ( !mResultDisplay->isVisible() )
     {
-      mResultDisplay->move( e->pos() - QPoint( 100, 100 ) );
       mResultDisplay->show();
     }
 
@@ -113,7 +112,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mResultDisplay = new QgsDisplayAngle( this );
       mResultDisplay->setWindowFlags( mResultDisplay->windowFlags() | Qt::Tool );
-      connect( mResultDisplay, &QDialog::rejected, this, &QgsMapToolMeasureAngle::stopMeasuring );
+      connect( mResultDisplay, &QDialog::finished, this, &QgsMapToolMeasureAngle::stopMeasuring );
     }
     configureDistanceArea();
     createRubberBand();

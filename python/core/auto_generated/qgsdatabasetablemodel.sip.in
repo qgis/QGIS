@@ -27,16 +27,17 @@ called.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole
     {
-      RoleTableName,
-      RoleSchema,
-      RoleTableFlags,
-      RoleComment,
-      RoleCustomInfo,
-      RoleWkbType,
-      RoleCrs,
-      RoleEmpty,
+      TableName,
+      Schema,
+      TableFlags,
+      Comment,
+      CustomInfo,
+      WkbType,
+      Crs,
+      Empty,
     };
 
     explicit QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema = QString(), QObject *parent /TransferThis/ = 0 );

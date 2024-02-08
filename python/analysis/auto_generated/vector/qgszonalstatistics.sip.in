@@ -23,41 +23,11 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
 %End
   public:
 
-    enum Statistic
-    {
-      Count,
-      Sum,
-      Mean,
-      Median,
-      StDev,
-      Min,
-      Max,
-      Range,
-      Minority,
-      Majority,
-      Variety,
-      Variance,
-      All
-    };
-    typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
-
-
-    enum Result
-    {
-      Success,
-      LayerTypeWrong,
-      LayerInvalid,
-      RasterInvalid,
-      RasterBandInvalid,
-      FailedToCreateField,
-      Canceled
-    };
-
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+                        Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 %Docstring
 Convenience constructor for QgsZonalStatistics, using an input raster layer.
 
@@ -76,7 +46,7 @@ The raster layer must exist for the lifetime of the zonal statistics calculation
                         double rasterUnitsPerPixelY,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+                        Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 %Docstring
 Constructor for QgsZonalStatistics, using a QgsRasterInterface.
 
@@ -107,12 +77,12 @@ added to ``polygonLayer`` for each statistic calculated.
 %End
 
 
-    QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
+    Qgis::ZonalStatisticResult calculateStatistics( QgsFeedback *feedback );
 %Docstring
 Runs the calculation.
 %End
 
-    static QString displayName( QgsZonalStatistics::Statistic statistic );
+    static QString displayName( Qgis::ZonalStatistic statistic );
 %Docstring
 Returns the friendly display name for a ``statistic``.
 
@@ -121,7 +91,7 @@ Returns the friendly display name for a ``statistic``.
 .. versionadded:: 3.12
 %End
 
-    static QString shortName( QgsZonalStatistics::Statistic statistic );
+    static QString shortName( Qgis::ZonalStatistic statistic );
 %Docstring
 Returns a short, friendly display name for a ``statistic``, suitable for use in a field name.
 
@@ -132,7 +102,7 @@ Returns a short, friendly display name for a ``statistic``, suitable for use in 
 
 
 
-    static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics ) /PyName=calculateStatistics/;
+    static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics ) /PyName=calculateStatistics/;
 %Docstring
 Calculates the specified ``statistics`` for the pixels of ``rasterBand``
 in ``rasterInterface`` (a raster layer :py:func:`~QgsZonalStatistics.dataProvider` ) within polygon ``geometry``.
@@ -144,9 +114,6 @@ Returns a map of statistic to result value.
 
       public:
 };
-
-QFlags<QgsZonalStatistics::Statistic> operator|(QgsZonalStatistics::Statistic f1, QFlags<QgsZonalStatistics::Statistic> f2);
-
 
 
 /************************************************************************

@@ -130,6 +130,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     void setExtent( QgsRectangle &newExtent );
 
     QgsRectangle extent() const override;
+    QgsBox3D extent3D() const override;
     void updateExtents() override;
 
     /**
@@ -181,7 +182,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
-    SpatialIndexPresence hasSpatialIndex() const override;
+    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The Postgres provider does its own transforms so we return
@@ -397,7 +398,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     QString mGeometryColumn;          //!< Name of the geometry column
     QString mBoundingBoxColumn;       //!< Name of the bounding box column
-    mutable QgsRectangle mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
+    mutable QgsBox3D mLayerExtent;        //!< Rectangle that contains the extent (bounding box) of the layer
 
     Qgis::WkbType mDetectedGeomType = Qgis::WkbType::Unknown ;  //!< Geometry type detected in the database
     Qgis::WkbType mRequestedGeomType = Qgis::WkbType::Unknown ; //!< Geometry type requested in the uri

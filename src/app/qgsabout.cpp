@@ -30,17 +30,28 @@
 #include <QRegularExpression>
 
 #ifdef Q_OS_MACX
-QgsAbout::QgsAbout( QWidget *parent )
-  : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+// Modeless dialog with close button only
+constexpr Qt::WindowFlags kAboutWindowFlags = Qt::WindowSystemMenuHint;
 #else
-QgsAbout::QgsAbout( QWidget * parent )
-  : QgsOptionsDialogBase( QStringLiteral( "about" ), parent )  // Normal dialog in non Mac-OS
+// Normal dialog in non Mac-OS
+constexpr Qt::WindowFlags kAboutWindowFlags = Qt::WindowFlags();
 #endif
+
+QgsAbout::QgsAbout( QWidget *parent )
+  : QgsOptionsDialogBase( QStringLiteral( "about" ), parent, kAboutWindowFlags )
 {
   setupUi( this );
   connect( btnQgisUser, &QPushButton::clicked, this, &QgsAbout::btnQgisUser_clicked );
   connect( btnQgisHome, &QPushButton::clicked, this, &QgsAbout::btnQgisHome_clicked );
-  initOptionsBase( true, QStringLiteral( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
+  if constexpr( QSysInfo::WordSize != 64 )
+  {
+    // 64 bit is the current standard. Only specify word size if it is not 64.
+    initOptionsBase( true, tr( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
+  }
+  else
+  {
+    initOptionsBase( true );
+  }
   init();
 }
 

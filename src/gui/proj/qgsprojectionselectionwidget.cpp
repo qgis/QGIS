@@ -719,7 +719,7 @@ void QgsProjectionSelectionWidget::setShowAccuracyWarnings( bool show )
 void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
   const QgsCoordinateReferenceSystem crs = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
-  switch ( static_cast< CrsOption >( mCrsComboBox->itemData( idx ).toInt() ) )
+  switch ( static_cast< CrsOption >( mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption ).toInt() ) )
   {
     case QgsProjectionSelectionWidget::Invalid:
     case QgsProjectionSelectionWidget::LayerCrs:

@@ -41,15 +41,23 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
 
   public:
 
-    //! Model roles
-    enum Role
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProviderConnectionModel::Role
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProviderConnectionModel, Role ) : int
     {
-      RoleConnectionName = Qt::UserRole, //!< Connection name
-      RoleUri, //!< Connection URI string
-      RoleConfiguration, //!< Connection configuration variant map
-      RoleEmpty, //!< Entry is an empty entry
+      ConnectionName SIP_MONKEYPATCH_COMPAT_NAME(RoleConnectionName) = Qt::UserRole, //!< Connection name
+      Uri SIP_MONKEYPATCH_COMPAT_NAME(RoleUri), //!< Connection URI string
+      Configuration SIP_MONKEYPATCH_COMPAT_NAME(RoleConfiguration), //!< Connection configuration variant map
+      Empty SIP_MONKEYPATCH_COMPAT_NAME(RoleEmpty), //!< Entry is an empty entry
     };
-    Q_ENUM( Role )
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsProviderConnectionModel, for the specified \a provider.

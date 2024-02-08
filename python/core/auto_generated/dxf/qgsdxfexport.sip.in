@@ -146,6 +146,13 @@ Add layers to export
 
     ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
+    const QString feedbackMessage() const;
+%Docstring
+Returns any feedback message produced while export to dxf file.
+
+.. versionadded:: 3.36
+%End
+
     void setSymbologyScale( double scale );
 %Docstring
 Set reference ``scale`` for output.

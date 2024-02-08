@@ -140,20 +140,29 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
       Tags, //!< Tags column
     };
 
-    //! Custom model roles
-    enum Role
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsStyleModel::Role
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStyleModel, Role ) : int
     {
-      TypeRole = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
-      TagRole, //!< String list of tags
+      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
+      Tag SIP_MONKEYPATCH_COMPAT_NAME(TagRole), //!< String list of tags
       EntityName, //!< Entity name (since QGIS 3.26)
-      SymbolTypeRole, //!< Symbol type (for symbol or legend patch shape entities)
-      IsFavoriteRole, //!< Whether entity is flagged as a favorite
-      LayerTypeRole, //!< Layer type (for label settings entities)
-      CompatibleGeometryTypesRole, //!< Compatible layer geometry types (for 3D symbols)
+      SymbolType SIP_MONKEYPATCH_COMPAT_NAME(SymbolTypeRole), //!< Symbol type (for symbol or legend patch shape entities)
+      IsFavorite SIP_MONKEYPATCH_COMPAT_NAME(IsFavoriteRole), //!< Whether entity is flagged as a favorite
+      LayerType SIP_MONKEYPATCH_COMPAT_NAME(LayerTypeRole), //!< Layer type (for label settings entities)
+      CompatibleGeometryTypes SIP_MONKEYPATCH_COMPAT_NAME(CompatibleGeometryTypesRole), //!< Compatible layer geometry types (for 3D symbols)
       StyleName, //!< Name of associated QgsStyle (QgsStyle::name()) (since QGIS 3.26)
       StyleFileName, //!< File name of associated QgsStyle (QgsStyle::fileName()) (since QGIS 3.26)
-      IsTitleRole, //!< True if the index corresponds to a title item (since QGIS 3.26)
+      IsTitle SIP_MONKEYPATCH_COMPAT_NAME(IsTitleRole), //!< True if the index corresponds to a title item (since QGIS 3.26)
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsStyleModel, for the specified \a style and \a parent object.

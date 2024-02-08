@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * Layer types the renderer is compatible with
      * \since QGIS 2.16
      */
-    enum LayerType
+    enum LayerType SIP_ENUM_BASETYPE( IntFlag )
     {
       PointLayer = 1, //!< Compatible with point layers
       LineLayer = 2, //!< Compatible with line layers

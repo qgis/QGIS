@@ -172,7 +172,7 @@ class QgsInternalGeometryEngine
     QgsGeometry variableWidthBufferByM( int segments ) const;
 
     /**
-     * Returns a list of \a count random points generated inside a \a polygon geometry
+     * Returns a list of \a count random points generated inside a polygon geometry
      * (if \a acceptPoint is specified, and restrictive, the number of points returned may
      * be less than \a count).
      *
@@ -191,7 +191,7 @@ class QgsInternalGeometryEngine
      *
      * \since QGIS 3.10
      */
-    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
+    QVector< QgsPointXY > randomPointsInPolygon( int count,
         const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
 
     /**

@@ -40,7 +40,9 @@
 #include "qgsvectortileutils.h"
 #include "qgsunittypes.h"
 
+#include <QApplication>
 #include <QPainter>
+#include <QScreen>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
 
@@ -1070,6 +1072,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
   if ( mLayout->renderContext().isPreviewRender() )
   {
     bool renderInProgress = false;
+    mPreviewDevicePixelRatio = painter->device()->devicePixelRatioF();
 
     QgsScopedQPainterState painterState( painter );
     painter->setClipRect( thisPaintRect );
@@ -1111,7 +1114,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       //Background color is already included in cached image, so no need to draw
 
       double imagePixelWidth = mCacheFinalImage->width(); //how many pixels of the image are for the map extent?
-      double scale = rect().width() / imagePixelWidth;
+      double scale = rect().width() / imagePixelWidth * mCacheFinalImage->devicePixelRatio();
 
       QgsScopedQPainterState rotatedPainterState( painter );
 
@@ -1591,11 +1594,12 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage.reset( new QImage( w * mPreviewDevicePixelRatio, h * mPreviewDevicePixelRatio, QImage::Format_ARGB32 ) );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
   mCacheRenderingImage->setDotsPerMeterY( static_cast< int >( std::round( 1000 * h / heightLayoutUnits ) ) );
+  mCacheRenderingImage->setDevicePixelRatio( mPreviewDevicePixelRatio );
 
   //start with empty fill to avoid artifacts
   mCacheRenderingImage->fill( QColor( 255, 255, 255, 0 ).rgba() );
@@ -1666,7 +1670,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setOutputSize( size.toSize() );
   jobMapSettings.setOutputDpi( dpi );
   if ( layout()->renderContext().isPreviewRender() )
+  {
     jobMapSettings.setDpiTarget( layout()->renderContext().dpi() );
+    jobMapSettings.setDevicePixelRatio( mPainter ? mPainter->device()->devicePixelRatioF() : 1.0 );
+  }
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
   if ( mLayout )

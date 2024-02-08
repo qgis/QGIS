@@ -167,13 +167,16 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       if ( renderAsTriangles() )
       {
         addPointToTriangulation( x, y, z, QColor( red, green, blue ), context );
+
+        // We don't want to render any points if we're rendering triangles and there is no preview painter
+        if ( !context.renderContext().previewRenderPainter() )
+          continue;
       }
-      else
-      {
-        drawPoint( x, y, QColor( red, green, blue ), context );
-        if ( renderElevation )
-          drawPointToElevationMap( x, y, z, context );
-      }
+
+      drawPoint( x, y, QColor( red, green, blue ), context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, context );
+
       rendered++;
     }
   }

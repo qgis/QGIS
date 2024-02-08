@@ -39,7 +39,6 @@ QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
   , mMetalRoughGL3Technique( new Qt3DRender::QTechnique() )
   , mMetalRoughGL3RenderPass( new Qt3DRender::QRenderPass() )
   , mMetalRoughGL3Shader( new Qt3DRender::QShaderProgram() )
-  , mMetalRoughGL3ShaderBuilder( new Qt3DRender::QShaderProgramBuilder() )
   , mFilterKey( new Qt3DRender::QFilterKey )
 {
   init();
@@ -81,122 +80,141 @@ void QgsMetalRoughMaterial::setBaseColor( const QVariant &baseColor )
 {
   mBaseColorParameter->setValue( baseColor );
   mBaseColorMapParameter->setValue( baseColor );
+  bool oldUsingBaseColorMap = mUsingBaseColorMap;
 
-  auto layers = mMetalRoughGL3ShaderBuilder->enabledLayers();
   if ( baseColor.value<Qt3DRender::QAbstractTexture *>() )
   {
-    layers.removeAll( QStringLiteral( "baseColor" ) );
-    layers.append( QStringLiteral( "baseColorMap" ) );
+    mUsingBaseColorMap = true;
     mMetalRoughEffect->addParameter( mBaseColorMapParameter );
     if ( mMetalRoughEffect->parameters().contains( mBaseColorParameter ) )
       mMetalRoughEffect->removeParameter( mBaseColorParameter );
   }
   else
   {
-    layers.removeAll( QStringLiteral( "baseColorMap" ) );
-    layers.append( QStringLiteral( "baseColor" ) );
+    mUsingBaseColorMap = false;
     if ( mMetalRoughEffect->parameters().contains( mBaseColorMapParameter ) )
       mMetalRoughEffect->removeParameter( mBaseColorMapParameter );
     mMetalRoughEffect->addParameter( mBaseColorParameter );
   }
-  updateLayersOnTechnique( layers );
+
+  if ( oldUsingBaseColorMap != mUsingBaseColorMap )
+    updateFragmentShader();
 }
 
 void QgsMetalRoughMaterial::setMetalness( const QVariant &metalness )
 {
   mMetalnessParameter->setValue( metalness );
   mMetalnessMapParameter->setValue( metalness );
+  bool oldUsingMetalnessMap = mUsingMetalnessMap;
 
-  auto layers = mMetalRoughGL3ShaderBuilder->enabledLayers();
   if ( metalness.value<Qt3DRender::QAbstractTexture *>() )
   {
-    layers.removeAll( QStringLiteral( "metalness" ) );
-    layers.append( QStringLiteral( "metalnessMap" ) );
+    mUsingMetalnessMap = true;
     mMetalRoughEffect->addParameter( mMetalnessMapParameter );
     if ( mMetalRoughEffect->parameters().contains( mMetalnessParameter ) )
       mMetalRoughEffect->removeParameter( mMetalnessParameter );
   }
   else
   {
-    layers.removeAll( QStringLiteral( "metalnessMap" ) );
-    layers.append( QStringLiteral( "metalness" ) );
+    mUsingMetalnessMap = false;
     if ( mMetalRoughEffect->parameters().contains( mMetalnessMapParameter ) )
       mMetalRoughEffect->removeParameter( mMetalnessMapParameter );
     mMetalRoughEffect->addParameter( mMetalnessParameter );
   }
-  updateLayersOnTechnique( layers );
+
+  if ( oldUsingMetalnessMap != mUsingMetalnessMap )
+    updateFragmentShader();
 }
 
 void QgsMetalRoughMaterial::setRoughness( const QVariant &roughness )
 {
   mRoughnessParameter->setValue( roughness );
   mRoughnessMapParameter->setValue( roughness );
+  bool oldUsingRoughnessMap = mUsingRoughnessMap;
 
-  auto layers = mMetalRoughGL3ShaderBuilder->enabledLayers();
   if ( roughness.value<Qt3DRender::QAbstractTexture *>() )
   {
-    layers.removeAll( QStringLiteral( "roughness" ) );
-    layers.append( QStringLiteral( "roughnessMap" ) );
+    mUsingRoughnessMap = true;
     mMetalRoughEffect->addParameter( mRoughnessMapParameter );
     if ( mMetalRoughEffect->parameters().contains( mRoughnessParameter ) )
       mMetalRoughEffect->removeParameter( mRoughnessParameter );
   }
   else
   {
-    layers.removeAll( QStringLiteral( "roughnessMap" ) );
-    layers.append( QStringLiteral( "roughness" ) );
+    mUsingRoughnessMap = false;
     if ( mMetalRoughEffect->parameters().contains( mRoughnessMapParameter ) )
       mMetalRoughEffect->removeParameter( mRoughnessMapParameter );
     mMetalRoughEffect->addParameter( mRoughnessParameter );
   }
-  updateLayersOnTechnique( layers );
+
+  if ( oldUsingRoughnessMap != mUsingRoughnessMap )
+    updateFragmentShader();
 }
 
 void QgsMetalRoughMaterial::setAmbientOcclusion( const QVariant &ambientOcclusion )
 {
   mAmbientOcclusionMapParameter->setValue( ambientOcclusion );
+  bool oldUsingAmbientOcclusionMap = mUsingAmbientOcclusionMap;
 
-  auto layers = mMetalRoughGL3ShaderBuilder->enabledLayers();
   if ( ambientOcclusion.value<Qt3DRender::QAbstractTexture *>() )
   {
-    layers.removeAll( QStringLiteral( "ambientOcclusion" ) );
-    layers.append( QStringLiteral( "ambientOcclusionMap" ) );
+    mUsingAmbientOcclusionMap = true;
     mMetalRoughEffect->addParameter( mAmbientOcclusionMapParameter );
   }
   else
   {
-    layers.removeAll( QStringLiteral( "ambientOcclusionMap" ) );
-    layers.append( QStringLiteral( "ambientOcclusion" ) );
+    mUsingAmbientOcclusionMap = false;
     if ( mMetalRoughEffect->parameters().contains( mAmbientOcclusionMapParameter ) )
       mMetalRoughEffect->removeParameter( mAmbientOcclusionMapParameter );
   }
-  updateLayersOnTechnique( layers );
+
+  if ( oldUsingAmbientOcclusionMap != mUsingAmbientOcclusionMap )
+    updateFragmentShader();
 }
 
 void QgsMetalRoughMaterial::setNormal( const QVariant &normal )
 {
   mNormalMapParameter->setValue( normal );
+  bool oldUsingNormalMap = mUsingNormalMap;
 
-  auto layers = mMetalRoughGL3ShaderBuilder->enabledLayers();
   if ( normal.value<Qt3DRender::QAbstractTexture *>() )
   {
-    layers.removeAll( QStringLiteral( "normal" ) );
-    layers.append( QStringLiteral( "normalMap" ) );
+    mUsingNormalMap = true;
     mMetalRoughEffect->addParameter( mNormalMapParameter );
   }
   else
   {
-    layers.removeAll( QStringLiteral( "normalMap" ) );
-    layers.append( QStringLiteral( "normal" ) );
+    mUsingNormalMap = false;
     if ( mMetalRoughEffect->parameters().contains( mNormalMapParameter ) )
       mMetalRoughEffect->removeParameter( mNormalMapParameter );
   }
-  updateLayersOnTechnique( layers );
+
+  if ( oldUsingNormalMap != mUsingNormalMap )
+    updateFragmentShader();
 }
 
 void QgsMetalRoughMaterial::setTextureScale( float textureScale )
 {
   mTextureScaleParameter->setValue( textureScale );
+}
+
+QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines )
+{
+  // There is one caveat to take care of - GLSL source code needs to start with #version as
+  // a first directive, otherwise we get the old GLSL 100 version. So we can't just prepend the
+  // shader source code, but insert our defines at the right place.
+
+  QStringList defineLines;
+  for ( const QString &define : defines )
+    defineLines += "#define " + define + "\n";
+
+  QString definesText = defineLines.join( QString() );
+
+  QByteArray newShaderCode = shaderCode;
+  int versionIndex = shaderCode.indexOf( "#version " );
+  int insertionIndex = versionIndex == -1 ? 0 : shaderCode.indexOf( '\n', versionIndex + 1 ) + 1;
+  newShaderCode.insert( insertionIndex, definesText.toLatin1() );
+  return newShaderCode;
 }
 
 void QgsMetalRoughMaterial::init()
@@ -208,7 +226,7 @@ void QgsMetalRoughMaterial::init()
   QObject::connect( mRoughnessParameter, &Qt3DRender::QParameter::valueChanged,
                     this, &QgsMetalRoughMaterial::roughnessChanged );
   QObject::connect( mAmbientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::roughnessChanged );
+                    this, &QgsMetalRoughMaterial::ambientOcclusionChanged );
   QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged,
                     this, &QgsMetalRoughMaterial::normalChanged );
   connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged,
@@ -216,19 +234,7 @@ void QgsMetalRoughMaterial::init()
 
   mMetalRoughGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
 
-  mMetalRoughGL3ShaderBuilder->setParent( this );
-  mMetalRoughGL3ShaderBuilder->setShaderProgram( mMetalRoughGL3Shader );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  mMetalRoughGL3ShaderBuilder->setFragmentShaderGraph( QUrl( QStringLiteral( "qrc:/shaders/metalrough.frag.json" ) ) );
-#else
-  mMetalRoughGL3ShaderBuilder->setFragmentShaderGraph( QUrl( QStringLiteral( "qrc:/shaders/metalrough.qt6.frag.json" ) ) );
-#endif
-
-  mMetalRoughGL3ShaderBuilder->setEnabledLayers( {QStringLiteral( "baseColor" ),
-      QStringLiteral( "metalness" ),
-      QStringLiteral( "roughness" ),
-      QStringLiteral( "ambientOcclusion" ),
-      QStringLiteral( "normal" )} );
+  updateFragmentShader();
 
   mMetalRoughGL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mMetalRoughGL3Technique->graphicsApiFilter()->setMajorVersion( 3 );
@@ -257,13 +263,46 @@ void QgsMetalRoughMaterial::init()
   setEffect( mMetalRoughEffect );
 }
 
+void QgsMetalRoughMaterial::updateFragmentShader()
+{
+  // pre-process fragment shader and add #defines based on whether using maps for some properties
+  QByteArray fragmentShaderCode = Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/metalrough.frag" ) ) );
+  QStringList defines;
+  if ( mUsingBaseColorMap )
+    defines += "BASE_COLOR_MAP";
+  if ( mUsingMetalnessMap )
+    defines += "METALNESS_MAP";
+  if ( mUsingRoughnessMap )
+    defines += "ROUGHNESS_MAP";
+  if ( mUsingAmbientOcclusionMap )
+    defines += "AMBIENT_OCCLUSION_MAP";
+  if ( mUsingNormalMap )
+    defines += "NORMAL_MAP";
+
+  if ( mFlatShading )
+    defines += "FLAT_SHADING";
+
+  QByteArray finalShaderCode = addDefinesToShaderCode( fragmentShaderCode, defines );
+  mMetalRoughGL3Shader->setFragmentShaderCode( finalShaderCode );
+}
+
 void QgsMetalRoughMaterial::handleTextureScaleChanged( const QVariant &var )
 {
   emit textureScaleChanged( var.toFloat() );
 }
 
-void QgsMetalRoughMaterial::updateLayersOnTechnique( const QStringList &layers )
+bool QgsMetalRoughMaterial::flatShadingEnabled() const
 {
-  mMetalRoughGL3ShaderBuilder->setEnabledLayers( layers );
+  return mFlatShading;
 }
+
+void QgsMetalRoughMaterial::setFlatShadingEnabled( bool enabled )
+{
+  if ( enabled != mFlatShading )
+  {
+    mFlatShading = enabled;
+    updateFragmentShader();
+  }
+}
+
 ///@endcond PRIVATE

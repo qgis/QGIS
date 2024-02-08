@@ -81,14 +81,14 @@ Qgis::VectorLayerTypeFlags QgsVectorDataProvider::vectorLayerTypeFlags() const
   return Qgis::VectorLayerTypeFlags();
 }
 
-QgsFeatureSource::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
+Qgis::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( empty() )
-    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+    return Qgis::FeatureAvailability::NoFeaturesAvailable;
   else
-    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+    return Qgis::FeatureAvailability::FeaturesAvailable;
 }
 
 QgsCoordinateReferenceSystem QgsVectorDataProvider::sourceCrs() const
@@ -593,7 +593,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   return results;
 }
 
-QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
+QVariant QgsVectorDataProvider::aggregate( Qgis::Aggregate aggregate, int index,
     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids ) const
 {
   // non fatal for now -- the "aggregate" functions are not thread safe and call this

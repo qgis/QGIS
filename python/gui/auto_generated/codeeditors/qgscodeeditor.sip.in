@@ -105,7 +105,7 @@ A text editor based on QScintilla2.
     typedef QFlags<QgsCodeEditor::Flag> Flags;
 
 
-    QgsCodeEditor( QWidget * parent /TransferThis/ = 0, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
 Construct a new code editor.
 
@@ -119,7 +119,7 @@ Construct a new code editor.
 .. versionadded:: 2.6
 %End
 
-    void setTitle( const QString & title );
+    void setTitle( const QString &title );
 %Docstring
 Set the widget title
 
@@ -199,7 +199,7 @@ Returns ``True`` if the folding controls are visible in the editor.
 .. seealso:: :py:func:`setFoldingVisible`
 %End
 
-    void insertText( const QString & text );
+    void insertText( const QString &text );
 %Docstring
 Insert text at cursor position, or replace any selected text if user has
 made a selection.
@@ -207,7 +207,7 @@ made a selection.
 :param text: The text to be inserted
 %End
 
-    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString & theme = QString() );
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
 %Docstring
 Returns the default color for the specified ``role``.
 
@@ -232,7 +232,7 @@ selected a custom color scheme for the editor.
 .. versionadded:: 3.16
 %End
 
-    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor & color );
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
 %Docstring
 Sets the ``color`` to use in the editor for the specified ``role``.
 
@@ -254,7 +254,7 @@ Returns the monospaced font to use for code editors.
 %End
 
 
-    void addWarning( int lineNumber, const QString & warning );
+    void addWarning( int lineNumber, const QString &warning );
 %Docstring
 Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
 

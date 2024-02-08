@@ -44,6 +44,9 @@ class CORE_EXPORT QgsPointCloudRequest
     //! Ctor
     QgsPointCloudRequest();
 
+    //! Equality operator
+    bool operator==( const QgsPointCloudRequest &other ) const;
+
     //! Returns attributes
     QgsPointCloudAttributeCollection attributes() const;
 
@@ -65,5 +68,8 @@ class CORE_EXPORT QgsPointCloudRequest
     QgsPointCloudAttributeCollection mAttributes;
     QgsRectangle mFilterRect;
 };
+
+//! Hash function for QgsPointCloudRequest
+uint qHash( const QgsPointCloudRequest &request );
 
 #endif // QGSPOINTCLOUDREQUEST_H

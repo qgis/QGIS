@@ -26,6 +26,7 @@
 
 #include "qgsgui.h"
 
+#include <QApplication>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
@@ -42,8 +43,11 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
+  , mBlockDoubleClickTimer( new QTimer( this ) )
 
 {
+  mBlockDoubleClickTimer->setSingleShot( true );
+  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
   setHeaderHidden( true );
 
   setDragEnabled( true );
@@ -77,6 +81,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 QgsLayerTreeView::~QgsLayerTreeView()
 {
   delete mMenuProvider;
+  delete mBlockDoubleClickTimer;
 }
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
@@ -245,7 +250,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     const auto constLayerLegendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      const QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+      const QString ruleKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
         setExpanded( legendNode2index( legendNode ), true );
     }
@@ -276,7 +281,7 @@ void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex &index )
   }
   else if ( QgsLayerTreeModelLegendNode *node = index2legendNode( index ) )
   {
-    const QString ruleKey = node->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    const QString ruleKey = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     QStringList lst = node->layerNode()->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
     const bool expanded = isExpanded( index );
     const bool isInList = lst.contains( ruleKey );
@@ -342,7 +347,7 @@ void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QS
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    const QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    const QString key = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     if ( !key.isEmpty() )
       setExpanded( legendNode2index( legendNode ), expandedLegendNodes.contains( key ) );
   }
@@ -536,7 +541,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
     const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      const QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
+      const QString parentKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) ).toString();
       if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
         lst << parentKey;
     }
@@ -599,6 +604,14 @@ void QgsLayerTreeView::setShowPrivateLayers( bool showPrivate )
 bool QgsLayerTreeView::showPrivateLayers()
 {
   return mShowPrivateLayers;
+}
+
+void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  if ( mBlockDoubleClickTimer->isActive() )
+    event->accept();
+  else
+    QTreeView::mouseDoubleClickEvent( event );
 }
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
@@ -691,7 +704,7 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
       return;
     }
   }
-  if ( event->keyboardModifiers() & Qt::AltModifier )
+  if ( event->keyboardModifiers() & Qt::AltModifier || event->keyboardModifiers() & Qt::ControlModifier )
   {
     event->accept();
   }
@@ -730,6 +743,7 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
   if ( roles.contains( Qt::SizeHintRole ) )
     viewport()->update();
 
+  mBlockDoubleClickTimer->start();
   //checkModel();
 }
 

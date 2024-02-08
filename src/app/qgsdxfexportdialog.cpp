@@ -366,8 +366,6 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
   mCheckedLeafs.clear();
   applyVisibility( visibleLayers, rootGroup() );
-
-  emit dataChanged( QModelIndex(), QModelIndex() );
 }
 
 void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node )
@@ -382,15 +380,80 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
     if ( QgsLayerTree::isLayer( child ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsLayerTree::toLayer( child )->layer() );
-      if ( vl && visibleLayers.contains( vl->id() ) )
+      if ( vl )
       {
-        visibleLayers.remove( vl->id() );
-        mCheckedLeafs.insert( node2index( child ) );
+        QModelIndex idx = node2index( child );
+        if ( visibleLayers.contains( vl->id() ) )
+        {
+          visibleLayers.remove( vl->id() );
+          mCheckedLeafs.insert( idx );
+        }
+        emit dataChanged( idx, idx, QVector<int>() << Qt::CheckStateRole );
       }
       continue;
     }
 
     applyVisibility( visibleLayers, child );
+  }
+}
+
+void QgsVectorLayerAndAttributeModel::loadLayersOutputAttribute( QgsLayerTreeNode *node )
+{
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsLayerTree::toLayer( child )->layer() );
+      if ( vl )
+      {
+        const int attributeIndex = vl->fields().lookupField( vl->customProperty( QStringLiteral( "lastDxfOutputAttribute" ), -1 ).toString() );
+        if ( attributeIndex > -1 )
+        {
+          mAttributeIdx[vl] = attributeIndex;
+
+          QModelIndex idx = node2index( child );
+          idx = index( idx.row(), 1, idx.parent() );
+          emit dataChanged( idx, idx, QVector<int>() << Qt::EditRole );
+        }
+      }
+      continue;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      loadLayersOutputAttribute( child );
+    }
+  }
+}
+
+void QgsVectorLayerAndAttributeModel::saveLayersOutputAttribute( QgsLayerTreeNode *node )
+{
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsLayerTree::toLayer( child )->layer() );
+      if ( vl )
+      {
+        QModelIndex idx = node2index( child );
+        const int attributeIndex = data( index( idx.row(), 1, idx.parent() ), Qt::EditRole ).toInt();
+        const QgsFields fields = vl->fields();
+        if ( attributeIndex > -1 && attributeIndex < fields.count() )
+        {
+          vl->setCustomProperty( QStringLiteral( "lastDxfOutputAttribute" ), fields.at( attributeIndex ).name() );
+        }
+        else
+        {
+          vl->removeCustomProperty( QStringLiteral( "lastDxfOutputAttribute" ) );
+        }
+      }
+      continue;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      saveLayersOutputAttribute( child );
+    }
   }
 }
 
@@ -510,7 +573,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   QStringList ids = QgsProject::instance()->mapThemeCollection()->mapThemes();
   ids.prepend( QString() );
   mVisibilityPresets->addItems( ids );
-  mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastVisibliltyPreset" ), QString() ) ) );
+  mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastVisibilityPreset" ), QString() ) ) );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -526,6 +589,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   mEncoding->addItems( QgsDxfExport::encodings() );
   mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), settings.value( QStringLiteral( "qgis/lastDxfEncoding" ), "CP1252" ).toString() ) ) );
+
+  mModel->loadLayersOutputAttribute( mModel->rootGroup() );
 }
 
 
@@ -670,6 +735,8 @@ void QgsDxfExportDialog::saveSettings()
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfUseMText" ), mMTextCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfForce2d" ), mForce2d->isChecked() );
+
+  mModel->saveLayersOutputAttribute( mModel->rootGroup() );
 }
 
 

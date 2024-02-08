@@ -33,7 +33,7 @@ is not supported or cannot be performed without errors.
 
   public:
 
-    enum TableFlag
+    enum class TableFlag
     {
       Aspatial,
       Vector,

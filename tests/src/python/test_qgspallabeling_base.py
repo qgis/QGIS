@@ -15,10 +15,7 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import datetime
-import glob
 import os
-import shutil
 import sys
 from collections.abc import Callable
 
@@ -30,7 +27,6 @@ from qgis.core import (
     QgsGeometry,
     QgsLabelingEngineSettings,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsPalLabeling,
     QgsPalLayerSettings,
     QgsProject,
@@ -46,47 +42,33 @@ from qgis.core import (
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
-from qgis.testing.mocked import get_iface
 
 from utilities import (
-    getTempfilePath,
     getTestFont,
     loadTestFonts,
-    openInBrowserTab,
-    renderMapToImage,
     unitTestDataPath,
 )
 
 start_app(sys.platform != 'darwin')  # No cleanup on mac os x, it crashes the pallabelingcanvas test on exit
 FONTSLOADED = loadTestFonts()
 
-PALREPORT = 'PAL_REPORT' in os.environ
-PALREPORTS = {}
-
 
 # noinspection PyPep8Naming,PyShadowingNames
 class TestQgsPalLabeling(QgisTestCase):
 
-    _TestDataDir = unitTestDataPath()
-    _PalDataDir = os.path.join(_TestDataDir, 'labeling')
+    _PalDataDir = os.path.join(unitTestDataPath(), 'labeling')
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
     _MapRegistry = None
     """:type: QgsProject"""
     _MapSettings = None
     """:type: QgsMapSettings"""
-    _Canvas = None
-    """:type: QgsMapCanvas"""
     _BaseSetup = False
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-
-        # qgis iface
-        cls._Iface = get_iface()
-        cls._Canvas = cls._Iface.mapCanvas()
 
         cls._TestFunction = ''
         cls._TestGroup = ''
@@ -105,10 +87,6 @@ class TestQgsPalLabeling(QgisTestCase):
         cls._MapRegistry = QgsProject.instance()
 
         cls._MapSettings = cls.getBaseMapSettings()
-        osize = cls._MapSettings.outputSize()
-        cls._Canvas.resize(QSize(osize.width(), osize.height()))  # necessary?
-        # set color to match render test comparisons background
-        cls._Canvas.setCanvasColor(cls._MapSettings.backgroundColor())
 
         cls.setDefaultEngineSettings()
 
@@ -165,7 +143,6 @@ class TestQgsPalLabeling(QgisTestCase):
 
         # zoom to aoi
         cls._MapSettings.setExtent(cls.aoiExtent())
-        cls._Canvas.zoomToFullExtent()
         return vlayer
 
     @classmethod
@@ -261,90 +238,6 @@ class TestQgsPalLabeling(QgisTestCase):
                     res[attr] = value
         return res
 
-    def controlImagePath(self, grpprefix=''):
-        if not grpprefix:
-            grpprefix = self._TestGroupPrefix
-        return os.path.join(self._TestDataDir, 'control_images',
-                            'expected_' + grpprefix,
-                            self._Test, self._Test + '.png')
-
-    def saveControlImage(self, tmpimg=''):
-        # don't save control images for RenderVsOtherOutput (Vs) tests, since
-        # those control images belong to a different test result
-        if ('PAL_CONTROL_IMAGE' not in os.environ
-                or 'Vs' in self._TestGroup):
-            return
-        imgpath = self.controlImagePath()
-        testdir = os.path.dirname(imgpath)
-        if not os.path.exists(testdir):
-            os.makedirs(testdir)
-        imgbasepath = \
-            os.path.join(testdir,
-                         os.path.splitext(os.path.basename(imgpath))[0])
-        # remove any existing control images
-        for f in glob.glob(imgbasepath + '.*'):
-            if os.path.exists(f):
-                os.remove(f)
-        qDebug(f'Control image for {self._TestGroup}.{self._TestFunction}')
-
-        if not tmpimg:
-            # TODO: this can be deprecated, when per-base-test-class rendering
-            #       in checkTest() is verified OK for all classes
-            qDebug(f'Rendering control to: {imgpath}')
-            ms = self._MapSettings  # class settings
-            """:type: QgsMapSettings"""
-            settings_type = 'Class'
-            if self._TestMapSettings is not None:
-                ms = self._TestMapSettings  # per test settings
-                settings_type = 'Test'
-            qDebug(f'MapSettings type: {settings_type}')
-
-            img = renderMapToImage(ms, parallel=False)
-            """:type: QImage"""
-            tmpimg = getTempfilePath('png')
-            if not img.save(tmpimg, 'png'):
-                os.unlink(tmpimg)
-                raise OSError(f'Control not created for: {imgpath}')
-
-        if tmpimg and os.path.exists(tmpimg):
-            qDebug(f'Copying control to: {imgpath}')
-            shutil.copyfile(tmpimg, imgpath)
-        else:
-            raise OSError(f'Control not copied to: {imgpath}')
-
-    def renderCheck(self, mismatch=0, colortol=0, imgpath='', grpprefix=''):
-        """Check rendered map canvas or existing image against control image
-
-        :mismatch: number of pixels different from control, and still valid
-        :colortol: maximum difference for each color component including alpha
-        :imgpath: existing image; if present, skips rendering canvas
-        :grpprefix: compare test image/rendering against different test group
-        """
-        if not grpprefix:
-            grpprefix = self._TestGroupPrefix
-        chk = QgsMultiRenderChecker()
-
-        chk.setControlPathPrefix('expected_' + grpprefix)
-
-        chk.setControlName(self._Test)
-
-        if imgpath:
-            chk.setRenderedImage(imgpath)
-
-        ms = self._MapSettings  # class settings
-        if self._TestMapSettings is not None:
-            ms = self._TestMapSettings  # per test settings
-        chk.setMapSettings(ms)
-
-        chk.setColorTolerance(colortol)
-        # noinspection PyUnusedLocal
-        res = chk.runTest(self._Test, mismatch)
-        if PALREPORT and not res:  # don't report OK checks
-            testname = self._TestGroup + ' . ' + self._Test
-            PALREPORTS[testname] = chk.report()
-        msg = f'\nRender check failed for "{self._Test}"'
-        return res, msg
-
     def checkTest(self, **kwargs):
         """Intended to be overridden in subclasses"""
         pass
@@ -367,7 +260,7 @@ class TestPALConfig(TestQgsPalLabeling):
     @classmethod
     def tearDownClass(cls):
         cls.removeMapLayer(cls.layer)
-        TestQgsPalLabeling.tearDownClass()
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""
@@ -458,20 +351,6 @@ def runSuite(module, tests):
     verb = 2 if 'PAL_VERBOSE' in os.environ else 0
 
     res = unittest.TextTestRunner(verbosity=verb).run(suite)
-
-    if PALREPORTS:
-        teststamp = 'PAL Test Report: ' + \
-                    datetime.datetime.now().strftime('%Y-%m-%d %X')
-        report = f'<html><head><title>{teststamp}</title></head><body>'
-        report += f'\n<h2>Failed Tests: {len(PALREPORTS)}</h2>'
-        for k, v in list(PALREPORTS.items()):
-            report += f'\n<h3>{k}</h3>\n{v}'
-        report += '</body></html>'
-
-        tmp_name = getTempfilePath('html')
-        with open(tmp_name, 'w') as report_file:
-            report_file.write(report)
-        openInBrowserTab('file://' + tmp_name)
 
     return res
 

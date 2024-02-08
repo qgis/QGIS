@@ -194,7 +194,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   {
     // only calculate cheap stats-- we cannot calculate stats which require holding values in memory -- because otherwise we'll end
     // up trying to store EVERY pixel value from the input in memory
-    QgsStatisticalSummary s{ QgsStatisticalSummary::Count | QgsStatisticalSummary::Sum | QgsStatisticalSummary::Min | QgsStatisticalSummary::Max | QgsStatisticalSummary::Mean };
+    QgsStatisticalSummary s{ Qgis::Statistic::Count | Qgis::Statistic::Sum | Qgis::Statistic::Min | Qgis::Statistic::Max | Qgis::Statistic::Mean };
   };
   QHash<double, StatCalculator > zoneStats;
   qgssize noDataCount = 0;

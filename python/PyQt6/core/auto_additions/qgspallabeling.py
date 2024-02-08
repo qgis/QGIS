@@ -1,14 +1,4 @@
 # The following has been generated automatically from src/core/labeling/qgspallabeling.h
-QgsPalLayerSettings.OnLine = QgsPalLayerSettings.LinePlacementFlags.OnLine
-QgsPalLayerSettings.AboveLine = QgsPalLayerSettings.LinePlacementFlags.AboveLine
-QgsPalLayerSettings.BelowLine = QgsPalLayerSettings.LinePlacementFlags.BelowLine
-QgsPalLayerSettings.MapOrientation = QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-QgsPalLayerSettings.SymbolLeftRight = QgsPalLayerSettings.DirectionSymbols.SymbolLeftRight
-QgsPalLayerSettings.SymbolAbove = QgsPalLayerSettings.DirectionSymbols.SymbolAbove
-QgsPalLayerSettings.SymbolBelow = QgsPalLayerSettings.DirectionSymbols.SymbolBelow
-QgsPalLayerSettings.PolygonInterior = QgsPalLayerSettings.ObstacleType.PolygonInterior
-QgsPalLayerSettings.PolygonBoundary = QgsPalLayerSettings.ObstacleType.PolygonBoundary
-QgsPalLayerSettings.PolygonWhole = QgsPalLayerSettings.ObstacleType.PolygonWhole
 # monkey patching scoped based enum
 QgsPalLayerSettings.Size = QgsPalLayerSettings.Property.Size
 QgsPalLayerSettings.Size.is_monkey_patched = True

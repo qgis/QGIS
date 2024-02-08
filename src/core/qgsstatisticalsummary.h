@@ -20,6 +20,8 @@
 #include <QVariant>
 #include <cmath>
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -44,36 +46,11 @@ class CORE_EXPORT QgsStatisticalSummary
 {
   public:
 
-    //! Enumeration of flags that specify statistics to be calculated
-    enum Statistic
-    {
-      Count = 1 << 0,  //!< Count
-      CountMissing = 1 << 15, //!< Number of missing (null) values
-      Sum = 1 << 1,  //!< Sum of values
-      Mean = 1 << 2,  //!< Mean of values
-      Median = 1 << 3, //!< Median of values
-      StDev = 1 << 4, //!< Standard deviation of values
-      StDevSample = 1 << 5, //!< Sample standard deviation of values
-      Min = 1 << 6,  //!< Min of values
-      Max = 1 << 7,  //!< Max of values
-      Range = 1 << 8, //!< Range of values (max - min)
-      Minority = 1 << 9, //!< Minority of values
-      Majority = 1 << 10, //!< Majority of values
-      Variety = 1 << 11, //!< Variety (count of distinct) values
-      FirstQuartile = 1 << 12, //!< First quartile
-      ThirdQuartile = 1 << 13, //!< Third quartile
-      InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
-      First = 1 << 16, //!< First value (since QGIS 3.6)
-      Last = 1 << 17, //!< Last value (since QGIS 3.6)
-      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last
-    };
-    Q_DECLARE_FLAGS( Statistics, Statistic )
-
     /**
      * Constructor for QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      */
-    QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
+    QgsStatisticalSummary( Qgis::Statistics stats = Qgis::Statistic::All );
 
     virtual ~QgsStatisticalSummary() = default;
 
@@ -82,7 +59,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * are always calculated (e.g., sum, min and max).
      * \see setStatistics
      */
-    Statistics statistics() const { return mStatistics; }
+    Qgis::Statistics statistics() const { return mStatistics; }
 
     /**
      * Sets flags which specify which statistics will be calculated. Some statistics
@@ -90,7 +67,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      * \see statistics
      */
-    void setStatistics( QgsStatisticalSummary::Statistics stats );
+    void setStatistics( Qgis::Statistics stats );
 
     /**
      * Resets the calculated values
@@ -152,7 +129,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \returns calculated value of statistic. A NaN value may be returned for invalid
      * statistics.
      */
-    double statistic( QgsStatisticalSummary::Statistic stat ) const;
+    double statistic( Qgis::Statistic stat ) const;
 
     /**
      * Returns calculated count of values
@@ -289,18 +266,18 @@ class CORE_EXPORT QgsStatisticalSummary
      * Returns the friendly display name for a \a statistic.
      * \see shortName()
      */
-    static QString displayName( QgsStatisticalSummary::Statistic statistic );
+    static QString displayName( Qgis::Statistic statistic );
 
     /**
      * Returns a short, friendly display name for a \a statistic, suitable for use in a field name.
      * \see displayName()
      * \since QGIS 3.6
      */
-    static QString shortName( QgsStatisticalSummary::Statistic statistic );
+    static QString shortName( Qgis::Statistic statistic );
 
   private:
 
-    Statistics mStatistics;
+    Qgis::Statistics mStatistics;
 
     int mCount;
     int mMissing;
@@ -322,7 +299,5 @@ class CORE_EXPORT QgsStatisticalSummary
     bool mRequiresAllValueStorage = false;
     bool mRequiresHisto = false;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsStatisticalSummary::Statistics )
 
 #endif // QGSSTATISTICALSUMMARY_H

@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsfontutils.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsnullsymbolrenderer.h"
 #include "qgspallabeling.h"
 #include "qgssinglesymbolrenderer.h"
@@ -31,6 +32,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgslinesymbol.h"
+
 #include <QTemporaryFile>
 #include <QRegularExpression>
 
@@ -53,6 +55,7 @@ class TestQgsDxfExport : public QObject
     void testLines();
     void testPolygons();
     void testMultiSurface();
+    void testMapTheme();
     void testMtext();
     void testMtext_data();
     void testMTextEscapeSpaces();
@@ -69,6 +72,7 @@ class TestQgsDxfExport : public QObject
     void testDashedLine();
     void testTransform();
     void testDataDefinedPoints();
+    void testExtent();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -311,6 +315,59 @@ void TestQgsDxfExport::testMultiSurface()
   QgsFeature f2;
   result->getFeatures().nextFeature( f2 );
   QCOMPARE( f2.geometry().asWkt(), QStringLiteral( "LineString (0 0, 0 1, 1 1, 0 0)" ) );
+}
+
+void TestQgsDxfExport::testMapTheme()
+{
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineString?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  const QgsGeometry g = QgsGeometry::fromWkt( "LineString(2600000 1280000, 2680000 1280000, 2680000 1285000, 2600000 1285000, 2600000 1280000)" );
+  QgsFeature f;
+  f.setGeometry( g );
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 255, 0 ) );
+  symbolLayer->setWidth( 0.11 );
+  QgsLineSymbol *symbol = new QgsLineSymbol();
+  symbol->changeSymbolLayer( 0, symbolLayer.release() );
+
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( symbol );
+  vl->setRenderer( renderer );
+
+  // Save layer style with green line
+  QMap<QString, QString> styleOverrides;
+  QgsMapLayerStyle layerStyle;
+  layerStyle.readFromLayer( vl.get() );
+  styleOverrides[vl->id()] = layerStyle.xmlData();
+
+  // Change layer style to red line
+  dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() )->symbol()->setColor( QColor( 255, 0, 0 ) );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerSymbolLayer );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+  mapSettings.setLayerStyleOverrides( styleOverrides );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  const QString file = getTempFileName( "map_theme_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QString debugInfo;
+  // Verify that the style override worked by checking for green line color
+  QVERIFY2( fileContainsText( file, "CONTINUOUS\n"
+                              " 62\n"
+                              "     3", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testMtext()
@@ -1350,6 +1407,44 @@ void TestQgsDxfExport::testDataDefinedPoints()
                               "1.0\n"
                               "  0\n"
                               "ENDBLK", &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testExtent()
+{
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPolygonLayer->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPolygonLayer );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPolygonLayer->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setExtent( QgsRectangle( -103.9, 25.0, -98.0, 29.8 ) );
+
+  const QString file1 = getTempFileName( "polygon_extent_dxf" );
+  QFile dxfFile1( file1 );
+  QCOMPARE( d.writeToFile( &dxfFile1, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile1.close();
+
+  // reload and compare
+  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file1, "dxf" );
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->featureCount(), 1L );
+  QCOMPARE( result->wkbType(), Qgis::WkbType::LineString );
+
+  d.setExtent( QgsRectangle( 81.0, 34.0, -77.0, 38.0 ) );
+  const QString file2 = getTempFileName( "polygon_extent_empty_dxf" );
+  QFile dxfFile2( file2 );
+  QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile2.close();
+
+  QString debugInfo;
+  QCOMPARE( fileContainsText( file2, "polygons", &debugInfo ), false );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const

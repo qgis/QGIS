@@ -24,16 +24,17 @@ A tree model for display of known coordinate reference systems.
 %End
   public:
 
-    enum Roles
+
+    enum class CustomRole
     {
-      RoleNodeType,
-      RoleName,
-      RoleAuthId,
-      RoleDeprecated,
-      RoleType,
-      RoleGroupId,
-      RoleWkt,
-      RoleProj,
+      NodeType,
+      Name,
+      AuthId,
+      Deprecated,
+      Type,
+      GroupId,
+      Wkt,
+      Proj,
     };
 
     QgsCoordinateReferenceSystemModel( QObject *parent /TransferThis/ = 0 );

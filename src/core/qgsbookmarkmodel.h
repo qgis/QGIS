@@ -44,15 +44,24 @@ class CORE_EXPORT QgsBookmarkManagerModel: public QAbstractTableModel
 
   public:
 
-    //! Custom model roles
-    enum CustomRoles
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsBookmarkManagerModel::CustomRoles
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsBookmarkManagerModel, CustomRoles ) : int
     {
-      RoleExtent = Qt::UserRole, //!< Bookmark extent as a QgsReferencedRectangle
-      RoleName, //!< Bookmark name
-      RoleId, //!< Bookmark ID
-      RoleGroup, //!< Bookmark group
-      RoleRotation, //!< Bookmark map rotation
+      Extent SIP_MONKEYPATCH_COMPAT_NAME(RoleExtent) = Qt::UserRole, //!< Bookmark extent as a QgsReferencedRectangle
+      Name SIP_MONKEYPATCH_COMPAT_NAME(RoleName), //!< Bookmark name
+      Id SIP_MONKEYPATCH_COMPAT_NAME(RoleId), //!< Bookmark ID
+      Group SIP_MONKEYPATCH_COMPAT_NAME(RoleGroup), //!< Bookmark group
+      Rotation SIP_MONKEYPATCH_COMPAT_NAME(RoleRotation), //!< Bookmark map rotation
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     //! Model columns
     enum Columns

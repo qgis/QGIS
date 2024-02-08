@@ -285,7 +285,7 @@ bool QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
   return true;
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
 {
   QgsDebugMsgLevel( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ), 2 );
   QgsRasterBandStats myRasterBandStats;
@@ -333,10 +333,10 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats
   QgsDebugMsgLevel( QString( "count = %1" ).arg( myRasterBandStats.elementCount ), 2 );
   QgsDebugMsgLevel( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ), 2 );
 
-  myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max |
-                                    QgsRasterBandStats::Range | QgsRasterBandStats::Mean |
-                                    QgsRasterBandStats::Sum | QgsRasterBandStats::SumOfSquares |
-                                    QgsRasterBandStats::StdDev;
+  myRasterBandStats.statsGathered = Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max |
+                                    Qgis::RasterBandStatistic::Range | Qgis::RasterBandStatistic::Mean |
+                                    Qgis::RasterBandStatistic::Sum | Qgis::RasterBandStatistic::SumOfSquares |
+                                    Qgis::RasterBandStatistic::StdDev;
 
   mStatistics.append( myRasterBandStats );
   return myRasterBandStats;

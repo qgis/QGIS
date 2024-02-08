@@ -16,23 +16,25 @@
  ***************************************************************************/
 
 #include "qgsalgorithmzonalstatistics.h"
+#include "qgszonalstatistics.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
-const std::vector< QgsZonalStatistics::Statistic > STATS
+const std::vector< Qgis::ZonalStatistic > STATS
 {
-  QgsZonalStatistics::Count,
-  QgsZonalStatistics::Sum,
-  QgsZonalStatistics::Mean,
-  QgsZonalStatistics::Median,
-  QgsZonalStatistics::StDev,
-  QgsZonalStatistics::Min,
-  QgsZonalStatistics::Max,
-  QgsZonalStatistics::Range,
-  QgsZonalStatistics::Minority,
-  QgsZonalStatistics::Majority,
-  QgsZonalStatistics::Variety,
-  QgsZonalStatistics::Variance,
+  Qgis::ZonalStatistic::Count,
+  Qgis::ZonalStatistic::Sum,
+  Qgis::ZonalStatistic::Mean,
+  Qgis::ZonalStatistic::Median,
+  Qgis::ZonalStatistic::StDev,
+  Qgis::ZonalStatistic::Min,
+  Qgis::ZonalStatistic::Max,
+  Qgis::ZonalStatistic::Range,
+  Qgis::ZonalStatistic::Minority,
+  Qgis::ZonalStatistic::Majority,
+  Qgis::ZonalStatistic::Variety,
+  Qgis::ZonalStatistic::Variance,
 };
 
 QString QgsZonalStatisticsAlgorithm::name() const
@@ -86,7 +88,7 @@ void QgsZonalStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList statChoices;
   statChoices.reserve( STATS.size() );
-  for ( const QgsZonalStatistics::Statistic stat : STATS )
+  for ( const Qgis::ZonalStatistic stat : STATS )
   {
     statChoices << QgsZonalStatistics::displayName( stat );
   }
@@ -123,7 +125,7 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
-  mStats = QgsZonalStatistics::Statistics();
+  mStats = Qgis::ZonalStatistics();
   for ( const int s : stats )
   {
     mStats |= STATS.at( s );
@@ -145,7 +147,7 @@ QVariantMap QgsZonalStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
                          mPixelSizeY,
                          mPrefix,
                          mBand,
-                         QgsZonalStatistics::Statistics( mStats )
+                         Qgis::ZonalStatistics( mStats )
                        );
 
   zs.calculateStatistics( feedback );

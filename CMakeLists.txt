@@ -398,7 +398,7 @@ if(WITH_CORE)
   endif()
 
   if (NOT WITH_INTERNAL_POLY2TRI)
-    find_package(Poly2Tri REQUIRED)
+    find_package(poly2tri REQUIRED)
   endif()
 
   if (WITH_SPATIALITE)

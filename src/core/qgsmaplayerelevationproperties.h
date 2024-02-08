@@ -100,7 +100,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     /**
      * Flags attached to the elevation property.
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when z range context is modified.
     };

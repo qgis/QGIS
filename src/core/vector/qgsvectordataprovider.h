@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * enumeration with capabilities that providers might implement
      */
-    enum Capability
+    enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0,       //!< Provider has no capabilities
       AddFeatures = 1,       //!< Allows adding features
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \see empty()
      * \since QGIS 3.4
      */
-    QgsFeatureSource::FeatureAvailability hasFeatures() const override;
+    Qgis::FeatureAvailability hasFeatures() const override;
 
     /**
      * Returns the fields associated with this data provider.
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
-    virtual QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
+    virtual QVariant aggregate( Qgis::Aggregate aggregate,
                                 int index,
                                 const QgsAggregateCalculator::AggregateParameters &parameters,
                                 QgsExpressionContext *context,

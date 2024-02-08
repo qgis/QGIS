@@ -39,7 +39,7 @@ class CORE_EXPORT QgsGeocoderInterface
   public:
 
     //! Capability flags for the geocoder.
-    enum class Flag
+    enum class Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       GeocodesStrings = 1 << 0, //!< Can geocode string input values
       GeocodesFeatures = 1 << 1, //!< Can geocode QgsFeature input values

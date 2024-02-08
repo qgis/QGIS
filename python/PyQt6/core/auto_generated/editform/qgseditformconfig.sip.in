@@ -49,7 +49,7 @@ Constructor for TabData
     };
 
 
-    enum class DataDefinedProperty /BaseType=IntFlag/
+    enum class DataDefinedProperty /BaseType=IntEnum/
       {
       NoProperty,
       AllProperties,

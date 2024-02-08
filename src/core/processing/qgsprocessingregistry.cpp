@@ -103,7 +103,7 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   if ( !provider )
     return false;
 
-  if ( mProviders.contains( provider->id() ) )
+  if ( providerById( provider->id() ) )
   {
     QgsLogger::warning( QStringLiteral( "Duplicate provider %1 registered" ).arg( provider->id() ) );
     delete provider;
@@ -156,9 +156,17 @@ bool QgsProcessingRegistry::removeProvider( const QString &providerId )
   return removeProvider( p );
 }
 
-QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id )
+QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id ) const
 {
-  return mProviders.value( id, nullptr );
+  auto it = mProviders.constFind( id );
+  if ( it != mProviders.constEnd() )
+    return it.value();
+
+  // transparently map old references to "grass7" provider to "grass" provider
+  if ( id.compare( QLatin1String( "grass7" ), Qt::CaseInsensitive ) == 0 )
+    return providerById( QStringLiteral( "grass" ) );
+
+  return nullptr;
 }
 
 QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
@@ -201,7 +209,7 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   const QRegularExpressionMatch match = reSplitProviderId.match( id );
   if ( match.hasMatch() )
   {
-    if ( QgsProcessingProvider *provider = mProviders.value( match.captured( 1 ) ) )
+    if ( QgsProcessingProvider *provider = providerById( match.captured( 1 ) ) )
     {
       if ( const QgsProcessingAlgorithm *algorithm = provider->algorithm( match.captured( 2 ) ) )
         return algorithm;

@@ -453,7 +453,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
   public:
 
     //! Parameter flags
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagAdvanced = 1 << 1, //!< Parameter is an advanced parameter which should be hidden from users by default
       FlagHidden = 1 << 2, //!< Parameter is hidden and should not be shown to users

@@ -66,7 +66,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
   public:
 
     //! Flags indicating how and when an algorithm operates and should be exposed to users
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagHideFromToolbox = 1 << 1, //!< Algorithm should be hidden from the toolbox
       FlagHideFromModeler = 1 << 2, //!< Algorithm should be hidden from the modeler

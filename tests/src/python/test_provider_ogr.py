@@ -14,6 +14,7 @@ import os
 import shutil
 import sys
 import tempfile
+import math
 from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
@@ -25,6 +26,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsAuthMethodConfig,
+    QgsBox3D,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDataProvider,
@@ -1399,14 +1401,33 @@ class PyQgsOGRProvider(QgisTestCase):
 
             # Test a nominal case
             handler = mockedwebserver.SequentialHandler()
+            # Asked when ogr provider try to open. See QgsOgrProvider::QgsOgrProvider#453 open( OpenModeForceReadOnly );
             handler.add('GET', '/collections/foo', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
-            handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
-                        '{ "type": "FeatureCollection", "features": [] }')
-            handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
-                        '{ "type": "FeatureCollection", "features": [] }')
-            if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0):
+
+            if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 9, 0):
+                # See QgsOgrProvider::open#4012 mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, options, mLayerName, errCause, true );
                 handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                             '{ "type": "FeatureCollection", "features": [] }')
+
+                # See QgsOgrProvider::open#4066 computeCapabilities();
+                handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
+
+                if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0):
+                    handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
+                                '{ "type": "FeatureCollection", "features": [] }')
+
+            else:
+                handler.add('GET', '/', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
+                handler.add('GET', '/api', 200, {'Content-Type': 'application/json'}, '{ "id": "foo" }')
+
+                handler.add('GET', '/collections/foo/items?limit=20', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
+                handler.add('GET', '/collections/foo/items?limit=1000', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
+                handler.add('GET', '/collections/foo/items?limit=1000', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
+
             with mockedwebserver.install_http_handler(handler):
                 vl = QgsVectorLayer("OAPIF:http://127.0.0.1:%d/collections/foo" % port, 'test', 'ogr')
                 self.assertTrue(vl.isValid())
@@ -3508,6 +3529,76 @@ class PyQgsOGRProvider(QgisTestCase):
 
             vl = QgsVectorLayer(dest_file_name, 'vl')
             self.assertEqual(vl.dataComment(), "my_alias")
+
+    def testExtentCsv(self):
+        # 2D points
+        datasource_2d = os.path.join(self.basetestpath, 'testExtent2D.csv')
+        with open(datasource_2d, 'w') as f:
+            f.write('id,WKT\n')
+            for i in range(9):
+                f.write(f'{i},POINT ({2*i} {i-3})\n')
+
+        vl = QgsVectorLayer(f'{datasource_2d}|layerid=0', 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 9)
+        self.assertEqual(vl.extent(), QgsRectangle(0, -3, 16, 5))
+        self.assertEqual(vl.extent3D(), QgsBox3D(0, -3, float('nan'), 16, 5, float('nan')))
+        del vl
+
+        os.unlink(datasource_2d)
+        self.assertFalse(os.path.exists(datasource_2d))
+
+        # 3D points
+        datasource_3d = os.path.join(self.basetestpath, 'testExtent3D.csv')
+        with open(datasource_3d, 'w') as f:
+            f.write('id,WKT\n')
+            for i in range(13):
+                f.write(f'{i},POINT Z({2*i} {i-3} {i-5})\n')
+
+        vl = QgsVectorLayer(f'{datasource_3d}|layerid=0', 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 12)
+        self.assertEqual(vl.extent(), QgsRectangle(0, -3, 24, 9))
+        self.assertEqual(vl.extent3D(), QgsBox3D(0, -3, -5, 24, 9, 7))
+        del vl
+
+        os.unlink(datasource_3d)
+        self.assertFalse(os.path.exists(datasource_3d))
+
+    def testExtentShp(self):
+        # 2D points
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), 'points.shp'), 'points', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 9)
+        self.assertAlmostEqual(vl.extent().xMinimum(), -118.8888, places=3)
+        self.assertAlmostEqual(vl.extent().yMinimum(), 22.8002, places=3)
+        self.assertAlmostEqual(vl.extent().xMaximum(), -83.3333, places=3)
+        self.assertAlmostEqual(vl.extent().yMaximum(), 46.872, places=3)
+
+        self.assertAlmostEqual(vl.extent3D().xMinimum(), -118.8888, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMinimum(), 22.8002, places=3)
+        self.assertTrue(math.isnan(vl.extent3D().zMinimum()))
+        self.assertAlmostEqual(vl.extent3D().xMaximum(), -83.3333, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMaximum(), 46.872, places=3)
+        self.assertTrue(math.isnan(vl.extent3D().zMaximum()))
+        del vl
+
+        # 3D points
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), '3d', 'points_with_z.shp'), 'points', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 9)
+        self.assertAlmostEqual(vl.extent().xMinimum(), 321384.94, places=3)
+        self.assertAlmostEqual(vl.extent().yMinimum(), 129147.09, places=3)
+        self.assertAlmostEqual(vl.extent().xMaximum(), 322342.3, places=3)
+        self.assertAlmostEqual(vl.extent().yMaximum(), 130554.6, places=3)
+
+        self.assertAlmostEqual(vl.extent3D().xMinimum(), 321384.94, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMinimum(), 129147.09, places=3)
+        self.assertAlmostEqual(vl.extent3D().zMinimum(), 64.9, places=3)
+        self.assertAlmostEqual(vl.extent3D().xMaximum(), 322342.3, places=3)
+        self.assertAlmostEqual(vl.extent3D().yMaximum(), 130554.6, places=3)
+        self.assertAlmostEqual(vl.extent3D().zMaximum(), 105.6, places=3)
+        del vl
 
 
 if __name__ == '__main__':

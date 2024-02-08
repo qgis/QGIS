@@ -42,7 +42,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Flags indicating how and when an provider operates and should be exposed to users
      * \since QGIS 3.14
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDeemphasiseSearchResults = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
       FlagCompatibleWithVirtualRaster = 1 << 2, //!< The processing provider's algorithms can work with QGIS virtualraster data provider. Since QGIS 3.36

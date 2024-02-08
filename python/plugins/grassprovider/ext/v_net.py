@@ -14,7 +14,7 @@
 *                                                                         *
 ***************************************************************************
 
-This Python module handles pre-treatment operations for v.net.* GRASS7 modules.
+This Python module handles pre-treatment operations for v.net.* GRASS modules.
 Before using a v.net module you often have to incorporate a points layer into
 the network vector map.
 """

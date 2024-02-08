@@ -151,14 +151,17 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
       if ( renderAsTriangles() )
       {
         addPointToTriangulation( x, y, z, color, context );
+
+        // We don't want to render any points if we're rendering triangles and there is no preview painter
+        if ( !context.renderContext().previewRenderPainter() )
+          continue;
       }
-      else
-      {
-        const double size = pointSizes.value( attributeValue );
-        drawPoint( x, y, color, size, context );
-        if ( renderElevation )
-          drawPointToElevationMap( x, y, z, size, context );
-      }
+
+      const double size = pointSizes.value( attributeValue );
+      drawPoint( x, y, color, size, context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, size, context );
+
       rendered++;
     }
   }

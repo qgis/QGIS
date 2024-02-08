@@ -56,7 +56,7 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
 
     QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
-    void load( const QString &url ) override;
+    void load( const QString &uri ) override;
 
     std::unique_ptr<QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;

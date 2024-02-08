@@ -51,6 +51,13 @@ Set placeholder ``text`` for the line edit.
 .. versionadded:: 3.36
 %End
 
+    void setResultContainerAnchors( QgsFloatingWidget::AnchorPoint anchorPoint, QgsFloatingWidget::AnchorPoint anchorWidgetPoint );
+%Docstring
+Sets the result container ``anchorPoint`` and ``anchorWidgetPoint`` position.
+
+.. versionadded:: 3.36
+%End
+
   public slots:
 
     void search( const QString &string );

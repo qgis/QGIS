@@ -1057,6 +1057,19 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
       break;
   }
 
+  // Update other widgets pointing to the same field, required to happen now to insure
+  // currentFormValuesFeature() gets the right value when processing constraints
+  const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
+  for ( QgsAttributeFormEditorWidget *formEditorWidget : formEditorWidgets )
+  {
+    if ( formEditorWidget->editorWidget() == eww )
+      continue;
+
+    // formEditorWidget and eww points to the same field, so block signals
+    // as there is no need to handle valueChanged again for each duplicate
+    whileBlocking( formEditorWidget->editorWidget() )->setValue( value );
+  }
+
   updateConstraints( eww );
 
   // Update dependent fields (only if form is not initializing)
@@ -1071,20 +1084,6 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   // Updates expression controlled labels and editable state
   updateLabels();
   updateEditableState();
-
-  // Update other widgets pointing to the same field
-  const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
-  for ( QgsAttributeFormEditorWidget *formEditorWidget : formEditorWidgets )
-  {
-    if ( formEditorWidget->editorWidget() == eww )
-      continue;
-
-    // formEditorWidget and eww points to the same field, so block signals
-    // as there is no need to handle valueChanged again for each duplicate
-    formEditorWidget->editorWidget()->blockSignals( true );
-    formEditorWidget->editorWidget()->setValue( value );
-    formEditorWidget->editorWidget()->blockSignals( false );
-  }
 
   if ( !signalEmitted )
   {
@@ -1435,7 +1434,13 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
   const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
 
   for ( QgsAttributeFormEditorWidget *formEditorWidget : formEditorWidgets )
+  {
     formEditorWidget->setConstraintStatus( constraint, description, err, result );
+    if ( formEditorWidget->editorWidget() != eww )
+    {
+      formEditorWidget->editorWidget()->updateConstraint( result, err );
+    }
+  }
 }
 
 QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w )

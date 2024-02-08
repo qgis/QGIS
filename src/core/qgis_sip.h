@@ -273,6 +273,11 @@
 #define SIP_MONKEYPATCH_COMPAT_NAME(FORMERNAME)
 
 /*
+ * Directive to define the base type for a enum
+ */
+#define SIP_ENUM_BASETYPE(type)
+
+/*
  * Directive to define a Python property;
  */
 #define SIP_PROPERTY(name,getter,setter)

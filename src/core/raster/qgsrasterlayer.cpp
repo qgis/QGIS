@@ -525,9 +525,9 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += tr( "n/a" );
     myMetadata += QLatin1String( "</td>" );
 
-    if ( provider->hasStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) ) )
+    if ( provider->hasStatistics( i, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) ) )
     {
-      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) );
+      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) );
       myMetadata += QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.minimumValue, 'f', 10 ) % QStringLiteral( "</td>" ) %
                     QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.maximumValue, 'f', 10 ) % QStringLiteral( "</td>" );
     }
@@ -1218,9 +1218,9 @@ void QgsRasterLayer::computeMinMax( int band,
 
   if ( limits == QgsRasterMinMaxOrigin::MinMax )
   {
-    QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max, extent, sampleSize );
+    QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, extent, sampleSize );
     // Check if statistics were actually gathered, None means a failure
-    if ( myRasterBandStats.statsGathered == QgsRasterBandStats::Stats::None )
+    if ( myRasterBandStats.statsGathered == static_cast< int >( Qgis::RasterBandStatistic::NoStatistic ) )
     {
       // Best guess we can do
       switch ( mDataProvider->dataType( band ) )
@@ -1291,7 +1291,7 @@ void QgsRasterLayer::computeMinMax( int band,
   }
   else if ( limits == QgsRasterMinMaxOrigin::StdDev )
   {
-    const QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, extent, sampleSize );
+    const QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, extent, sampleSize );
     min = myRasterBandStats.mean - ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
     max = myRasterBandStats.mean + ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
   }

@@ -58,7 +58,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     };
 
     //! Available flags
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused = 1 << 0, //!< Temporary unused entry

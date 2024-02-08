@@ -1,6 +1,6 @@
 file(GLOB PY_FILES *.py)
 list(FILTER PY_FILES EXCLUDE REGEX ".*description_to_json.py")
-file(GLOB OTHER_FILES grass7.txt metadata.txt)
+file(GLOB OTHER_FILES grass.txt metadata.txt)
 
 execute_process(
   COMMAND ${Python_EXECUTABLE} -m grassprovider.description_to_json ${CMAKE_CURRENT_SOURCE_DIR}/description ${CMAKE_CURRENT_SOURCE_DIR}/description/algorithms.json

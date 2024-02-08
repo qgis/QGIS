@@ -171,9 +171,10 @@ layout manager.
 %End
   public:
 
-    enum Role
+
+    enum class CustomRole
     {
-      LayoutRole,
+      Layout,
     };
 
     explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent /TransferThis/ = 0 );

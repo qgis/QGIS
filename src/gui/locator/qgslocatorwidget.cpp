@@ -155,6 +155,12 @@ void QgsLocatorWidget::setPlaceholderText( const QString &text )
   mLineEdit->setPlaceholderText( text );
 }
 
+void QgsLocatorWidget::setResultContainerAnchors( QgsFloatingWidget::AnchorPoint anchorPoint, QgsFloatingWidget::AnchorPoint anchorWidgetPoint )
+{
+  mResultsContainer->setAnchorPoint( anchorPoint );
+  mResultsContainer->setAnchorWidgetPoint( anchorWidgetPoint );
+}
+
 void QgsLocatorWidget::search( const QString &string )
 {
   window()->activateWindow(); // window must also be active - otherwise floating docks can steal keystrokes
@@ -206,7 +212,7 @@ void QgsLocatorWidget::showContextMenu( const QPoint &point )
   if ( !index.isValid() )
     return;
 
-  const QList<QgsLocatorResult::ResultAction> actions = mResultsView->model()->data( index, QgsLocatorModel::ResultActionsRole ).value<QList<QgsLocatorResult::ResultAction>>();
+  const QList<QgsLocatorResult::ResultAction> actions = mResultsView->model()->data( index, static_cast< int >( QgsLocatorModel::CustomRole::ResultActions ) ).value<QList<QgsLocatorResult::ResultAction>>();
   QMenu *contextMenu = new QMenu( mResultsView );
   for ( auto resultAction : actions )
   {

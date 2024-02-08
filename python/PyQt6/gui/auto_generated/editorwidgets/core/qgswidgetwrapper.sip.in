@@ -49,7 +49,7 @@ changed status of the widget will be saved.
   public:
 
 
-    enum class Property /BaseType=IntFlag/
+    enum class Property /BaseType=IntEnum/
     {
       RootPath,
       DocumentViewerContent,

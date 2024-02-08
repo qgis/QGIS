@@ -189,7 +189,7 @@ QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QS
 void QgsLayoutGuidePositionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor );
-  model->setData( index, spin->value(), QgsLayoutGuideCollection::PositionRole );
+  model->setData( index, spin->value(), static_cast< int >( QgsLayoutGuideCollection::CustomRole::Position ) );
 }
 
 QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
@@ -211,6 +211,6 @@ QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyle
 void QgsLayoutGuideUnitDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsLayoutUnitsComboBox *cb = qobject_cast< QgsLayoutUnitsComboBox *>( editor );
-  model->setData( index, static_cast< int >( cb->unit() ), QgsLayoutGuideCollection::UnitsRole );
+  model->setData( index, static_cast< int >( cb->unit() ), static_cast< int >( QgsLayoutGuideCollection::CustomRole::Units ) );
 }
 

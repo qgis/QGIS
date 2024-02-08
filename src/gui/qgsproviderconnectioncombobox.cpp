@@ -80,7 +80,7 @@ void QgsProviderConnectionComboBox::setConnection( const QString &connection )
     return;
   }
 
-  const QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), QgsProviderConnectionModel::RoleConnectionName, connection, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+  const QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), static_cast< int >( QgsProviderConnectionModel::CustomRole::ConnectionName ), connection, Qt::MatchFixedString | Qt::MatchCaseSensitive );
   if ( !idx.empty() )
   {
     const QModelIndex proxyIdx = idx.at( 0 );
@@ -103,7 +103,7 @@ QString QgsProviderConnectionComboBox::currentConnection() const
     return QString();
   }
 
-  return mSortModel->data( proxyIndex, QgsProviderConnectionModel::RoleConnectionName ).toString();
+  return mSortModel->data( proxyIndex, static_cast< int >( QgsProviderConnectionModel::CustomRole::ConnectionName ) ).toString();
 }
 
 QString QgsProviderConnectionComboBox::currentConnectionUri() const
@@ -114,7 +114,7 @@ QString QgsProviderConnectionComboBox::currentConnectionUri() const
     return QString();
   }
 
-  return mSortModel->data( proxyIndex, QgsProviderConnectionModel::RoleUri ).toString();
+  return mSortModel->data( proxyIndex, static_cast< int >( QgsProviderConnectionModel::CustomRole::Uri ) ).toString();
 }
 
 void QgsProviderConnectionComboBox::indexChanged( int i )
@@ -147,9 +147,9 @@ QgsProviderConnectionComboBoxSortModel::QgsProviderConnectionComboBoxSortModel( 
 bool QgsProviderConnectionComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty row is always first
-  if ( sourceModel()->data( left, QgsProviderConnectionModel::RoleEmpty ).toBool() )
+  if ( sourceModel()->data( left, static_cast< int >( QgsProviderConnectionModel::CustomRole::Empty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, QgsProviderConnectionModel::RoleEmpty ).toBool() )
+  else if ( sourceModel()->data( right, static_cast< int >( QgsProviderConnectionModel::CustomRole::Empty ) ).toBool() )
     return false;
 
   // default mode is alphabetical order

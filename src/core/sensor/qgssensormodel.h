@@ -42,8 +42,15 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
       LastValue = 1, //!< Last value
     };
 
-    //! Custom model roles
-    enum Role
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsSensorModel::Role
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSensorModel, Role ) : int
     {
       SensorType = Qt::UserRole + 1, //!< Sensor type
       SensorId, //!< Sensor id
@@ -53,6 +60,8 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
       SensorLastTimestamp, //!< Sensor timestamp of last captured value
       Sensor, //!< Sensor object pointer
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsSensorModel, for the specified \a manager and \a parent object.

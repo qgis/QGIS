@@ -24,9 +24,10 @@ A QAbstractItemModel subclass for displaying the results from a :py:class:`QgsAb
 %End
   public:
 
-    enum Roles
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      DescriptionRole,
+      Description,
     };
 
     QgsValidityCheckResultsModel( const QList< QgsValidityCheckResult > &results, QObject *parent /TransferThis/ = 0 );

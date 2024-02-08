@@ -27,12 +27,13 @@ The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 %End
   public:
 
-    enum ItemDataRole
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      LayerIdRole,
-      LayerRole,
-      EmptyRole,
-      AdditionalRole,
+      LayerId,
+      Layer,
+      Empty,
+      Additional,
     };
 
     explicit QgsMapLayerModel( QObject *parent /TransferThis/ = 0, QgsProject *project = 0 );

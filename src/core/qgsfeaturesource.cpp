@@ -23,9 +23,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsFeatureSource::FeatureAvailability QgsFeatureSource::hasFeatures() const
+Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const
 {
-  return FeaturesMaybeAvailable;
+  return Qgis::FeatureAvailability::FeaturesMaybeAvailable;
 }
 
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
@@ -192,7 +192,7 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
   return layer.release();
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
 {
-  return SpatialIndexUnknown;
+  return Qgis::SpatialIndexPresence::Unknown;
 }

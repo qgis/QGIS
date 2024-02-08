@@ -147,7 +147,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * \since QGIS 3.4
      */
-    enum LayerFlag
+    enum LayerFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       Identifiable = 1 << 0, //!< If the layer is identifiable using the identify map tool and as a WMS layer.
       Removable = 1 << 1,    //!< If the layer can be removed from the project. The layer will not be removable from the legend menu entry but can still be removed with an API call.
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Categories of style to distinguish appropriate sections for import/export
      * \since QGIS 3.4
      */
-    enum StyleCategory
+    enum StyleCategory SIP_ENUM_BASETYPE( IntFlag )
     {
       LayerConfiguration = 1 << 0,  //!< General configuration: identifiable, removable, searchable, display expression, read-only
       Symbology          = 1 << 1,  //!< Symbology
@@ -641,7 +641,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Flags which control project read behavior.
      * \since QGIS 3.10
      */
-    enum ReadFlag
+    enum ReadFlag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
       FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
@@ -2357,8 +2357,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
-    //! Extent of the layer
-    mutable QgsBox3D mExtent;
+    //! 3D Extent of the layer
+    mutable QgsBox3D mExtent3D;
+
+    //! 2D Extent of the layer
+    mutable QgsRectangle mExtent2D;
 
     //! Extent of the layer in EPSG:4326
     mutable QgsRectangle mWgs84Extent;

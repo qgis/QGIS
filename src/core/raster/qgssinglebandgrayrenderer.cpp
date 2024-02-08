@@ -333,7 +333,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       case QgsContrastEnhancement::ClipToMinimumMaximum:
       {
         // with this renderer export have to be check against real min/max values of the raster
-        const QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+        const QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max );
 
         // if minimum range differ from the real minimum => set is in exported SLD vendor option
         if ( !qgsDoubleNear( lContrastEnhancement->minimumValue(), myRasterBandStats.minimumValue ) )

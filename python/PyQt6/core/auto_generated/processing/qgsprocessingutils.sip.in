@@ -282,7 +282,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
 .. versionadded:: 3.14
 %End
 
-    enum class LayerHint /BaseType=IntFlag/
+    enum class LayerHint /BaseType=IntEnum/
     {
       UnknownType,
       Vector,
@@ -335,6 +335,15 @@ if ``value`` cannot be successfully converted to a CRS.
 %Docstring
 Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
+%End
+
+    static QString layerToStringIdentifier( const QgsMapLayer *layer ) /HoldGIL/;
+%Docstring
+Returns a string representation of the source for a ``layer``. The returned
+value is suitable for storage for subsequent executions of an algorithm
+using the same layer source.
+
+.. versionadded:: 3.34
 %End
 
     static QString variantToPythonLiteral( const QVariant &value );
@@ -677,7 +686,7 @@ An optional ``request`` can be used to optimise the returned
 iterator, eg by restricting the returned attributes or geometry.
 %End
 
-    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+    virtual Qgis::FeatureAvailability hasFeatures() const;
 
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
@@ -702,7 +711,7 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsFeatureIds allFeatureIds() const;
 
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;

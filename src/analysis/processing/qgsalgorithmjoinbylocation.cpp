@@ -313,7 +313,7 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
 
 void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( mBaseSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( mBaseSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
   QgsFeatureIterator joinIter = mJoinSource->getFeatures( QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( mJoinedFieldIndices ) );
@@ -373,7 +373,7 @@ void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( Qg
 
 void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverInputSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  if ( mJoinSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( mJoinSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
 
   QgsFeatureIterator it = mBaseSource->getFeatures();

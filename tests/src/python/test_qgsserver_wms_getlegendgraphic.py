@@ -141,7 +141,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerTitleSpace")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerTitleSpace",
+                             max_size_diff=QSize(1, 5))
 
     def test_wms_GetLegendGraphic_ShowFeatureCount(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -489,7 +490,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize",
+                             max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_LayerFont(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({

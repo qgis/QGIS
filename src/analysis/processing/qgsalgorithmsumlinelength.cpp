@@ -137,7 +137,7 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   if ( !mLinesSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "LINES" ) ) );
 
-  if ( mLinesSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( mLinesSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for lines layer, performance will be severely degraded" ) );
 
   mDa.setEllipsoid( context.ellipsoid() );

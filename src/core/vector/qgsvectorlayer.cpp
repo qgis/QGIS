@@ -973,8 +973,11 @@ void QgsVectorLayer::updateExtents( bool force )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // do not update extent by default when trust project option is activated
-  if ( force || !mReadExtentFromXml || ( mReadExtentFromXml && mXmlExtent.isNull() ) )
-    mValidExtent = false;
+  if ( force || !mReadExtentFromXml || ( mReadExtentFromXml && mXmlExtent2D.isNull() && mXmlExtent3D.isNull() ) )
+  {
+    mValidExtent2D = false;
+    mValidExtent3D = false;
+  }
 }
 
 void QgsVectorLayer::setExtent( const QgsRectangle &r )
@@ -982,7 +985,7 @@ void QgsVectorLayer::setExtent( const QgsRectangle &r )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsMapLayer::setExtent( r );
-  mValidExtent = true;
+  mValidExtent2D = true;
 }
 
 void QgsVectorLayer::setExtent3D( const QgsBox3D &r )
@@ -990,7 +993,7 @@ void QgsVectorLayer::setExtent3D( const QgsBox3D &r )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QgsMapLayer::setExtent3D( r );
-  mValidExtent = true;
+  mValidExtent3D = true;
 }
 
 void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
@@ -1024,25 +1027,25 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( !mValidExtent && mLazyExtent && mReadExtentFromXml && !mXmlExtent.isNull() )
+  if ( !mValidExtent2D && mLazyExtent2D && mReadExtentFromXml && !mXmlExtent2D.isNull() )
   {
-    updateExtent( mXmlExtent );
-    mValidExtent = true;
-    mLazyExtent = false;
+    updateExtent( mXmlExtent2D );
+    mValidExtent2D = true;
+    mLazyExtent2D = false;
   }
 
-  if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
+  if ( !mValidExtent2D && mLazyExtent2D && mDataProvider && mDataProvider->isValid() )
   {
     // store the extent
     updateExtent( mDataProvider->extent() );
-    mValidExtent = true;
-    mLazyExtent = false;
+    mValidExtent2D = true;
+    mLazyExtent2D = false;
 
     // show the extent
-    QgsDebugMsgLevel( QStringLiteral( "Extent of layer: %1" ).arg( mExtent.toString() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "2D Extent of layer: %1" ).arg( mExtent2D.toString() ), 3 );
   }
 
-  if ( mValidExtent )
+  if ( mValidExtent2D )
     return QgsMapLayer::extent();
 
   if ( !isValid() || !mDataProvider )
@@ -1101,7 +1104,7 @@ QgsRectangle QgsVectorLayer::extent() const
   }
 
   updateExtent( rect );
-  mValidExtent = true;
+  mValidExtent2D = true;
 
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
@@ -1113,31 +1116,37 @@ QgsBox3D QgsVectorLayer:: extent3D() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  // if data is 2D, redirect to 2D extend computation, and save it as 2D extent (in 3D bbox)
+  if ( mDataProvider && mDataProvider->elevationProperties() && !mDataProvider->elevationProperties()->containsElevationData() )
+  {
+    return QgsBox3D( extent() );
+  }
+
   QgsBox3D extent;
   extent.setNull();
 
   if ( !isSpatial() )
     return extent;
 
-  if ( !mValidExtent && mLazyExtent && mReadExtentFromXml && !mXmlExtent.isNull() )
+  if ( !mValidExtent3D && mLazyExtent3D && mReadExtentFromXml && !mXmlExtent3D.isNull() )
   {
-    updateExtent( mXmlExtent );
-    mValidExtent = true;
-    mLazyExtent = false;
+    updateExtent( mXmlExtent3D );
+    mValidExtent3D = true;
+    mLazyExtent3D = false;
   }
 
-  if ( !mValidExtent && mLazyExtent && mDataProvider && mDataProvider->isValid() )
+  if ( !mValidExtent3D && mLazyExtent3D && mDataProvider && mDataProvider->isValid() )
   {
     // store the extent
     updateExtent( mDataProvider->extent3D() );
-    mValidExtent = true;
-    mLazyExtent = false;
+    mValidExtent3D = true;
+    mLazyExtent3D = false;
 
     // show the extent
-    QgsDebugMsgLevel( QStringLiteral( "Extent of layer: %1" ).arg( mExtent.toString() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "3D Extent of layer: %1" ).arg( mExtent3D.toString() ), 3 );
   }
 
-  if ( mValidExtent )
+  if ( mValidExtent3D )
     return QgsMapLayer::extent3D();
 
   if ( !isValid() || !mDataProvider )
@@ -1196,7 +1205,7 @@ QgsBox3D QgsVectorLayer:: extent3D() const
   }
 
   updateExtent( extent );
-  mValidExtent = true;
+  mValidExtent3D = true;
 
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
@@ -1828,11 +1837,11 @@ void QgsVectorLayer::setTransformContext( const QgsCoordinateTransformContext &t
     mDataProvider->setTransformContext( transformContext );
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsVectorLayer::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsVectorLayer::hasSpatialIndex() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider ? mDataProvider->hasSpatialIndex() : QgsFeatureSource::SpatialIndexUnknown;
+  return mDataProvider ? mDataProvider->hasSpatialIndex() : Qgis::SpatialIndexPresence::Unknown;
 }
 
 bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
@@ -1951,7 +1960,12 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
     if ( !extentNode.isNull() )
     {
-      mXmlExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+      mXmlExtent2D = QgsXmlUtils::readRectangle( extentNode.toElement() );
+    }
+    const QDomNode extent3DNode = layer_node.namedItem( QStringLiteral( "extent3D" ) );
+    if ( !extent3DNode.isNull() )
+    {
+      mXmlExtent3D = QgsXmlUtils::readBox3D( extent3DNode.toElement() );
     }
   }
 
@@ -3793,7 +3807,7 @@ long long QgsVectorLayer::featureCount() const
          ( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures().size() - mEditBuffer->deletedFeatureIds().size() : 0 );
 }
 
-QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
+Qgis::FeatureAvailability QgsVectorLayer::hasFeatures() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -3803,15 +3817,15 @@ QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
   if ( mEditBuffer && !deletedFeatures.empty() )
   {
     if ( addedFeatures.size() > deletedFeatures.size() )
-      return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+      return Qgis::FeatureAvailability::FeaturesAvailable;
     else
-      return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
+      return Qgis::FeatureAvailability::FeaturesMaybeAvailable;
   }
 
   if ( ( !mEditBuffer || addedFeatures.empty() ) && mDataProvider && mDataProvider->empty() )
-    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+    return Qgis::FeatureAvailability::NoFeaturesAvailable;
   else
-    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+    return Qgis::FeatureAvailability::FeaturesAvailable;
 }
 
 bool QgsVectorLayer::commitChanges( bool stopEditing )
@@ -4990,7 +5004,7 @@ void QgsVectorLayer::clearEditBuffer()
   mEditBuffer = nullptr;
 }
 
-QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
+QVariant QgsVectorLayer::aggregate( Qgis::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
                                     bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback, QString *error ) const
 {
