@@ -189,7 +189,11 @@ void QgsWebEnginePage::handlePostBlockingLoadOperations()
 #ifdef HAVE_PDF4QT
 bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
 {
-  // TODO -- page size
+  const QSize actualSize = documentSize();
+
+  // TODO -- is this ALWAYS 96?
+  static constexpr double dpi = 96.0;
+  const QSizeF pageSize = QSizeF( actualSize.width() / dpi, actualSize.height() / dpi );
 
   QEventLoop loop;
   bool finished = false;
@@ -207,7 +211,11 @@ bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
   QTemporaryFile f;
   f.open();
   f.close();
-  mPage->printToPdf( f.fileName() );
+
+  const QPageLayout layout = QPageLayout( QPageSize( pageSize, QPageSize::Inch ),
+                                          QPageLayout::Portrait, QMarginsF( 0, 0, 0, 0 ),
+                                          QPageLayout::Inch, QMarginsF( 0, 0, 0, 0 ) );
+  mPage->printToPdf( f.fileName(), layout );
 
   if ( !finished )
   {
