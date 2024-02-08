@@ -16,7 +16,16 @@
  ***************************************************************************/
 
 #include "qgswebenginepage.h"
+#include "qgsconfig.h"
 #include <QWebEnginePage>
+
+#ifdef HAVE_PDF4QT
+#include "qgspdfrenderer.h"
+#include <QEventLoop>
+#include <QTemporaryFile>
+#else
+#include "qgsexception.h"
+#endif
 
 QgsWebEnginePage::QgsWebEnginePage( QObject *parent )
   : QObject( parent )
@@ -49,3 +58,45 @@ void QgsWebEnginePage::setUrl( const QUrl &url )
 {
   mPage->setUrl( url );
 }
+
+#ifdef HAVE_PDF4QT
+bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
+{
+  // TODO -- page size
+
+  QEventLoop loop;
+  bool finished = false;
+  bool printOk = false;
+  QString renderedPdfPath;
+  connect( mPage.get(), &QWebEnginePage::pdfPrintingFinished, &loop, [&loop, &finished, &printOk, &renderedPdfPath]( const QString & pdfPath, bool success )
+  {
+    finished = true;
+    renderedPdfPath = pdfPath;
+    printOk = success;
+    loop.exit();
+  } );
+
+  // generate file name for temporary intermediate PDF file
+  QTemporaryFile f;
+  f.open();
+  f.close();
+  mPage->printToPdf( f.fileName() );
+
+  if ( !finished )
+  {
+    loop.exec( QEventLoop::ExcludeUserInputEvents );
+  }
+
+  if ( printOk )
+  {
+    QgsPdfRenderer renderer( renderedPdfPath );
+    renderer.render( painter, painterRect, 0 );
+  }
+  return printOk;
+}
+#else
+bool QgsWebEnginePage::render( QPainter *, const QRectF & )
+{
+  throw QgsNotSupportedException( QObject::tr( "Rendering web pages requires a QGIS build with PDF4Qt library support" ) );
+}
+#endif

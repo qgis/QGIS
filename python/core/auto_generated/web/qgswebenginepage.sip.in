@@ -64,6 +64,26 @@ Sets the ``url`` of the web page to be displayed.
 Setting this property clears the page and loads the URL.
 %End
 
+    bool render( QPainter *painter, const QRectF &painterRect ) throw( QgsNotSupportedException );
+%Docstring
+Renders the web page contents to a ``painter``. Content will be rendered as vector objects.
+
+The ``painterRect`` argument specifies the target rectangle for the page in ``painter`` coordinates.
+
+.. warning::
+
+   This method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+
+.. warning::
+
+   This method requires a QGIS build with PDF4Qt library support.
+
+:return: ``True`` if rendering was successful
+
+
+:raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
+%End
+
   signals:
 
     void loadStarted();
