@@ -50,6 +50,7 @@
 #include "qgs3dsceneexporter.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
+#include "qgspointlightsettings.h"
 
 #include <QFileInfo>
 #include <QDir>
