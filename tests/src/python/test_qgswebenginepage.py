@@ -11,10 +11,11 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import unittest
 
-from PyQt5.QtCore import Qt
 from qgis.PyQt.QtCore import (
+    Qt,
     QRectF,
-    QUrl
+    QUrl,
+    QSize
 )
 from qgis.PyQt.QtGui import (
     QImage,
@@ -39,9 +40,9 @@ class TestWebEnginePage(QgisTestCase):
     def control_path_prefix(cls):
         return "html"
 
-    def test_render_web_page(self):
+    def test_contents_size(self):
         """
-        Test rendering web pages to a QPainter
+        Test contentsSize
         """
         html_path = os.path.join(TEST_DATA_DIR, 'test_html.html')
         page = QgsWebEnginePage()
@@ -49,9 +50,37 @@ class TestWebEnginePage(QgisTestCase):
         page.setUrl(QUrl.fromLocalFile(html_path))
         spy.wait()
         self.assertTrue(spy[0][0])
+        self.assertEqual(
+            page.documentSize(),
+            QSize(306, 248)
+        )
+
+    def test_contents_size_blocking(self):
+        """
+        Test contentsSize using a blocking load
+        """
+        html_path = os.path.join(TEST_DATA_DIR, 'test_html.html')
+        page = QgsWebEnginePage()
+        self.assertTrue(
+            page.setUrl(QUrl.fromLocalFile(html_path), blocking=True)
+        )
+        self.assertEqual(
+            page.documentSize(),
+            QSize(306, 248)
+        )
+
+    def test_render_web_page(self):
+        """
+        Test rendering web pages to a QPainter
+        """
+        html_path = os.path.join(TEST_DATA_DIR, 'test_html.html')
+        page = QgsWebEnginePage()
+        self.assertTrue(
+            page.setUrl(QUrl.fromLocalFile(html_path), blocking=True)
+        )
 
         image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
-        image.fill(Qt.transparent)
+        image.fill(Qt.GlobalColor.transparent)
         painter = QPainter(image)
         self.assertTrue(
             page.render(
