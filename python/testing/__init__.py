@@ -34,12 +34,14 @@ from typing import Optional, Tuple, Union
 from warnings import warn
 
 from qgis.PyQt.QtCore import (
+    Qt,
     QVariant,
     QDateTime,
     QDate,
     QDir,
     QUrl,
-    QSize
+    QSize,
+    QCoreApplication
 )
 from qgis.PyQt.QtGui import (
     QImage,
@@ -875,6 +877,8 @@ def start_app(cleanup=True):
             argvb = list(map(os.fsencode, sys.argv))
         except AttributeError:
             argvb = sys.argv
+
+        QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True)
 
         # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication -
         # no need to mess with it here.

@@ -492,6 +492,9 @@ endif()
 
 if (WITH_PDF4QT)
   ADD_PYTHON_TEST(PyQgsPdfRenderer test_qgspdfrenderer.py)
+  if (WITH_QTWEBENGINE)
+    ADD_PYTHON_TEST(PyQgsWebEnginePage test_qgswebenginepage.py)
+  endif()
 endif()
 
 if (ENABLE_PGTEST)

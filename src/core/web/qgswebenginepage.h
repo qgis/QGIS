@@ -22,11 +22,13 @@
 #include "qgis_core.h"
 #include <QObject>
 #include <QUrl>
+#include <QPageLayout>
 #include <memory>
 
 SIP_IF_MODULE( HAVE_WEBENGINE_SIP )
 
 class QWebEnginePage;
+class QPainter;
 
 /**
  * \ingroup core
@@ -81,6 +83,20 @@ class CORE_EXPORT QgsWebEnginePage : public QObject
      * Setting this property clears the page and loads the URL.
      */
     void setUrl( const QUrl &url );
+
+    /**
+     * Renders the web page contents to a \a painter. Content will be rendered as vector objects.
+     *
+     * The \a painterRect argument specifies the target rectangle for the page in \a painter coordinates.
+     *
+     * \warning This method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
+     * \warning This method requires a QGIS build with PDF4Qt library support.
+     *
+     * \returns TRUE if rendering was successful
+     *
+     * \throws QgsNotSupportedException on QGIS builds without PDF4Qt library support.
+     */
+    bool render( QPainter *painter, const QRectF &painterRect ) SIP_THROW( QgsNotSupportedException );
 
   signals:
 
