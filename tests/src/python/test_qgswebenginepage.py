@@ -98,6 +98,39 @@ class TestWebEnginePage(QgisTestCase):
             )
         )
 
+    def test_render_web_page_with_text(self):
+        """
+        Test rendering web page with text to a QPainter
+        """
+        html_path = os.path.join(TEST_DATA_DIR, 'test_html_feature.html')
+        page = QgsWebEnginePage()
+        self.assertTrue(
+            page.setUrl(QUrl.fromLocalFile(html_path), blocking=True)
+        )
+        self.assertEqual(
+            page.documentSize(),
+            QSize(306, 64)
+        )
+
+        image = QImage(600, 125, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+        self.assertTrue(
+            page.render(
+                painter,
+                QRectF(0, 0, 600, 125))
+        )
+        painter.end()
+
+        self.assertTrue(
+            self.image_check(
+                'Render QgsWebEnginePage with text to QPainter',
+                'render_with_text',
+                image,
+                'expected_render_with_text',
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
