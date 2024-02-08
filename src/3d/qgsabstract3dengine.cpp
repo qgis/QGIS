@@ -15,7 +15,7 @@
 
 #include "qgsabstract3dengine.h"
 
-#include "qgsshadowrenderingframegraph.h"
+#include "qgsframegraph.h"
 
 #include <Qt3DRender/QRenderCapture>
 #include <Qt3DRender/QRenderSettings>

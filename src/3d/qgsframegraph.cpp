@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsshadowrenderingframegraph.cpp
+  qgsframegraph.cpp
   --------------------------------------
   Date                 : August 2020
   Copyright            : (C) 2020 by Belgacem Nedjima
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsshadowrenderingframegraph.h"
+#include "qgsframegraph.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgspostprocessingentity.h"
 #include "qgspreviewquad.h"
@@ -47,7 +47,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QBlendEquationArguments>
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPreviewPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructTexturesPreviewPass()
 {
   mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
   mPreviewLayerFilter->addLayer( mPreviewLayer );
@@ -63,7 +63,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
   return mPreviewLayerFilter;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRenderPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
   // This is where rendering of the 3D scene actually happens.
   // We define two forward passes: one for solid objects, followed by one for transparent objects.
@@ -201,7 +201,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   return mMainCameraSelector;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRenderPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructShadowRenderPass()
 {
   mLightCameraSelectorShadowPass = new Qt3DRender::QCameraSelector;
   mLightCameraSelectorShadowPass->setCamera( mLightCamera );
@@ -250,7 +250,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   return mLightCameraSelectorShadowPass;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessingPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 {
   mPostProcessingCameraSelector = new Qt3DRender::QCameraSelector;
   mPostProcessingCameraSelector->setCamera( mLightCamera );
@@ -305,7 +305,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   return mPostProcessingCameraSelector;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclusionRenderPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass()
 {
   mAmbientOcclusionRenderCameraSelector = new Qt3DRender::QCameraSelector;
   mAmbientOcclusionRenderCameraSelector->setCamera( mMainCamera );
@@ -351,7 +351,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
   return mAmbientOcclusionRenderCameraSelector;
 }
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclusionBlurPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionBlurPass()
 {
   mAmbientOcclusionBlurCameraSelector = new Qt3DRender::QCameraSelector;
   mAmbientOcclusionBlurCameraSelector->setCamera( mMainCamera );
@@ -398,7 +398,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
 }
 
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructRubberBandsPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
 {
   mRubberBandsCameraSelector = new Qt3DRender::QCameraSelector;
   mRubberBandsCameraSelector->setCamera( mMainCamera );
@@ -422,7 +422,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructRubberBandsP
 
 
 
-Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthRenderPass()
+Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructDepthRenderPass()
 {
   // depth buffer render to copy pass
 
@@ -485,7 +485,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructDepthRenderP
   return mDepthRenderCameraSelector;
 }
 
-Qt3DCore::QEntity *QgsShadowRenderingFrameGraph::constructDepthRenderQuad()
+Qt3DCore::QEntity *QgsFrameGraph::constructDepthRenderQuad()
 {
   Qt3DCore::QEntity *quad = new Qt3DCore::QEntity;
   quad->setObjectName( "depthRenderQuad" );
@@ -554,7 +554,7 @@ Qt3DCore::QEntity *QgsShadowRenderingFrameGraph::constructDepthRenderQuad()
   return quad;
 }
 
-QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
+QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
   : Qt3DCore::QEntity( root )
   , mSize( s )
 {
@@ -663,7 +663,7 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   mDepthRenderQuad->setParent( mRootEntity );
 }
 
-QgsPreviewQuad *QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerTexCoords, const QSizeF &sizeTexCoords, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
+QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerTexCoords, const QSizeF &sizeTexCoords, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
 {
   QgsPreviewQuad *previewQuad = new QgsPreviewQuad( texture, centerTexCoords, sizeTexCoords, additionalShaderParameters );
   previewQuad->addComponent( mPreviewLayer );
@@ -732,7 +732,7 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
   }
 }
 
-void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
+void QgsFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
 {
   float minX, maxX, minY, maxY, minZ, maxZ;
   QVector3D lookingAt = mMainCamera->viewCenter();
@@ -759,12 +759,12 @@ void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLi
   mPostprocessingEntity->setupDirectionalLight( lightPosition, lightDirection );
 }
 
-void QgsShadowRenderingFrameGraph::setClearColor( const QColor &clearColor )
+void QgsFrameGraph::setClearColor( const QColor &clearColor )
 {
   mForwardClearBuffers->setClearColor( clearColor );
 }
 
-void QgsShadowRenderingFrameGraph::setShadowRenderingEnabled( bool enabled )
+void QgsFrameGraph::setShadowRenderingEnabled( bool enabled )
 {
   mShadowRenderingEnabled = enabled;
   mPostprocessingEntity->setShadowRenderingEnabled( mShadowRenderingEnabled );
@@ -774,45 +774,45 @@ void QgsShadowRenderingFrameGraph::setShadowRenderingEnabled( bool enabled )
     mShadowSceneEntitiesFilter->setEnabled( false );
 }
 
-void QgsShadowRenderingFrameGraph::setShadowBias( float shadowBias )
+void QgsFrameGraph::setShadowBias( float shadowBias )
 {
   mShadowBias = shadowBias;
   mPostprocessingEntity->setShadowBias( mShadowBias );
 }
 
-void QgsShadowRenderingFrameGraph::setShadowMapResolution( int resolution )
+void QgsFrameGraph::setShadowMapResolution( int resolution )
 {
   mShadowMapResolution = resolution;
   mShadowMapTexture->setWidth( mShadowMapResolution );
   mShadowMapTexture->setHeight( mShadowMapResolution );
 }
 
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionEnabled( bool enabled )
+void QgsFrameGraph::setAmbientOcclusionEnabled( bool enabled )
 {
   mAmbientOcclusionEnabled = enabled;
   mAmbientOcclusionRenderEntity->setEnabled( enabled );
   mPostprocessingEntity->setAmbientOcclusionEnabled( enabled );
 }
 
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionIntensity( float intensity )
+void QgsFrameGraph::setAmbientOcclusionIntensity( float intensity )
 {
   mAmbientOcclusionIntensity = intensity;
   mAmbientOcclusionRenderEntity->setIntensity( intensity );
 }
 
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionRadius( float radius )
+void QgsFrameGraph::setAmbientOcclusionRadius( float radius )
 {
   mAmbientOcclusionRadius = radius;
   mAmbientOcclusionRenderEntity->setRadius( radius );
 }
 
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionThreshold( float threshold )
+void QgsFrameGraph::setAmbientOcclusionThreshold( float threshold )
 {
   mAmbientOcclusionThreshold = threshold;
   mAmbientOcclusionRenderEntity->setThreshold( threshold );
 }
 
-void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )
+void QgsFrameGraph::setFrustumCullingEnabled( bool enabled )
 {
   if ( enabled == mFrustumCullingEnabled )
     return;
@@ -823,7 +823,7 @@ void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )
     mFrustumCulling->setParent( ( Qt3DCore::QNode * )nullptr );
 }
 
-void QgsShadowRenderingFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
+void QgsFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
 {
   mEyeDomeLightingEnabled = enabled;
   mEyeDomeLightingStrength = strength;
@@ -833,7 +833,7 @@ void QgsShadowRenderingFrameGraph::setupEyeDomeLighting( bool enabled, double st
   mPostprocessingEntity->setEyeDomeLightingDistance( distance );
 }
 
-void QgsShadowRenderingFrameGraph::setupShadowMapDebugging( bool enabled, Qt::Corner corner, double size )
+void QgsFrameGraph::setupShadowMapDebugging( bool enabled, Qt::Corner corner, double size )
 {
   mDebugShadowMapPreviewQuad->setEnabled( enabled );
   if ( enabled )
@@ -856,7 +856,7 @@ void QgsShadowRenderingFrameGraph::setupShadowMapDebugging( bool enabled, Qt::Co
   }
 }
 
-void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size )
+void QgsFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, double size )
 {
   mDebugDepthMapPreviewQuad->setEnabled( enabled );
 
@@ -880,7 +880,7 @@ void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Cor
   }
 }
 
-void QgsShadowRenderingFrameGraph::setSize( QSize s )
+void QgsFrameGraph::setSize( QSize s )
 {
   mSize = s;
   mForwardColorTexture->setSize( mSize.width(), mSize.height() );
@@ -895,7 +895,7 @@ void QgsShadowRenderingFrameGraph::setSize( QSize s )
   mAmbientOcclusionBlurTexture->setSize( mSize.width(), mSize.height() );
 }
 
-void QgsShadowRenderingFrameGraph::setRenderCaptureEnabled( bool enabled )
+void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 {
   if ( enabled == mRenderCaptureEnabled )
     return;
@@ -903,7 +903,7 @@ void QgsShadowRenderingFrameGraph::setRenderCaptureEnabled( bool enabled )
   mRenderCaptureTargetSelector->setEnabled( mRenderCaptureEnabled );
 }
 
-void QgsShadowRenderingFrameGraph::setDebugOverlayEnabled( bool enabled )
+void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
   mDebugOverlay->setEnabled( enabled );
 }

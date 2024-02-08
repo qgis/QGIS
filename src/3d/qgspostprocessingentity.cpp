@@ -40,9 +40,9 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QDepthTest>
 #include <QUrl>
 
-#include "qgsshadowrenderingframegraph.h"
+#include "qgsframegraph.h"
 
-QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
+QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, QNode *parent )
   : QgsRenderPassQuad( parent )
   , mFrameGraph( frameGraph )
 {

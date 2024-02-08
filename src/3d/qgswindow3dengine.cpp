@@ -20,7 +20,7 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include "qgs3dmapcanvas.h"
-#include "qgsshadowrenderingframegraph.h"
+#include "qgsframegraph.h"
 
 
 QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
@@ -31,7 +31,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   mRoot = new Qt3DCore::QEntity;
   mMapCanvas3D->setRootEntity( mRoot );
 
-  mFrameGraph = new QgsShadowRenderingFrameGraph( mMapCanvas3D, QSize( 1024, 768 ), mMapCanvas3D->camera(), mRoot );
+  mFrameGraph = new QgsFrameGraph( mMapCanvas3D, QSize( 1024, 768 ), mMapCanvas3D->camera(), mRoot );
   mFrameGraph->setRenderCaptureEnabled( false );
   mMapCanvas3D->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
 

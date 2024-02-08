@@ -39,7 +39,7 @@ namespace Qt3DRender
   class QFrameGraphNode;
 }
 
-class QgsShadowRenderingFrameGraph;
+class QgsFrameGraph;
 
 /**
  * \ingroup 3d
@@ -109,7 +109,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      *
      * \since QGIS 3.18
      */
-    QgsShadowRenderingFrameGraph *frameGraph() { return mFrameGraph; }
+    QgsFrameGraph *frameGraph() { return mFrameGraph; }
 
     /**
      * Sets whether it will be possible to render to an image
@@ -142,7 +142,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      */
     void sizeChanged();
   protected:
-    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
+    QgsFrameGraph *mFrameGraph = nullptr;
 };
 
 
