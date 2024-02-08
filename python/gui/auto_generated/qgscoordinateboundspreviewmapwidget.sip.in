@@ -51,6 +51,8 @@ Sets the "preview" rectangle for the bounds overview map.
 Must be in EPSG:4326 coordinate reference system.
 %End
 
+    bool operator==( const QgsEditorWidgetSetup &other ) const;
+
 };
 
 /************************************************************************
