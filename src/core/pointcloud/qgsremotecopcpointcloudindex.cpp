@@ -188,6 +188,8 @@ bool QgsRemoteCopcPointCloudIndex::isValid() const
 
 void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
+  Q_ASSERT( byteSize > 0 );
+
   QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
   QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsRemoteCopcPointCloudIndex" ) );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
