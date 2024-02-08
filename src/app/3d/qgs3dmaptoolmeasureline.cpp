@@ -24,7 +24,7 @@
 #include "qgs3dmeasuredialog.h"
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
-#include "qgsshadowrenderingframegraph.h"
+#include "qgsframegraph.h"
 
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )

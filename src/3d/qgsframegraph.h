@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsshadowrenderingframegraph.h
+  qgsframegraph.h
   --------------------------------------
   Date                 : August 2020
   Copyright            : (C) 2020 by Belgacem Nedjima
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSHADOWRENDERINGFRAMEGRAPH_H
-#define QGSSHADOWRENDERINGFRAMEGRAPH_H
+#ifndef QGSFRAMEGRAPH_H
+#define QGSFRAMEGRAPH_H
 
 #include <QWindow>
 #include <Qt3DRender/QCamera>
@@ -50,19 +50,21 @@ class QgsAmbientOcclusionBlurEntity;
 
 /**
  * \ingroup 3d
- * \brief Container class that holds different objects related to shadow rendering
+ * \brief Container class that holds different objects related to frame graph of 3D scenes
+ *
+ * A frame graph captures configuration of rendering passes when 3D scene gets rendered.
  *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.16
  */
-class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
+class QgsFrameGraph : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
+      QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
 
     //! Returns the root of the frame graph object
     Qt3DRender::QFrameGraphNode *frameGraphRoot() { return mRenderSurfaceSelector; }
@@ -353,7 +355,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 
     bool mRenderCaptureEnabled = true;
 
-    Q_DISABLE_COPY( QgsShadowRenderingFrameGraph )
+    Q_DISABLE_COPY( QgsFrameGraph )
 };
 
-#endif // QGSSHADOWRENDERINGFRAMEGRAPH_H
+#endif // QGSFRAMEGRAPH_H

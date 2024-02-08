@@ -48,7 +48,6 @@ namespace Qt3DLogic
   class QLogicAspect;
 }
 
-#include "qgsshadowrenderingframegraph.h"
 
 #define SIP_NO_FILE
 
