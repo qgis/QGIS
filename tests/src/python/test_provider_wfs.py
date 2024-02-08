@@ -43,6 +43,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import (
+    QT_VERSION_STR,
     QCoreApplication,
     QDate,
     QDateTime,
@@ -60,14 +61,16 @@ TEST_DATA_DIR = unitTestDataPath()
 
 def sanitize(endpoint, x):
     if len(endpoint + x) > 256:
-        ret = endpoint + hashlib.md5(x.replace('/', '_').encode()).hexdigest()
         # print('Before: ' + endpoint + x)
+        x = x.replace('/', '_').encode()
+        ret = endpoint + hashlib.md5(x).hexdigest()
         # print('After:  ' + ret)
         return ret
     ret = endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"',
                                                                                                        '_').replace("'",
                                                                                                                     '_').replace(
         ' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
+    # print('Sanitize: ' + x)
     return ret
 
 
@@ -999,11 +1002,18 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </wfs:TransactionResult>
 </wfs:WFS_TransactionResponse>
 """
-        # Qt 5 order
+
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            attrs = 'xmlns="http://www.opengis.net/wfs" service="WFS" version="1.0.0" xmlns:gml="http://www.opengis.net/gml" xmlns:my="http://my" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename"'
+        else:
+            attrs = 'xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" version="1.0.0"'
+
         with open(sanitize(transaction_endpoint,
-                           '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" version="1.0.0"><Insert xmlns="http://www.opengis.net/wfs"><typename xmlns="http://my"><intfield xmlns="http://my">1</intfield><longfield xmlns="http://my">1234567890123</longfield><stringfield xmlns="http://my">foo</stringfield><datetimefield xmlns="http://my">2016-04-10T12:34:56.789Z</datetimefield><geometryProperty xmlns="http://my"><gml:Point srsName="EPSG:4326"><gml:coordinates cs="," ts=" ">2,49</gml:coordinates></gml:Point></geometryProperty></typename></Insert></Transaction>'),
+                           f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Insert xmlns="http://www.opengis.net/wfs"><typename xmlns="http://my"><intfield xmlns="http://my">1</intfield><longfield xmlns="http://my">1234567890123</longfield><stringfield xmlns="http://my">foo</stringfield><datetimefield xmlns="http://my">2016-04-10T12:34:56.789Z</datetimefield><geometryProperty xmlns="http://my"><gml:Point srsName="EPSG:4326"><gml:coordinates cs="," ts=" ">2,49</gml:coordinates></gml:Point></geometryProperty></typename></Insert></Transaction>'),
                   'wb') as f:
             f.write(response.encode('UTF-8'))
+
+        # Qt 4 order ??
         with open(sanitize(transaction_endpoint,
                            '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" version="1.0.0" service="WFS"><Insert xmlns="http://www.opengis.net/wfs"><typename xmlns="http://my"><intfield xmlns="http://my">1</intfield><longfield xmlns="http://my">1234567890123</longfield><stringfield xmlns="http://my">foo</stringfield><datetimefield xmlns="http://my">2016-04-10T12:34:56.789Z</datetimefield><geometryProperty xmlns="http://my"><gml:Point srsName="EPSG:4326"><gml:coordinates cs="," ts=" ">2,49</gml:coordinates></gml:Point></geometryProperty></typename></Insert></Transaction>'),
                   'wb') as f:
@@ -1052,11 +1062,13 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </wfs:TransactionResult>
 </wfs:WFS_TransactionResponse>
 """
-        # Qt 5 order
+
         with open(sanitize(transaction_endpoint,
-                           '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" version="1.0.0"><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:geometryProperty</Name><Value xmlns="http://www.opengis.net/wfs"><gml:Point srsName="EPSG:4326"><gml:coordinates cs="," ts=" ">3,50</gml:coordinates></gml:Point></Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'),
+                           f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:geometryProperty</Name><Value xmlns="http://www.opengis.net/wfs"><gml:Point srsName="EPSG:4326"><gml:coordinates cs="," ts=" ">3,50</gml:coordinates></gml:Point></Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'),
                   'wb') as f:
             f.write(content.encode('UTF-8'))
+
+        # Qt 4 order ??
         with open(sanitize(transaction_endpoint,
                            '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" version="1.0.0" service="WFS"><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:geometryProperty</Name><Value xmlns="http://www.opengis.net/wfs"><gml:Point srsName="EPSG:4326"><gml:coordinates cs="," ts=" ">3,50</gml:coordinates></gml:Point></Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'),
                   'wb') as f:
@@ -1091,11 +1103,12 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 </wfs:WFS_TransactionResponse>
 """
 
-        # Qt 5 order
         with open(sanitize(transaction_endpoint,
-                           '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" version="1.0.0"><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:intfield</Name><Value xmlns="http://www.opengis.net/wfs">2</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:longfield</Name><Value xmlns="http://www.opengis.net/wfs">3</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:stringfield</Name><Value xmlns="http://www.opengis.net/wfs">bar</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:datetimefield</Name><Value xmlns="http://www.opengis.net/wfs">2015-04-10T12:34:56.789Z</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'),
+                           f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:intfield</Name><Value xmlns="http://www.opengis.net/wfs">2</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:longfield</Name><Value xmlns="http://www.opengis.net/wfs">3</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:stringfield</Name><Value xmlns="http://www.opengis.net/wfs">bar</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:datetimefield</Name><Value xmlns="http://www.opengis.net/wfs">2015-04-10T12:34:56.789Z</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'),
                   'wb') as f:
-            f.write(content.encode('UTF-8'))
+            f.write(response.encode('UTF-8'))
+
+        # Qt 4 order ??
         with open(sanitize(transaction_endpoint,
                            '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" version="1.0.0" service="WFS"><Update xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:intfield</Name><Value xmlns="http://www.opengis.net/wfs">2</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:longfield</Name><Value xmlns="http://www.opengis.net/wfs">3</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:stringfield</Name><Value xmlns="http://www.opengis.net/wfs">bar</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">my:datetimefield</Name><Value xmlns="http://www.opengis.net/wfs">2015-04-10T12:34:56.789Z</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Update></Transaction>'),
                   'wb') as f:
@@ -1131,11 +1144,12 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
 </wfs:WFS_TransactionResponse>
 """
 
-        # Qt 5 order
         with open(sanitize(transaction_endpoint,
-                           '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" version="1.0.0"><Delete xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Delete></Transaction>'),
+                           f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Delete xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Delete></Transaction>'),
                   'wb') as f:
-            f.write(content.encode('UTF-8'))
+            f.write(response.encode('UTF-8'))
+
+        # Qt 4 order ??
         with open(sanitize(transaction_endpoint,
                            '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://my http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=my:typename" xmlns:my="http://my" version="1.0.0" service="WFS"><Delete xmlns="http://www.opengis.net/wfs" typeName="my:typename"><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="typename.1"/></Filter></Delete></Transaction>'),
                   'wb') as f:
@@ -3573,8 +3587,13 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
         request = QgsFeatureRequest().setFilterRect(extent)
 
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            filter_attrs = 'xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my"'
+        else:
+            filter_attrs = 'xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my" xmlns:fes="http://www.opengis.net/fes/2.0"'
+
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my" xmlns:fes="http://www.opengis.net/fes/2.0">
+                           f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter {filter_attrs}>
  <fes:And>
   <fes:BBOX>
    <fes:ValueReference>my:geometryProperty</fes:ValueReference>
@@ -3613,7 +3632,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         # is included in the filter
         vl.setSubsetString('intfield = 2')
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my" xmlns:fes="http://www.opengis.net/fes/2.0">
+                           f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter {filter_attrs}>
  <fes:And>
   <fes:BBOX>
    <fes:ValueReference>my:geometryProperty</fes:ValueReference>
@@ -3778,12 +3797,17 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         request.setExpressionContext(context)
         request.setFilterExpression("intersects( $geometry, geometry(var('parent')))")
 
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            polygon_attrs = 'xmlns:gml="http://www.opengis.net/gml/3.2" srsName="urn:ogc:def:crs:EPSG::4326" gml:id="qgis_id_geom_1"'
+        else:
+            polygon_attrs = 'xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326"'
+
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+                           f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
  <fes:And>
   <fes:Intersects xmlns:fes="http://www.opengis.net/fes/2.0">
    <fes:ValueReference>geometryProperty</fes:ValueReference>
-   <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
+   <gml:Polygon {polygon_attrs}>
     <gml:exterior xmlns:gml="http://www.opengis.net/gml/3.2">
      <gml:LinearRing xmlns:gml="http://www.opengis.net/gml/3.2">
       <gml:posList xmlns:gml="http://www.opengis.net/gml/3.2" srsDimension="2">-20 -20 20 -20 20 20 -20 20 -20 -20</gml:posList>
@@ -3834,12 +3858,17 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         request.setExpressionContext(context)
         request.setFilterExpression("intersects( $geometry, geometry(var('parent')))")
 
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            filter_attrs = 'xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2"'
+        else:
+            filter_attrs = 'xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0"'
+
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+                           f"""?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter {filter_attrs}>
  <fes:And>
   <fes:Intersects xmlns:fes="http://www.opengis.net/fes/2.0">
    <fes:ValueReference>geometryProperty</fes:ValueReference>
-   <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
+   <gml:Polygon {polygon_attrs}>
     <gml:exterior xmlns:gml="http://www.opengis.net/gml/3.2">
      <gml:LinearRing xmlns:gml="http://www.opengis.net/gml/3.2">
       <gml:posList xmlns:gml="http://www.opengis.net/gml/3.2" srsDimension="2">-20 -20 20 -20 20 20 -20 20 -20 -20</gml:posList>
@@ -5314,7 +5343,13 @@ Can't recognize service requested.
 
         # Test add features for real
         # Transaction response with 1 feature added
-        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_added.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Insert xmlns="http:__www.opengis.net_wfs"><polygons xmlns="ws1"><name xmlns="ws1">one<_name><value xmlns="ws1">1<_value><geometry xmlns="ws1"><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">45 9 45 10 46 10 46 9 45 9<_gml:posList><_gml:LinearRing><_gml:exterior><_gml:Polygon><_geometry><_polygons><_Insert><_Transaction>'))
+
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            attrs = 'xmlns="http:__www.opengis.net_wfs" service="WFS" version="1.1.0" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons"'
+        else:
+            attrs = 'xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"'
+
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_added.xml'), sanitize(endpoint, f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Insert xmlns="http:__www.opengis.net_wfs"><polygons xmlns="ws1"><name xmlns="ws1">one<_name><value xmlns="ws1">1<_value><geometry xmlns="ws1"><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">45 9 45 10 46 10 46 9 45 9<_gml:posList><_gml:LinearRing><_gml:exterior><_gml:Polygon><_geometry><_polygons><_Insert><_Transaction>'))
 
         feat = QgsFeature(vl.fields())
         feat.setAttribute('name', 'one')
@@ -5326,14 +5361,14 @@ Can't recognize service requested.
 
         # Test change attributes
         # Transaction response with 1 feature changed
-        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_changed.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Update xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">ws1:name</Name><Value xmlns="http://www.opengis.net/wfs">one-one-one</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">ws1:value</Name><Value xmlns="http://www.opengis.net/wfs">111</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="123"/></Filter></Update></Transaction>'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_changed.xml'), sanitize(endpoint, f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Update xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">ws1:name</Name><Value xmlns="http://www.opengis.net/wfs">one-one-one</Value></Property><Property xmlns="http://www.opengis.net/wfs"><Name xmlns="http://www.opengis.net/wfs">ws1:value</Name><Value xmlns="http://www.opengis.net/wfs">111</Value></Property><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="123"/></Filter></Update></Transaction>'))
 
         self.assertTrue(vl.dataProvider().changeAttributeValues({1: {0: 'one-one-one', 1: 111}}))
         self.assertEqual(next(vl.dataProvider().getFeatures()).attributes(), ['one-one-one', 111])
 
         # Test change geometry
         # Transaction response with 1 feature changed
-        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_changed.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Update xmlns="http:__www.opengis.net_wfs" typeName="ws1:polygons"><Property xmlns="http:__www.opengis.net_wfs"><Name xmlns="http:__www.opengis.net_wfs">ws1:geometry<_Name><Value xmlns="http:__www.opengis.net_wfs"><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">46 10 46 11 47 11 47 10 46 10<_gml:posList><_gml:LinearRing><_gml:exterior><_gml:Polygon><_Value><_Property><Filter xmlns="http:__www.opengis.net_ogc"><FeatureId xmlns="http:__www.opengis.net_ogc" fid="123"_><_Filter><_Update><_Transaction>'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_changed.xml'), sanitize(endpoint, f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Update xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Property xmlns="http:__www.opengis.net_wfs"><Name xmlns="http:__www.opengis.net_wfs">ws1:geometry<_Name><Value xmlns="http:__www.opengis.net_wfs"><gml:Polygon srsName="urn:ogc:def:crs:EPSG::4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">46 10 46 11 47 11 47 10 46 10<_gml:posList><_gml:LinearRing><_gml:exterior><_gml:Polygon><_Value><_Property><Filter xmlns="http:__www.opengis.net_ogc"><FeatureId xmlns="http:__www.opengis.net_ogc" fid="123"_><_Filter><_Update><_Transaction>'))
 
         new_geom = QgsGeometry.fromWkt('Polygon ((10 46, 11 46, 11 47, 10 47, 10 46))')
 
@@ -5342,7 +5377,7 @@ Can't recognize service requested.
 
         # Test delete feature
         # Transaction response with 1 feature deleted
-        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_deleted.xml'), sanitize(endpoint, '?SERVICE=WFS&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:polygons" version="1.1.0" service="WFS"><Delete xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="123"/></Filter></Delete></Transaction>'))
+        shutil.copy(os.path.join(TEST_DATA_DIR, 'provider', 'wfst-1-1', 'transaction_response_feature_deleted.xml'), sanitize(endpoint, f'?SERVICE=WFS&POSTDATA=<Transaction {attrs}><Delete xmlns="http://www.opengis.net/wfs" typeName="ws1:polygons"><Filter xmlns="http://www.opengis.net/ogc"><FeatureId xmlns="http://www.opengis.net/ogc" fid="123"/></Filter></Delete></Transaction>'))
 
         self.assertTrue(vl.dataProvider().deleteFeatures([1]))
         self.assertEqual(vl.featureCount(), 0)
