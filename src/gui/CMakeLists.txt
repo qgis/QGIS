@@ -727,6 +727,7 @@ set(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
+  qgsstackedwidget.cpp
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
@@ -1000,6 +1001,7 @@ set(QGIS_GUI_HDRS
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
   qgssqlcomposerdialog.h
+  qgsstackedwidget.h
   qgsstatusbar.h
   qgsstyleitemslistwidget.h
   qgssublayersdialog.h
