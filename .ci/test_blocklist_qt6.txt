@@ -92,7 +92,6 @@ PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
 PyQgsLayerDefinition
-PyQgsWFSProvider
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsSelectiveMasking
