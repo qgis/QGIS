@@ -372,6 +372,31 @@ void TestQgsField::equality()
   QVERIFY( !( constraints1 == constraints2 ) );
   constraints2.setDomainName( QStringLiteral( "d" ) );
   QVERIFY( constraints1 == constraints2 );
+
+  QgsEditorWidgetSetup setup1 { QStringLiteral( "TextEdit" ), QVariantMap() };
+  QgsEditorWidgetSetup setup2 { QStringLiteral( "TextEdit" ), QVariantMap() };
+
+  field1.setEditorWidgetSetup( setup1 );
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 == field2 );
+
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "Text" ), QVariantMap() };
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 != field2 );
+  setup1 = QgsEditorWidgetSetup{ QStringLiteral( "Text" ), QVariantMap() };
+  field1.setEditorWidgetSetup( setup1 );
+  QVERIFY( field1 == field2 );
+
+  setup1 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
+  field1.setEditorWidgetSetup( setup1 );
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 == field2 );
+
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "XXXXXX" ) } } };
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 != field2 );
+
 }
 
 void TestQgsField::asVariant()
