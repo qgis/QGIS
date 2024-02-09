@@ -752,15 +752,15 @@ bool QgsVectorLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
   if ( mTolerance == 0.0 ) // geos does not handle very well buffer with 0 size
   {
-    mProfileBox = std::unique_ptr<QgsAbstractGeometry>( mProfileCurve->clone() );
+    mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurve->clone() );
   }
   else
   {
-    mProfileBox = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+    mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   }
 
-  mProfileBoxEngine.reset( new QgsGeos( mProfileBox.get() ) );
-  mProfileBoxEngine->prepareGeometry();
+  mProfileBufferedCurveEngine.reset( new QgsGeos( mProfileBufferedCurve.get() ) );
+  mProfileBufferedCurveEngine->prepareGeometry();
 
   mDataDefinedProperties.prepare( mExpressionContext );
 
@@ -824,7 +824,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
     const QgsGeometry g = feature.geometry();
     for ( auto it = g.const_parts_begin(); !mFeedback->isCanceled() && it != g.const_parts_end(); ++it )
     {
-      if ( mProfileBoxEngine->intersects( *it ) )
+      if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
         processIntersectionPoint( qgsgeometry_cast< const QgsPoint * >( *it ), feature );
       }
@@ -965,14 +965,14 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  request.setFilterRect( mProfileBox->boundingBox() );
+  request.setFilterRect( mProfileBufferedCurve->boundingBox() );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
   auto processCurve = [this]( const QgsFeature & feature, const QgsCurve * featGeomPart )
   {
     QString error;
-    std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBoxEngine->intersection( featGeomPart, &error ) );
+    std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBufferedCurveEngine->intersection( featGeomPart, &error ) );
     if ( !intersection )
       return;
 
@@ -1019,7 +1019,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     const QgsGeometry g = feature.geometry();
     for ( auto it = g.const_parts_begin(); !mFeedback->isCanceled() && it != g.const_parts_end(); ++it )
     {
-      if ( mProfileBoxEngine->intersects( *it ) )
+      if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
         processCurve( feature, qgsgeometry_cast< const QgsCurve * >( *it ) );
       }
@@ -1172,7 +1172,7 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
   bool oldExtrusion = mExtrusionEnabled;
 
   mExtrusionEnabled = false;
-  if ( mProfileBoxEngine->contains( sourcePolygon ) ) // sourcePolygon is entirely inside curve buffer, we keep it as whole
+  if ( mProfileBufferedCurveEngine->contains( sourcePolygon ) ) // sourcePolygon is entirely inside curve buffer, we keep it as whole
   {
     if ( const QgsCurve *exterior = sourcePolygon->exteriorRing() )
     {
@@ -1198,7 +1198,7 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
     for ( int i = 0; i < intersectionPolygon->numInteriorRings(); ++i )
     {
       QgsLineString *interiorLine = qgsgeometry_cast<QgsLineString *>( intersectionPolygon->interiorRing( i ) );
-      if ( mProfileBoxEngine->contains( interiorLine ) ) // interiorLine is entirely inside curve buffer
+      if ( mProfileBufferedCurveEngine->contains( interiorLine ) ) // interiorLine is entirely inside curve buffer
       {
         processTriangleIntersectForLine( sourcePolygon, interiorLine, transformedParts, crossSectionParts );
       }
@@ -1220,7 +1220,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   // get features from layer
   QgsFeatureRequest request;
   request.setDestinationCrs( mTargetCrs, mTransformContext );
-  request.setFilterRect( mProfileBox->boundingBox() );
+  request.setFilterRect( mProfileBufferedCurve->boundingBox() );
   request.setSubsetOfAttributes( mDataDefinedProperties.referencedFields( mExpressionContext ), mFields );
   request.setFeedback( mFeedback.get() );
 
@@ -1289,9 +1289,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     if ( mTolerance > 0.0 ) // if the tolerance is not 0.0 we will have a polygon / polygon intersection, we do not need tessellation
     {
       QString error;
-      if ( mProfileBoxEngine->intersects( clampedPolygon.get(), &error ) )
+      if ( mProfileBufferedCurveEngine->intersects( clampedPolygon.get(), &error ) )
       {
-        std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBoxEngine->intersection( clampedPolygon.get(), &error ) );
+        std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBufferedCurveEngine->intersection( clampedPolygon.get(), &error ) );
         processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
       }
     }
@@ -1378,9 +1378,9 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
         else // not collinear
         {
           QString error;
-          if ( mProfileBoxEngine->intersects( triangle, &error ) )
+          if ( mProfileBufferedCurveEngine->intersects( triangle, &error ) )
           {
-            std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBoxEngine->intersection( triangle, &error ) );
+            std::unique_ptr< QgsAbstractGeometry > intersection( mProfileBufferedCurveEngine->intersection( triangle, &error ) );
             processTriangleLineIntersect( triangle, intersection.get(), transformedParts, crossSectionParts );
           }
         }
@@ -1393,7 +1393,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
   QgsFeatureIterator it = mSource->getFeatures( request );
   while ( ! mFeedback->isCanceled() && it.nextFeature( feature ) )
   {
-    if ( !mProfileBoxEngine->intersects( feature.geometry().constGet() ) )
+    if ( !mProfileBufferedCurveEngine->intersects( feature.geometry().constGet() ) )
       continue;
 
     mExpressionContext.setFeature( feature );
@@ -1407,7 +1407,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
     // === process intersection of geometry feature parts with the mProfileBoxEngine
     for ( auto it = g.const_parts_begin(); ! mFeedback->isCanceled() && it != g.const_parts_end(); ++it )
     {
-      if ( mProfileBoxEngine->intersects( *it ) )
+      if ( mProfileBufferedCurveEngine->intersects( *it ) )
       {
         processPolygon( qgsgeometry_cast< const QgsCurvePolygon * >( *it ), transformedParts, crossSectionParts, offset, wasCollinear );
       }
