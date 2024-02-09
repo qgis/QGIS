@@ -46,7 +46,8 @@ public:
     }
     ~Cell()
     {
-        write();
+        if (m_buf)
+            write();
     }
 
     void initialize(const Cell *exclude);

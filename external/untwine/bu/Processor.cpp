@@ -339,7 +339,7 @@ Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter po
             // For single file output we need the counts by return number.
             if (fdi.dim == pdal::Dimension::Id::Classification)
                 stats.push_back({fdi.dim, Stats(fdi.name, Stats::EnumType::Enumerate, false)});
-            else if (fdi.dim == pdal::Dimension::Id::ReturnNumber && m_b.opts.singleFile)
+            else if (fdi.dim == pdal::Dimension::Id::ReturnNumber)
                 stats.push_back({fdi.dim, Stats(fdi.name, Stats::EnumType::Enumerate, false)});
             else
                 stats.push_back({fdi.dim, Stats(fdi.name, Stats::EnumType::NoEnum, false)});
@@ -431,62 +431,9 @@ void Processor::flushCompressed(pdal::PointViewPtr view, const OctantInfo& oi, I
         }
     }
 
-    if (m_b.opts.singleFile)
-    {
-        createChunk(oi.key(), view);
-    }
-    else
-    {
-        std::string filename = m_b.opts.outputName + "/ept-data/" + oi.key().toString() + ".laz";
-        writeEptFile(filename, view);
-    }
+    createChunk(oi.key(), view);
 }
 
-void Processor::writeEptFile(const std::string& filename, pdal::PointViewPtr view)
-{
-    using namespace pdal;
-
-    StageFactory factory;
-
-    BufferReader r;
-    r.addView(view);
-
-    Stage *prev = &r;
-
-    if (view->layout()->hasDim(Dimension::Id::GpsTime))
-    {
-        Stage *f = factory.createStage("filters.sort");
-        pdal::Options fopts;
-        fopts.add("dimension", "gpstime");
-        f->setOptions(fopts);
-        f->setInput(*prev);
-        prev = f;
-    }
-
-    Stage *w = factory.createStage("writers.las");
-    pdal::Options wopts;
-    wopts.add("extra_dims", "all");
-    wopts.add("software_id", "Entwine 1.0");
-    wopts.add("compression", "laszip");
-    wopts.add("filename", filename);
-    wopts.add("offset_x", m_b.offset[0]);
-    wopts.add("offset_y", m_b.offset[1]);
-    wopts.add("offset_z", m_b.offset[2]);
-    wopts.add("scale_x", m_b.scale[0]);
-    wopts.add("scale_y", m_b.scale[1]);
-    wopts.add("scale_z", m_b.scale[2]);
-    wopts.add("minor_version", 4);
-    wopts.add("dataformat_id", m_b.pointFormatId);
-    if (m_b.opts.a_srs.size())
-        wopts.add("a_srs", m_b.opts.a_srs);
-    if (m_b.opts.metadata)
-        wopts.add("pdal_metadata", m_b.opts.metadata);
-    w->setOptions(wopts);
-    w->setInput(*prev);
-
-    w->prepare(view->table());
-    w->execute(view->table());
-}
 
 void Processor::sortChunk(pdal::PointViewPtr view)
 {
