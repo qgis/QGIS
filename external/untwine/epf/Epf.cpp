@@ -34,70 +34,6 @@
 namespace
 {
 
-// PDAL's directoryList had a bug, so we've imported a working
-// version here so that we can still use older PDAL releases.
-
-#ifndef __APPLE_CC__
-std::vector<std::string> directoryList(const std::string& dir)
-{
-    namespace fs = std::filesystem;
-
-    std::vector<std::string> files;
-
-    try
-    {
-        fs::directory_iterator it(untwine::toNative(dir));
-        fs::directory_iterator end;
-        while (it != end)
-        {
-            files.push_back(untwine::fromNative(it->path()));
-            it++;
-        }
-    }
-    catch (fs::filesystem_error&)
-    {
-        files.clear();
-    }
-    return files;
-}
-#else
-
-#include <dirent.h>
-
-// Provide simple opendir/readdir solution for OSX because directory_iterator is
-// not available until OSX 10.15
-std::vector<std::string> directoryList(const std::string& dir)
-{
-
-    DIR *dpdf;
-    struct dirent *epdf;
-
-    std::vector<std::string> files;
-    dpdf = opendir(dir.c_str());
-    if (dpdf != NULL){
-       while ((epdf = readdir(dpdf))){
-            std::string name = untwine::fromNative(epdf->d_name);
-            // Skip paths
-            if (pdal::Utils::iequals(name, ".") ||
-                pdal::Utils::iequals(name, ".."))
-            {
-                continue;
-            }
-            else
-            {
-                // we expect the path + name
-                std::string p = dir + "/" + untwine::fromNative(epdf->d_name);
-                files.push_back(p);
-           }
-       }
-    }
-    closedir(dpdf);
-
-    return files;
-
-}
-#endif
-
 pdal::Dimension::Type getDimensionType(const std::string& name)
 {
     using namespace pdal;
@@ -138,9 +74,6 @@ void Epf::run(ProgressWriter& progress)
     using namespace pdal;
 
     BOX3D totalBounds;
-
-    if (pdal::FileUtils::fileExists(m_b.opts.tempDir + "/" + MetadataFilename))
-        throw FatalError("Output directory already contains EPT data.");
 
     m_grid.setCubic(m_b.opts.doCube);
 
@@ -336,9 +269,16 @@ void Epf::fillMetadata(const pdal::PointLayoutPtr layout)
         return std::round(minval + offset);  // Add the base (min) value and round to an integer.
     };
 
-    m_b.offset[0] = calcOffset(m_b.trueBounds.minx, m_b.trueBounds.maxx, m_b.scale[0]);
-    m_b.offset[1] = calcOffset(m_b.trueBounds.miny, m_b.trueBounds.maxy, m_b.scale[1]);
-    m_b.offset[2] = calcOffset(m_b.trueBounds.minz, m_b.trueBounds.maxz, m_b.scale[2]);
+    // Preserve offsets if we have them and --single_file with single input is used
+    if (!m_b.preserveHeaderFields() ||
+            std::isnan(m_b.offset[0]) ||
+            std::isnan(m_b.offset[1]) ||
+            std::isnan(m_b.offset[2]))
+    {
+        m_b.offset[0] = calcOffset(m_b.trueBounds.minx, m_b.trueBounds.maxx, m_b.scale[0]);
+        m_b.offset[1] = calcOffset(m_b.trueBounds.miny, m_b.trueBounds.maxy, m_b.scale[1]);
+        m_b.offset[2] = calcOffset(m_b.trueBounds.minz, m_b.trueBounds.maxz, m_b.scale[2]);
+    }
 }
 
 PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
@@ -419,6 +359,39 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
         m = root.findChild("offset_z");
         if (m.valid())
             zOffsets.push_back(m.value<double>());
+
+        if (m_b.preserveHeaderFields())
+        {
+            m = root.findChild("global_encoding");
+            if (m.valid())
+                m_b.globalEncoding = m.value<int>();
+            m = root.findChild("creation_doy");
+            if (m.valid())
+                m_b.creationDoy = m.value<int>();
+            m = root.findChild("creation_year");
+            if (m.valid())
+                m_b.creationYear = m.value<int>();
+            m = root.findChild("filesource_id");
+            if (m.valid())
+                m_b.fileSourceId = m.value<int>();
+            m = root.findChild("software_id");
+            if (m.valid())
+                m_b.generatingSoftware = m.value<std::string>();
+            m = root.findChild("system_id");
+            if (m.valid())
+                m_b.systemId = m.value<std::string>();
+        }
+        else
+        {
+            std::time_t now;
+            std::time(&now);
+            std::tm* ptm = std::gmtime(&now);
+            if (ptm)
+            {
+                m_b.creationDoy = ptm->tm_yday + 1;
+                m_b.creationYear = ptm->tm_year + 1900;
+            }
+        }
 
         FileInfo fi;
         fi.bounds = qi.m_bounds;
