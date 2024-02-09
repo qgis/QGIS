@@ -830,7 +830,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPoints()
       }
     }
   }
-  return true;
+  return !mFeedback->isCanceled();
 }
 
 void QgsVectorLayerProfileGenerator::processIntersectionPoint( const QgsPoint *point, const QgsFeature &feature )
@@ -1026,7 +1026,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForLines()
     }
   }
 
-  return true;
+  return !mFeedback->isCanceled();
 }
 
 QgsPoint QgsVectorLayerProfileGenerator::interpolatePointOnTriangle( const QgsPolygon *triangle, double x, double y ) const
