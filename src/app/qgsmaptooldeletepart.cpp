@@ -203,6 +203,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       if ( !g.isMultipart() )
       {
         fid = f.id();
+        partNum = 0;
         return geomPart;
       }
       QgsMultiPolygonXY mpolygon = g.asMultiPolygon();
