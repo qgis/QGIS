@@ -14,6 +14,8 @@
 #include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
 
+#include <regex>
+
 #include "Common.hpp"
 #include "Config.hpp"
 #include "ProgressWriter.hpp"
