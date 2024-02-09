@@ -353,15 +353,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
-    /**
-     * Static function that returns a set of names of volatile expression functions
-     * to determine whether a widget should be updated "realtime" or not.*
-     * \returns QSet<QString> of volatile expression functions
-     *
-     * \since QGIS 3.34.4
-     */
-    static const QSet<QString> volatileExpressionFunctions() { return QSet<QString>() << QStringLiteral( "now" ) << QStringLiteral( "rand" ) << QStringLiteral( "randf" ) << QStringLiteral( "uuid" ); }
-
   private slots:
     void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
     void onAttributeAdded( int idx );
