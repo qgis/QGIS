@@ -144,8 +144,8 @@ QVariant QgsRemappingSinkDefinition::toVariant() const
   for ( const QgsField &field : mDestinationFields )
     fieldNames << field.name();
   map.insert( QStringLiteral( "destination_field_names" ), fieldNames );
-  map.insert( QStringLiteral( "transform_source" ), mSourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
-  map.insert( QStringLiteral( "transform_dest" ), mDestinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+  map.insert( QStringLiteral( "transform_source" ), mSourceCrs.toWkt( Qgis::CrsWktVariant::Preferred ) );
+  map.insert( QStringLiteral( "transform_dest" ), mDestinationCrs.toWkt( Qgis::CrsWktVariant::Preferred ) );
 
   QVariantMap fieldMap;
   for ( auto it = mFieldMap.constBegin(); it != mFieldMap.constEnd(); ++it )

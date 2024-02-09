@@ -21,6 +21,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \class QgsFieldConstraints
@@ -40,7 +41,7 @@ class CORE_EXPORT QgsFieldConstraints
     /**
      * Constraints which may be present on a field.
      */
-    enum Constraint
+    enum Constraint SIP_ENUM_BASETYPE( IntFlag )
     {
       ConstraintNotNull = 1, //!< Field may not be null
       ConstraintUnique = 1 << 1, //!< Field must have a unique value

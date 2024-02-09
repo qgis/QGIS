@@ -45,10 +45,10 @@ void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
 
   // nodata value
   std::unique_ptr< QgsProcessingParameterNumber > nodata = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NODATA" ),
-      QObject::tr( "Value for nodata or non-intersecting vertices" ), QgsProcessingParameterNumber::Double,
+      QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsProcessingParameterNumber::Double,
       0.0 );
   nodata->setIsDynamic( true );
-  nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "NODATA" ), QObject::tr( "Value for nodata or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
+  nodata->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "NODATA" ), QObject::tr( "Value for NoData or non-intersecting vertices" ), QgsPropertyDefinition::Double ) );
   nodata->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( nodata.release() );
 

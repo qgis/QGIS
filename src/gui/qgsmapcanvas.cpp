@@ -268,8 +268,6 @@ QgsMapCanvas::~QgsMapCanvas()
     tool->mCanvas = nullptr;
   }
 
-  mLastNonZoomMapTool = nullptr;
-
   cancelJobs();
 
   // delete canvas items prior to deleting the canvas
@@ -1192,10 +1190,10 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     }
   };
 
-  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ) ), mSettings.destinationCrs() );
+  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) ), mSettings.destinationCrs() );
   QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
   if ( mSettings.destinationCrs() != wgs84 )
-    addCoordinateFormat( wgs84.userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ), wgs84 );
+    addCoordinateFormat( wgs84.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ), wgs84 );
 
   QgsSettings settings;
   const QString customCrsString = settings.value( QStringLiteral( "qgis/custom_coordinate_crs" ) ).toString();
@@ -1204,7 +1202,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     QgsCoordinateReferenceSystem customCrs( customCrsString );
     if ( customCrs != mSettings.destinationCrs() && customCrs != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
     {
-      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ), customCrs );
+      addCoordinateFormat( customCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ), customCrs );
     }
   }
   copyCoordinateMenu->addSeparator();
@@ -1215,7 +1213,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
     if ( selector.exec() )
     {
-      QgsSettings().setValue( QStringLiteral( "qgis/custom_coordinate_crs" ), selector.crs().authid().isEmpty() ? selector.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : selector.crs().authid() );
+      QgsSettings().setValue( QStringLiteral( "qgis/custom_coordinate_crs" ), selector.crs().authid().isEmpty() ? selector.crs().toWkt( Qgis::CrsWktVariant::Preferred ) : selector.crs().authid() );
     }
   } );
   copyCoordinateMenu->addAction( setCustomCrsAction );
@@ -2531,25 +2529,6 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
     // call handler of current map tool
     if ( mMapTool )
     {
-      // right button was pressed in zoom tool? return to previous non zoom tool
-      if ( e->button() == Qt::RightButton && mMapTool->flags() & QgsMapTool::Transient )
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Right click in map tool zoom or pan, last tool is %1." ).arg(
-                            mLastNonZoomMapTool ? QStringLiteral( "not null" ) : QStringLiteral( "null" ) ), 2 );
-
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
-
-        // change to older non-zoom tool
-        if ( mLastNonZoomMapTool
-             && ( !( mLastNonZoomMapTool->flags() & QgsMapTool::EditTool )
-                  || ( vlayer && vlayer->isEditable() ) ) )
-        {
-          QgsMapTool *t = mLastNonZoomMapTool;
-          mLastNonZoomMapTool = nullptr;
-          setMapTool( t );
-        }
-        return;
-      }
       std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
       mMapTool->canvasReleaseEvent( me.get() );
     }
@@ -2764,19 +2743,6 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
     mMapTool->deactivate();
   }
 
-  if ( ( tool->flags() & QgsMapTool::Transient )
-       && mMapTool && !( mMapTool->flags() & QgsMapTool::Transient ) )
-  {
-    // if zoom or pan tool will be active, save old tool
-    // to bring it back on right click
-    // (but only if it wasn't also zoom or pan tool)
-    mLastNonZoomMapTool = mMapTool;
-  }
-  else
-  {
-    mLastNonZoomMapTool = nullptr;
-  }
-
   QgsMapTool *oldTool = mMapTool;
 
   // set new map tool and activate it
@@ -2800,11 +2766,6 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
     oldTool->deactivate();
     emit mapToolSet( nullptr, oldTool );
     setCursor( Qt::ArrowCursor );
-  }
-
-  if ( mLastNonZoomMapTool && mLastNonZoomMapTool == tool )
-  {
-    mLastNonZoomMapTool = nullptr;
   }
 }
 

@@ -59,7 +59,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     };
 
     //! Flags for controlling how the scene is rendered and scene behavior
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagHideControls = 1 << 1,  //!< If set, item interactive controls will be hidden
       FlagHideComments = 1 << 2, //!< If set, comments will be hidden

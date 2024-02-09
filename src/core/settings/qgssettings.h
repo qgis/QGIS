@@ -25,6 +25,8 @@
 #include "qgslogger.h"
 #include "qgssettingstreenode.h"
 
+class QgsSettingsProxy;
+
 /**
  * \ingroup core
  * \class QgsSettings
@@ -230,7 +232,7 @@ class CORE_EXPORT QgsSettings : public QObject
                         SIP_PYOBJECT type = 0,
                         QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
     % MethodCode
-    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
@@ -238,7 +240,7 @@ class CORE_EXPORT QgsSettings : public QObject
     value = sipCpp->value( *a0, *a1, a3 );
     Py_END_ALLOW_THREADS
 
-    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a2 );
 
     sipIsErr = !sipRes;
@@ -439,6 +441,57 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Removes all entries in the user settings
     void clear();
 
+    /**
+     * Temporarily places a hold on flushing QgsSettings objects and writing
+     * new values to the underlying ini files.
+     *
+     * This can be used in code which access multiple settings to avoid creation and
+     * destruction of many QgsSettings objects for each in turn. This can be
+     * a VERY expensive operation due to flushing of new values to disk.
+     *
+     * \warning This method ONLY affects access to the settings from the current thread!
+     *
+     * \warning A corresponding call to releaseFlush() MUST be made from the SAME thread.
+     *
+     * \see releaseFlush()
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.36
+     */
+    static void holdFlush() SIP_SKIP;
+
+    /**
+     * Releases a previously made hold on flushing QgsSettings objects and writing
+     * new values to the underlying ini files.
+     *
+     * \warning This method ONLY affects access to the settings from the current thread!
+     *
+     * \warning This must ALWAYS be called after a corresponding call to holdFlush() and MUST be made from the SAME thread.
+     *
+     * \see holdFlush()
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.36
+     */
+    static void releaseFlush() SIP_SKIP;
+
+    /**
+     * Returns a proxy for a QgsSettings object.
+     *
+     * This either directly constructs a QgsSettings object, or if a
+     * previous call to holdFlush() has been made then the thread local
+     * QgsSettings object will be used.
+     *
+     * \warning ALWAYS use this function to retrieve a QgsSettings object
+     * for entries, NEVER create one manually!
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.36
+     */
+    static QgsSettingsProxy get() SIP_SKIP;
+
   private:
     void init();
     QString sanitizeKey( const QString &key ) const;
@@ -448,5 +501,8 @@ class CORE_EXPORT QgsSettings : public QObject
     Q_DISABLE_COPY( QgsSettings )
 
 };
+
+// as static members cannot be CORE_EXPORTed
+extern thread_local QgsSettings *sQgsSettingsThreadSettings SIP_SKIP;
 
 #endif // QGSSETTINGS_H

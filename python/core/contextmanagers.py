@@ -55,7 +55,7 @@ def qgisapp(args=None, guienabled=True, configpath=None, sysexit=True):
     QgsApplication.initQgis()
     yield app
     if guienabled:
-        exitcode = app.exec_()
+        exitcode = app.exec()
     else:
         exitcode = 0
     QgsApplication.exitQgis()

@@ -11,3 +11,10 @@ QgsLayerTreeModel.AllowLegendChangeState = QgsLayerTreeModel.Flag.AllowLegendCha
 QgsLayerTreeModel.ActionHierarchical = QgsLayerTreeModel.Flag.ActionHierarchical
 QgsLayerTreeModel.UseThreadedHitTest = QgsLayerTreeModel.Flag.UseThreadedHitTest
 QgsLayerTreeModel.Flags = lambda flags=0: QgsLayerTreeModel.Flag(flags)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
+
+
+QgsLayerTreeModel.Flag.__bool__ = lambda flag: bool(_force_int(flag))
+QgsLayerTreeModel.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsLayerTreeModel.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsLayerTreeModel.Flag.__or__ = lambda flag1, flag2: QgsLayerTreeModel.Flag(_force_int(flag1) | _force_int(flag2))

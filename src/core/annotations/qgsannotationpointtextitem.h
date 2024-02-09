@@ -52,7 +52,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     static QgsAnnotationPointTextItem *create() SIP_FACTORY;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-    QgsAnnotationPointTextItem *clone() override SIP_FACTORY;
+    QgsAnnotationPointTextItem *clone() const override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
     QList< QgsAnnotationItemNode > nodes() const override;

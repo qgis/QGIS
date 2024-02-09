@@ -33,8 +33,8 @@ class TestQgsFilterLineEdit(QgisTestCase):
         self.assertEqual(w.text(), 'value')
         w.setDefaultValue('default')
         self.assertEqual(w.defaultValue(), 'default')
-        w.setClearMode(QgsFilterLineEdit.ClearToDefault)
-        self.assertEqual(w.clearMode(), QgsFilterLineEdit.ClearToDefault)
+        w.setClearMode(QgsFilterLineEdit.ClearMode.ClearToDefault)
+        self.assertEqual(w.clearMode(), QgsFilterLineEdit.ClearMode.ClearToDefault)
         w.setShowClearButton(False)
         self.assertFalse(w.showClearButton())
         w.setShowClearButton(True)
@@ -94,7 +94,7 @@ class TestQgsFilterLineEdit(QgisTestCase):
     def testClearToDefault(self):
         # test clearing to default value
         w = QgsFilterLineEdit()
-        w.setClearMode(QgsFilterLineEdit.ClearToDefault)
+        w.setClearMode(QgsFilterLineEdit.ClearMode.ClearToDefault)
 
         w.setValue('abc')
         w.clearValue()

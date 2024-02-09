@@ -62,8 +62,8 @@ class BatchInputSelectionPanel(QWidget):
         self.text.setMinimumWidth(300)
         self.setValue('')
         self.text.editingFinished.connect(self.textEditingFinished)
-        self.text.setSizePolicy(QSizePolicy.Expanding,
-                                QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                QSizePolicy.Policy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
         self.pushButton.setText('…')
@@ -97,13 +97,13 @@ class BatchInputSelectionPanel(QWidget):
         selectDirectoryAction.triggered.connect(self.showDirectorySelectionDialog)
         popupmenu.addAction(selectDirectoryAction)
 
-        popupmenu.exec_(QCursor.pos())
+        popupmenu.exec(QCursor.pos())
 
     def showLayerSelectionDialog(self):
         layers = []
         if (isinstance(self.param, QgsProcessingParameterRasterLayer)
             or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.layerType() == QgsProcessing.TypeRaster)):
+                self.param.layerType() == QgsProcessing.SourceType.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
@@ -111,26 +111,26 @@ class BatchInputSelectionPanel(QWidget):
             layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         elif (isinstance(self.param, QgsProcessingParameterMeshLayer)
               or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                  self.param.layerType() == QgsProcessing.TypeMesh)):
+                  self.param.layerType() == QgsProcessing.SourceType.TypeMesh)):
             layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
         elif (isinstance(self.param, QgsProcessingParameterPointCloudLayer)
               or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                  self.param.layerType() == QgsProcessing.TypePointCloud)):
+                  self.param.layerType() == QgsProcessing.SourceType.TypePointCloud)):
             layers = QgsProcessingUtils.compatiblePointCloudLayers(QgsProject.instance())
         else:
-            datatypes = [QgsProcessing.TypeVectorAnyGeometry]
+            datatypes = [QgsProcessing.SourceType.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
                 datatypes = self.param.dataTypes()
             elif isinstance(self.param, QgsProcessingParameterMultipleLayers):
                 datatypes = [self.param.layerType()]
 
-            if QgsProcessing.TypeVectorAnyGeometry not in datatypes:
+            if QgsProcessing.SourceType.TypeVectorAnyGeometry not in datatypes:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
             else:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
-        dlg.exec_()
+        dlg.exec()
 
         def generate_layer_id(layer):
             # prefer layer name if unique
@@ -192,7 +192,7 @@ class BatchInputSelectionPanel(QWidget):
                     p = pp.as_posix()
 
                     if ((isinstance(self.param, QgsProcessingParameterRasterLayer)
-                         or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster)) and
+                         or (isinstance(self.param, QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.SourceType.TypeRaster)) and
                             not QgsRasterLayer.isValidRasterFileName(p)):
                         continue
 

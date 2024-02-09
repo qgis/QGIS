@@ -64,8 +64,8 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
 
   QgsFeatureRequest request = QgsFeatureRequest()
                               .setFlags( ( expression && expression->needsGeometry() ) ?
-                                         QgsFeatureRequest::NoFlags :
-                                         QgsFeatureRequest::NoGeometry )
+                                         Qgis::FeatureRequestFlag::NoFlags :
+                                         Qgis::FeatureRequestFlag::NoGeometry )
                               .setSubsetOfAttributes( lst, layer->fields() );
 
   ok = true;
@@ -184,7 +184,7 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   // build up an optimised feature request
   QgsFeatureRequest request;
   request.setNoAttributes();
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   // at most we need to check ignoreIds.size() + 1 - the feature not in ignoreIds is the one we're interested in
   int limit = ignoreIds.size() + 1;
@@ -253,7 +253,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, in
           QgsFeatureRequest req;
           req.setLimit( 1 );
           req.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
-          req.setFlags( QgsFeatureRequest::NoGeometry );
+          req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
           QgsFeature f;
           layer->getFeatures( req ).nextFeature( f );
           base = f.attribute( fieldIndex ).toString();
@@ -647,17 +647,15 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   layer->addFeature( newFeature );
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+  referencedLayersBranch << layer;
 
   const int effectiveMaxDepth = maxDepth > 0 ? maxDepth : 100;
 
   for ( const QgsRelation &relation : relations )
   {
     //check if composition (and not association)
-    if ( relation.strength() == Qgis::RelationshipStrength::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
+    if ( relation.strength() == Qgis::RelationshipStrength::Composition && !referencedLayersBranch.contains( relation.referencingLayer() ) && depth < effectiveMaxDepth )
     {
-      depth++;
-      referencedLayersBranch << layer;
-
       //get features connected over this relation
       QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( feature );
       QgsFeatureIds childFeatureIds;
@@ -673,7 +671,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
         //call the function for the child
-        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, duplicateFeatureContext, maxDepth, depth, referencedLayersBranch ).id() );
+        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, duplicateFeatureContext, maxDepth, depth + 1, referencedLayersBranch ).id() );
       }
 
       //store for feedback

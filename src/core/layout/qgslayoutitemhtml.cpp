@@ -175,7 +175,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
 
       //data defined url set?
       bool ok = false;
-      currentUrl = mDataDefinedProperties.valueAsString( QgsLayoutObject::SourceUrl, *evalContext, currentUrl, &ok );
+      currentUrl = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::SourceUrl, *evalContext, currentUrl, &ok );
       if ( ok )
       {
         currentUrl = currentUrl.trimmed();
@@ -583,7 +583,7 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
   const QgsExpressionContext context = createExpressionContext();
 
   //updates data defined properties and redraws item to match
-  if ( property == QgsLayoutObject::SourceUrl || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::SourceUrl || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     loadHtml( true, &context );
   }

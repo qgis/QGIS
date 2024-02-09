@@ -26,13 +26,15 @@ Is mostly referred to as "master model" within this doc and the source.
 #include "qgsattributetablemodel.h"
 %End
   public:
-    enum Role
+
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      FeatureIdRole,
-      FieldIndexRole,
-      UserRole,
+      FeatureId,
+      FieldIndex,
+      User,
       // Insert new values here, SortRole needs to be the last one
-      SortRole,
+      Sort,
     };
 
   public:

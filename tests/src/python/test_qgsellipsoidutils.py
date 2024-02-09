@@ -86,8 +86,8 @@ class TestQgsEllipsoidUtils(QgisTestCase):
             self.assertFalse(params.valid)
 
     def testAcronyms(self):
-        self.assertTrue('EPSG:7030' in QgsEllipsoidUtils.acronyms())
-        self.assertTrue('ESRI:107916' in QgsEllipsoidUtils.acronyms())
+        self.assertIn('EPSG:7030', QgsEllipsoidUtils.acronyms())
+        self.assertIn('ESRI:107916', QgsEllipsoidUtils.acronyms())
 
     def testDefinitions(self):
         defs = QgsEllipsoidUtils.definitions()

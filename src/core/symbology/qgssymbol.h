@@ -123,14 +123,17 @@ class CORE_EXPORT QgsSymbol
      */
     static Qgis::SymbolType symbolTypeForGeometryType( Qgis::GeometryType type );
 
+    // *INDENT-OFF*
+
     /**
      * Data definable properties.
      * \since QGIS 3.18
      */
-    enum Property
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, Property ) : int
     {
-      PropertyOpacity, //!< Opacity
+      Opacity SIP_MONKEYPATCH_COMPAT_NAME( PropertyOpacity ), //!< Opacity
     };
+    // *INDENT-ON*
 
     /**
      * Returns the symbol property definitions.

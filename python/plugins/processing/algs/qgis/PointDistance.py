@@ -80,24 +80,24 @@ class PointDistance(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input point layer'),
-                                                              [QgsProcessing.TypeVectorPoint]))
+                                                              [QgsProcessing.SourceType.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterField(self.INPUT_FIELD,
                                                       self.tr('Input unique ID field'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Any))
+                                                      type=QgsProcessingParameterField.DataType.Any))
         self.addParameter(QgsProcessingParameterFeatureSource(self.TARGET,
                                                               self.tr('Target point layer'),
-                                                              [QgsProcessing.TypeVectorPoint]))
+                                                              [QgsProcessing.SourceType.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterField(self.TARGET_FIELD,
                                                       self.tr('Target unique ID field'),
                                                       parentLayerParameterName=self.TARGET,
-                                                      type=QgsProcessingParameterField.Any))
+                                                      type=QgsProcessingParameterField.DataType.Any))
         self.addParameter(QgsProcessingParameterEnum(self.MATRIX_TYPE,
                                                      self.tr('Output matrix type'), options=self.mat_types, defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.NEAREST_POINTS,
-                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Integer, minValue=0, defaultValue=0))
+                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Type.Integer, minValue=0, defaultValue=0))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Distance matrix'), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Distance matrix'), QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'distancematrix'
@@ -209,7 +209,7 @@ class PointDistance(QgisAlgorithm):
                     out_geom = QgsGeometry.unaryUnion([inFeat.geometry(), outFeat.geometry()])
                     out_feature.setGeometry(out_geom)
                     out_feature.setAttributes([inID, outID, dist])
-                    sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                    sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
                 else:
                     distList.append(float(dist))
 
@@ -222,7 +222,7 @@ class PointDistance(QgisAlgorithm):
                 out_feature = QgsFeature()
                 out_feature.setGeometry(inFeat.geometry())
                 out_feature.setAttributes([inID, mean, vari, min(distList), max(distList)])
-                sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
 
             feedback.setProgress(int(current * total))
 
@@ -277,7 +277,7 @@ class PointDistance(QgisAlgorithm):
             out_feature = QgsFeature()
             out_feature.setGeometry(inGeom)
             out_feature.setAttributes(data)
-            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

@@ -139,8 +139,8 @@ class gdalcalc(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.NO_DATA,
-                self.tr('Set output nodata value'),
-                type=QgsProcessingParameterNumber.Double,
+                self.tr('Set output NoData value'),
+                type=QgsProcessingParameterNumber.Type.Double,
                 defaultValue=None,
                 optional=True))
 
@@ -171,7 +171,7 @@ class gdalcalc(GdalAlgorithm):
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
@@ -181,7 +181,7 @@ class gdalcalc(GdalAlgorithm):
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
                                                    optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(extra_param)
 
         self.addParameter(

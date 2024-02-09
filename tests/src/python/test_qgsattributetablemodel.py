@@ -145,7 +145,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(spy[-1][0].column(), field_idx)
         self.assertEqual(spy[-1][1].row(), model_index.row())
         self.assertEqual(spy[-1][1].column(), field_idx)
-        self.assertEqual(spy[-1][2], [Qt.DisplayRole])
+        self.assertEqual(spy[-1][2], [Qt.ItemDataRole.DisplayRole])
 
         self.layer.commitChanges()
 
@@ -190,7 +190,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(spy[-1][0].column(), field_idx)
         self.assertEqual(spy[-1][1].row(), model_index.row())
         self.assertEqual(spy[-1][1].column(), field_idx)
-        self.assertEqual(spy[-1][2], [Qt.DisplayRole])
+        self.assertEqual(spy[-1][2], [Qt.ItemDataRole.DisplayRole])
 
         self.layer.commitChanges()
 
@@ -215,7 +215,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         for f in self.layer.getFeatures():
             model_index = self.am.idToIndex(f.id())
-            text_color = self.am.data(model_index, Qt.TextColorRole)
+            text_color = self.am.data(model_index, Qt.ItemDataRole.ForegroundRole)
 
             if f['fldint'] <= style_threshold:
                 self.assertEqual(text_color, color)
@@ -235,7 +235,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
 
         for f in self.layer.getFeatures():
             model_index = self.am.idToIndex(f.id())
-            text_color = self.am.data(model_index, Qt.TextColorRole)
+            text_color = self.am.data(model_index, Qt.ItemDataRole.ForegroundRole)
 
             if f['fldint'] <= style_threshold:
                 self.assertEqual(color, text_color, f'Feature {f.id()} should have color')
@@ -265,7 +265,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
         }
 
         err = QgsVectorLayerExporter.exportLayer(vl, tmpfile, "ogr", vl.crs(), False, options)
-        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+        self.assertEqual(err[0], QgsVectorLayerExporter.ExportError.NoError,
                          f'unexpected import error {err}')
 
         vl = QgsVectorLayer(
@@ -327,7 +327,7 @@ class TestQgsAttributeTableModel(QgisTestCase):
                 super().__init__()
 
             def data(self, index, role):
-                if role == Qt.DisplayRole and self.sourceModel().extraColumns() > 0 and index.column() > 1:
+                if role == Qt.ItemDataRole.DisplayRole and self.sourceModel().extraColumns() > 0 and index.column() > 1:
                     return f"extra_{index.column()}"
 
                 return super().data(index, role)
@@ -335,9 +335,9 @@ class TestQgsAttributeTableModel(QgisTestCase):
         fm = TestFilterModel()
         fm.setSourceModel(self.am)
 
-        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
-        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), None)
 
         # 2 columns have been loaded since we call data
         self.assertEqual(twf.widgetLoaded, 2)
@@ -350,9 +350,9 @@ class TestQgsAttributeTableModel(QgisTestCase):
         colsInserted = 0
         self.assertEqual(colsRemoved, 0)
 
-        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
-        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), "extra_2")
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), "extra_2")
 
         self.assertEqual(twf.widgetLoaded, 0)
 
@@ -363,9 +363,9 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(colsRemoved, 1)
         colsRemoved = 0
 
-        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
-        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), None)
 
         self.assertEqual(twf.widgetLoaded, 0)
 
@@ -383,9 +383,9 @@ class TestQgsAttributeTableModel(QgisTestCase):
         colsInserted = 0
         twf.widgetLoaded = 0
 
-        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
-        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), "newfield_test")
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), "newfield_test")
         twf.widgetLoaded = 0
 
         # remove field, widget will be reloaded again
@@ -395,9 +395,9 @@ class TestQgsAttributeTableModel(QgisTestCase):
         self.assertEqual(colsRemoved, 1)
         colsRemoved = 0
 
-        self.assertEqual(fm.data(fm.index(2, 0), Qt.DisplayRole), "test")
-        self.assertEqual(fm.data(fm.index(2, 1), Qt.DisplayRole), "2")
-        self.assertEqual(fm.data(fm.index(2, 2), Qt.DisplayRole), None)
+        self.assertEqual(fm.data(fm.index(2, 0), Qt.ItemDataRole.DisplayRole), "test")
+        self.assertEqual(fm.data(fm.index(2, 1), Qt.ItemDataRole.DisplayRole), "2")
+        self.assertEqual(fm.data(fm.index(2, 2), Qt.ItemDataRole.DisplayRole), None)
         self.assertEqual(twf.widgetLoaded, 2)
         twf.widgetLoaded = 0
 

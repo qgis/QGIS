@@ -86,11 +86,11 @@ class TestQgsPainting(QgisTestCase):
         texture_image = QImage(TEST_DATA_DIR + "/rgb256x256.png")
         self.assertFalse(texture_image.isNull())
 
-        render_image = QImage(400, 400, QImage.Format_ARGB32)
-        render_image.fill(Qt.transparent)
+        render_image = QImage(400, 400, QImage.Format.Format_ARGB32)
+        render_image.fill(Qt.GlobalColor.transparent)
 
         painter = QPainter(render_image)
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
 
         QgsPainting.drawTriangleUsingTexture(
             painter,

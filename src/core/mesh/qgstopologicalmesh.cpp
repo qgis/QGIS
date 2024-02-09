@@ -946,7 +946,7 @@ bool QgsTopologicalMesh::renumberFaces( QVector<int> &oldToNewIndex ) const
   int currentFace = minDegreeFace;
   nonThreadedFaces.remove( minDegreeFace );
 
-  auto sortedNeighbor = [ = ]( QList<int> &neighbors, int index )
+  auto sortedNeighbor = [this, faceDegrees]( QList<int> &neighbors, int index )
   {
     const FaceNeighbors &neighborhood = mFacesNeighborhood.at( index );
 

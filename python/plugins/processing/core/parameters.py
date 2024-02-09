@@ -286,7 +286,7 @@ def getParameterFromString(s, context=''):
 
             param = clazz(*params)
             if isAdvanced:
-                param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+                param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
 
             param.setDescription(QCoreApplication.translate(context, param.description()))
 

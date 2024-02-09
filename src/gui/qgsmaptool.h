@@ -107,11 +107,9 @@ class GUI_EXPORT QgsMapTool : public QObject
      * Enumeration of flags that adjust the way the map tool operates
      * \since QGIS 2.16
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
-                               If it does, the tool can be operated once and then a previous map
-                               tool automatically restored. */
+      Transient = 1 << 1, //!< Deprecated since QGIS 3.36 -- no longer used by QGIS and will be removed in QGIS 4.0
       EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
       AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
       ShowContextMenu = 1 << 4, //!< Show a context menu when right-clicking with the tool (since QGIS 3.14). See populateContextMenu().

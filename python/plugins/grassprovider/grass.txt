@@ -1,0 +1,192 @@
+A short guide for creating and editing GRASS GIS processing algorithms:
+-----------------------------------------------------------------------
+
+For a GRASS command to be executed within QGIS a plain text description file is needed
+to define the inputs required by the command, the output it generates and the parameters
+that are used to configure it. Each command is described in a separate text file, but some
+commands can be split into several algorithms by using more than one description file,
+so that more than one entry is shown in the algorithms list. Splitting a grass command
+was originally done because the processing provider did not support optional parameters,
+however it can be convenient to simplify the use of GRASS commands that have many options.
+
+Here is an explanation of the content of these description files, so you can
+create new algorithms or improve existing algorithms.
+
+Each file starts with three lines containing:
+
+ - The name of the grass command to call to execute the algorithm (e.g. v.buffer)
+ - The description of the algorithm to show to the user.  For split commands you must
+ include the algorithm id first, e.g.:
+	r.sun.insoltime - Solar irradiance and irradiation model (daily sums).
+and
+	r.sun.incidout - Solar irradiance and irradiation model (for the set local time).
+ - The name of the group where you want the command to appear
+
+After these three lines the algorithm inputs and outputs are defined, one per line.
+Here is a brief explanation of the format of these lines for the different types
+of input and output parameter. Each definition is contained in a single line, with
+elements separated by the pipe symbol "|"
+
+- A raster input layer
+
+QgsProcessingParameterRasterLayer|[name of GRASS parameter]|[description of parameter to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterRasterLayer|base|Name of input raster map|None|False
+
+- A vector input layer
+
+QgsProcessingParameterFeatureSource|[name of GRASS parameter]|[description of parameter to show]|[A number indicating the type of geometry]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+
+To indicate the type of geometry, use the following values:
+
+-1: any geometry
+0: points
+1: lines
+2: polygons
+
+- Multiple input layers
+
+QgsProcessingParameterMultipleLayers|[name of GRASS parameter]|[description of parameter to show]|[A number indicating the type of geometry]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+
+To indicate the type of geometry, use the following values:
+
+-1: any vector geometry
+0: points
+1: lines
+2: polygons
+3: raster
+
+- A file
+
+QgsProcessingParameterFile|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterFile.File|[file extension|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+- A numerical value
+
+QgsProcessingParameterNumber|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterNumber.Integer or QgsProcessingParameterNumber.Double|[default value]|[True/False, indicating if the parameter is optional or not]|[min value]|[max value]
+
+"None" can be used for both min and max values to indicate that there is no lower
+or upper limit.
+
+Example: QgsProcessingParameterNumber|levels|levels|QgsProcessingParameterNumber.Integer|32|False|1|256
+
+- A numerical range
+
+QgsProcessingParameterRange|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterNumber.Integer or QgsProcessingParameterNumber.Double|[default minimum and maximum values, separated by comma]|[True/False, indicating if the parameter is optional or not]
+
+- A string
+
+QgsProcessingParameterString|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+- A value to select from a list
+
+QgsProcessingParameterEnum|[name of GRASS parameter]|[description of parameter to show]|[list of possible values, separated by semicolons]|[True/False, indicating whether more than one value can be selected (allowMultiple)]|[zero-based index of default value]|[True/False, indicating if the parameter is optional or not]
+
+- GRASS command flags
+
+QgsProcessingParameterBoolean|[GRASS flag]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterBoolean|-p|Output values as percentages|False|True
+
+- A pair of coordinates:
+
+QgsProcessingParameterPoint[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterPoint|coordinates|The coordinate of the center (east,north)|0,0|False
+
+- A rectangular map extent:
+
+QgsProcessingParameterExtent|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterExtent|bbox|Bounding box for selecting features|None|True
+
+- A crs
+
+QgsProcessingParameterCrs|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterCrs|crs|New coordinate reference system|None|False
+
+- Raster outputs:
+
+QgsProcessingParameterRasterDestination|[name of GRASS parameter]|[description of output to show]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterRasterDestination|length_slope|Slope length and steepness (LS) factor for USLE|None|True
+
+- Vector outputs:
+
+QgsProcessingParameterVectorDestination|[name of GRASS parameter]|[description of output to show]|vector type|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+The following types are available
+
+QgsProcessing.TypeVectorPoint
+QgsProcessing.TypeVectorLine
+QgsProcessing.TypeVectorPolygon
+QgsProcessing.TypeVectorAnyGeometry
+
+Example: QgsProcessingParameterVectorDestination|flowline|Flow line|QgsProcessing.TypeVectorLine|None|True
+
+- File outputs which are not layers or tables of a format supported by QGIS:
+
+QgsProcessingParameterFileDestination|[name of GRASS parameter]|[description of output to show]|[file type]|[Default value, or None]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterFileDestination|reportfile|Final Report File|Txt files (*.txt)|None|True
+
+- An output folder:
+
+QgsProcessingParameterFolderDestination|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+
+Example: QgsProcessingParameterFolderDestination|output_dir|Output Directory|None|False
+
+- Hardcoded parameters: to specify something that is always added to the GRASS command.
+
+Hardcoded|[parameter and argument to be passed to GRASS]
+
+Example: Hardcoded|operation=report
+Example: Hardcoded|-o
+
+- Advanced parameters
+
+to tag an input parameter as "advanced", just add "*" before its declaration.
+
+Example: *QgsProcessingParameterBoolean|-i|Output raster map as integer|False
+
+RELOADING ALGORITHM DESCRIPTIONS
+---------------------------------------
+You do not need to restart QGIS after editing or creating an algorithm description - simply click the wrench icon in the processing toolbox, then click OK, and QGIS will reload the descriptions.
+
+ADVANCED PROCESSING
+--------------------------
+
+To save the console output from GRASS to file, simply create a QgsProcessingParameterFileDestination parameter named 'html'
+
+Example: QgsProcessingParameterFileDestination|html|List of addons|Html files (*.html)|addons_list.html|False
+
+To add additional logic to an algorithm, like a preliminary check on data, the use of more than one GRASS command,
+or a transformation of output data, then you need to use the ext mechanism.
+
+There are 4 different levels where you can add logic: 
+- Checking the input parameters, e.g. if you want to verify that two mutually exclusive options have not been both enabled. 
+- Processing inputs import: if you need to do more than importing input layers. 
+- Processing the command itself: if you need to chain more than one GRASS command for your algorithm. 
+- Processing the outputs: if you need to do special things before exporting layers or if you need special export methods. 
+- Customising html outputs: if you need to do special processing to an html output, or save the raw output to an output variable. 
+
+To add some logic on one or more of these levels you have to create a .py file named according to the algorithm name in python/plugins/grassprovider/ext, replacing '.' with '_'.
+Then create methods using the respective names:
+- Input parameters: checkParameterValuesBeforeExecuting
+- Inputs import: processInputs
+- Command: processCommand
+- Outputs: processOutputs
+- Custom html outputs: convertToHtml
+
+If there is a Python file with the algorithm name in the ext directory, these methods will be imported from the file. 
+In the case of processCommand, processInputs, processOutputs and convertToHtml these will override the "standard" versions of these methods in the code of the GRASS provider. 
+You will need to read (and understand) the code for the standard methods in python/plugins/grassprovider/grass_algorithm.py.
+checkParameterValuesBeforeExecuting will override the standard checkParameterValues method from QgsProcessingAlgorithm.
+
+If we take the example of v.what.rast, there is an ext file: ext/v_what_rast.py.
+In this file there is a processCommand method. It just launches the standard processCommand but with the delOutputs option set to True (we do not want to have standard outputs).
+Then there is also a customized processOutputs which exports the input vector as an output for QGIS. We need to do this because v.what.rast modifies values directly in the input vector layer instead of generating a new output, so we have to build this output ourself. 

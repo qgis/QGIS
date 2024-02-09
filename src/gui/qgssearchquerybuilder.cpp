@@ -23,14 +23,12 @@
 #include <QStandardItem>
 #include <QTextStream>
 
-#include "qgssettings.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgssearchquerybuilder.h"
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
 #include "qgshelp.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsquerybuilder.h"
@@ -142,7 +140,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   QgsAttributeList attrs;
   attrs.append( fieldIndex );
 
-  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attrs ) );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( attrs ) );
 
   lstValues->setCursor( Qt::WaitCursor );
   // Block for better performance
@@ -229,7 +227,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( fetchGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( fetchGeom ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ) );
 
   while ( fit.nextFeature( feat ) )
   {

@@ -665,14 +665,7 @@ Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94".
 .. seealso:: :py:func:`userFriendlyIdentifier`
 %End
 
-    enum IdentifierType
-    {
-      ShortString,
-      MediumString,
-      FullString,
-    };
-
-    QString userFriendlyIdentifier( IdentifierType type = MediumString ) const;
+    QString userFriendlyIdentifier( Qgis::CrsIdentifierType type = Qgis::CrsIdentifierType::MediumString ) const;
 %Docstring
 Returns a user friendly identifier for the CRS.
 
@@ -714,23 +707,7 @@ Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 .. seealso:: :py:func:`projectionAcronym`
 %End
 
-    enum WktVariant
-    {
-      WKT1_GDAL,
-      WKT1_ESRI,
-      WKT2_2015,
-      WKT2_2015_SIMPLIFIED,
-      WKT2_2018,
-      WKT2_2018_SIMPLIFIED,
-      WKT2_2019,
-      WKT2_2019_SIMPLIFIED,
-
-      WKT_PREFERRED,
-      WKT_PREFERRED_SIMPLIFIED,
-      WKT_PREFERRED_GDAL,
-    };
-
-    QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;
+    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1Gdal, bool multiline = false, int indentationWidth = 4 ) const;
 %Docstring
 Returns a WKT representation of this CRS.
 
@@ -789,6 +766,13 @@ overridden with these.
 Returns the type of the CRS.
 
 .. versionadded:: 3.34
+%End
+
+    bool isDeprecated() const;
+%Docstring
+Returns ``True`` if the CRS is considered deprecated.
+
+.. versionadded:: 3.36
 %End
 
     bool isGeographic() const;
@@ -1111,7 +1095,7 @@ Returns auth id of related geographic CRS
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ),
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),
                         std::isfinite( sipCpp->coordinateEpoch() ) ? QStringLiteral( " @ %1" ).arg( sipCpp->coordinateEpoch() ) : QString() )
                         : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -1125,35 +1109,39 @@ Returns a list of recently used projections
 :return: list of srsid for recently used projections
 
 .. deprecated::
-   QGIS 3.10 Use :py:func:`~QgsCoordinateReferenceSystem.recentCoordinateReferenceSystems` instead.
+   QGIS 3.10 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
-    static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems();
+ static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Returns a list of recently used CRS.
 
-.. versionadded:: 3.10.3
+.. deprecated::
+   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
-    static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+ static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Pushes a recently used CRS to the top of the recent CRS list.
 
-.. versionadded:: 3.10.3
+.. deprecated::
+   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.pushRecent` instead.
 %End
 
-    static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+ static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Removes a CRS from the list of recently used CRS.
 
-.. versionadded:: 3.32
+.. deprecated::
+   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
 %End
 
-    static void clearRecentCoordinateReferenceSystems();
+ static void clearRecentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Cleans the list of recently used CRS.
 
-.. versionadded:: 3.32
+.. deprecated::
+   QGIS 3.36 Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.clearRecent` instead.
 %End
 
 

@@ -256,16 +256,16 @@ class TestQgsXmlUtils(QgisTestCase):
         definition = QgsProcessingFeatureSourceDefinition(QgsProperty.fromValue('my source'))
         definition.selectedFeaturesOnly = True
         definition.featureLimit = 27
-        definition.flags = QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature
-        definition.geometryCheck = QgsFeatureRequest.GeometrySkipInvalid
+        definition.flags = QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
+        definition.geometryCheck = QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid
 
         elem = QgsXmlUtils.writeVariant(definition, doc)
         c = QgsXmlUtils.readVariant(elem)
         self.assertEqual(c.source.staticValue(), 'my source')
         self.assertTrue(c.selectedFeaturesOnly)
         self.assertEqual(c.featureLimit, 27)
-        self.assertEqual(c.flags, QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature)
-        self.assertEqual(c.geometryCheck, QgsFeatureRequest.GeometrySkipInvalid)
+        self.assertEqual(c.flags, QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature)
+        self.assertEqual(c.geometryCheck, QgsFeatureRequest.InvalidGeometryCheck.GeometrySkipInvalid)
 
     def test_output_layer_definition(self):
         """
@@ -288,7 +288,7 @@ class TestQgsXmlUtils(QgisTestCase):
         fields.append(QgsField('fldtxt2', QVariant.String))
 
         mapping_def = QgsRemappingSinkDefinition()
-        mapping_def.setDestinationWkbType(QgsWkbTypes.Point)
+        mapping_def.setDestinationWkbType(QgsWkbTypes.Type.Point)
         mapping_def.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         mapping_def.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         mapping_def.setDestinationFields(fields)
@@ -299,7 +299,7 @@ class TestQgsXmlUtils(QgisTestCase):
         elem = QgsXmlUtils.writeVariant(mapping_def, doc)
         c = QgsXmlUtils.readVariant(elem)
 
-        self.assertEqual(c.destinationWkbType(), QgsWkbTypes.Point)
+        self.assertEqual(c.destinationWkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(c.sourceCrs().authid(), 'EPSG:4326')
         self.assertEqual(c.destinationCrs().authid(), 'EPSG:3857')
         self.assertEqual(c.destinationFields()[0].name(), 'fldtxt')

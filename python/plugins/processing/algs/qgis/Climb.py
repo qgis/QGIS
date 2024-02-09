@@ -74,7 +74,7 @@ class Climb(QgisAlgorithm):
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
                 self.tr('Line layer'),
-                [QgsProcessing.TypeVectorLine]
+                [QgsProcessing.SourceType.TypeVectorLine]
             )
         )
 
@@ -222,7 +222,7 @@ class Climb(QgisAlgorithm):
             # Set the final attribute list
             feature.setAttributes(attrs)
             # Add a feature to the sink
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
             minelevation = min(minelevation, minelev)
             maxelevation = max(maxelevation, maxelev)
             # Update the progress bar

@@ -19,6 +19,7 @@
 #define QGSMAPCANVASINTERACTIONBLOCKER_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /**
  * \class QgsMapCanvasInteractionBlocker
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsMapCanvasInteractionBlocker
     /**
      * Available interactions to block.
      */
-    enum class Interaction : int
+    enum class Interaction : int SIP_ENUM_BASETYPE( IntFlag )
     {
       MapPanOnSingleClick = 1 << 0, //!< A map pan interaction caused by a single click and release on the map canvas
     };

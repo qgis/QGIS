@@ -332,6 +332,7 @@ set(QGIS_GUI_SRCS
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
   mesh/qgsmeshdatasetgrouptreewidget.cpp
+  mesh/qgsmeshlabelingwidget.cpp
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
@@ -424,6 +425,17 @@ set(QGIS_GUI_SRCS
   processing/models/qgsmodelviewtooltemporarymousepan.cpp
   processing/models/qgsmodelviewtoolzoom.cpp
 
+  proj/qgscoordinateboundspreviewmapwidget.cpp
+  proj/qgscoordinateoperationwidget.cpp
+  proj/qgscoordinatereferencesystemmodel.cpp
+  proj/qgscrsdefinitionwidget.cpp
+  proj/qgsdatumtransformdialog.cpp
+  proj/qgsinstallgridshiftdialog.cpp
+  proj/qgsprojectionselectiondialog.cpp
+  proj/qgsprojectionselectionwidget.cpp
+  proj/qgsprojectionselectiontreewidget.cpp
+  proj/qgsrecentcoordinatereferencesystemsmodel.cpp
+
   providers/qgsabstractdbsourceselect.cpp
   providers/qgspointcloudproviderguimetadata.cpp
   providers/qgspointcloudsourceselect.cpp
@@ -435,6 +447,7 @@ set(QGIS_GUI_SRCS
   providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.cpp
   providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.cpp
 
+  providers/ogr/qgsogrfilesourcewidget.cpp
   providers/ogr/qgsogrguiprovider.cpp
   providers/ogr/qgsogrdbsourceselect.cpp
   providers/ogr/qgsogrdbtablemodel.cpp
@@ -518,10 +531,6 @@ set(QGIS_GUI_SRCS
   qgscolorwidgets.cpp
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
-  qgscoordinateboundspreviewmapwidget.cpp
-  qgscoordinateoperationwidget.cpp
-  qgscoordinatereferencesystemmodel.cpp
-  qgscrsdefinitionwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscustomprojectopenhandler.cpp
@@ -530,7 +539,6 @@ set(QGIS_GUI_SRCS
   qgsdatabasetablecombobox.cpp
   qgsdataitemguiprovider.cpp
   qgsdataitemguiproviderregistry.cpp
-  qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
@@ -595,7 +603,6 @@ set(QGIS_GUI_SRCS
   qgshttpheaderwidget.cpp
   qgsidentifymenu.cpp
   qgsimagedroptextedit.cpp
-  qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
   qgslayermetadatasearchwidget.cpp
   qgslayermetadataresultsmodel.cpp
@@ -672,6 +679,7 @@ set(QGIS_GUI_SRCS
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
+  qgspercentagewidget.cpp
   qgspixmaplabel.cpp
   qgsplaybackcontrollerwidget.cpp
   qgspluginmanagerinterface.cpp
@@ -679,9 +687,6 @@ set(QGIS_GUI_SRCS
   qgspointcloudquerybuilder.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
-  qgsprojectionselectiondialog.cpp
-  qgsprojectionselectionwidget.cpp
-  qgsprojectionselectiontreewidget.cpp
   qgspropertyassistantwidget.cpp
   qgspropertyoverridebutton.cpp
   qgsproviderguiregistry.cpp
@@ -722,6 +727,7 @@ set(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
+  qgsstackedwidget.cpp
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
@@ -794,11 +800,7 @@ set(QGIS_GUI_HDRS
   qgscolorwidgets.h
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
-  qgscoordinateboundspreviewmapwidget.h
-  qgscoordinateoperationwidget.h
-  qgscoordinatereferencesystemmodel.h
   qgscredentialdialog.h
-  qgscrsdefinitionwidget.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgscustomprojectopenhandler.h
@@ -811,7 +813,6 @@ set(QGIS_GUI_HDRS
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
   qgsnewdatabasetablenamewidget.h
-  qgsdatumtransformdialog.h
   qgsdetaileditemdata.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -874,7 +875,6 @@ set(QGIS_GUI_HDRS
   qgshttpheaderwidget.h
   qgsidentifymenu.h
   qgsimagedroptextedit.h
-  qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslayermetadatasearchwidget.h
   qgslayermetadataresultsmodel.h
@@ -952,6 +952,7 @@ set(QGIS_GUI_HDRS
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
+  qgspercentagewidget.h
   qgspixmaplabel.h
   qgsplaybackcontrollerwidget.h
   qgspluginmanagerinterface.h
@@ -959,9 +960,6 @@ set(QGIS_GUI_HDRS
   qgspointcloudquerybuilder.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
-  qgsprojectionselectiondialog.h
-  qgsprojectionselectiontreewidget.h
-  qgsprojectionselectionwidget.h
   qgsprojectstorageguiprovider.h
   qgsprojectstorageguiregistry.h
   qgspropertyassistantwidget.h
@@ -1003,6 +1001,7 @@ set(QGIS_GUI_HDRS
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
   qgssqlcomposerdialog.h
+  qgsstackedwidget.h
   qgsstatusbar.h
   qgsstyleitemslistwidget.h
   qgssublayersdialog.h
@@ -1288,6 +1287,7 @@ set(QGIS_GUI_HDRS
   mesh/qgsrenderermeshpropertieswidget.h
   mesh/qgsmeshdatasetgrouptreeview.h
   mesh/qgsmeshdatasetgrouptreewidget.h
+  mesh/qgsmeshlabelingwidget.h
   mesh/qgsmeshrenderer3daveragingwidget.h
   mesh/qgsmeshrenderermeshsettingswidget.h
   mesh/qgsmeshrendererscalarsettingswidget.h
@@ -1379,6 +1379,17 @@ set(QGIS_GUI_HDRS
   processing/models/qgsmodelviewtooltemporarymousepan.h
   processing/models/qgsmodelviewtoolzoom.h
 
+  proj/qgscoordinateboundspreviewmapwidget.h
+  proj/qgscoordinateoperationwidget.h
+  proj/qgscoordinatereferencesystemmodel.h
+  proj/qgscrsdefinitionwidget.h
+  proj/qgsdatumtransformdialog.h
+  proj/qgsinstallgridshiftdialog.h
+  proj/qgsprojectionselectiondialog.h
+  proj/qgsprojectionselectiontreewidget.h
+  proj/qgsprojectionselectionwidget.h
+  proj/qgsrecentcoordinatereferencesystemsmodel.h
+
   providers/qgsabstractdbsourceselect.h
   providers/qgspointcloudsourceselect.h
   providers/qgspointcloudproviderguimetadata.h
@@ -1390,6 +1401,7 @@ set(QGIS_GUI_HDRS
   providers/mbtilesvectortiles/qgsmbtilesvectortileguiprovider.h
   providers/mbtilesvectortiles/qgsmbtilesvectortilesourcewidget.h
 
+  providers/ogr/qgsogrfilesourcewidget.h
   providers/ogr/qgsgeopackageitemguiprovider.h
   providers/ogr/qgsgeopackageprojectstoragedialog.h
   providers/ogr/qgsgeopackageprojectstorageguiprovider.h
@@ -1631,6 +1643,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/plot
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+  ${CMAKE_SOURCE_DIR}/src/gui/proj
   ${CMAKE_SOURCE_DIR}/src/gui/providers
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/mbtilesvectortiles

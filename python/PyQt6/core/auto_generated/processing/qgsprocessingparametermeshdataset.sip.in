@@ -51,13 +51,13 @@ Constructor
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
 
     virtual QStringList dependsOnOtherParameters() const;
 
-    virtual QVariantMap toVariantMap() const;
+    virtual QMap<QString, QVariant> toVariantMap() const;
 
-    virtual bool fromVariantMap( const QVariantMap &map );
+    virtual bool fromVariantMap( const QMap<QString, QVariant> &map );
 
 
     static QString typeName();
@@ -128,13 +128,13 @@ Constructor
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
 
     virtual QStringList dependsOnOtherParameters() const;
 
-    virtual QVariantMap toVariantMap() const;
+    virtual QMap<QString, QVariant> toVariantMap() const;
 
-    virtual bool fromVariantMap( const QVariantMap &map );
+    virtual bool fromVariantMap( const QMap<QString, QVariant> &map );
 
 
     static QString typeName();

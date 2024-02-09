@@ -97,7 +97,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
             self.groupBox.layout().addWidget(label)
             self.groupBox.layout().addWidget(combo)
 
-        verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.groupBox.layout().addItem(verticalSpacer)
 
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -133,7 +133,7 @@ class ExpressionWidget(BASE, WIDGET):
         def addButtonText(text):
             if any(c for c in text if c.islower()):
                 self.text.insertPlainText(f" {text}()")
-                self.text.moveCursor(QTextCursor.PreviousCharacter, QTextCursor.MoveAnchor)
+                self.text.moveCursor(QTextCursor.MoveOperation.PreviousCharacter, QTextCursor.MoveMode.MoveAnchor)
             else:
                 self.text.insertPlainText(f" {text} ")
         buttons = [b for b in self.buttonsGroupBox.children()if isinstance(b, QPushButton)]
@@ -177,7 +177,7 @@ class ExpressionWidget(BASE, WIDGET):
     def addPredefined(self):
         expression = self.expressions[self.comboPredefined.currentText()]
         dlg = PredefinedExpressionDialog(expression, self.options)
-        dlg.exec_()
+        dlg.exec()
         if dlg.filledExpression:
             self.text.setPlainText(dlg.filledExpression)
 
@@ -189,7 +189,7 @@ class ExpressionWidget(BASE, WIDGET):
             exp = exp.replace(v, f'[{chr(97 + i)}]')
 
         dlg = AddNewExpressionDialog(exp)
-        dlg.exec_()
+        dlg.exec()
         if dlg.name:
             self.expressions[dlg.name] = dlg.expression
 
@@ -216,7 +216,7 @@ class ExpressionWidget(BASE, WIDGET):
             item = QListWidgetItem(name, self.listWidget)
             tooltip = _find_source(name)
             if tooltip:
-                item.setData(Qt.ToolTipRole, tooltip)
+                item.setData(Qt.ItemDataRole.ToolTipRole, tooltip)
             self.listWidget.addItem(item)
 
     def setValue(self, value):
@@ -302,6 +302,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
                 raise InvalidParameterValue()
             return values

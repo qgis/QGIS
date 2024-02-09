@@ -117,6 +117,17 @@ Sets the ``name`` of the style.
 .. versionadded:: 3.26
 %End
 
+    bool isInitialized() const;
+%Docstring
+Returns ``True`` if the style is initialized and ready for use.
+
+Most instances of QgsStyle will already be initialized. However, if the
+style is the :py:func:`QgsStyle.defaultStyle()` object it may have been created using
+lazy initialization and will return ``False`` until it is :py:func:`~QgsStyle.initialized`.
+
+.. versionadded:: 3.36
+%End
+
     bool isReadOnly() const;
 %Docstring
 Returns ``True`` if the style is considered a read-only library.
@@ -428,9 +439,14 @@ Returns 0 if the label settings were not found.
 .. versionadded:: 3.10
 %End
 
-    static QgsStyle *defaultStyle();
+    static QgsStyle *defaultStyle( bool initialize = true );
 %Docstring
-Returns default application-wide style
+Returns the default application-wide style.
+
+Since QGIS 3.36, the ``initialize`` argument can be set to ``False`` to temporarily
+defer the actual loading of the style's objects until they are first requested.
+This lazy-initialization can substantially improve application startup times,
+especially for standalone applications which do not utilize styles.
 %End
 
 
@@ -749,7 +765,7 @@ Returns the default patch geometry for the given symbol ``type`` and ``size`` as
 .. versionadded:: 3.14
 %End
 
-    enum class TextFormatContext /BaseType=IntFlag/
+    enum class TextFormatContext /BaseType=IntEnum/
     {
       Labeling,
     };
@@ -993,6 +1009,16 @@ large xml files.
 
   signals:
 
+    void initialized();
+%Docstring
+Emitted when the style database has been fully initialized.
+
+This signals is only emitted by the :py:func:`QgsStyle.defaultStyle()` instance,
+and only when the :py:func:`~QgsStyle.defaultStyle` has been lazily initialized.
+
+.. versionadded:: 3.36
+%End
+
     void aboutToBeDestroyed();
 %Docstring
 Emitted just before the style object is destroyed.
@@ -1139,7 +1165,6 @@ name or tag changes.
 
 .. versionadded:: 3.4
 %End
-
 
     void textFormatRenamed( const QString &oldName, const QString &newName );
 %Docstring

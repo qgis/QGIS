@@ -226,7 +226,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mResRadio->setChecked( true );
   radioChanged();
 
-  connect( mRadioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
+  connect( mRadioGroup, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
 
   // Connect entries
   connect( mNorth, &QLineEdit::editingFinished, this, &QgsGrassRegion::northChanged );

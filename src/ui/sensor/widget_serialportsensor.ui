@@ -37,7 +37,31 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="mSerialPortComboBox"/>
+    <widget class="QComboBox" name="mSerialPortComboBox">
+     <property name="toolTip">
+      <string>Choose a serial port for the connection</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="mBaudRateLabel">
+     <property name="text">
+      <string>Data baud rate</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="mBaudRateComboBox">
+     <property name="toolTip">
+      <string>Choose a baudrate for the sensor connection</string>
+     </property>
+     <property name="currentText">
+      <string/>
+     </property>
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="mSerialPortDetails">

@@ -249,20 +249,21 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   {
     const QVariantMap timeInfo = layerData.value( QStringLiteral( "timeInfo" ) ).toMap();
 
-    temporalCapabilities()->setHasTemporalCapabilities( true );
-    temporalCapabilities()->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
-    temporalCapabilities()->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
-    if ( !temporalCapabilities()->endField().isEmpty() )
-      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeStartAndEndInSeparateFields );
-    else if ( !temporalCapabilities()->startField().isEmpty() )
-      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeInstantInField );
+    QgsVectorDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+    lTemporalCapabilities->setHasTemporalCapabilities( true );
+    lTemporalCapabilities->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
+    lTemporalCapabilities->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
+    if ( !lTemporalCapabilities->endField().isEmpty() )
+      lTemporalCapabilities->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeStartAndEndInSeparateFields );
+    else if ( !lTemporalCapabilities->startField().isEmpty() )
+      lTemporalCapabilities->setMode( Qgis::VectorDataProviderTemporalMode::StoresFeatureDateTimeInstantInField );
     else
-      temporalCapabilities()->setMode( Qgis::VectorDataProviderTemporalMode::HasFixedTemporalRange );
+      lTemporalCapabilities->setMode( Qgis::VectorDataProviderTemporalMode::HasFixedTemporalRange );
 
     const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
     if ( extent.size() == 2 )
     {
-      temporalCapabilities()->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ),
+      lTemporalCapabilities->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ),
           QgsArcGisRestUtils::convertDateTime( extent.at( 1 ) ) ) );
     }
   }
@@ -394,7 +395,7 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
   }
 
   // REST API requires a full definition of features, so we have to read their initial values first
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ) );
   QgsFeature feature;
 
   QgsFeatureList updatedFeatures;
@@ -651,6 +652,11 @@ bool QgsAfsProvider::setSubsetString( const QString &subset, bool )
   const QString trimmedSubset = subset.trimmed();
   if ( trimmedSubset == mSharedData->subsetString() )
     return true;
+
+  // We must not change the subset string of the shared data used in another iterator/data provider,
+  // or other layers attached to the same shared data (i.e. layers with a data provider cloned from
+  // this one) will also unwantedly inherit the new subset string.
+  mSharedData = mSharedData->clone();
 
   mSharedData->setSubsetString( trimmedSubset );
 

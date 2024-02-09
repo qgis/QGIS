@@ -176,25 +176,25 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
     def testDecodeArrowHeadType(self):
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(0)
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadSingle)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadSingle)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('single')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadSingle)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadSingle)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('   SINGLE   ')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadSingle)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadSingle)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(1)
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadReversed)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadReversed)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('reversed')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadReversed)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadReversed)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(2)
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadDouble)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadDouble)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('double')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.HeadDouble)
+        self.assertEqual(type, QgsArrowSymbolLayer.HeadType.HeadDouble)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType('xxxxx')
         self.assertFalse(ok)
         type, ok = QgsSymbolLayerUtils.decodeArrowHeadType(34)
@@ -203,25 +203,25 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
     def testDecodeArrowType(self):
         type, ok = QgsSymbolLayerUtils.decodeArrowType(0)
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowPlain)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowPlain)
         type, ok = QgsSymbolLayerUtils.decodeArrowType('plain')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowPlain)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowPlain)
         type, ok = QgsSymbolLayerUtils.decodeArrowType('   PLAIN   ')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowPlain)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowPlain)
         type, ok = QgsSymbolLayerUtils.decodeArrowType(1)
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowLeftHalf)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowLeftHalf)
         type, ok = QgsSymbolLayerUtils.decodeArrowType('lefthalf')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowLeftHalf)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowLeftHalf)
         type, ok = QgsSymbolLayerUtils.decodeArrowType(2)
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowRightHalf)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowRightHalf)
         type, ok = QgsSymbolLayerUtils.decodeArrowType('righthalf')
         self.assertTrue(ok)
-        self.assertEqual(type, QgsArrowSymbolLayer.ArrowRightHalf)
+        self.assertEqual(type, QgsArrowSymbolLayer.ArrowType.ArrowRightHalf)
         type, ok = QgsSymbolLayerUtils.decodeArrowType('xxxxx')
         self.assertFalse(ok)
         type, ok = QgsSymbolLayerUtils.decodeArrowType(34)
@@ -297,17 +297,17 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
 
         # millimeter
         encode = None
-        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMillimeters)
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderUnit.RenderMillimeters)
         self.assertTupleEqual(encode, ('', 3.571428571428571))
 
         # mapunits
         encode = None
-        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMapUnits)
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderUnit.RenderMapUnits)
         self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 0.001))
 
         # meters at scale
         encode = None
-        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMetersInMapUnits)
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderUnit.RenderMetersInMapUnits)
         self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 1.0))
 
     def testDecodeSldUom(self):
@@ -318,17 +318,17 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         # meter
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/metre")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 1.0))
+        self.assertEqual(decode, (QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, 1.0))
 
         # foot
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/foot")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 0.3048))
+        self.assertEqual(decode, (QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, 0.3048))
 
         # pixel
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/pixel")
-        self.assertEqual(decode, (QgsUnitTypes.RenderPixels, 1.0))
+        self.assertEqual(decode, (QgsUnitTypes.RenderUnit.RenderPixels, 1.0))
 
     def testPolylineLength(self):
         """
@@ -519,14 +519,14 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
     def testPreviewColorRampVertical(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
-        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical)
+        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Orientation.Vertical)
         img = QImage(pix)
         self.assertTrue(self.image_check('color_ramp_vertical', 'color_ramp_vertical', img))
 
     def testPreviewColorRampVerticalFlipped(self):
         r = QgsGradientColorRamp(QColor(200, 0, 0, 200), QColor(0, 200, 0, 255))
 
-        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical, flipDirection=True)
+        pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Orientation.Vertical, flipDirection=True)
         img = QImage(pix)
         self.assertTrue(self.image_check('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
 
@@ -573,7 +573,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         line = QgsSimpleLineSymbolLayer()
-        line.setRingFilter(QgsSimpleLineSymbolLayer.ExteriorRingOnly)
+        line.setRingFilter(QgsSimpleLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
         self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         line = QgsSimpleLineSymbolLayer()
@@ -581,25 +581,25 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         line = QgsSimpleLineSymbolLayer()
-        line.setDataDefinedProperty(QgsSymbolLayer.PropertyTrimEnd, QgsProperty.fromValue(4))
+        line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyTrimEnd, QgsProperty.fromValue(4))
         self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         # compatible!
         line = QgsSimpleLineSymbolLayer()
         line.setColor(QColor(255, 0, 0))
         line.setWidth(1.2)
-        line.setWidthUnit(QgsUnitTypes.RenderPoints)
+        line.setWidthUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         line.setWidthMapUnitScale(QgsMapUnitScale(1, 2))
-        line.setPenJoinStyle(Qt.MiterJoin)
-        line.setPenStyle(Qt.DashDotDotLine)
+        line.setPenJoinStyle(Qt.PenJoinStyle.MiterJoin)
+        line.setPenStyle(Qt.PenStyle.DashDotDotLine)
         self.assertTrue(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
 
         self.assertEqual(fill.strokeColor(), QColor(255, 0, 0))
         self.assertEqual(fill.strokeWidth(), 1.2)
-        self.assertEqual(fill.strokeWidthUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(fill.strokeWidthUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(fill.strokeWidthMapUnitScale(), QgsMapUnitScale(1, 2))
-        self.assertEqual(fill.penJoinStyle(), Qt.MiterJoin)
-        self.assertEqual(fill.strokeStyle(), Qt.DashDotDotLine)
+        self.assertEqual(fill.penJoinStyle(), Qt.PenJoinStyle.MiterJoin)
+        self.assertEqual(fill.strokeStyle(), Qt.PenStyle.DashDotDotLine)
 
     def test_renderer_frame_rate(self):
         # renderer without an animated symbol

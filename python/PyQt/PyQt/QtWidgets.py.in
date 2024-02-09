@@ -21,12 +21,49 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'November 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
 
-from PyQt@QT_VERSION_MAJOR@.QtCore import QT_VERSION
 from PyQt@QT_VERSION_MAJOR@.QtWidgets import *
 
 QLayout.setMargin = lambda self, m: self.setContentsMargins(m, m, m, m)
 
-if (QT_VERSION >= 0x060000):
+if @QT_VERSION_MAJOR@ == 6:
   from PyQt6.QtGui import QAction as _QAction, QShortcut as _QShortcut
   QAction = _QAction
   QShortcut = _QShortcut
+
+  # patch back in Qt flags removed in PyQt
+  QWidget.RenderFlags = lambda flags=0: QWidget.RenderFlag(flags)
+  QGraphicsItem.GraphicsItemFlags = lambda flags=0: QGraphicsItem.GraphicsItemFlag(flags)
+  QAbstractItemView.EditTriggers = lambda flags=0: QAbstractItemView.EditTrigger(flags)
+  QAbstractSpinBox.StepEnabled = lambda flags=0: QAbstractSpinBox.StepEnabledFlag(flags)
+  QColorDialog.ColorDialogOptions = lambda flags=0: QColorDialog.ColorDialogOption(flags)
+  QStyle.State = lambda flags=0: QStyle.StateFlag(flags)
+  QStyle.SubControls = lambda flags=0: QStyle.SubControl(flags)
+  QDateTimeEdit.Sections = lambda flags=0: QDateTimeEdit.Section(flags)
+  QDialogButtonBox.StandardButtons = lambda flags=0: QDialogButtonBox.StandardButton(flags)
+  QDockWidget.DockWidgetFeatures = lambda flags=0: QDockWidget.DockWidgetFeature(flags)
+  QFileDialog.Options = lambda flags=0: QFileDialog.Option(flags)
+  QFontComboBox.FontFilters = lambda flags=0: QFontComboBox.FontFilter(flags)
+  QFontDialog.FontDialogOptions = lambda flags=0: QFontDialog.FontDialogOption(flags)
+  QGestureRecognizer.Result = lambda flags=0: QGestureRecognizer.ResultFlag(flags)
+  QGraphicsEffect.ChangeFlags = lambda flags=0: QGraphicsEffect.ChangeFlag(flags)
+  QGraphicsBlurEffect.BlurHints = lambda flags=0: QGraphicsBlurEffect.BlurHint(flags)
+  QGraphicsScene.SceneLayers = lambda flags=0: QGraphicsScene.SceneLayer(flags)
+  QGraphicsView.CacheMode = lambda flags=0: QGraphicsView.CacheModeFlag(flags)
+  QGraphicsView.OptimizationFlags = lambda flags=0: QGraphicsView.OptimizationFlag(flags)
+  QInputDialog.InputDialogOptions = lambda flags=0: QInputDialog.InputDialogOption(flags)
+  QMainWindow.DockOptions = lambda flags=0: QMainWindow.DockOption(flags)
+  QMdiArea.AreaOptions = lambda flags=0: QMdiArea.AreaOption(flags)
+  QMdiSubWindow.SubWindowOptions = lambda flags=0: QMdiSubWindow.SubWindowOption(flags)
+  QMessageBox.StandardButtons = lambda flags=0: QMessageBox.StandardButton(flags)
+  QPinchGesture.ChangeFlags = lambda flags=0: QPinchGesture.ChangeFlag(flags)
+  QSizePolicy.ControlTypes = lambda flags=0: QSizePolicy.ControlType(flags)
+  QStyleOptionButton.ButtonFeatures = lambda flags=0: QStyleOptionButton.ButtonFeature(flags)
+  QStyleOptionFrame.FrameFeatures = lambda flags=0: QStyleOptionFrame.FrameFeature(flags)
+  QStyleOptionTab.CornerWidgets = lambda flags=0: QStyleOptionTab.CornerWidget(flags)
+  QStyleOptionTab.TabFeatures = lambda flags=0: QStyleOptionTab.TabFeature(flags)
+  QStyleOptionToolBar.ToolBarFeatures = lambda flags=0: QStyleOptionToolBar.ToolBarFeature(flags)
+  QStyleOptionToolButton.ToolButtonFeatures = lambda flags=0: QStyleOptionToolButton.ToolButtonFeature(flags)
+  QStyleOptionViewItem.ViewItemFeatures = lambda flags=0: QStyleOptionViewItem.ViewItemFeature(flags)
+  QTextEdit.AutoFormatting = lambda flags=0: QTextEdit.AutoFormattingFlag(flags)
+  QTreeWidgetItemIterator.IteratorFlags = lambda flags=0: QTreeWidgetItemIterator.IteratorFlag(flags)
+  QWizard.WizardOptions = lambda flags=0: QWizard.WizardOption(flags)

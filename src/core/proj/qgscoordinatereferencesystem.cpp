@@ -1215,26 +1215,26 @@ QString QgsCoordinateReferenceSystem::description() const
   }
 }
 
-QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( IdentifierType type ) const
+QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( Qgis::CrsIdentifierType type ) const
 {
   QString id;
   if ( !authid().isEmpty() )
   {
-    if ( type != ShortString && !description().isEmpty() )
+    if ( type != Qgis::CrsIdentifierType::ShortString && !description().isEmpty() )
       id = QStringLiteral( "%1 - %2" ).arg( authid(), description() );
     else
       id = authid();
   }
   else if ( !description().isEmpty() )
     id = description();
-  else if ( type == ShortString )
+  else if ( type == Qgis::CrsIdentifierType::ShortString )
     id = isValid() ? QObject::tr( "Custom CRS" ) : QObject::tr( "Unknown CRS" );
-  else if ( !toWkt( WKT_PREFERRED ).isEmpty() )
+  else if ( !toWkt( Qgis::CrsWktVariant::Preferred ).isEmpty() )
     id = QObject::tr( "Custom CRS: %1" ).arg(
-           type == MediumString ? ( toWkt( WKT_PREFERRED ).left( 50 ) + QString( QChar( 0x2026 ) ) )
-           : toWkt( WKT_PREFERRED ) );
+           type == Qgis::CrsIdentifierType::MediumString ? ( toWkt( Qgis::CrsWktVariant::Preferred ).left( 50 ) + QString( QChar( 0x2026 ) ) )
+           : toWkt( Qgis::CrsWktVariant::Preferred ) );
   else if ( !toProj().isEmpty() )
-    id = QObject::tr( "Custom CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
+    id = QObject::tr( "Custom CRS: %1" ).arg( type == Qgis::CrsIdentifierType::MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
          : toProj() );
   if ( !id.isEmpty() && !std::isnan( d->mCoordinateEpoch ) )
     id += QStringLiteral( " @ %1" ).arg( d->mCoordinateEpoch );
@@ -1372,6 +1372,15 @@ Qgis::CrsType QgsCoordinateReferenceSystem::type() const
   }
   return Qgis::CrsType::Unknown;
   // NOLINTEND(bugprone-branch-clone)
+}
+
+bool QgsCoordinateReferenceSystem::isDeprecated() const
+{
+  const PJ *pj = projObject();
+  if ( !pj )
+    return false;
+
+  return proj_is_deprecated( pj );
 }
 
 bool QgsCoordinateReferenceSystem::isGeographic() const
@@ -1905,7 +1914,7 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !isUser && ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
     return d->mAuthId == srs.d->mAuthId;
 
-  return toWkt( WKT_PREFERRED ) == srs.toWkt( WKT_PREFERRED );
+  return toWkt( Qgis::CrsWktVariant::Preferred ) == srs.toWkt( Qgis::CrsWktVariant::Preferred );
 }
 
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &srs ) const
@@ -1913,11 +1922,11 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
   return  !( *this == srs );
 }
 
-QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline, int indentationWidth ) const
+QString QgsCoordinateReferenceSystem::toWkt( Qgis::CrsWktVariant variant, bool multiline, int indentationWidth ) const
 {
   if ( PJ *obj = d->threadLocalProjObject() )
   {
-    const bool isDefaultPreferredFormat = variant == WKT_PREFERRED && !multiline;
+    const bool isDefaultPreferredFormat = variant == Qgis::CrsWktVariant::Preferred && !multiline;
     if ( isDefaultPreferredFormat && !d->mWktPreferred.isEmpty() )
     {
       // can use cached value
@@ -1927,22 +1936,22 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
     PJ_WKT_TYPE type = PJ_WKT1_GDAL;
     switch ( variant )
     {
-      case WKT1_GDAL:
+      case Qgis::CrsWktVariant::Wkt1Gdal:
         type = PJ_WKT1_GDAL;
         break;
-      case WKT1_ESRI:
+      case Qgis::CrsWktVariant::Wkt1Esri:
         type = PJ_WKT1_ESRI;
         break;
-      case WKT2_2015:
+      case Qgis::CrsWktVariant::Wkt2_2015:
         type = PJ_WKT2_2015;
         break;
-      case WKT2_2015_SIMPLIFIED:
+      case Qgis::CrsWktVariant::Wkt2_2015Simplified:
         type = PJ_WKT2_2015_SIMPLIFIED;
         break;
-      case WKT2_2019:
+      case Qgis::CrsWktVariant::Wkt2_2019:
         type = PJ_WKT2_2019;
         break;
-      case WKT2_2019_SIMPLIFIED:
+      case Qgis::CrsWktVariant::Wkt2_2019Simplified:
         type = PJ_WKT2_2019_SIMPLIFIED;
         break;
     }
@@ -2096,7 +2105,7 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
   }
 
   QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
-  wktElement.appendChild( doc.createTextNode( toWkt( WKT_PREFERRED ) ) );
+  wktElement.appendChild( doc.createTextNode( toWkt( Qgis::CrsWktVariant::Preferred ) ) );
   srsElement.appendChild( wktElement );
 
   QDomElement proj4Element = doc.createElement( QStringLiteral( "proj4" ) );
@@ -2236,7 +2245,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsgLevel( "* Valid : " + ( d->mIsValid ? QString( "true" ) : QString( "false" ) ), 1 );
   QgsDebugMsgLevel( "* SrsId : " + QString::number( d->mSrsId ), 1 );
   QgsDebugMsgLevel( "* Proj4 : " + toProj(), 1 );
-  QgsDebugMsgLevel( "* WKT   : " + toWkt( WKT_PREFERRED ), 1 );
+  QgsDebugMsgLevel( "* WKT   : " + toWkt( Qgis::CrsWktVariant::Preferred ), 1 );
   QgsDebugMsgLevel( "* Desc. : " + d->mDescription, 1 );
   if ( mapUnits() == Qgis::DistanceUnit::Meters )
   {
@@ -3044,7 +3053,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
 QStringList QgsCoordinateReferenceSystem::recentProjections()
 {
   QStringList projections;
-  const QList<QgsCoordinateReferenceSystem> res = recentCoordinateReferenceSystems();
+  const QList<QgsCoordinateReferenceSystem> res = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
   projections.reserve( res.size() );
   for ( const QgsCoordinateReferenceSystem &crs : res )
   {
@@ -3055,98 +3064,22 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
 
 QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems()
 {
-  QList<QgsCoordinateReferenceSystem> res;
-
-  // Read settings from persistent storage
-  QgsSettings settings;
-  QStringList projectionsProj4  = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
-  QStringList projectionsWkt = settings.value( QStringLiteral( "UI/recentProjectionsWkt" ) ).toStringList();
-  QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
-  int max = std::max( projectionsAuthId.size(), std::max( projectionsProj4.size(), projectionsWkt.size() ) );
-  res.reserve( max );
-  for ( int i = 0; i < max; ++i )
-  {
-    const QString proj = projectionsProj4.value( i );
-    const QString wkt = projectionsWkt.value( i );
-    const QString authid = projectionsAuthId.value( i );
-
-    QgsCoordinateReferenceSystem crs;
-    if ( !authid.isEmpty() )
-      crs = QgsCoordinateReferenceSystem( authid );
-    if ( !crs.isValid() && !wkt.isEmpty() )
-      crs.createFromWkt( wkt );
-    if ( !crs.isValid() && !proj.isEmpty() )
-      crs.createFromProj( wkt );
-
-    if ( crs.isValid() )
-      res << crs;
-  }
-  return res;
+  return QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
 }
 
 void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs )
 {
-  // we only want saved and standard CRSes in the recent list
-  if ( crs.srsid() == 0 || !crs.isValid() )
-    return;
-
-  QList<QgsCoordinateReferenceSystem> recent = recentCoordinateReferenceSystems();
-  recent.removeAll( crs );
-  recent.insert( 0, crs );
-
-  // trim to max 30 items
-  recent = recent.mid( 0, 30 );
-  QStringList authids;
-  authids.reserve( recent.size() );
-  QStringList proj;
-  proj.reserve( recent.size() );
-  QStringList wkt;
-  wkt.reserve( recent.size() );
-  for ( const QgsCoordinateReferenceSystem &c : std::as_const( recent ) )
-  {
-    authids << c.authid();
-    proj << c.toProj();
-    wkt << c.toWkt( WKT_PREFERRED );
-  }
-
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+  QgsApplication::coordinateReferenceSystemRegistry()->pushRecent( crs );
 }
-
 
 void QgsCoordinateReferenceSystem::removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs )
 {
-  if ( crs.srsid() == 0 || !crs.isValid() )
-    return;
-
-  QList<QgsCoordinateReferenceSystem> recent = recentCoordinateReferenceSystems();
-  recent.removeAll( crs );
-  QStringList authids;
-  authids.reserve( recent.size() );
-  QStringList proj;
-  proj.reserve( recent.size() );
-  QStringList wkt;
-  wkt.reserve( recent.size() );
-  for ( const QgsCoordinateReferenceSystem &c : std::as_const( recent ) )
-  {
-    authids << c.authid();
-    proj << c.toProj();
-    wkt << c.toWkt( WKT_PREFERRED );
-  }
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
-  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+  QgsApplication::coordinateReferenceSystemRegistry()->removeRecent( crs );
 }
 
 void QgsCoordinateReferenceSystem::clearRecentCoordinateReferenceSystems()
 {
-  QgsSettings settings;
-  settings.remove( QStringLiteral( "UI/recentProjectionsAuthId" ) );
-  settings.remove( QStringLiteral( "UI/recentProjectionsWkt" ) );
-  settings.remove( QStringLiteral( "UI/recentProjectionsProj4" ) );
+  QgsApplication::coordinateReferenceSystemRegistry()->clearRecent();
 }
 
 void QgsCoordinateReferenceSystem::invalidateCache( bool disableCache )
@@ -3230,18 +3163,16 @@ bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   if ( !c1IsUser && c2IsUser )
     return false;
 
-  if ( !c1IsUser && !c2IsUser )
+  if ( !c1IsUser && !c2IsUser && !c1.d->mAuthId.isEmpty() && !c2.d->mAuthId.isEmpty() )
   {
     if ( c1.d->mAuthId != c2.d->mAuthId )
       return c1.d->mAuthId > c2.d->mAuthId;
   }
-  else
-  {
-    const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    if ( wkt1 != wkt2 )
-      return wkt1 > wkt2;
-  }
+
+  const QString wkt1 = c1.toWkt( Qgis::CrsWktVariant::Preferred );
+  const QString wkt2 = c2.toWkt( Qgis::CrsWktVariant::Preferred );
+  if ( wkt1 != wkt2 )
+    return wkt1 > wkt2;
 
   if ( c1.d->mCoordinateEpoch == c2.d->mCoordinateEpoch )
     return false;
@@ -3281,18 +3212,16 @@ bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   if ( c1IsUser && !c2IsUser )
     return false;
 
-  if ( !c1IsUser && !c2IsUser )
+  if ( !c1IsUser && !c2IsUser && !c1.d->mAuthId.isEmpty() && !c2.d->mAuthId.isEmpty() )
   {
     if ( c1.d->mAuthId != c2.d->mAuthId )
       return c1.d->mAuthId < c2.d->mAuthId;
   }
-  else
-  {
-    const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
-    if ( wkt1 != wkt2 )
-      return wkt1 < wkt2;
-  }
+
+  const QString wkt1 = c1.toWkt( Qgis::CrsWktVariant::Preferred );
+  const QString wkt2 = c2.toWkt( Qgis::CrsWktVariant::Preferred );
+  if ( wkt1 != wkt2 )
+    return wkt1 < wkt2;
 
   if ( c1.d->mCoordinateEpoch == c2.d->mCoordinateEpoch )
     return false;

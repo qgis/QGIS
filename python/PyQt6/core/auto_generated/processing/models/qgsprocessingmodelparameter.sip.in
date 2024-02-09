@@ -56,9 +56,9 @@ Saves this parameter to a QVariant.
 .. seealso:: :py:func:`loadVariant`
 %End
 
-    bool loadVariant( const QVariantMap &map );
+    bool loadVariant( const QMap<QString, QVariant> &map );
 %Docstring
-Loads this parameter from a QVariantMap.
+Loads this parameter from a QMap<QString, QVariant>.
 
 .. seealso:: :py:func:`toVariant`
 %End

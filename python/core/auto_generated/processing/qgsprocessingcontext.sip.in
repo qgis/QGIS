@@ -352,14 +352,14 @@ algorithm or model.
 .. versionadded:: 3.2
 %End
 
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const /HoldGIL/;
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const /HoldGIL/;
 %Docstring
 Returns the behavior used for checking invalid geometries in input layers.
 
 .. seealso:: :py:func:`setInvalidGeometryCheck`
 %End
 
-    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check );
+    void setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check );
 %Docstring
 Sets the behavior used for checking invalid geometries in input layers.
 Settings this to anything but :py:class:`QgsFeatureRequest`.GeometryNoCheck will also

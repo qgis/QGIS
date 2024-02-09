@@ -245,7 +245,7 @@ Qgis::SldExportOptions QgsMapLayerSaveStyleDialog::sldExportOptions() const
 {
   Qgis::SldExportOptions options;
 
-  if ( mStyleTypeComboBox->currentData( ) == QgsLayerPropertiesDialog::SLD )
+  if ( mStyleTypeComboBox->currentData( ) == QgsLayerPropertiesDialog::SLD && mSldExportPng->isChecked() )
   {
     options.setFlag( Qgis::SldExportOption::Png );
   }

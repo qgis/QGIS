@@ -106,8 +106,8 @@ class TestAuthManager(QgisTestCase):
         if layer_name is None:
             layer_name = 'pg_' + type_name
         uri = QgsDataSourceUri()
-        uri.setWkbType(QgsWkbTypes.Point)
-        uri.setConnection(cls.pg_host, cls.pg_port, cls.pg_dbname, cls.pg_user, cls.pg_pass, QgsDataSourceUri.SslVerifyFull, authcfg)
+        uri.setWkbType(QgsWkbTypes.Type.Point)
+        uri.setConnection(cls.pg_host, cls.pg_port, cls.pg_dbname, cls.pg_user, cls.pg_pass, QgsDataSourceUri.SslMode.SslVerifyFull, authcfg)
         uri.setKeyColumn('pk')
         uri.setSrid('EPSG:4326')
         uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
@@ -139,7 +139,7 @@ class TestAuthManager(QgisTestCase):
             pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
             for fn in pkies:
                 f = QFile(fn)
-                f.setPermissions(QFile.WriteOwner)
+                f.setPermissions(QFile.Permission.WriteOwner)
                 f.remove()
 
         # remove any temppki in temporary path to check that no

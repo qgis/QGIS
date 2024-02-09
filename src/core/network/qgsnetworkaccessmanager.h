@@ -534,9 +534,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     PyObject *s = 0;
-    Py_BEGIN_ALLOW_THREADS
+    QString id;
     Py_XINCREF( a0 );
-    QString id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
     {
       QString res;
       SIP_BLOCK_THREADS
@@ -552,9 +553,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
       SIP_UNBLOCK_THREADS
       return res;
     } );
+    Py_END_ALLOW_THREADS
 
     s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
-    Py_END_ALLOW_THREADS
     return s;
     % End
 #endif
@@ -599,17 +600,18 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
     PyObject *s = 0;
-    Py_BEGIN_ALLOW_THREADS
+    QString id;
     Py_XINCREF( a0 );
-    QString id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
     {
       SIP_BLOCK_THREADS
       Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
 #endif

@@ -64,7 +64,7 @@ Returns item flags.
 .. versionadded:: 3.22
 %End
 
-    virtual QgsAnnotationItem *clone() = 0 /Factory/;
+    virtual QgsAnnotationItem *clone() const = 0 /Factory/;
 %Docstring
 Returns a clone of the item. Ownership is transferred to the caller.
 
@@ -146,6 +146,24 @@ Sets the item's z ``index``, which controls the order in which annotation items
 are rendered in the layer.
 
 .. seealso:: :py:func:`zIndex`
+%End
+
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the item is enabled and will be rendered in the layer.
+
+.. seealso:: :py:func:`setEnabled`
+
+.. versionadded:: 3.36
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets if the item will be rendered or not in the layer.
+
+.. seealso:: :py:func:`enabled`
+
+.. versionadded:: 3.36
 %End
 
     virtual QList< QgsAnnotationItemNode > nodes() const;

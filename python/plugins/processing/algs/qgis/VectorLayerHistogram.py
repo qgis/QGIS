@@ -52,7 +52,7 @@ class VectorLayerHistogram(QgisAlgorithm):
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Attribute'), parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric))
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
         self.addParameter(QgsProcessingParameterNumber(self.BINS,
                                                        self.tr('number of bins'), minValue=2, defaultValue=10))
 

@@ -326,6 +326,16 @@ class CORE_EXPORT QgsSettingsEntryBase
     void copyValueToKey( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
 
     /**
+     * Copies the settings to the given key, if it has changed during the current QGIS session (see hasChanged()).
+     *
+     * \param key the key to copy the setting value to.
+     * \param dynamicKeyPartList is the optional dynamic key part to determine the key. It must be the same for origin and destination keys.
+     *
+     * \since QGIS 3.36
+     */
+    void copyValueToKeyIfChanged( const QString &key, const QStringList &dynamicKeyPartList = QStringList() ) const;
+
+    /**
     * Returns the parent tree element
     * \since QGIS 3.30
     */
@@ -338,6 +348,13 @@ class CORE_EXPORT QgsSettingsEntryBase
       return true;
     }
 
+    /**
+     * Returns TRUE if the setting was changed during the current QGIS session.
+     *
+     * \since QGIS 3.36
+     */
+    bool hasChanged() const { return mHasChanged; }
+
   private:
     QString formerValuekey( const QStringList &dynamicKeyPartList ) const;
 
@@ -349,6 +366,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     QVariant mDefaultValue;
     QString mDescription;
     Qgis::SettingsOptions mOptions;
+    mutable bool mHasChanged = false;
 };
 
 /**

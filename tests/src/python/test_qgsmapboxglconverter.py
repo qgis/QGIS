@@ -52,7 +52,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
     def testNoLayer(self):
         c = QgsMapBoxGlStyleConverter()
-        self.assertEqual(c.convert({'x': 'y'}), QgsMapBoxGlStyleConverter.NoLayerList)
+        self.assertEqual(c.convert({'x': 'y'}), QgsMapBoxGlStyleConverter.Result.NoLayerList)
         self.assertEqual(c.errorMessage(), 'Could not find layers list in JSON')
         self.assertIsNone(c.renderer())
         self.assertIsNone(c.labeling())
@@ -681,7 +681,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         """ Test icon-rotate property that depends on a data attribute """
         context = QgsMapBoxGlStyleConversionContext()
 
-        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
         context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
         style = {
             "layout": {
@@ -698,7 +698,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(has_renderer)
         self.assertFalse(has_labeling)
         dd_props = renderer.symbol().symbolLayers()[0].dataDefinedProperties()
-        prop = dd_props.property(QgsSymbolLayer.PropertyAngle)
+        prop = dd_props.property(QgsSymbolLayer.Property.PropertyAngle)
         self.assertEqual(prop.asExpression(), '"ROTATION"')
 
     def testCircleLayer(self):
@@ -718,19 +718,19 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseCircleLayer(style, context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         properties = rendererStyle.symbol().symbolLayers()[0].properties()
         expected_properties = {
             'angle': '0',
             'cap_style': 'square',
-            'color': '22,22,22,153',
+            'color': '22,22,22,153,rgb:0.08627450980392157,0.08627450980392157,0.08627450980392157,0.59999999999999998',
             'horizontal_anchor_point': '1',
             'joinstyle': 'bevel',
             'name': 'circle',
             'offset': '11,22',
             'offset_map_unit_scale': '3x:0,0,0,0,0,0',
             'offset_unit': 'Pixel',
-            'outline_color': '46,46,46,128',
+            'outline_color': '46,46,46,128,rgb:0.1803921568627451,0.1803921568627451,0.1803921568627451,0.50000762951094835',
             'outline_style': 'solid',
             'outline_width': '3',
             'outline_width_map_unit_scale': '3x:0,0,0,0,0,0',
@@ -780,12 +780,12 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
         self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
-        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(),
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
                          "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END")
-        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(),
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).asExpression(),
                          "array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')")
 
     def testParseLineDashArrayOddNumber(self):
@@ -811,13 +811,13 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
         self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
         self.assertEqual(rendererStyle.symbol()[0].customDashVector(), [6.0, 3.0])
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
-        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(),
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END')
-        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(),
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).asExpression(),
                          """array_to_string(array_foreach(array(4,2),@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')""")
 
     def testParseLineDashArraySingleNumber(self):
@@ -843,12 +843,12 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
         self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
-        self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(),
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END')
-        self.assertFalse(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).isActive())
+        self.assertFalse(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
 
     def testParseLineNoWidth(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -863,20 +863,20 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
         self.assertEqual(rendererStyle.symbol()[0].width(), 1.0)
 
         conversion_context.setPixelSizeConversionFactor(0.5)
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
         self.assertEqual(rendererStyle.symbol()[0].width(), 0.5)
 
     def testLinePattern(self):
         """ Test line-pattern property """
         context = QgsMapBoxGlStyleConversionContext()
 
-        image = QImage(QSize(1, 1), QImage.Format_ARGB32)
+        image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
         context.setSprites(image, {"foo": {"x": 0, "y": 0, "width": 1, "height": 1, "pixelRatio": 1}})
         style = {
             "id": "mountain range/ridge",
@@ -895,10 +895,10 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, context)
         self.assertTrue(has_renderer)
-        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.LineGeometry)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
         self.assertEqual(rendererStyle.symbol().symbolLayers()[0].layerType(), 'RasterLine')
         dd_props = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
-        prop = dd_props.property(QgsSymbolLayer.PropertyFile)
+        prop = dd_props.property(QgsSymbolLayer.Property.PropertyFile)
         self.assertTrue(prop.isActive())
 
     def testLabelWithLiteral(self):
@@ -1125,7 +1125,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertIsInstance(raster_layer, QgsRasterLayer)
         self.assertEqual(raster_layer.name(), 'Texture-Relief')
         self.assertEqual(raster_layer.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
-        self.assertEqual(raster_layer.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity).asExpression(), 'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 7 THEN 35 WHEN @vector_tile_zoom > 7 AND @vector_tile_zoom <= 8 THEN (scale_linear(@vector_tile_zoom,7,8,0.35,0.65)) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 15 THEN 65 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16 THEN (scale_linear(@vector_tile_zoom,15,16,0.65,0.3)) * 100 WHEN @vector_tile_zoom > 16 THEN 30 END')
+        self.assertEqual(raster_layer.pipe().dataDefinedProperties().property(QgsRasterPipe.Property.RendererOpacity).asExpression(), 'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 7 THEN 35 WHEN @vector_tile_zoom > 7 AND @vector_tile_zoom <= 8 THEN (scale_linear(@vector_tile_zoom,7,8,0.35,0.65)) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 15 THEN 65 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16 THEN (scale_linear(@vector_tile_zoom,15,16,0.65,0.3)) * 100 WHEN @vector_tile_zoom > 16 THEN 30 END')
 
     def testLabelWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()
@@ -1173,7 +1173,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         # mapbox fill strokes are always 1 px wide
         self.assertEqual(renderer.symbol()[0].strokeWidth(), 0)
 
-        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.SolidLine)
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.PenStyle.SolidLine)
         # if "fill-outline-color" is not specified, then MapBox specs state the
         # stroke color matches the value of fill-color if unspecified.
         self.assertEqual(renderer.symbol()[0].strokeColor().name(), '#47b312')
@@ -1194,7 +1194,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
         self.assertTrue(has_renderer)
 
-        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.SolidLine)
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.PenStyle.SolidLine)
         self.assertEqual(renderer.symbol()[0].strokeColor().name(), '#ff0000')
         self.assertEqual(renderer.symbol()[0].strokeColor().alpha(), 255)
 
@@ -1216,7 +1216,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         # resulting in visible seams between tiles. Accordingly, we only
         # set the stroke color if it's a completely different color to the
         # fill if the stroke color is opaque and the double-rendering artifacts aren't an issue
-        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.NoPen)
+        self.assertEqual(renderer.symbol()[0].strokeStyle(), Qt.PenStyle.NoPen)
 
     def testFillOpacityWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()
@@ -1286,11 +1286,11 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
         self.assertTrue(has_renderer)
         dd_props = renderer.symbol().dataDefinedProperties()
-        prop = dd_props.property(QgsSymbol.PropertyOpacity)
+        prop = dd_props.property(QgsSymbol.Property.PropertyOpacity)
         self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom <= 8 THEN (scale_linear(@vector_tile_zoom,0,8,0.1,0.2)) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,8,14,0.2,0.32)) * 100 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14,15,0.32,0.6)) * 100 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 17 THEN (scale_linear(@vector_tile_zoom,15,17,0.6,0.8)) * 100 WHEN @vector_tile_zoom > 17 THEN 80 END')
 
         dd_props = renderer.symbol()[0].dataDefinedProperties()
-        prop = dd_props.property(QgsSymbolLayer.PropertyFillColor)
+        prop = dd_props.property(QgsSymbolLayer.Property.PropertyFillColor)
         self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 8 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 8 AND @vector_tile_zoom < 14 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 14 AND @vector_tile_zoom < 15 THEN color_hsla(66, scale_linear(@vector_tile_zoom,14,15,25,21), scale_linear(@vector_tile_zoom,14,15,85,90), 255) WHEN @vector_tile_zoom >= 15 AND @vector_tile_zoom < 17 THEN color_hsla(scale_linear(@vector_tile_zoom,15,17,66,67), scale_linear(@vector_tile_zoom,15,17,21,23), scale_linear(@vector_tile_zoom,15,17,90,93), 255) WHEN @vector_tile_zoom >= 17 THEN color_hsla(67, 23, 93, 255) ELSE color_hsla(67, 23, 93, 255) END')
 
 

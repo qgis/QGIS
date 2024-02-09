@@ -26,32 +26,8 @@ Contains settings for how a map layer will be labeled.
     ~QgsPalLayerSettings();
 
 
-
-    enum LinePlacementFlags
-    {
-      OnLine,
-      AboveLine,
-      BelowLine,
-      MapOrientation,
-    };
-
-    enum DirectionSymbols
-    {
-      SymbolLeftRight,
-      SymbolAbove,
-      SymbolBelow
-    };
-
-
-    enum ObstacleType
-    {
-      PolygonInterior,
-      PolygonBoundary,
-      PolygonWhole
-    };
-
-    enum Property
-    {
+    enum class Property
+      {
       // text style
       Size,
       Bold,
@@ -190,7 +166,6 @@ Contains settings for how a map layer will be labeled.
       Show,
       AlwaysShow
     };
-
 
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames /In,Out/, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 %Docstring
@@ -374,61 +349,6 @@ Set unit for rotation of labels.
     Qgis::UpsideDownLabelHandling upsidedownLabels;
 
     bool labelPerPart;
-
-
-%Property( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
-%Property( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
-%Property( name = minFeatureSize, get = _minFeatureSize, set = _setMinFeatureSize )
-%Property( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
-%Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
-%Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
-%Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
-%Property( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
-%Property( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
-%Property( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
-%Property( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
-%Property( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
-%Property( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
-
-%Property( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
-%Property( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
-%Property( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
-%Property( name = displayAll, get = _getDisplayAll, set = _setDisplayAll )
-
-    bool _limitNumLabels() const;
-    void _setLimitNumLabels( bool limit );
-    int _maxNumLabels() const;
-    void _setMaxNumLabels( int max );
-    double _minFeatureSize() const;
-    void _setMinFeatureSize( double size );
-    bool _getIsObstacle() const;
-    void _setIsObstacle( bool obstacle );
-    double _getObstacleFactor() const;
-    void _setObstacleFactor( double factor );
-    ObstacleType _getObstacleType() const;
-    void _setObstacleType( ObstacleType type );
-    unsigned int _getLinePlacementFlags() const;
-    void _setLinePlacementFlags( unsigned int flags );
-    bool _getMergeLines() const;
-    void _setMergeLines( bool merge );
-    bool _getAddDirectionSymbol() const;
-    void _setAddDirectionSymbol( bool add );
-    QString _getLeftDirectionSymbol() const;
-    void _setLeftDirectionSymbol( const QString &symbol );
-    QString _getRightDirectionSymbol() const;
-    void _setRightDirectionSymbol( const QString &symbol );
-    bool _getReverseDirectionSymbol() const;
-    void _setReverseDirectionSymbol( bool reverse );
-    DirectionSymbols _getPlaceDirectionSymbol() const;
-    void _setPlaceDirectionSymbol( DirectionSymbols placement );
-    double _getOverrunDistance() const;
-    void _setOverrunDistance( double distance );
-    Qgis::RenderUnit _getOverrunDistanceUnit() const;
-    void _setOverrunDistanceUnit( Qgis::RenderUnit unit );
-    QgsMapUnitScale _getOverrunDistanceMapUnitScale() const;
-    void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
-    bool _getDisplayAll() const;
-    void _setDisplayAll( bool display );
 
     double zIndex;
 

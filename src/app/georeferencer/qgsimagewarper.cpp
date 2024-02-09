@@ -94,7 +94,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   if ( crs.isValid() )
   {
     OGRSpatialReference oTargetSRS;
-    oTargetSRS.importFromWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().data() );
+    oTargetSRS.importFromWkt( crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toUtf8().data() );
 
     char *wkt = nullptr;
     const OGRErr err = oTargetSRS.exportToWkt( &wkt );

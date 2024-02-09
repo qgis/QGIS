@@ -35,3 +35,14 @@ QgsDxfExport.PolygonMesh = QgsDxfExport.DxfPolylineFlag.PolygonMesh
 QgsDxfExport.PolyfaceMesh = QgsDxfExport.DxfPolylineFlag.PolyfaceMesh
 QgsDxfExport.ContinuousPattern = QgsDxfExport.DxfPolylineFlag.ContinuousPattern
 QgsDxfExport.DxfPolylineFlags = lambda flags=0: QgsDxfExport.DxfPolylineFlag(flags)
+def _force_int(v): return v if isinstance(v, int) else int(v.value)
+
+
+QgsDxfExport.Flag.__bool__ = lambda flag: bool(_force_int(flag))
+QgsDxfExport.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsDxfExport.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsDxfExport.Flag.__or__ = lambda flag1, flag2: QgsDxfExport.Flag(_force_int(flag1) | _force_int(flag2))
+QgsDxfExport.DxfPolylineFlag.__bool__ = lambda flag: bool(_force_int(flag))
+QgsDxfExport.DxfPolylineFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
+QgsDxfExport.DxfPolylineFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
+QgsDxfExport.DxfPolylineFlag.__or__ = lambda flag1, flag2: QgsDxfExport.DxfPolylineFlag(_force_int(flag1) | _force_int(flag2))

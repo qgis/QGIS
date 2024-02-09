@@ -58,7 +58,7 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
     QgsRectangle boundingBox() const override;
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
 
-    QgsAnnotationLineTextItem *clone() override SIP_FACTORY;
+    QgsAnnotationLineTextItem *clone() const override SIP_FACTORY;
 
     /**
      * Returns the geometry of the item.

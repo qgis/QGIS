@@ -23,13 +23,14 @@ A QAbstractItemModel subclass for showing sensors within a :py:class:`QgsSensorM
 %End
   public:
 
-    enum class Column /BaseType=IntFlag/
+    enum class Column /BaseType=IntEnum/
     {
       Name,
       LastValue,
     };
 
-    enum Role
+
+    enum class CustomRole /BaseType=IntEnum/
     {
       SensorType,
       SensorId,

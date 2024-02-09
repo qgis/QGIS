@@ -142,18 +142,19 @@ bool QgsStyle::addEntity( const QString &name, const QgsStyleEntityInterface *en
   return false;
 }
 
-QgsStyle *QgsStyle::defaultStyle() // static
+QgsStyle *QgsStyle::defaultStyle( bool initialize ) // static
 {
+  static QString sStyleFilename;
   if ( !sDefaultStyle )
   {
     QgsScopedRuntimeProfile profile( tr( "Load default style database" ) );
-    QString styleFilename = QgsApplication::userStylePath();
+    sStyleFilename = QgsApplication::userStylePath();
 
     // copy default style if user style doesn't exist
-    if ( !QFile::exists( styleFilename ) )
+    if ( !QFile::exists( sStyleFilename ) )
     {
       sDefaultStyle = new QgsStyle;
-      sDefaultStyle->createDatabase( styleFilename );
+      sDefaultStyle->createDatabase( sStyleFilename );
       if ( QFile::exists( QgsApplication::defaultStylePath() ) )
       {
         if ( sDefaultStyle->importXml( QgsApplication::defaultStylePath() ) )
@@ -165,12 +166,37 @@ QgsStyle *QgsStyle::defaultStyle() // static
     else
     {
       sDefaultStyle = new QgsStyle;
-      sDefaultStyle->load( styleFilename );
-      sDefaultStyle->upgradeIfRequired();
+      sDefaultStyle->mInitialized = false;
+      if ( initialize )
+      {
+        sDefaultStyle->initializeDefaultStyle( sStyleFilename );
+      }
     }
     sDefaultStyle->setName( QObject::tr( "Default" ) );
   }
+  else if ( initialize && !sDefaultStyle->mInitialized )
+  {
+    // lazy initialize
+    sDefaultStyle->initializeDefaultStyle( sStyleFilename );
+  }
   return sDefaultStyle;
+}
+
+void QgsStyle::initializeDefaultStyle( const QString &filename )
+{
+  Q_ASSERT( this == sDefaultStyle );
+  if ( this != sDefaultStyle )
+    return;
+
+  if ( mInitialized )
+    return;
+
+  QgsScopedRuntimeProfile profile( tr( "Initialize default style database" ) );
+
+  mInitialized = true;
+  load( filename );
+  upgradeIfRequired();
+  emit initialized();
 }
 
 void QgsStyle::cleanDefaultStyle() // static

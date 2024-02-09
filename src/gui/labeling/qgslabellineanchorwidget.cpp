@@ -84,10 +84,10 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
     updateAnchorTextPointHint();
   } );
 
-  registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::LineAnchorPercent );
-  registerDataDefinedButton( mLineClippingDDBtn, QgsPalLayerSettings::LineAnchorClipping );
-  registerDataDefinedButton( mAnchorTextPointDDBtn, QgsPalLayerSettings::LineAnchorTextPoint );
-  registerDataDefinedButton( mAnchorTypeDDBtn, QgsPalLayerSettings::LineAnchorType );
+  registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::Property::LineAnchorPercent );
+  registerDataDefinedButton( mLineClippingDDBtn, QgsPalLayerSettings::Property::LineAnchorClipping );
+  registerDataDefinedButton( mAnchorTextPointDDBtn, QgsPalLayerSettings::Property::LineAnchorTextPoint );
+  registerDataDefinedButton( mAnchorTypeDDBtn, QgsPalLayerSettings::Property::LineAnchorType );
   updateAnchorTypeHint();
   updateAnchorTextPointHint();
 }
@@ -135,10 +135,10 @@ QgsLabelLineSettings QgsLabelLineAnchorWidget::settings() const
 
 void QgsLabelLineAnchorWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
-  properties.setProperty( QgsPalLayerSettings::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorPercent ) );
-  properties.setProperty( QgsPalLayerSettings::LineAnchorClipping, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorClipping ) );
-  properties.setProperty( QgsPalLayerSettings::LineAnchorType, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorType ) );
-  properties.setProperty( QgsPalLayerSettings::LineAnchorTextPoint, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorTextPoint ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorPercent ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorClipping, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorClipping ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorType, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorType ) );
+  properties.setProperty( QgsPalLayerSettings::Property::LineAnchorTextPoint, mDataDefinedProperties.property( QgsPalLayerSettings::Property::LineAnchorTextPoint ) );
 }
 
 void QgsLabelLineAnchorWidget::updateAnchorTypeHint()

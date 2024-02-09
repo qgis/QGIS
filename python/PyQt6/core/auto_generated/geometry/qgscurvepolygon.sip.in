@@ -25,10 +25,12 @@ Curve polygon geometry type
     QgsCurvePolygon();
     QgsCurvePolygon( const QgsCurvePolygon &p );
 
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
     virtual bool operator==( const QgsAbstractGeometry &other ) const;
 
     virtual bool operator!=( const QgsAbstractGeometry &other ) const;
-
 
     ~QgsCurvePolygon();
 

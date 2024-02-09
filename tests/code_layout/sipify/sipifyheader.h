@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
   public:
     //! This is an enum
-    enum MyEnum : int
+    enum MyEnum : int SIP_ENUM_BASETYPE( IntFlag )
     {
       Success = 0, //!< Edit operation was successful
       NoSuccess = 1, //!< Edit operation resulted in an empty geometry

@@ -10,7 +10,6 @@
 
 
 
-
 class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
@@ -151,7 +150,6 @@ Returns the number of named nodes in the complete key
 %Docstring
 Registers a child nodes
 %End
-
 
 
   private:

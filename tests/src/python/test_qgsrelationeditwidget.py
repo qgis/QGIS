@@ -160,7 +160,7 @@ class TestQgsRelationEditWidget(QgisTestCase):
             # box
             widget = self.widget.findChild(QMessageBox)
             buttonBox = widget.findChild(QDialogButtonBox)
-            deleteButton = next(b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.AcceptRole)
+            deleteButton = next(b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.ButtonRole.AcceptRole)
             deleteButton.click()
 
         QTimer.singleShot(1, clickOk)

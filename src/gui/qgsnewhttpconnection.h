@@ -40,7 +40,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * Available connection types for configuring in the dialog.
      * \since QGIS 3.0
      */
-    enum ConnectionType
+    enum ConnectionType SIP_ENUM_BASETYPE( IntFlag )
     {
       ConnectionWfs = 1 << 1, //!< WFS connection
       ConnectionWms = 1 << 2, //!< WMS connection
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * Flags controlling dialog behavior.
      * \since QGIS 3.0
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       FlagShowTestConnection = 1 << 1, //!< Display the 'test connection' button
       FlagHideAuthenticationGroup = 1 << 2, //!< Hide the Authentication group

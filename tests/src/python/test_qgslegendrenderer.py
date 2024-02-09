@@ -42,7 +42,7 @@ class TestPyQgsLegendRenderer(QgisTestCase):
         settings = QgsLegendSettings()
         renderer = QgsLegendRenderer(model, settings)
         nodes = renderer.exportLegendToJson(ctx)['nodes'].toVariant()
-        self.assertEqual(len(nodes), 7)
+        self.assertEqual(len(nodes), 9)
         self.assertEqual(nodes[0]['type'], 'layer')
         self.assertEqual(nodes[0]['title'], 'testlayer')
 

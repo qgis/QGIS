@@ -55,27 +55,27 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgswindow3dengine.h"
 #include "qgsraycastingutils_p.h"
 
-Qgs3DAxis::Qgs3DAxis( Qgs3DWindow *parentWindow,
+Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas,
                       Qt3DCore::QEntity *parent3DScene,
                       Qgs3DMapScene *mapScene,
                       QgsCameraController *cameraCtrl,
                       Qgs3DMapSettings *map )
-  : QObject( parentWindow )
+  : QObject( canvas )
   , mMapSettings( map )
-  , mParentWindow( parentWindow )
+  , mCanvas( canvas )
   , mMapScene( mapScene )
   , mCameraController( cameraCtrl )
   , mCrs( map->crs() )
 {
   mAxisViewport = constructAxisViewport( parent3DScene );
-  mAxisViewport->setParent( mParentWindow->activeFrameGraph() );
+  mAxisViewport->setParent( mCanvas->activeFrameGraph() );
 
   mTwoDLabelViewport = constructLabelViewport( parent3DScene, QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
-  mTwoDLabelViewport->setParent( mParentWindow->activeFrameGraph() );
+  mTwoDLabelViewport->setParent( mCanvas->activeFrameGraph() );
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
-  connect( mParentWindow, &Qgs3DWindow::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
-  connect( mParentWindow, &Qgs3DWindow::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
+  connect( mCanvas, &Qgs3DMapCanvas::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
+  connect( mCanvas, &Qgs3DMapCanvas::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
 
   createAxisScene();
   onAxisViewportSizeUpdate();
@@ -107,12 +107,12 @@ void Qgs3DAxis::init3DObjectPicking( )
   QObject::connect( mScreenRayCaster, &Qt3DRender::QScreenRayCaster::hitsChanged, this, &Qgs3DAxis::onTouchedByRay );
 
   // we need event filter (see Qgs3DAxis::eventFilter) to handle the mouse click event as this event is not catchable via the Qt3DRender::QObjectPicker
-  mParentWindow->installEventFilter( this );
+  mCanvas->installEventFilter( this );
 }
 
 bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
 {
-  if ( watched != mParentWindow )
+  if ( watched != mCanvas )
     return false;
 
   if ( event->type() == QEvent::MouseButtonPress )
@@ -146,8 +146,8 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
     else if ( ! mIsDragging )
     {
       // limit ray caster usage to the axis viewport
-      QPointF normalizedPos( static_cast<float>( mouseEvent->pos().x() ) / mParentWindow->width(),
-                             ( float )mouseEvent->pos().y() / mParentWindow->height() );
+      QPointF normalizedPos( static_cast<float>( mouseEvent->pos().x() ) / mCanvas->width(),
+                             ( float )mouseEvent->pos().y() / mCanvas->height() );
 
       if ( 2 <= QgsLogger::debugLevel() && event->type() == QEvent::MouseButtonRelease )
       {
@@ -166,9 +166,9 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
       }
 
       // when we exit the viewport, reset the mouse cursor if needed
-      else if ( mPreviousCursor != Qt::ArrowCursor && mParentWindow->cursor() == Qt::ArrowCursor )
+      else if ( mPreviousCursor != Qt::ArrowCursor && mCanvas->cursor() == Qt::ArrowCursor )
       {
-        mParentWindow->setCursor( mPreviousCursor );
+        mCanvas->setCursor( mPreviousCursor );
         mPreviousCursor = Qt::ArrowCursor;
       }
 
@@ -202,7 +202,11 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
 
     for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
     {
-      if ( hits.at( i ).distance() < 500.0f && ( hits.at( i ).entity() == mCubeRoot || hits.at( i ).entity() == mAxisRoot || hits.at( i ).entity()->parent() == mCubeRoot || hits.at( i ).entity()->parent() == mAxisRoot ) )
+      if ( hits.at( i ).distance() < 500.0f && hits.at( i ).entity() &&
+           ( hits.at( i ).entity() == mCubeRoot ||
+             hits.at( i ).entity() == mAxisRoot ||
+             hits.at( i ).entity()->parent() == mCubeRoot ||
+             hits.at( i ).entity()->parent() == mAxisRoot ) )
       {
         mHitsFound = i;
       }
@@ -213,10 +217,10 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   {
     if ( mHitsFound != -1 )
     {
-      if ( mParentWindow->cursor() != Qt::ArrowCursor )
+      if ( mCanvas->cursor() != Qt::ArrowCursor )
       {
-        mPreviousCursor = mParentWindow->cursor();
-        mParentWindow->setCursor( Qt::ArrowCursor );
+        mPreviousCursor = mCanvas->cursor();
+        mCanvas->setCursor( Qt::ArrowCursor );
         QgsDebugMsgLevel( "Enabling arrow cursor", 2 );
       }
     }
@@ -336,8 +340,8 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   mTwoDLabelCamera->setParent( mTwoDLabelSceneEntity );
   mTwoDLabelCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
   mTwoDLabelCamera->lens()->setOrthographicProjection(
-    -mParentWindow->width() / 2.0f, mParentWindow->width() / 2.0f,
-    -mParentWindow->height() / 2.0f, mParentWindow->height() / 2.0f,
+    -mCanvas->width() / 2.0f, mCanvas->width() / 2.0f,
+    -mCanvas->height() / 2.0f, mCanvas->height() / 2.0f,
     -10.0f, 100.0f );
 
   mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
@@ -709,15 +713,8 @@ void Qgs3DAxis::displayMenuAt( const QPoint &sourcePos )
   {
     createMenu();
   }
-  QObject *threeDMapCanvasWidget = mMapScene->engine()  // ie. 3DEngine
-                                   ->parent() // ie. Qgs3DMapCanvas
-                                   ->parent(); // ie. Qgs3DMapCanvasWidget
 
-  QWidget *container = dynamic_cast<QWidget * >( threeDMapCanvasWidget->parent() );
-  if ( container )
-    mMenu->popup( container->mapToGlobal( sourcePos ) );
-  else
-    mMenu->popup( mParentWindow->parent()->mapToGlobal( sourcePos ) );
+  mMenu->popup( mCanvas->mapToGlobal( sourcePos ) );
 }
 
 void Qgs3DAxis::onAxisModeChanged( Qgs3DAxisSettings::Mode mode )
@@ -1034,8 +1031,8 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
 {
   Qgs3DAxisSettings settings = mMapSettings->get3DAxisSettings();
 
-  double windowWidth = ( double )mParentWindow->width();
-  double windowHeight = ( double )mParentWindow->height();
+  double windowWidth = ( double )mCanvas->width();
+  double windowHeight = ( double )mCanvas->height();
 
   QgsMapSettings set;
   if ( 2 <= QgsLogger::debugLevel() )
@@ -1043,16 +1040,16 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window w/h: %1px / %2px" )
                       .arg( windowWidth ).arg( windowHeight ), 2 );
     QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window physicalDpi %1 (%2, %3)" )
-                      .arg( mParentWindow->screen()->physicalDotsPerInch() )
-                      .arg( mParentWindow->screen()->physicalDotsPerInchX() )
-                      .arg( mParentWindow->screen()->physicalDotsPerInchY() ), 2 );
+                      .arg( mCanvas->screen()->physicalDotsPerInch() )
+                      .arg( mCanvas->screen()->physicalDotsPerInchX() )
+                      .arg( mCanvas->screen()->physicalDotsPerInchY() ), 2 );
     QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window logicalDotsPerInch %1 (%2, %3)" )
-                      .arg( mParentWindow->screen()->logicalDotsPerInch() )
-                      .arg( mParentWindow->screen()->logicalDotsPerInchX() )
-                      .arg( mParentWindow->screen()->logicalDotsPerInchY() ), 2 );
+                      .arg( mCanvas->screen()->logicalDotsPerInch() )
+                      .arg( mCanvas->screen()->logicalDotsPerInchX() )
+                      .arg( mCanvas->screen()->logicalDotsPerInchY() ), 2 );
 
     QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window pixel ratio %1" )
-                      .arg( mParentWindow->screen()->devicePixelRatio() ), 2 );
+                      .arg( mCanvas->screen()->devicePixelRatio() ), 2 );
 
     QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate set pixel ratio %1" )
                       .arg( set.devicePixelRatio() ), 2 );
@@ -1068,7 +1065,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   // computes the viewport size according to screen dpi but as the viewport size growths too fast
   // then we limit the growth by using a factor on the dpi difference.
   double viewportPixelSize = defaultViewportPixelSize + ( ( double )settings.defaultViewportSize() / 25.4 )
-                             * ( mParentWindow->screen()->physicalDotsPerInch() - 92.0 ) * 0.7;
+                             * ( mCanvas->screen()->physicalDotsPerInch() - 92.0 ) * 0.7;
   QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate viewportPixelSize %1" ).arg( viewportPixelSize ), 2 );
   double widthRatio = viewportPixelSize / windowWidth;
   double heightRatio = widthRatio * windowWidth / windowHeight;
@@ -1174,17 +1171,17 @@ void Qgs3DAxis::updateAxisLabelPosition()
   {
     mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
-                                     mParentWindow->size() ) );
+                                     mCanvas->size() ) );
     onTextXChanged( mTextX->text() );
 
     mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
-                                     mParentWindow->size() ) );
+                                     mCanvas->size() ) );
     onTextYChanged( mTextY->text() );
 
     mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
-                                     mParentWindow->size() ) );
+                                     mCanvas->size() ) );
     onTextZChanged( mTextZ->text() );
   }
 }

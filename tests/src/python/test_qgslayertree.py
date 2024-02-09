@@ -146,7 +146,7 @@ class TestQgsLayerTree(QgisTestCase):
 
         group_layer.deleteLater()
         group_layer = None
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         # should be automatically cleaned
         self.assertFalse(group_node.groupLayer())
 

@@ -161,7 +161,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     /**
      * Flags for geometry checks.
      */
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer peroperties
     };

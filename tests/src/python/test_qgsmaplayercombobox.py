@@ -222,7 +222,7 @@ class TestQgsMapLayerComboBox(QgisTestCase):
         self.assertEqual(m.itemText(6), 'b')
 
         l3.deleteLater()
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
         self.assertEqual(m.count(), 6)
         self.assertFalse(m.itemText(0))
         self.assertEqual(m.itemText(1), 'l1')

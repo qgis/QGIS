@@ -26,12 +26,15 @@
 #include "qgsdoublevalidator.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsstackedwidget.h"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
 {
   setupUi( this );
+
+  mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
   mPointSizeSpinBox->setClearValue( 2.0 );
   mMaxScreenErrorSpinBox->setClearValue( 1.0 );

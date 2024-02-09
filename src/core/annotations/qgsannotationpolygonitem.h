@@ -53,7 +53,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     static QgsAnnotationPolygonItem *create() SIP_FACTORY;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-    QgsAnnotationPolygonItem *clone() override SIP_FACTORY;
+    QgsAnnotationPolygonItem *clone() const override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
 
     /**

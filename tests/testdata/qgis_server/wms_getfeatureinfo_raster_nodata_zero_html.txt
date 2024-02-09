@@ -1,14 +1,44 @@
 *****
 Content-Type: text/html; charset=utf-8
 
-<HEAD>
-<TITLE> GetFeatureInfo results </TITLE>
-<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-</HEAD>
-<BODY>
-<TABLE border=1 width=100%>
-<TR><TH width=25%>Layer</TH><TD>requires_warped_vrt</TD></TR>
-</BR><TR><TH>Band 1</TH><TD>0</TD></TR>
-</TABLE>
-<BR></BR>
-</BODY>
+<!DOCTYPE html>
+
+<head>
+  <title>Information</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>
+    body {
+      font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
+    }
+
+    table,
+    th,
+    td {
+      width: 100%;
+      border: 1px solid black;
+      border-collapse: collapse;
+      text-align: left;
+      padding: 2px;
+    }
+
+    th {
+      width: 25%;
+      font-weight: bold;
+    }
+
+    .layer-title {
+      font-weight: bold;
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='layer-title'>requires_warped_vrt</div>
+  <table>
+    <tr>
+      <th>Band 1</th>
+      <td>0</td>
+    </tr>
+  </table>
+</body>

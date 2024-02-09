@@ -5,6 +5,7 @@ about=MetaSearch is a QGIS plugin to interact with metadata catalog services, su
 category=Web
 version=0.3.6
 qgisMinimumVersion=3.0
+supportsQt6=yes
 icon=images/MetaSearch.svg
 author=Tom Kralidis
 email=tomkralidis@gmail.com

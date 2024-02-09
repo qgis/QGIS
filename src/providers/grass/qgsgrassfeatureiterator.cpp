@@ -68,7 +68,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
 
   if ( !request.filterRect().isNull() )
   {
-    setSelectionRect( request.filterRect(), request.flags() & QgsFeatureRequest::ExactIntersect );
+    setSelectionRect( request.filterRect(), request.flags() & Qgis::FeatureRequestFlag::ExactIntersect );
   }
   else
   {
@@ -231,7 +231,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   // TODO: locking each feature is too expensive. What happens with map structures if lines are
   // written/rewritten/deleted? Can be read simultaneously?
   mSource->mLayer->map()->lockReadWrite(); // locks only in editing mode
-  bool filterById = mRequest.filterType() == QgsFeatureRequest::FilterFid;
+  bool filterById = mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid;
   int cat = 0;
   int type = 0;
   int lid = 0;
@@ -477,7 +477,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   QgsDebugMsgLevel( QString( "mSource->mFields.size() = %1" ).arg( mSource->mFields.size() ), 3 );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) )
   {
     if ( oldGeometry )
     {
@@ -497,7 +497,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
       symbol = mSource->mLayer->map()->topoSymbol( lid );
     }
 
-    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    if ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes )
       setFeatureAttributes( cat, &feature, mRequest.subsetOfAttributes(), symbol );
     else
       setFeatureAttributes( cat, &feature, symbol );

@@ -48,7 +48,7 @@ def load_user_expressions(path):
             error = traceback.format_exc()
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
             msg = QCoreApplication.translate("UserExpressions", "The user expression {0} is not valid").format(name)
-            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, Qgis.Warning)
+            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, Qgis.MessageLevel.Warning)
 
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")

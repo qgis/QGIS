@@ -56,7 +56,7 @@ class AddScriptFromFileAction(ToolboxAction):
                 except OSError as e:
                     QgsMessageLog.logMessage(self.tr("Could not copy script '{}'\n{}").format(f, str(e)),
                                              "Processing",
-                                             Qgis.Warning)
+                                             Qgis.MessageLevel.Warning)
 
             if valid > 0:
                 QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()

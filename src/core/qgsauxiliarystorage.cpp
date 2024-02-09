@@ -31,41 +31,41 @@
 #define AS_EXTENSION QStringLiteral( "qgd" )
 #define AS_JOINPREFIX QStringLiteral( "auxiliary_storage_" )
 
-typedef QVector<QgsPalLayerSettings::Property> PalPropertyList;
-typedef QVector<QgsSymbolLayer::Property> SymbolPropertyList;
+typedef QVector<int> PalPropertyList;
+typedef QVector<int> SymbolPropertyList;
 
 Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
 {
-  QgsPalLayerSettings::PositionX,
-  QgsPalLayerSettings::PositionY,
-  QgsPalLayerSettings::Show,
-  QgsPalLayerSettings::LabelRotation,
-  QgsPalLayerSettings::Family,
-  QgsPalLayerSettings::FontStyle,
-  QgsPalLayerSettings::Size,
-  QgsPalLayerSettings::Bold,
-  QgsPalLayerSettings::Italic,
-  QgsPalLayerSettings::Underline,
-  QgsPalLayerSettings::Color,
-  QgsPalLayerSettings::Strikeout,
-  QgsPalLayerSettings::MultiLineAlignment,
-  QgsPalLayerSettings::BufferSize,
-  QgsPalLayerSettings::BufferDraw,
-  QgsPalLayerSettings::BufferColor,
-  QgsPalLayerSettings::LabelDistance,
-  QgsPalLayerSettings::Hali,
-  QgsPalLayerSettings::Vali,
-  QgsPalLayerSettings::ScaleVisibility,
-  QgsPalLayerSettings::MinScale,
-  QgsPalLayerSettings::MaxScale,
-  QgsPalLayerSettings::AlwaysShow,
-  QgsPalLayerSettings::CalloutDraw,
-  QgsPalLayerSettings::LabelAllParts
+  static_cast< int >( QgsPalLayerSettings::Property::PositionX ),
+  static_cast< int >( QgsPalLayerSettings::Property::PositionY ),
+  static_cast< int >( QgsPalLayerSettings::Property::Show ),
+  static_cast< int >( QgsPalLayerSettings::Property::LabelRotation ),
+  static_cast< int >( QgsPalLayerSettings::Property::Family ),
+  static_cast< int >( QgsPalLayerSettings::Property::FontStyle ),
+  static_cast< int >( QgsPalLayerSettings::Property::Size ),
+  static_cast< int >( QgsPalLayerSettings::Property::Bold ),
+  static_cast< int >( QgsPalLayerSettings::Property::Italic ),
+  static_cast< int >( QgsPalLayerSettings::Property::Underline ),
+  static_cast< int >( QgsPalLayerSettings::Property::Color ),
+  static_cast< int >( QgsPalLayerSettings::Property::Strikeout ),
+  static_cast< int >( QgsPalLayerSettings::Property::MultiLineAlignment ),
+  static_cast< int >( QgsPalLayerSettings::Property::BufferSize ),
+  static_cast< int >( QgsPalLayerSettings::Property::BufferDraw ),
+  static_cast< int >( QgsPalLayerSettings::Property::BufferColor ),
+  static_cast< int >( QgsPalLayerSettings::Property::LabelDistance ),
+  static_cast< int >( QgsPalLayerSettings::Property::Hali ),
+  static_cast< int >( QgsPalLayerSettings::Property::Vali ),
+  static_cast< int >( QgsPalLayerSettings::Property::ScaleVisibility ),
+  static_cast< int >( QgsPalLayerSettings::Property::MinScale ),
+  static_cast< int >( QgsPalLayerSettings::Property::MaxScale ),
+  static_cast< int >( QgsPalLayerSettings::Property::AlwaysShow ),
+  static_cast< int >( QgsPalLayerSettings::Property::CalloutDraw ),
+  static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts )
 } ) )
 Q_GLOBAL_STATIC_WITH_ARGS( SymbolPropertyList, symbolHiddenProperties, (
 {
-  QgsSymbolLayer::PropertyAngle,
-  QgsSymbolLayer::PropertyOffset
+  static_cast< int >( QgsSymbolLayer::Property::Angle ),
+  static_cast< int >( QgsSymbolLayer::Property::Offset )
 } ) )
 
 //
@@ -236,7 +236,7 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
   if ( layer && layer->labeling() && layer->auxiliaryLayer() )
   {
     // property definition are identical whatever the provider id
-    const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[property];
+    const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast< int >( property )];
     const QString fieldName = nameFromProperty( def, true );
 
     layer->auxiliaryLayer()->addAuxiliaryField( def );
@@ -285,7 +285,7 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
 
   if ( layer && layer->diagramLayerSettings() && layer->auxiliaryLayer() )
   {
-    const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[property];
+    const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[static_cast<int>( property )];
 
     if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
     {
@@ -325,7 +325,7 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
   if ( layer && layer->labeling() && layer->labeling()->settings().callout() && layer->auxiliaryLayer() )
   {
     // property definition are identical whatever the provider id
-    const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[property];
+    const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast< int >( property )];
     const QString fieldName = nameFromProperty( def, true );
 
     layer->auxiliaryLayer()->addAuxiliaryField( def );
@@ -373,7 +373,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
   if ( def.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
     const PalPropertyList &palProps = *palHiddenProperties();
-    for ( const QgsPalLayerSettings::Property &p : palProps )
+    for ( const int p : palProps )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )
@@ -386,7 +386,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
   else if ( def.origin().compare( QLatin1String( "symbol" ) ) == 0 )
   {
     const SymbolPropertyList &symbolProps = *symbolHiddenProperties();
-    for ( const QgsSymbolLayer::Property &p : symbolProps )
+    for ( int p : symbolProps )
     {
       const QString propName = QgsSymbolLayer::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )

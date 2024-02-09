@@ -84,7 +84,7 @@ class RegularPoints(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
                                                     self.tr('Output layer CRS'), 'ProjectCrs'))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'regularpoints'
@@ -104,7 +104,7 @@ class RegularPoints(QgisAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, crs)
+                                               fields, QgsWkbTypes.Type.Point, crs)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -146,7 +146,7 @@ class RegularPoints(QgisAlgorithm):
                 if extent_engine.intersects(geom.constGet()):
                     f.setAttributes([id])
                     f.setGeometry(geom)
-                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                    sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
                     x += pSpacing
                     id += 1
 

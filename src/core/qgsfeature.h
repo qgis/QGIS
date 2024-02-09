@@ -296,7 +296,8 @@ class CORE_EXPORT QgsFeature
     else
     {
       QVariantMap *v = new QVariantMap( sipCpp->attributeMap() );
-      sipRes = sipConvertFromNewType( v, sipType_QVariantMap, Py_None );
+      const sipTypeDef *qvariantmap_type = sipFindType( "QMap<QString,QVariant>" );
+      sipRes = sipConvertFromNewType( v, qvariantmap_type, Py_None );
     }
     % End
 #endif

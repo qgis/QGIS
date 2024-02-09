@@ -44,6 +44,20 @@ widget to customize the searches performed by its :py:func:`~QgsLocatorWidget.lo
 as prioritizing results which are near the current canvas extent.
 %End
 
+    void setPlaceholderText( const QString  &text );
+%Docstring
+Set placeholder ``text`` for the line edit.
+
+.. versionadded:: 3.36
+%End
+
+    void setResultContainerAnchors( QgsFloatingWidget::AnchorPoint anchorPoint, QgsFloatingWidget::AnchorPoint anchorWidgetPoint );
+%Docstring
+Sets the result container ``anchorPoint`` and ``anchorWidgetPoint`` position.
+
+.. versionadded:: 3.36
+%End
+
   public slots:
 
     void search( const QString &string );

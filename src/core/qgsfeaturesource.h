@@ -38,22 +38,6 @@ class CORE_EXPORT QgsFeatureSource
 {
   public:
 
-    /**
-     * Possible return value for hasFeatures() to determine if a source is empty.
-     * It is implemented as a three-value logic, so it can return if
-     * there are features available for sure, if there are no features
-     * available for sure or if there might be features available but
-     * there is no guarantee for this.
-     *
-     * \since QGIS 3.4
-     */
-    enum FeatureAvailability
-    {
-      NoFeaturesAvailable, //!< There are certainly no features available in this source
-      FeaturesAvailable, //!< There is at least one feature available in this source
-      FeaturesMaybeAvailable //!< There may be features available in this source
-    };
-
     virtual ~QgsFeatureSource() = default;
 
     /**
@@ -112,7 +96,7 @@ class CORE_EXPORT QgsFeatureSource
      *
      * \since QGIS 3.2
      */
-    virtual FeatureAvailability hasFeatures() const;
+    virtual Qgis::FeatureAvailability hasFeatures() const;
 
     /**
      * Returns the set of unique values contained within the specified \a fieldIndex from this source.
@@ -189,17 +173,6 @@ class CORE_EXPORT QgsFeatureSource
                                  QgsFeedback *feedback = nullptr ) SIP_FACTORY;
 
     /**
-     * Enumeration of spatial index presence states.
-     * \since QGIS 3.10.1
-     */
-    enum SpatialIndexPresence
-    {
-      SpatialIndexUnknown = 0, //!< Spatial index presence cannot be determined, index may or may not exist
-      SpatialIndexNotPresent = 1, //!< No spatial index exists for the source
-      SpatialIndexPresent = 2, //!< A valid spatial index exists for the source
-    };
-
-    /**
      * Returns an enum value representing the presence of a valid spatial index on the source,
      * if it can be determined.
      *
@@ -208,7 +181,7 @@ class CORE_EXPORT QgsFeatureSource
      *
      * \since QGIS 3.10.1
      */
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )

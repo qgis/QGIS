@@ -59,7 +59,7 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
             return
 
         # now create the index
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 self.table.addIndex(idx)
             except DbError as e:

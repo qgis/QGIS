@@ -24,6 +24,9 @@ Utility functions for use with processing classes.
 #include "qgsprocessingutils.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
 %Docstring
@@ -279,7 +282,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
 .. versionadded:: 3.14
 %End
 
-    enum class LayerHint /BaseType=IntFlag/
+    enum class LayerHint /BaseType=IntEnum/
     {
       UnknownType,
       Vector,
@@ -334,6 +337,15 @@ Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
 %End
 
+    static QString layerToStringIdentifier( const QgsMapLayer *layer ) /HoldGIL/;
+%Docstring
+Returns a string representation of the source for a ``layer``. The returned
+value is suitable for storage for subsequent executions of an algorithm
+using the same layer source.
+
+.. versionadded:: 3.34
+%End
+
     static QString variantToPythonLiteral( const QVariant &value );
 %Docstring
 Converts a variant to a Python literal.
@@ -351,7 +363,7 @@ Converts a string to a Python string literal. E.g. by replacing ' with \'.
 %End
 
 
-    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
+    static void createFeatureSinkPython( QgsFeatureSink **sink /Out,TransferBack/, QString &destination /In,Out/, QgsProcessingContext &context, const QgsFields &fields, Qgis::WkbType geometryType, const QgsCoordinateReferenceSystem &crs, const QMap<QString, QVariant> &createOptions = QMap<QString, QVariant>() ) throw( QgsProcessingException ) /PyName=createFeatureSink/;
 %Docstring
 Creates a feature sink ready for adding features. The ``destination`` specifies a destination
 URI for the resultant layer. It may be updated in place to reflect the actual destination
@@ -420,7 +432,7 @@ but not changing the ``basename``.
 .. seealso:: :py:func:`tempFolder`
 %End
 
-    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+    static QString formatHelpMapAsHtml( const QMap<QString, QVariant> &map, const QgsProcessingAlgorithm *algorithm );
 %Docstring
 Returns a HTML formatted version of the help text encoded in a variant ``map`` for
 a specified ``algorithm``.
@@ -600,7 +612,7 @@ This method returns a fallback value of "mbtiles".
 .. versionadded:: 3.32
 %End
 
-    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
+    static QMap<QString, QVariant> removePointerValuesFromMap( const QMap<QString, QVariant> &map );
 %Docstring
 Removes any raw pointer values from an input ``map``, replacing them with
 appropriate string values where possible.
@@ -608,7 +620,7 @@ appropriate string values where possible.
 .. versionadded:: 3.26
 %End
 
-    static QVariantMap preprocessQgisProcessParameters( const QVariantMap &parameters, bool &ok, QString &error );
+    static QMap<QString, QVariant> preprocessQgisProcessParameters( const QMap<QString, QVariant> &parameters, bool &ok, QString &error );
 %Docstring
 Pre-processes a set of ``parameter`` values for the qgis_process command.
 
@@ -674,7 +686,7 @@ An optional ``request`` can be used to optimise the returned
 iterator, eg by restricting the returned attributes or geometry.
 %End
 
-    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+    virtual Qgis::FeatureAvailability hasFeatures() const;
 
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
@@ -699,7 +711,7 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsFeatureIds allFeatureIds() const;
 
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
@@ -707,7 +719,7 @@ iterator, eg by restricting the returned attributes or geometry.
 Returns an expression context scope suitable for this source.
 %End
 
-    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+    void setInvalidGeometryCheck( Qgis::InvalidGeometryCheck method );
 %Docstring
 Overrides the default geometry check method for the source.
 
@@ -716,7 +728,7 @@ Overrides the default geometry check method for the source.
 .. versionadded:: 3.14
 %End
 
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
 Returns the geometry check method for the source.
 

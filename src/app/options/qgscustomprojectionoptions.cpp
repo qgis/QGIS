@@ -94,8 +94,8 @@ void QgsCustomProjectionOptionsWidget::populateList()
     const QString id = QString::number( details.id );
 
     mExistingCRSnames[id] = details.name;
-    const QString actualWkt = details.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
-    const QString actualWktFormatted = details.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true );
+    const QString actualWkt = details.crs.toWkt( Qgis::CrsWktVariant::Preferred, false );
+    const QString actualWktFormatted = details.crs.toWkt( Qgis::CrsWktVariant::Preferred, true );
     const QString actualProj = details.crs.toProj();
     mExistingCRSwkt[id] = details.wkt.isEmpty() ? QString() : actualWkt;
     mExistingCRSproj[id] = details.wkt.isEmpty() ? actualProj : QString();
@@ -142,7 +142,7 @@ bool QgsCustomProjectionOptionsWidget::saveCrs( const QgsCoordinateReferenceSyst
     }
   }
 
-  mExistingCRSwkt[id] = format == Qgis::CrsDefinitionFormat::Wkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
+  mExistingCRSwkt[id] = format == Qgis::CrsDefinitionFormat::Wkt ? crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) : QString();
   mExistingCRSproj[id] = format == Qgis::CrsDefinitionFormat::Proj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
 
@@ -226,7 +226,7 @@ void QgsCustomProjectionOptionsWidget::leNameList_currentItemChanged( QTreeWidge
     switch ( mCrsDefinitionWidget->format() )
     {
       case Qgis::CrsDefinitionFormat::Wkt:
-        mDefinitions[previousIndex].wkt = mCrsDefinitionWidget->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+        mDefinitions[previousIndex].wkt = mCrsDefinitionWidget->crs().toWkt( Qgis::CrsWktVariant::Preferred );
         mDefinitions[previousIndex].proj.clear();
         break;
 
@@ -319,7 +319,7 @@ bool QgsCustomProjectionOptionsWidget::isValid()
         {
           ref = QStringLiteral( "ID[\"%1\",%2]" ).arg( authparts.at( 0 ), authparts.at( 1 ) );
         }
-        if ( !ref.isEmpty() && crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ).contains( ref ) )
+        if ( !ref.isEmpty() && crs.toWkt( Qgis::CrsWktVariant::Preferred ).contains( ref ) )
         {
           QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                                 tr( "Cannot save '%1' — the definition is equivalent to %2.\n\n(Try removing \"%3\" from the WKT definition.)" ).arg( def.name, crs.authid(), ref ) );

@@ -108,11 +108,19 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
       QgsGeometry g( t.asMultiPolygon() );
       if ( !g.isEmpty() )
       {
+        if ( !t.error().isEmpty() )
+        {
+          feedback->reportError( QObject::tr( "Feature ID %1 was only partially tessellated: %2" ).arg( f.id() ).arg( t.error() ) );
+        }
+
         g.translate( bounds.xMinimum(), bounds.yMinimum() );
       }
       else
       {
-        feedback->reportError( QObject::tr( "Feature ID %1 could not be divided into triangular components." ).arg( f.id() ) );
+        if ( !t.error().isEmpty() )
+          feedback->reportError( QObject::tr( "Feature ID %1 could not be tessellated: %2" ).arg( f.id() ).arg( t.error() ) );
+        else
+          feedback->reportError( QObject::tr( "Feature ID %1 could not be divided into triangular components." ).arg( f.id() ) );
       }
       f.setGeometry( g );
     }

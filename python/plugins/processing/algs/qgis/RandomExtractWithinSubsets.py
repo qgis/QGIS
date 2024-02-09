@@ -64,7 +64,7 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
                                                      self.tr('Method'), self.methods, False, 0))
 
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
-                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Integer,
+                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Type.Integer,
                                                        10, False, 0.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random stratified)')))
@@ -86,7 +86,7 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
         index = source.fields().lookupField(field)
 
-        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks)
         featureCount = source.featureCount()
         unique = source.uniqueValues(index)
         value = self.parameterAsInt(parameters, self.NUMBER, context)
@@ -130,6 +130,6 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
         for (i, feat) in enumerate(selran):
             if feedback.isCanceled():
                 break
-            sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(i * total))
         return {self.OUTPUT: dest_id}

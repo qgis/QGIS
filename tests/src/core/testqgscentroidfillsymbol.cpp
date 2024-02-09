@@ -33,9 +33,6 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbol.h"
 
-//qgis test includes
-#include "qgsrenderchecker.h"
-
 /**
  * \ingroup UnitTests
  * This is a unit test for line fill symbol types.
@@ -45,7 +42,7 @@ class TestQgsCentroidFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsCentroidFillSymbol() : QgsTest( QStringLiteral( "Centroid Fill Symbol Tests" ) ) {}
+    TestQgsCentroidFillSymbol() : QgsTest( QStringLiteral( "Centroid Fill Symbol Tests" ), QStringLiteral( "symbol_centroidfill" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -64,7 +61,6 @@ class TestQgsCentroidFillSymbol : public QgsTest
   private:
     bool mTestHasError =  false ;
 
-    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QgsCentroidFillSymbolLayer *mCentroidFill = nullptr;
@@ -122,27 +118,35 @@ void TestQgsCentroidFillSymbol::cleanupTestCase()
 
 void TestQgsCentroidFillSymbol::centroidFillSymbol()
 {
-  QVERIFY( imageCheck( "symbol_centroidfill" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill", "symbol_centroidfill", mMapSettings );
 }
 
 void TestQgsCentroidFillSymbol::centroidFillSymbolPointOnSurface()
 {
   mCentroidFill->setPointOnSurface( true );
-  QVERIFY( imageCheck( "symbol_centroidfill_point_on_surface" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_point_on_surface", "symbol_centroidfill_point_on_surface", mMapSettings );
   mCentroidFill->setPointOnSurface( false );
 }
 
 void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 {
   mCentroidFill->setPointOnAllParts( false );
-  QVERIFY( imageCheck( "symbol_centroidfill_part_biggest" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_part_biggest", "symbol_centroidfill_part_biggest", mMapSettings );
   mCentroidFill->setPointOnAllParts( true );
 }
 
 void TestQgsCentroidFillSymbol::centroidFillClipPoints()
 {
   mCentroidFill->setClipPoints( true );
-  QVERIFY( imageCheck( "symbol_centroidfill_clip_points" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_clip_points", "symbol_centroidfill_clip_points", mMapSettings );
   mCentroidFill->setClipPoints( false );
 }
 
@@ -150,7 +154,9 @@ void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnly()
 {
   mCentroidFill->setClipPoints( true );
   mCentroidFill->setClipOnCurrentPartOnly( true );
-  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_only" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_clip_current_only", "symbol_centroidfill_clip_current_only", mMapSettings );
   mCentroidFill->setClipPoints( false );
   mCentroidFill->setClipOnCurrentPartOnly( false );
 }
@@ -160,7 +166,9 @@ void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnlyBiggest()
   mCentroidFill->setClipPoints( true );
   mCentroidFill->setClipOnCurrentPartOnly( true );
   mCentroidFill->setPointOnAllParts( false );
-  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_biggest" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_clip_current_biggest", "symbol_centroidfill_clip_current_biggest", mMapSettings );
   mCentroidFill->setClipPoints( false );
   mCentroidFill->setClipOnCurrentPartOnly( false );
   mCentroidFill->setPointOnAllParts( true );
@@ -178,7 +186,9 @@ void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
   mFillSymbol->appendSymbolLayer( mCentroidFill->clone() );
   mFillSymbol->appendSymbolLayer( simpleFill.clone() );
 
-  QVERIFY( imageCheck( "symbol_centroidfill_clip_multilayer" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_clip_multilayer", "symbol_centroidfill_clip_multilayer", mMapSettings );
 
   mCentroidFill->setClipPoints( false );
   mFillSymbol->deleteSymbolLayer( 0 );
@@ -192,49 +202,33 @@ void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
 {
   const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
   qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
   qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 0.5 );
 
-  QVERIFY( imageCheck( "symbol_centroidfill_opacityddcolor" ) );
+  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_opacityddcolor", "symbol_centroidfill_opacityddcolor", mMapSettings );
 }
 
 void TestQgsCentroidFillSymbol::dataDefinedOpacity()
 {
   const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
   qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
   qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 1.0 );
-  mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+  mFillSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
 
-  QVERIFY( imageCheck( "symbol_centroidfill_ddopacity" ) );
-}
-
-//
-// Private helper functions not called directly by CTest
-//
-
-
-bool TestQgsCentroidFillSymbol::imageCheck( const QString &testType )
-{
-  //use the QgsRenderChecker test utility class to
-  //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
-  QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "symbol_centroidfill" ) );
-  myChecker.setControlName( "expected_" + testType );
-  myChecker.setMapSettings( mMapSettings );
-  const bool myResultFlag = myChecker.runTest( testType );
-  mReport += myChecker.report();
-  return myResultFlag;
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_centroidfill_ddopacity", "symbol_centroidfill_ddopacity", mMapSettings );
 }
 
 QGSTEST_MAIN( TestQgsCentroidFillSymbol )

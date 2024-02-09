@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsRectangle boundingBox() const override;
 
-    QgsAnnotationLineItem *clone() override SIP_FACTORY;
+    QgsAnnotationLineItem *clone() const override SIP_FACTORY;
 
     /**
      * Returns the geometry of the item.

@@ -277,17 +277,26 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
   public:
 
-    //! Custom roles used by the model
-    enum Roles
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsProcessingToolboxModel::Roles
+     * \since QGIS 3.36
+     */
+      enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingToolboxModel, Roles ) : int
     {
-      RoleNodeType = Qt::UserRole, //!< Corresponds to the node's type
-      RoleAlgorithmFlags, //!< Returns the node's algorithm flags, for algorithm nodes
-      RoleAlgorithmId, //!< Algorithm ID, for algorithm nodes
-      RoleAlgorithmName, //!< Untranslated algorithm name, for algorithm nodes
-      RoleAlgorithmShortDescription, //!< Short algorithm description, for algorithm nodes
-      RoleAlgorithmTags, //!< List of algorithm tags, for algorithm nodes
-      RoleProviderFlags, //!< Returns the node's provider flags
+      NodeType SIP_MONKEYPATCH_COMPAT_NAME(RoleNodeType) = Qt::UserRole, //!< Corresponds to the node's type
+      AlgorithmFlags SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmFlags), //!< Returns the node's algorithm flags, for algorithm nodes
+      AlgorithmId SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmId), //!< Algorithm ID, for algorithm nodes
+      AlgorithmName SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmName), //!< Untranslated algorithm name, for algorithm nodes
+      AlgorithmShortDescription SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmShortDescription), //!< Short algorithm description, for algorithm nodes
+      AlgorithmTags SIP_MONKEYPATCH_COMPAT_NAME(RoleAlgorithmTags), //!< List of algorithm tags, for algorithm nodes
+      ProviderFlags SIP_MONKEYPATCH_COMPAT_NAME(RoleProviderFlags), //!< Returns the node's provider flags
     };
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * Constructor for QgsProcessingToolboxModel, with the given \a parent object.
@@ -421,7 +430,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
   public:
 
     //! Available filter flags for filtering the model
-    enum Filter
+    enum Filter SIP_ENUM_BASETYPE( IntFlag )
     {
       FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
       FilterModeler = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler

@@ -37,6 +37,7 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgstextformat.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsdxfexport.h"
 
 class TestQgsProcessingAlgsPt2: public QgsTest
 {
@@ -63,13 +64,11 @@ class TestQgsProcessingAlgsPt2: public QgsTest
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-#ifndef QT_NO_PRINTER
     void exportLayoutPdf();
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
     void exportAtlasLayoutPdfMultiple();
     void exportAtlasLayoutPng();
-#endif
 
     void tinMeshCreation();
     void exportMeshVertices();
@@ -92,6 +91,8 @@ class TestQgsProcessingAlgsPt2: public QgsTest
     void transferMainAnnotationLayer();
 
     void extractLabels();
+
+    void dxfExport();
 
     void splitVectorLayer();
     void buffer();
@@ -220,7 +221,6 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   return package->run( parameters, *context, &feedback, ok );
 }
 
-#ifndef QT_NO_PRINTER
 void TestQgsProcessingAlgsPt2::exportLayoutPdf()
 {
   QgsProject p;
@@ -464,7 +464,6 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
   QGSVERIFYIMAGECHECK( "export_atlas_custom_layers", "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png", QString(), 500, QSize( 3, 3 ) );
 }
-#endif
 
 void TestQgsProcessingAlgsPt2::tinMeshCreation()
 {
@@ -1685,6 +1684,37 @@ void TestQgsProcessingAlgsPt2::extractLabels()
   QCOMPARE( attributes[QStringLiteral( "FontWordSpacing" )], 0.0 );
   QCOMPARE( attributes[QStringLiteral( "MultiLineAlignment" )], QStringLiteral( "left" ) );
   QCOMPARE( attributes[QStringLiteral( "MultiLineHeight" )], 1.0 );
+}
+
+void TestQgsProcessingAlgsPt2::dxfExport()
+{
+  QgsProject project;
+  project.addMapLayer( mPolygonLayer );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:dxfexport" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsReferencedRectangle extent( QgsRectangle( -103.9, 25.0, -98.0, 29.8 ), mPolygonLayer->crs() );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPolygonLayer->id() );
+  parameters.insert( QStringLiteral( "EXTENT" ), extent );
+  parameters.insert( QStringLiteral( "SCALE" ), 1000.00 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &project );
+
+  TestProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr< QgsVectorLayer > resultLayer = std::make_unique< QgsVectorLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "dxf" );
+  QVERIFY( resultLayer->isValid() );
+  QCOMPARE( resultLayer->featureCount(), 1L );
+  QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::LineString );
 }
 
 void TestQgsProcessingAlgsPt2::splitVectorLayer()

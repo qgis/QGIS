@@ -18,7 +18,6 @@
 #include "qgscurve.h"
 #include "qgsgeometryutils_base.h"
 #include "qgsgeometry.h"
-#include "qgsmessagelog.h"
 #include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
@@ -615,7 +614,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       const QgsGeometry polygonSimplified = QgsGeometry( polygonNew->clone() ).simplify( 0.001 );
       if ( polygonSimplified.isNull() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "geometry simplification failed - skipping" ), QObject::tr( "3D" ) );
+        mError = QObject::tr( "geometry simplification failed - skipping" );
         return;
       }
       const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
@@ -623,7 +622,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       {
         // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
         // geometry in unprojected lat/lon coordinates
-        QgsMessageLog::logMessage( QObject::tr( "geometry's coordinates are too close to each other and simplification failed - skipping" ), QObject::tr( "3D" ) );
+        mError = QObject::tr( "geometry's coordinates are too close to each other and simplification failed - skipping" );
         return;
       }
       else
@@ -716,9 +715,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         }
       }
     }
+    catch ( std::runtime_error &err )
+    {
+      mError = err.what();
+    }
     catch ( ... )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Triangulation failed. Skipping polygon…" ), QObject::tr( "3D" ) );
+      mError = QObject::tr( "An unknown error occurred" );
     }
 
     for ( int i = 0; i < polylinesToDelete.count(); ++i )

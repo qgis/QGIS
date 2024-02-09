@@ -219,7 +219,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
   return true;
 }
 
-QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
+QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone() const
 {
   std::unique_ptr< QgsAnnotationPolygonItem > item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );

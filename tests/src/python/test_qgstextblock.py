@@ -85,7 +85,7 @@ class TestQgsTextBlock(QgisTestCase):
         fragment = QgsTextFragment('ludicrous gibs!')
         block = QgsTextBlock(fragment)
         block.append(QgsTextFragment('another part'))
-        block.applyCapitalization(QgsStringUtils.TitleCase)
+        block.applyCapitalization(QgsStringUtils.Capitalization.TitleCase)
         self.assertEqual(block.toPlainText(), 'Ludicrous Gibs!Another Part')
 
 

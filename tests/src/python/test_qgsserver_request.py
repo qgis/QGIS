@@ -163,7 +163,7 @@ class QgsServerRequestTest(QgsServerTestBase):
             request = QgsFcgiServerRequest()
             response = QgsBufferServerResponse()
             self.server.handleRequest(request, response)
-            self.assertFalse(b'ServiceExceptionReport' in response.body())
+            self.assertNotIn(b'ServiceExceptionReport', response.body())
 
             if method == 'POST':
                 self.assertEqual(request.data(), data.encode('utf8'))
@@ -174,7 +174,7 @@ class QgsServerRequestTest(QgsServerTestBase):
 
             exp = re.compile(r'href="([^"]+)"', re.DOTALL | re.MULTILINE)
             elems = exp.findall(bytes(response.body()).decode('utf8'))
-            self.assertTrue(len(elems) > 0)
+            self.assertGreater(len(elems), 0)
             for href in elems:
                 self.assertTrue(href.startswith('http://www.myserver.com/aproject/'))
                 self.assertEqual(href.find(urlencode({'MAP': params['map']})), -1)

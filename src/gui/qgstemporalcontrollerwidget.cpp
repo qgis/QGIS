@@ -231,7 +231,7 @@ void QgsTemporalControllerWidget::aboutToShowRangeMenu()
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
     const QModelIndex index = mMapLayerModel->index( i, 0 );
-    QgsMapLayer *currentLayer = mMapLayerModel->data( index, QgsMapLayerModel::LayerRole ).value<QgsMapLayer *>();
+    QgsMapLayer *currentLayer = mMapLayerModel->data( index, static_cast< int >( QgsMapLayerModel::CustomRole::Layer ) ).value<QgsMapLayer *>();
     if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
       continue;
 
@@ -340,7 +340,7 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   }
   else
   {
-    setDatesToProjectTime();
+    setDatesToProjectTime( false );
   }
   updateTemporalExtent();
   updateFrameDuration();
@@ -442,7 +442,7 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
 
 void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
 {
-  setDatesToProjectTime();
+  setDatesToProjectTime( true );
 
   if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer ) )
   {
@@ -677,7 +677,7 @@ void QgsTemporalControllerWidget::updateTimeStepInputs( const QgsInterval &timeS
 
 void QgsTemporalControllerWidget::mRangeSetToProjectAction_triggered()
 {
-  setDatesToProjectTime();
+  setDatesToProjectTime( false );
   saveRangeToProject();
 }
 
@@ -702,12 +702,23 @@ void QgsTemporalControllerWidget::setDatesToAllLayers()
   setDates( range );
 }
 
-void QgsTemporalControllerWidget::setDatesToProjectTime()
+void QgsTemporalControllerWidget::setDatesToProjectTime( bool tryLastStoredRange )
 {
   QgsDateTimeRange range;
 
+  if ( tryLastStoredRange )
+  {
+    const QString startString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/StartDateTime" ) );
+    const QString endString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/EndDateTime" ) );
+    if ( !startString.isEmpty() && !endString.isEmpty() )
+    {
+      range = QgsDateTimeRange( QDateTime::fromString( startString, Qt::ISODateWithMs ),
+                                QDateTime::fromString( endString, Qt::ISODateWithMs ) );
+    }
+  }
+
   // by default try taking the project's fixed temporal extent
-  if ( QgsProject::instance()->timeSettings() )
+  if ( ( !range.begin().isValid() || !range.end().isValid() ) && QgsProject::instance()->timeSettings() )
     range = QgsProject::instance()->timeSettings()->temporalRange();
 
   // if that's not set, calculate the extent from the project's layers

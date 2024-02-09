@@ -21,6 +21,28 @@ Convenience functions for geometry utils.
 %End
   public:
 
+    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
+%Docstring
+Returns the squared 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (``z2``, ``z2``).
+
+.. warning::
+
+   No check is done if z contains NaN value. This is the caller's responsibility.
+
+.. versionadded:: 3.36
+%End
+
+    static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
+%Docstring
+Returns the 3D distance between (``x1``, ``y1``), (``x2``, ``y2``) and (``z2``, ``z2``).
+
+.. warning::
+
+   No check is done if z contains NaN value. This is the caller's responsibility.
+
+.. versionadded:: 3.36
+%End
+
     static double sqrDistance2D( double x1, double y1, double x2, double y2 ) /HoldGIL/;
 %Docstring
 Returns the squared 2D distance between (``x1``, ``y1``) and (``x2``, ``y2``).

@@ -393,7 +393,7 @@ int QgsAlignRaster::suggestedReferenceLayer() const
   // would be a better a choice to more accurately compute areas?
   // (Why earth is not flat???)
   const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
-  const QString destWkt = destCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+  const QString destWkt = destCRS.toWkt( Qgis::CrsWktVariant::PreferredGdal );
 
   const auto constMRasters = mRasters;
   for ( const Item &raster : constMRasters )

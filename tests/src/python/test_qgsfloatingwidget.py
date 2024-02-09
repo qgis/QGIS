@@ -44,23 +44,23 @@ class TestQgsFloatingWidget(QgisTestCase):
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
-        tests = [{'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 250, 'y': 200},
-                 {'anchorPoint': QgsFloatingWidget.TopMiddle, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 200, 'y': 200},
-                 {'anchorPoint': QgsFloatingWidget.TopRight, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 150, 'y': 200},
-                 {'anchorPoint': QgsFloatingWidget.MiddleLeft, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 250, 'y': 175},
-                 {'anchorPoint': QgsFloatingWidget.Middle, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 200, 'y': 175},
-                 {'anchorPoint': QgsFloatingWidget.MiddleRight, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 150, 'y': 175},
-                 {'anchorPoint': QgsFloatingWidget.BottomLeft, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 250, 'y': 150},
-                 {'anchorPoint': QgsFloatingWidget.BottomMiddle, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 200, 'y': 150},
-                 {'anchorPoint': QgsFloatingWidget.BottomRight, 'widgetAnchorPoint': QgsFloatingWidget.TopLeft, 'x': 150, 'y': 150},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.TopMiddle, 'x': 400, 'y': 200},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.TopRight, 'x': 550, 'y': 200},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.MiddleLeft, 'x': 250, 'y': 300},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.Middle, 'x': 400, 'y': 300},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.MiddleRight, 'x': 550, 'y': 300},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.BottomLeft, 'x': 250, 'y': 400},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.BottomMiddle, 'x': 400, 'y': 400},
-                 {'anchorPoint': QgsFloatingWidget.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.BottomRight, 'x': 550, 'y': 400}]
+        tests = [{'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 250, 'y': 200},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopMiddle, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 200, 'y': 200},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopRight, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 150, 'y': 200},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.MiddleLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 250, 'y': 175},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.Middle, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 200, 'y': 175},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.MiddleRight, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 150, 'y': 175},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.BottomLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 250, 'y': 150},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.BottomMiddle, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 200, 'y': 150},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.BottomRight, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'x': 150, 'y': 150},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopMiddle, 'x': 400, 'y': 200},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.TopRight, 'x': 550, 'y': 200},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.MiddleLeft, 'x': 250, 'y': 300},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.Middle, 'x': 400, 'y': 300},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.MiddleRight, 'x': 550, 'y': 300},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.BottomLeft, 'x': 250, 'y': 400},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.BottomMiddle, 'x': 400, 'y': 400},
+                 {'anchorPoint': QgsFloatingWidget.AnchorPoint.TopLeft, 'widgetAnchorPoint': QgsFloatingWidget.AnchorPoint.BottomRight, 'x': 550, 'y': 400}]
 
         for t in tests:
             fw.setAnchorPoint(t['anchorPoint'])
@@ -93,8 +93,8 @@ class TestQgsFloatingWidget(QgisTestCase):
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
-        fw.setAnchorPoint(QgsFloatingWidget.TopLeft)
-        fw.setAnchorWidgetPoint(QgsFloatingWidget.TopLeft)
+        fw.setAnchorPoint(QgsFloatingWidget.AnchorPoint.TopLeft)
+        fw.setAnchorWidgetPoint(QgsFloatingWidget.AnchorPoint.TopLeft)
 
         self.assertEqual(fw.pos().x(), 250)
         self.assertEqual(fw.pos().y(), 200)
@@ -137,8 +137,8 @@ class TestQgsFloatingWidget(QgisTestCase):
         fw.setMinimumSize(100, 50)
         fw.setAnchorWidget(anchor_widget)
 
-        fw.setAnchorPoint(QgsFloatingWidget.TopLeft)
-        fw.setAnchorWidgetPoint(QgsFloatingWidget.TopLeft)
+        fw.setAnchorPoint(QgsFloatingWidget.AnchorPoint.TopLeft)
+        fw.setAnchorWidgetPoint(QgsFloatingWidget.AnchorPoint.TopLeft)
 
         self.assertEqual(fw.pos().x(), 250)
         self.assertEqual(fw.pos().y(), 200)
@@ -175,14 +175,14 @@ class TestQgsFloatingWidget(QgisTestCase):
         fw.setMinimumSize(300, 50)
         fw.setAnchorWidget(anchor_widget)
 
-        fw.setAnchorPoint(QgsFloatingWidget.TopRight)
-        fw.setAnchorWidgetPoint(QgsFloatingWidget.TopLeft)
+        fw.setAnchorPoint(QgsFloatingWidget.AnchorPoint.TopRight)
+        fw.setAnchorWidgetPoint(QgsFloatingWidget.AnchorPoint.TopLeft)
 
         # x-position should be 0, not -50
         self.assertEqual(fw.pos().x(), 0)
 
-        fw.setAnchorPoint(QgsFloatingWidget.TopLeft)
-        fw.setAnchorWidgetPoint(QgsFloatingWidget.TopRight)
+        fw.setAnchorPoint(QgsFloatingWidget.AnchorPoint.TopLeft)
+        fw.setAnchorWidgetPoint(QgsFloatingWidget.AnchorPoint.TopRight)
 
         # x-position should be 500, not 600
         self.assertEqual(fw.pos().x(), 500)

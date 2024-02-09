@@ -51,7 +51,7 @@ class DlgCreateConstraint(QDialog, Ui_Dialog):
         constr = self.getConstraint()
 
         # now create the constraint
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             try:
                 self.table.addConstraint(constr)
             except DbError as e:

@@ -348,7 +348,7 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
       fieldAction->setText( tr( "Do Not Store" ) );
     }
     fieldAction->setIcon( mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), Qt::DecorationRole ).value< QIcon >() );
-    const QString fieldName = mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), QgsFieldModel::FieldNameRole ).toString();
+    const QString fieldName = mFieldProxyModel->data( mFieldProxyModel->index( row, 0 ), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString();
     fieldAction->setData( fieldName );
     fieldAction->setCheckable( true );
     if ( currentTimeStampField == fieldName )

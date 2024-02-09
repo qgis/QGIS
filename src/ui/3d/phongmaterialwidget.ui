@@ -7,15 +7,75 @@
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>186</height>
+    <height>210</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mAmbientDataDefinedButton">
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblSpecular">
+     <property name="toolTip">
+      <string>Color of light reflecting from smooth surfaces.</string>
+     </property>
+     <property name="text">
+      <string>Specular</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblAmbient">
+     <property name="toolTip">
+      <string>Color of light that is scattered around the entire scene.</string>
+     </property>
+     <property name="text">
+      <string>Ambient</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lblShininess">
+     <property name="toolTip">
+      <string>How shiny smooth surfaces are.</string>
+     </property>
+     <property name="text">
+      <string>Shininess</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsColorButton" name="btnAmbient">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsPercentageWidget" name="mDiffuseCoefficientWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsPercentageWidget" name="mAmbientCoefficientWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
      <property name="text">
       <string>...</string>
      </property>
@@ -31,19 +91,17 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QgsColorButton" name="btnSpecular">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="4" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
+     <property name="text">
+      <string>...</string>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="mLblOpacity">
+     <property name="text">
+      <string>Opacity</string>
      </property>
     </widget>
    </item>
@@ -63,52 +121,15 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lblShininess">
-     <property name="toolTip">
-      <string>How shiny smooth surfaces are.</string>
-     </property>
-     <property name="text">
-      <string>Shininess</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
+    <widget class="QgsPropertyOverrideButton" name="mAmbientDataDefinedButton">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lblSpecular">
-     <property name="toolTip">
-      <string>Color of light reflecting from smooth surfaces.</string>
-     </property>
-     <property name="text">
-      <string>Specular</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lblAmbient">
-     <property name="toolTip">
-      <string>Color of light that is scattered around the entire scene.</string>
-     </property>
-     <property name="text">
-      <string>Ambient</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsColorButton" name="btnAmbient">
+   <item row="4" column="1">
+    <widget class="QgsColorButton" name="btnSpecular">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -123,20 +144,24 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mLblOpacity">
-     <property name="text">
-      <string>Opacity</string>
+   <item row="7" column="1" colspan="2">
+    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true"/>
-   </item>
-   <item row="3" column="1" colspan="2">
+   <item row="6" column="1" colspan="2">
     <widget class="QgsDoubleSpinBox" name="spinShininess">
      <property name="maximum">
       <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsPercentageWidget" name="mSpecularCoefficientWidget" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -165,15 +190,25 @@
    <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsPercentageWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspercentagewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>btnDiffuse</tabstop>
   <tabstop>mDiffuseDataDefinedButton</tabstop>
+  <tabstop>mDiffuseCoefficientWidget</tabstop>
   <tabstop>btnAmbient</tabstop>
   <tabstop>mAmbientDataDefinedButton</tabstop>
+  <tabstop>mAmbientCoefficientWidget</tabstop>
   <tabstop>btnSpecular</tabstop>
   <tabstop>mSpecularDataDefinedButton</tabstop>
+  <tabstop>mSpecularCoefficientWidget</tabstop>
   <tabstop>spinShininess</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

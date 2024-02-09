@@ -87,9 +87,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QPageSetupDialog>
 #include <QWidgetAction>
 #include <QProgressBar>
 #include <QClipboard>
@@ -99,6 +96,12 @@
 #include <QScreen>
 #include <QActionGroup>
 #include <QDesktopServices>
+
+#if defined( HAVE_QTPRINTER )
+#include <QPageSetupDialog>
+#include <QPrinter>
+#include <QPrintDialog>
+#endif
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
@@ -376,7 +379,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
   connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
 
-  connect( mActionPrint, &QAction::triggered, this, &QgsLayoutDesignerDialog::print );
   connect( mActionExportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToRaster );
   connect( mActionExportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToPdf );
   connect( mActionExportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToSvg );
@@ -397,17 +399,24 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionAtlasPrev, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasPrevious );
   connect( mActionAtlasFirst, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasFirst );
   connect( mActionAtlasLast, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasLast );
-  connect( mActionPrintAtlas, &QAction::triggered, this, &QgsLayoutDesignerDialog::printAtlas );
   connect( mActionExportAtlasAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToRaster );
   connect( mActionExportAtlasAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToSvg );
   connect( mActionExportAtlasAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToPdf );
-
   connect( mActionExportReportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToRaster );
   connect( mActionExportReportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToSvg );
   connect( mActionExportReportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToPdf );
-  connect( mActionPrintReport, &QAction::triggered, this, &QgsLayoutDesignerDialog::printReport );
 
+#if defined( HAVE_QTPRINTER )
+  connect( mActionPrint, &QAction::triggered, this, &QgsLayoutDesignerDialog::print );
+  connect( mActionPrintAtlas, &QAction::triggered, this, &QgsLayoutDesignerDialog::printAtlas );
+  connect( mActionPrintReport, &QAction::triggered, this, &QgsLayoutDesignerDialog::printReport );
   connect( mActionPageSetup, &QAction::triggered, this, &QgsLayoutDesignerDialog::pageSetup );
+#else
+  mActionPrintAtlas->setVisible( false );
+  mActionPrintReport->setVisible( false );
+  mActionPrint->setVisible( false );
+  mActionPageSetup->setVisible( false );
+#endif
 
   connect( mActionOptions, &QAction::triggered, this, [ = ]
   {
@@ -2109,6 +2118,7 @@ void QgsLayoutDesignerDialog::deleteLayout()
 
 void QgsLayoutDesignerDialog::print()
 {
+#if defined( HAVE_QTPRINTER )
   if ( !checkBeforeExport() )
     return;
 
@@ -2216,6 +2226,7 @@ void QgsLayoutDesignerDialog::print()
   }
 
   mView->setPaintingEnabled( true );
+#endif
 }
 
 void QgsLayoutDesignerDialog::exportToRaster()
@@ -2715,6 +2726,7 @@ void QgsLayoutDesignerDialog::atlasLast()
 
 void QgsLayoutDesignerDialog::printAtlas()
 {
+#if defined( HAVE_QTPRINTER )
   if ( !checkBeforeExport() )
     return;
 
@@ -2857,6 +2869,7 @@ void QgsLayoutDesignerDialog::printAtlas()
   }
 
   mView->setPaintingEnabled( true );
+#endif
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToRaster()
@@ -3838,6 +3851,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
 void QgsLayoutDesignerDialog::printReport()
 {
+#if defined( HAVE_QTPRINTER )
   if ( !checkBeforeExport() )
     return;
 
@@ -3956,10 +3970,12 @@ void QgsLayoutDesignerDialog::printReport()
   }
 
   mView->setPaintingEnabled( true );
+#endif
 }
 
 void QgsLayoutDesignerDialog::pageSetup()
 {
+#if defined( HAVE_QTPRINTER )
   if ( currentLayout() && currentLayout()->pageCollection()->pageCount() > 0 )
   {
     // get orientation from first page
@@ -3970,6 +3986,7 @@ void QgsLayoutDesignerDialog::pageSetup()
 
   QPageSetupDialog pageSetupDialog( printer(), this );
   pageSetupDialog.exec();
+#endif
 }
 
 void QgsLayoutDesignerDialog::pageOrientationChanged()
@@ -4530,7 +4547,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
       break;
     }
 
-    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::MapRotation ) )
+    if ( map->mapRotation() != 0 || map->itemRotation() != 0 || map->dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::MapRotation ) )
     {
       allowGeoPdfExport = false;
       dialogGeoPdfReason = tr( "One or more map items are rotated. This is not supported for GeoPDF export." );
@@ -4803,6 +4820,7 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   }
 }
 
+#if defined( HAVE_QTPRINTER )
 void QgsLayoutDesignerDialog::setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation )
 {
   if ( !mSetPageOrientation )
@@ -4831,6 +4849,7 @@ QPrinter *QgsLayoutDesignerDialog::printer()
 
   return mPrinter.get();
 }
+#endif
 
 QString QgsLayoutDesignerDialog::reportTypeString()
 {
@@ -4907,7 +4926,7 @@ bool QgsLayoutDesignerDialog::checkBeforeExport( )
   if ( mLayout )
   {
     QgsLayoutValidityCheckContext context( mLayout );
-    return QgsValidityCheckResultsWidget::runChecks( QgsAbstractValidityCheck::TypeLayoutCheck, &context, tr( "Checking Layout" ),
+    return QgsValidityCheckResultsWidget::runChecks( static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck ), &context, tr( "Checking Layout" ),
            tr( "The layout generated the following warnings. Please review and address these before proceeding with the layout export." ), this );
   }
   else

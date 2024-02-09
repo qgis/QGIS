@@ -36,7 +36,58 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QgsCompoundCurve &operator=( const QgsCompoundCurve &curve );
     ~QgsCompoundCurve() override;
 
-    bool equals( const QgsCurve &other ) const override;
+#ifndef SIP_RUN
+  private:
+    bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
+    {
+      const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
+      if ( !otherCurve )
+        return false;
+
+      if ( mWkbType != otherCurve->mWkbType )
+        return false;
+
+      if ( mCurves.size() != otherCurve->mCurves.size() )
+        return false;
+
+      for ( int i = 0; i < mCurves.size(); ++i )
+      {
+        if ( useDistance )
+        {
+          if ( !( *mCurves.at( i ) ).fuzzyDistanceEqual( *otherCurve->mCurves.at( i ), epsilon ) )
+          {
+            return false;
+          }
+
+        }
+        else
+        {
+          if ( !( *mCurves.at( i ) ).fuzzyEqual( *otherCurve->mCurves.at( i ), epsilon ) )
+          {
+            return false;
+          }
+
+        }
+      }
+
+      return true;
+    }
+#endif
+  public:
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper( other, epsilon, false );
+    }
+    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper( other, epsilon, true );
+    }
+
+    bool equals( const QgsCurve &other ) const override
+    {
+      return fuzzyEqual( other, 1e-8 );
+    }
+
 
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;

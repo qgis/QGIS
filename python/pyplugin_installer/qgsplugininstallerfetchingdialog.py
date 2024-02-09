@@ -54,7 +54,7 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
                 self.itemProgress[key] = 0
                 self.displayState(key, 2)
         self.treeWidget.resizeColumnToContents(0)
-        self.treeWidget.setCursor(Qt.WaitCursor)
+        self.treeWidget.setCursor(Qt.CursorShape.WaitCursor)
         repositories.repositoryFetched.connect(self.repositoryFetched)
         repositories.anythingChanged.connect(self.displayState)
 

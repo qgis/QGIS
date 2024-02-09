@@ -22,7 +22,6 @@
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfeaturerequest.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
 
@@ -47,7 +46,7 @@ class CORE_EXPORT QgsProcessingContext
   public:
 
     //! Flags that affect how processing algorithms are run
-    enum Flag
+    enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused = 1 << 0, //!< Temporary unused entry
@@ -423,7 +422,7 @@ class CORE_EXPORT QgsProcessingContext
      * Returns the behavior used for checking invalid geometries in input layers.
      * \see setInvalidGeometryCheck()
      */
-    QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const SIP_HOLDGIL { return mInvalidGeometryCheck; }
+    Qgis::InvalidGeometryCheck invalidGeometryCheck() const SIP_HOLDGIL { return mInvalidGeometryCheck; }
 
     /**
      * Sets the behavior used for checking invalid geometries in input layers.
@@ -431,7 +430,7 @@ class CORE_EXPORT QgsProcessingContext
      * reset the invalidGeometryCallback() to a default implementation.
      * \see invalidGeometryCheck()
      */
-    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check );
+    void setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check );
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
@@ -472,7 +471,7 @@ class CORE_EXPORT QgsProcessingContext
      * \note not available in Python bindings
      * \since QGIS 3.14
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check, QgsFeatureSource *source = nullptr ) const;
+    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck check, QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Sets a callback function to use when encountering a transform error when iterating
@@ -740,7 +739,7 @@ class CORE_EXPORT QgsProcessingContext
      *
      * \since QGIS 3.24
      */
-    enum class ProcessArgumentFlag : int
+    enum class ProcessArgumentFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IncludeProjectPath = 1 << 0, //!< Include the associated project path argument
     };
@@ -769,7 +768,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
 
-    QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    Qgis::InvalidGeometryCheck mInvalidGeometryCheck = Qgis::InvalidGeometryCheck::NoCheck;
     bool mUseDefaultInvalidGeometryCallback = true;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
 

@@ -771,7 +771,7 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   settings.fieldName = QStringLiteral( "Name" );
   settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.zIndex = 2;
-  settings.obstacleSettings().setType( QgsLabelObstacleSettings::PolygonInterior );
+  settings.obstacleSettings().setType( QgsLabelObstacleSettings::ObstacleType::PolygonInterior );
   polygonsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   polygonsLayer->setLabelsEnabled( true );
 
@@ -1116,7 +1116,7 @@ void TestQgsMapRendererJob::testMapShading()
   std::unique_ptr< QgsVectorLayer > vectorLayer =
     std::make_unique< QgsVectorLayer >(
       QStringLiteral( "Polygon?crs=%1&field=id:integer&field=name:string(20)&index=no" )
-      .arg( pointCloudLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ),
+      .arg( pointCloudLayer->crs().toWkt( Qgis::CrsWktVariant::Preferred ) ),
       QStringLiteral( "vector-layer" ),
       QStringLiteral( "memory" ) );
   QVERIFY( vectorLayer->isValid() );

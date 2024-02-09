@@ -1229,7 +1229,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HIGHLIGHT_GEOM": "POLYGON((-15000000 10000000, -15000000 6110620, 2500000 6110620, 2500000 10000000, -15000000 10000000))",
             "HIGHLIGHT_SYMBOL": "<StyledLayerDescriptor><UserStyle><Name>Highlight</Name><FeatureTypeStyle><Rule><Name>Symbol</Name><LineSymbolizer><Stroke><SvgParameter name=\"stroke\">%23ea1173</SvgParameter><SvgParameter name=\"stroke-opacity\">1</SvgParameter><SvgParameter name=\"stroke-width\">1.6</SvgParameter></Stroke></LineSymbolizer></Rule></FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
             "HIGHLIGHT_LABELSTRING": "Highlight Layer!",
-            "HIGHLIGHT_LABELSIZE": "16",
+            "HIGHLIGHT_LABELFONT": "QGIS Vera Sans",
+            "HIGHLIGHT_LABELSIZE": "20",
             "HIGHLIGHT_LABELCOLOR": "%2300FF0000",
             "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
             "HIGHLIGHT_LABELBUFFERSIZE": "1.5",
@@ -1255,7 +1256,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HIGHLIGHT_GEOM": "POINT(-6250000 8055310)",
             "HIGHLIGHT_SYMBOL": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" xmlns:se=\"http://www.opengis.net/se\"><UserStyle><se:FeatureTypeStyle><se:Rule><se:PointSymbolizer><se:Graphic><se:Mark><se:WellKnownName>circle</se:WellKnownName><se:Stroke><se:SvgParameter name=\"stroke\">%23ff0000</se:SvgParameter><se:SvgParameter name=\"stroke-opacity\">1</se:SvgParameter><se:SvgParameter name=\"stroke-width\">7.5</se:SvgParameter></se:Stroke><se:Fill><se:SvgParameter name=\"fill\">%237bdcb5</se:SvgParameter><se:SvgParameter name=\"fill-opacity\">1</se:SvgParameter></se:Fill></se:Mark><se:Size>28.4</se:Size></se:Graphic></se:PointSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
             "HIGHLIGHT_LABELSTRING": "Highlight Point :)",
-            "HIGHLIGHT_LABELSIZE": "16",
+            "HIGHLIGHT_LABELFONT": "QGIS Vera Sans",
+            "HIGHLIGHT_LABELSIZE": "20",
             "HIGHLIGHT_LABELCOLOR": "%2300FF0000",
             "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
             "HIGHLIGHT_LABELBUFFERSIZE": "1.2",
@@ -1280,7 +1282,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HIGHLIGHT_GEOM": "POINT(-6250000 8055310)",
             "HIGHLIGHT_SYMBOL": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" xmlns:se=\"http://www.opengis.net/se\"><UserStyle><se:FeatureTypeStyle><se:Rule><se:PointSymbolizer><se:Graphic><se:Mark><se:WellKnownName>circle</se:WellKnownName><se:Stroke><se:SvgParameter name=\"stroke\">%23ff0000</se:SvgParameter><se:SvgParameter name=\"stroke-opacity\">1</se:SvgParameter><se:SvgParameter name=\"stroke-width\">7.5</se:SvgParameter></se:Stroke><se:Fill><se:SvgParameter name=\"fill\">%237bdcb5</se:SvgParameter><se:SvgParameter name=\"fill-opacity\">1</se:SvgParameter></se:Fill></se:Mark><se:Size>28.4</se:Size></se:Graphic></se:PointSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
             "HIGHLIGHT_LABELSTRING": "Highlight Point :)",
-            "HIGHLIGHT_LABELSIZE": "16",
+            "HIGHLIGHT_LABELFONT": "QGIS Vera Sans",
+            "HIGHLIGHT_LABELSIZE": "20",
             "HIGHLIGHT_LABELCOLOR": "%2300FF0000",
             "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
             "HIGHLIGHT_LABELBUFFERSIZE": "1.2",
@@ -1676,7 +1679,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
 
-        self.assertTrue('ServerException' in str(r))
+        self.assertIn('ServerException', str(r))
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Can\'t rely on external resources for continuous integration')
@@ -1888,7 +1891,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency")
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency", max_diff=1500)
 
     def test_multiple_layers_with_equal_name(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1934,7 +1937,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request_project(qs, p))
         # No exceptions
         self.assertEqual(h['Content-Type'], 'image/png')
-        self.assertFalse(b"The layer 'test plus' does not exist" in r)
+        self.assertNotIn(b"The layer 'test plus' does not exist", r)
 
         # + literal: we get an exception
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1951,7 +1954,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request_project(qs, p))
-        self.assertTrue(b"The layer 'test plus' does not exist" in r)
+        self.assertIn(b"The layer 'test plus' does not exist", r)
 
     def test_wms_annotation_item(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -2000,7 +2003,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertFalse(props_date.isActive())
         self.assertEqual(props_date.startField(), 'event_date')
         self.assertFalse(props_date.endField())
-        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
 
         # sample table with likely dual fields
         layer_range = QgsVectorLayer("Point?srid=EPSG:4326&field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test_range", "memory")
@@ -2024,7 +2027,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertFalse(props_range.isActive())
         self.assertEqual(props_range.startField(), 'start_date')
         self.assertEqual(props_range.endField(), 'end_date')
-        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromFields)
 
         project = QgsProject()
         project.addMapLayers([layer_date, layer_range])

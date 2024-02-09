@@ -52,7 +52,7 @@ class GUI_EXPORT QgsSourceSelectProvider
      * The Capability enum describes the capabilities of the source select implementation.
      * \since QGIS 3.38
      */
-    enum class Capability : int
+    enum class Capability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities  = 0, //!< No capabilities
       ConfigureFromUri = 1  //!< The source select widget can be configured from a URI

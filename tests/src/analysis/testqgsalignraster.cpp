@@ -229,7 +229,7 @@ class TestAlignRaster : public QgsTest
       QgsAlignRaster::List rasters;
       rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
       align.setRasters( rasters );
-      align.setParametersFromRaster( SRC_FILE, destCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+      align.setParametersFromRaster( SRC_FILE, destCRS.toWkt( Qgis::CrsWktVariant::Preferred ) );
       const bool res = align.run();
       QVERIFY( res );
 

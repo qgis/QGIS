@@ -78,8 +78,8 @@ class ModelerParametersDialog(QDialog):
         QgsGui.enableAutoGeometryRestore(self)
 
         self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok | QDialogButtonBox.Help)
+        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Help)
 
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.reject)
@@ -206,7 +206,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.verticalLayout = QVBoxLayout()
 
         self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.bar.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.verticalLayout.addWidget(self.bar)
 
         hLayout = QHBoxLayout()
@@ -218,8 +218,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         hLayout.addWidget(self.descriptionBox)
         self.verticalLayout.addLayout(hLayout)
         line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
+        line.setFrameShape(QFrame.Shape.HLine)
+        line.setFrameShadow(QFrame.Shadow.Sunken)
         self.verticalLayout.addWidget(line)
 
         widget_context = QgsProcessingParameterWidgetContext()
@@ -240,7 +240,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             self.verticalLayout.addWidget(self.algorithmItem)
 
         for param in self._alg.parameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
+            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
                 self.advancedButton = QPushButton()
                 self.advancedButton.setText(self.tr('Show advanced parameters'))
                 self.advancedButton.clicked.connect(
@@ -251,7 +251,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
         for param in self._alg.parameterDefinitions():
-            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                 continue
 
             wrapper = WidgetWrapperFactory.create_wrapper(param, self.dialog)
@@ -272,7 +272,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     label = wrapper.label
                 self.widget_labels[param.name()] = label
 
-                if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
+                if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
                     label.setVisible(self.showAdvanced)
                     widget.setVisible(self.showAdvanced)
 
@@ -280,7 +280,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.verticalLayout.addWidget(widget)
 
         for output in self._alg.destinationParameterDefinitions():
-            if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                 continue
 
             widget = QgsGui.processingGuiRegistry().createModelerParameterWidget(self.model,
@@ -321,7 +321,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.scrollArea = QgsScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setFrameStyle(QFrame.NoFrame)
+        self.scrollArea.setFrameStyle(QFrame.Shape.NoFrame)
 
         self.verticalLayout2.addWidget(self.scrollArea)
 
@@ -337,7 +337,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         else:
             self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self._alg.parameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
+            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
                 wrapper = self.wrappers[param.name()]
                 if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
                     wrapper.setVisible(self.showAdvanced)
@@ -352,7 +352,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
             self.descriptionBox.setText(alg.description())
             for param in alg.algorithm().parameterDefinitions():
-                if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                     continue
                 value = None
                 if param.name() in alg.parameterSources():
@@ -378,7 +378,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     wrapper.setValue(value)
 
             for output in self.algorithm().destinationParameterDefinitions():
-                if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                     continue
 
                 model_output_name = None
@@ -420,7 +420,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             alg.setConfiguration(self.algorithmItem.configuration())
             self._alg = alg.algorithm().create(self.algorithmItem.configuration())
         for param in self._alg.parameterDefinitions():
-            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                 continue
             try:
                 wrapper = self.wrappers[param.name()]
@@ -444,7 +444,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 if (isinstance(subval, QgsProcessingModelChildParameterSource)
                         and subval.source() == Qgis.ProcessingModelChildParameterSource.StaticValue
                         and not param.checkValueIsAcceptable(subval.staticValue())) \
-                        or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
+                        or (subval is None and not param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional):
                     valid = False
                     break
 
@@ -453,7 +453,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
         outputs = {}
         for output in self._alg.destinationParameterDefinitions():
-            if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if not output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                 wrapper = self.wrappers[output.name()]
 
                 if wrapper.isModelOutput():
@@ -474,7 +474,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
                     alg.addParameterSources(output.name(), val)
 
-            if output.flags() & QgsProcessingParameterDefinition.FlagIsModelOutput:
+            if output.flags() & QgsProcessingParameterDefinition.Flag.FlagIsModelOutput:
                 if output.name() not in outputs:
                     model_output = QgsProcessingModelOutput(output.name(), output.name())
                     model_output.setChildId(alg.childId())

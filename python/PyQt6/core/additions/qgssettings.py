@@ -22,7 +22,7 @@ from qgis.core import QgsSettings
 import qgis  # required to get base class of enums
 
 
-def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.NoSection):
+def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.Section.NoSection):
     """
     Return the setting value for a setting based on an enum.
     This forces the output to be a valid and existing entry of the enum.
@@ -58,7 +58,7 @@ def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.NoS
     return enu_val
 
 
-def _qgssettings_set_enum_value(self, key, enumValue, section=QgsSettings.NoSection):
+def _qgssettings_set_enum_value(self, key, enumValue, section=QgsSettings.Section.NoSection):
     """
     Save the setting value for a setting based on an enum.
     This forces the output to be a valid and existing entry of the enum.
@@ -81,7 +81,7 @@ def _qgssettings_set_enum_value(self, key, enumValue, section=QgsSettings.NoSect
     self.setValue(key, meta_enum.valueToKey(enumValue), section)
 
 
-def _qgssettings_flag_value(self, key, flagDefaultValue, section=QgsSettings.NoSection):
+def _qgssettings_flag_value(self, key, flagDefaultValue, section=QgsSettings.Section.NoSection):
     """
     Return the setting value for a setting based on a flag.
     This forces the output to be a valid and existing entry of the enum.

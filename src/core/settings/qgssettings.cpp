@@ -22,8 +22,11 @@
 
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
+#include "qgssettingsproxy.h"
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
+
+thread_local QgsSettings *sQgsSettingsThreadSettings = nullptr;
 
 bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
@@ -329,4 +332,24 @@ QString QgsSettings::sanitizeKey( const QString &key ) const
 void QgsSettings::clear()
 {
   mUserSettings->clear();
+}
+
+
+void QgsSettings::holdFlush()
+{
+  if ( sQgsSettingsThreadSettings )
+    return;
+
+  sQgsSettingsThreadSettings = new QgsSettings();
+}
+
+void QgsSettings::releaseFlush()
+{
+  delete sQgsSettingsThreadSettings;
+  sQgsSettingsThreadSettings = nullptr;
+}
+
+QgsSettingsProxy QgsSettings::get()
+{
+  return QgsSettingsProxy( sQgsSettingsThreadSettings );
 }

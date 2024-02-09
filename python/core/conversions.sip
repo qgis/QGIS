@@ -3223,6 +3223,10 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 }
 %End
 
+%ModuleHeaderCode
+#define SIP_PYQT_FROM_QVARIANT_BY_TYPE "pyqt5_from_qvariant_by_type"
+%End
+
 %PostInitialisationCode  //#spellok
 
 // Import the Chimera helper registration functions.

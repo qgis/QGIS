@@ -28,15 +28,16 @@ in order to ensure correct sorting of results by priority and match level.
 
     static const int NoGroup;
 
-    enum Role
+
+    enum class CustomRole /BaseType=IntEnum/
     {
-      ResultDataRole,
-      ResultTypeRole,
-      ResultFilterPriorityRole,
-      ResultScoreRole,
-      ResultFilterNameRole,
-      ResultFilterGroupSortingRole,
-      ResultActionsRole,
+      ResultData,
+      ResultType,
+      ResultFilterPriority,
+      ResultScore,
+      ResultFilterName,
+      ResultFilterGroupSorting,
+      ResultActions,
     };
 
     QgsLocatorModel( QObject *parent /TransferThis/ = 0 );

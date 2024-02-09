@@ -484,7 +484,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   if ( !selectionRect.isEmpty() )
     req.setFilterRect( selectionRect );
 
-  req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoFlags );
+  req.setFlags( mShowOnlyVisibleFeatures ? Qgis::FeatureRequestFlag::ExactIntersect : Qgis::FeatureRequestFlag::NoFlags );
 
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
   {
@@ -745,7 +745,7 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
   QgsExpressionContext context = createExpressionContext();
 
   if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes &&
-       ( property == QgsLayoutObject::AttributeTableSourceLayer || property == QgsLayoutObject::AllProperties ) )
+       ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
   {
     mDataDefinedVectorLayer = nullptr;
 
@@ -753,7 +753,7 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
     if ( QgsVectorLayer *currentLayer = mVectorLayer.get() )
       currentLayerIdentifier = currentLayer->id();
 
-    const QString layerIdentifier = mDataDefinedProperties.valueAsString( QgsLayoutObject::AttributeTableSourceLayer, context, currentLayerIdentifier );
+    const QString layerIdentifier = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer, context, currentLayerIdentifier );
     QgsVectorLayer *ddLayer = qobject_cast< QgsVectorLayer * >( QgsLayoutUtils::mapLayerFromString( layerIdentifier, mLayout->project() ) );
     if ( ddLayer )
       mDataDefinedVectorLayer = ddLayer;

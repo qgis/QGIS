@@ -77,7 +77,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.destroyed.connect(clean_up_store)
 
         self.setupUi(self)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
@@ -172,12 +172,12 @@ class ScriptEditorDialog(BASE, WIDGET):
             ret = QMessageBox.question(
                 self, self.tr('Save Script?'),
                 self.tr('There are unsaved changes in this script. Do you want to keep those?'),
-                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel)
 
-            if ret == QMessageBox.Save:
+            if ret == QMessageBox.StandardButton.Save:
                 self.saveScript(False)
                 event.accept()
-            elif ret == QMessageBox.Discard:
+            elif ret == QMessageBox.StandardButton.Discard:
                 event.accept()
             else:
                 event.ignore()
@@ -189,8 +189,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             ret = QMessageBox.warning(self,
                                       self.tr("Unsaved changes"),
                                       self.tr("There are unsaved changes in the script. Continue?"),
-                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if ret == QMessageBox.No:
+                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+            if ret == QMessageBox.StandardButton.No:
                 return
 
         scriptDir = ScriptUtils.scriptsFolders()[0]
@@ -202,7 +202,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         if fileName == "":
             return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             self._loadFile(fileName)
 
     def save(self):

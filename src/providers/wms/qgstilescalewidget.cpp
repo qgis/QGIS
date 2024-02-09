@@ -105,6 +105,9 @@ void QgsTileScaleWidget::scaleChanged( double scale )
   mSlider->blockSignals( true );
   mSlider->setValue( i );
   mSlider->blockSignals( false );
+
+
+  mLabelScale->setText( tr( "Zoom: %1" ).arg( i ) );
 }
 
 void QgsTileScaleWidget::mSlider_valueChanged( int value )

@@ -323,7 +323,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
   QgsFeatureRequest request;
   request.setFilterRect( r );
-  request.setFlags( QgsFeatureRequest::ExactIntersect );
+  request.setFlags( Qgis::FeatureRequestFlag::ExactIntersect );
   if ( !canvasFilter.isEmpty() )
   {
     request.setFilterExpression( canvasFilter );

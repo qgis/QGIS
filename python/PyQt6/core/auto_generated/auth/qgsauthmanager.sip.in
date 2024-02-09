@@ -35,7 +35,7 @@ and to utilize configurations through various authentication method plugins
       CRITICAL
     };
 
-    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+ bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated/;
 %Docstring
 init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
 
@@ -47,6 +47,20 @@ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authen
 .. seealso:: :py:func:`QgsApplication.pluginPath`
 
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
+
+.. deprecated:: QGIS 3.36
+  use :py:func:`~QgsAuthManager.setup` instead.
+%End
+
+    void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+%Docstring
+Sets up the authentication manager configuration.
+
+This method does not initialize the authentication framework, instead that is deferred
+to lazy-initialize when required.
+
+:param pluginPath: the plugin path
+:param authDatabasePath: the authentication DB path
 %End
 
     ~QgsAuthManager();
@@ -249,7 +263,7 @@ Verify if provided authentication id is unique
 :param id: Id to check
 %End
 
-    bool hasConfigId( const QString &txt ) const;
+    static bool hasConfigId( const QString &txt );
 %Docstring
 Returns whether a string includes an authcfg ID token
 
@@ -595,7 +609,7 @@ Check if a certificate authority exists
 Remove a certificate authority
 %End
 
-    const QList<QSslCertificate> systemRootCAs();
+    static const QList<QSslCertificate> systemRootCAs();
 %Docstring
 systemRootCAs get root system certificate authorities
 
@@ -744,7 +758,7 @@ trustedCaCertsPemText get concatenated string of all trusted CA certificates
 
 
 
-    bool passwordHelperEnabled() const;
+    static bool passwordHelperEnabled();
 %Docstring
 Password helper enabled getter
 

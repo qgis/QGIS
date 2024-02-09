@@ -20,7 +20,7 @@ class TestTestRunner(unittest.TestCase):
         self.assertTrue(False)
 
     def test_passes(self):
-        self.assertTrue(Qgis.QGIS_VERSION_INT > 0)
+        self.assertGreater(Qgis.QGIS_VERSION_INT, 0)
 
     @unittest.skip('Skipped!')
     def test_skipped(self):

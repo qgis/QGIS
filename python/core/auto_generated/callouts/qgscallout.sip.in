@@ -50,8 +50,8 @@ relevant symbology elements to render them.
 %End
   public:
 
-    enum Property
-    {
+    enum class Property
+      {
       MinimumCalloutLength,
       OffsetFromAnchor,
       OffsetFromLabel,

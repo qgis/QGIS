@@ -147,7 +147,7 @@ This method will not attempt to calculate the data bounds, rather it will return
 are included in the data source's metadata.
 %End
 
-    virtual QVariantMap originalMetadata() const;
+    virtual QMap<QString, QVariant> originalMetadata() const;
 %Docstring
 Returns a representation of the original metadata included in a point cloud dataset.
 
@@ -155,7 +155,7 @@ This is a free-form dictionary of values, the contents and structure of which wi
 dataset.
 %End
 
-    virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+    virtual QgsPointCloudRenderer *createRenderer( const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() ) const /Factory/;
 %Docstring
 Creates a new 2D point cloud renderer, using provider backend specific information.
 
@@ -178,7 +178,7 @@ Returns whether the dataset contains statistics metadata
 %End
 
 
-    SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
+    SIP_PYOBJECT metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
 %Docstring
 Returns a statistic for the specified ``attribute``, taken only from the metadata of the point cloud
 data source.
@@ -217,7 +217,7 @@ in the metadata.
 
 
 
-    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
 %Docstring
 Returns a statistic for one class ``value`` from the specified ``attribute``, taken only from the metadata of the point cloud
 data source.

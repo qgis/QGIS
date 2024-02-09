@@ -60,7 +60,7 @@ class merge(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input layers'),
-                                                               QgsProcessing.TypeRaster))
+                                                               QgsProcessing.SourceType.TypeRaster))
         self.addParameter(QgsProcessingParameterBoolean(self.PCT,
                                                         self.tr('Grab pseudocolor table from first layer'),
                                                         defaultValue=False))
@@ -69,26 +69,26 @@ class merge(GdalAlgorithm):
                                                         defaultValue=False))
 
         nodata_param = QgsProcessingParameterNumber(self.NODATA_INPUT,
-                                                    self.tr('Input pixel value to treat as "nodata"'),
-                                                    type=QgsProcessingParameterNumber.Double,
+                                                    self.tr('Input pixel value to treat as NoData'),
+                                                    type=QgsProcessingParameterNumber.Type.Double,
                                                     defaultValue=None,
                                                     optional=True)
-        nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(nodata_param)
 
         nodata_out_param = QgsProcessingParameterNumber(self.NODATA_OUTPUT,
-                                                        self.tr('Assign specified "nodata" value to output'),
-                                                        type=QgsProcessingParameterNumber.Double,
+                                                        self.tr('Assign specified NoData value to output'),
+                                                        type=QgsProcessingParameterNumber.Type.Double,
                                                         defaultValue=None,
                                                         optional=True)
-        nodata_out_param.setFlags(nodata_out_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        nodata_out_param.setFlags(nodata_out_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(nodata_out_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
@@ -98,7 +98,7 @@ class merge(GdalAlgorithm):
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
                                                    optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterEnum(self.DATA_TYPE,

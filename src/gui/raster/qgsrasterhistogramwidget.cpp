@@ -293,9 +293,9 @@ static int getBinCount( QgsRasterInterface *rasterInterface,
 {
   const Qgis::DataType mySrcDataType = rasterInterface->sourceDataType( bandNo );
   const double statsMin = mySrcDataType == Qgis::DataType::Byte ? 0 :
-                          rasterInterface->bandStatistics( bandNo, QgsRasterBandStats::Min, QgsRectangle(), sampleSize ).minimumValue;
+                          rasterInterface->bandStatistics( bandNo, Qgis::RasterBandStatistic::Min, QgsRectangle(), sampleSize ).minimumValue;
   const double statsMax = mySrcDataType == Qgis::DataType::Byte ? 255 :
-                          rasterInterface->bandStatistics( bandNo, QgsRasterBandStats::Max, QgsRectangle(), sampleSize ).maximumValue;
+                          rasterInterface->bandStatistics( bandNo, Qgis::RasterBandStatistic::Max, QgsRectangle(), sampleSize ).maximumValue;
   const QgsRectangle extent( rasterInterface->extent() );
 
   // Calc resolution from sampleSize

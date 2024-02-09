@@ -19,7 +19,7 @@ __author__ = 'Nyall Dawson'
 __date__ = 'October 2021'
 __copyright__ = '(C) 2021, Nyall Dawson'
 
-from qgis.PyQt.QtCore import QDir, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
@@ -31,7 +31,6 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMapSettings,
     QgsProperty,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSymbolLayer,
 )
@@ -46,13 +45,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsLineburstSymbolLayer(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsLineburstSymbolLayer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_lineburst"
 
     def testTwoColor(self):
         s = QgsLineSymbol()
@@ -67,7 +62,11 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_two_color', 'lineburst_two_color', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_two_color', 'lineburst_two_color', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testDataDefinedColors(self):
         s = QgsLineSymbol()
@@ -77,14 +76,18 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression("'orange'"))
-        line.setDataDefinedProperty(QgsSymbolLayer.PropertySecondaryColor, QgsProperty.fromExpression("'purple'"))
+        line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression("'orange'"))
+        line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertySecondaryColor, QgsProperty.fromExpression("'purple'"))
 
         s.appendSymbolLayer(line.clone())
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_datadefined_color', 'lineburst_datadefined_color', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_datadefined_color', 'lineburst_datadefined_color', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testColorRamp(self):
         s = QgsLineSymbol()
@@ -100,7 +103,11 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_colorramp', 'lineburst_colorramp', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_colorramp', 'lineburst_colorramp', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderClosedRing(self):
         s = QgsLineSymbol()
@@ -115,7 +122,11 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_closed', 'lineburst_closed', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_closed', 'lineburst_closed', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderFlatCap(self):
         s = QgsLineSymbol()
@@ -125,13 +136,17 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenCapStyle(Qt.FlatCap)
+        line.setPenCapStyle(Qt.PenCapStyle.FlatCap)
 
         s.appendSymbolLayer(line.clone())
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_flatcap', 'lineburst_flatcap', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_flatcap', 'lineburst_flatcap', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderSquareCap(self):
         s = QgsLineSymbol()
@@ -141,13 +156,17 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenCapStyle(Qt.SquareCap)
+        line.setPenCapStyle(Qt.PenCapStyle.SquareCap)
 
         s.appendSymbolLayer(line.clone())
 
         g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_squarecap', 'lineburst_squarecap', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_squarecap', 'lineburst_squarecap', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderMiterJoin(self):
         s = QgsLineSymbol()
@@ -157,13 +176,17 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenJoinStyle(Qt.MiterJoin)
+        line.setPenJoinStyle(Qt.PenJoinStyle.MiterJoin)
 
         s.appendSymbolLayer(line.clone())
 
         g = QgsGeometry.fromWkt('LineString(0 15, 0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_miterjoin', 'lineburst_miterjoin', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_miterjoin', 'lineburst_miterjoin', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testRenderBevelJoin(self):
         s = QgsLineSymbol()
@@ -173,13 +196,17 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
         line.setColor(QColor(255, 0, 0))
         line.setColor2(QColor(0, 255, 0))
         line.setWidth(8)
-        line.setPenJoinStyle(Qt.BevelJoin)
+        line.setPenJoinStyle(Qt.PenJoinStyle.BevelJoin)
 
         s.appendSymbolLayer(line.clone())
 
         g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_beveljoin', 'lineburst_beveljoin', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_beveljoin', 'lineburst_beveljoin', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def testLineOffset(self):
         s = QgsLineSymbol()
@@ -195,13 +222,17 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('lineburst_offset', 'lineburst_offset', rendered_image))
+        self.assertTrue(
+            self.image_check('lineburst_offset', 'lineburst_offset', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20)
+        )
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -229,21 +260,6 @@ class TestQgsLineburstSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_lineburst")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

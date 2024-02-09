@@ -21,7 +21,7 @@ __copyright__ = '(C) 2019, Nyall Dawson'
 
 import os
 
-from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -32,11 +32,9 @@ from qgis.core import (
     QgsLineSymbol,
     QgsLineSymbolLayer,
     QgsMapSettings,
-    QgsMultiRenderChecker,
     QgsProperty,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsRenderChecker,
     QgsRenderContext,
     QgsSimpleLineSymbolLayer,
     QgsSingleSymbolRenderer,
@@ -58,13 +56,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsHashedLineSymbolLayer Tests</h1>\n"
-
-    def tearDown(self):
-        report_file_path = f"{QDir.tempPath()}/qgistest.html"
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+    @classmethod
+    def control_path_prefix(cls):
+        return "symbol_hashline"
 
     def testWidth(self):
         ms = QgsMapSettings()
@@ -82,7 +76,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
         simple_line = QgsSimpleLineSymbolLayer()
         line_symbol = QgsLineSymbol()
         line_symbol.changeSymbolLayer(0, simple_line)
@@ -93,7 +87,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         self.assertAlmostEqual(hash_line.width(context), 37.795275590551185, 3)
         self.assertAlmostEqual(hash_line.width(context2), 118.11023622047244, 3)
 
-        hash_line.setHashLengthUnit(QgsUnitTypes.RenderPixels)
+        hash_line.setHashLengthUnit(QgsUnitTypes.RenderUnit.RenderPixels)
         self.assertAlmostEqual(hash_line.width(context), 10.0, 3)
         self.assertAlmostEqual(hash_line.width(context2), 10.0, 3)
 
@@ -102,7 +96,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -118,20 +112,34 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_angle', 'line_hash_angle', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_angle',
+                'line_hash_angle',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
         s.symbolLayer(0).setRotateSymbols(False)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_no_rotate', 'line_hash_no_rotate', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_no_rotate',
+                'line_hash_no_rotate',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testHashAverageAngleInterval(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -147,14 +155,21 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_average_angle', 'line_hash_average_angle', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_average_angle',
+                'line_hash_average_angle',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testHashAverageAngleCentralPoint(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.CentralPoint)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
         simple_line.setWidth(1)
@@ -169,14 +184,21 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_center_average_angle', 'line_hash_center_average_angle', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_center_average_angle',
+                'line_hash_center_average_angle',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testHashAverageAngleClosedRing(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -192,14 +214,21 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 0 10, 10 10, 10 0, 0 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_ring_average_angle', 'line_hash_ring_average_angle', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_ring_average_angle',
+                'line_hash_ring_average_angle',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testHashPlacement(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Vertex)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Vertex)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -214,19 +243,40 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_vertex', 'line_hash_vertex', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_vertex',
+                'line_hash_vertex',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
-        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.FirstVertex)
+        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_first', 'line_hash_first', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_first',
+                'line_hash_first',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
-        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.LastVertex)
+        s.symbolLayer(0).setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.LastVertex)
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_last', 'line_hash_last', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_last',
+                'line_hash_last',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testRingFilter(self):
         # test filtering rings during rendering
@@ -234,7 +284,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -246,42 +296,56 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line.setAverageAngleLength(0)
 
         s.appendSymbolLayer(hash_line.clone())
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.AllRings)
-        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
-        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.AllRings)
+        s.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
+        self.assertEqual(s.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         s2 = s.clone()
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         doc = QDomDocument()
         context = QgsReadWriteContext()
         element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
 
         s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
-        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.ExteriorRingOnly)
+        self.assertEqual(s2.symbolLayer(0).ringFilter(), QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         # rendering test
         s3 = QgsFillSymbol()
         s3.deleteSymbolLayer(0)
         s3.appendSymbolLayer(
             hash_line.clone())
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.ExteriorRingOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.ExteriorRingOnly)
 
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('hashline_exterioronly', 'hashline_exterioronly', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'hashline_exterioronly',
+                'hashline_exterioronly',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
-        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.InteriorRingsOnly)
+        s3.symbolLayer(0).setRingFilter(QgsLineSymbolLayer.RenderRingFilter.InteriorRingsOnly)
         g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        assert self.imageCheck('hashline_interioronly', 'hashline_interioronly', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'hashline_interioronly',
+                'hashline_interioronly',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testLineOffset(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -297,19 +361,33 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         s.symbolLayer(0).setOffset(3)
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_offset_positive', 'line_offset_positive', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_offset_positive',
+                'line_offset_positive',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
         s.symbolLayer(0).setOffset(-3)
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_offset_negative', 'line_offset_negative', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_offset_negative',
+                'line_offset_negative',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testPointNumInterval(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Interval)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.Interval)
         hash_line.setInterval(6)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
@@ -322,19 +400,26 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(hash_line.clone())
 
-        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.PropertyLineDistance, QgsProperty.fromExpression(
+        s.symbolLayer(0).setDataDefinedProperty(QgsSymbolLayer.Property.PropertyLineDistance, QgsProperty.fromExpression(
             "@geometry_point_num * 2"))
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_dd_size', 'line_dd_size', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_dd_size',
+                'line_dd_size',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testSegmentCenter(self):
         s = QgsLineSymbol()
         s.deleteSymbolLayer(0)
 
         hash_line = QgsHashedLineSymbolLayer(True)
-        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.SegmentCenter)
+        hash_line.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.SegmentCenter)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
         simple_line.setWidth(1)
@@ -348,7 +433,14 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
 
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 0 10)')
         rendered_image = self.renderGeometry(s, g)
-        assert self.imageCheck('line_hash_segmentcenter', 'line_hash_segmentcenter', rendered_image)
+        self.assertTrue(
+            self.image_check(
+                'line_hash_segmentcenter',
+                'line_hash_segmentcenter',
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20)
+        )
 
     def testOpacityWithDataDefinedColor(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -360,7 +452,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line = QgsHashedLineSymbolLayer(True)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
-        simple_line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        simple_line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
 
         simple_line.setWidth(1)
@@ -384,13 +476,13 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         ms.setLayers([line_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_hashline')
-        renderchecker.setControlName('expected_hashline_opacityddcolor')
-        res = renderchecker.runTest('expected_hashline_opacityddcolor')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'hashline_opacityddcolor',
+                'hashline_opacityddcolor',
+                ms
+            )
+        )
 
     def testDataDefinedOpacity(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
@@ -402,7 +494,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line = QgsHashedLineSymbolLayer(True)
         simple_line = QgsSimpleLineSymbolLayer()
         simple_line.setColor(QColor(0, 255, 0))
-        simple_line.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeColor, QgsProperty.fromExpression(
+        simple_line.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
             "if(Name='Arterial', 'red', 'green')"))
 
         simple_line.setWidth(1)
@@ -414,7 +506,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         hash_line.setAverageAngleLength(0)
         s.appendSymbolLayer(hash_line.clone())
 
-        s.setDataDefinedProperty(QgsSymbol.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
+        s.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" = 1, 25, 50)"))
 
         line_layer.setRenderer(QgsSingleSymbolRenderer(s))
 
@@ -425,19 +517,19 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         ms.setLayers([line_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_hashline')
-        renderchecker.setControlName('expected_hashline_ddopacity')
-        res = renderchecker.runTest('expected_hashline_ddopacity')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(
+            self.render_map_settings_check(
+                'hashline_ddopacity',
+                'hashline_ddopacity',
+                ms
+            )
+        )
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
 
         painter = QPainter()
         ms = QgsMapSettings()
@@ -465,21 +557,6 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("symbol_hashline")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
 
 if __name__ == '__main__':

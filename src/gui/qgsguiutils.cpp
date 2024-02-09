@@ -112,7 +112,7 @@ namespace QgsGuiUtils
         imageFormats << QStringLiteral( "*.%1 *.%2" ).arg( format, QString( format ).toUpper() );
       }
     }
-    const QString formatByExtension = QStringLiteral( "%1 (%2)" ).arg( QObject::tr( "Format by Extension" ), imageFormats.join( QStringLiteral( " " ) ) );
+    const QString formatByExtension = QStringLiteral( "%1 (%2)" ).arg( QObject::tr( "Format by Extension" ), imageFormats.join( QLatin1Char( ' ' ) ) );
 
 #ifdef QGISDEBUG
     QgsDebugMsgLevel( QStringLiteral( "Available Filters Map: " ), 2 );

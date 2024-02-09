@@ -98,7 +98,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * Point cloud statistics calculation task
      * \since QGIS 3.26
      */
-    enum class PointCloudStatisticsCalculationState : int
+    enum class PointCloudStatisticsCalculationState : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NotStarted = 0, //!< The statistics calculation task has not been started
       Calculating = 1 << 0, //!< The statistics calculation task is running

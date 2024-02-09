@@ -396,9 +396,9 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         }.items())])
         header, body = self._execute_request(qs)
         xmlResult = body.decode('utf-8')
-        self.assertTrue(xmlResult.find("<WMSBackgroundLayer>1</WMSBackgroundLayer>") != -1)
-        self.assertTrue(xmlResult.find("<WMSDataSource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</WMSDataSource>") != -1)
-        self.assertTrue(xmlResult.find("<WMSPrintLayer>contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?</WMSPrintLayer>") != -1)
+        self.assertNotEqual(xmlResult.find("<WMSBackgroundLayer>1</WMSBackgroundLayer>"), -1)
+        self.assertNotEqual(xmlResult.find("<WMSDataSource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</WMSDataSource>"), -1)
+        self.assertNotEqual(xmlResult.find("<WMSPrintLayer>contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?</WMSPrintLayer>"), -1)
 
     def test_getcapabilities_owslib(self):
 
@@ -418,7 +418,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
 
         # check content
         rootLayerName = 'QGIS Test Project'
-        self.assertTrue(rootLayerName in w.contents.keys())
+        self.assertIn(rootLayerName, w.contents.keys())
 
 
 if __name__ == '__main__':

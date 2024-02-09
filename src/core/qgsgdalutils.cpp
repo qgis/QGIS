@@ -68,7 +68,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
   geoTransform[4] = 0;
   geoTransform[5] = -cellSizeY;
 
-  GDALSetProjection( hSrcDS.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLatin1().constData() );
+  GDALSetProjection( hSrcDS.get(), crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLatin1().constData() );
   GDALSetGeoTransform( hSrcDS.get(), geoTransform );
   return hSrcDS;
 }
@@ -99,7 +99,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QStrin
   }
 
   // Write out the projection definition.
-  GDALSetProjection( hDstDS.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLatin1().constData() );
+  GDALSetProjection( hDstDS.get(), crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLatin1().constData() );
   GDALSetGeoTransform( hDstDS.get(), geoTransform );
   return hDstDS;
 }
@@ -299,8 +299,8 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS,
 {
   char **papszOptions = nullptr;
 
-  papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", sourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().constData() );
-  papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", destinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().constData() );
+  papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", sourceCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toUtf8().constData() );
+  papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", destinationCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toUtf8().constData() );
 
   bool result = resampleSingleBandRasterStatic( hSrcDS, hDstDS, resampleAlg, papszOptions );
   CSLDestroy( papszOptions );

@@ -135,7 +135,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      * that isn't defined, the range will fallback to the full range of all
      * layers.
      */
-    void setDatesToProjectTime();
+    void setDatesToProjectTime( bool tryLastStoredRange );
 
     /**
      * Updates the value of the slider

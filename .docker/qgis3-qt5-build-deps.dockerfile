@@ -73,6 +73,7 @@ RUN  apt-get update \
     python3-pyqt5.qtwebkit \
     python3-pyqt5.qtpositioning \
     python3-pyqt5.qtmultimedia \
+    python3-pyqt5.qtserialport \
     python3-sip \
     python3-termcolor \
     python3-yaml \
@@ -151,7 +152,7 @@ RUN  apt-get update \
 
 # HANA: client side
 # Install hdbsql tool
-RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
+RUN curl -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
   && tar -xvf hanaclient-latest-linux-x64.tar.gz \
   && mkdir /usr/sap \
   && ./client/hdbinst -a client --sapmnt=/usr/sap \

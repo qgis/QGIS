@@ -15,8 +15,8 @@
 
 #include "qgsphongtexturedmaterialsettings.h"
 
-#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgscolorutils.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
@@ -69,8 +69,8 @@ float QgsPhongTexturedMaterialSettings::textureRotation() const
 
 void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
-  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toFloat();
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
@@ -82,8 +82,8 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
 
 void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
-  elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
+  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
+  elem.setAttribute( QStringLiteral( "specular" ), QgsColorUtils::colorToString( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
   elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
   elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mDiffuseTexturePath );
@@ -151,8 +151,8 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
 
       int opacity = mOpacity * 255;
       QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
-      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) ) );
-      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
       effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
 
@@ -198,8 +198,8 @@ QMap<QString, QString> QgsPhongTexturedMaterialSettings::toExportParameters() co
 
 void QgsPhongTexturedMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
+  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
   Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
 
   ambientParameter->setValue( mAmbient );

@@ -231,8 +231,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
         super()._img_diff_error(response, headers, image, max_diff=max_diff,
-                                max_size_diff=max_size_diff,
-                                unittest_data_path='qgis_server_accesscontrol')
+                                max_size_diff=max_size_diff)
 
     def _geo_img_diff(self, image_1, image_2):
         if os.name == 'nt':

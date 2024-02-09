@@ -99,7 +99,7 @@ class CORE_EXPORT QgsAnnotationItem
      *
      * \see copyCommonProperties()
      */
-    virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
+    virtual QgsAnnotationItem *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns a unique (untranslated) string identifying the type of item.
@@ -173,6 +173,22 @@ class CORE_EXPORT QgsAnnotationItem
      * \see zIndex()
      */
     void setZIndex( int index ) { mZIndex = index; }
+
+    /**
+     * Returns TRUE if the item is enabled and will be rendered in the layer.
+     *
+     * \see setEnabled()
+     * \since QGIS 3.36
+     */
+    bool enabled() const { return mEnabled; }
+
+    /**
+     * Sets if the item will be rendered or not in the layer.
+     *
+     * \see enabled()
+     * \since QGIS 3.36
+     */
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     /**
      * Returns the nodes for the item, used for editing the item.
@@ -259,7 +275,7 @@ class CORE_EXPORT QgsAnnotationItem
   private:
 
     int mZIndex = 0;
-
+    bool mEnabled = true;
     bool mUseReferenceScale = false;
     double mReferenceScale = 0;
 

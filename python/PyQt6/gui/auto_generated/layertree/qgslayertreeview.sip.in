@@ -406,6 +406,8 @@ Allows customization of the menu.
 
     QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
 
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
     virtual void keyPressEvent( QKeyEvent *event );

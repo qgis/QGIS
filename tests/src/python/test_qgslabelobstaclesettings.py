@@ -40,8 +40,8 @@ class TestQgsLabelObstacleSettings(QgisTestCase):
         settings.setFactor(0.1)
         self.assertEqual(settings.factor(), 0.1)
 
-        settings.setType(QgsLabelObstacleSettings.PolygonWhole)
-        self.assertEqual(settings.type(), QgsLabelObstacleSettings.PolygonWhole)
+        settings.setType(QgsLabelObstacleSettings.ObstacleType.PolygonWhole)
+        self.assertEqual(settings.type(), QgsLabelObstacleSettings.ObstacleType.PolygonWhole)
 
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
@@ -56,9 +56,9 @@ class TestQgsLabelObstacleSettings(QgisTestCase):
         self.assertEqual(pal_settings.obstacleFactor, 0.2)
         self.assertEqual(pal_settings.obstacleSettings().factor(), 0.2)
 
-        pal_settings.obstacleType = QgsPalLayerSettings.PolygonWhole
-        self.assertEqual(pal_settings.obstacleType, QgsPalLayerSettings.PolygonWhole)
-        self.assertEqual(pal_settings.obstacleSettings().type(), QgsLabelObstacleSettings.PolygonWhole)
+        pal_settings.obstacleType = QgsPalLayerSettings.ObstacleType.PolygonWhole
+        self.assertEqual(pal_settings.obstacleType, QgsPalLayerSettings.ObstacleType.PolygonWhole)
+        self.assertEqual(pal_settings.obstacleSettings().type(), QgsLabelObstacleSettings.ObstacleType.PolygonWhole)
 
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelObstacleSettings()
@@ -66,7 +66,7 @@ class TestQgsLabelObstacleSettings(QgisTestCase):
         self.assertEqual(settings.factor(), 0.1)
 
         props = QgsPropertyCollection()
-        props.setProperty(QgsPalLayerSettings.ObstacleFactor, QgsProperty.fromExpression('@factor'))
+        props.setProperty(QgsPalLayerSettings.Property.ObstacleFactor, QgsProperty.fromExpression('@factor'))
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable('factor', 9)

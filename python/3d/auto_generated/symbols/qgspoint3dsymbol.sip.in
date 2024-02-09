@@ -81,41 +81,45 @@ Sets the ``material`` settings used for shading of the symbol.
 Ownership of ``material`` is transferred to the symbol.
 %End
 
-    enum Shape
-    {
-      Cylinder,
-      Sphere,
-      Cone,
-      Cube,
-      Torus,
-      Plane,
-      ExtrudedText,
-      Model,
-      Billboard,
-    };
-
-    static Shape shapeFromString( const QString &shape );
+    static Qgis::Point3DShape shapeFromString( const QString &shape );
 %Docstring
 Returns shape enum value from a string
 %End
-    static QString shapeToString( Shape shape );
+    static QString shapeToString( Qgis::Point3DShape shape );
 %Docstring
 Returns string from a shape enum value
 %End
 
-    Shape shape() const;
+    Qgis::Point3DShape shape() const;
 %Docstring
 Returns 3D shape for points
 %End
-    void setShape( Shape shape );
+    void setShape( Qgis::Point3DShape shape );
 %Docstring
 Sets 3D shape for points
 %End
 
     QVariantMap shapeProperties() const;
 %Docstring
-Returns a key-value dictionary of point shape properties
+Returns a key-value dictionary of point shape properties.
+
+In most cases callers should use :py:func:`~QgsPoint3DSymbol.shapeProperty` instead, to
+correctly handle default values when a property has not been
+explicitly set.
+
+.. seealso:: :py:func:`shapeProperty`
 %End
+
+    QVariant shapeProperty( const QString &property ) const;
+%Docstring
+Returns the value for a specific shape ``property``.
+
+This method accounts for default property values for the symbol's :py:func:`~QgsPoint3DSymbol.shape`,
+used when the property has not been explicitly set.
+
+.. versionadded:: 3.36
+%End
+
     void setShapeProperties( const QVariantMap &properties );
 %Docstring
 Sets a key-value dictionary of point shape properties

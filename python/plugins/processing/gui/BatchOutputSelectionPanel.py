@@ -55,8 +55,8 @@ class BatchOutputSelectionPanel(QWidget):
         self.text = QLineEdit()
         self.text.setText('')
         self.text.setMinimumWidth(300)
-        self.text.setSizePolicy(QSizePolicy.Expanding,
-                                QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                QSizePolicy.Policy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
         self.pushButton.setText('…')
@@ -85,7 +85,7 @@ class BatchOutputSelectionPanel(QWidget):
                     filename += ext.group(1)
             settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
-            dlg.exec_()
+            dlg.exec()
             if dlg.mode is not None:
                 if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
                     self.table.cellWidget(self.row,
@@ -142,7 +142,7 @@ class BatchOutputSelectionPanel(QWidget):
             lastDir = ''
 
         dirName = QFileDialog.getExistingDirectory(self,
-                                                   self.tr('Output Directory'), lastDir, QFileDialog.ShowDirsOnly)
+                                                   self.tr('Output Directory'), lastDir, QFileDialog.Option.ShowDirsOnly)
 
         if dirName:
             self.table.cellWidget(self.row, self.col).setValue(dirName)

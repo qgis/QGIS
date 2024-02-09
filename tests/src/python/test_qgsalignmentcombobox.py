@@ -25,30 +25,30 @@ class TestQgsAlignmentComboBox(QgisTestCase):
     def testGettersSetters(self):
         """ test widget getters/setters """
         w = QgsAlignmentComboBox()
-        w.setAvailableAlignments(Qt.AlignRight | Qt.AlignJustify)
-        w.setCurrentAlignment(Qt.AlignRight)
-        self.assertEqual(w.currentAlignment(), Qt.AlignRight)
-        w.setCurrentAlignment(Qt.AlignJustify)
-        self.assertEqual(w.currentAlignment(), Qt.AlignJustify)
+        w.setAvailableAlignments(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignJustify)
+        w.setCurrentAlignment(Qt.AlignmentFlag.AlignRight)
+        self.assertEqual(w.currentAlignment(), Qt.AlignmentFlag.AlignRight)
+        w.setCurrentAlignment(Qt.AlignmentFlag.AlignJustify)
+        self.assertEqual(w.currentAlignment(), Qt.AlignmentFlag.AlignJustify)
         # not a choice
-        w.setCurrentAlignment(Qt.AlignLeft)
-        self.assertEqual(w.currentAlignment(), Qt.AlignJustify)
+        w.setCurrentAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.assertEqual(w.currentAlignment(), Qt.AlignmentFlag.AlignJustify)
 
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when setting alignment"""
         w = QgsAlignmentComboBox()
 
         spy = QSignalSpy(w.changed)
-        w.setCurrentAlignment(Qt.AlignRight)
+        w.setCurrentAlignment(Qt.AlignmentFlag.AlignRight)
         self.assertEqual(len(spy), 1)
-        w.setCurrentAlignment(Qt.AlignRight)
+        w.setCurrentAlignment(Qt.AlignmentFlag.AlignRight)
         self.assertEqual(len(spy), 1)
-        w.setCurrentAlignment(Qt.AlignLeft)
+        w.setCurrentAlignment(Qt.AlignmentFlag.AlignLeft)
         self.assertEqual(len(spy), 2)
-        w.setAvailableAlignments(Qt.AlignRight | Qt.AlignJustify)
+        w.setAvailableAlignments(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignJustify)
         self.assertEqual(len(spy), 3)
-        self.assertEqual(w.currentAlignment(), Qt.AlignRight)
-        w.setAvailableAlignments(Qt.AlignLeft | Qt.AlignRight)
+        self.assertEqual(w.currentAlignment(), Qt.AlignmentFlag.AlignRight)
+        w.setAvailableAlignments(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignRight)
         self.assertEqual(len(spy), 3)
 
 

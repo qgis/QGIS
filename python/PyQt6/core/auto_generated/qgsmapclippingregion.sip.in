@@ -23,7 +23,7 @@ A map clipping region (in map coordinates and CRS).
 %End
   public:
 
-    enum class FeatureClippingType /BaseType=IntFlag/
+    enum class FeatureClippingType /BaseType=IntEnum/
     {
       ClipToIntersection,
       ClipPainterOnly,

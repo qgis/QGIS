@@ -27,6 +27,7 @@
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloud3dsymbol.h"
+#include "qgspointlightsettings.h"
 #include "qgsstyle.h"
 #include "qgs3dutils.h"
 #include "qgs3dmapsettings.h"

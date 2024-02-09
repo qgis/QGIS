@@ -23,11 +23,10 @@
 #include "qgis_sip.h"
 
 #include "qgis_core.h"
-#include "qgsfeaturerequest.h"
 
 class QString;
 class QgsVectorLayer;
-
+class QgsFeatureRequest;
 
 /**
  * \ingroup core

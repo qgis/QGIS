@@ -54,10 +54,10 @@ class DeleteModelAction(ContextAction):
             None,
             self.tr('Delete Model', 'DeleteModelAction'),
             msg,
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No)
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No)
 
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             if project_provider:
                 provider = QgsApplication.processingRegistry().providerById(PROJECT_PROVIDER_ID)
                 provider.remove_model(model)

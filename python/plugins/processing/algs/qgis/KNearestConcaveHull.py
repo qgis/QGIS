@@ -77,7 +77,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         return 'vectorgeometry'
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
 
     def __init__(self):
         super().__init__()
@@ -87,13 +87,13 @@ class KNearestConcaveHull(QgisAlgorithm):
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterNumber(self.KNEIGHBORS,
                                                        self.tr('Number of neighboring points to consider (a lower number is more concave, a higher number is smoother)'),
-                                                       QgsProcessingParameterNumber.Integer,
+                                                       QgsProcessingParameterNumber.Type.Integer,
                                                        defaultValue=3, minValue=3))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Field (set if creating concave hulls by class)'),
                                                       parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'),
-                                                            QgsProcessing.TypeVectorPolygon))
+                                                            QgsProcessing.SourceType.TypeVectorPolygon))
 
     def processAlgorithm(self, parameters, context, feedback):
         # Get variables from dialog
@@ -120,7 +120,7 @@ class KNearestConcaveHull(QgisAlgorithm):
 
                 # Initialize writer
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                       fields, QgsWkbTypes.Polygon, source.sourceCrs())
+                                                       fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())
                 if sink is None:
                     raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -156,7 +156,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                             out_feature.setGeometry(poly)
                             # Give the polygon the same attribute as the point grouping attribute
                             out_feature.setAttributes([fid, unique])
-                            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                            sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
                             success = True  # at least one polygon created
                     fid += 1
                 if not success:
@@ -169,7 +169,7 @@ class KNearestConcaveHull(QgisAlgorithm):
             # Not grouped by field
             # Initialize writer
             (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                   fields, QgsWkbTypes.Polygon, source.sourceCrs())
+                                                   fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())
             if sink is None:
                 raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -196,7 +196,7 @@ class KNearestConcaveHull(QgisAlgorithm):
 
                     out_feature.setGeometry(poly)
                     out_feature.setAttributes([0])
-                    sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                    sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
                 else:
                     # the_hull returns None only when there are less than three points after cleaning
                     raise QgsProcessingException('At least three unique points are required to create a concave hull.')

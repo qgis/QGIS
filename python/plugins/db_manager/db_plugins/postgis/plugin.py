@@ -21,7 +21,11 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from qgis.PyQt.QtCore import Qt, QRegExp, QCoreApplication
+from qgis.PyQt.QtCore import (
+    Qt,
+    QRegularExpression,
+    QCoreApplication
+)
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.core import Qgis, QgsApplication, QgsSettings
@@ -79,9 +83,9 @@ class PostGisDBPlugin(DBPlugin):
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         try:
-            sslmode = settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer)
+            sslmode = settings.enumValue("sslmode", QgsDataSourceUri.SslMode.SslPrefer)
         except TypeError:
-            sslmode = QgsDataSourceUri.SslPrefer
+            sslmode = QgsDataSourceUri.SslMode.SslPrefer
 
         settings.endGroup()
 
@@ -153,11 +157,11 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.Info,
+                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.MessageLevel.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.runVacuumAnalyze()
 
@@ -165,11 +169,11 @@ class PGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, PGTable) or item._relationType != 'm':
-                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.Info,
+                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.MessageLevel.Info,
                                            parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         item.runRefreshMaterializedView()
 
@@ -229,10 +233,10 @@ class PGTable(Table):
 
             try:
                 if QMessageBox.question(None, self.tr("Table rule"), msg,
-                                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
                     return False
             finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if rule_action == "delete":
                 self.aboutToChange.emit()
@@ -394,7 +398,7 @@ class PGRasterTable(PGTable, RasterTable):
                         break
 
         if rl.isValid():
-            rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
+            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         return rl
 
 
@@ -407,10 +411,10 @@ class PGTableField(TableField):
 
         # get modifier (e.g. "precision,scale") from formatted type string
         trimmedTypeStr = typeStr.strip()
-        regex = QRegExp("\\((.+)\\)$")
-        startpos = regex.indexIn(trimmedTypeStr)
-        if startpos >= 0:
-            self.modifier = regex.cap(1).strip()
+        regex = QRegularExpression(r"\((.+)\)$")
+        match = regex.match(trimmedTypeStr)
+        if match.hasMatch():
+            self.modifier = match.captured(1).strip()
         else:
             self.modifier = None
 

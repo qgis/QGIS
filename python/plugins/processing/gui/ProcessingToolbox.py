@@ -57,9 +57,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     PROVIDER_ITEM = 'PROVIDER_ITEM'
     GROUP_ITEM = 'GROUP_ITEM'
 
-    NAME_ROLE = Qt.UserRole
-    TAG_ROLE = Qt.UserRole + 1
-    TYPE_ROLE = Qt.UserRole + 2
+    NAME_ROLE = Qt.ItemDataRole.UserRole
+    TAG_ROLE = Qt.ItemDataRole.UserRole + 1
+    TYPE_ROLE = Qt.ItemDataRole.UserRole + 2
 
     # Trigger algorithm execution
     executeWithGui = pyqtSignal(str, QWidget, bool, bool)
@@ -69,14 +69,14 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.tipWasClosed = False
         self.in_place_mode = False
         self.setupUi(self)
-        self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.setAllowedAreas(Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
                                        QgsGui.instance().processingRecentAlgorithmLog())
-        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.Filter.FilterToolbox)
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
         self.algorithmTree.setFilters(filters)
 
         self.searchBox.setShowSearchIcon(True)
@@ -113,19 +113,19 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     def set_filter_string(self, string):
         filters = self.algorithmTree.filters()
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
         else:
-            filters &= ~QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters &= ~QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
         self.algorithmTree.setFilters(filters)
         self.algorithmTree.setFilterString(string)
 
     def set_in_place_edit_mode(self, enabled):
-        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.Filter.FilterToolbox)
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+            filters |= QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues
 
         if enabled:
-            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.FilterInPlace)
+            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.Filter.FilterInPlace)
         else:
             self.algorithmTree.setFilters(filters)
         self.in_place_mode = enabled
@@ -152,7 +152,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             toolbarButton.setObjectName('provideraction_' + provider.id())
             toolbarButton.setIcon(provider.icon())
             toolbarButton.setToolTip(provider.name())
-            toolbarButton.setPopupMode(QToolButton.InstantPopup)
+            toolbarButton.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
             actions = ProviderActions.actions[provider.id()]
             menu = QMenu(provider.name(), self)
@@ -182,7 +182,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), popupmenu)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
+            if alg.flags() & QgsProcessingAlgorithm.Flag.FlagSupportsBatch:
                 executeBatchAction = QAction(
                     QCoreApplication.translate('ProcessingToolbox', 'Execute as Batch Process…'),
                     popupmenu)
@@ -210,13 +210,13 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
-            popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
+            popupmenu.exec(self.algorithmTree.mapToGlobal(point))
 
     def editRenderingStyles(self):
         alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             dlg = EditRenderingStylesDialog(alg)
-            dlg.exec_()
+            dlg.exec()
 
     def activateCurrent(self):
         self.executeAlgorithm()

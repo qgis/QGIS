@@ -72,17 +72,17 @@ class RandomPointsLayer(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorPolygon]))
+                                                              [QgsProcessing.SourceType.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.POINTS_NUMBER,
                                                        self.tr('Number of points'),
-                                                       QgsProcessingParameterNumber.Integer,
+                                                       QgsProcessingParameterNumber.Type.Integer,
                                                        1, False, 1, 1000000000))
         self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
                                                          self.tr('Minimum distance between points'),
                                                          0, self.INPUT, False, 0, 1000000000))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
-                                                            type=QgsProcessing.TypeVectorPoint))
+                                                            type=QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'randompointsinlayerbounds'
@@ -105,7 +105,7 @@ class RandomPointsLayer(QgisAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
+                                               fields, QgsWkbTypes.Type.Point, source.sourceCrs(), QgsFeatureSink.SinkFlag.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -143,7 +143,7 @@ class RandomPointsLayer(QgisAlgorithm):
                         f.setFields(fields)
                         f.setAttribute('id', nPoints)
                         f.setGeometry(geom)
-                        sink.addFeature(f, QgsFeatureSink.FastInsert)
+                        sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
                         index.addFeature(f)
                         points[nPoints] = p
                         nPoints += 1

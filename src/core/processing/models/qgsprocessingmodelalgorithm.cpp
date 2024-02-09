@@ -682,7 +682,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
   QStringList importLines; // not a set - we need regular ordering
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       // add specific parameter type imports
       const auto params = parameterDefinitions();
@@ -898,7 +898,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
       lines << currentIndent + QStringLiteral( "return results" );
       lines << QString();
 
@@ -1676,7 +1676,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mParameters.clear();
   QVariantMap paramDefMap = map.value( QStringLiteral( "parameterDefinitions" ) ).toMap();
 
-  auto addParam = [ = ]( const QVariant & value )
+  auto addParam = [this]( const QVariant & value )
   {
     std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( value.toMap() ) );
     // we be lenient here - even if we couldn't load a parameter, don't interrupt the model loading

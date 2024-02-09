@@ -53,7 +53,7 @@ class FeatureSourceTestCase:
         self.assertEqual(self.source.sourceCrs().authid(), 'EPSG:4326')
 
     def testWkbType(self):
-        self.assertEqual(self.source.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(self.source.wkbType(), QgsWkbTypes.Type.Point)
 
     def testFeatureCount(self):
         self.assertEqual(self.source.featureCount(), 5)
@@ -62,7 +62,7 @@ class FeatureSourceTestCase:
     def testFields(self):
         fields = self.source.fields()
         for f in ('pk', 'cnt', 'name', 'name2', 'num_char'):
-            self.assertTrue(fields.lookupField(f) >= 0)
+            self.assertGreaterEqual(fields.lookupField(f), 0)
 
     def testGetFeatures(self, source=None, extra_features=[], skip_features=[], changed_attributes={},
                         changed_geometries={}):
@@ -92,7 +92,7 @@ class FeatureSourceTestCase:
             attributes[f['pk']] = attrs
             geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
-        tz = Qt.UTC if self.treat_datetime_tz_as_utc() else Qt.LocalTime
+        tz = Qt.TimeSpec.UTC if self.treat_datetime_tz_as_utc() else Qt.TimeSpec.LocalTime
         expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14), tz) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14', QDate(2020, 5, 2) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 2, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-02', QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01'],
                                3: [3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL],
                                1: [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14), tz) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14', QDate(2020, 5, 3) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 3, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-03', QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14'],
@@ -137,7 +137,7 @@ class FeatureSourceTestCase:
                 self.assertFalse(geometries[pk], f'Expected null geometry for {pk}')
 
     def assert_query(self, source, expression, expected):
-        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.Flag.NoGeometry | QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         result = {f['pk'] for f in source.getFeatures(request)}
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected),
                                                                                                      result, expression)
@@ -145,13 +145,13 @@ class FeatureSourceTestCase:
 
         # Also check that filter works when referenced fields are not being retrieved by request
         result = {f['pk'] for f in source.getFeatures(
-            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))}
+            QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()).setFlags(QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation))}
         assert set(
             expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(
             set(expected), result, expression)
 
         # test that results match QgsFeatureRequest.acceptFeature
-        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+        request = QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         for f in source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
@@ -587,7 +587,7 @@ class FeatureSourceTestCase:
 
         # ExactIntersection flag set, but no filter rect set. Should be ignored.
         request = QgsFeatureRequest()
-        request.setFlags(QgsFeatureRequest.ExactIntersect)
+        request.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
@@ -601,7 +601,7 @@ class FeatureSourceTestCase:
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest()
         request.setFilterRect(extent)
-        request.setFlags(QgsFeatureRequest.NoGeometry)
+        request.setFlags(QgsFeatureRequest.Flag.NoGeometry)
 
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
@@ -614,7 +614,7 @@ class FeatureSourceTestCase:
 
         # test with an empty rectangle
         extent = QgsRectangle()
-        request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.NoGeometry)
+        request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.Flag.NoGeometry)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
@@ -622,7 +622,7 @@ class FeatureSourceTestCase:
 
         # ExactIntersection flag set, but no filter rect set. Should be ignored.
         request = QgsFeatureRequest()
-        request.setFlags(QgsFeatureRequest.ExactIntersect | QgsFeatureRequest.NoGeometry)
+        request.setFlags(QgsFeatureRequest.Flag.ExactIntersect | QgsFeatureRequest.Flag.NoGeometry)
         features = [f['pk'] for f in self.source.getFeatures(request)]
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         assert set(features) == {1, 2, 3, 4, 5}, f'Got {features} instead'
@@ -741,14 +741,14 @@ class FeatureSourceTestCase:
         """
         request = QgsFeatureRequest().setFilterExpression(
             'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setSubsetOfAttributes([]).setFlags(
-            QgsFeatureRequest.NoGeometry | QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+            QgsFeatureRequest.Flag.NoGeometry | QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
         self.assertTrue(all_valid)
 
         request = QgsFeatureRequest().setFilterExpression(
-            'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
+            'attribute($currentfeature,\'cnt\')>200 and $x>=-70 and $x<=-60').setFlags(QgsFeatureRequest.Flag.IgnoreStaticNodesDuringExpressionCompilation)
         result = {f['pk'] for f in self.source.getFeatures(request)}
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
         self.assertEqual(result, {4})
@@ -882,15 +882,15 @@ class FeatureSourceTestCase:
     def testGetFeaturesSubsetAttributes(self):
         """ Test that expected results are returned when using subsets of attributes """
 
-        tz = Qt.UTC if self.treat_datetime_tz_as_utc() else Qt.LocalTime
+        tz = Qt.TimeSpec.UTC if self.treat_datetime_tz_as_utc() else Qt.TimeSpec.LocalTime
         tests = {'pk': {1, 2, 3, 4, 5},
                  'cnt': {-200, 300, 100, 200, 400},
                  'name': {'Pear', 'Orange', 'Apple', 'Honey', NULL},
                  'name2': {'NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'},
-                 'dt': {NULL, '2021-05-04 13:13:14' if self.treat_datetime_as_string() else QDateTime(2021, 5, 4, 13, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2021-05-04 13:13:14',
-                        '2020-05-04 12:14:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 14, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-04 12:14:14',
-                        '2020-05-04 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14',
-                        '2020-05-03 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 3, 12, 13, 14, 0, tz) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14'},
+                 'dt': {NULL, '2021-05-04 13:13:14' if self.treat_datetime_as_string() else QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14, 0), tz) if not self.treat_datetime_as_string() else '2021-05-04 13:13:14',
+                        '2020-05-04 12:14:14' if self.treat_datetime_as_string() else QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14, 0), tz) if not self.treat_datetime_as_string() else '2020-05-04 12:14:14',
+                        '2020-05-04 12:13:14' if self.treat_datetime_as_string() else QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14, 0), tz) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14',
+                        '2020-05-03 12:13:14' if self.treat_datetime_as_string() else QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14, 0), tz) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14'},
                  'date': {NULL,
                           '2020-05-02' if self.treat_date_as_string() else QDate(2020, 5, 2) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 2, 0, 0, 0),
                           '2020-05-03' if self.treat_date_as_string() else QDate(2020, 5, 3) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 3, 0, 0, 0),
@@ -926,7 +926,7 @@ class FeatureSourceTestCase:
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
 
-        for f in self.source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)):
+        for f in self.source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)):
             self.assertFalse(f.hasGeometry(), 'Expected no geometry, got one')
             self.assertTrue(f.isValid())
 
@@ -953,8 +953,8 @@ class FeatureSourceTestCase:
         else:
             if self.treat_datetime_tz_as_utc():
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                                 {QDateTime(2021, 5, 4, 13, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 4, 12, 14, 14, 0, Qt.UTC),
-                                  QDateTime(2020, 5, 4, 12, 13, 14, 0, Qt.UTC), QDateTime(2020, 5, 3, 12, 13, 14, 0, Qt.UTC), NULL})
+                                 {QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14, 0), Qt.TimeSpec.UTC), QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14, 0), Qt.TimeSpec.UTC),
+                                  QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14, 0), Qt.TimeSpec.UTC), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14, 0), Qt.TimeSpec.UTC), NULL})
             else:
                 self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
                                  {QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL})

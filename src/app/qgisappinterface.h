@@ -107,6 +107,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList< QgsMapCanvas * > mapCanvases() override;
     QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
     void closeMapCanvas( const QString &name ) override;
+    QList< Qgs3DMapCanvas * > mapCanvases3D() override;
+    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name ) override;
+    void closeMapCanvas3D( const QString &name ) override;
     QSize iconSize( bool dockedToolbar = false ) const override;
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
     QWidget *mainWindow() override;
@@ -317,6 +320,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
     QList<QgsMapDecoration *> activeDecorations() override;
     QgsUserProfileManager *userProfileManager() override;
+    void blockActiveLayerChanges( bool blocked ) override;
 
   private slots:
 

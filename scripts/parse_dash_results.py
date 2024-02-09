@@ -84,9 +84,9 @@ class SelectReferenceImageDialog(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle('Select reference image')
-        self.setWindowFlags(Qt.Window)
+        self.setWindowFlags(Qt.WindowType.Window)
 
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
 
@@ -111,7 +111,7 @@ class ResultHandler(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Dash results')
-        self.setWindowFlags(Qt.Window)
+        self.setWindowFlags(Qt.WindowType.Window)
         self.control_label = QLabel()
         self.rendered_label = QLabel()
         self.diff_label = QLabel()
@@ -135,7 +135,7 @@ class ResultHandler(QDialog):
         grid.addWidget(QLabel('New Mask'), 3, 1)
         grid.addWidget(self.mask_label, 4, 0)
         grid.addWidget(self.new_mask_label, 4, 1)
-        grid.setSizeConstraint(QLayout.SetFixedSize)
+        grid.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
 
         self.widget.setLayout(grid)
         self.scrollArea.setWidget(self.widget)
@@ -251,7 +251,7 @@ class ResultHandler(QDialog):
             print(
                 f'Mask image does not exist, creating {mask_image_path}')
             self.mask_image = QImage(
-                self.control_image.width(), self.control_image.height(), QImage.Format_ARGB32)
+                self.control_image.width(), self.control_image.height(), QImage.Format.Format_ARGB32)
             self.mask_image.fill(QColor(0, 0, 0))
 
         self.diff_image = self.create_diff_image(
@@ -306,7 +306,7 @@ class ResultHandler(QDialog):
         max_height = min(rendered_image.height(), control_image.height())
 
         new_mask_image = QImage(
-            control_image.width(), control_image.height(), QImage.Format_ARGB32)
+            control_image.width(), control_image.height(), QImage.Format.Format_ARGB32)
         new_mask_image.fill(QColor(0, 0, 0))
 
         # loop through pixels in rendered image and compare
@@ -365,7 +365,7 @@ class ResultHandler(QDialog):
                 print(' -  ' + item)
 
             dlg = SelectReferenceImageDialog(self, test_name, matching_control_images)
-            if not dlg.exec_():
+            if not dlg.exec():
                 return None
 
             self.found_control_image_path = dlg.selected_image()
@@ -396,7 +396,7 @@ class ResultHandler(QDialog):
         linebytes = max_width * 4
 
         diff_image = QImage(
-            control_image.width(), control_image.height(), QImage.Format_ARGB32)
+            control_image.width(), control_image.height(), QImage.Format.Format_ARGB32)
         diff_image.fill(QColor(152, 219, 249))
 
         for y in range(max_height):
@@ -452,7 +452,7 @@ def main():
 
     w = ResultHandler()
     w.parse_url(args.dash_url)
-    w.exec_()
+    w.exec()
 
 
 if __name__ == '__main__':

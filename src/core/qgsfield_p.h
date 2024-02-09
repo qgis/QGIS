@@ -82,6 +82,7 @@ class QgsFieldPrivate : public QSharedData
       , flags( other.flags )
       , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
+      , editorWidgetSetup( other.editorWidgetSetup )
       , splitPolicy( other.splitPolicy )
       , isReadOnly( other.isReadOnly )
     {
@@ -98,7 +99,8 @@ class QgsFieldPrivate : public QSharedData
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints )  && ( flags == other.flags )
                && ( splitPolicy == other.splitPolicy )
-               && ( isReadOnly == other.isReadOnly ) );
+               && ( isReadOnly == other.isReadOnly )
+               && ( editorWidgetSetup == other.editorWidgetSetup ) );
     }
 
     //! Name

@@ -39,7 +39,7 @@ class Response(QgsServerResponse):
     def __init__(self):
         QgsServerResponse.__init__(self)
         self._buffer = QBuffer()
-        self._buffer.open(QIODevice.ReadWrite)
+        self._buffer.open(QIODevice.OpenModeFlag.ReadWrite)
 
     def setStatusCode(self, code):
         pass
@@ -102,6 +102,13 @@ class TestModules(unittest.TestCase):
             except KeyError:
                 pass
         self.server = QgsServer()
+
+    def test_dummy(self):
+        """
+        A dummy test to avoid empty test suite
+        reporting failures on some unittest versions
+        """
+        pass
 
 
 if __name__ == '__main__':

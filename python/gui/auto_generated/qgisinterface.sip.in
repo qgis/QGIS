@@ -10,6 +10,11 @@
 
 
 
+class Qgs3DMapCanvas /External/;
+
+%ModuleHeaderCode
+class Qgs3DMapCanvas;
+%End
 
 
 class QgisInterface : QObject
@@ -95,6 +100,31 @@ Closes the additional map canvas with matching ``name``.
 .. seealso:: :py:func:`createNewMapCanvas`
 
 .. versionadded:: 3.0
+%End
+
+    virtual QList< Qgs3DMapCanvas * > mapCanvases3D() = 0;
+%Docstring
+Returns a list of all 3D map canvases open in the app.
+
+.. versionadded:: 3.36
+%End
+
+    virtual Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name ) = 0;
+%Docstring
+Create a new 3D map canvas with the specified unique ``name``.
+
+.. seealso:: :py:func:`closeMapCanvas3D`
+
+.. versionadded:: 3.36
+%End
+
+    virtual void closeMapCanvas3D( const QString &name ) = 0;
+%Docstring
+Closes the additional map canvas with matching ``name``.
+
+.. seealso:: :py:func:`createNewMapCanvas3D`
+
+.. versionadded:: 3.36
 %End
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -1747,6 +1777,24 @@ Any existing GPS connection used by the widget will be disconnect and replaced w
 is automatically registered within the :py:func:`QgsApplication.gpsConnectionRegistry()`.
 
 .. versionadded:: 3.16
+%End
+
+    virtual void blockActiveLayerChanges( bool blocked ) = 0;
+%Docstring
+Sets whether changes to the active layer should be temporarily
+blocked.
+
+This is a low-level method, designed to avoid unnecessary work when adding lots
+of layers at once. Clients which will be adding many layers may call blockActiveLayerChanges( ``True`` ) upfront,
+add all the layers, and then follow up with a call to blockActiveLayerChanges( ``False`` ). This will defer emitting
+the active layer changed signal until they've added all layers, and only emit the signal once for
+the final layer added.
+
+.. warning::
+
+   This must be accompanied by a subsequent call with ``blocked`` as ``False``.
+
+.. versionadded:: 3.36
 %End
 
   signals:

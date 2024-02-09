@@ -20,8 +20,14 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 import time
+import unittest
 
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    QgsApplication,
+    Qgis,
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
     QgsPointXY,
     QgsProviderRegistry,
@@ -30,9 +36,11 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-import unittest
+from qgis.core import QgsProject
+from qgis.gui import QgsMapCanvas, QgsLayerTreeMapCanvasBridge
 from qgis.testing import start_app, QgisTestCase
 
+from qgis.testing.mocked import get_iface
 from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
@@ -62,6 +70,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
+        cls.iface = get_iface()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -77,6 +86,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
             'public', 'int16_regression_36689', 'bug_36689_pg_raster')
         cls._load_test_table('public', 'bug_37968_dem_linear_cdn_extract')
         cls._load_test_table('public', 'bug_39017_untiled_no_metadata')
+        cls._load_test_table('public', 'raster_sparse_3035')
 
         # Fix timing issues in backend
         # time.sleep(1)
@@ -119,9 +129,32 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
 
     def testGetData(self):
         identify = self.source.identify(QgsPointXY(
-            4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue)
+            4080137.9, 2430687.9), QgsRaster.IdentifyFormat.IdentifyFormatValue)
         expected = 192.51044
         self.assertAlmostEqual(identify.results()[1], expected, 4)
+
+    def testGetDataFromSparse(self):
+        """Test issue GH #55753"""
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='raster_sparse_3035', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(
+        ), 'POLYGON((4080050 2430625, 4080326 2430625, 4080326 2430855, 4080050 2430855, 4080050 2430625))', 0.01))
+
+        app_log = QgsApplication.messageLog()
+        log_spy = QSignalSpy(app_log.messageReceived)
+
+        # Identify pixel from area not containing data
+        identify = rl.dataProvider().identify(QgsPointXY(
+            4080320, 2430854), QgsRaster.IdentifyFormat.IdentifyFormatValue)
+        self.assertEqual(identify.results()[1], -9999)
+
+        postgis_warning_logs = list(filter(lambda log: log[2] == Qgis.MessageLevel.Warning and log[1] == "PostGIS", list(log_spy)))
+        # TODO: there is still NOTICE: row number 0 is out of range 0..-1 warning...
+
+        conversion_logs = list(filter(lambda log: "Cannot convert identified value" in log[0], postgis_warning_logs))
+        self.assertEqual(len(conversion_logs), 0, list(conversion_logs))
 
     def testBlockTiled(self):
 
@@ -163,12 +196,12 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertNotEqual(rl_nowhere.extent(), rl.extent())
 
         self.assertIsNone(
-            rl.dataProvider().identify(QgsPointXY(4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue).results()[1])
+            rl.dataProvider().identify(QgsPointXY(4080137.9, 2430687.9), QgsRaster.IdentifyFormat.IdentifyFormatValue).results()[1])
         self.assertIsNotNone(rl_nowhere.dataProvider().identify(QgsPointXY(4080137.9, 2430687.9),
-                                                                QgsRaster.IdentifyFormatValue).results()[1])
+                                                                QgsRaster.IdentifyFormat.IdentifyFormatValue).results()[1])
 
         self.assertAlmostEqual(
-            rl.dataProvider().identify(rl.extent().center(), QgsRaster.IdentifyFormatValue).results()[1], 223.38, 2)
+            rl.dataProvider().identify(rl.extent().center(), QgsRaster.IdentifyFormat.IdentifyFormatValue).results()[1], 223.38, 2)
 
         self.assertTrue(compareWkt(rl_nowhere.extent().asWktPolygon(),
                                    'POLYGON((4080050 2430625, 4080200 2430625, 4080200 2430750, 4080050 2430750, 4080050 2430625))'))
@@ -305,7 +338,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertEqual(data, [136, 142, 161, 169])
 
         stats = rl.dataProvider().bandStatistics(
-            1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+            1, QgsRasterBandStats.Stats.Min | QgsRasterBandStats.Stats.Max, rl.extent())
         self.assertEqual(int(stats.minimumValue), 136)
         self.assertEqual(int(stats.maximumValue), 169)
 
@@ -324,7 +357,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
 
         # Check that we have new statistics
         stats = rl.dataProvider().bandStatistics(
-            1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+            1, QgsRasterBandStats.Stats.Min | QgsRasterBandStats.Stats.Max, rl.extent())
         self.assertEqual(int(stats.minimumValue), 136)
         self.assertEqual(int(stats.maximumValue), 153)
 
@@ -420,7 +453,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
             'schema': 'public',
             'service': 'qgis_test',
             'srid': '3035',
-            'sslmode': QgsDataSourceUri.SslDisable,
+            'sslmode': QgsDataSourceUri.SslMode.SslDisable,
             'table': 'raster_tiled_3035',
         })
 
@@ -444,7 +477,7 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
             'service': 'qgis_test',
             'sql': '"a_field" != 1223223',
             'srid': '3035',
-            'sslmode': QgsDataSourceUri.SslPrefer,
+            'sslmode': QgsDataSourceUri.SslMode.SslPrefer,
             'table': 'raster_tiled_3035',
             'temporalDefaultTime':
                 '2020-03-02',
@@ -548,6 +581,53 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
                 table='raster_tiled_3035_view', schema='public'), 'pg_layer', 'postgresraster')
 
         self.assertTrue(rl.isValid())
+
+    def testSparseRaster(self):
+        """Test issue GH #55753"""
+        project: QgsProject = QgsProject.instance()
+        canvas: QgsMapCanvas = self.iface.mapCanvas()
+        project.setCrs(QgsCoordinateReferenceSystem('EPSG:3035'))
+        canvas.setExtent(QgsRectangle(4080050, 2430625, 4080200, 2430750))
+
+        bridge = QgsLayerTreeMapCanvasBridge(  # noqa: F841, this needs to be assigned
+            project.layerTreeRoot(), canvas
+        )
+
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='raster_sparse_3035', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(
+        ), 'POLYGON((4080050 2430625, 4080326 2430625, 4080326 2430855, 4080050 2430855, 4080050 2430625))', 0.01))
+
+        app_log = QgsApplication.messageLog()
+        log_spy = QSignalSpy(app_log.messageReceived)
+
+        project.addMapLayer(rl)
+        sleep_time = 0.001
+        zoom_times = 10
+
+        for _ in range(zoom_times):
+            canvas.zoomIn()
+            QCoreApplication.instance().processEvents()
+            time.sleep(sleep_time)
+
+        # Remove layer and add the same layer again
+        project.removeMapLayer(rl.id())
+
+        rl2 = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='raster_sparse_3035', schema='public'), 'pg_layer', 'postgresraster')
+        project.addMapLayer(rl2)
+
+        for _ in range(zoom_times):
+            canvas.zoomOut()
+            QCoreApplication.instance().processEvents()
+            time.sleep(sleep_time)
+
+        # Log should not contain any critical warnings
+        critical_postgis_logs = list(filter(lambda log: log[2] == Qgis.MessageLevel.Critical and log[1] == "PostGIS", list(log_spy)))
+        self.assertEqual(len(critical_postgis_logs), 0, list(log_spy))
 
 
 if __name__ == '__main__':

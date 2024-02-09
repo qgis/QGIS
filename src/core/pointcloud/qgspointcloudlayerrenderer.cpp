@@ -330,6 +330,14 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
 
 int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
+  QPainter *finalPainter = context.renderContext().painter();
+  if ( mRenderer->renderAsTriangles() && context.renderContext().previewRenderPainter() )
+  {
+    // swap out the destination painter for the preview render painter to render points
+    // until the actual triangles are ready to be rendered
+    context.renderContext().setPainter( context.renderContext().previewRenderPainter() );
+  }
+
   int nodesDrawn = 0;
   for ( const IndexedPointCloudNode &n : nodes )
   {
@@ -370,6 +378,8 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
 
   if ( mRenderer->renderAsTriangles() )
   {
+    // Switch back from the preview painter to the destination painter to render the triangles
+    context.renderContext().setPainter( finalPainter );
     renderTriangulatedSurface( context );
   }
 
@@ -378,6 +388,14 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
 
 int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
+  QPainter *finalPainter = context.renderContext().painter();
+  if ( mRenderer->renderAsTriangles() && context.renderContext().previewRenderPainter() )
+  {
+    // swap out the destination painter for the preview render painter to render points
+    // until the actual triangles are ready to be rendered
+    context.renderContext().setPainter( context.renderContext().previewRenderPainter() );
+  }
+
   int nodesDrawn = 0;
 
   if ( context.feedback() && context.feedback()->isCanceled() )
@@ -460,6 +478,8 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
 
   if ( mRenderer->renderAsTriangles() )
   {
+    // Switch back from the preview painter to the destination painter to render the triangles
+    context.renderContext().setPainter( finalPainter );
     renderTriangulatedSurface( context );
   }
 
@@ -713,6 +733,17 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   }
 
   painter->drawImage( 0, 0, img );
+}
+
+Qgis::MapLayerRendererFlags QgsPointCloudLayerRenderer::flags() const
+{
+  // when rendering as triangles we still want to show temporary incremental renders as points until
+  // the final triangulated surface is ready, which may be slow
+  // So we request here a preview render image for the temporary incremental updates:
+  if ( mRenderer->renderAsTriangles() )
+    return Qgis::MapLayerRendererFlag::RenderPartialOutputs | Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage;
+
+  return Qgis::MapLayerRendererFlags();
 }
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const

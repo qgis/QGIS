@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>shaders/diffuseSpecular.frag</file>
         <file>shaders/diffuseSpecular.vert</file>
-        <file>shaders/instanced.frag</file>
         <file>shaders/instanced.vert</file>
         <file>shaders/light.inc.frag</file>
         <file>shaders/lines.vert</file>
@@ -34,5 +33,9 @@
         <file>shaders/ssao_factor_render.vert</file>
         <file>shaders/ssao_factor_blur.frag</file>
         <file>shaders/ssao_factor_blur.vert</file>
+        <file>shaders/phongConstant.frag</file>
+        <file>shaders/phongConstant.vert</file>
+        <file>shaders/metalrough.frag</file>
+        <file>shaders/default.vert</file>
     </qresource>
 </RCC>

@@ -28,18 +28,18 @@ class TestQgsLayoutUnitsComboBox(QgisTestCase):
         """ test widget getters/setters """
         w = QgsLayoutUnitsComboBox()
 
-        w.setUnit(QgsUnitTypes.LayoutPixels)
-        self.assertEqual(w.unit(), QgsUnitTypes.LayoutPixels)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutPixels)
+        self.assertEqual(w.unit(), QgsUnitTypes.LayoutUnit.LayoutPixels)
 
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when setting unit"""
         w = QgsLayoutUnitsComboBox()
 
         spy = QSignalSpy(w.changed)
-        w.setUnit(QgsUnitTypes.LayoutPixels)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutPixels)
 
         self.assertEqual(len(spy), 1)
-        self.assertEqual(spy[0][0], QgsUnitTypes.LayoutPixels)
+        self.assertEqual(spy[0][0], QgsUnitTypes.LayoutUnit.LayoutPixels)
 
     def testLinkedWidgets(self):
         """ test linking spin boxes to combobox"""
@@ -52,24 +52,24 @@ class TestQgsLayoutUnitsComboBox(QgisTestCase):
         spin = QDoubleSpinBox()
         spin.setMaximum(1000000)
         spin.setValue(100)
-        w.setUnit(QgsUnitTypes.LayoutCentimeters)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutCentimeters)
         w.linkToWidget(spin)
-        w.setUnit(QgsUnitTypes.LayoutMeters)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutMeters)
         self.assertAlmostEqual(spin.value(), 1.0, 2)
-        w.setUnit(QgsUnitTypes.LayoutMillimeters)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutMillimeters)
         self.assertAlmostEqual(spin.value(), 1000.0, 2)
 
         spin2 = QDoubleSpinBox()
         spin2.setValue(50)
         spin2.setMaximum(1000000)
         w.linkToWidget(spin2)
-        w.setUnit(QgsUnitTypes.LayoutCentimeters)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutCentimeters)
         self.assertAlmostEqual(spin.value(), 100.0, 2)
         self.assertAlmostEqual(spin2.value(), 5.0, 2)
 
         # no crash!
         del spin
-        w.setUnit(QgsUnitTypes.LayoutMeters)
+        w.setUnit(QgsUnitTypes.LayoutUnit.LayoutMeters)
         self.assertAlmostEqual(spin2.value(), 0.05, 2)
 
 

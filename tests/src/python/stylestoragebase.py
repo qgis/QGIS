@@ -69,9 +69,9 @@ class StyleStorageTestBase():
         schema = None
         capabilities = conn.capabilities()
 
-        if (capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema
-            and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
-                and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
+        if (capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateSchema
+            and capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas
+                and capabilities & QgsAbstractDatabaseProviderConnection.Capability.DropSchema):
 
             schema = self.schemaName()
             # Start clean
@@ -81,9 +81,9 @@ class StyleStorageTestBase():
             # Create
             conn.createSchema(schema)
             schemas = conn.schemas()
-            self.assertTrue(schema in schemas)
+            self.assertIn(schema, schemas)
 
-        elif (capabilities & QgsAbstractDatabaseProviderConnection.Schemas):
+        elif (capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas):
             schema = self.schemaName()
 
             try:
@@ -97,13 +97,13 @@ class StyleStorageTestBase():
                 pass
 
             schemas = conn.schemas()
-            self.assertTrue(schema in schemas)
+            self.assertIn(schema, schemas)
 
         fields = QgsFields()
         fields.append(QgsField("string_t", QVariant.String))
         options = {}
         crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
-        typ = QgsWkbTypes.Point
+        typ = QgsWkbTypes.Type.Point
 
         # Create table
         conn.createVectorTable(schema, self.tableName(), fields, typ, crs, True, options)

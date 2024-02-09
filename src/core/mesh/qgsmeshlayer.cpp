@@ -47,6 +47,7 @@
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsmeshlayerlabeling.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -106,6 +107,7 @@ bool QgsMeshLayer::hasSimplifiedMeshes() const
 
 QgsMeshLayer::~QgsMeshLayer()
 {
+  delete mLabeling;
   delete mDataProvider;
 }
 
@@ -137,6 +139,12 @@ QgsMeshLayer *QgsMeshLayer::clone() const
 
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
+
+  if ( auto *lLabeling = labeling() )
+  {
+    layer->setLabeling( lLabeling->clone() );
+  }
+  layer->setLabelsEnabled( labelsEnabled() );
 
   return layer;
 }
@@ -223,7 +231,7 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
         scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
         break;
       case QgsMeshDatasetGroupMetadata::DataOnVertices:
-        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NoResampling );
         break;
       case QgsMeshDatasetGroupMetadata::DataOnEdges:
         break;
@@ -248,22 +256,23 @@ bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultRef
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const bool isTemporalBefore = dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
+  const QgsDataProviderTemporalCapabilities *temporalCapabilities = dataProvider()->temporalCapabilities();
+  const bool isTemporalBefore = temporalCapabilities->hasTemporalCapabilities();
   if ( mDatasetGroupStore->addPersistentDatasets( path ) )
   {
     mExtraDatasetUri.append( path );
     QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mTemporalProperties );
-    if ( !isTemporalBefore && dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+    if ( !isTemporalBefore && temporalCapabilities->hasTemporalCapabilities() )
     {
       mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities(
-        dataProvider()->temporalCapabilities() );
+        temporalCapabilities );
 
       if ( ! temporalProperties->referenceTime().isValid() )
       {
         QDateTime referenceTime = defaultReferenceTime;
         if ( !defaultReferenceTime.isValid() ) // If project reference time is invalid, use current date
           referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
-        temporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+        temporalProperties->setReferenceTime( referenceTime, temporalCapabilities );
       }
 
       mTemporalProperties->setIsActive( true );
@@ -784,7 +793,7 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
     }
 
     scalarSettings.setColorRampShader( colorRampShader );
-    scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+    scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NoResampling );
   }
 }
 
@@ -1488,7 +1497,7 @@ QList<int> QgsMeshLayer::selectVerticesByExpression( QgsExpression expression )
   QgsExpressionContext context;
   std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
   context.appendScope( expScope.release() );
-  context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( this ) );
+  context.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( *mNativeMesh ) );
 
   expression.prepare( &context );
 
@@ -1521,7 +1530,7 @@ QList<int> QgsMeshLayer::selectFacesByExpression( QgsExpression expression )
   QgsExpressionContext context;
   std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
   context.appendScope( expScope.release() );
-  context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( this ) );
+  context.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( *mNativeMesh ) );
 
   expression.prepare( &context );
 
@@ -1725,6 +1734,20 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
     setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
   }
 
+  // read labeling definition
+  if ( categories.testFlag( Labeling ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
+
+    QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
+    if ( !labelingElement.isNull() )
+    {
+      QgsAbstractMeshLayerLabeling *labeling = QgsAbstractMeshLayerLabeling::create( labelingElement, context );
+      mLabelsEnabled = node.toElement().attribute( QStringLiteral( "labelsEnabled" ), QStringLiteral( "0" ) ).toInt();
+      setLabeling( labeling );
+    }
+  }
+
   // get and set the layer transparency
   if ( categories.testFlag( Rendering ) )
   {
@@ -1772,6 +1795,16 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
   blendModeElement.appendChild( blendModeText );
   node.appendChild( blendModeElement );
+
+  if ( categories.testFlag( Labeling ) )
+  {
+    if ( mLabeling )
+    {
+      QDomElement labelingElement = mLabeling->save( doc, context );
+      elem.appendChild( labelingElement );
+    }
+    elem.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  }
 
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
@@ -2147,4 +2180,30 @@ QgsMapLayerElevationProperties *QgsMeshLayer::elevationProperties()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mElevationProperties;
+}
+
+bool QgsMeshLayer::labelsEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsMeshLayer::setLabelsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mLabelsEnabled = enabled;
+}
+
+void QgsMeshLayer::setLabeling( QgsAbstractMeshLayerLabeling *labeling )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mLabeling == labeling )
+    return;
+
+  delete mLabeling;
+  mLabeling = labeling;
+  triggerRepaint();
 }

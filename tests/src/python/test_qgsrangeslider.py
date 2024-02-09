@@ -23,13 +23,13 @@ class TestQgsRangeSlider(QgisTestCase):
 
     def testSettersGetters(self):
         w = QgsRangeSlider()
-        w.setOrientation(Qt.Horizontal)
-        self.assertEqual(w.orientation(), Qt.Horizontal)
-        w.setOrientation(Qt.Vertical)
-        self.assertEqual(w.orientation(), Qt.Vertical)
+        w.setOrientation(Qt.Orientation.Horizontal)
+        self.assertEqual(w.orientation(), Qt.Orientation.Horizontal)
+        w.setOrientation(Qt.Orientation.Vertical)
+        self.assertEqual(w.orientation(), Qt.Orientation.Vertical)
 
-        w.setTickPosition(QSlider.TicksAbove)
-        self.assertEqual(w.tickPosition(), QSlider.TicksAbove)
+        w.setTickPosition(QSlider.TickPosition.TicksAbove)
+        self.assertEqual(w.tickPosition(), QSlider.TickPosition.TicksAbove)
         w.setTickInterval(5)
         self.assertEqual(w.tickInterval(), 5)
         w.setFlippedDirection(True)

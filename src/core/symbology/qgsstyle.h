@@ -204,6 +204,17 @@ class CORE_EXPORT QgsStyle : public QObject
     void setName( const QString &name );
 
     /**
+     * Returns TRUE if the style is initialized and ready for use.
+     *
+     * Most instances of QgsStyle will already be initialized. However, if the
+     * style is the QgsStyle::defaultStyle() object it may have been created using
+     * lazy initialization and will return FALSE until it is initialized().
+     *
+     * \since QGIS 3.36
+     */
+    bool isInitialized() const { return mInitialized; }
+
+    /**
      * Returns TRUE if the style is considered a read-only library.
      *
      * \note This flag is used to control GUI operations, and does not prevent calling functions
@@ -479,8 +490,15 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     int labelSettingsId( const QString &name );
 
-    //! Returns default application-wide style
-    static QgsStyle *defaultStyle();
+    /**
+     * Returns the default application-wide style.
+     *
+     * Since QGIS 3.36, the \a initialize argument can be set to FALSE to temporarily
+     * defer the actual loading of the style's objects until they are first requested.
+     * This lazy-initialization can substantially improve application startup times,
+     * especially for standalone applications which do not utilize styles.
+     */
+    static QgsStyle *defaultStyle( bool initialize = true );
 
     //! Deletes the default style. Only to be used by QgsApplication::exitQgis()
     static void cleanDefaultStyle() SIP_SKIP;
@@ -987,6 +1005,16 @@ class CORE_EXPORT QgsStyle : public QObject
   signals:
 
     /**
+     * Emitted when the style database has been fully initialized.
+     *
+     * This signals is only emitted by the QgsStyle::defaultStyle() instance,
+     * and only when the defaultStyle() has been lazily initialized.
+     *
+     * \since QGIS 3.36
+     */
+    void initialized();
+
+    /**
      * Emitted just before the style object is destroyed.
      *
      * Emitted in the destructor when the style is about to be deleted,
@@ -1114,7 +1142,6 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     void rampChanged( const QString &name );
 
-
     /**
      * Emitted whenever a text format has been renamed from \a oldName to \a newName
      * \see symbolRenamed()
@@ -1194,6 +1221,7 @@ class CORE_EXPORT QgsStyle : public QObject
 
   private:
 
+    bool mInitialized = true;
     QString mName;
     bool mReadOnly = false;
 
@@ -1223,6 +1251,13 @@ class CORE_EXPORT QgsStyle : public QObject
     void handleDeferred3DSymbolCreation();
 
     static QgsStyle *sDefaultStyle;
+
+    /**
+     * Loads default style database contents from the specified \a filename.
+     *
+     * \warning Must only be called on defaultStyle() instance!
+     */
+    void initializeDefaultStyle( const QString &filename );
 
     //! Convenience function to open the DB and return a sqlite3 object
     bool openDatabase( const QString &filename );

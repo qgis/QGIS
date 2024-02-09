@@ -29,7 +29,8 @@ A QAbstractItemModel subclass for showing sensors within a :py:class:`QgsSensorM
       LastValue,
     };
 
-    enum Role
+
+    enum class CustomRole
     {
       SensorType,
       SensorId,

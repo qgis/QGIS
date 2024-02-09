@@ -39,6 +39,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsmarkersymbol.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -138,6 +139,22 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
 
   QString attrName = props[ QStringLiteral( "attribute" )].toString();
 
+  // try to determine if attribute name is actually a field reference or expression.
+  // If it's a field reference, we need to quote it.
+  // Because we don't have access to the layer or fields here, we treat a parser error
+  // as just an unquoted field name (eg a field name with spaces)
+  const QgsExpression attrExpression = QgsExpression( attrName );
+  if ( attrExpression.hasParserError() )
+  {
+    attrName = QgsExpression::quotedColumnRef( attrName );
+  }
+  else if ( attrExpression.isField() )
+  {
+    attrName = QgsExpression::quotedColumnRef(
+                 qgis::down_cast<const QgsExpressionNodeColumnRef *>( attrExpression.rootNode() )->name()
+               );
+  }
+
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
 
@@ -154,15 +171,32 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
 
   // create the ogc:Filter for the range
   QString filterFunc;
-  if ( QgsVariantUtils::isNull( mValue ) || mValue.toString().isEmpty() )
+  if ( mValue.type() == QVariant::List )
+  {
+    const QVariantList list = mValue.toList();
+    if ( list.size() == 1 )
+    {
+      filterFunc = QStringLiteral( "%1 = %2" ).arg( attrName, QgsExpression::quotedValue( list.at( 0 ) ) );
+    }
+    else
+    {
+      QStringList valuesList;
+      valuesList.reserve( list.size() );
+      for ( const QVariant &v : list )
+      {
+        valuesList << QgsExpression::quotedValue( v );
+      }
+      filterFunc = QStringLiteral( "%1 IN (%2)" ).arg( attrName,
+                   valuesList.join( ',' ) );
+    }
+  }
+  else if ( QgsVariantUtils::isNull( mValue ) || mValue.toString().isEmpty() )
   {
     filterFunc = QStringLiteral( "ELSE" );
   }
   else
   {
-    filterFunc = QStringLiteral( "%1 = '%2'" )
-                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ).append( '"' ).prepend( '"' ),
-                       mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+    filterFunc = QStringLiteral( "%1 = %2" ).arg( attrName, QgsExpression::quotedValue( mValue ) );
   }
 
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
@@ -1348,7 +1382,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     const QgsEmbeddedSymbolRenderer *embeddedRenderer = dynamic_cast<const QgsEmbeddedSymbolRenderer *>( renderer );
     QgsCategoryList categories;
     QgsFeatureRequest req;
-    req.setFlags( QgsFeatureRequest::EmbeddedSymbols | QgsFeatureRequest::NoGeometry );
+    req.setFlags( Qgis::FeatureRequestFlag::EmbeddedSymbols | Qgis::FeatureRequestFlag::NoGeometry );
     req.setNoAttributes();
     QgsFeatureIterator it = layer->getFeatures( req );
     QgsFeature feature;

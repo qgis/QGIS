@@ -74,6 +74,8 @@ Pushes a general informational message from the algorithm. This can
 be used to report feedback which is neither a status report or an
 error, such as "Found 47 matching features".
 
+.. seealso:: :py:func:`pushFormattedMessage`
+
 .. seealso:: :py:func:`pushWarning`
 
 .. seealso:: :py:func:`pushCommandInfo`
@@ -81,6 +83,26 @@ error, such as "Found 47 matching features".
 .. seealso:: :py:func:`pushDebugInfo`
 
 .. seealso:: :py:func:`pushConsoleInfo`
+%End
+
+    virtual void pushFormattedMessage( const QString &html, const QString &text );
+%Docstring
+Pushes a pre-formatted message from the algorithm.
+
+This can be used to push formatted HTML messages to the feedback object.
+A plain ``text`` version of the message must also be specified.
+
+.. seealso:: :py:func:`pushInfo`
+
+.. seealso:: :py:func:`pushWarning`
+
+.. seealso:: :py:func:`pushCommandInfo`
+
+.. seealso:: :py:func:`pushDebugInfo`
+
+.. seealso:: :py:func:`pushConsoleInfo`
+
+.. versionadded:: 3.36
 %End
 
     virtual void pushCommandInfo( const QString &info );
@@ -131,6 +153,13 @@ report the output from executing an external command or subprocess.
 Pushes a summary of the QGIS (and underlying library) version information to the log.
 
 .. versionadded:: 3.4.7
+%End
+
+    void pushFormattedResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &results );
+%Docstring
+Pushes a summary of the execution ``results`` to the log
+
+.. versionadded:: 3.36
 %End
 
     virtual QString htmlLog() const;
@@ -198,6 +227,9 @@ to scale the current progress to account for progress through the overall proces
     virtual void pushDebugInfo( const QString &info );
 
     virtual void pushConsoleInfo( const QString &info );
+
+    virtual void pushFormattedMessage( const QString &html, const QString &text );
+
 
     virtual QString htmlLog() const;
 

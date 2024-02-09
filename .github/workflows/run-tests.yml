@@ -27,6 +27,9 @@ on:
     # paths cannot be filtered on this workflow on pull request as it is a required one in the branch protection
     # feature request and hacks: https://github.community/t/feature-request-conditional-required-checks/16761
 
+permissions:
+  contents: read
+
 jobs:
   build:
     env:
@@ -192,7 +195,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
@@ -316,7 +319,7 @@ jobs:
 
           - qt-version: 6
             distro-version: 38
-            docker-target: single
+            docker-target: binary-only
 
           - qt-version: 5
             distro-version: 22.04
@@ -388,7 +391,7 @@ jobs:
           sudo df -h
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
           path: .
@@ -438,7 +441,7 @@ jobs:
 
       - name: Archive test results report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-qt${{ matrix.qt-version }}
           path: qgis_test_report
@@ -489,7 +492,7 @@ jobs:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
           path: .

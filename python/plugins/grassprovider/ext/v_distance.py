@@ -36,9 +36,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 def processCommand(alg, parameters, context, feedback):
     # We need to disable only from_output parameter
     fromOutput = alg.parameterDefinition('from_output')
-    fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.FlagHidden)
+    fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.Flag.FlagHidden)
     alg.processCommand(parameters, context, feedback, False)
-    fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.FlagHidden)
+    fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.Flag.FlagHidden)
 
 
 def processOutputs(alg, parameters, context, feedback):

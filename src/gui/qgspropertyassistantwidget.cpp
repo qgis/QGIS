@@ -27,6 +27,8 @@
 #include "qgsstyle.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsstringutils.h"
+#include "qgsgui.h"
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
     const QgsPropertyDefinition &definition, const QgsProperty &initialState,
@@ -39,7 +41,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  setPanelTitle( mDefinition.description() );
+  setPanelTitle( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( mDefinition.description(), Qgis::Capitalization::TitleCase ) : mDefinition.description() );
 
   mLegendPreview->hide();
 
@@ -135,6 +137,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
+  connect( mTransformCurveCheckBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mCurveEditor, &QgsCurveEditorWidget::changed, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( this, &QgsPropertyAssistantWidget::widgetChanged, this, &QgsPropertyAssistantWidget::updatePreview );
   updatePreview();
@@ -275,8 +278,8 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
 
   QgsFeatureIterator fit = mLayer->getFeatures(
                              QgsFeatureRequest().setFlags( e.needsGeometry()
-                                 ? QgsFeatureRequest::NoFlags
-                                 : QgsFeatureRequest::NoGeometry )
+                                 ? Qgis::FeatureRequestFlag::NoFlags
+                                 : Qgis::FeatureRequestFlag::NoGeometry )
                              .setSubsetOfAttributes( referencedCols, mLayer->fields() ) );
 
   // create list of non-null attribute values
@@ -495,7 +498,8 @@ QgsColorRampTransformer *QgsPropertyColorAssistantWidget::createTransformer( dou
     minValue,
     maxValue,
     mColorRampButton->colorRamp(),
-    mNullColorButton->color() );
+    mNullColorButton->color(),
+    mColorRampButton->colorRampName() );
   return transformer;
 }
 

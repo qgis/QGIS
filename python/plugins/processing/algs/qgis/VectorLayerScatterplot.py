@@ -51,11 +51,11 @@ class VectorLayerScatterplot(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.XFIELD,
                                                       self.tr('X attribute'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric))
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
         self.addParameter(QgsProcessingParameterField(self.YFIELD,
                                                       self.tr('Y attribute'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric))
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot'), self.tr('HTML files (*.html)')))
 

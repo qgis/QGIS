@@ -69,9 +69,9 @@ class TestQgsVirtualLayerDefinition(unittest.TestCase):
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryField(), "geom")
         self.assertEqual(QgsVirtualLayerDefinition.fromUrl(strToUrl(d.toString())).geometryField(), "geom")
 
-        d.setGeometryWkbType(QgsWkbTypes.Point)
-        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryWkbType(), QgsWkbTypes.Point)
-        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(strToUrl(d.toString())).geometryWkbType(), QgsWkbTypes.Point)
+        d.setGeometryWkbType(QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(d.toUrl()).geometryWkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsVirtualLayerDefinition.fromUrl(strToUrl(d.toString())).geometryWkbType(), QgsWkbTypes.Type.Point)
 
         f = QgsFields()
         f.append(QgsField("a", QVariant.Int))

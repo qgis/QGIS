@@ -34,7 +34,7 @@ QgsFieldProxyModel *QgsFieldProxyModel::setFilters( QgsFieldProxyModel::Filters 
 
 bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 {
-  const QVariant originVariant = sourceModel()->data( index, QgsFieldModel::FieldOriginRole );
+  const QVariant originVariant = sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldOrigin ) );
   if ( QgsVariantUtils::isNull( originVariant ) )
   {
     //expression
@@ -49,10 +49,10 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
       // show joined fields (e.g. auxiliary fields) only if they have a non-hidden editor widget.
       // This enables them to be bulk field-calculated when a user needs to, but hides them by default
       // (since there's often MANY of these, e.g. after using the label properties tool on a layer)
-      if ( sourceModel()->data( index, QgsFieldModel::EditorWidgetType ).toString() == QLatin1String( "Hidden" ) )
+      if ( sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ) ).toString() == QLatin1String( "Hidden" ) )
         return true;
 
-      return !sourceModel()->data( index, QgsFieldModel::JoinedFieldIsEditable ).toBool();
+      return !sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::JoinedFieldIsEditable ) ).toBool();
     }
 
     case QgsFields::OriginUnknown:
@@ -63,7 +63,7 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
     case QgsFields::OriginEdit:
     case QgsFields::OriginProvider:
     {
-      if ( !sourceModel()->data( index, QgsFieldModel::FieldIsWidgetEditable ).toBool() )
+      if ( !sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldIsWidgetEditable ) ).toBool() )
       {
         return true;
       }
@@ -88,7 +88,7 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mFilters.testFlag( AllTypes ) )
     return true;
 
-  const QVariant typeVar = sourceModel()->data( index, QgsFieldModel::FieldTypeRole );
+  const QVariant typeVar = sourceModel()->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldType ) );
 
   // if expression, consider valid
   if ( QgsVariantUtils::isNull( typeVar ) )
@@ -117,15 +117,15 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 bool QgsFieldProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty field is always first
-  if ( sourceModel()->data( left, QgsFieldModel::IsEmptyRole ).toBool() )
+  if ( sourceModel()->data( left, static_cast< int >( QgsFieldModel::CustomRole::IsEmpty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, QgsFieldModel::IsEmptyRole ).toBool() )
+  else if ( sourceModel()->data( right, static_cast< int >( QgsFieldModel::CustomRole::IsEmpty ) ).toBool() )
     return false;
 
   // order is field order, then expressions
   bool lok, rok;
-  const int leftId = sourceModel()->data( left, QgsFieldModel::FieldIndexRole ).toInt( &lok );
-  const int rightId = sourceModel()->data( right, QgsFieldModel::FieldIndexRole ).toInt( &rok );
+  const int leftId = sourceModel()->data( left, static_cast< int >( QgsFieldModel::CustomRole::FieldIndex ) ).toInt( &lok );
+  const int rightId = sourceModel()->data( right, static_cast< int >( QgsFieldModel::CustomRole::FieldIndex ) ).toInt( &rok );
 
   if ( !lok )
     return false;

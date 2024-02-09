@@ -155,7 +155,7 @@ def createTest(text):
 
     i = 0
     for param in alg.parameterDefinitions():
-        if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
+        if param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden or param.isDestination():
             continue
 
         if not param.name() in parameters:
@@ -164,7 +164,7 @@ def createTest(text):
         i += 1
         token = parameters[param.name()]
         # Handle empty parameters that are optionals
-        if param.flags() & QgsProcessingParameterDefinition.FlagOptional and token is None:
+        if param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional and token is None:
             continue
 
         if isinstance(param, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
@@ -193,7 +193,7 @@ def createTest(text):
 
             # Handle datatype detection
             dataType = param.layerType()
-            if dataType in [QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVector]:
+            if dataType in [QgsProcessing.SourceType.TypeVectorAnyGeometry, QgsProcessing.SourceType.TypeVectorPoint, QgsProcessing.SourceType.TypeVectorLine, QgsProcessing.SourceType.TypeVectorPolygon, QgsProcessing.SourceType.TypeVector]:
                 dataType = 'vector'
             else:
                 dataType = 'raster'
@@ -228,7 +228,7 @@ def createTest(text):
         elif isinstance(param, QgsProcessingParameterBoolean):
             params[param.name()] = token
         elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance)):
-            if param.dataType() == QgsProcessingParameterNumber.Integer:
+            if param.dataType() == QgsProcessingParameterNumber.Type.Integer:
                 params[param.name()] = int(token)
             else:
                 params[param.name()] = float(token)
@@ -248,7 +248,7 @@ def createTest(text):
 
     definition['params'] = params
 
-    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHidden]):
+    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden]):
         if not out.name() in parameters:
             continue
 
@@ -300,7 +300,7 @@ def createTest(text):
 
     definition['results'] = results
     dlg = ShowTestDialog(yaml.dump([definition], default_flow_style=False))
-    dlg.exec_()
+    dlg.exec()
 
 
 def tr(string):

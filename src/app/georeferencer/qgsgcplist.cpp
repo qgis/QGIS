@@ -141,7 +141,7 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
     QTextStream points( &pointFile );
     if ( targetCrs.isValid() )
     {
-      points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+      points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( Qgis::CrsWktVariant::Preferred ) );
       points << Qt::endl;
     }
 

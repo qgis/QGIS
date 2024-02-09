@@ -260,7 +260,7 @@ namespace QgsWms
       {
         if ( vLayer->renderer() )
         {
-          const QString ruleKey { legendNode.data( QgsLayerTreeModelLegendNode::LegendNodeRoles::RuleKeyRole ).toString() };
+          const QString ruleKey { legendNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
           bool ok;
           const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
           if ( ok )
@@ -306,7 +306,7 @@ namespace QgsWms
     r->startRender( context, vl->fields() );
     QgsFeature f;
     QgsFeatureRequest request( context.extent() );
-    request.setFlags( QgsFeatureRequest::ExactIntersect );
+    request.setFlags( Qgis::FeatureRequestFlag::ExactIntersect );
     QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
@@ -1649,6 +1649,15 @@ namespace QgsWms
             }
 
             layerElement.setAttribute( QStringLiteral( "name" ), layerName );
+            const QString layerTitle = layer->title();
+            if ( !layerTitle.isEmpty() )
+            {
+              layerElement.setAttribute( QStringLiteral( "title" ), layerTitle );
+            }
+            else
+            {
+              layerElement.setAttribute( QStringLiteral( "title" ), layerName );
+            }
             getFeatureInfoElement.appendChild( layerElement );
             if ( sia2045 ) //the name might not be unique after alias replacement
             {
@@ -1687,7 +1696,7 @@ namespace QgsWms
               getFeatureInfoElement.appendChild( layerElement );
             }
 
-            ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
+            ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
           }
           break;
         }
@@ -1841,7 +1850,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
 
     bool hasGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) || addWktGeometry || featureBBox || layerFilterGeom;
-    fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
+    fReq.setFlags( ( ( hasGeometry ) ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ) | Qgis::FeatureRequestFlag::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
     {
@@ -1849,7 +1858,7 @@ namespace QgsWms
     }
     else
     {
-      fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
+      fReq.setFlags( fReq.flags() & ~ static_cast<int>( Qgis::FeatureRequestFlag::ExactIntersect ) );
     }
 
 
@@ -1980,7 +1989,7 @@ namespace QgsWms
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
         QString mapTip = layer->mapTipTemplate();
-        if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
+        if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -2146,6 +2155,7 @@ namespace QgsWms
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer,
       const QgsMapSettings &mapSettings,
       const QgsPointXY *infoPoint,
+      const QgsRenderContext &renderContext,
       QDomDocument &infoDocument,
       QDomElement &layerElement,
       const QString &version ) const
@@ -2157,7 +2167,7 @@ namespace QgsWms
       return false;
     }
 
-    QgsMessageLog::logMessage( QStringLiteral( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
+    QgsMessageLog::logMessage( QStringLiteral( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
     if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) &&
          !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature ) )
@@ -2306,6 +2316,19 @@ namespace QgsWms
             }
           }
         }
+      }
+      //add maptip attribute based on html/expression
+      QString mapTip = layer->mapTipTemplate();
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+      {
+        QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+        maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
+        QgsExpressionContext context { renderContext.expressionContext() };
+        QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( layer );
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_cursor_point" ), QVariant::fromValue( QgsGeometry::fromPointXY( QgsPointXY( infoPoint->x(), infoPoint->y() ) ) ) ) );
+        context.appendScope( scope );
+        maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &context ) );
+        layerElement.appendChild( maptipElem );
       }
     }
     return true;
@@ -2557,74 +2580,175 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
   {
-    QString featureInfoString;
+    const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip();
+    QString featureInfoString = QStringLiteral( "    <!DOCTYPE html>" );
+    if ( !onlyMapTip )
+    {
+      featureInfoString.append( QStringLiteral( R"HTML(
 
-    //the HTML head
-    featureInfoString.append( "<HEAD>\n" );
-    featureInfoString.append( "<TITLE> GetFeatureInfo results </TITLE>\n" );
-    featureInfoString.append( "<META http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n" );
-    featureInfoString.append( "</HEAD>\n" );
+    <head>
+      <title>Information</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <style>
+        body {
+          font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
+        }
 
-    //start the html body
-    featureInfoString.append( "<BODY>\n" );
+        table,
+        th,
+        td {
+          width: 100%;
+          border: 1px solid black;
+          border-collapse: collapse;
+          text-align: left;
+          padding: 2px;
+        }
 
-    QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
+        th {
+          width: 25%;
+          font-weight: bold;
+        }
+
+        .layer-title {
+          font-weight: bold;
+          padding: 2px;
+        }
+      </style>
+    </head>
+
+    <body>
+    )HTML" ) );
+    }
+
+    const QDomNodeList layerList = doc.elementsByTagName( QStringLiteral( "Layer" ) );
 
     //layer loop
     for ( int i = 0; i < layerList.size(); ++i )
     {
-      QDomElement layerElem = layerList.at( i ).toElement();
-
-      featureInfoString.append( "<TABLE border=1 width=100%>\n" );
-      featureInfoString.append( "<TR><TH width=25%>Layer</TH><TD>" + layerElem.attribute( QStringLiteral( "name" ) ) + "</TD></TR>\n" );
-      featureInfoString.append( "</BR>" );
+      const QDomElement layerElem = layerList.at( i ).toElement();
 
       //feature loop (for vector layers)
-      QDomNodeList featureNodeList = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
-      QDomElement currentFeatureElement;
+      const QDomNodeList featureNodeList = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
+      const QDomElement currentFeatureElement;
 
       if ( !featureNodeList.isEmpty() ) //vector layer
       {
+        if ( !onlyMapTip )
+        {
+          const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ).toHtmlEscaped() );
+          featureInfoString.append( featureInfoLayerTitleString );
+        }
+
         for ( int j = 0; j < featureNodeList.size(); ++j )
         {
-          QDomElement featureElement = featureNodeList.at( j ).toElement();
-          featureInfoString.append( "<TABLE border=1 width=100%>\n" );
-          featureInfoString.append( "<TR><TH>Feature</TH><TD>" + featureElement.attribute( QStringLiteral( "id" ) ) +
-                                    "</TD></TR>\n" );
+          const QDomElement featureElement = featureNodeList.at( j ).toElement();
+          if ( !onlyMapTip )
+          {
+            featureInfoString.append( QStringLiteral( R"HTML(
+      <table>)HTML" ) );
+          }
 
           //attribute loop
-          QDomNodeList attributeNodeList = featureElement.elementsByTagName( QStringLiteral( "Attribute" ) );
+          const QDomNodeList attributeNodeList = featureElement.elementsByTagName( QStringLiteral( "Attribute" ) );
           for ( int k = 0; k < attributeNodeList.size(); ++k )
           {
-            QDomElement attributeElement = attributeNodeList.at( k ).toElement();
-            featureInfoString.append( "<TR><TH>" + attributeElement.attribute( QStringLiteral( "name" ) ) +
-                                      "</TH><TD>" + attributeElement.attribute( QStringLiteral( "value" ) ) + "</TD></TR>\n" );
-          }
+            const QDomElement attributeElement = attributeNodeList.at( k ).toElement();
+            const QString name = attributeElement.attribute( QStringLiteral( "name" ) ).toHtmlEscaped();
+            QString value = attributeElement.attribute( QStringLiteral( "value" ) );
+            if ( name != QLatin1String( "maptip" ) )
+            {
+              value = value.toHtmlEscaped();
+            }
 
-          featureInfoString.append( "</TABLE>\n</BR>\n" );
-        }
-      }
-      else //raster layer
-      {
-        QDomNodeList attributeNodeList = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
-        for ( int j = 0; j < attributeNodeList.size(); ++j )
-        {
-          QDomElement attributeElement = attributeNodeList.at( j ).toElement();
-          QString value = attributeElement.attribute( QStringLiteral( "value" ) );
-          if ( value.isEmpty() )
+            if ( !onlyMapTip )
+            {
+              const QString featureInfoAttributeString = QStringLiteral( R"HTML(
+        <tr>
+          <th>%1</th>
+          <td>%2</td>
+        </tr>)HTML" ).arg( name, value );
+
+              featureInfoString.append( featureInfoAttributeString );
+            }
+            else if ( name == QStringLiteral( "maptip" ) )
+            {
+              featureInfoString.append( QStringLiteral( R"HTML(
+      %1)HTML" ).arg( value ) );
+              break;
+            }
+
+          }
+          if ( !onlyMapTip )
           {
-            value = QStringLiteral( "no data" );
+            featureInfoString.append( QStringLiteral( R"HTML(
+      </table>)HTML" ) );
           }
-          featureInfoString.append( "<TR><TH>" + attributeElement.attribute( QStringLiteral( "name" ) ) +
-                                    "</TH><TD>" + value + "</TD></TR>\n" );
         }
       }
+      else //no result or raster layer
+      {
+        const QDomNodeList attributeNodeList = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
 
-      featureInfoString.append( "</TABLE>\n<BR></BR>\n" );
+        //  raster layer
+        if ( !attributeNodeList.isEmpty() )
+        {
+          if ( !onlyMapTip )
+          {
+            const QString featureInfoLayerTitleString = QStringLiteral( "  <div class='layer-title'>%1</div>" ).arg( layerElem.attribute( QStringLiteral( "title" ) ).toHtmlEscaped() );
+            featureInfoString.append( featureInfoLayerTitleString );
+
+            featureInfoString.append( QStringLiteral( R"HTML(
+      <table>)HTML" ) );
+          }
+
+          for ( int j = 0; j < attributeNodeList.size(); ++j )
+          {
+            const QDomElement attributeElement = attributeNodeList.at( j ).toElement();
+            const QString name = attributeElement.attribute( QStringLiteral( "name" ) ).toHtmlEscaped();
+            QString value = attributeElement.attribute( QStringLiteral( "value" ) );
+            if ( value.isEmpty() )
+            {
+              value = QStringLiteral( "no data" );
+            }
+            if ( name != QLatin1String( "maptip" ) )
+            {
+              value = value.toHtmlEscaped();
+            }
+
+            if ( !onlyMapTip )
+            {
+              const QString featureInfoAttributeString = QStringLiteral( R"HTML(
+        <tr>
+          <th>%1</th>
+          <td>%2</td>
+        </tr>)HTML" ).arg( name, value );
+
+
+              featureInfoString.append( featureInfoAttributeString );
+            }
+            else if ( name == QStringLiteral( "maptip" ) )
+            {
+              featureInfoString.append( QStringLiteral( R"HTML(
+      %1)HTML" ).arg( value ) );
+              break;
+            }
+
+          }
+          if ( !onlyMapTip )
+          {
+            featureInfoString.append( QStringLiteral( R"HTML(
+      </table>)HTML" ) );
+          }
+        }
+      }
     }
 
-    //start the html body
-    featureInfoString.append( "</BODY>\n" );
+    //end the html body
+    if ( !onlyMapTip )
+    {
+      featureInfoString.append( QStringLiteral( R"HTML(
+    </body>)HTML" ) );
+    }
 
     return featureInfoString.toUtf8();
   }
@@ -2742,7 +2866,7 @@ namespace QgsWms
           else
           {
             QgsFeatureRequest request { QgsExpression( expression )};
-            request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+            request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
             vl->getFeatures( request ).nextFeature( feature );
           }
 
@@ -2969,7 +3093,7 @@ namespace QgsWms
     {
       QString mapTip = layer->mapTipTemplate();
 
-      if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
       {
         QString fieldTextString = QgsExpression::replaceExpressionText( mapTip, &expressionContext );
         QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:maptip" ) );
@@ -3111,7 +3235,7 @@ namespace QgsWms
 
         if ( !qgsDoubleNear( param.mLabelRotation, 0 ) )
         {
-          QgsPalLayerSettings::Property pR = QgsPalLayerSettings::LabelRotation;
+          QgsPalLayerSettings::Property pR = QgsPalLayerSettings::Property::LabelRotation;
           palSettings.dataDefinedProperties().setProperty( pR, param.mLabelRotation );
         }
 
@@ -3128,15 +3252,15 @@ namespace QgsWms
             else //set label directly on point if there is hali/vali
             {
               QgsPointXY pt = param.mGeom.asPoint();
-              QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
+              QgsPalLayerSettings::Property pX = QgsPalLayerSettings::Property::PositionX;
               QVariant x( pt.x() );
               palSettings.dataDefinedProperties().setProperty( pX, x );
-              QgsPalLayerSettings::Property pY = QgsPalLayerSettings::PositionY;
+              QgsPalLayerSettings::Property pY = QgsPalLayerSettings::Property::PositionY;
               QVariant y( pt.y() );
               palSettings.dataDefinedProperties().setProperty( pY, y );
-              QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Hali;
+              QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Property::Hali;
               palSettings.dataDefinedProperties().setProperty( pHali, param.mHali );
-              QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Vali;
+              QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Property::Vali;
               palSettings.dataDefinedProperties().setProperty( pVali, param.mVali );
             }
 
@@ -3148,19 +3272,19 @@ namespace QgsWms
             QgsPointXY pt = point.asPoint();
             placement = Qgis::LabelPlacement::AroundPoint;
 
-            QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
+            QgsPalLayerSettings::Property pX = QgsPalLayerSettings::Property::PositionX;
             QVariant x( pt.x() );
             palSettings.dataDefinedProperties().setProperty( pX, x );
 
-            QgsPalLayerSettings::Property pY = QgsPalLayerSettings::PositionY;
+            QgsPalLayerSettings::Property pY = QgsPalLayerSettings::Property::PositionY;
             QVariant y( pt.y() );
             palSettings.dataDefinedProperties().setProperty( pY, y );
 
-            QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Hali;
+            QgsPalLayerSettings::Property pHali = QgsPalLayerSettings::Property::Hali;
             QVariant hali( "Center" );
             palSettings.dataDefinedProperties().setProperty( pHali, hali );
 
-            QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Vali;
+            QgsPalLayerSettings::Property pVali = QgsPalLayerSettings::Property::Vali;
             QVariant vali( "Half" );
             palSettings.dataDefinedProperties().setProperty( pVali, vali );
             break;

@@ -324,7 +324,7 @@ namespace pal
 
       double mDefaultPriority;
 
-      QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
+      QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
       bool mCentroidInside = false;

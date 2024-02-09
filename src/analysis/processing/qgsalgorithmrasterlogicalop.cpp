@@ -46,10 +46,10 @@ void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Input layers" ), QgsProcessing::TypeRaster ) );
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NODATA_AS_FALSE" ), QObject::tr( "Treat nodata values as false" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NODATA_AS_FALSE" ), QObject::tr( "Treat NoData values as false" ), false ) );
 
   std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
-      QObject::tr( "Output no data value" ), QgsProcessingParameterNumber::Double, -9999 );
+      QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999 );
   noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( noDataValueParam.release() );
 
@@ -65,7 +65,7 @@ void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_PIXEL_COUNT" ), QObject::tr( "NODATA pixel count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_PIXEL_COUNT" ), QObject::tr( "NoData pixel count" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TRUE_PIXEL_COUNT" ), QObject::tr( "True pixel count" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FALSE_PIXEL_COUNT" ), QObject::tr( "False pixel count" ) ) );
 }
@@ -220,8 +220,8 @@ QString QgsRasterLogicalOrAlgorithm::shortHelpString() const
                       "that pixel will be set to 1 in the output raster. If all the input rasters have 0 values for the pixel it will be set to 0 in the output raster.\n\n"
                       "The reference layer parameter specifies an existing raster layer to use as a reference when creating the output raster. The output raster "
                       "will have the same extent, CRS, and pixel dimensions as this layer.\n\n"
-                      "By default, a nodata pixel in ANY of the input layers will result in a nodata pixel in the output raster. If the "
-                      "'Treat nodata values as false' option is checked, then nodata inputs will be treated the same as a 0 input value." );
+                      "By default, a NoData pixel in ANY of the input layers will result in a NoData pixel in the output raster. If the "
+                      "'Treat NoData values as false' option is checked, then NoData inputs will be treated the same as a 0 input value." );
 }
 
 QgsRasterLogicalOrAlgorithm *QgsRasterLogicalOrAlgorithm::createInstance() const
@@ -297,8 +297,8 @@ QString QgsRasterLogicalAndAlgorithm::shortHelpString() const
                       "that pixel will be set to 1 in the output raster. If any of the input rasters have 0 values for the pixel it will be set to 0 in the output raster.\n\n"
                       "The reference layer parameter specifies an existing raster layer to use as a reference when creating the output raster. The output raster "
                       "will have the same extent, CRS, and pixel dimensions as this layer.\n\n"
-                      "By default, a nodata pixel in ANY of the input layers will result in a nodata pixel in the output raster. If the "
-                      "'Treat nodata values as false' option is checked, then nodata inputs will be treated the same as a 0 input value." );
+                      "By default, a NoData pixel in ANY of the input layers will result in a NoData pixel in the output raster. If the "
+                      "'Treat NoData values as false' option is checked, then NoData inputs will be treated the same as a 0 input value." );
 }
 
 QgsRasterLogicalAndAlgorithm *QgsRasterLogicalAndAlgorithm::createInstance() const

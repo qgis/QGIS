@@ -54,7 +54,7 @@ class TestQgsMapLayer(QgisTestCase):
         # make sure all ids are unique
         ids = set()
         for l in layers:
-            self.assertFalse(l.id() in ids)
+            self.assertNotIn(l.id(), ids)
             ids.add(l.id())
 
     def copyLayerViaXmlReadWrite(self, source, dest):

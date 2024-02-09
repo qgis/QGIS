@@ -25,7 +25,7 @@ QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
   , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
 {
-  auto callback = [ = ]( const QgsFeature & feature )
+  auto callback = [this]( const QgsFeature & feature )
   {
     if ( mFeedback )
       mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
@@ -67,7 +67,7 @@ void QgsProcessingContext::addLayerToLoadOnCompletion( const QString &layer, con
   mLayersToLoadOnCompletion.insert( layer, details );
 }
 
-void QgsProcessingContext::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
+void QgsProcessingContext::setInvalidGeometryCheck( Qgis::InvalidGeometryCheck check )
 {
   mInvalidGeometryCheck = check;
   mUseDefaultInvalidGeometryCallback = true;
@@ -82,12 +82,12 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::invalidGeometry
     return mInvalidGeometryCallback;
 }
 
-std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check, QgsFeatureSource *source ) const
+std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck check, QgsFeatureSource *source ) const
 {
   const QString sourceName = source ? source->sourceName() : QString();
   switch ( check )
   {
-    case  QgsFeatureRequest::GeometryAbortOnInvalid:
+    case Qgis::InvalidGeometryCheck::AbortOnInvalid:
     {
       auto callback = [sourceName]( const QgsFeature & feature )
       {
@@ -99,9 +99,9 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
       return callback;
     }
 
-    case QgsFeatureRequest::GeometrySkipInvalid:
+    case Qgis::InvalidGeometryCheck::SkipInvalid:
     {
-      auto callback = [ = ]( const QgsFeature & feature )
+      auto callback = [this, sourceName]( const QgsFeature & feature )
       {
         if ( mFeedback )
         {
@@ -114,7 +114,7 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
       return callback;
     }
 
-    case QgsFeatureRequest::GeometryNoCheck:
+    case Qgis::InvalidGeometryCheck::NoCheck:
       return nullptr;
   }
   return nullptr;

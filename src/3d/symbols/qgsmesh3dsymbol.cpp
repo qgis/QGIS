@@ -15,8 +15,8 @@
 
 #include "qgsmesh3dsymbol.h"
 #include "qgs3dtypes.h"
-#include "qgssymbollayerutils.h"
 #include "qgs3dutils.h"
+#include "qgscolorutils.h"
 #include "qgsphongmaterialsettings.h"
 
 QgsMesh3DSymbol::QgsMesh3DSymbol()
@@ -79,7 +79,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "smoothed-triangle" ), mSmoothedTriangles ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-color" ), QgsSymbolLayerUtils::encodeColor( mWireframeLineColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-color" ), QgsColorUtils::colorToString( mWireframeLineColor ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "level-of-detail" ), mLevelOfDetailIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
@@ -88,7 +88,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc, context ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-single-color" ), QgsColorUtils::colorToString( mSingleColor ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "arrows-enabled" ), mArrowsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "arrows-spacing" ), mArrowsSpacing );
   elemAdvancedSettings.setAttribute( QStringLiteral( "arrows-fixed-size" ), mArrowsFixedSize ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
@@ -117,7 +117,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mSmoothedTriangles = elemAdvancedSettings.attribute( QStringLiteral( "smoothed-triangle" ) ).toInt();
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
   mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
-  mWireframeLineColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-color" ) ) );
+  mWireframeLineColor = QgsColorUtils::colorFromString( elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-color" ) ) );
   mLevelOfDetailIndex = elemAdvancedSettings.attribute( QStringLiteral( "level-of-detail" ) ).toInt();
   mVerticalScale = elemAdvancedSettings.attribute( "vertical-scale" ).toDouble();
   mVerticalDatasetGroupIndex = elemAdvancedSettings.attribute( "vertical-group-index" ).toInt();
@@ -126,7 +126,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ), context );
   mColorRampShader.setMinimumValue( elemAdvancedSettings.attribute( QStringLiteral( "min-color-ramp-shader" ) ).toDouble() );
   mColorRampShader.setMaximumValue( elemAdvancedSettings.attribute( QStringLiteral( "max-color-ramp-shader" ) ).toDouble() );
-  mSingleColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "texture-single-color" ) ) );
+  mSingleColor = QgsColorUtils::colorFromString( elemAdvancedSettings.attribute( QStringLiteral( "texture-single-color" ) ) );
   mArrowsEnabled = elemAdvancedSettings.attribute( QStringLiteral( "arrows-enabled" ) ).toInt();
   if ( elemAdvancedSettings.hasAttribute( QStringLiteral( "arrows-spacing" ) ) )
     mArrowsSpacing = elemAdvancedSettings.attribute( QStringLiteral( "arrows-spacing" ) ).toDouble();

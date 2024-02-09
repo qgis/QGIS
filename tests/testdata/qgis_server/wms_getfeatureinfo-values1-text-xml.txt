@@ -3,7 +3,7 @@ Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="UTF-8"?>
 <GetFeatureInfoResponse>
- <Layer name="layer1">
+ <Layer title="layer1" name="layer1">
   <Feature id="1">
    <Attribute value="Id no. 1 value" name="id"/>
    <Attribute value="one_value" name="name"/>

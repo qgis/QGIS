@@ -81,8 +81,8 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
                 res = QMessageBox.warning(
                     self, self.tr('Save Connection'),
                     self.tr('Overwrite {0}?').format(conn_name),
-                    QMessageBox.Ok | QMessageBox.Cancel)
-                if res == QMessageBox.Cancel:
+                    QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+                if res == QMessageBox.StandardButton.Cancel:
                     return
 
             # on rename delete original entry first

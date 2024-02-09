@@ -24,7 +24,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
-#include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsgeometryengine.h"
 
@@ -42,7 +41,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
 
-  mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry );
   mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
   mRowNumber = 0;
 
@@ -107,7 +106,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
 
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
   {
     whereClause = whereClauseFid();
     if ( ! whereClause.isEmpty() )
@@ -115,7 +114,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       whereClauses.append( whereClause );
     }
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids )
   {
     if ( request.filterFids().isEmpty() )
     {
@@ -127,10 +126,10 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
   //IMPORTANT - this MUST be the last clause added!
-  else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  else if ( request.filterType() == Qgis::FeatureRequestFilterType::Expression )
   {
     // ensure that all attributes required for expression filter are being fetched
-    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes && request.filterType() == Qgis::FeatureRequestFilterType::Expression )
     {
       QgsAttributeList attrs = request.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared
@@ -143,7 +142,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mFetchGeometry = true;
     }
 
-    QgsSpatialiteExpressionCompiler compiler = QgsSpatialiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+    QgsSpatialiteExpressionCompiler compiler = QgsSpatialiteExpressionCompiler( source->mFields, request.flags() & Qgis::FeatureRequestFlag::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -177,7 +176,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     const auto constOrderBy = request.orderBy();
     for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & Qgis::FeatureRequestFlag::IgnoreStaticNodesDuringExpressionCompilation );
       QgsExpression expression = clause.expression();
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {
@@ -207,7 +206,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       limitAtProvider = false;
 
     // also need attributes required by order by
-    if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+    if ( !mOrderByCompiled && mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
     {
       QSet<int> attributeIndexes;
       const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
@@ -356,7 +355,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
     QString sql = QStringLiteral( "SELECT %1" ).arg( mHasPrimaryKey ? quotedPrimaryKey() : QStringLiteral( "0" ) );
     int colIdx = 1; // column 0 is primary key
 
-    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    if ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes )
     {
       QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
       for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
@@ -441,7 +440,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
   QString whereClause;
 
   bool requiresGeom = false;
-  if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  if ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
   {
     // we are requested to evaluate a true INTERSECT relationship
     whereClause += QStringLiteral( "Intersects(%1, BuildMbr(%2)) AND " ).arg( QgsSqliteUtils::quotedIdentifier( mSource->mGeometryColumn ), mbr( mFilterRect ) );
@@ -520,7 +519,7 @@ QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField &fld )
 
 bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &feature )
 {
-  bool subsetAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  bool subsetAttributes = mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes;
 
   int ret = sqlite3_step( stmt );
   if ( ret == SQLITE_DONE )

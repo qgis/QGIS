@@ -66,12 +66,12 @@ class polygonize(GdalAlgorithm):
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
                                                    optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('Vectorized'),
-                                                                  QgsProcessing.TypeVectorPolygon))
+                                                                  QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'polygonize'

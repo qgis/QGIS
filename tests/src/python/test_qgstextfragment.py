@@ -46,7 +46,7 @@ class TestQgsTextFragment(QgisTestCase):
 
     def testCapitalize(self):
         fragment = QgsTextFragment('ludicrous gibs!')
-        fragment.applyCapitalization(QgsStringUtils.TitleCase)
+        fragment.applyCapitalization(QgsStringUtils.Capitalization.TitleCase)
         self.assertEqual(fragment.text(), 'Ludicrous Gibs!')
 
 

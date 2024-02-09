@@ -146,7 +146,7 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
   QgsExpression expr( referencedLayer->displayExpression() );
 
   QgsFeatureRequest request;
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   QgsAttributeList requiredAttributes = qgis::setToList( expr.referencedAttributeIndexes( referencedLayer->fields() ) );
   requiredAttributes << referencedFieldIdx;
   request.setSubsetOfAttributes( requiredAttributes );

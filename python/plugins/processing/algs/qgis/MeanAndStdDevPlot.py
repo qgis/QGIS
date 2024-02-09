@@ -52,7 +52,7 @@ class MeanAndStdDevPlot(QgisAlgorithm):
                                                               self.tr('Input table')))
         self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
                                                       self.tr('Category name field'), parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Any))
+                                                      type=QgsProcessingParameterField.DataType.Any))
         self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
                                                       self.tr('Value field'), parentLayerParameterName=self.INPUT))
 

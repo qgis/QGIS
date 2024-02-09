@@ -24,39 +24,39 @@ class TestQgsMultiEditToolButton(QgisTestCase):
         Test that the logic involving button states is correct
         """
         w = QgsMultiEditToolButton()
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Default)
 
         # set is changed should update state to changed
         w.setIsChanged(True)
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Changed)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Changed)
         w.setIsChanged(False)
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Default)
         # resetting changes should fall back to default state
         w.setIsChanged(True)
         w.resetChanges()
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Default)
         # setting changes committed should result in default state
         w.setIsChanged(True)
         w.changesCommitted()
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Default)
 
         # Test with mixed values
         w.setIsMixed(True)
-        self.assertEqual(w.state(), QgsMultiEditToolButton.MixedValues)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.MixedValues)
         # changed state takes priority over mixed state
         w.setIsChanged(True)
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Changed)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Changed)
         w.setIsChanged(False)
         # should reset to mixed state
-        self.assertEqual(w.state(), QgsMultiEditToolButton.MixedValues)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.MixedValues)
         # resetting changes should fall back to mixed state
         w.setIsChanged(True)
         w.resetChanges()
-        self.assertEqual(w.state(), QgsMultiEditToolButton.MixedValues)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.MixedValues)
         # setting changes committed should result in default state
         w.setIsChanged(True)
         w.changesCommitted()
-        self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
+        self.assertEqual(w.state(), QgsMultiEditToolButton.State.Default)
 
 
 if __name__ == '__main__':

@@ -22,6 +22,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFields,
     QgsGlobFieldDomain,
+    QgsMetadataSearchContext,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRangeFieldDomain,
@@ -118,33 +119,33 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
 
         # Retrieve capabilities
         capabilities = conn.capabilities()
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameRasterTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Tables))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.DropVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameVectorTable))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
 
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
-        typ = QgsWkbTypes.LineString
-        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.NoGeometry, crs, True, {})
+        typ = QgsWkbTypes.Type.LineString
+        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.Type.NoGeometry, crs, True, {})
         conn.createVectorTable('', 'myNewTable', QgsFields(), typ, crs, True, {})
 
         # Check filters and special cases
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Raster))
-        self.assertTrue('osm' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertFalse('myNewAspatialTable' in table_names)
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Raster))
+        self.assertIn('osm', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertNotIn('myNewAspatialTable', table_names)
 
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.View))
-        self.assertFalse('osm' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertFalse('myNewAspatialTable' in table_names)
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.View))
+        self.assertNotIn('osm', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertNotIn('myNewAspatialTable', table_names)
 
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Aspatial))
-        self.assertFalse('osm' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertTrue('myNewAspatialTable' in table_names)
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial))
+        self.assertNotIn('osm', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertIn('myNewAspatialTable', table_names)
 
     def test_gpkg_fields(self):
         """Test fields"""
@@ -300,7 +301,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         options.sql = 'SELECT fid, name, geom FROM cdb_lines WHERE name LIKE \'S%\' LIMIT 2'
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
         self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])
@@ -360,6 +361,14 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         conn.renameField('', 'cdb_lines', 'name2', 'name3')
         fields = conn.fields('', 'cdb_lines')
         self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name3', 'ortsrat', 'id_long', 'geom'])
+
+    def test_searchLayerMetadata_buggy_extent(self):
+        """ Test fix for https://github.com/qgis/QGIS/issues/56203 """
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(f'{TEST_DATA_DIR}/provider/bug_56203.gpkg', {})
+        res = conn.searchLayerMetadata(QgsMetadataSearchContext())
+        self.assertTrue(res[0].geographicExtent().isEmpty())
 
 
 if __name__ == '__main__':

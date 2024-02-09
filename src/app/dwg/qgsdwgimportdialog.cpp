@@ -331,7 +331,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
   if ( l )
   {
     QgsSimpleFillSymbolLayer *sfl = new QgsSimpleFillSymbolLayer();
-    sfl->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sfl->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
     sfl->setStrokeStyle( Qt::NoPen );
     sym = new QgsFillSymbol();
     sym->changeSymbolLayer( 0, sfl );
@@ -343,12 +343,12 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
   if ( l )
   {
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
-    // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
+    // sll->setDataDefinedProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromField( "linetype" ) );
     sym = new QgsLineSymbol();
     sym->changeSymbolLayer( 0, sll );
     sym->setOutputUnit( Qgis::RenderUnit::Millimeters );
@@ -362,21 +362,21 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     sym = new QgsLineSymbol();
 
     QgsSimpleLineSymbolLayer *sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( QStringLiteral( "width" ) ) );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyLayerEnabled, QgsProperty::fromExpression( QStringLiteral( "width>0" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( QStringLiteral( "width" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( QStringLiteral( "coalesce(\"width\",0) > 0" ) ) );
     sll->setOutputUnit( Qgis::RenderUnit::MapUnits );
     // sll->setUseCustomDashPattern( true );
     // sll->setCustomDashPatternUnit( QgsSymbolV2::MapUnit );
-    // sll->setDataDefinedProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromField( "linetype" ) );
+    // sll->setDataDefinedProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromField( "linetype" ) );
     sym->changeSymbolLayer( 0, sll );
 
     sll = new QgsSimpleLineSymbolLayer();
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromField( QStringLiteral( "color" ) ) );
     sll->setPenJoinStyle( Qt::MiterJoin );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
-    sll->setDataDefinedProperty( QgsSymbolLayer::PropertyLayerEnabled, QgsProperty::fromExpression( QStringLiteral( "width=0" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeWidth, QgsProperty::fromField( QStringLiteral( "linewidth" ) ) );
+    sll->setDataDefinedProperty( QgsSymbolLayer::Property::LayerEnabled, QgsProperty::fromExpression( QStringLiteral( "width=0" ) ) );
     sll->setOutputUnit( Qgis::RenderUnit::Millimeters );
     sym->appendSymbolLayer( sll );
 
@@ -399,11 +399,11 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     pls.fieldName = QStringLiteral( "text" );
     pls.wrapChar = QStringLiteral( "\\P" );
 
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "height" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromField( QStringLiteral( "color" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( QStringLiteral( "height" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromField( QStringLiteral( "color" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::MultiLineHeight, QgsProperty::fromExpression( QStringLiteral( "CASE WHEN interlin<0 THEN 1 ELSE interlin*1.5 END" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromExpression( QStringLiteral( "$x" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromExpression( QStringLiteral( "$y" ) ) );
 
     // DXF TEXT
     // vertical: 0 = Base, 1 = Bottom, 2 = Middle, 3 = Top,  default Base
@@ -420,7 +420,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     // 6 QuadrantBelowLeft, 7 QuadrantBelow, 8 QuadrantBelowRight,
 
     pls.dataDefinedProperties().setProperty(
-      QgsPalLayerSettings::Hali,
+      static_cast< int >( QgsPalLayerSettings::Property::Hali ),
       QgsProperty::fromExpression( QStringLiteral(
                                      "CASE"
                                      " WHEN etype=%1 THEN"
@@ -441,7 +441,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     );
 
     pls.dataDefinedProperties().setProperty(
-      QgsPalLayerSettings::Vali,
+      static_cast< int >( QgsPalLayerSettings::Property::Vali ),
       QgsProperty::fromExpression( QStringLiteral(
                                      "CASE"
                                      " WHEN etype=%1 THEN"
@@ -462,8 +462,8 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
                                  )
     );
 
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle" ) ) );
-    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::AlwaysShow, QgsProperty::fromExpression( QStringLiteral( "1" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360-angle" ) ) );
+    pls.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::AlwaysShow, QgsProperty::fromExpression( QStringLiteral( "1" ) ) );
 
     l->setLabeling( new QgsVectorLayerSimpleLabeling( pls ) );
     l->setLabelsEnabled( true );
@@ -486,7 +486,7 @@ QList<QgsVectorLayer *> QgsDwgImportDialog::createLayers( const QStringList &lay
     {
       QgsSingleSymbolRenderer *ssr = dynamic_cast<QgsSingleSymbolRenderer *>( l->renderer() );
       if ( ssr && ssr->symbol() && ssr->symbol()->symbolLayer( 0 ) )
-        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
+        ssr->symbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::Angle, QgsProperty::fromExpression( QStringLiteral( "180-angle*180.0/pi()" ) ) );
       layers.append( l );
     }
   }

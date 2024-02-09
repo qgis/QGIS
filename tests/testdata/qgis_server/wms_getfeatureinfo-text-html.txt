@@ -1,20 +1,52 @@
-Content-Length: 512
+*****
 Content-Type: text/html; charset=utf-8
 
-<HEAD>
-<TITLE> GetFeatureInfo results </TITLE>
-<META http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-</HEAD>
-<BODY>
-<TABLE border=1 width=100%>
-<TR><TH width=25%>Layer</TH><TD>testlayer èé</TD></TR>
-</BR><TABLE border=1 width=100%>
-<TR><TH>Feature</TH><TD>2</TD></TR>
-<TR><TH>id</TH><TD>3</TD></TR>
-<TR><TH>name</TH><TD>three</TD></TR>
-<TR><TH>utf8nameè</TH><TD>three èé↓</TD></TR>
-</TABLE>
-</BR>
-</TABLE>
-<BR></BR>
-</BODY>
+<!DOCTYPE html>
+
+<head>
+  <title>Information</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>
+    body {
+      font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
+    }
+
+    table,
+    th,
+    td {
+      width: 100%;
+      border: 1px solid black;
+      border-collapse: collapse;
+      text-align: left;
+      padding: 2px;
+    }
+
+    th {
+      width: 25%;
+      font-weight: bold;
+    }
+
+    .layer-title {
+      font-weight: bold;
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='layer-title'>A test vector layer</div>
+  <table>
+    <tr>
+      <th>id</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td>three</td>
+    </tr>
+    <tr>
+      <th>utf8nameè</th>
+      <td>three èé↓</td>
+    </tr>
+  </table>
+</body>

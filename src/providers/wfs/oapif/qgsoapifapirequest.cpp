@@ -49,20 +49,20 @@ QString QgsOapifApiRequest::errorMessageWithReason( const QString &reason )
 
 // j must be the root element
 // ref is something like "#/components/parameters/limitFeatures_VegetationSrf"
-static json resolveRef( const json &j, const std::string &ref )
+static const json *resolveRef( const json &j, const std::string &ref )
 {
   if ( ref.compare( 0, 2, "#/" ) != 0 )
-    return json();
+    return nullptr;
   const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( QLatin1Char( '/' ) );
-  json ret = j;
+  const json *ret = &j;
   for ( const auto &subPath : subPaths )
   {
-    if ( !ret.is_object() )
-      return json();
-    const auto subJIter = ret.find( subPath.toStdString() );
-    if ( subJIter == ret.end() )
-      return json();
-    ret = *subJIter;
+    if ( !ret->is_object() )
+      return nullptr;
+    const auto subJIter = ret->find( subPath.toStdString() );
+    if ( subJIter == ret->end() )
+      return nullptr;
+    ret = &( *subJIter );
   }
   return ret;
 }
@@ -104,16 +104,16 @@ void QgsOapifApiRequest::processReply()
     const json j = json::parse( utf8Text.toStdString() );
     if ( j.is_object() && j.contains( "components" ) )
     {
-      const auto components = j["components"];
+      const auto &components = j["components"];
       if ( components.is_object() && components.contains( "parameters" ) )
       {
-        const auto parameters = components["parameters"];
+        const auto &parameters = components["parameters"];
         if ( parameters.is_object() && parameters.contains( "limit" ) )
         {
-          const auto limit = parameters["limit"];
+          const auto &limit = parameters["limit"];
           if ( limit.is_object() && limit.contains( "schema" ) )
           {
-            const auto schema = limit["schema"];
+            const auto &schema = limit["schema"];
             if ( schema.is_object() )
             {
               if ( schema.contains( "maximum" ) )
@@ -141,7 +141,7 @@ void QgsOapifApiRequest::processReply()
 
     if ( j.is_object() && j.contains( "paths" ) )
     {
-      const auto paths = j["paths"];
+      const auto &paths = j["paths"];
       if ( paths.is_object() )
       {
         for ( const auto& [key, val] : paths.items() )
@@ -156,10 +156,10 @@ void QgsOapifApiRequest::processReply()
                                              strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix ) );
             if ( val.is_object() && val.contains( "get" ) )
             {
-              const auto get = val["get"];
+              const auto &get = val["get"];
               if ( get.is_object() && get.contains( "parameters" ) )
               {
-                const auto parameters = get["parameters"];
+                const auto &parameters = get["parameters"];
                 if ( parameters.is_array() )
                 {
                   CollectionProperties collectionProperties;
@@ -167,32 +167,29 @@ void QgsOapifApiRequest::processReply()
                   {
                     if ( parameter.is_object() )
                     {
-                      json parameterResolved;
+                      const json *parameterResolved = &parameter;
                       if ( parameter.contains( "$ref" ) )
                       {
-                        const auto ref = parameter["$ref"];
+                        const auto &ref = parameter["$ref"];
                         if ( ref.is_string() )
                         {
                           const auto refStr = ref.get<std::string>();
                           parameterResolved = resolveRef( j, refStr );
                         }
                       }
-                      else
+                      if ( parameterResolved &&
+                           parameterResolved->is_object() &&
+                           parameterResolved->contains( "name" ) &&
+                           parameterResolved->contains( "in" ) &&
+                           parameterResolved->contains( "style" ) &&
+                           parameterResolved->contains( "explode" ) &&
+                           parameterResolved->contains( "schema" ) )
                       {
-                        parameterResolved = parameter;
-                      }
-                      if ( parameterResolved.is_object() &&
-                           parameterResolved.contains( "name" ) &&
-                           parameterResolved.contains( "in" ) &&
-                           parameterResolved.contains( "style" ) &&
-                           parameterResolved.contains( "explode" ) &&
-                           parameterResolved.contains( "schema" ) )
-                      {
-                        const auto jName = parameterResolved["name"];
-                        const auto jIn = parameterResolved["in"];
-                        const auto jStyle = parameterResolved["style"];
-                        const auto jExplode = parameterResolved["explode"];
-                        const auto jSchema = parameterResolved["schema"];
+                        const auto &jName = ( *parameterResolved )["name"];
+                        const auto &jIn = ( *parameterResolved )["in"];
+                        const auto &jStyle = ( *parameterResolved )["style"];
+                        const auto &jExplode = ( *parameterResolved )["explode"];
+                        const auto &jSchema = ( *parameterResolved )["schema"];
                         if ( jName.is_string() && jIn.is_string() &&
                              jStyle.is_string() && jExplode.is_boolean() &&
                              jSchema.is_object() && jSchema.contains( "type" ) )
@@ -234,19 +231,19 @@ void QgsOapifApiRequest::processReply()
 
     if ( j.is_object() && j.contains( "info" ) )
     {
-      const auto info = j["info"];
+      const auto &info = j["info"];
       if ( info.is_object() && info.contains( "contact" ) )
       {
-        const auto jContact = info["contact"];
+        const auto &jContact = info["contact"];
         if ( jContact.is_object() && jContact.contains( "name" ) )
         {
-          const auto name = jContact["name"];
+          const auto &name = jContact["name"];
           if ( name.is_string() )
           {
             QgsAbstractMetadataBase::Contact contact( QString::fromStdString( name.get<std::string>() ) );
             if ( jContact.contains( "email" ) )
             {
-              const auto email = jContact["email"];
+              const auto &email = jContact["email"];
               if ( email.is_string() )
               {
                 contact.email = QString::fromStdString( email.get<std::string>() );
@@ -254,7 +251,7 @@ void QgsOapifApiRequest::processReply()
             }
             if ( jContact.contains( "url" ) )
             {
-              const auto url = jContact["url"];
+              const auto &url = jContact["url"];
               if ( url.is_string() )
               {
                 // A bit of abuse to fill organization with url

@@ -283,7 +283,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
   switch ( role )
   {
-    case FieldNameRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::FieldName ):
     {
       if ( isEmpty || exprIdx >= 0 )
       {
@@ -293,7 +293,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return field.name();
     }
 
-    case ExpressionRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::Expression ):
     {
       if ( exprIdx >= 0 )
       {
@@ -310,7 +310,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       }
     }
 
-    case FieldIndexRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::FieldIndex ):
     {
       if ( isEmpty || exprIdx >= 0 )
       {
@@ -319,12 +319,12 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return index.row() - fieldOffset;
     }
 
-    case IsExpressionRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::IsExpression ):
     {
       return exprIdx >= 0;
     }
 
-    case ExpressionValidityRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::ExpressionValidity ):
     {
       if ( exprIdx >= 0 )
       {
@@ -339,7 +339,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return true;
     }
 
-    case FieldTypeRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::FieldType ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
@@ -349,7 +349,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case FieldOriginRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::FieldOrigin ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
@@ -358,12 +358,12 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case IsEmptyRole:
+    case static_cast< int >( QgsFieldModel::CustomRole::IsEmpty ):
     {
       return isEmpty;
     }
 
-    case EditorWidgetType:
+    case static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
@@ -372,7 +372,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case JoinedFieldIsEditable:
+    case static_cast< int >( QgsFieldModel::CustomRole::JoinedFieldIsEditable ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
@@ -390,7 +390,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case FieldIsWidgetEditable:
+    case static_cast< int >( QgsFieldModel::CustomRole::FieldIsWidgetEditable ):
     {
       return !( mLayer->editFormConfig().readOnly( index.row() - fieldOffset ) );
     }

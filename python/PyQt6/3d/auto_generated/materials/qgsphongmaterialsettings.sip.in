@@ -62,16 +62,55 @@ Returns diffuse color component
 %Docstring
 Returns specular color component
 %End
-    float shininess() const;
+    double shininess() const;
 %Docstring
 Returns shininess of the surface
 %End
 
-    float opacity() const;
+    double opacity() const;
 %Docstring
 Returns the opacity of the surface
 
 .. versionadded:: 3.26
+%End
+
+    double ambientCoefficient() const;
+%Docstring
+Returns the coefficient for the ambient color contribution (ie strength factor of the ambient color).
+
+.. seealso:: :py:func:`setAmbientCoefficient`
+
+.. seealso:: :py:func:`diffuseCoefficient`
+
+.. seealso:: :py:func:`specularCoefficient`
+
+.. versionadded:: 3.36
+%End
+
+    double diffuseCoefficient() const;
+%Docstring
+Returns the coefficient for the diffuse color contribution (ie strength factor of the diffuse color).
+
+.. seealso:: :py:func:`setDiffuseCoefficient`
+
+.. seealso:: :py:func:`ambientCoefficient`
+
+.. seealso:: :py:func:`specularCoefficient`
+
+.. versionadded:: 3.36
+%End
+
+    double specularCoefficient() const;
+%Docstring
+Returns the coefficient for the specular color contribution (ie strength factor of the specular color).
+
+.. seealso:: :py:func:`setSpecularCoefficient`
+
+.. seealso:: :py:func:`diffuseCoefficient`
+
+.. seealso:: :py:func:`ambientCoefficient`
+
+.. versionadded:: 3.36
 %End
 
     virtual QMap<QString, QString> toExportParameters() const;
@@ -94,14 +133,51 @@ Sets specular color component
 Sets shininess of the surface
 %End
 
-    void setOpacity( float opacity );
+    void setOpacity( double opacity );
 %Docstring
 Sets opacity of the surface
 
 .. versionadded:: 3.26
 %End
 
+    void setAmbientCoefficient( double coefficient );
+%Docstring
+Sets the ``coefficient`` for the ambient color contribution (ie strength factor of the ambient color).
 
+.. seealso:: :py:func:`ambientCoefficient`
+
+.. seealso:: :py:func:`setDiffuseCoefficient`
+
+.. seealso:: :py:func:`setSpecularCoefficient`
+
+.. versionadded:: 3.36
+%End
+
+    void setDiffuseCoefficient( double coefficient );
+%Docstring
+Sets the ``coefficient`` for the diffuse color contribution (ie strength factor of the diffuse color).
+
+.. seealso:: :py:func:`diffuseCoefficient`
+
+.. seealso:: :py:func:`setAmbientCoefficient`
+
+.. seealso:: :py:func:`setSpecularCoefficient`
+
+.. versionadded:: 3.36
+%End
+
+    void setSpecularCoefficient( double coefficient );
+%Docstring
+Sets the ``coefficient`` for the specular color contribution (ie strength factor of the specular color).
+
+.. seealso:: :py:func:`specularCoefficient`
+
+.. seealso:: :py:func:`setDiffuseCoefficient`
+
+.. seealso:: :py:func:`setAmbientCoefficient`
+
+.. versionadded:: 3.36
+%End
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 

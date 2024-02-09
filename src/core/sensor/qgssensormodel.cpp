@@ -87,37 +87,37 @@ QVariant QgsSensorModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case SensorType:
+    case static_cast< int >( CustomRole::SensorType ):
     {
       return sensor->type();
     }
 
-    case SensorId:
+    case static_cast< int >( CustomRole::SensorId ):
     {
       return sensor->id();
     }
 
-    case SensorName:
+    case static_cast< int >( CustomRole::SensorName ):
     {
       return sensor->name();
     }
 
-    case SensorStatus:
+    case static_cast< int >( CustomRole::SensorStatus ):
     {
       return QVariant::fromValue<Qgis::DeviceConnectionStatus>( sensor->status() );
     }
 
-    case SensorLastValue:
+    case static_cast< int >( CustomRole::SensorLastValue ):
     {
       return sensor->data().lastValue;
     }
 
-    case SensorLastTimestamp:
+    case static_cast< int >( CustomRole::SensorLastTimestamp ):
     {
       return sensor->data().lastTimestamp;
     }
 
-    case Sensor:
+    case static_cast< int >( CustomRole::Sensor ):
     {
       return QVariant::fromValue<QgsAbstractSensor *>( sensor );
     }
@@ -251,7 +251,7 @@ void QgsSensorModel::sensorNameChanged( const QString &id )
   if ( sensorIndex < 0 )
     return;
 
-  emit dataChanged( index( sensorIndex, static_cast<int>( Column::Name ) ), index( sensorIndex, static_cast<int>( Column::Name ) ), QVector< int >() << Qt::DisplayRole << QgsSensorModel::SensorName );
+  emit dataChanged( index( sensorIndex, static_cast<int>( Column::Name ) ), index( sensorIndex, static_cast<int>( Column::Name ) ), QVector< int >() << Qt::DisplayRole << static_cast< int >( CustomRole::SensorName ) );
 }
 
 void QgsSensorModel::sensorStatusChanged( const QString &id )
@@ -260,7 +260,7 @@ void QgsSensorModel::sensorStatusChanged( const QString &id )
   if ( sensorIndex < 0 )
     return;
 
-  emit dataChanged( index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ), QVector< int >() << QgsSensorModel::SensorStatus );
+  emit dataChanged( index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ), QVector< int >() << static_cast< int >( CustomRole::SensorStatus ) );
 }
 
 void QgsSensorModel::sensorDataCaptured( const QString &id )
@@ -269,5 +269,5 @@ void QgsSensorModel::sensorDataCaptured( const QString &id )
   if ( sensorIndex < 0 )
     return;
 
-  emit dataChanged( index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ), QVector< int >() << QgsSensorModel::SensorLastValue << QgsSensorModel::SensorLastTimestamp );
+  emit dataChanged( index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ), QVector< int >() << static_cast< int >( CustomRole::SensorLastValue ) << static_cast< int >( CustomRole::SensorLastTimestamp ) );
 }

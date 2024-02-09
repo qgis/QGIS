@@ -22,7 +22,6 @@
 #include <QImage>
 #include <QList>
 #include <QPainter>
-#include <QPrinter>
 #include <QSpinBox>
 #include <QUrl>
 
@@ -162,6 +161,7 @@ void QgsMapSaveDialog::updateDpi( int dpi )
   mDpi = dpi;
 
   updateOutputSize();
+  checkOutputSize();
 }
 
 void QgsMapSaveDialog::updateOutputWidth( int width )
@@ -188,6 +188,8 @@ void QgsMapSaveDialog::updateOutputWidth( int width )
   }
 
   whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+
+  checkOutputSize();
 }
 
 void QgsMapSaveDialog::updateOutputHeight( int height )
@@ -214,6 +216,8 @@ void QgsMapSaveDialog::updateOutputHeight( int height )
   }
 
   whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+
+  checkOutputSize();
 }
 
 void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
@@ -245,6 +249,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
     mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
   }
   updateOutputSize();
+  checkOutputSize();
 
   mExtent = extent;
   if ( mLockAspectRatio->locked() )
@@ -269,6 +274,15 @@ void QgsMapSaveDialog::updateOutputSize()
 {
   whileBlocking( mOutputWidthSpinBox )->setValue( mSize.width() );
   whileBlocking( mOutputHeightSpinBox )->setValue( mSize.height() );
+}
+
+void QgsMapSaveDialog::checkOutputSize()
+{
+  // check if image size does not exceed QPainter limitation https://doc.qt.io/qt-5/qpainter.html#limitations
+  if ( mSize.width() > 32768 || mSize.height() > 32768 )
+  {
+    mMessageBar->pushWarning( QString(), tr( "Output will be truncated, as image width or height is larger than 32768 pixels." ) );
+  }
 }
 
 QgsRectangle QgsMapSaveDialog::extent() const

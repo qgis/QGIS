@@ -71,11 +71,11 @@ class TestQgsFieldValidator(QgisTestCase):
         # class can be reworked to fix this regression.
 
         if DECIMAL_SEPARATOR != ',':
-            _test('0.1234', QValidator.Acceptable)
+            _test('0.1234', QValidator.State.Acceptable)
 
         # Apparently we accept comma only when locale say so
         if DECIMAL_SEPARATOR != '.':
-            _test('0,1234', QValidator.Acceptable)
+            _test('0,1234', QValidator.State.Acceptable)
 
         # If precision is > 0, regexp validator is used (and it does not support sci notation)
         if field.precision() == 0:
@@ -84,24 +84,24 @@ class TestQgsFieldValidator(QgisTestCase):
             # The previous tests were moved to test_disabled_tests.py for now, until the QgsFieldValidator
             # class can be reworked to fix this regression.
             if DECIMAL_SEPARATOR != ',':
-                _test('12345.1234e+123', QValidator.Acceptable)
-                _test('12345.1234e-123', QValidator.Acceptable)
+                _test('12345.1234e+123', QValidator.State.Acceptable)
+                _test('12345.1234e-123', QValidator.State.Acceptable)
 
             if DECIMAL_SEPARATOR != '.':
-                _test('12345,1234e+123', QValidator.Acceptable)
-                _test('12345,1234e-123', QValidator.Acceptable)
-            _test('', QValidator.Acceptable)
+                _test('12345,1234e+123', QValidator.State.Acceptable)
+                _test('12345,1234e-123', QValidator.State.Acceptable)
+            _test('', QValidator.State.Acceptable)
 
             # Out of range
-            _test('12345.1234e+823', QValidator.Intermediate)
-            _test('12345.1234e-823', QValidator.Intermediate)
+            _test('12345.1234e+823', QValidator.State.Intermediate)
+            _test('12345.1234e-823', QValidator.State.Intermediate)
             if DECIMAL_SEPARATOR != '.':
-                _test('12345,1234e+823', QValidator.Intermediate)
-                _test('12345,1234e-823', QValidator.Intermediate)
+                _test('12345,1234e+823', QValidator.State.Intermediate)
+                _test('12345,1234e-823', QValidator.State.Intermediate)
 
         # Invalid
-        _test('12345-1234', QValidator.Invalid)
-        _test('onetwothree', QValidator.Invalid)
+        _test('12345-1234', QValidator.State.Invalid)
+        _test('onetwothree', QValidator.State.Invalid)
 
         int_field = self.vl.fields()[self.vl.fields().indexFromName('int_field')]
         self.assertEqual(int_field.precision(), 0)  # this is what the provider reports :(
@@ -111,14 +111,14 @@ class TestQgsFieldValidator(QgisTestCase):
         validator = QgsFieldValidator(None, int_field, '0', '')
 
         # Valid
-        _test('0', QValidator.Acceptable)
-        _test('1234', QValidator.Acceptable)
-        _test('', QValidator.Acceptable)
+        _test('0', QValidator.State.Acceptable)
+        _test('1234', QValidator.State.Acceptable)
+        _test('', QValidator.State.Acceptable)
 
         # Invalid
-        _test('12345-1234', QValidator.Invalid)
-        _test(f'12345{DECIMAL_SEPARATOR}1234', QValidator.Invalid)
-        _test('onetwothree', QValidator.Invalid)
+        _test('12345-1234', QValidator.State.Invalid)
+        _test(f'12345{DECIMAL_SEPARATOR}1234', QValidator.State.Invalid)
+        _test('onetwothree', QValidator.State.Invalid)
 
     def test_doubleValidator(self):
         """Test the double with default (system) locale"""
@@ -130,21 +130,21 @@ class TestQgsFieldValidator(QgisTestCase):
 
     def test_doubleValidatorCommaLocale(self):
         """Test the double with german locale"""
-        QLocale.setDefault(QLocale(QLocale.German, QLocale.Germany))
+        QLocale.setDefault(QLocale(QLocale.Language.German, QLocale.Country.Germany))
         self.assertEqual(QLocale().decimalPoint(), ',')
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
         self._fld_checker(field)
 
     def test_doubleValidatorDotLocale(self):
         """Test the double with english locale"""
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         self.assertEqual(QLocale().decimalPoint(), '.')
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
         self._fld_checker(field)
 
     def test_precision(self):
         """Test different precision"""
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         self.assertEqual(QLocale().decimalPoint(), '.')
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
         field.setPrecision(4)

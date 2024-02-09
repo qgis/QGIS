@@ -252,7 +252,7 @@ class TestQgsLayerTreeView(QgisTestCase):
         ])
 
         selectionMode = view.selectionMode()
-        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        view.setSelectionMode(QgsLayerTreeView.SelectionMode.MultiSelection)
         nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         view.setCurrentLayer(self.layer5)
@@ -369,7 +369,7 @@ class TestQgsLayerTreeView(QgisTestCase):
         ])
 
         selectionMode = view.selectionMode()
-        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        view.setSelectionMode(QgsLayerTreeView.SelectionMode.MultiSelection)
         nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         view.setCurrentLayer(self.layer4)
@@ -440,7 +440,7 @@ class TestQgsLayerTreeView(QgisTestCase):
         ])
 
         selectionMode = view.selectionMode()
-        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        view.setSelectionMode(QgsLayerTreeView.SelectionMode.MultiSelection)
         view.setCurrentLayer(self.layer)
         view.setCurrentLayer(self.layer2)
         view.setSelectionMode(selectionMode)
@@ -516,7 +516,7 @@ class TestQgsLayerTreeView(QgisTestCase):
         ])
 
         selectionMode = view.selectionMode()
-        view.setSelectionMode(QgsLayerTreeView.MultiSelection)
+        view.setSelectionMode(QgsLayerTreeView.SelectionMode.MultiSelection)
         nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         nodeLayerIndex2 = view.node2index(group2)
@@ -691,8 +691,8 @@ class TestQgsLayerTreeView(QgisTestCase):
 
         self.assertFalse(view.selectedLegendNodes())
 
-        view.selectionModel().select(view.proxyModel().mapFromSource(index), QItemSelectionModel.ClearAndSelect)
-        view.selectionModel().select(view.proxyModel().mapFromSource(index2), QItemSelectionModel.Select)
+        view.selectionModel().select(view.proxyModel().mapFromSource(index), QItemSelectionModel.SelectionFlag.ClearAndSelect)
+        view.selectionModel().select(view.proxyModel().mapFromSource(index2), QItemSelectionModel.SelectionFlag.Select)
 
         self.assertCountEqual(view.selectedLegendNodes(), [legend_nodes[0], legend_nodes[2]])
 

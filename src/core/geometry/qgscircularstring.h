@@ -85,7 +85,133 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
         const QgsPoint &center,
         bool useShortestArc = true );
 
-    bool equals( const QgsCurve &other ) const override;
+#ifndef SIP_RUN
+  private:
+    bool fuzzyHelper( double epsilon,
+                      const QgsAbstractGeometry &other,
+                      bool is3DFlag,
+                      bool isMeasureFlag,
+                      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
+                      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
+                      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
+                      std::function<bool( double, double, double, double, double )> comparator2D ) const
+    {
+      const QgsCircularString *otherLine = qgsgeometry_cast< const QgsCircularString * >( &other );
+      if ( !otherLine )
+        return false;
+
+      if ( mWkbType != otherLine->mWkbType )
+        return false;
+
+      const int size = mX.count();
+      if ( size != otherLine->mX.count() )
+        return false;
+
+      bool result = true;
+      const double *xData = mX.constData();
+      const double *yData = mY.constData();
+      const double *zData = is3DFlag ? mZ.constData() : nullptr;
+      const double *mData = isMeasureFlag ? mM.constData() : nullptr;
+      const double *otherXData = otherLine->mX.constData();
+      const double *otherYData = otherLine->mY.constData();
+      const double *otherZData = is3DFlag ? otherLine->mZ.constData() : nullptr;
+      const double *otherMData = isMeasureFlag ? otherLine->mM.constData() : nullptr;
+      for ( int i = 0; i < size; ++i )
+      {
+        if ( is3DFlag && isMeasureFlag )
+        {
+          result &= comparator3DMeasure( epsilon, *xData++, *yData++, *zData++, *mData++,
+                                         *otherXData++, *otherYData++, *otherZData++, *otherMData++ );
+        }
+        else if ( is3DFlag )
+        {
+          result &= comparator3D( epsilon, *xData++, *yData++, *zData++,
+                                  *otherXData++, *otherYData++, *otherZData++ );
+        }
+        else if ( isMeasureFlag )
+        {
+          result &= comparatorMeasure( epsilon, *xData++, *yData++, *mData++,
+                                       *otherXData++, *otherYData++, *otherMData++ );
+        }
+        else
+        {
+          result &= comparator2D( epsilon, *xData++, *yData++,
+                                  *otherXData++, *otherYData++ );
+        }
+        if ( ! result )
+        {
+          return false;
+        }
+      }
+
+      return result;
+    }
+#endif // !SIP_RUN
+
+  public:
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper(
+               epsilon,
+               other,
+               is3D(),
+               isMeasure(),
+               []( double epsilon, double x1, double y1, double z1, double m1,
+                   double x2, double y2, double z2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
+      },
+      []( double epsilon, double x1, double y1, double z1,
+          double x2, double y2, double z2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, x2, y2, z2 );
+      },
+      []( double epsilon, double x1, double y1, double m1,
+          double x2, double y2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, m1, x2, y2, m2 );
+      },
+      []( double epsilon, double x1, double y1,
+          double x2, double y2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, x2, y2 );
+      } );
+    }
+
+    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper(
+               epsilon,
+               other,
+               is3D(),
+               isMeasure(),
+               []( double epsilon, double x1, double y1, double z1, double m1,
+                   double x2, double y2, double z2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
+      },
+      []( double epsilon, double x1, double y1, double z1,
+          double x2, double y2, double z2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, x2, y2, z2 );
+      },
+      []( double epsilon, double x1, double y1, double m1,
+          double x2, double y2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, m1, x2, y2, m2 );
+      },
+      []( double epsilon, double x1, double y1,
+          double x2, double y2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, x2, y2 );
+      } );
+    }
+
+    bool equals( const QgsCurve &other ) const override
+    {
+      return fuzzyEqual( other, 1e-8 );
+    }
+
 
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;

@@ -45,76 +45,76 @@ void QgsSymbolLayer::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsSymbolLayer::PropertySize, QgsPropertyDefinition( "size", QObject::tr( "Symbol size" ), QgsPropertyDefinition::Size, origin ) },
-    { QgsSymbolLayer::PropertyAngle, QgsPropertyDefinition( "angle", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation, origin ) },
-    { QgsSymbolLayer::PropertyName, QgsPropertyDefinition( "name", QObject::tr( "Symbol name" ), QgsPropertyDefinition::String, origin ) },
-    { QgsSymbolLayer::PropertyFillColor, QgsPropertyDefinition( "fillColor", QObject::tr( "Symbol fill color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
-    { QgsSymbolLayer::PropertyStrokeColor, QgsPropertyDefinition( "outlineColor", QObject::tr( "Symbol stroke color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
-    { QgsSymbolLayer::PropertyStrokeWidth, QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol stroke width" ), QgsPropertyDefinition::StrokeWidth, origin ) },
-    { QgsSymbolLayer::PropertyStrokeStyle, QgsPropertyDefinition( "outlineStyle", QObject::tr( "Symbol stroke style" ), QgsPropertyDefinition::LineStyle, origin )},
-    { QgsSymbolLayer::PropertyOffset, QgsPropertyDefinition( "offset", QObject::tr( "Symbol offset" ), QgsPropertyDefinition::Offset, origin )},
-    { QgsSymbolLayer::PropertyCharacter, QgsPropertyDefinition( "char", QObject::tr( "Marker character(s)" ), QgsPropertyDefinition::String, origin )},
-    { QgsSymbolLayer::PropertyFontFamily, QgsPropertyDefinition( "fontFamily", QObject::tr( "Font family" ), QgsPropertyDefinition::String, origin )},
-    { QgsSymbolLayer::PropertyFontStyle, QgsPropertyDefinition( "fontStyle", QObject::tr( "Font style" ), QgsPropertyDefinition::String, origin )},
-    { QgsSymbolLayer::PropertyWidth, QgsPropertyDefinition( "width", QObject::tr( "Symbol width" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyHeight, QgsPropertyDefinition( "height", QObject::tr( "Symbol height" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyPreserveAspectRatio, QgsPropertyDefinition( "preserveAspectRatio", QObject::tr( "Preserve aspect ratio between width and height" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyFillStyle, QgsPropertyDefinition( "fillStyle", QObject::tr( "Symbol fill style" ), QgsPropertyDefinition::FillStyle, origin )},
-    { QgsSymbolLayer::PropertyJoinStyle, QgsPropertyDefinition( "joinStyle", QObject::tr( "Outline join style" ), QgsPropertyDefinition::PenJoinStyle, origin )},
-    { QgsSymbolLayer::PropertySecondaryColor, QgsPropertyDefinition( "color2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha, origin )},
-    { QgsSymbolLayer::PropertyLineAngle, QgsPropertyDefinition( "lineAngle", QObject::tr( "Angle for line fills" ), QgsPropertyDefinition::Rotation, origin )},
-    { QgsSymbolLayer::PropertyGradientType, QgsPropertyDefinition( "gradientType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Gradient type" ),  QObject::tr( "string " ) + QLatin1String( "[<b>linear</b>|<b>radial</b>|<b>conical</b>]" ), origin )},
-    { QgsSymbolLayer::PropertyCoordinateMode, QgsPropertyDefinition( "gradientMode", QgsPropertyDefinition::DataTypeString, QObject::tr( "Gradient mode" ), QObject::tr( "string " ) + QLatin1String( "[<b>feature</b>|<b>viewport</b>]" ), origin )},
-    { QgsSymbolLayer::PropertyGradientSpread, QgsPropertyDefinition( "gradientSpread", QgsPropertyDefinition::DataTypeString, QObject::tr( "Gradient spread" ), QObject::tr( "string " ) + QLatin1String( "[<b>pad</b>|<b>repeat</b>|<b>reflect</b>]" ), origin )},
-    { QgsSymbolLayer::PropertyGradientReference1X, QgsPropertyDefinition( "gradientRef1X", QObject::tr( "Reference point 1 (X)" ), QgsPropertyDefinition::Double0To1, origin )},
-    { QgsSymbolLayer::PropertyGradientReference1Y, QgsPropertyDefinition( "gradientRef1Y", QObject::tr( "Reference point 1 (Y)" ), QgsPropertyDefinition::Double0To1, origin )},
-    { QgsSymbolLayer::PropertyGradientReference2X, QgsPropertyDefinition( "gradientRef2X", QObject::tr( "Reference point 2 (X)" ), QgsPropertyDefinition::Double0To1, origin )},
-    { QgsSymbolLayer::PropertyGradientReference2Y, QgsPropertyDefinition( "gradientRef2Y", QObject::tr( "Reference point 2 (Y)" ), QgsPropertyDefinition::Double0To1, origin )},
-    { QgsSymbolLayer::PropertyGradientReference1IsCentroid, QgsPropertyDefinition( "gradientRef1Centroid", QObject::tr( "Reference point 1 follows feature centroid" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyGradientReference2IsCentroid, QgsPropertyDefinition( "gradientRef2Centroid", QObject::tr( "Reference point 2 follows feature centroid" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyBlurRadius, QgsPropertyDefinition( "blurRadius", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Blur radius" ), QObject::tr( "Integer between 0 and 18" ), origin )},
-    { QgsSymbolLayer::PropertyLineDistance, QgsPropertyDefinition( "lineDistance", QObject::tr( "Distance between lines" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyShapeburstUseWholeShape, QgsPropertyDefinition( "shapeburstWholeShape", QObject::tr( "Shade whole shape" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyShapeburstMaxDistance, QgsPropertyDefinition( "shapeburstMaxDist", QObject::tr( "Maximum distance for shapeburst fill" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyShapeburstIgnoreRings, QgsPropertyDefinition( "shapeburstIgnoreRings", QObject::tr( "Ignore rings in feature" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyFile, QgsPropertyDefinition( "file", QObject::tr( "Symbol file path" ), QgsPropertyDefinition::String, origin )},
-    { QgsSymbolLayer::PropertyDistanceX, QgsPropertyDefinition( "distanceX", QObject::tr( "Horizontal distance between markers" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyDistanceY, QgsPropertyDefinition( "distanceY", QObject::tr( "Vertical distance between markers" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyDisplacementX, QgsPropertyDefinition( "displacementX", QObject::tr( "Horizontal displacement between rows" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyDisplacementY, QgsPropertyDefinition( "displacementY", QObject::tr( "Vertical displacement between columns" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyOffsetX, QgsPropertyDefinition( "offsetX", QObject::tr( "Horizontal offset" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyOffsetY, QgsPropertyDefinition( "offsetY", QObject::tr( "Vertical offset" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyOpacity, QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
-    { QgsSymbolLayer::PropertyCustomDash, QgsPropertyDefinition( "customDash", QgsPropertyDefinition::DataTypeString, QObject::tr( "Custom dash pattern" ), QObject::tr( "[<b><dash>;<space></b>] e.g. '8;2;1;2'" ), origin )},
-    { QgsSymbolLayer::PropertyCapStyle, QgsPropertyDefinition( "capStyle", QObject::tr( "Line cap style" ), QgsPropertyDefinition::CapStyle, origin )},
-    { QgsSymbolLayer::PropertyPlacement, QgsPropertyDefinition( "placement", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker placement" ), QObject::tr( "string " ) + "[<b>interval</b>|<b>innervertices</b>|<b>vertex</b>|<b>lastvertex</b>|<b>firstvertex</b>|<b>centerpoint</b>|<b>curvepoint</b>|<b>segmentcenter</b>]", origin )},
-    { QgsSymbolLayer::PropertyInterval, QgsPropertyDefinition( "interval", QObject::tr( "Marker interval" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyOffsetAlongLine, QgsPropertyDefinition( "offsetAlongLine", QObject::tr( "Offset along line" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyAverageAngleLength, QgsPropertyDefinition( "averageAngleLength", QObject::tr( "Average line angles over" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyHorizontalAnchor, QgsPropertyDefinition( "hAnchor", QObject::tr( "Horizontal anchor point" ), QgsPropertyDefinition::HorizontalAnchor, origin )},
-    { QgsSymbolLayer::PropertyVerticalAnchor, QgsPropertyDefinition( "vAnchor", QObject::tr( "Vertical anchor point" ), QgsPropertyDefinition::VerticalAnchor, origin )},
-    { QgsSymbolLayer::PropertyLayerEnabled, QgsPropertyDefinition( "enabled", QObject::tr( "Layer enabled" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyArrowWidth, QgsPropertyDefinition( "arrowWidth", QObject::tr( "Arrow line width" ), QgsPropertyDefinition::StrokeWidth, origin )},
-    { QgsSymbolLayer::PropertyArrowStartWidth, QgsPropertyDefinition( "arrowStartWidth", QObject::tr( "Arrow line start width" ), QgsPropertyDefinition::StrokeWidth, origin )},
-    { QgsSymbolLayer::PropertyArrowHeadLength, QgsPropertyDefinition( "arrowHeadLength", QObject::tr( "Arrow head length" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyArrowHeadThickness, QgsPropertyDefinition( "arrowHeadThickness", QObject::tr( "Arrow head thickness" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyArrowHeadType, QgsPropertyDefinition( "arrowHeadType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow head type" ), QObject::tr( "string " ) + QLatin1String( "[<b>single</b>|<b>reversed</b>|<b>double</b>]" ), origin )},
-    { QgsSymbolLayer::PropertyArrowType, QgsPropertyDefinition( "arrowType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow type" ), QObject::tr( "string " ) + QLatin1String( "[<b>plain</b>|<b>lefthalf</b>|<b>righthalf</b>]" ), origin )},
-    { QgsSymbolLayer::PropertyPointCount, QgsPropertyDefinition( "pointCount", QObject::tr( "Point count" ), QgsPropertyDefinition::IntegerPositive, origin )},
-    { QgsSymbolLayer::PropertyRandomSeed, QgsPropertyDefinition( "randomSeed", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Random number seed" ), QObject::tr( "integer > 0, or 0 for completely random sequence" ), origin )},
-    { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "clipPoints", QObject::tr( "Clip markers" ), QgsPropertyDefinition::Boolean, origin )},
-    { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "densityArea", QObject::tr( "Density area" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyDashPatternOffset, QgsPropertyDefinition( "dashPatternOffset", QObject::tr( "Dash pattern offset" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyTrimStart, QgsPropertyDefinition( "trimStart", QObject::tr( "Start trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyTrimEnd, QgsPropertyDefinition( "trimEnd", QObject::tr( "End trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { QgsSymbolLayer::PropertyLineStartWidthValue, QgsPropertyDefinition( "lineStartWidthValue", QObject::tr( "Line start width value" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyLineEndWidthValue, QgsPropertyDefinition( "lineEndWidthValue", QObject::tr( "Line end width value" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyLineStartColorValue, QgsPropertyDefinition( "lineStartColorValue", QObject::tr( "Line start color value" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyLineEndColorValue, QgsPropertyDefinition( "lineEndColorValue", QObject::tr( "Line end color value" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyMarkerClipping, QgsPropertyDefinition( "markerClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>shape</b>|<b>centroid_within</b>|<b>completely_within</b>]" ), origin )},
-    { QgsSymbolLayer::PropertyRandomOffsetX, QgsPropertyDefinition( "randomOffsetX", QObject::tr( "Horizontal random offset" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyRandomOffsetY, QgsPropertyDefinition( "randomOffsetY", QObject::tr( "Vertical random offset" ), QgsPropertyDefinition::Double, origin )},
-    { QgsSymbolLayer::PropertyLineClipping, QgsPropertyDefinition( "lineClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>during_render</b>|<b>before_render</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Size ), QgsPropertyDefinition( "size", QObject::tr( "Symbol size" ), QgsPropertyDefinition::Size, origin ) },
+    { static_cast< int >( QgsSymbolLayer::Property::Angle ), QgsPropertyDefinition( "angle", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation, origin ) },
+    { static_cast< int >( QgsSymbolLayer::Property::Name ), QgsPropertyDefinition( "name", QObject::tr( "Symbol name" ), QgsPropertyDefinition::String, origin ) },
+    { static_cast< int >( QgsSymbolLayer::Property::FillColor ), QgsPropertyDefinition( "fillColor", QObject::tr( "Symbol fill color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+    { static_cast< int >( QgsSymbolLayer::Property::StrokeColor ), QgsPropertyDefinition( "outlineColor", QObject::tr( "Symbol stroke color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+    { static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ), QgsPropertyDefinition( "outlineWidth", QObject::tr( "Symbol stroke width" ), QgsPropertyDefinition::StrokeWidth, origin ) },
+    { static_cast< int >( QgsSymbolLayer::Property::StrokeStyle ), QgsPropertyDefinition( "outlineStyle", QObject::tr( "Symbol stroke style" ), QgsPropertyDefinition::LineStyle, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Offset ), QgsPropertyDefinition( "offset", QObject::tr( "Symbol offset" ), QgsPropertyDefinition::Offset, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Character ), QgsPropertyDefinition( "char", QObject::tr( "Marker character(s)" ), QgsPropertyDefinition::String, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::FontFamily ), QgsPropertyDefinition( "fontFamily", QObject::tr( "Font family" ), QgsPropertyDefinition::String, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::FontStyle ), QgsPropertyDefinition( "fontStyle", QObject::tr( "Font style" ), QgsPropertyDefinition::String, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Width ), QgsPropertyDefinition( "width", QObject::tr( "Symbol width" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Symbol height" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::PreserveAspectRatio ), QgsPropertyDefinition( "preserveAspectRatio", QObject::tr( "Preserve aspect ratio between width and height" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::FillStyle ), QgsPropertyDefinition( "fillStyle", QObject::tr( "Symbol fill style" ), QgsPropertyDefinition::FillStyle, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::JoinStyle ), QgsPropertyDefinition( "joinStyle", QObject::tr( "Outline join style" ), QgsPropertyDefinition::PenJoinStyle, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::SecondaryColor ), QgsPropertyDefinition( "color2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineAngle ), QgsPropertyDefinition( "lineAngle", QObject::tr( "Angle for line fills" ), QgsPropertyDefinition::Rotation, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientType ), QgsPropertyDefinition( "gradientType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Gradient type" ),  QObject::tr( "string " ) + QLatin1String( "[<b>linear</b>|<b>radial</b>|<b>conical</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::CoordinateMode ), QgsPropertyDefinition( "gradientMode", QgsPropertyDefinition::DataTypeString, QObject::tr( "Gradient mode" ), QObject::tr( "string " ) + QLatin1String( "[<b>feature</b>|<b>viewport</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientSpread ), QgsPropertyDefinition( "gradientSpread", QgsPropertyDefinition::DataTypeString, QObject::tr( "Gradient spread" ), QObject::tr( "string " ) + QLatin1String( "[<b>pad</b>|<b>repeat</b>|<b>reflect</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientReference1X ), QgsPropertyDefinition( "gradientRef1X", QObject::tr( "Reference point 1 (X)" ), QgsPropertyDefinition::Double0To1, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientReference1Y ), QgsPropertyDefinition( "gradientRef1Y", QObject::tr( "Reference point 1 (Y)" ), QgsPropertyDefinition::Double0To1, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientReference2X ), QgsPropertyDefinition( "gradientRef2X", QObject::tr( "Reference point 2 (X)" ), QgsPropertyDefinition::Double0To1, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientReference2Y ), QgsPropertyDefinition( "gradientRef2Y", QObject::tr( "Reference point 2 (Y)" ), QgsPropertyDefinition::Double0To1, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientReference1IsCentroid ), QgsPropertyDefinition( "gradientRef1Centroid", QObject::tr( "Reference point 1 follows feature centroid" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::GradientReference2IsCentroid ), QgsPropertyDefinition( "gradientRef2Centroid", QObject::tr( "Reference point 2 follows feature centroid" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::BlurRadius ), QgsPropertyDefinition( "blurRadius", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Blur radius" ), QObject::tr( "Integer between 0 and 18" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineDistance ), QgsPropertyDefinition( "lineDistance", QObject::tr( "Distance between lines" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ShapeburstUseWholeShape ), QgsPropertyDefinition( "shapeburstWholeShape", QObject::tr( "Shade whole shape" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ShapeburstMaxDistance ), QgsPropertyDefinition( "shapeburstMaxDist", QObject::tr( "Maximum distance for shapeburst fill" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ShapeburstIgnoreRings ), QgsPropertyDefinition( "shapeburstIgnoreRings", QObject::tr( "Ignore rings in feature" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::File ), QgsPropertyDefinition( "file", QObject::tr( "Symbol file path" ), QgsPropertyDefinition::String, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::DistanceX ), QgsPropertyDefinition( "distanceX", QObject::tr( "Horizontal distance between markers" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::DistanceY ), QgsPropertyDefinition( "distanceY", QObject::tr( "Vertical distance between markers" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::DisplacementX ), QgsPropertyDefinition( "displacementX", QObject::tr( "Horizontal displacement between rows" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::DisplacementY ), QgsPropertyDefinition( "displacementY", QObject::tr( "Vertical displacement between columns" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::OffsetX ), QgsPropertyDefinition( "offsetX", QObject::tr( "Horizontal offset" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::OffsetY ), QgsPropertyDefinition( "offsetY", QObject::tr( "Vertical offset" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Opacity ), QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::CustomDash ), QgsPropertyDefinition( "customDash", QgsPropertyDefinition::DataTypeString, QObject::tr( "Custom dash pattern" ), QObject::tr( "[<b><dash>;<space></b>] e.g. '8;2;1;2'" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::CapStyle ), QgsPropertyDefinition( "capStyle", QObject::tr( "Line cap style" ), QgsPropertyDefinition::CapStyle, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Placement ), QgsPropertyDefinition( "placement", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker placement" ), QObject::tr( "string " ) + "[<b>interval</b>|<b>innervertices</b>|<b>vertex</b>|<b>lastvertex</b>|<b>firstvertex</b>|<b>centerpoint</b>|<b>curvepoint</b>|<b>segmentcenter</b>]", origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::Interval ), QgsPropertyDefinition( "interval", QObject::tr( "Marker interval" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::OffsetAlongLine ), QgsPropertyDefinition( "offsetAlongLine", QObject::tr( "Offset along line" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::AverageAngleLength ), QgsPropertyDefinition( "averageAngleLength", QObject::tr( "Average line angles over" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::HorizontalAnchor ), QgsPropertyDefinition( "hAnchor", QObject::tr( "Horizontal anchor point" ), QgsPropertyDefinition::HorizontalAnchor, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::VerticalAnchor ), QgsPropertyDefinition( "vAnchor", QObject::tr( "Vertical anchor point" ), QgsPropertyDefinition::VerticalAnchor, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LayerEnabled ), QgsPropertyDefinition( "enabled", QObject::tr( "Layer enabled" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ArrowWidth ), QgsPropertyDefinition( "arrowWidth", QObject::tr( "Arrow line width" ), QgsPropertyDefinition::StrokeWidth, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ArrowStartWidth ), QgsPropertyDefinition( "arrowStartWidth", QObject::tr( "Arrow line start width" ), QgsPropertyDefinition::StrokeWidth, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ArrowHeadLength ), QgsPropertyDefinition( "arrowHeadLength", QObject::tr( "Arrow head length" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ArrowHeadThickness ), QgsPropertyDefinition( "arrowHeadThickness", QObject::tr( "Arrow head thickness" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ArrowHeadType ), QgsPropertyDefinition( "arrowHeadType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow head type" ), QObject::tr( "string " ) + QLatin1String( "[<b>single</b>|<b>reversed</b>|<b>double</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ArrowType ), QgsPropertyDefinition( "arrowType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Arrow type" ), QObject::tr( "string " ) + QLatin1String( "[<b>plain</b>|<b>lefthalf</b>|<b>righthalf</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::PointCount ), QgsPropertyDefinition( "pointCount", QObject::tr( "Point count" ), QgsPropertyDefinition::IntegerPositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::RandomSeed ), QgsPropertyDefinition( "randomSeed", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Random number seed" ), QObject::tr( "integer > 0, or 0 for completely random sequence" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ClipPoints ), QgsPropertyDefinition( "clipPoints", QObject::tr( "Clip markers" ), QgsPropertyDefinition::Boolean, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ClipPoints ), QgsPropertyDefinition( "densityArea", QObject::tr( "Density area" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::DashPatternOffset ), QgsPropertyDefinition( "dashPatternOffset", QObject::tr( "Dash pattern offset" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::TrimStart ), QgsPropertyDefinition( "trimStart", QObject::tr( "Start trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::TrimEnd ), QgsPropertyDefinition( "trimEnd", QObject::tr( "End trim distance" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineStartWidthValue ), QgsPropertyDefinition( "lineStartWidthValue", QObject::tr( "Line start width value" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineEndWidthValue ), QgsPropertyDefinition( "lineEndWidthValue", QObject::tr( "Line end width value" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineStartColorValue ), QgsPropertyDefinition( "lineStartColorValue", QObject::tr( "Line start color value" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineEndColorValue ), QgsPropertyDefinition( "lineEndColorValue", QObject::tr( "Line end color value" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::MarkerClipping ), QgsPropertyDefinition( "markerClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Marker clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>shape</b>|<b>centroid_within</b>|<b>completely_within</b>]" ), origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::RandomOffsetX ), QgsPropertyDefinition( "randomOffsetX", QObject::tr( "Horizontal random offset" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::RandomOffsetY ), QgsPropertyDefinition( "randomOffsetY", QObject::tr( "Vertical random offset" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::LineClipping ), QgsPropertyDefinition( "lineClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line clipping mode" ),  QObject::tr( "string " ) + QLatin1String( "[<b>no</b>|<b>during_render</b>|<b>before_render</b>]" ), origin )},
   };
 }
 
@@ -368,79 +368,79 @@ QgsProperty propertyFromMap( const QVariantMap &map, const QString &baseName )
 void QgsSymbolLayer::restoreOldDataDefinedProperties( const QVariantMap &stringMap )
 {
   // property string to type upgrade map
-  static const QMap< QString, QgsSymbolLayer::Property > OLD_PROPS
+  static const QMap < QString, int > OLD_PROPS
   {
-    { "color", QgsSymbolLayer::PropertyFillColor },
-    { "arrow_width", QgsSymbolLayer::PropertyArrowWidth },
-    { "arrow_start_width", QgsSymbolLayer::PropertyArrowStartWidth },
-    { "head_length", QgsSymbolLayer::PropertyArrowHeadLength },
-    { "head_thickness", QgsSymbolLayer::PropertyArrowHeadThickness },
-    { "offset", QgsSymbolLayer::PropertyOffset },
-    { "head_type", QgsSymbolLayer::PropertyArrowHeadType },
-    { "arrow_type", QgsSymbolLayer::PropertyArrowType },
-    { "width_field", QgsSymbolLayer::PropertyWidth },
-    { "height_field", QgsSymbolLayer::PropertyHeight },
-    { "rotation_field", QgsSymbolLayer::PropertyAngle },
-    { "outline_width_field", QgsSymbolLayer::PropertyStrokeWidth },
-    { "fill_color_field", QgsSymbolLayer::PropertyFillColor },
-    { "outline_color_field", QgsSymbolLayer::PropertyStrokeColor },
-    { "symbol_name_field", QgsSymbolLayer::PropertyName },
-    { "outline_width", QgsSymbolLayer::PropertyStrokeWidth },
-    { "outline_style", QgsSymbolLayer::PropertyStrokeStyle },
-    { "join_style", QgsSymbolLayer::PropertyJoinStyle },
-    { "fill_color", QgsSymbolLayer::PropertyFillColor },
-    { "outline_color", QgsSymbolLayer::PropertyStrokeColor },
-    { "width", QgsSymbolLayer::PropertyWidth },
-    { "height", QgsSymbolLayer::PropertyHeight },
-    { "symbol_name", QgsSymbolLayer::PropertyName },
-    { "angle", QgsSymbolLayer::PropertyAngle },
-    { "fill_style", QgsSymbolLayer::PropertyFillStyle },
-    { "color_border", QgsSymbolLayer::PropertyStrokeColor },
-    { "width_border", QgsSymbolLayer::PropertyStrokeWidth },
-    { "border_color", QgsSymbolLayer::PropertyStrokeColor },
-    { "border_style", QgsSymbolLayer::PropertyStrokeStyle },
-    { "color2", QgsSymbolLayer::PropertySecondaryColor },
-    { "gradient_type", QgsSymbolLayer::PropertyGradientType },
-    { "coordinate_mode", QgsSymbolLayer::PropertyCoordinateMode },
-    { "spread", QgsSymbolLayer::PropertyGradientSpread },
-    { "reference1_x", QgsSymbolLayer::PropertyGradientReference1X },
-    { "reference1_y", QgsSymbolLayer::PropertyGradientReference1Y },
-    { "reference2_x", QgsSymbolLayer::PropertyGradientReference2X },
-    { "reference2_y", QgsSymbolLayer::PropertyGradientReference2Y },
-    { "reference1_iscentroid", QgsSymbolLayer::PropertyGradientReference1IsCentroid },
-    { "reference2_iscentroid", QgsSymbolLayer::PropertyGradientReference2IsCentroid },
-    { "blur_radius", QgsSymbolLayer::PropertyBlurRadius },
-    { "use_whole_shape", QgsSymbolLayer::PropertyShapeburstUseWholeShape },
-    { "max_distance", QgsSymbolLayer::PropertyShapeburstMaxDistance },
-    { "ignore_rings", QgsSymbolLayer::PropertyShapeburstIgnoreRings },
-    { "svgFillColor", QgsSymbolLayer::PropertyFillColor },
-    { "svgOutlineColor", QgsSymbolLayer::PropertyStrokeColor },
-    { "svgOutlineWidth", QgsSymbolLayer::PropertyStrokeWidth },
-    { "svgFile", QgsSymbolLayer::PropertyFile },
-    { "lineangle", QgsSymbolLayer::PropertyLineAngle },
-    { "distance", QgsSymbolLayer::PropertyLineDistance },
-    { "distance_x", QgsSymbolLayer::PropertyDistanceX },
-    { "distance_y", QgsSymbolLayer::PropertyDistanceY },
-    { "displacement_x", QgsSymbolLayer::PropertyDisplacementX },
-    { "displacement_y", QgsSymbolLayer::PropertyDisplacementY },
-    { "file", QgsSymbolLayer::PropertyFile },
-    { "alpha", QgsSymbolLayer::PropertyOpacity },
-    { "customdash", QgsSymbolLayer::PropertyCustomDash },
-    { "line_style", QgsSymbolLayer::PropertyStrokeStyle },
-    { "joinstyle", QgsSymbolLayer::PropertyJoinStyle },
-    { "capstyle", QgsSymbolLayer::PropertyCapStyle },
-    { "placement", QgsSymbolLayer::PropertyPlacement },
-    { "interval", QgsSymbolLayer::PropertyInterval },
-    { "offset_along_line", QgsSymbolLayer::PropertyOffsetAlongLine },
-    { "name", QgsSymbolLayer::PropertyName },
-    { "size", QgsSymbolLayer::PropertySize },
-    { "fill", QgsSymbolLayer::PropertyFillColor },
-    { "outline", QgsSymbolLayer::PropertyStrokeColor },
-    { "char", QgsSymbolLayer::PropertyCharacter },
-    { "enabled", QgsSymbolLayer::PropertyLayerEnabled },
-    { "rotation", QgsSymbolLayer::PropertyAngle },
-    { "horizontal_anchor_point", QgsSymbolLayer::PropertyHorizontalAnchor },
-    { "vertical_anchor_point", QgsSymbolLayer::PropertyVerticalAnchor },
+    { "color", static_cast< int >( QgsSymbolLayer::Property::FillColor ) },
+    { "arrow_width", static_cast< int >( QgsSymbolLayer::Property::ArrowWidth ) },
+    { "arrow_start_width", static_cast< int >( QgsSymbolLayer::Property::ArrowStartWidth ) },
+    { "head_length", static_cast< int >( QgsSymbolLayer::Property::ArrowHeadLength ) },
+    { "head_thickness", static_cast< int >( QgsSymbolLayer::Property::ArrowHeadThickness ) },
+    { "offset", static_cast< int >( QgsSymbolLayer::Property::Offset ) },
+    { "head_type", static_cast< int >( QgsSymbolLayer::Property::ArrowHeadType ) },
+    { "arrow_type", static_cast< int >( QgsSymbolLayer::Property::ArrowType ) },
+    { "width_field", static_cast< int >( QgsSymbolLayer::Property::Width ) },
+    { "height_field", static_cast< int >( QgsSymbolLayer::Property::Height ) },
+    { "rotation_field", static_cast< int >( QgsSymbolLayer::Property::Angle ) },
+    { "outline_width_field", static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) },
+    { "fill_color_field", static_cast< int >( QgsSymbolLayer::Property::FillColor ) },
+    { "outline_color_field", static_cast< int >( QgsSymbolLayer::Property::StrokeColor ) },
+    { "symbol_name_field", static_cast< int >( QgsSymbolLayer::Property::Name ) },
+    { "outline_width", static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) },
+    { "outline_style", static_cast< int >( QgsSymbolLayer::Property::StrokeStyle ) },
+    { "join_style", static_cast< int >( QgsSymbolLayer::Property::JoinStyle ) },
+    { "fill_color", static_cast< int >( QgsSymbolLayer::Property::FillColor ) },
+    { "outline_color", static_cast< int >( QgsSymbolLayer::Property::StrokeColor ) },
+    { "width", static_cast< int >( QgsSymbolLayer::Property::Width ) },
+    { "height", static_cast< int >( QgsSymbolLayer::Property::Height ) },
+    { "symbol_name", static_cast< int >( QgsSymbolLayer::Property::Name ) },
+    { "angle", static_cast< int >( QgsSymbolLayer::Property::Angle ) },
+    { "fill_style", static_cast< int >( QgsSymbolLayer::Property::FillStyle ) },
+    { "color_border", static_cast< int >( QgsSymbolLayer::Property::StrokeColor ) },
+    { "width_border", static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) },
+    { "border_color", static_cast< int >( QgsSymbolLayer::Property::StrokeColor ) },
+    { "border_style", static_cast< int >( QgsSymbolLayer::Property::StrokeStyle ) },
+    { "color2", static_cast< int >( QgsSymbolLayer::Property::SecondaryColor ) },
+    { "gradient_type", static_cast< int >( QgsSymbolLayer::Property::GradientType ) },
+    { "coordinate_mode", static_cast< int >( QgsSymbolLayer::Property::CoordinateMode )},
+    { "spread", static_cast< int >( QgsSymbolLayer::Property::GradientSpread ) },
+    { "reference1_x", static_cast< int >( QgsSymbolLayer::Property::GradientReference1X ) },
+    { "reference1_y", static_cast< int >( QgsSymbolLayer::Property::GradientReference1Y ) },
+    { "reference2_x", static_cast< int >( QgsSymbolLayer::Property::GradientReference2X ) },
+    { "reference2_y", static_cast< int >( QgsSymbolLayer::Property::GradientReference2Y )},
+    { "reference1_iscentroid", static_cast< int >( QgsSymbolLayer::Property::GradientReference1IsCentroid )},
+    { "reference2_iscentroid", static_cast< int >( QgsSymbolLayer::Property::GradientReference2IsCentroid )},
+    { "blur_radius", static_cast< int >( QgsSymbolLayer::Property::BlurRadius ) },
+    { "use_whole_shape", static_cast< int >( QgsSymbolLayer::Property::ShapeburstUseWholeShape ) },
+    { "max_distance", static_cast< int >( QgsSymbolLayer::Property::ShapeburstMaxDistance ) },
+    { "ignore_rings", static_cast< int >( QgsSymbolLayer::Property::ShapeburstIgnoreRings ) },
+    { "svgFillColor", static_cast< int >( QgsSymbolLayer::Property::FillColor ) },
+    { "svgOutlineColor", static_cast< int >( QgsSymbolLayer::Property::StrokeColor ) },
+    { "svgOutlineWidth", static_cast< int >( QgsSymbolLayer::Property::StrokeWidth ) },
+    { "svgFile", static_cast< int >( QgsSymbolLayer::Property::File ) },
+    { "lineangle", static_cast< int >( QgsSymbolLayer::Property::LineAngle ) },
+    { "distance", static_cast< int >( QgsSymbolLayer::Property::LineDistance )},
+    { "distance_x", static_cast< int >( QgsSymbolLayer::Property::DistanceX )},
+    { "distance_y", static_cast< int >( QgsSymbolLayer::Property::DistanceY ) },
+    { "displacement_x", static_cast< int >( QgsSymbolLayer::Property::DisplacementX )},
+    { "displacement_y", static_cast< int >( QgsSymbolLayer::Property::DisplacementY ) },
+    { "file", static_cast< int >( QgsSymbolLayer::Property::File ) },
+    { "alpha", static_cast< int >( QgsSymbolLayer::Property::Opacity )},
+    { "customdash", static_cast< int >( QgsSymbolLayer::Property::CustomDash ) },
+    { "line_style", static_cast< int >( QgsSymbolLayer::Property::StrokeStyle ) },
+    { "joinstyle", static_cast< int >( QgsSymbolLayer::Property::JoinStyle ) },
+    { "capstyle", static_cast< int >( QgsSymbolLayer::Property::CapStyle ) },
+    { "placement", static_cast< int >( QgsSymbolLayer::Property::Placement ) },
+    { "interval", static_cast< int >( QgsSymbolLayer::Property::Interval ) },
+    { "offset_along_line", static_cast< int >( QgsSymbolLayer::Property::OffsetAlongLine ) },
+    { "name", static_cast< int >( QgsSymbolLayer::Property::Name ) },
+    { "size", static_cast< int >( QgsSymbolLayer::Property::Size ) },
+    { "fill", static_cast< int >( QgsSymbolLayer::Property::FillColor ) },
+    { "outline", static_cast< int >( QgsSymbolLayer::Property::StrokeColor )},
+    { "char", static_cast< int >( QgsSymbolLayer::Property::Character )},
+    { "enabled", static_cast< int >( QgsSymbolLayer::Property::LayerEnabled ) },
+    { "rotation", static_cast< int >( QgsSymbolLayer::Property::Angle )},
+    { "horizontal_anchor_point", static_cast< int >( QgsSymbolLayer::Property::HorizontalAnchor ) },
+    { "vertical_anchor_point", static_cast< int >( QgsSymbolLayer::Property::VerticalAnchor ) },
   };
 
   QVariantMap::const_iterator propIt = stringMap.constBegin();
@@ -471,18 +471,18 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QVariantMap &stringM
     if ( !prop || !OLD_PROPS.contains( propertyName ) )
       continue;
 
-    QgsSymbolLayer::Property key = static_cast< QgsSymbolLayer::Property >( OLD_PROPS.value( propertyName ) );
+    int key = OLD_PROPS.value( propertyName );
 
     if ( type() == Qgis::SymbolType::Line )
     {
       //these keys had different meaning for line symbol layers
       if ( propertyName == QLatin1String( "width" ) )
-        key = QgsSymbolLayer::PropertyStrokeWidth;
+        key = static_cast< int >( QgsSymbolLayer::Property::StrokeWidth );
       else if ( propertyName == QLatin1String( "color" ) )
-        key = QgsSymbolLayer::PropertyStrokeColor;
+        key = static_cast< int >( QgsSymbolLayer::Property::StrokeColor );
     }
 
-    setDataDefinedProperty( key, QgsProperty( *prop.get() ) );
+    setDataDefinedProperty( static_cast< QgsSymbolLayer::Property >( key ), QgsProperty( *prop.get() ) );
   }
 }
 
@@ -578,10 +578,10 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Offset ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::Offset, context.renderContext().expressionContext() );
     bool ok = false;
     const QPointF offset = QgsSymbolLayerUtils::toPoint( exprVal, &ok );
     if ( ok )
@@ -596,17 +596,17 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHorizontalAnchor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::HorizontalAnchor ) )
   {
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyHorizontalAnchor, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::HorizontalAnchor, context.renderContext().expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       horizontalAnchorPoint = decodeHorizontalAnchorPoint( exprVal.toString() );
     }
   }
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyVerticalAnchor ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::VerticalAnchor ) )
   {
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyVerticalAnchor, context.renderContext().expressionContext() );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::VerticalAnchor, context.renderContext().expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       verticalAnchorPoint = decodeVerticalAnchorPoint( exprVal.toString() );
@@ -644,7 +644,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
     offsetX -= anchorPointCorrectionX;
   }
 
-  //correct vertical position according to anchor point
+//correct vertical position according to anchor point
   if ( verticalAnchorPoint == Top )
   {
     offsetY += anchorPointCorrectionY;
@@ -921,10 +921,10 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   double size = mSize;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySize ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Size ) )
   {
     bool ok = false;
-    size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertySize, context.renderContext().expressionContext(), mSize, &ok );
+    size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Size, context.renderContext().expressionContext(), mSize, &ok );
 
     if ( ok )
     {
@@ -944,10 +944,10 @@ double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderCont
 double QgsMarkerSymbolLayer::dxfAngle( QgsSymbolRenderContext &context ) const
 {
   double angle = mAngle;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Angle ) )
   {
     context.setOriginalValueVariable( mAngle );
-    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyAngle, context.renderContext().expressionContext(), mAngle );
+    angle = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::Angle, context.renderContext().expressionContext(), mAngle );
   }
   return angle;
 }

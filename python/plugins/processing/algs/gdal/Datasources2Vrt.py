@@ -69,7 +69,7 @@ class Datasources2Vrt(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
                                                                self.tr('Input datasources'),
-                                                               QgsProcessing.TypeVector))
+                                                               QgsProcessing.SourceType.TypeVector))
         self.addParameter(QgsProcessingParameterBoolean(self.UNIONED,
                                                         self.tr('Create "unioned" VRT'),
                                                         defaultValue=False))

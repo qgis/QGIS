@@ -35,9 +35,9 @@ class TestQgsMediaWidget(QgisTestCase):
         """
 
         mw = QgsMediaWidget()
-        self.assertEqual(mw.mode(), QgsMediaWidget.Audio)
-        mw.setMode(QgsMediaWidget.Video)
-        self.assertEqual(mw.mode(), QgsMediaWidget.Video)
+        self.assertEqual(mw.mode(), QgsMediaWidget.Mode.Audio)
+        mw.setMode(QgsMediaWidget.Mode.Video)
+        self.assertEqual(mw.mode(), QgsMediaWidget.Mode.Video)
 
     def testLinkProjectColor(self):
         """

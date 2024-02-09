@@ -89,7 +89,7 @@ class ModelerNumberInputPanel(BASE, WIDGET):
         dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
         dlg.setWindowTitle(self.tr('Expression Based Input'))
-        if dlg.exec_() == QDialog.Accepted:
+        if dlg.exec() == QDialog.DialogCode.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
                 self.setValue(dlg.expressionText())
@@ -143,7 +143,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.setExpressionsEnabled(True)
 
         self.param = param
-        if self.param.dataType() == QgsProcessingParameterNumber.Integer:
+        if self.param.dataType() == QgsProcessingParameterNumber.Type.Integer:
             self.spnValue.setDecimals(0)
         else:
             # Guess reasonable step value
@@ -164,7 +164,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
         self.allowing_null = False
         # set default value
-        if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+        if param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
             self.spnValue.setShowClearButton(True)
             min = self.spnValue.minimum() - 1
             self.spnValue.setMinimum(min)
@@ -264,12 +264,12 @@ class DistanceInputPanel(NumberInputPanel):
         self.label = QLabel('')
 
         self.units_combo = QComboBox()
-        self.base_units = QgsUnitTypes.DistanceUnknownUnit
-        for u in (QgsUnitTypes.DistanceMeters,
-                  QgsUnitTypes.DistanceKilometers,
-                  QgsUnitTypes.DistanceFeet,
-                  QgsUnitTypes.DistanceMiles,
-                  QgsUnitTypes.DistanceYards):
+        self.base_units = QgsUnitTypes.DistanceUnit.DistanceUnknownUnit
+        for u in (QgsUnitTypes.DistanceUnit.DistanceMeters,
+                  QgsUnitTypes.DistanceUnit.DistanceKilometers,
+                  QgsUnitTypes.DistanceUnit.DistanceFeet,
+                  QgsUnitTypes.DistanceUnit.DistanceMiles,
+                  QgsUnitTypes.DistanceUnit.DistanceYards):
             self.units_combo.addItem(QgsUnitTypes.toString(u), u)
 
         label_margin = self.fontMetrics().width('X')
@@ -285,22 +285,22 @@ class DistanceInputPanel(NumberInputPanel):
         self.layout().insertWidget(4, self.warning_label)
         self.layout().insertSpacing(5, label_margin)
 
-        self.setUnits(QgsUnitTypes.DistanceUnknownUnit)
+        self.setUnits(QgsUnitTypes.DistanceUnit.DistanceUnknownUnit)
 
     def setUnits(self, units):
         self.label.setText(QgsUnitTypes.toString(units))
-        if QgsUnitTypes.unitType(units) != QgsUnitTypes.Standard:
+        if QgsUnitTypes.unitType(units) != QgsUnitTypes.DistanceUnitType.Standard:
             self.units_combo.hide()
             self.label.show()
         else:
             self.units_combo.setCurrentIndex(self.units_combo.findData(units))
             self.units_combo.show()
             self.label.hide()
-        self.warning_label.setVisible(units == QgsUnitTypes.DistanceDegrees)
+        self.warning_label.setVisible(units == QgsUnitTypes.DistanceUnit.DistanceDegrees)
         self.base_units = units
 
     def setUnitParameterValue(self, value):
-        units = QgsUnitTypes.DistanceUnknownUnit
+        units = QgsUnitTypes.DistanceUnit.DistanceUnknownUnit
         layer = self.getLayerFromValue(value)
         if isinstance(layer, QgsMapLayer):
             units = layer.crs().mapUnits()

@@ -175,7 +175,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
 
     // Read feature id
     QgsFeatureId fid = FID_NULL;
-    bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+    bool subsetOfAttributes = mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes;
     QgsAttributeList fetchAttributes = mRequest.subsetOfAttributes();
 
     if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
@@ -303,7 +303,7 @@ bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::Orde
 
 QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request )
 {
-  const bool geometryRequested = ( request.flags() & QgsFeatureRequest::NoGeometry ) == 0
+  const bool geometryRequested = ( request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) == 0
                                  || !mFilterRect.isNull()
                                  || request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
   bool limitAtProvider = ( request.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
@@ -352,13 +352,13 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   if ( !mOrderByCompiled )
     limitAtProvider = false;
 
-  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  bool subsetOfAttributes = mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes;
   QgsAttributeIds attrIds = qgis::listToSet( subsetOfAttributes ?
                             request.subsetOfAttributes() : mSource->mFields.allAttributesList() );
 
   if ( subsetOfAttributes )
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression )
       // Ensure that all attributes required for expression filter are fetched
       attrIds.unite( request.filterExpression()->referencedAttributeIndexes( mSource->mFields ) );
 
@@ -389,7 +389,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 
   // Add geometry column
   if ( mSource->isSpatial() &&
-       ( geometryRequested || ( request.filterType() == QgsFeatureRequest::FilterExpression &&
+       ( geometryRequested || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression &&
                                 request.filterExpression()->needsGeometry() ) ) )
   {
     sqlFields += QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn );
@@ -407,14 +407,14 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   // Set fid filter
   if ( !mSource->mPrimaryKeyAttrs.isEmpty() )
   {
-    if ( request.filterType() == QgsFeatureRequest::FilterFid )
+    if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
     {
       QString fidWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
       if ( fidWhereClause.isEmpty() )
         throw QgsHanaException( QStringLiteral( "Key values for feature %1 not found." ).arg( request.filterFid() ) );
       sqlFilter.push_back( fidWhereClause );
     }
-    else if ( request.filterType() == QgsFeatureRequest::FilterFids && !mRequest.filterFids().isEmpty() )
+    else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids && !mRequest.filterFids().isEmpty() )
     {
       QString fidsWhereClause = QgsHanaPrimaryKeyUtils::buildWhereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, *mSource->mPrimaryKeyCntx );
       if ( fidsWhereClause.isEmpty() )
@@ -426,11 +426,11 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   //IMPORTANT - this MUST be the last clause added
   mExpressionCompiled = false;
   mCompileStatus = NoCompilation;
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( request.filterType() == Qgis::FeatureRequestFilterType::Expression )
   {
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
-      QgsHanaExpressionCompiler compiler = QgsHanaExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+      QgsHanaExpressionCompiler compiler = QgsHanaExpressionCompiler( mSource, request.flags() & Qgis::FeatureRequestFlag::IgnoreStaticNodesDuringExpressionCompilation );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
       switch ( result )
       {

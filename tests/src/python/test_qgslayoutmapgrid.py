@@ -67,24 +67,24 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationTextFormat(format)
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_grid", layout)
@@ -105,19 +105,19 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setEnabled(True)
-        map.grid().setStyle(QgsLayoutItemMapGrid.Cross)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.Cross)
         map.grid().setCrossLength(2.0)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_crossgrid", layout)
 
-        map.grid().setStyle(QgsLayoutItemMapGrid.Solid)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.Solid)
         map.grid().setEnabled(False)
         map.grid().setAnnotationEnabled(False)
 
@@ -135,17 +135,17 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setEnabled(True)
-        map.grid().setStyle(QgsLayoutItemMapGrid.Markers)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.Markers)
         map.grid().setCrossLength(2.0)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.grid().markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_markergrid", layout)
-        map.grid().setStyle(QgsLayoutItemMapGrid.Solid)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.Solid)
         map.grid().setEnabled(False)
         map.grid().setAnnotationEnabled(False)
 
@@ -163,21 +163,21 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setEnabled(True)
-        map.grid().setStyle(QgsLayoutItemMapGrid.FrameAnnotationsOnly)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         map.grid().setFramePenSize(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         map.updateBoundingRect()
 
         result = self.render_layout_check("composermap_gridframeonly", layout)
 
-        map.grid().setStyle(QgsLayoutItemMapGrid.Solid)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.Solid)
         map.grid().setEnabled(False)
         map.grid().setAnnotationEnabled(False)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.NoFrame)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.NoFrame)
 
         self.assertTrue(result)
 
@@ -190,14 +190,14 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.setBackgroundColor(QColor(150, 100, 100))
         layout.addLayoutItem(map)
 
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         myRectangle = QgsRectangle(785462.375, 3341423.125, 789262.375, 3343323.125)
         map.setExtent(myRectangle)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setGridLineColor(QColor(0, 0, 0))
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
         map.grid().setGridLineWidth(0.5)
@@ -221,14 +221,14 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.setBackgroundColor(QColor(150, 100, 100))
         layout.addLayoutItem(map)
 
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setGridLineColor(QColor(0, 0, 0))
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
         map.grid().setGridLineWidth(0.5)
@@ -237,10 +237,10 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setFrameFillColor2(QColor(255, 255, 255))
         map.grid().setEnabled(True)
 
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameLeft, True)
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameRight, False)
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameTop, False)
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameBottom, False)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameLeft, True)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameRight, False)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameTop, False)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom, False)
         map.updateBoundingRect()
 
         self.assertTrue(
@@ -248,22 +248,22 @@ class TestQgsLayoutMapGrid(QgisTestCase):
                                      allowed_mismatch=100)
         )
 
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameTop, True)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameTop, True)
         map.updateBoundingRect()
         self.assertTrue(
             self.render_layout_check("composermap_zebrastyle_lefttop", layout,
                                      allowed_mismatch=100)
         )
 
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameRight, True)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameRight, True)
         map.updateBoundingRect()
         self.assertTrue(
             self.render_layout_check("composermap_zebrastyle_lefttopright", layout,
                                      allowed_mismatch=100)
         )
 
-        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameBottom, True)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.NoFrame)
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom, True)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.NoFrame)
 
     def testInteriorTicks(self):
         layout = QgsLayout(QgsProject.instance())
@@ -274,18 +274,18 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.setBackgroundColor(QColor(150, 100, 100))
         layout.addLayoutItem(map)
 
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
-        map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.InteriorTicks)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.InteriorTicks)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
         map.grid().setFramePenColor(QColor(0, 0, 0))
         map.grid().setEnabled(True)
-        map.grid().setStyle(QgsLayoutItemMapGrid.FrameAnnotationsOnly)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
         map.updateBoundingRect()
 
         self.assertTrue(
@@ -301,57 +301,57 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             (
                 10,
                 30,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 0,
             ),
             (
                 10,
                 120,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 3,
             ),
             (
                 90,
                 30,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 0,
             ),
             (
                 90,
                 120,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 3,
             ),
             (
                 170,
                 30,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 0,
             ),
             (
                 170,
                 120,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 3,
             ),
             (
                 250,
                 30,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 0,
             ),
             (
                 250,
                 120,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 3,
             ),
         ]
@@ -378,22 +378,22 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             map.grid().setAnnotationPrecision(0)
             map.grid().setAnnotationFrameDistance(dist)
 
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Top)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Right)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Bottom)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Left)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Top)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Right)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Bottom)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Left)
 
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.Vertical, QgsLayoutItemMapGrid.Top
+                QgsLayoutItemMapGrid.AnnotationDirection.Vertical, QgsLayoutItemMapGrid.BorderSide.Top
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right
+                QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.BoundaryDirection, QgsLayoutItemMapGrid.Bottom
+                QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection, QgsLayoutItemMapGrid.BorderSide.Bottom
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.VerticalDescending, QgsLayoutItemMapGrid.Left
+                QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending, QgsLayoutItemMapGrid.BorderSide.Left
             )
 
             map.updateBoundingRect()
@@ -411,57 +411,57 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             (
                 10,
                 30,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 0,
             ),
             (
                 10,
                 120,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 3,
             ),
             (
                 90,
                 30,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 0,
             ),
             (
                 90,
                 120,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 3,
             ),
             (
                 170,
                 30,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 0,
             ),
             (
                 170,
                 120,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 3,
             ),
             (
                 250,
                 30,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 0,
             ),
             (
                 250,
                 120,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 3,
             ),
         ]
@@ -491,22 +491,22 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             map.grid().setRotatedTicksEnabled(True)
             map.grid().setRotatedAnnotationsEnabled(True)
 
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Top)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Right)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Bottom)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Left)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Top)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Right)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Bottom)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Left)
 
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AboveTick, QgsLayoutItemMapGrid.Top
+                QgsLayoutItemMapGrid.AnnotationDirection.AboveTick, QgsLayoutItemMapGrid.BorderSide.Top
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.OnTick, QgsLayoutItemMapGrid.Right
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Right
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.UnderTick, QgsLayoutItemMapGrid.Bottom
+                QgsLayoutItemMapGrid.AnnotationDirection.UnderTick, QgsLayoutItemMapGrid.BorderSide.Bottom
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.BoundaryDirection, QgsLayoutItemMapGrid.Left
+                QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection, QgsLayoutItemMapGrid.BorderSide.Left
             )
 
             map.updateBoundingRect()
@@ -527,32 +527,32 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             (
                 10,
                 30,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 True,
                 False,
             ),
             (
                 10,
                 120,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 True,
                 False,
             ),
             (
                 170,
                 30,
-                QgsLayoutItemMapGrid.OutsideMapFrame,
-                QgsLayoutItemMapGrid.InteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.InteriorTicks,
                 False,
                 True,
             ),
             (
                 170,
                 120,
-                QgsLayoutItemMapGrid.InsideMapFrame,
-                QgsLayoutItemMapGrid.ExteriorTicks,
+                QgsLayoutItemMapGrid.AnnotationPosition.InsideMapFrame,
+                QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks,
                 False,
                 True,
             ),
@@ -578,7 +578,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             map.grid().setAnnotationEnabled(True)
             map.grid().setGridLineColor(QColor(0, 255, 0))
             map.grid().setGridLineWidth(0.5)
-            map.grid().setRotatedTicksLengthMode(QgsLayoutItemMapGrid.NormalizedTicks)
+            map.grid().setRotatedTicksLengthMode(QgsLayoutItemMapGrid.TickLengthMode.NormalizedTicks)
             map.grid().setAnnotationFont(getTestFont("Bold", 15))
             map.grid().setAnnotationFontColor(QColor(0, 0, 255, 150))
             map.grid().setAnnotationPrecision(0)
@@ -586,22 +586,22 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             map.grid().setRotatedTicksEnabled(True)
             map.grid().setRotatedAnnotationsEnabled(True)
 
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Top)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Right)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Bottom)
-            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.Left)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Top)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Right)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Bottom)
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Left)
 
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.OnTick, QgsLayoutItemMapGrid.Top
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Top
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.OnTick, QgsLayoutItemMapGrid.Right
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Right
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.OnTick, QgsLayoutItemMapGrid.Bottom
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Bottom
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.OnTick, QgsLayoutItemMapGrid.Left
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Left
             )
 
             if limit_rot:
@@ -659,28 +659,28 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationTextFormat(format)
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridEnabled, QgsProperty.fromValue(True)
+            QgsLayoutObject.DataDefinedProperty.MapGridEnabled, QgsProperty.fromValue(True)
         )
         map.grid().refresh()
 
@@ -690,7 +690,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         )
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridEnabled, QgsProperty.fromValue(False)
+            QgsLayoutObject.DataDefinedProperty.MapGridEnabled, QgsProperty.fromValue(False)
         )
         map.grid().refresh()
 
@@ -715,20 +715,20 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridIntervalX, QgsProperty.fromValue(1500)
+            QgsLayoutObject.DataDefinedProperty.MapGridIntervalX, QgsProperty.fromValue(1500)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridIntervalY, QgsProperty.fromValue(2500)
+            QgsLayoutObject.DataDefinedProperty.MapGridIntervalY, QgsProperty.fromValue(2500)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridOffsetX, QgsProperty.fromValue(500)
+            QgsLayoutObject.DataDefinedProperty.MapGridOffsetX, QgsProperty.fromValue(500)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridOffsetY, QgsProperty.fromValue(250)
+            QgsLayoutObject.DataDefinedProperty.MapGridOffsetY, QgsProperty.fromValue(250)
         )
         map.grid().refresh()
 
@@ -753,21 +753,21 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
         map.grid().setGridLineWidth(0.5)
         map.grid().setFramePenColor(QColor(0, 0, 0))
         map.grid().setFrameFillColor1(QColor(0, 0, 0))
         map.grid().setFrameFillColor2(QColor(255, 255, 255))
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameSize, QgsProperty.fromValue(20)
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameSize, QgsProperty.fromValue(20)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameMargin, QgsProperty.fromValue(10)
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameMargin, QgsProperty.fromValue(10)
         )
         map.grid().refresh()
 
@@ -789,18 +789,18 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setEnabled(True)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
-        map.grid().setStyle(QgsLayoutItemMapGrid.Cross)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.Cross)
         map.grid().setCrossLength(2.0)
         map.grid().setIntervalX(2000)
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridCrossSize, QgsProperty.fromValue(4)
+            QgsLayoutObject.DataDefinedProperty.MapGridCrossSize, QgsProperty.fromValue(4)
         )
         map.grid().refresh()
 
@@ -825,18 +825,18 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(False)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.Zebra)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.Zebra)
         map.grid().setFrameWidth(10)
         map.grid().setFramePenSize(1)
         map.grid().setGridLineWidth(0.5)
         map.grid().setFramePenColor(QColor(0, 0, 0))
         map.grid().setFrameFillColor1(QColor(0, 0, 0))
         map.grid().setFrameFillColor2(QColor(255, 255, 255))
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameLineThickness, QgsProperty.fromValue(4)
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameLineThickness, QgsProperty.fromValue(4)
         )
         map.grid().refresh()
 
@@ -869,28 +869,28 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridLabelDistance, QgsProperty.fromValue(10)
+            QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance, QgsProperty.fromValue(10)
         )
         map.grid().refresh()
 
@@ -916,7 +916,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationEnabled(True)
         map.grid().setGridLineColor(QColor(0, 255, 0))
         map.grid().setGridLineWidth(0.5)
-        map.grid().setFrameStyle(QgsLayoutItemMapGrid.ExteriorTicks)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
         map.grid().setFrameWidth(4)
         map.grid().setFramePenSize(1)
         map.grid().setFramePenColor(QColor(0, 0, 255))
@@ -930,34 +930,34 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setRotatedTicksEnabled(True)
         map.grid().setRotatedAnnotationsEnabled(True)
-        map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.OnTick)
+        map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.AnnotationDirection.OnTick)
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridAnnotationDisplayLeft,
+            QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayLeft,
             QgsProperty.fromValue("x_only"),
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridAnnotationDisplayRight,
+            QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayRight,
             QgsProperty.fromValue("Y_ONLY"),
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridAnnotationDisplayTop,
+            QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayTop,
             QgsProperty.fromValue("disabled"),
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridAnnotationDisplayBottom, QgsProperty.fromValue("ALL")
+            QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayBottom, QgsProperty.fromValue("ALL")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameDivisionsLeft, QgsProperty.fromValue("X_ONLY")
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsLeft, QgsProperty.fromValue("X_ONLY")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameDivisionsRight, QgsProperty.fromValue("y_only")
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsRight, QgsProperty.fromValue("y_only")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameDivisionsTop, QgsProperty.fromValue("DISABLED")
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsTop, QgsProperty.fromValue("DISABLED")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapGridFrameDivisionsBottom, QgsProperty.fromValue("all")
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsBottom, QgsProperty.fromValue("all")
         )
 
         map.grid().refresh()
@@ -978,7 +978,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         map.setExtent(myRectangle)
         map.grid().setEnabled(True)
-        map.grid().setUnits(QgsLayoutItemMapGrid.DynamicPageSizeBased)
+        map.grid().setUnits(QgsLayoutItemMapGrid.GridUnit.DynamicPageSizeBased)
         map.grid().setMinimumIntervalWidth(50)
         map.grid().setMaximumIntervalWidth(100)
         map.grid().setAnnotationEnabled(True)
@@ -992,24 +992,24 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Left
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.HideAll, QgsLayoutItemMapGrid.Top
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.OutsideMapFrame, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Right
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.Horizontal, QgsLayoutItemMapGrid.Bottom
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
-        map.grid().setBlendMode(QPainter.CompositionMode_Overlay)
+        map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().refresh()
@@ -1078,7 +1078,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         self.assertEqual(len(spy), 6)
         # data defined crs
         map.dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapCrs, QgsProperty.fromValue("EPSG:4283")
+            QgsLayoutObject.DataDefinedProperty.MapCrs, QgsProperty.fromValue("EPSG:4283")
         )
         self.assertEqual(len(spy), 6)
         map.refresh()
@@ -1090,7 +1090,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         grid.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         self.assertEqual(len(spy), 8)
         map.dataDefinedProperties().setProperty(
-            QgsLayoutObject.MapCrs, QgsProperty.fromValue("EPSG:3111")
+            QgsLayoutObject.DataDefinedProperty.MapCrs, QgsProperty.fromValue("EPSG:3111")
         )
         map.refresh()
         self.assertEqual(len(spy), 8)

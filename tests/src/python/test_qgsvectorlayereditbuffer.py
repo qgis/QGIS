@@ -443,7 +443,7 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             options.layerName = 'layer_a'
             err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'transaction_test.gpkg'), QgsCoordinateTransformContext(), options)
 
-            self.assertEqual(err, QgsVectorFileWriter.NoError)
+            self.assertEqual(err, QgsVectorFileWriter.WriterError.NoError)
             self.assertTrue(os.path.isfile(newFileName))
 
             layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
@@ -650,13 +650,13 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             f.setGeometry(QgsGeometry.fromWkt('point(8 46)'))
             self.assertTrue(layer_a.addFeatures([f]))
             f = [f for f in layer_a.getFeatures() if f.attribute('int') == 555][0]
-            self.assertTrue(f.id() in buffer.addedFeatures())
+            self.assertIn(f.id(), buffer.addedFeatures())
             self.assertTrue(layer_a.deleteFeature(f.id()))
-            self.assertFalse(f.id() in buffer.addedFeatures())
-            self.assertFalse(f.id() in buffer.deletedFeatureIds())
+            self.assertNotIn(f.id(), buffer.addedFeatures())
+            self.assertNotIn(f.id(), buffer.deletedFeatureIds())
 
             layer_a.undoStack().undo()
-            self.assertTrue(f.id() in buffer.addedFeatures())
+            self.assertIn(f.id(), buffer.addedFeatures())
 
             ###########################################
             # Add attribute

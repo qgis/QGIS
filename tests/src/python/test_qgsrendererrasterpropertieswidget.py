@@ -31,7 +31,7 @@ class QgsRendererRasterPropertiesTestCases(TestCase):
         lyr.setName(path.name)
         self.assertIsInstance(lyr, QgsRasterLayer)
         self.assertTrue(lyr.isValid())
-        self.assertTrue(lyr.bandCount() > 1)
+        self.assertGreater(lyr.bandCount(), 1)
 
         return lyr
 

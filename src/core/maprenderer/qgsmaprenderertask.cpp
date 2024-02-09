@@ -319,7 +319,7 @@ bool QgsMapRendererTask::run()
             f -= 0.5 * e;
             double geoTransform[6] = { c, a, b, f, d, e };
             GDALSetGeoTransform( outputDS.get(), geoTransform );
-            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().constData() );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().constData() );
           }
 
           if ( mExportMetadata )
@@ -397,7 +397,7 @@ bool QgsMapRendererTask::run()
             f -= 0.5 * e;
             double geoTransform[] = { c, a, b, f, d, e };
             GDALSetGeoTransform( outputDS.get(), geoTransform );
-            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().constData() );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().constData() );
           }
         }
 

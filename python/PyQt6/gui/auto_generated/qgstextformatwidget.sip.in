@@ -35,14 +35,14 @@ of Labeling.
   public:
 
     QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0,
-                         QgsVectorLayer *layer = 0 );
+                         QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
 :param format: initial formatting settings to show in widget
 :param mapCanvas: associated map canvas
 :param parent: parent widget
-:param layer: associated vector layer
+:param layer: associated layer (vector or mesh)
 %End
 
     ~QgsTextFormatWidget();
@@ -121,7 +121,7 @@ Emitted when an auxiliary field is created in the widget.
       Labeling,
     };
 
-    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode, QgsVectorLayer *layer = 0 );
+    QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
@@ -224,7 +224,7 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 %End
   public:
 
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsVectorLayer *layer = 0 );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatDialog.
 
@@ -274,7 +274,7 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 %End
   public:
 
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0 );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.
 
@@ -307,8 +307,6 @@ Sets the ``context`` in which the widget is shown, e.g., the associated map canv
 
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

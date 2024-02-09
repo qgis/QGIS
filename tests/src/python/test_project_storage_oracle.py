@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
 
-from PyQt5.QtCore import QUrl, QUrlQuery
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
     QgsDataSourceUri,
@@ -62,7 +62,7 @@ class TestPyQgsProjectStorageOracle(QgisTestCase, TestPyQgsProjectStorageBase):
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.con)
         query = QSqlQuery(self.con)
-        res = query.exec_(sql)
+        res = query.exec(sql)
         if not ignore_errors:
             self.assertTrue(res, sql + ': ' + query.lastError().text())
         query.finish()
@@ -87,7 +87,7 @@ class TestPyQgsProjectStorageOracle(QgisTestCase, TestPyQgsProjectStorageBase):
             urlQuery.addQueryItem("service", ds_uri.service())
         if ds_uri.authConfigId() != '':
             urlQuery.addQueryItem("authcfg", ds_uri.authConfigId())
-        if ds_uri.sslMode() != QgsDataSourceUri.SslPrefer:
+        if ds_uri.sslMode() != QgsDataSourceUri.SslMode.SslPrefer:
             urlQuery.addQueryItem("sslmode", QgsDataSourceUri.encodeSslMode(ds_uri.sslMode()))
 
         urlQuery.addQueryItem("dbname", ds_uri.database())

@@ -17,6 +17,10 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QRegularExpressionMatch>
+
 #include "qgssettings.h"
 
 #include "qgis.h"
@@ -530,7 +534,7 @@ void QgsGrassModuleOption::addRow()
   }
   else if ( mIsOutput )
   {
-    QRegExp rx;
+    QRegularExpression rx;
     if ( mOutputType == Vector )
     {
       rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
@@ -539,7 +543,7 @@ void QgsGrassModuleOption::addRow()
     {
       rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
     }
-    mValidator = new QRegExpValidator( rx, this );
+    mValidator = new QRegularExpressionValidator( rx, this );
 
     lineEdit->setValidator( mValidator );
   }
@@ -666,22 +670,24 @@ bool QgsGrassModuleOption::checkVersion( const QString &version_min, const QStri
 
   bool minOk = true;
   bool maxOk = true;
-  QRegExp rxVersionMajor( "(\\d+)" );
-  QRegExp rxVersion( "(\\d+)\\.(\\d+)" );
+  const thread_local QRegularExpression rxVersionMajor( "^(\\d+)$" );
+  const thread_local QRegularExpression rxVersion( "^(\\d+)\\.(\\d+)$" );
   if ( !version_min.isEmpty() )
   {
-    if ( rxVersion.exactMatch( version_min ) )
+    const QRegularExpressionMatch versionMatch = rxVersion.match( version_min );
+    const QRegularExpressionMatch versionMajorMatch = rxVersionMajor.match( version_min );
+    if ( versionMatch.hasMatch() )
     {
-      int versionMajorMin = rxVersion.cap( 1 ).toInt();
-      int versionMinorMin = rxVersion.cap( 2 ).toInt();
+      int versionMajorMin = versionMatch.captured( 1 ).toInt();
+      int versionMinorMin = versionMatch.captured( 2 ).toInt();
       if ( QgsGrass::versionMajor() < versionMajorMin || ( QgsGrass::versionMajor() == versionMajorMin && QgsGrass::versionMinor() < versionMinorMin ) )
       {
         minOk = false;
       }
     }
-    else if ( rxVersionMajor.exactMatch( version_min ) )
+    else if ( versionMajorMatch.hasMatch() )
     {
-      int versionMajorMin = rxVersionMajor.cap( 1 ).toInt();
+      int versionMajorMin = versionMajorMatch.captured( 1 ).toInt();
       if ( QgsGrass::versionMajor() < versionMajorMin )
       {
         minOk = false;
@@ -695,18 +701,21 @@ bool QgsGrassModuleOption::checkVersion( const QString &version_min, const QStri
 
   if ( !version_max.isEmpty() )
   {
-    if ( rxVersion.exactMatch( version_max ) )
+    const QRegularExpressionMatch versionMatch = rxVersion.match( version_max );
+    const QRegularExpressionMatch versionMajorMatch = rxVersionMajor.match( version_max );
+
+    if ( versionMatch.hasMatch() )
     {
-      int versionMajorMax = rxVersion.cap( 1 ).toInt();
-      int versionMinorMax = rxVersion.cap( 2 ).toInt();
+      int versionMajorMax = versionMatch.captured( 1 ).toInt();
+      int versionMinorMax = versionMatch.captured( 2 ).toInt();
       if ( QgsGrass::versionMajor() > versionMajorMax || ( QgsGrass::versionMajor() == versionMajorMax && QgsGrass::versionMinor() > versionMinorMax ) )
       {
         maxOk = false;
       }
     }
-    else if ( rxVersionMajor.exactMatch( version_max ) )
+    else if ( versionMajorMatch.hasMatch() )
     {
-      int versionMajorMax = rxVersionMajor.cap( 1 ).toInt();
+      int versionMajorMax = versionMajorMatch.captured( 1 ).toInt();
       if ( QgsGrass::versionMajor() > versionMajorMax )
       {
         maxOk = false;

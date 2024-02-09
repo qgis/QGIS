@@ -79,7 +79,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
   , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
-  , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
+  , mProviderCapabilities( layer->dataProvider()->providerCapabilities() )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
   , mEnableProfile( rendererContext.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
@@ -254,7 +254,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   // TODO R->mLastViewPort = *mRasterViewPort;
 
   // TODO: is it necessary? Probably WMS only?
-  layer->dataProvider()->setDpi( dpi );
+  layer->dataProvider()->setDpi( std::floor( dpi * rendererContext.devicePixelRatio() ) );
 
   // copy the whole raster pipe!
   mPipe.reset( new QgsRasterPipe( *layer->pipe() ) );
@@ -281,18 +281,18 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
       case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
         // in this mode we need to pass on the desired render temporal range to the data provider
-        if ( mPipe->provider()->temporalCapabilities() )
+        if ( QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = mPipe->provider()->temporalCapabilities() )
         {
-          mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
-          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
+          temporalCapabilities->setRequestedTemporalRange( rendererContext.temporalRange() );
+          temporalCapabilities->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
         }
         break;
     }
   }
-  else if ( mPipe->provider()->temporalCapabilities() )
+  else if ( QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = mPipe->provider()->temporalCapabilities() )
   {
-    mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
-    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
+    temporalCapabilities->setRequestedTemporalRange( QgsDateTimeRange() );
+    temporalCapabilities->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
   }
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );

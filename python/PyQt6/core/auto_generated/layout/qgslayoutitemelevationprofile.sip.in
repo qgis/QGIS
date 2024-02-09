@@ -40,7 +40,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QIcon icon() const;
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
     virtual QgsLayoutItem::Flags itemFlags() const;
 

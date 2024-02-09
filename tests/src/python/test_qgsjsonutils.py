@@ -55,7 +55,7 @@ class TestQgsJsonUtils(QgisTestCase):
             fields, codec)
         self.assertEqual(len(features), 1)
         self.assertFalse(features[0].geometry().isNull())
-        self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Type.Point)
         point = features[0].geometry().constGet()
         self.assertEqual(point.x(), 125.0)
         self.assertEqual(point.y(), 10.0)
@@ -67,13 +67,13 @@ class TestQgsJsonUtils(QgisTestCase):
             fields, codec)
         self.assertEqual(len(features), 2)
         self.assertFalse(features[0].geometry().isNull())
-        self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(features[0].geometry().wkbType(), QgsWkbTypes.Type.Point)
         point = features[0].geometry().constGet()
         self.assertEqual(point.x(), 125.0)
         self.assertEqual(point.y(), 10.0)
         self.assertEqual(features[0]['name'], "Dinagat Islands")
         self.assertFalse(features[1].geometry().isNull())
-        self.assertEqual(features[1].geometry().wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(features[1].geometry().wkbType(), QgsWkbTypes.Type.Point)
         point = features[1].geometry().constGet()
         self.assertEqual(point.x(), 110.0)
         self.assertEqual(point.y(), 20.0)
@@ -92,12 +92,12 @@ class TestQgsJsonUtils(QgisTestCase):
         # No milliseconds
         features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10'), fields)
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.ISODateWithMs), f"{date}22:00:10.000")
+        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), f"{date}22:00:10.000")
 
         # milliseconds
         features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10.123'), fields)
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.ISODateWithMs), f"{date}22:00:10.123")
+        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), f"{date}22:00:10.123")
 
     def testStringToFeatureListWithTimeProperty_regression44160(self):
         """Test that milliseconds and time zone information is parsed from time properties"""
@@ -110,12 +110,12 @@ class TestQgsJsonUtils(QgisTestCase):
         # No milliseconds
         features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10'), fields)
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.ISODateWithMs), "22:00:10.000")
+        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), "22:00:10.000")
 
         # milliseconds
         features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10.123'), fields)
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.ISODateWithMs), "22:00:10.123")
+        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), "22:00:10.123")
 
     def testStringToFields(self):
         """test retrieving fields from GeoJSON strings"""

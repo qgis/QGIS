@@ -70,7 +70,7 @@ class SelectByAttribute(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
 
     def initAlgorithm(self, config=None):
         self.operators = ['=',
@@ -93,7 +93,7 @@ class SelectByAttribute(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
                                                             self.tr('Input layer'),
-                                                            types=[QgsProcessing.TypeVector]))
+                                                            types=[QgsProcessing.SourceType.TypeVector]))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Selection attribute'),
                                                       parentLayerParameterName=self.INPUT))
@@ -152,13 +152,13 @@ class SelectByAttribute(QgisAlgorithm):
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
         if method == 0:
-            behavior = QgsVectorLayer.SetSelection
+            behavior = QgsVectorLayer.SelectBehavior.SetSelection
         elif method == 1:
-            behavior = QgsVectorLayer.AddToSelection
+            behavior = QgsVectorLayer.SelectBehavior.AddToSelection
         elif method == 2:
-            behavior = QgsVectorLayer.RemoveFromSelection
+            behavior = QgsVectorLayer.SelectBehavior.RemoveFromSelection
         elif method == 3:
-            behavior = QgsVectorLayer.IntersectSelection
+            behavior = QgsVectorLayer.SelectBehavior.IntersectSelection
 
         expression = QgsExpression(expression_string)
         if expression.hasParserError():

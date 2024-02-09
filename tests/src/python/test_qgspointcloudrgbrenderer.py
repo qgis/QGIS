@@ -21,7 +21,6 @@ from qgis.core import (
     QgsMapClippingRegion,
     QgsMapSettings,
     QgsMapUnitScale,
-    QgsMultiRenderChecker,
     QgsPointCloudLayer,
     QgsPointCloudRenderContext,
     QgsPointCloudRenderer,
@@ -72,15 +71,15 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertEqual(layer.renderer().redContrastEnhancement().minimumValue(), 0)
         self.assertEqual(layer.renderer().redContrastEnhancement().maximumValue(), 65535.0)
         self.assertEqual(layer.renderer().redContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         self.assertEqual(layer.renderer().greenContrastEnhancement().minimumValue(), 0)
         self.assertEqual(layer.renderer().greenContrastEnhancement().maximumValue(), 65535.0)
         self.assertEqual(layer.renderer().greenContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         self.assertEqual(layer.renderer().blueContrastEnhancement().minimumValue(), 0)
         self.assertEqual(layer.renderer().blueContrastEnhancement().maximumValue(), 65535.0)
         self.assertEqual(layer.renderer().blueContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
 
     def testBasic(self):
         renderer = QgsPointCloudRgbRenderer()
@@ -94,32 +93,32 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         redce = QgsContrastEnhancement()
         redce.setMinimumValue(100)
         redce.setMaximumValue(120)
-        redce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+        redce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchAndClipToMinimumMaximum)
         renderer.setRedContrastEnhancement(redce)
 
         greence = QgsContrastEnhancement()
         greence.setMinimumValue(130)
         greence.setMaximumValue(150)
-        greence.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        greence.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         renderer.setGreenContrastEnhancement(greence)
 
         bluece = QgsContrastEnhancement()
         bluece.setMinimumValue(170)
         bluece.setMaximumValue(190)
-        bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ClipToMinimumMaximum)
+        bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.ClipToMinimumMaximum)
         renderer.setBlueContrastEnhancement(bluece)
 
         renderer.setMaximumScreenError(18)
-        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderInches)
+        renderer.setMaximumScreenErrorUnit(QgsUnitTypes.RenderUnit.RenderInches)
         renderer.setPointSize(13)
-        renderer.setPointSizeUnit(QgsUnitTypes.RenderPoints)
+        renderer.setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         renderer.setPointSizeMapUnitScale(QgsMapUnitScale(1000, 2000))
 
         rr = renderer.clone()
         self.assertEqual(rr.maximumScreenError(), 18)
-        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(rr.maximumScreenErrorUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         self.assertEqual(rr.pointSize(), 13)
-        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(rr.pointSizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(rr.pointSizeMapUnitScale().minScale, 1000)
         self.assertEqual(rr.pointSizeMapUnitScale().maxScale, 2000)
 
@@ -129,24 +128,24 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertEqual(rr.redContrastEnhancement().minimumValue(), 100)
         self.assertEqual(rr.redContrastEnhancement().maximumValue(), 120)
         self.assertEqual(rr.redContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchAndClipToMinimumMaximum)
         self.assertEqual(rr.greenContrastEnhancement().minimumValue(), 130)
         self.assertEqual(rr.greenContrastEnhancement().maximumValue(), 150)
         self.assertEqual(rr.greenContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         self.assertEqual(rr.blueContrastEnhancement().minimumValue(), 170)
         self.assertEqual(rr.blueContrastEnhancement().maximumValue(), 190)
         self.assertEqual(rr.blueContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.ClipToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.ClipToMinimumMaximum)
 
         doc = QDomDocument("testdoc")
         elem = renderer.save(doc, QgsReadWriteContext())
 
         r2 = QgsPointCloudRgbRenderer.create(elem, QgsReadWriteContext())
         self.assertEqual(r2.maximumScreenError(), 18)
-        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderInches)
+        self.assertEqual(r2.maximumScreenErrorUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         self.assertEqual(r2.pointSize(), 13)
-        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(r2.pointSizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(r2.pointSizeMapUnitScale().minScale, 1000)
         self.assertEqual(r2.pointSizeMapUnitScale().maxScale, 2000)
 
@@ -156,15 +155,15 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertEqual(r2.redContrastEnhancement().minimumValue(), 100)
         self.assertEqual(r2.redContrastEnhancement().maximumValue(), 120)
         self.assertEqual(r2.redContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchAndClipToMinimumMaximum)
         self.assertEqual(r2.greenContrastEnhancement().minimumValue(), 130)
         self.assertEqual(r2.greenContrastEnhancement().maximumValue(), 150)
         self.assertEqual(r2.greenContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.StretchToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         self.assertEqual(r2.blueContrastEnhancement().minimumValue(), 170)
         self.assertEqual(r2.blueContrastEnhancement().maximumValue(), 190)
         self.assertEqual(r2.blueContrastEnhancement().contrastEnhancementAlgorithm(),
-                         QgsContrastEnhancement.ClipToMinimumMaximum)
+                         QgsContrastEnhancement.ContrastEnhancementAlgorithm.ClipToMinimumMaximum)
 
     def testUsedAttributes(self):
         renderer = QgsPointCloudRgbRenderer()
@@ -183,7 +182,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -202,8 +201,8 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(3)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
-        layer.renderer().setPointSymbol(QgsPointCloudRenderer.Circle)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        layer.renderer().setPointSymbol(QgsPointCloudRenderer.PointSymbol.Circle)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -222,7 +221,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -241,24 +240,24 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         redce = QgsContrastEnhancement()
         redce.setMinimumValue(100)
         redce.setMaximumValue(120)
-        redce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        redce.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         layer.renderer().setRedContrastEnhancement(redce)
 
         greence = QgsContrastEnhancement()
         greence.setMinimumValue(130)
         greence.setMaximumValue(150)
-        greence.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        greence.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         layer.renderer().setGreenContrastEnhancement(greence)
 
         bluece = QgsContrastEnhancement()
         bluece.setMinimumValue(170)
         bluece.setMaximumValue(190)
-        bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.StretchToMinimumMaximum)
+        bluece.setContrastEnhancementAlgorithm(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         layer.renderer().setBlueContrastEnhancement(bluece)
 
         mapsettings = QgsMapSettings()
@@ -278,7 +277,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         layer.setOpacity(0.5)
 
@@ -299,9 +298,9 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
-        layer.setBlendMode(QPainter.CompositionMode_ColorBurn)
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_ColorBurn)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -320,7 +319,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(0.05)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMapUnits)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -339,7 +338,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -359,7 +358,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(2)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
@@ -387,7 +386,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.TopToBottom)
 
         mapsettings = QgsMapSettings()
@@ -407,7 +406,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
 
         mapsettings = QgsMapSettings()
@@ -427,7 +426,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setRenderAsTriangles(True)
 
         mapsettings = QgsMapSettings()
@@ -447,7 +446,7 @@ class TestQgsPointCloudRgbRenderer(QgisTestCase):
         self.assertTrue(layer.isValid())
 
         layer.renderer().setPointSize(6)
-        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
         layer.renderer().setRenderAsTriangles(True)
         layer.renderer().setHorizontalTriangleFilter(True)
         layer.renderer().setHorizontalTriangleFilterThreshold(10.0)

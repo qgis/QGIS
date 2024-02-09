@@ -270,7 +270,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     }
     else
     {
-      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt( Qgis::CrsWktVariant::Preferred ) );
     }
     query.addQueryItem( QStringLiteral( "crs" ), crsDef );
   }
@@ -779,9 +779,9 @@ bool QgsMemoryProvider::createSpatialIndex()
   return true;
 }
 
-QgsFeatureSource::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
+Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
 {
-  return mSpatialIndex ? SpatialIndexPresent : SpatialIndexNotPresent;
+  return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
 }
 
 QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const

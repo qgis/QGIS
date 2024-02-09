@@ -1109,8 +1109,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.4
      */
-    FeatureAvailability hasFeatures() const FINAL;
-
+    Qgis::FeatureAvailability hasFeatures() const FINAL;
 
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 
@@ -2309,7 +2308,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
-    QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
+    QVariant aggregate( Qgis::Aggregate aggregate,
                         const QString &fieldOrExpression,
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
@@ -2552,7 +2551,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
-    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
+    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
@@ -2984,8 +2983,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings = nullptr;
 
-    mutable bool mValidExtent = false;
-    mutable bool mLazyExtent = true;
+    mutable bool mValidExtent2D = false;
+    mutable bool mLazyExtent2D = true;
+    mutable bool mValidExtent3D = false;
+    mutable bool mLazyExtent3D = true;
 
     //! Auxiliary layer
     std::unique_ptr<QgsAuxiliaryLayer> mAuxiliaryLayer;
@@ -3007,7 +3008,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mCommitChangesActive = false;
 
     bool mReadExtentFromXml;
-    QgsRectangle mXmlExtent;
+    QgsRectangle mXmlExtent2D;
+    QgsBox3D mXmlExtent3D;
 
     QgsFeatureIds mDeletedFids;
 

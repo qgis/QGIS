@@ -98,9 +98,11 @@ done:
 %Import QtPrintSupport/QtPrintSupportmod.sip
 %Import QtWidgets/QtWidgetsmod.sip
 %Import QtPositioning/QtPositioningmod.sip
+%Import QtSerialPort/QtSerialPortmod.sip
 
 %Feature HAVE_GUI
 %Feature HAVE_QTSERIALPORT
+%Feature HAVE_QTPRINTER
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
 

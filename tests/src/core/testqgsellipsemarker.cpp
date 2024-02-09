@@ -33,9 +33,6 @@
 #include "qgsproperty.h"
 #include "qgsmarkersymbol.h"
 
-//qgis test includes
-#include "qgsrenderchecker.h"
-
 /**
  * \ingroup UnitTests
  * This is a unit test for ellipse marker symbol types.
@@ -45,7 +42,7 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsEllipseMarkerSymbol() : QgsTest( QStringLiteral( "Ellipse Marker Tests" ) ) {}
+    TestQgsEllipseMarkerSymbol() : QgsTest( QStringLiteral( "Ellipse Marker Tests" ), QStringLiteral( "symbol_ellipsemarker" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -77,7 +74,6 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
   private:
     bool mTestHasError =  false ;
 
-    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPointsLayer = nullptr;
     QgsEllipseSymbolLayer *mEllipseMarkerLayer = nullptr;
@@ -136,7 +132,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker", "ellipsemarker", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolThirdCircle()
@@ -147,7 +146,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolThirdCircle()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker_thirdcircle" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_thirdcircle", "ellipsemarker_thirdcircle", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolQuarterCircle()
@@ -158,7 +160,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolQuarterCircle()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker_quartercircle" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_quartercircle", "ellipsemarker_quartercircle", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolPentagon()
@@ -169,7 +174,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolPentagon()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker_pentagon" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_pentagon", "ellipsemarker_pentagon", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolHexagon()
@@ -180,7 +188,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolHexagon()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker_hexagon" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_hexagon", "ellipsemarker_hexagon", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolOctagon()
@@ -191,7 +202,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolOctagon()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker_octagon" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_octagon", "ellipsemarker_octagon", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolStar()
@@ -202,7 +216,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolStar()
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
-  QVERIFY( imageCheck( "ellipsemarker_star" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_star", "ellipsemarker_star", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolSize()
@@ -227,7 +244,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolBevelJoin()
   mEllipseMarkerLayer->setSymbolWidth( 20 );
   mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
-  QVERIFY( imageCheck( "ellipsemarker_beveljoin" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_beveljoin", "ellipsemarker_beveljoin", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolMiterJoin()
@@ -239,7 +259,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolMiterJoin()
   mEllipseMarkerLayer->setSymbolWidth( 20 );
   mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
-  QVERIFY( imageCheck( "ellipsemarker_miterjoin" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_miterjoin", "ellipsemarker_miterjoin", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
@@ -251,7 +274,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
   mEllipseMarkerLayer->setSymbolWidth( 20 );
   mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
-  QVERIFY( imageCheck( "ellipsemarker_roundjoin" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_roundjoin", "ellipsemarker_roundjoin", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolCapStyle()
@@ -263,7 +289,10 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolCapStyle()
   mEllipseMarkerLayer->setSymbolHeight( 15 );
   mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenCapStyle( Qt::RoundCap );
-  QVERIFY( imageCheck( "ellipsemarker_roundcap" ) );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "ellipsemarker_roundcap", "ellipsemarker_roundcap", mMapSettings );
 }
 
 void TestQgsEllipseMarkerSymbol::selected()
@@ -277,7 +306,9 @@ void TestQgsEllipseMarkerSymbol::selected()
   mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
 
   mpPointsLayer->selectAll();
-  const bool res = imageCheck( "ellipsemarker_selected" );
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  const bool res = QGSRENDERMAPSETTINGSCHECK( "ellipsemarker_selected", "ellipsemarker_selected", mMapSettings );
   mpPointsLayer->removeSelection();
   QVERIFY( res );
 }
@@ -289,11 +320,13 @@ void TestQgsEllipseMarkerSymbol::bounds()
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
-  const bool result = imageCheck( QStringLiteral( "ellipsemarker_bounds" ) );
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( "ellipsemarker_bounds", "ellipsemarker_bounds", mMapSettings );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, false );
   QVERIFY( result );
 }
@@ -305,14 +338,16 @@ void TestQgsEllipseMarkerSymbol::opacityWithDataDefinedColor()
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
   mMarkerSymbol->setOpacity( 0.5 );
 
-  const bool result = imageCheck( QStringLiteral( "ellipsemarker_opacityddcolor" ) );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( "ellipsemarker_opacityddcolor", "ellipsemarker_opacityddcolor", mMapSettings );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty() );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty() );
   mMarkerSymbol->setOpacity( 1.0 );
   QVERIFY( result );
 }
@@ -324,36 +359,18 @@ void TestQgsEllipseMarkerSymbol::dataDefinedOpacity()
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
-  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
 
-  const bool result = imageCheck( QStringLiteral( "ellipsemarker_ddopacity" ) );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
-  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty() );
-  QVERIFY( result );
-}
-
-//
-// Private helper functions not called directly by CTest
-//
-
-
-bool TestQgsEllipseMarkerSymbol::imageCheck( const QString &testType )
-{
-  //use the QgsRenderChecker test utility class to
-  //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
-  QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "symbol_ellipsemarker" ) );
-  myChecker.setControlName( "expected_" + testType );
-  myChecker.setMapSettings( mMapSettings );
-  const bool myResultFlag = myChecker.runTest( testType );
-  mReport += myChecker.report();
-  return myResultFlag;
+  const bool result = QGSRENDERMAPSETTINGSCHECK( "ellipsemarker_ddopacity", "ellipsemarker_ddopacity", mMapSettings );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty() );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty() );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty() );
+  QVERIFY( result );
 }
 
 QGSTEST_MAIN( TestQgsEllipseMarkerSymbol )

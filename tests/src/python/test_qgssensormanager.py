@@ -44,7 +44,7 @@ class TestSensor(QgsIODeviceSensor):
         self.initIODevice(self.buffer)
 
     def handleConnect(self):
-        self.buffer.open(QIODevice.ReadWrite)
+        self.buffer.open(QIODevice.OpenModeFlag.ReadWrite)
         self.setStatus(Qgis.DeviceConnectionStatus.Connected)
 
     def handleDisconnect(self):
@@ -69,7 +69,7 @@ class TestQgsSensorManager(QgisTestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsSensorManager.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsSensorManager")
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
         cls.manager = QgsProject.instance().sensorManager()

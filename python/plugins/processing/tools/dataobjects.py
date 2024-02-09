@@ -67,7 +67,9 @@ def createContext(feedback=None):
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     if invalid_features_method is None:
-        invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
+        invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck.GeometryAbortOnInvalid
+    else:
+        invalid_features_method = QgsFeatureRequest.InvalidGeometryCheck(int(invalid_features_method))
     context.setInvalidGeometryCheck(invalid_features_method)
 
     settings = QgsSettings()
@@ -142,9 +144,9 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
             if style is None:
-                if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
+                if qgslayer.geometryType() == QgsWkbTypes.GeometryType.PointGeometry:
                     style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-                elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
+                elif qgslayer.geometryType() == QgsWkbTypes.GeometryType.LineGeometry:
                     style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
                 else:
                     style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
@@ -191,10 +193,10 @@ def getRasterSublayer(path, param):
 
             # Use QgsSublayersDialog
             # Would be good if QgsSublayersDialog had an option to allow only one sublayer to be selected
-            chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.Gdal, "gdal")
+            chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.ProviderType.Gdal, "gdal")
             chooseSublayersDialog.populateLayerTable(layers)
 
-            if chooseSublayersDialog.exec_():
+            if chooseSublayersDialog.exec():
                 return layer.subLayers()[chooseSublayersDialog.selectionIndexes()[0]]
             else:
                 # If user pressed cancel then just return the input path

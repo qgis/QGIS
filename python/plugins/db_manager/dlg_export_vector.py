@@ -143,7 +143,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
                                         self.tr("Invalid target srid: must be an integer"))
                 return
 
-        with OverrideCursor(Qt.WaitCursor):
+        with OverrideCursor(Qt.CursorShape.WaitCursor):
             # store current input layer crs, so I can restore it later
             prevInCrs = self.inLayer.crs()
             try:

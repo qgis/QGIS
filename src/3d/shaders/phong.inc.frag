@@ -15,7 +15,8 @@ vec4 phongFunction(const in vec4 ambient,
     adsModel(worldPosition, worldNormal, worldView, shin, diffuseColor, specularColor);
 
     // Combine spec with ambient+diffuse for final fragment color
-    vec3 color = (ambient.rgb + diffuseColor) * diffuse.rgb
+    vec3 color = ambient.rgb
+               + diffuseColor * diffuse.rgb
                + specularColor * specular.rgb;
 
     return vec4(color, diffuse.a);

@@ -63,10 +63,10 @@ QgsSettingsRegistryApp::~QgsSettingsRegistryApp()
 {
   // TODO QGIS 4.0: Remove
   // backward compatibility for settings
-  QgsIdentifyResultsDialog::settingHideNullValues->copyValueToKey( QStringLiteral( "Map/hideNullValues" ) );
-  QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueToKey( QStringLiteral( "plugins/automatically-check-for-updates" ) );
-  QgsPluginManager::settingsAllowExperimental->copyValueToKey( QStringLiteral( "app/plugin_installer/allowExperimental" ) );
-  QgsPluginManager::settingsAllowDeprecated->copyValueToKey( QStringLiteral( "app/plugin_installer/allowDeprecated" ) );
+  QgsIdentifyResultsDialog::settingHideNullValues->copyValueToKeyIfChanged( QStringLiteral( "Map/hideNullValues" ) );
+  QgsPluginManager::settingsAutomaticallyCheckForPluginUpdates->copyValueToKeyIfChanged( QStringLiteral( "plugins/automatically-check-for-updates" ) );
+  QgsPluginManager::settingsAllowExperimental->copyValueToKeyIfChanged( QStringLiteral( "app/plugin_installer/allowExperimental" ) );
+  QgsPluginManager::settingsAllowDeprecated->copyValueToKeyIfChanged( QStringLiteral( "app/plugin_installer/allowDeprecated" ) );
   QgsPluginManager::settingsCheckOnStartLastDate->copyValueFromKey( QStringLiteral( "app/plugin_installer/checkOnStartLastDate" ), true );
   QgsPluginManager::settingsSeenPlugins->copyValueFromKey( QStringLiteral( "app/plugin_installer/seen_plugins" ), true );
   QgsPluginManager::settingsLastZipDirectory->copyValueFromKey( QStringLiteral( "app/plugin_installer/lastZipDirectory" ), true );

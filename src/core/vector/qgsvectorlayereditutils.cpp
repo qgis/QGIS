@@ -171,7 +171,7 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
   {
     //check all intersecting features
     QgsRectangle bBox = ring->boundingBox();
-    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   }
 
   //find first valid feature we can add the ring to
@@ -422,7 +422,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
       }
     }
 
-    features = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+    features = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   }
 
   QgsVectorLayerUtils::QgsFeaturesDataList featuresDataToAdd;
@@ -683,7 +683,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
       }
     }
 
-    fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+    fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   }
 
   QgsFeature feat;
@@ -806,7 +806,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   QgsFeature f;
   QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( searchRect )
-                           .setFlags( QgsFeatureRequest::ExactIntersect )
+                           .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
                            .setNoAttributes() );
 
   QMap<QgsFeatureId, QgsGeometry> features;

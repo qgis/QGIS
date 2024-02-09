@@ -35,6 +35,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgslayertreeview.h"
 #include "qgsmaplayeraction.h"
+#include "qgsunittypes.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -53,7 +54,6 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   identifyMenu()->addCustomAction( attrTableAction );
   mSelectionHandler = new QgsMapToolSelectionHandler( canvas, QgsMapToolSelectionHandler::SelectSimple );
   connect( mSelectionHandler, &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolIdentifyAction::identifyFromGeometry );
-
 }
 
 QgsMapToolIdentifyAction::~QgsMapToolIdentifyAction()
@@ -102,7 +102,6 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   tableDialog->setFilterExpression( filter );
   tableDialog->show();
 }
-
 
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
@@ -234,12 +233,24 @@ void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, Qg
 
 Qgis::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
-  return QgsProject::instance()->distanceUnits();
+  Qgis::DistanceUnit units = QgsProject::instance()->distanceUnits();
+  // unknown units used as a placeholder for map units
+  if ( units == Qgis::DistanceUnit::Unknown )
+  {
+    return QgsProject::instance()->crs().mapUnits();
+  }
+  return units;
 }
 
 Qgis::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
 {
-  return QgsProject::instance()->areaUnits();
+  Qgis::AreaUnit units = QgsProject::instance()->areaUnits();
+  // unknown units used as a placeholder for map units
+  if ( units == Qgis::AreaUnit::Unknown )
+  {
+    return QgsUnitTypes::distanceToAreaUnit( QgsProject::instance()->crs().mapUnits() );
+  }
+  return units;
 }
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureStore )
@@ -262,7 +273,6 @@ void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
   }
 }
 
-
 void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 {
   if ( mSelectionHandler->keyReleaseEvent( e ) )
@@ -270,7 +280,6 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
 
   QgsMapTool::keyReleaseEvent( e );
 }
-
 
 void QgsMapToolIdentifyAction::showIdentifyResults( const QList<IdentifyResult> &identifyResults )
 {

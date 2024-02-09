@@ -45,7 +45,7 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Text attribute to convert to float'),
                                                       parentLayerParameterName='INPUT',
-                                                      type=QgsProcessingParameterField.String
+                                                      type=QgsProcessingParameterField.DataType.String
                                                       ))
 
     def name(self):
@@ -58,7 +58,7 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         return self.tr('Float from text')
 
     def inputLayerTypes(self):
-        return [QgsProcessing.TypeVector]
+        return [QgsProcessing.SourceType.TypeVector]
 
     def outputFields(self, inputFields):
         self.field_idx = inputFields.lookupField(self.field_name)
@@ -74,7 +74,7 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         return False
 
     def sourceFlags(self):
-        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+        return QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks
 
     def processFeature(self, feature, context, feedback):
         value = feature[self.field_idx]

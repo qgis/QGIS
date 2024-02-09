@@ -17,6 +17,7 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgis.h"
 #include "qgsterrainprovider.h"
+#include "qgsrasterbandstats.h"
 
 #include <QDomElement>
 

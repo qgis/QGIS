@@ -1066,7 +1066,7 @@ tests:
         type: regex
         rules:
           - 'Total pixel count: 224'
-          - 'NODATA pixel count: 104'
+          - 'NoData pixel count: 104'
           - '826</td><td>4</td><td>411.2757251916548'
           - '837</td><td>6</td><td>616.9135877874822'
           - '843</td><td>6</td><td>616.9135877874822'

@@ -46,7 +46,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   protocolGroupBox->hide();
 
   QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs" ).split( ';' );
-  protocolTypes += QStringLiteral( "Microsoft Azure Blob,vsiaz;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift" ).split( ';' );
+  protocolTypes += QStringLiteral( "Microsoft Azure Blob,vsiaz;Microsoft Azure Data Lake Storage,vsiadls;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift" ).split( ';' );
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
     QString protocol = protocolTypes.at( i );
@@ -99,6 +99,7 @@ bool QgsGdalSourceSelect::isProtocolCloudType()
   return ( cmbProtocolTypes->currentText() == QLatin1String( "AWS S3" ) ||
            cmbProtocolTypes->currentText() == QLatin1String( "Google Cloud Storage" ) ||
            cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Blob" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Data Lake Storage" ) ||
            cmbProtocolTypes->currentText() == QLatin1String( "Alibaba Cloud OSS" ) ||
            cmbProtocolTypes->currentText() == QLatin1String( "OpenStack Swift Object Storage" ) );
 }

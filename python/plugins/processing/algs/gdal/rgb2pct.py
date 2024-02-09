@@ -47,7 +47,7 @@ class rgb2pct(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterNumber(self.NCOLORS,
                                                        self.tr('Number of colors'),
-                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       type=QgsProcessingParameterNumber.Type.Integer,
                                                        minValue=0,
                                                        maxValue=255,
                                                        defaultValue=2))

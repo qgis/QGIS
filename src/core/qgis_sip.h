@@ -151,6 +151,11 @@
 #define SIP_PYARGREMOVE
 
 /*
+ * remove argument in SIP method only for Qt version >= 6
+ */
+#define SIP_PYARGREMOVE6
+
+/*
  * rename argument in SIP method
  */
 #define SIP_PYARGRENAME(pyname)
@@ -268,8 +273,19 @@
 #define SIP_MONKEYPATCH_COMPAT_NAME(FORMERNAME)
 
 /*
+ * Directive to define the base type for a enum
+ */
+#define SIP_ENUM_BASETYPE(type)
+
+/*
  * Directive to define a Python property;
  */
 #define SIP_PROPERTY(name,getter,setter)
+
+/*
+ * Directive to indicate that following code is only available with Qt 5 version
+ */
+#define SIP_PYQT5_RUN
+
 
 #endif // QGIS_SIP_H

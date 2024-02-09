@@ -71,15 +71,15 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         self.assertTrue(props.showMarkerSymbolInSurfacePlots())
         self.assertEqual(props.elevationLimit(), 909)
 
-        props.dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.ExtrusionHeight, QgsProperty.fromExpression('1*5'))
-        self.assertEqual(props.dataDefinedProperties().property(QgsMapLayerElevationProperties.ExtrusionHeight).asExpression(), '1*5')
+        props.dataDefinedProperties().setProperty(QgsMapLayerElevationProperties.Property.ExtrusionHeight, QgsProperty.fromExpression('1*5'))
+        self.assertEqual(props.dataDefinedProperties().property(QgsMapLayerElevationProperties.Property.ExtrusionHeight).asExpression(), '1*5')
         properties = QgsPropertyCollection()
-        properties.setProperty(QgsMapLayerElevationProperties.ZOffset, QgsProperty.fromExpression('9'))
+        properties.setProperty(QgsMapLayerElevationProperties.Property.ZOffset, QgsProperty.fromExpression('9'))
         props.setDataDefinedProperties(properties)
         self.assertFalse(
-            props.dataDefinedProperties().isActive(QgsMapLayerElevationProperties.ExtrusionHeight))
+            props.dataDefinedProperties().isActive(QgsMapLayerElevationProperties.Property.ExtrusionHeight))
         self.assertEqual(
-            props.dataDefinedProperties().property(QgsMapLayerElevationProperties.ZOffset).asExpression(),
+            props.dataDefinedProperties().property(QgsMapLayerElevationProperties.Property.ZOffset).asExpression(),
             '9')
 
         sym = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
@@ -117,7 +117,7 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         self.assertEqual(props2.profileMarkerSymbol().color().name(), '#ff1122')
 
         self.assertEqual(
-            props2.dataDefinedProperties().property(QgsMapLayerElevationProperties.ZOffset).asExpression(),
+            props2.dataDefinedProperties().property(QgsMapLayerElevationProperties.Property.ZOffset).asExpression(),
             '9')
 
         props_clone = props.clone()
@@ -138,7 +138,7 @@ class TestQgsVectorLayerElevationProperties(QgisTestCase):
         self.assertEqual(props_clone.profileMarkerSymbol().color().name(), '#ff1122')
 
         self.assertEqual(
-            props_clone.dataDefinedProperties().property(QgsMapLayerElevationProperties.ZOffset).asExpression(),
+            props_clone.dataDefinedProperties().property(QgsMapLayerElevationProperties.Property.ZOffset).asExpression(),
             '9')
 
     def test_defaults(self):

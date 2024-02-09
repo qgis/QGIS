@@ -15,9 +15,6 @@
 
 #include "qgsprocessingparameterfieldmap.h"
 
-#include "qgsvectorlayer.h"
-
-
 QgsProcessingParameterFieldMapping::QgsProcessingParameterFieldMapping( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
@@ -70,7 +67,7 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
 {
   switch ( outputType )
   {
-    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterFieldMapping('%1', %2" )
                      .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );

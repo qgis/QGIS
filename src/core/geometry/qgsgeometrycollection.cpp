@@ -73,43 +73,6 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
-bool QgsGeometryCollection::operator==( const QgsAbstractGeometry &other ) const
-{
-  const QgsGeometryCollection *otherCollection = qgsgeometry_cast< const QgsGeometryCollection * >( &other );
-  if ( !otherCollection )
-    return false;
-
-  if ( mWkbType != otherCollection->mWkbType )
-    return false;
-
-  if ( mGeometries.count() != otherCollection->mGeometries.count() )
-    return false;
-
-  for ( int i = 0; i < mGeometries.count(); ++i )
-  {
-    QgsAbstractGeometry *g1 = mGeometries.at( i );
-    QgsAbstractGeometry *g2 = otherCollection->mGeometries.at( i );
-
-    // Quick check if the geometries are exactly the same
-    if ( g1 != g2 )
-    {
-      if ( !g1 || !g2 )
-        return false;
-
-      // Slower check, compare the contents of the geometries
-      if ( *g1 != *g2 )
-        return false;
-    }
-  }
-
-  return true;
-}
-
-bool QgsGeometryCollection::operator!=( const QgsAbstractGeometry &other ) const
-{
-  return !operator==( other );
-}
-
 QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
 {
   auto result = std::make_unique< QgsGeometryCollection >();

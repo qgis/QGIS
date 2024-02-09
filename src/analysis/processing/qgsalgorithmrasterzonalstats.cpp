@@ -72,7 +72,7 @@ void QgsRasterLayerZonalStatsAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "WIDTH_IN_PIXELS" ), QObject::tr( "Width in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_PIXEL_COUNT" ), QObject::tr( "NODATA pixel count" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NODATA_PIXEL_COUNT" ), QObject::tr( "NoData pixel count" ) ) );
 }
 
 QString QgsRasterLayerZonalStatsAlgorithm::shortDescription() const
@@ -85,7 +85,7 @@ QString QgsRasterLayerZonalStatsAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates statistics for a raster layer's values, categorized by zones defined in another raster layer.\n\n"
                       "If the reference layer parameter is set to \"Input layer\", then zones are determined by sampling the zone raster layer value at the centroid of each pixel from the source raster layer.\n\n"
                       "If the reference layer parameter is set to \"Zones layer\", then the input raster layer will be sampled at the centroid of each pixel from the zones raster layer.\n\n"
-                      "If either the source raster layer or the zone raster layer value is NODATA for a pixel, that pixel's value will be skipped and not including in the calculated statistics." );
+                      "If either the source raster layer or the zone raster layer value is NoData for a pixel, that pixel's value will be skipped and not included in the calculated statistics." );
 }
 
 QgsRasterLayerZonalStatsAlgorithm *QgsRasterLayerZonalStatsAlgorithm::createInstance() const
@@ -194,7 +194,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   {
     // only calculate cheap stats-- we cannot calculate stats which require holding values in memory -- because otherwise we'll end
     // up trying to store EVERY pixel value from the input in memory
-    QgsStatisticalSummary s{ QgsStatisticalSummary::Count | QgsStatisticalSummary::Sum | QgsStatisticalSummary::Min | QgsStatisticalSummary::Max | QgsStatisticalSummary::Mean };
+    QgsStatisticalSummary s{ Qgis::Statistic::Count | Qgis::Statistic::Sum | Qgis::Statistic::Min | Qgis::Statistic::Max | Qgis::Statistic::Mean };
   };
   QHash<double, StatCalculator > zoneStats;
   qgssize noDataCount = 0;

@@ -38,6 +38,9 @@ Constructor for an empty geometry collection.
 
     virtual bool operator!=( const QgsAbstractGeometry &other ) const;
 
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
 
     virtual QgsGeometryCollection *clone() const /Factory/;
 

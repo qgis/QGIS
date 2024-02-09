@@ -39,7 +39,7 @@ class TestQgsAggregateCalculator(QgisTestCase):
         self.assertEqual(a.layer(), None)
 
         # should not crash
-        val, ok = a.calculate(QgsAggregateCalculator.Sum, 'field')
+        val, ok = a.calculate(QgsAggregateCalculator.Aggregate.Sum, 'field')
         self.assertFalse(ok)
 
         layer = QgsVectorLayer("Point?field=fldint:integer&field=flddbl:double",
@@ -76,7 +76,7 @@ class TestQgsAggregateCalculator(QgisTestCase):
 
         agg = QgsAggregateCalculator(layer)
 
-        val, ok = agg.calculate(QgsAggregateCalculator.GeometryCollect, '$geometry')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.GeometryCollect, '$geometry')
         self.assertTrue(ok)
         expwkt = "MultiPoint ((0 0), (1 1), (2 2))"
         wkt = val.asWkt()
@@ -102,36 +102,36 @@ class TestQgsAggregateCalculator(QgisTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        tests = [[QgsAggregateCalculator.Count, 'fldint', 6],
-                 [QgsAggregateCalculator.Count, 'flddbl', 6],
-                 [QgsAggregateCalculator.Sum, 'fldint', 24],
-                 [QgsAggregateCalculator.Sum, 'flddbl', 37.5],
-                 [QgsAggregateCalculator.Mean, 'fldint', 4],
-                 [QgsAggregateCalculator.Mean, 'flddbl', 6.25],
-                 [QgsAggregateCalculator.StDev, 'fldint', 2.0816],
-                 [QgsAggregateCalculator.StDev, 'flddbl', 1.7969],
-                 [QgsAggregateCalculator.StDevSample, 'fldint', 2.2803],
-                 [QgsAggregateCalculator.StDevSample, 'flddbl', 1.9685],
-                 [QgsAggregateCalculator.Min, 'fldint', 2],
-                 [QgsAggregateCalculator.Min, 'flddbl', 3.5],
-                 [QgsAggregateCalculator.Max, 'fldint', 8],
-                 [QgsAggregateCalculator.Max, 'flddbl', 9],
-                 [QgsAggregateCalculator.Range, 'fldint', 6],
-                 [QgsAggregateCalculator.Range, 'flddbl', 5.5],
-                 [QgsAggregateCalculator.Median, 'fldint', 3.5],
-                 [QgsAggregateCalculator.Median, 'flddbl', 6.25],
-                 [QgsAggregateCalculator.CountDistinct, 'fldint', 5],
-                 [QgsAggregateCalculator.CountDistinct, 'flddbl', 6],
-                 [QgsAggregateCalculator.CountMissing, 'fldint', 1],
-                 [QgsAggregateCalculator.CountMissing, 'flddbl', 1],
-                 [QgsAggregateCalculator.FirstQuartile, 'fldint', 2],
-                 [QgsAggregateCalculator.FirstQuartile, 'flddbl', 5.0],
-                 [QgsAggregateCalculator.ThirdQuartile, 'fldint', 5.0],
-                 [QgsAggregateCalculator.ThirdQuartile, 'flddbl', 7.5],
-                 [QgsAggregateCalculator.InterQuartileRange, 'fldint', 3.0],
-                 [QgsAggregateCalculator.InterQuartileRange, 'flddbl', 2.5],
-                 [QgsAggregateCalculator.ArrayAggregate, 'fldint', int_values],
-                 [QgsAggregateCalculator.ArrayAggregate, 'flddbl', dbl_values],
+        tests = [[QgsAggregateCalculator.Aggregate.Count, 'fldint', 6],
+                 [QgsAggregateCalculator.Aggregate.Count, 'flddbl', 6],
+                 [QgsAggregateCalculator.Aggregate.Sum, 'fldint', 24],
+                 [QgsAggregateCalculator.Aggregate.Sum, 'flddbl', 37.5],
+                 [QgsAggregateCalculator.Aggregate.Mean, 'fldint', 4],
+                 [QgsAggregateCalculator.Aggregate.Mean, 'flddbl', 6.25],
+                 [QgsAggregateCalculator.Aggregate.StDev, 'fldint', 2.0816],
+                 [QgsAggregateCalculator.Aggregate.StDev, 'flddbl', 1.7969],
+                 [QgsAggregateCalculator.Aggregate.StDevSample, 'fldint', 2.2803],
+                 [QgsAggregateCalculator.Aggregate.StDevSample, 'flddbl', 1.9685],
+                 [QgsAggregateCalculator.Aggregate.Min, 'fldint', 2],
+                 [QgsAggregateCalculator.Aggregate.Min, 'flddbl', 3.5],
+                 [QgsAggregateCalculator.Aggregate.Max, 'fldint', 8],
+                 [QgsAggregateCalculator.Aggregate.Max, 'flddbl', 9],
+                 [QgsAggregateCalculator.Aggregate.Range, 'fldint', 6],
+                 [QgsAggregateCalculator.Aggregate.Range, 'flddbl', 5.5],
+                 [QgsAggregateCalculator.Aggregate.Median, 'fldint', 3.5],
+                 [QgsAggregateCalculator.Aggregate.Median, 'flddbl', 6.25],
+                 [QgsAggregateCalculator.Aggregate.CountDistinct, 'fldint', 5],
+                 [QgsAggregateCalculator.Aggregate.CountDistinct, 'flddbl', 6],
+                 [QgsAggregateCalculator.Aggregate.CountMissing, 'fldint', 1],
+                 [QgsAggregateCalculator.Aggregate.CountMissing, 'flddbl', 1],
+                 [QgsAggregateCalculator.Aggregate.FirstQuartile, 'fldint', 2],
+                 [QgsAggregateCalculator.Aggregate.FirstQuartile, 'flddbl', 5.0],
+                 [QgsAggregateCalculator.Aggregate.ThirdQuartile, 'fldint', 5.0],
+                 [QgsAggregateCalculator.Aggregate.ThirdQuartile, 'flddbl', 7.5],
+                 [QgsAggregateCalculator.Aggregate.InterQuartileRange, 'fldint', 3.0],
+                 [QgsAggregateCalculator.Aggregate.InterQuartileRange, 'flddbl', 2.5],
+                 [QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldint', int_values],
+                 [QgsAggregateCalculator.Aggregate.ArrayAggregate, 'flddbl', dbl_values],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -144,8 +144,8 @@ class TestQgsAggregateCalculator(QgisTestCase):
                 self.assertAlmostEqual(val, t[2], 3)
 
         # bad tests - the following stats should not be calculatable for numeric fields
-        for t in [QgsAggregateCalculator.StringMinimumLength,
-                  QgsAggregateCalculator.StringMaximumLength]:
+        for t in [QgsAggregateCalculator.Aggregate.StringMinimumLength,
+                  QgsAggregateCalculator.Aggregate.StringMaximumLength]:
             val, ok = agg.calculate(t, 'fldint')
             self.assertFalse(ok)
             val, ok = agg.calculate(t, 'flddbl')
@@ -153,16 +153,16 @@ class TestQgsAggregateCalculator(QgisTestCase):
 
         # with order by
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldint')
         self.assertEqual(val, [4, 2, 3, 2, 5, NULL, 8])
         params = QgsAggregateCalculator.AggregateParameters()
         params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldint')])
         agg.setParameters(params)
-        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldint')
         self.assertEqual(val, [2, 2, 3, 4, 5, 8, NULL])
         params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('flddbl')])
         agg.setParameters(params)
-        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldint')
         self.assertEqual(val, [2, 2, 4, 8, 3, 5, NULL])
 
     def testString(self):
@@ -180,14 +180,14 @@ class TestQgsAggregateCalculator(QgisTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        tests = [[QgsAggregateCalculator.Count, 'fldstring', 9],
-                 [QgsAggregateCalculator.CountDistinct, 'fldstring', 6],
-                 [QgsAggregateCalculator.CountMissing, 'fldstring', 2],
-                 [QgsAggregateCalculator.Min, 'fldstring', 'aaaa'],
-                 [QgsAggregateCalculator.Max, 'fldstring', 'eeee'],
-                 [QgsAggregateCalculator.StringMinimumLength, 'fldstring', 0],
-                 [QgsAggregateCalculator.StringMaximumLength, 'fldstring', 8],
-                 [QgsAggregateCalculator.ArrayAggregate, 'fldstring', values],
+        tests = [[QgsAggregateCalculator.Aggregate.Count, 'fldstring', 9],
+                 [QgsAggregateCalculator.Aggregate.CountDistinct, 'fldstring', 6],
+                 [QgsAggregateCalculator.Aggregate.CountMissing, 'fldstring', 2],
+                 [QgsAggregateCalculator.Aggregate.Min, 'fldstring', 'aaaa'],
+                 [QgsAggregateCalculator.Aggregate.Max, 'fldstring', 'eeee'],
+                 [QgsAggregateCalculator.Aggregate.StringMinimumLength, 'fldstring', 0],
+                 [QgsAggregateCalculator.Aggregate.StringMaximumLength, 'fldstring', 8],
+                 [QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldstring', values],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -199,41 +199,41 @@ class TestQgsAggregateCalculator(QgisTestCase):
         # test string concatenation
         agg.setDelimiter(',')
         self.assertEqual(agg.delimiter(), ',')
-        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.StringConcatenate, 'fldstring')
         self.assertTrue(ok)
         self.assertEqual(val, 'cc,aaaa,bbbbbbbb,aaaa,eeee,,eeee,,dddd')
-        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenateUnique, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.StringConcatenateUnique, 'fldstring')
         self.assertTrue(ok)
         self.assertEqual(val, 'cc,aaaa,bbbbbbbb,eeee,,dddd')
 
         # bad tests - the following stats should not be calculatable for string fields
-        for t in [QgsAggregateCalculator.Sum,
-                  QgsAggregateCalculator.Mean,
-                  QgsAggregateCalculator.Median,
-                  QgsAggregateCalculator.StDev,
-                  QgsAggregateCalculator.StDevSample,
-                  QgsAggregateCalculator.Range,
-                  QgsAggregateCalculator.FirstQuartile,
-                  QgsAggregateCalculator.ThirdQuartile,
-                  QgsAggregateCalculator.InterQuartileRange
+        for t in [QgsAggregateCalculator.Aggregate.Sum,
+                  QgsAggregateCalculator.Aggregate.Mean,
+                  QgsAggregateCalculator.Aggregate.Median,
+                  QgsAggregateCalculator.Aggregate.StDev,
+                  QgsAggregateCalculator.Aggregate.StDevSample,
+                  QgsAggregateCalculator.Aggregate.Range,
+                  QgsAggregateCalculator.Aggregate.FirstQuartile,
+                  QgsAggregateCalculator.Aggregate.ThirdQuartile,
+                  QgsAggregateCalculator.Aggregate.InterQuartileRange
                   ]:
             val, ok = agg.calculate(t, 'fldstring')
             self.assertFalse(ok)
 
         # with order by
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldstring')
         self.assertEqual(val, ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd'])
         params = QgsAggregateCalculator.AggregateParameters()
         params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldstring')])
         agg.setParameters(params)
-        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldstring')
         self.assertEqual(val, ['', '', 'aaaa', 'aaaa', 'bbbbbbbb', 'cc', 'dddd', 'eeee', 'eeee'])
-        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.StringConcatenate, 'fldstring')
         self.assertEqual(val, 'aaaaaaaabbbbbbbbccddddeeeeeeee')
-        val, ok = agg.calculate(QgsAggregateCalculator.Minority, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Minority, 'fldstring')
         self.assertEqual(val, 'bbbbbbbb')
-        val, ok = agg.calculate(QgsAggregateCalculator.Majority, 'fldstring')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Majority, 'fldstring')
         self.assertEqual(val, '')
 
     def testDateTime(self):
@@ -271,22 +271,22 @@ class TestQgsAggregateCalculator(QgisTestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        tests = [[QgsAggregateCalculator.Count, 'flddatetime', 9],
-                 [QgsAggregateCalculator.Count, 'flddate', 9],
-                 [QgsAggregateCalculator.CountDistinct, 'flddatetime', 6],
-                 [QgsAggregateCalculator.CountDistinct, 'flddate', 5],
-                 [QgsAggregateCalculator.CountMissing, 'flddatetime', 2],
-                 [QgsAggregateCalculator.CountMissing, 'flddate', 2],
-                 [QgsAggregateCalculator.Min, 'flddatetime', QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54))],
-                 [QgsAggregateCalculator.Min, 'flddate', QDateTime(QDate(1998, 1, 2), QTime(0, 0, 0))],
-                 [QgsAggregateCalculator.Max, 'flddatetime', QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1))],
-                 [QgsAggregateCalculator.Max, 'flddate', QDateTime(QDate(2019, 12, 28), QTime(0, 0, 0))],
+        tests = [[QgsAggregateCalculator.Aggregate.Count, 'flddatetime', 9],
+                 [QgsAggregateCalculator.Aggregate.Count, 'flddate', 9],
+                 [QgsAggregateCalculator.Aggregate.CountDistinct, 'flddatetime', 6],
+                 [QgsAggregateCalculator.Aggregate.CountDistinct, 'flddate', 5],
+                 [QgsAggregateCalculator.Aggregate.CountMissing, 'flddatetime', 2],
+                 [QgsAggregateCalculator.Aggregate.CountMissing, 'flddate', 2],
+                 [QgsAggregateCalculator.Aggregate.Min, 'flddatetime', QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54))],
+                 [QgsAggregateCalculator.Aggregate.Min, 'flddate', QDateTime(QDate(1998, 1, 2), QTime(0, 0, 0))],
+                 [QgsAggregateCalculator.Aggregate.Max, 'flddatetime', QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1))],
+                 [QgsAggregateCalculator.Aggregate.Max, 'flddate', QDateTime(QDate(2019, 12, 28), QTime(0, 0, 0))],
 
-                 [QgsAggregateCalculator.Range, 'flddatetime', QgsInterval(693871147)],
-                 [QgsAggregateCalculator.Range, 'flddate', QgsInterval(693792000)],
+                 [QgsAggregateCalculator.Aggregate.Range, 'flddatetime', QgsInterval(693871147)],
+                 [QgsAggregateCalculator.Aggregate.Range, 'flddate', QgsInterval(693792000)],
 
-                 [QgsAggregateCalculator.ArrayAggregate, 'flddatetime', [None if v.isNull() else v for v in datetime_values]],
-                 [QgsAggregateCalculator.ArrayAggregate, 'flddate', [None if v.isNull() else v for v in date_values]],
+                 [QgsAggregateCalculator.Aggregate.ArrayAggregate, 'flddatetime', [None if v.isNull() else v for v in datetime_values]],
+                 [QgsAggregateCalculator.Aggregate.ArrayAggregate, 'flddate', [None if v.isNull() else v for v in date_values]],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -296,18 +296,18 @@ class TestQgsAggregateCalculator(QgisTestCase):
             self.assertEqual(val, t[2])
 
         # bad tests - the following stats should not be calculatable for string fields
-        for t in [QgsAggregateCalculator.Sum,
-                  QgsAggregateCalculator.Mean,
-                  QgsAggregateCalculator.Median,
-                  QgsAggregateCalculator.StDev,
-                  QgsAggregateCalculator.StDevSample,
-                  QgsAggregateCalculator.Minority,
-                  QgsAggregateCalculator.Majority,
-                  QgsAggregateCalculator.FirstQuartile,
-                  QgsAggregateCalculator.ThirdQuartile,
-                  QgsAggregateCalculator.InterQuartileRange,
-                  QgsAggregateCalculator.StringMinimumLength,
-                  QgsAggregateCalculator.StringMaximumLength,
+        for t in [QgsAggregateCalculator.Aggregate.Sum,
+                  QgsAggregateCalculator.Aggregate.Mean,
+                  QgsAggregateCalculator.Aggregate.Median,
+                  QgsAggregateCalculator.Aggregate.StDev,
+                  QgsAggregateCalculator.Aggregate.StDevSample,
+                  QgsAggregateCalculator.Aggregate.Minority,
+                  QgsAggregateCalculator.Aggregate.Majority,
+                  QgsAggregateCalculator.Aggregate.FirstQuartile,
+                  QgsAggregateCalculator.Aggregate.ThirdQuartile,
+                  QgsAggregateCalculator.Aggregate.InterQuartileRange,
+                  QgsAggregateCalculator.Aggregate.StringMinimumLength,
+                  QgsAggregateCalculator.Aggregate.StringMaximumLength,
                   ]:
             val, ok = agg.calculate(t, 'flddatetime')
             self.assertFalse(ok)
@@ -334,13 +334,13 @@ class TestQgsAggregateCalculator(QgisTestCase):
         agg.setFilter(filter_string)
         self.assertEqual(agg.filter(), filter_string)
 
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 20)
 
         # remove filter and retest
         agg.setFilter(None)
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 24)
 
@@ -363,50 +363,50 @@ class TestQgsAggregateCalculator(QgisTestCase):
 
         # int
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, 48)
 
         # double
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 1.5')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint * 1.5')
         self.assertTrue(ok)
         self.assertEqual(val, 36)
 
         # datetime
-        val, ok = agg.calculate(QgsAggregateCalculator.Max, "to_date('2012-05-04') + to_interval( fldint || ' day' )")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Max, "to_date('2012-05-04') + to_interval( fldint || ' day' )")
         self.assertTrue(ok)
         self.assertEqual(val, QDateTime(QDate(2012, 5, 12), QTime(0, 0, 0)))
 
         # date
-        val, ok = agg.calculate(QgsAggregateCalculator.Min, "to_date(to_date('2012-05-04') + to_interval( fldint || ' day' ))")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Min, "to_date(to_date('2012-05-04') + to_interval( fldint || ' day' ))")
         self.assertTrue(ok)
         self.assertEqual(val, QDateTime(QDate(2012, 5, 6), QTime(0, 0, 0)))
 
         # string
-        val, ok = agg.calculate(QgsAggregateCalculator.Max, "fldint || ' oranges'")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Max, "fldint || ' oranges'")
         self.assertTrue(ok)
         self.assertEqual(val, '8 oranges')
 
         # geometry
-        val, ok = agg.calculate(QgsAggregateCalculator.GeometryCollect, "make_point( coalesce(fldint,0), 2 )")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.GeometryCollect, "make_point( coalesce(fldint,0), 2 )")
         self.assertTrue(ok)
         self.assertTrue(val.asWkt(), 'MultiPoint((4 2, 2 2, 3 2, 2 2,5 2, 0 2,8 2))')
 
         # try a bad expression
-        val, ok = agg.calculate(QgsAggregateCalculator.Max, "not_a_field || ' oranges'")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Max, "not_a_field || ' oranges'")
         self.assertFalse(ok)
-        val, ok = agg.calculate(QgsAggregateCalculator.Max, "5+")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Max, "5+")
         self.assertFalse(ok)
 
         # test expression context
 
         # check default context first
         # should have layer variables:
-        val, ok = agg.calculate(QgsAggregateCalculator.Min, "@layer_name")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Min, "@layer_name")
         self.assertTrue(ok)
         self.assertEqual(val, 'layer')
         # but not custom variables:
-        val, ok = agg.calculate(QgsAggregateCalculator.Min, "@my_var")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Min, "@my_var")
         self.assertTrue(ok)
         self.assertEqual(val, NULL)
 
@@ -415,20 +415,20 @@ class TestQgsAggregateCalculator(QgisTestCase):
         scope.setVariable('my_var', 5)
         context = QgsExpressionContext()
         context.appendScope(scope)
-        val, ok = agg.calculate(QgsAggregateCalculator.Min, "@my_var", context)
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Min, "@my_var", context)
         self.assertTrue(ok)
         self.assertEqual(val, 5)
 
         # test with subset
         agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
         agg.setFidsFilter([1, 2])
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
         # test with empty subset
         agg.setFidsFilter(list())
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint')
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
 
@@ -451,13 +451,13 @@ class TestQgsAggregateCalculator(QgisTestCase):
 
         # number aggregation
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'to_int(fldstr)')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'to_int(fldstr)')
         self.assertTrue(ok)
         self.assertEqual(val, 10)
 
         # string aggregation
         agg.setDelimiter(',')
-        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstr || \'suffix\'')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.StringConcatenate, 'fldstr || \'suffix\'')
         self.assertTrue(ok)
         self.assertEqual(val, ',,,,,,,,,,2suffix,3suffix,5suffix')
 
@@ -469,70 +469,70 @@ class TestQgsAggregateCalculator(QgisTestCase):
 
         # sum
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Sum, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, None)
 
         # count
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.Count, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Count, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, 0)
 
         # count distinct
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.CountDistinct, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.CountDistinct, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, 0)
 
         # count missing
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.CountMissing, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.CountMissing, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, 0)
 
         # min
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.Min, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Min, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, None)
 
         # max
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.Max, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Max, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, None)
 
         # array_agg
         agg = QgsAggregateCalculator(layer)
-        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint * 2')
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.ArrayAggregate, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, [])
 
     def testStringToAggregate(self):
         """ test converting strings to aggregate types """
 
-        tests = [[QgsAggregateCalculator.Count, ' cOUnT '],
-                 [QgsAggregateCalculator.CountDistinct, ' count_distinct   '],
-                 [QgsAggregateCalculator.CountMissing, 'COUNT_MISSING'],
-                 [QgsAggregateCalculator.Min, ' MiN'],
-                 [QgsAggregateCalculator.Max, 'mAX'],
-                 [QgsAggregateCalculator.Sum, 'sum'],
-                 [QgsAggregateCalculator.Mean, 'MEAn  '],
-                 [QgsAggregateCalculator.Median, 'median'],
-                 [QgsAggregateCalculator.StDev, 'stdev'],
-                 [QgsAggregateCalculator.StDevSample, 'stdevsample'],
-                 [QgsAggregateCalculator.Range, 'range'],
-                 [QgsAggregateCalculator.Minority, 'minority'],
-                 [QgsAggregateCalculator.Majority, 'majority'],
-                 [QgsAggregateCalculator.FirstQuartile, 'q1'],
-                 [QgsAggregateCalculator.ThirdQuartile, 'q3'],
-                 [QgsAggregateCalculator.InterQuartileRange, 'iqr'],
-                 [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
-                 [QgsAggregateCalculator.StringMaximumLength, 'max_length'],
-                 [QgsAggregateCalculator.StringConcatenate, 'concatenate'],
-                 [QgsAggregateCalculator.StringConcatenateUnique, 'concatenate_unique'],
-                 [QgsAggregateCalculator.GeometryCollect, 'collect']]
+        tests = [[QgsAggregateCalculator.Aggregate.Count, ' cOUnT '],
+                 [QgsAggregateCalculator.Aggregate.CountDistinct, ' count_distinct   '],
+                 [QgsAggregateCalculator.Aggregate.CountMissing, 'COUNT_MISSING'],
+                 [QgsAggregateCalculator.Aggregate.Min, ' MiN'],
+                 [QgsAggregateCalculator.Aggregate.Max, 'mAX'],
+                 [QgsAggregateCalculator.Aggregate.Sum, 'sum'],
+                 [QgsAggregateCalculator.Aggregate.Mean, 'MEAn  '],
+                 [QgsAggregateCalculator.Aggregate.Median, 'median'],
+                 [QgsAggregateCalculator.Aggregate.StDev, 'stdev'],
+                 [QgsAggregateCalculator.Aggregate.StDevSample, 'stdevsample'],
+                 [QgsAggregateCalculator.Aggregate.Range, 'range'],
+                 [QgsAggregateCalculator.Aggregate.Minority, 'minority'],
+                 [QgsAggregateCalculator.Aggregate.Majority, 'majority'],
+                 [QgsAggregateCalculator.Aggregate.FirstQuartile, 'q1'],
+                 [QgsAggregateCalculator.Aggregate.ThirdQuartile, 'q3'],
+                 [QgsAggregateCalculator.Aggregate.InterQuartileRange, 'iqr'],
+                 [QgsAggregateCalculator.Aggregate.StringMinimumLength, 'min_length'],
+                 [QgsAggregateCalculator.Aggregate.StringMaximumLength, 'max_length'],
+                 [QgsAggregateCalculator.Aggregate.StringConcatenate, 'concatenate'],
+                 [QgsAggregateCalculator.Aggregate.StringConcatenateUnique, 'concatenate_unique'],
+                 [QgsAggregateCalculator.Aggregate.GeometryCollect, 'collect']]
 
         for t in tests:
             agg, ok = QgsAggregateCalculator.stringToAggregate(t[1])

@@ -22,7 +22,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_ARG, QObject, pyqtSlot
 from qgis.PyQt.QtGui import QColor, QKeySequence
-from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
+from qgis.PyQt.QtWidgets import QAction, QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar, QgsCodeEditorPython
@@ -49,7 +49,7 @@ class writeOut(QObject):
 
         # This manage the case when console is called from another thread
         if QThread.currentThread() != QCoreApplication.instance().thread():
-            QMetaObject.invokeMethod(self, "write", Qt.QueuedConnection, Q_ARG(str, m))
+            QMetaObject.invokeMethod(self, "write", Qt.ConnectionType.QueuedConnection, Q_ARG(str, m))
             return
 
         if self.style == "_traceback":
@@ -127,11 +127,11 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         # Creates layout for message bar
         self.layout = QGridLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.layout.addItem(spacerItem, 1, 0, 1, 1)
         # messageBar instance
         self.infoBar = QgsMessageBar()
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
@@ -148,18 +148,18 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
         self.setMinimumHeight(120)
 
-        self.setWrapMode(QsciScintilla.WrapCharacter)
+        self.setWrapMode(QsciScintilla.WrapMode.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
 
-        self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
-        self.runScut.setContext(Qt.WidgetShortcut)
+        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E), self)
+        self.runScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.runScut.activated.connect(self.enteredSelected)
         # Reimplemented copy action to prevent paste prompt (>>>,...) in command view
-        self.copyShortcut = QShortcut(QKeySequence.Copy, self)
-        self.copyShortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        self.copyShortcut = QShortcut(QKeySequence.StandardKey.Copy, self)
+        self.copyShortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         self.copyShortcut.activated.connect(self.copy)
-        self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
-        self.selectAllShortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        self.selectAllShortcut = QShortcut(QKeySequence.StandardKey.SelectAll, self)
+        self.selectAllShortcut.setContext(Qt.ShortcutContext.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def on_app_exit(self):
@@ -192,7 +192,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
     def initializeLexer(self):
         super().initializeLexer()
         self.setFoldingVisible(False)
-        self.setEdgeMode(QsciScintilla.EdgeNone)
+        self.setEdgeMode(QsciScintilla.EdgeMode.EdgeNone)
 
     def refreshSettingsOutput(self):
         # Set Python lexer
@@ -217,28 +217,48 @@ class ShellOutputScintilla(QgsCodeEditorPython):
             QCoreApplication.translate("PythonConsole", "Show Editor"),
             self.showEditor)
         menu.addSeparator()
-        runAction = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
-                                   QCoreApplication.translate("PythonConsole", "Enter Selected"),
-                                   self.enteredSelected,
-                                   QKeySequence(Qt.CTRL + Qt.Key_E))
-        clearAction = menu.addAction(QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
-                                     QCoreApplication.translate("PythonConsole", "Clear Console"),
-                                     self.clearConsole)
-        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                          QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
-                                          self.searchSelectedTextInPyQGISDocs)
+        runAction = QAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
+                            QCoreApplication.translate("PythonConsole", "Enter Selected"),
+                            menu)
+        runAction.triggered.connect(self.enteredSelected)
+        runAction.setShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E))
+        menu.addAction(runAction)
+
+        clearAction = QAction(QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
+                              QCoreApplication.translate("PythonConsole", "Clear Console"),
+                              menu)
+        clearAction.triggered.connect(self.clearConsole)
+        menu.addAction(clearAction)
+
+        pyQGISHelpAction = QAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
+                                   QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
+                                   menu)
+        pyQGISHelpAction.triggered.connect(self.searchSelectedTextInPyQGISDocs)
+        menu.addAction(pyQGISHelpAction)
+
         menu.addSeparator()
-        copyAction = menu.addAction(
+        copyAction = QAction(
             QgsApplication.getThemeIcon("mActionEditCopy.svg"),
             QCoreApplication.translate("PythonConsole", "Copy"),
-            self.copy, QKeySequence.Copy)
-        selectAllAction = menu.addAction(
+            menu)
+        copyAction.triggered.connect(self.copy)
+        copyAction.setShortcut(QKeySequence.StandardKey.Copy)
+        menu.addAction(copyAction)
+
+        selectAllAction = QAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
-            self.selectAll, QKeySequence.SelectAll)
+            menu)
+        selectAllAction.triggered.connect(self.selectAll)
+        selectAllAction.setShortcut(QKeySequence.StandardKey.SelectAll)
+        menu.addAction(selectAllAction)
+
         menu.addSeparator()
-        menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
-                       QCoreApplication.translate("PythonConsole", "Options…"),
-                       self.parent.openSettings)
+        settings_action = QAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
+                                  QCoreApplication.translate("PythonConsole", "Options…"),
+                                  menu)
+        settings_action.triggered.connect(self.parent.openSettings)
+        menu.addAction(settings_action)
+
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
@@ -254,7 +274,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
             clearAction.setEnabled(True)
         if self.parent.tabEditorWidget.isVisible():
             showEditorAction.setEnabled(False)
-        menu.exec_(self.mapToGlobal(e.pos()))
+        menu.exec(self.mapToGlobal(e.pos()))
 
     def hideToolBar(self):
         tB = self.parent.toolBar
@@ -296,4 +316,4 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, Qgis.Info, timeout)
+        self.infoBar.pushMessage(text, Qgis.MessageLevel.Info, timeout)

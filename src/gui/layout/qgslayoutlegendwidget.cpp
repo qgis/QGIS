@@ -218,8 +218,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
     connect( &mLegend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mItemFontButton, &QgsFontButton::setLayer );
   }
 
-  registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::LegendTitle );
-  registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::LegendColumnCount );
+  registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::DataDefinedProperty::LegendTitle );
+  registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::DataDefinedProperty::LegendColumnCount );
 
   setGuiElements();
 
@@ -1645,7 +1645,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
 
   if ( mLegendNode )
   {
-    switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt() ) )
+    switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt() ) )
     {
       case QgsLayerTreeModelLegendNode::EmbeddedWidget:
       case QgsLayerTreeModelLegendNode::RasterSymbolLegend:

@@ -79,11 +79,11 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         project = QgsProject()
         project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
         crss = QgsServerApiUtils.publishedCrsList(project)
-        self.assertTrue('http://www.opengis.net/def/crs/OGC/1.3/CRS84' in crss)
-        self.assertTrue(
-            'http://www.opengis.net/def/crs/EPSG/0/3857' in crss)
-        self.assertTrue(
-            'http://www.opengis.net/def/crs/EPSG/0/4326' in crss)
+        self.assertIn('http://www.opengis.net/def/crs/OGC/1.3/CRS84', crss)
+        self.assertIn(
+            'http://www.opengis.net/def/crs/EPSG/0/3857', crss)
+        self.assertIn(
+            'http://www.opengis.net/def/crs/EPSG/0/4326', crss)
 
     def test_parse_crs(self):
         crs = QgsServerApiUtils.parseCrs(
@@ -732,9 +732,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
         body = bytes(response.body()).decode('utf8')
-        self.assertTrue('Content-Length' in response.headers())
+        self.assertIn('Content-Length', response.headers())
         self.assertEqual(response.headers()['Content-Type'], 'text/css')
-        self.assertTrue(len(body) > 0)
+        self.assertGreater(len(body), 0)
 
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/static/does_not_exists.css')
@@ -1022,7 +1022,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         # Check that it was really deleted
         layer = project.mapLayersByName(
             'test layer èé 3857 published delete')[0]
-        self.assertFalse(1 in layer.allFeatureIds())
+        self.assertNotIn(1, layer.allFeatureIds())
 
     def test_wfs3_collection_items_patch(self):
         """Test WFS3 API items PATCH"""
@@ -1201,24 +1201,24 @@ class QgsServerAPITest(QgsServerAPITestBase):
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=name')
         self.server.handleRequest(request, response, project)
         j = json.loads(bytes(response.body()).decode('utf8'))
-        self.assertTrue('name' in j['features'][0]['properties'])
-        self.assertFalse('id' in j['features'][0]['properties'])
+        self.assertIn('name', j['features'][0]['properties'])
+        self.assertNotIn('id', j['features'][0]['properties'])
 
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=name,id')
         self.server.handleRequest(request, response, project)
         j = json.loads(bytes(response.body()).decode('utf8'))
-        self.assertTrue('name' in j['features'][0]['properties'])
-        self.assertTrue('id' in j['features'][0]['properties'])
+        self.assertIn('name', j['features'][0]['properties'])
+        self.assertIn('id', j['features'][0]['properties'])
 
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=id')
         self.server.handleRequest(request, response, project)
         j = json.loads(bytes(response.body()).decode('utf8'))
-        self.assertFalse('name' in j['features'][0]['properties'])
-        self.assertTrue('id' in j['features'][0]['properties'])
+        self.assertNotIn('name', j['features'][0]['properties'])
+        self.assertIn('id', j['features'][0]['properties'])
 
     def test_wfs3_field_filters_star(self):
         """Test field filters"""

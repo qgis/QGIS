@@ -25,7 +25,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingProvider,
                        QgsRuntimeProfiler)
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
@@ -173,3 +173,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
 
     def supportsNonFileBasedOutput(self):
         return True
+
+    def flags(self):
+        return QgsProcessingProvider.Flag.FlagCompatibleWithVirtualRaster

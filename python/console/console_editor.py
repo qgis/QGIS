@@ -37,6 +37,7 @@ from qgis.PyQt.QtCore import QByteArray, QCoreApplication, QDir, QEvent, QFileIn
 from qgis.PyQt.QtGui import QKeySequence
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import (
+    QAction,
     QApplication,
     QFileDialog,
     QFrame,
@@ -66,7 +67,7 @@ class Editor(QgsCodeEditorPython):
         self.settings = QgsSettings()
 
         self.setMinimumHeight(120)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
         # Disable default scintilla shortcuts
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
@@ -76,21 +77,21 @@ class Editor(QgsCodeEditorPython):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
         # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
-        self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
-        self.newShortcutCS.setContext(Qt.WidgetShortcut)
-        self.redoScut = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Z), self)
-        self.redoScut.setContext(Qt.WidgetShortcut)
+        self.newShortcutCS = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_Space), self)
+        self.newShortcutCS.setContext(Qt.ShortcutContext.WidgetShortcut)
+        self.redoScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Modifier.SHIFT | Qt.Key.Key_Z), self)
+        self.redoScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.redoScut.activated.connect(self.redo)
         self.newShortcutCS.activated.connect(self.autoComplete)
-        self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
-        self.runScut.setContext(Qt.WidgetShortcut)
+        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E), self)
+        self.runScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.runScut.activated.connect(self.runSelectedCode)  # spellok
-        self.runScriptScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_E), self)
-        self.runScriptScut.setContext(Qt.WidgetShortcut)
+        self.runScriptScut = QShortcut(QKeySequence(Qt.Modifier.SHIFT | Qt.Modifier.CTRL | Qt.Key.Key_E), self)
+        self.runScriptScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.runScriptScut.activated.connect(self.runScriptCode)
 
-        self.syntaxCheckScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_4), self)
-        self.syntaxCheckScut.setContext(Qt.WidgetShortcut)
+        self.syntaxCheckScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_4), self)
+        self.syntaxCheckScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.syntaxCheckScut.activated.connect(self.syntaxCheck)
         self.modificationChanged.connect(self.parent.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
@@ -104,46 +105,96 @@ class Editor(QgsCodeEditorPython):
         menu.addAction(
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
-        menu.addSeparator()  # ------------------------------
-        syntaxCheckAction = menu.addAction(QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
-                                           QCoreApplication.translate("PythonConsole", "Check Syntax"),
-                                           self.syntaxCheck, 'Ctrl+4')
-        runSelected = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
-                                     QCoreApplication.translate("PythonConsole", "Run Selected"),
-                                     self.runSelectedCode, 'Ctrl+E')  # spellok
-        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                          QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
-                                          self.searchSelectedTextInPyQGISDocs)
-        menu.addAction(QgsApplication.getThemeIcon("mActionStart.svg"),
-                       QCoreApplication.translate("PythonConsole", "Run Script"),
-                       self.runScriptCode, 'Ctrl+Shift+E')
         menu.addSeparator()
-        undoAction = menu.addAction(QgsApplication.getThemeIcon("mActionUndo.svg"),
-                                    QCoreApplication.translate("PythonConsole", "Undo"),
-                                    self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction(QgsApplication.getThemeIcon("mActionRedo.svg"),
-                                    QCoreApplication.translate("PythonConsole", "Redo"),
-                                    self.redo, 'Ctrl+Shift+Z')
+
+        syntaxCheckAction = QAction(QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
+                                    QCoreApplication.translate("PythonConsole", "Check Syntax"),
+                                    menu)
+        syntaxCheckAction.triggered.connect(self.syntaxCheck)
+        syntaxCheckAction.setShortcut('Ctrl+4')
+        menu.addAction(syntaxCheckAction)
+
+        runSelected = QAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
+                              QCoreApplication.translate("PythonConsole", "Run Selected"),
+                              menu)
+        runSelected.triggered.connect(self.runSelectedCode)  # spellok
+        runSelected.setShortcut('Ctrl+E')  # spellok
+        menu.addAction(runSelected)  # spellok
+
+        pyQGISHelpAction = QAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
+                                   QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
+                                   menu)
+        pyQGISHelpAction.triggered.connect(self.searchSelectedTextInPyQGISDocs)
+        menu.addAction(pyQGISHelpAction)
+
+        start_action = QAction(QgsApplication.getThemeIcon("mActionStart.svg"),
+                               QCoreApplication.translate("PythonConsole", "Run Script"),
+                               menu)
+        start_action.triggered.connect(self.runScriptCode)
+        start_action.setShortcut('Ctrl+Shift+E')
+        menu.addAction(start_action)
+
         menu.addSeparator()
-        menu.addAction(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"),
-                       QCoreApplication.translate("PythonConsole", "Find Text"),
-                       self.openFindWidget)
-        cutAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditCut.svg"),
-                                   QCoreApplication.translate("PythonConsole", "Cut"),
-                                   self.cut, QKeySequence.Cut)
-        copyAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditCopy.svg"),
-                                    QCoreApplication.translate("PythonConsole", "Copy"),
-                                    self.copy, QKeySequence.Copy)
-        pasteAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditPaste.svg"),
-                                     QCoreApplication.translate("PythonConsole", "Paste"),
-                                     self.paste, QKeySequence.Paste)
-        selectAllAction = menu.addAction(
+        undoAction = QAction(QgsApplication.getThemeIcon("mActionUndo.svg"),
+                             QCoreApplication.translate("PythonConsole", "Undo"),
+                             menu)
+        undoAction.triggered.connect(self.undo)
+        undoAction.setShortcut(QKeySequence.StandardKey.Undo)
+        menu.addAction(undoAction)
+
+        redoAction = QAction(QgsApplication.getThemeIcon("mActionRedo.svg"),
+                             QCoreApplication.translate("PythonConsole", "Redo"),
+                             menu)
+        redoAction.triggered.connect(self.redo)
+        redoAction.setShortcut('Ctrl+Shift+Z')
+        menu.addAction(redoAction)
+
+        menu.addSeparator()
+        find_action = QAction(
+            QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"),
+            QCoreApplication.translate("PythonConsole", "Find Text"),
+            menu)
+        find_action.triggered.connect(self.openFindWidget)
+        menu.addAction(find_action)
+
+        cutAction = QAction(
+            QgsApplication.getThemeIcon("mActionEditCut.svg"),
+            QCoreApplication.translate("PythonConsole", "Cut"),
+            menu)
+        cutAction.triggered.connect(self.cut)
+        cutAction.setShortcut(QKeySequence.StandardKey.Cut)
+        menu.addAction(cutAction)
+
+        copyAction = QAction(QgsApplication.getThemeIcon("mActionEditCopy.svg"),
+                             QCoreApplication.translate("PythonConsole", "Copy"),
+                             menu)
+        copyAction.triggered.connect(self.copy)
+        copyAction.setShortcut(QKeySequence.StandardKey.Copy)
+        menu.addAction(copyAction)
+
+        pasteAction = QAction(QgsApplication.getThemeIcon("mActionEditPaste.svg"),
+                              QCoreApplication.translate("PythonConsole", "Paste"),
+                              menu)
+        pasteAction.triggered.connect(self.paste)
+        pasteAction.setShortcut(QKeySequence.StandardKey.Paste)
+        menu.addAction(pasteAction)
+
+        selectAllAction = QAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
-            self.selectAll, QKeySequence.SelectAll)
+            menu)
+        selectAllAction.triggered.connect(self.selectAll)
+        selectAllAction.setShortcut(QKeySequence.StandardKey.SelectAll)
+        menu.addAction(selectAllAction)
+
         menu.addSeparator()
-        menu.addAction(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
-                       QCoreApplication.translate("PythonConsole", "Toggle Comment"),
-                       self.toggleComment, 'Ctrl+:')
+        toggle_comment_action = QAction(
+            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
+            QCoreApplication.translate("PythonConsole", "Toggle Comment"),
+            menu)
+        toggle_comment_action.triggered.connect(self.toggleComment)
+        toggle_comment_action.setShortcut('Ctrl+:')
+        menu.addAction(toggle_comment_action)
+
         menu.addSeparator()
         gist_menu = QMenu(self)
         gist_menu.setTitle(QCoreApplication.translate("PythonConsole", "Share on GitHub"))
@@ -189,7 +240,7 @@ class Editor(QgsCodeEditorPython):
         if self.settings.value("pythonConsole/enableObjectInsp",
                                False, type=bool):
             showCodeInspection.setEnabled(True)
-        menu.exec_(self.mapToGlobal(e.pos()))
+        menu.exec(self.mapToGlobal(e.pos()))
 
     def findText(self, forward, showMessage=True, findFirst=False):
         lineFrom, indexFrom, lineTo, indexTo = self.getSelection()
@@ -243,7 +294,7 @@ class Editor(QgsCodeEditorPython):
         if not ACCESS_TOKEN:
             msg_text = QCoreApplication.translate(
                 'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
-            self.parent.showMessage(msg_text, Qgis.Warning, 5)
+            self.parent.showMessage(msg_text, Qgis.MessageLevel.Warning, 5)
             return
 
         URL = "https://api.github.com/gists"
@@ -273,7 +324,7 @@ class Editor(QgsCodeEditorPython):
             self.parent.showMessage(msg)
         else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.showMessage(msg + request.erroMessage(), Qgis.Warning, 5)
+            self.parent.showMessage(msg + request.erroMessage(), Qgis.MessageLevel.Warning, 5)
 
     def hideEditor(self):
         self.pythonconsole.splitterObj.hide()
@@ -376,7 +427,7 @@ class Editor(QgsCodeEditorPython):
             if not QFileInfo(self.path).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>"{0}"</b> has been deleted or is not accessible').format(self.path)
-                self.parent.showMessage(msgText, Qgis.Critical)
+                self.parent.showMessage(msgText, Qgis.MessageLevel.Critical)
                 return
         if self.path and self.lastModified != QFileInfo(self.path).lastModified():
             self.beginUndoAction()
@@ -394,7 +445,7 @@ class Editor(QgsCodeEditorPython):
         tabWidget = self.tabwidget.currentWidget()
         msgText = QCoreApplication.translate('PythonConsole',
                                              'The file <b>"{0}"</b> is read only, please save to different file first.').format(tabWidget.path)
-        self.parent.showMessage(msgText, Qgis.Warning)
+        self.parent.showMessage(msgText, Qgis.MessageLevel.Warning)
 
     def loadFile(self, filename, readOnly=False):
         self.lastModified = QFileInfo(filename).lastModified()
@@ -449,16 +500,16 @@ class Editor(QgsCodeEditorPython):
     def event(self, e):
         """ Used to override the Application shortcuts when the editor has focus """
 
-        if e.type() == QEvent.ShortcutOverride:
-            ctrl = e.modifiers() == Qt.ControlModifier
-            ctrl_shift = e.modifiers() == (Qt.ControlModifier | Qt.ShiftModifier)
+        if e.type() == QEvent.Type.ShortcutOverride:
+            ctrl = e.modifiers() == Qt.KeyboardModifier.ControlModifier
+            ctrl_shift = e.modifiers() == (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.ShiftModifier)
             if (
-                (ctrl and e.key() == Qt.Key_W)
-                or (ctrl_shift and e.key() == Qt.Key_W)
-                or (ctrl and e.key() == Qt.Key_S)
-                or (ctrl_shift and e.key() == Qt.Key_S)
-                or (ctrl and e.key() == Qt.Key_T)
-                or (ctrl and e.key() == Qt.Key_Tab)
+                (ctrl and e.key() == Qt.Key.Key_W)
+                or (ctrl_shift and e.key() == Qt.Key.Key_W)
+                or (ctrl and e.key() == Qt.Key.Key_S)
+                or (ctrl_shift and e.key() == Qt.Key.Key_S)
+                or (ctrl and e.key() == Qt.Key.Key_T)
+                or (ctrl and e.key() == Qt.Key.Key_Tab)
             ):
                 e.accept()
                 return True
@@ -466,27 +517,27 @@ class Editor(QgsCodeEditorPython):
         return super().event(e)
 
     def keyPressEvent(self, e):
-        ctrl = e.modifiers() == Qt.ControlModifier
-        ctrl_shift = e.modifiers() == (Qt.ControlModifier | Qt.ShiftModifier)
+        ctrl = e.modifiers() == Qt.KeyboardModifier.ControlModifier
+        ctrl_shift = e.modifiers() == (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.ShiftModifier)
 
         # Ctrl+W: close current tab
-        if ctrl and e.key() == Qt.Key_W:
+        if ctrl and e.key() == Qt.Key.Key_W:
             self.parent.close()
 
         # Ctrl+Shift+W: close all tabs
-        if ctrl_shift and e.key() == Qt.Key_W:
+        if ctrl_shift and e.key() == Qt.Key.Key_W:
             self.tabwidget.closeAll()
 
         # Ctrl+S: save current tab
-        if ctrl and e.key() == Qt.Key_S:
+        if ctrl and e.key() == Qt.Key.Key_S:
             self.save()
 
         # Ctrl+Shift+S: save current tab as
-        if ctrl_shift and e.key() == Qt.Key_S:
+        if ctrl_shift and e.key() == Qt.Key.Key_S:
             self.tabwidget.saveAs()
 
         # Ctrl+T: open new tab
-        if ctrl and e.key() == Qt.Key_T:
+        if ctrl and e.key() == Qt.Key.Key_T:
             self.tabwidget.newTabEditor()
 
         super().keyPressEvent(e)
@@ -511,11 +562,11 @@ class EditorTab(QWidget):
         # Creates layout for message bar
         self.layout = QGridLayout(self._editor)
         self.layout.setContentsMargins(0, 0, 0, 0)
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.layout.addItem(spacerItem, 1, 0, 1, 1)
         # messageBar instance
         self.infoBar = QgsMessageBar()
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
@@ -543,7 +594,7 @@ class EditorTab(QWidget):
         except AttributeError:
             return setattr(self._editor, name, value)
 
-    def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
+    def showMessage(self, text, level=Qgis.MessageLevel.Info, timeout=-1, title=""):
         self.infoBar.pushMessage(title, text, level, timeout)
 
 
@@ -559,11 +610,11 @@ class EditorTabWidget(QTabWidget):
         # Layout for top frame (restore tabs)
         self.layoutTopFrame = QGridLayout(self)
         self.layoutTopFrame.setContentsMargins(0, 0, 0, 0)
-        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.layoutTopFrame.addItem(spacerItem, 1, 0, 1, 1)
         self.topFrame = QFrame(self)
         self.topFrame.setStyleSheet('background-color: rgb(255, 255, 230);')
-        self.topFrame.setFrameShape(QFrame.StyledPanel)
+        self.topFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.topFrame.setMinimumHeight(24)
         self.layoutTopFrame2 = QGridLayout(self.topFrame)
         self.layoutTopFrame2.setContentsMargins(0, 0, 0, 0)
@@ -578,7 +629,7 @@ class EditorTabWidget(QTabWidget):
         self.restoreTabsButton.setIcon(QgsApplication.getThemeIcon("console/iconRestoreTabsConsole.svg"))
         self.restoreTabsButton.setIconSize(QSize(24, 24))
         self.restoreTabsButton.setAutoRaise(True)
-        self.restoreTabsButton.setCursor(Qt.PointingHandCursor)
+        self.restoreTabsButton.setCursor(Qt.CursorShape.PointingHandCursor)
         self.restoreTabsButton.setStyleSheet('QToolButton:hover{border: none } \
                                               QToolButton:pressed{border: none}')
 
@@ -588,12 +639,12 @@ class EditorTabWidget(QTabWidget):
         self.clButton.setToolTip(toolTipClose)
         self.clButton.setIcon(QgsApplication.getThemeIcon("/mIconClose.svg"))
         self.clButton.setIconSize(QSize(18, 18))
-        self.clButton.setCursor(Qt.PointingHandCursor)
+        self.clButton.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clButton.setStyleSheet('QToolButton:hover{border: none } \
                                      QToolButton:pressed{border: none}')
         self.clButton.setAutoRaise(True)
 
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         self.topFrame.setSizePolicy(sizePolicy)
         self.layoutTopFrame.addWidget(self.topFrame, 0, 0, 1, 1)
         self.layoutTopFrame2.addWidget(self.label, 0, 1, 1, 1)
@@ -610,7 +661,7 @@ class EditorTabWidget(QTabWidget):
 
         self.setMovable(True)
         self.setTabsClosable(True)
-        self.setTabPosition(QTabWidget.North)
+        self.setTabPosition(QTabWidget.TabPosition.North)
 
         # Menu button list tabs
         self.fileTabMenu = QMenu()
@@ -623,9 +674,9 @@ class EditorTabWidget(QTabWidget):
         self.fileTabButton.setIcon(QgsApplication.getThemeIcon("console/iconFileTabsMenuConsole.svg"))
         self.fileTabButton.setIconSize(QSize(24, 24))
         self.fileTabButton.setAutoRaise(True)
-        self.fileTabButton.setPopupMode(QToolButton.InstantPopup)
+        self.fileTabButton.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.fileTabButton.setMenu(self.fileTabMenu)
-        self.setCornerWidget(self.fileTabButton, Qt.TopRightCorner)
+        self.setCornerWidget(self.fileTabButton, Qt.Corner.TopRightCorner)
         self.tabCloseRequested.connect(self._removeTab)
         self.currentChanged.connect(self._currentWidgetChanged)
 
@@ -637,7 +688,7 @@ class EditorTabWidget(QTabWidget):
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.svg"))
         self.newTabButton.setIconSize(QSize(24, 24))
-        self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
+        self.setCornerWidget(self.newTabButton, Qt.Corner.TopLeftCorner)
         self.newTabButton.clicked.connect(self.newTabEditor)
 
     def _currentWidgetChanged(self, tab):
@@ -684,7 +735,7 @@ class EditorTabWidget(QTabWidget):
                 closeOthersTabAction.setEnabled(True)
             if self.widget(self.idx).isModified():
                 saveAction.setEnabled(True)
-            menu.exec_(self.mapToGlobal(e.pos()))
+            menu.exec(self.mapToGlobal(e.pos()))
 
     def closeOthers(self):
         idx = self.idx
@@ -761,10 +812,10 @@ class EditorTabWidget(QTabWidget):
                                                             "The file <b>'{0}'</b> has been modified, save changes?").format(self.tabText(tab))
             res = QMessageBox.question(self, txtSaveOnRemove,
                                        txtMsgSaveOnRemove,
-                                       QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
-            if res == QMessageBox.Cancel:
+                                       QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel)
+            if res == QMessageBox.StandardButton.Cancel:
                 return
-            if res == QMessageBox.Save:
+            if res == QMessageBox.StandardButton.Save:
                 editorTab.save()
             if editorTab.path:
                 self.parent.updateTabListScript(editorTab.path, action='remove')
@@ -781,7 +832,7 @@ class EditorTabWidget(QTabWidget):
                 self.removeTab(tab)
 
         editorTab.deleteLater()
-        self.currentWidget()._editor.setFocus(Qt.TabFocusReason)
+        self.currentWidget()._editor.setFocus(Qt.FocusReason.TabFocusReason)
 
     def restoreTabsOrAddNew(self):
         """
@@ -813,7 +864,7 @@ class EditorTabWidget(QTabWidget):
             self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
-        self.currentWidget()._editor.setFocus(Qt.TabFocusReason)
+        self.currentWidget()._editor.setFocus(Qt.FocusReason.TabFocusReason)
 
     def closeRestore(self):
         self.parent.updateTabListScript(None)
@@ -920,7 +971,7 @@ class EditorTabWidget(QTabWidget):
         if objInspectorEnabled:
             cW = self.currentWidget()
             if cW and not self.parent.listClassMethod.isVisible():
-                with OverrideCursor(Qt.WaitCursor):
+                with OverrideCursor(Qt.CursorShape.WaitCursor):
                     self.listObject(cW)
 
     def changeLastDirPath(self, tab):
@@ -928,6 +979,6 @@ class EditorTabWidget(QTabWidget):
         if tabWidget and tabWidget.path:
             self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
-    def showMessage(self, text, level=Qgis.Info, timeout=-1, title=""):
+    def showMessage(self, text, level=Qgis.MessageLevel.Info, timeout=-1, title=""):
         currWidget = self.currentWidget()
         currWidget.showMessage(text, level, timeout, title)

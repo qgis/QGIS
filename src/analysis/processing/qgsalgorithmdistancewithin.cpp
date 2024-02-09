@@ -106,7 +106,7 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource( const QgsPr
     bool onlyRequireTargetIds,
     QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext )
 {
-  if ( referenceSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( referenceSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
 
   QgsFeatureIds foundSet;
@@ -160,7 +160,7 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverReferenceSource( const Qg
     bool onlyRequireTargetIds,
     QgsProcessingFeedback *feedback )
 {
-  if ( targetSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+  if ( targetSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
 
   QgsFeatureIds foundSet;

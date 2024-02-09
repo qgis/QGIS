@@ -92,14 +92,18 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
 void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
 {
   mRasterLayer = qobject_cast< QgsRasterLayer * >( layer );
-  if ( mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+  const QgsRasterDataProvider *provider = mRasterLayer->dataProvider() ;
+  if ( !provider )
+    return;
+  const QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = provider->temporalCapabilities();
+  if ( temporalCapabilities && temporalCapabilities->hasTemporalCapabilities() )
   {
-    const QgsDateTimeRange availableProviderRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
-    const QgsDateTimeRange availableReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
+    const QgsDateTimeRange availableProviderRange = temporalCapabilities->availableTemporalRange();
+    const QgsDateTimeRange availableReferenceRange = temporalCapabilities->availableReferenceTemporalRange();
 
-    const QList< QgsDateTimeRange > allAvailableRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+    const QList< QgsDateTimeRange > allAvailableRanges = temporalCapabilities->allAvailableTemporalRanges();
     // determine if available ranges are a set of non-contiguous instants, and if so, we show a combobox to users instead of the free-form date widgets
-    if ( ( mRasterLayer->dataProvider()->temporalCapabilities()->flags() & Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges )
+    if ( ( temporalCapabilities->flags() & Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges )
          || (
            allAvailableRanges.size() < 50 &&
     std::all_of( allAvailableRanges.cbegin(), allAvailableRanges.cend(), []( const QgsDateTimeRange & range ) { return range.isInstant(); } ) )

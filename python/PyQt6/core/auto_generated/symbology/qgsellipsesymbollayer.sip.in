@@ -57,7 +57,7 @@ Returns ``True`` if a ``shape`` has a fill.
     QgsEllipseSymbolLayer();
     ~QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
 %Docstring
 Creates the symbol layer
 %End
@@ -73,12 +73,12 @@ Creates the symbol layer
 
     virtual QgsEllipseSymbolLayer *clone() const /Factory/;
 
-    virtual QVariantMap properties() const;
+    virtual QMap<QString, QVariant> properties() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
 
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;

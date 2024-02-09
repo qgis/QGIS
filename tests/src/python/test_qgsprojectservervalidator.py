@@ -39,21 +39,21 @@ class TestQgsprojectServerValidator(QgisTestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.DuplicatedNames, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.DuplicatedNames, results[0].error)
 
         # Not valid, short name is invalid
         layer_1.setShortName('layer_1_invalid_#')
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.LayerShortName, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.LayerShortName, results[0].error)
 
         # Not valid, same short name as the first layer name
         layer_1.setShortName('layer_1')
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.DuplicatedNames, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.DuplicatedNames, results[0].error)
 
         # Valid
         layer_1.setShortName('layer_1_bis')
@@ -66,7 +66,7 @@ class TestQgsprojectServerValidator(QgisTestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.DuplicatedNames, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.DuplicatedNames, results[0].error)
 
         # Valid
         group.setCustomProperty('wmsShortName', 'my_group1')
@@ -79,7 +79,7 @@ class TestQgsprojectServerValidator(QgisTestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.ProjectShortName, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.ProjectShortName, results[0].error)
 
         # Valid project title
         project.setTitle('project_title')
@@ -100,13 +100,13 @@ class TestQgsprojectServerValidator(QgisTestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.ProjectShortName, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.ProjectShortName, results[0].error)
 
         # Not valid, duplicated project short name
         project.writeEntry('WMSRootName', '/', 'layer_1')
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.ProjectRootNameConflict, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.ValidationError.ProjectRootNameConflict, results[0].error)
 
 
 if __name__ == '__main__':

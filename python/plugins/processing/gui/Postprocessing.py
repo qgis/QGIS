@@ -89,10 +89,10 @@ def post_process_layer(output_name: str,
         if layer.type() == Qgis.LayerType.Raster:
             style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
         elif layer.type() == Qgis.LayerType.Vector:
-            if layer.geometryType() == QgsWkbTypes.PointGeometry:
+            if layer.geometryType() == QgsWkbTypes.GeometryType.PointGeometry:
                 style = ProcessingConfig.getSetting(
                     ProcessingConfig.VECTOR_POINT_STYLE)
-            elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+            elif layer.geometryType() == QgsWkbTypes.GeometryType.LineGeometry:
                 style = ProcessingConfig.getSetting(
                     ProcessingConfig.VECTOR_LINE_STYLE)
             else:
@@ -255,7 +255,7 @@ def handleAlgorithmResults(alg: QgsProcessingAlgorithm,
                     "Error loading result layer:"
                 ) + "\n" + traceback.format_exc(),
                 'Processing',
-                Qgis.Critical)
+                Qgis.MessageLevel.Critical)
             wrong_layers.append(str(dest_id))
         i += 1
 

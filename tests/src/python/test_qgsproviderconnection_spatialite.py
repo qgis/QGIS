@@ -107,26 +107,26 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
 
         # Retrieve capabilities
         capabilities = conn.capabilities()
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Tables))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Schemas))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.CreateVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable))
-        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameVectorTable))
-        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.RenameRasterTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Tables))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.Schemas))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.CreateVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.DropVectorTable))
+        self.assertTrue(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameVectorTable))
+        self.assertFalse(bool(capabilities & QgsAbstractDatabaseProviderConnection.Capability.RenameRasterTable))
 
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3857)
-        typ = QgsWkbTypes.LineString
-        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.NoGeometry, crs, True, {})
+        typ = QgsWkbTypes.Type.LineString
+        conn.createVectorTable('', 'myNewAspatialTable', QgsFields(), QgsWkbTypes.Type.NoGeometry, crs, True, {})
         conn.createVectorTable('', 'myNewTable', QgsFields(), typ, crs, True, {})
 
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.View))
-        self.assertTrue('my_view' in table_names)
-        self.assertFalse('myNewTable' in table_names)
-        self.assertFalse('myNewAspatialTable' in table_names)
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.View))
+        self.assertIn('my_view', table_names)
+        self.assertNotIn('myNewTable', table_names)
+        self.assertNotIn('myNewAspatialTable', table_names)
 
-        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.Aspatial))
-        self.assertFalse('myNewTable' in table_names)
-        self.assertTrue('myNewAspatialTable' in table_names)
+        table_names = self._table_names(conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial))
+        self.assertNotIn('myNewTable', table_names)
+        self.assertIn('myNewAspatialTable', table_names)
 
     def test_spatialite_fields(self):
         """Test fields"""
@@ -151,7 +151,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         vl = conn.createSqlVectorLayer(options)
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSqlQuery())
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
         self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])
@@ -162,7 +162,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         self.assertTrue(vl.isSqlQuery())
         # Test flags
         self.assertTrue(vl.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
-        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PolygonGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])

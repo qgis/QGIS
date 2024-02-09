@@ -1,0 +1,3 @@
+Embedded copy of https://github.com/JakubMelka/PDF4QT
+
+Current snapshot is 4f1fca4b7035bf49f60d5ddcf52f9ba3c83e7fff

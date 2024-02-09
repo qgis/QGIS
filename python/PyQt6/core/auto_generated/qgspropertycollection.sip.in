@@ -327,7 +327,7 @@ Reads property collection state from an XML element.
 
     virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
 %Docstring
-Saves this property collection to a QVariantMap, wrapped in a QVariant.
+Saves this property collection to a QMap<QString, QVariant>, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
@@ -335,11 +335,12 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
     virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 %Docstring
-Loads this property collection from a QVariantMap, wrapped in a QVariant.
+Loads this property collection from a QMap<QString, QVariant>, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.readVariant to save it to an XML document.
 
 .. seealso:: :py:func:`toVariant`
 %End
+
 
 };
 
@@ -397,11 +398,11 @@ Copy constructor.
 Returns the number of properties contained within the collection.
 %End
 
-    virtual QSet<int> propertyKeys() const;
+    QSet<int> propertyKeys() const final;
+    void clear() final;
+    bool hasProperty( int key ) const final;
 
-    virtual void clear();
 
-    virtual bool hasProperty( int key ) const;
 
 
     virtual QgsProperty &property( int key );
@@ -416,23 +417,20 @@ Returns a reference to a matching property from the collection, if one exists.
 .. seealso:: :py:func:`hasProperty`
 %End
 
-    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const;
 
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
-
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const;
-
-    virtual bool isActive( int key ) const;
-
-    virtual bool hasActiveProperties() const;
-
-    virtual bool hasDynamicProperties() const;
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const final;
 
 
-    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const final;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
+    bool isActive( int key ) const final;
 
-    virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions );
 
+    bool hasActiveProperties() const final;
+    bool hasDynamicProperties() const final;
+
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const final;
+    bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) final;
 
     void setProperty( int key, const QgsProperty &property );
 %Docstring
@@ -445,6 +443,7 @@ Adds a property to the collection and takes ownership of it.
                  will remove the property from the collection.
 %End
 
+
     void setProperty( int key, const QVariant &value );
 %Docstring
 Convenience method, creates a :py:class:`QgsStaticProperty` and stores it within the collection.
@@ -454,6 +453,7 @@ Convenience method, creates a :py:class:`QgsStaticProperty` and stores it within
             int and used for the key value.
 :param value: static value for property
 %End
+
 
 };
 

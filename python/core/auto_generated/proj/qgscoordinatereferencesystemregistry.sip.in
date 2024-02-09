@@ -150,6 +150,40 @@ Returns a list of all known authorities.
 %End
 
 
+    QList< QgsCoordinateReferenceSystem > recentCrs();
+%Docstring
+Returns a list of recently used CRS.
+
+.. versionadded:: 3.36
+%End
+
+    void pushRecent( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Pushes a recently used CRS to the top of the recent CRS list.
+
+.. seealso:: :py:func:`recentCrsPushed`
+
+.. versionadded:: 3.16
+%End
+
+    void removeRecent( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Removes a CRS from the list of recently used CRS.
+
+.. seealso:: :py:func:`recentCrsRemoved`
+
+.. versionadded:: 3.36
+%End
+
+    void clearRecent();
+%Docstring
+Cleans the list of recently used CRS.
+
+.. seealso:: :py:func:`recentCrsCleared`
+
+.. versionadded:: 3.36
+%End
+
   signals:
 
     void userCrsChanged( const QString &id );
@@ -190,6 +224,33 @@ from the database.
 %Docstring
 Emitted whenever an operation has caused any of the known CRS definitions (including
 user-defined CRS) to change.
+%End
+
+    void recentCrsPushed( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Emitted when a recently used CRS has been pushed to the top of the recent CRS list.
+
+.. seealso:: :py:func:`pushRecent`
+
+.. versionadded:: 3.36
+%End
+
+    void recentCrsRemoved( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Emitted when a recently used CRS has been removed from the recent CRS list.
+
+.. seealso:: :py:func:`removeRecent`
+
+.. versionadded:: 3.36
+%End
+
+    void recentCrsCleared();
+%Docstring
+Emitted when the list of recently used CRS has been cleared.
+
+.. seealso:: :py:func:`clearRecent`
+
+.. versionadded:: 3.36
 %End
 
 };

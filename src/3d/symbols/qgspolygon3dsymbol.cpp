@@ -18,8 +18,8 @@
 #include <Qt3DCore/QEntity>
 
 #include "qgs3dutils.h"
-#include "qgssymbollayerutils.h"
 #include "qgs3d.h"
+#include "qgscolorutils.h"
 #include "qgsmaterialregistry.h"
 #include "qgs3dsceneexporter.h"
 #include "qgsvectorlayerelevationproperties.h"
@@ -82,7 +82,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   QDomElement elemEdges = doc.createElement( QStringLiteral( "edges" ) );
   elemEdges.setAttribute( QStringLiteral( "enabled" ), mEdgesEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemEdges.setAttribute( QStringLiteral( "width" ), mEdgeWidth );
-  elemEdges.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mEdgeColor ) );
+  elemEdges.setAttribute( QStringLiteral( "color" ), QgsColorUtils::colorToString( mEdgeColor ) );
   elem.appendChild( elemEdges );
 }
 
@@ -116,7 +116,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   {
     mEdgesEnabled = elemEdges.attribute( QStringLiteral( "enabled" ) ).toInt();
     mEdgeWidth = elemEdges.attribute( QStringLiteral( "width" ) ).toFloat();
-    mEdgeColor = QgsSymbolLayerUtils::decodeColor( elemEdges.attribute( QStringLiteral( "color" ) ) );
+    mEdgeColor = QgsColorUtils::colorFromString( elemEdges.attribute( QStringLiteral( "color" ) ) );
   }
 }
 
@@ -132,21 +132,21 @@ void QgsPolygon3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *la
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
   mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
-  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ExtrusionHeight ) )
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) )
   {
-    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ExtrusionHeight ) );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::ExtrusionHeight ) );
   }
   else
   {
-    mDataDefinedProperties.setProperty( PropertyExtrusionHeight, QgsProperty() );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, QgsProperty() );
   }
-  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::ZOffset ) )
+  if ( props->dataDefinedProperties().isActive( QgsMapLayerElevationProperties::Property::ZOffset ) )
   {
-    mDataDefinedProperties.setProperty( PropertyHeight, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::ZOffset ) );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::Height, props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::ZOffset ) );
   }
   else
   {
-    mDataDefinedProperties.setProperty( PropertyHeight, QgsProperty() );
+    mDataDefinedProperties.setProperty( QgsAbstract3DSymbol::Property::Height, QgsProperty() );
   }
   mOffset = static_cast< float >( props->zOffset() );
 }

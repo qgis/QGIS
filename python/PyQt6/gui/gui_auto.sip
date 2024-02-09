@@ -36,11 +36,7 @@
 %Include auto_generated/qgscolorwidgets.sip
 %Include auto_generated/qgscompoundcolorwidget.sip
 %Include auto_generated/qgsconfigureshortcutsdialog.sip
-%Include auto_generated/qgscoordinateboundspreviewmapwidget.sip
-%Include auto_generated/qgscoordinateoperationwidget.sip
-%Include auto_generated/qgscoordinatereferencesystemmodel.sip
 %Include auto_generated/qgscredentialdialog.sip
-%Include auto_generated/qgscrsdefinitionwidget.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
 %Include auto_generated/qgscustomprojectopenhandler.sip
@@ -168,6 +164,7 @@
 %Include auto_generated/qgspanelwidget.sip
 %Include auto_generated/qgspanelwidgetstack.sip
 %Include auto_generated/qgspasswordlineedit.sip
+%Include auto_generated/qgspercentagewidget.sip
 %Include auto_generated/qgspixmaplabel.sip
 %Include auto_generated/qgsplaybackcontrollerwidget.sip
 %Include auto_generated/qgspluginmanagerinterface.sip
@@ -175,9 +172,6 @@
 %Include auto_generated/qgspointcloudquerybuilder.sip
 %Include auto_generated/qgspresetcolorrampdialog.sip
 %Include auto_generated/qgsprevieweffect.sip
-%Include auto_generated/qgsprojectionselectiondialog.sip
-%Include auto_generated/qgsprojectionselectiontreewidget.sip
-%Include auto_generated/qgsprojectionselectionwidget.sip
 %Include auto_generated/qgsprojectstorageguiprovider.sip
 %Include auto_generated/qgsprojectstorageguiregistry.sip
 %Include auto_generated/qgspropertyassistantwidget.sip
@@ -440,6 +434,14 @@
 %Include auto_generated/processing/models/qgsmodelgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsview.sip
+%Include auto_generated/proj/qgscoordinateboundspreviewmapwidget.sip
+%Include auto_generated/proj/qgscoordinateoperationwidget.sip
+%Include auto_generated/proj/qgscoordinatereferencesystemmodel.sip
+%Include auto_generated/proj/qgscrsdefinitionwidget.sip
+%Include auto_generated/proj/qgsprojectionselectiondialog.sip
+%Include auto_generated/proj/qgsprojectionselectiontreewidget.sip
+%Include auto_generated/proj/qgsprojectionselectionwidget.sip
+%Include auto_generated/proj/qgsrecentcoordinatereferencesystemsmodel.sip
 %Include auto_generated/providers/qgsabstractdbsourceselect.sip
 %Include auto_generated/raster/qgsrasterattributetablewidget.sip
 %Include auto_generated/raster/qgsrasterattributetabledialog.sip

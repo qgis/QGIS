@@ -140,7 +140,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
         serverIface.registerFilter(filter2, 100)
         serverIface.registerFilter(filter3, 300)
         serverIface.registerFilter(filter4, 400)
-        self.assertTrue(filter2 in serverIface.filters()[100])
+        self.assertIn(filter2, serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
         header, body = (_v for _v in self._execute_request('?service=simple'))
@@ -157,8 +157,8 @@ class TestQgsServerPlugins(QgsServerTestBase):
         # Check that the bindings for complex type QgsServerFiltersMap are working
         filters = {100: [filter, filter2], 101: [filter1], 200: [filter2]}
         serverIface.setFilters(filters)
-        self.assertTrue(filter in serverIface.filters()[100])
-        self.assertTrue(filter2 in serverIface.filters()[100])
+        self.assertIn(filter, serverIface.filters()[100])
+        self.assertIn(filter2, serverIface.filters()[100])
         self.assertEqual(filter1, serverIface.filters()[101][0])
         self.assertEqual(filter2, serverIface.filters()[200][0])
         header, body = self._execute_request('?service=simple')

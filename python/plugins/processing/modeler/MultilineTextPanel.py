@@ -35,8 +35,8 @@ class MultilineTextPanel(QWidget):
         self.combo.addItem(self.tr('[Use text below]'))
         for option in options:
             self.combo.addItem(option[0], option[1])
-        self.combo.setSizePolicy(QSizePolicy.Expanding,
-                                 QSizePolicy.Expanding)
+        self.combo.setSizePolicy(QSizePolicy.Policy.Expanding,
+                                 QSizePolicy.Policy.Expanding)
         self.verticalLayout.addWidget(self.combo)
         self.textBox = QPlainTextEdit()
         self.verticalLayout.addWidget(self.textBox)

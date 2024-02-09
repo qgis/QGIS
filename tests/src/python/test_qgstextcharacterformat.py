@@ -27,7 +27,6 @@ start_app()
 class TestQgsTextCharacterFormat(QgisTestCase):
 
     def setUp(self):
-        self.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
         QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
 
     def testGettersSetters(self):

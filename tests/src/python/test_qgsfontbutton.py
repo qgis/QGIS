@@ -56,8 +56,8 @@ class TestQgsFontButton(QgisTestCase):
 
     def testSetGetFont(self):
         button = QgsFontButton()
-        button.setMode(QgsFontButton.ModeQFont)
-        self.assertEqual(button.mode(), QgsFontButton.ModeQFont)
+        button.setMode(QgsFontButton.Mode.ModeQFont)
+        self.assertEqual(button.mode(), QgsFontButton.Mode.ModeQFont)
 
         s = getTestFont()
         s.setPointSize(16)

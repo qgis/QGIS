@@ -1466,7 +1466,7 @@ bool QgsWFSProvider::empty() const
   QgsFeature f;
   QgsFeatureRequest request;
   request.setNoAttributes();
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
   // Whoops, the WFS provider returns an empty iterator when we are using
   // a setLimit call in combination with a subsetString.
@@ -2060,11 +2060,15 @@ bool QgsWFSProvider::getCapabilities()
 
   //find the <FeatureType> for this layer
   QString thisLayerName = mShared->mURI.typeName();
+  const QString searchName = mShared->mCaps.addPrefixIfNeeded( thisLayerName );
   bool foundLayer = false;
   for ( int i = 0; i < mShared->mCaps.featureTypes.size(); i++ )
   {
-    if ( thisLayerName == mShared->mCaps.featureTypes[i].name )
+    if ( searchName == mShared->mCaps.featureTypes[i].name )
     {
+      if ( mShared->mURI.typeName() != mShared->mCaps.featureTypes[i].name )
+        mShared->mURI.setTypeName( mShared->mCaps.featureTypes[i].name );
+
       const QgsRectangle &r = mShared->mCaps.featureTypes[i].bbox;
       if ( mShared->mSourceCrs.authid().isEmpty() && mShared->mCaps.featureTypes[i].crslist.size() != 0 )
       {

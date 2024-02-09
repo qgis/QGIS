@@ -1579,7 +1579,7 @@ QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &c
   }
 
   // docs don't mention the WKT version support, so let's hope for 2.0...
-  res.insert( QStringLiteral( "wkt" ), crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019_SIMPLIFIED ) );
+  res.insert( QStringLiteral( "wkt" ), crs.toWkt( Qgis::CrsWktVariant::Wkt2_2019Simplified ) );
 
   return res;
 }

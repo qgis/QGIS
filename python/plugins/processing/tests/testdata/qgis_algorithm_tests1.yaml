@@ -900,6 +900,21 @@ tests:
             normalize: True
 
   - algorithm: native:dissolve
+    name: Dissolve separate disjoint with geopackage input and output 
+    params:
+      INPUT:
+        name: custom/pol.gpkg|layername=pol1
+        type: vector
+      SEPARATE_DISJOINT: true
+    results:
+      OUTPUT:
+        name: expected/dissolve_pol.gpkg
+        type: vector
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:dissolve
     name: Dissolve separate disjoint with classes
     params:
       FIELD:

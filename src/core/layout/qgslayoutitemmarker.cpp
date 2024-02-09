@@ -37,7 +37,7 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   mShapeStyleSymbol.reset( QgsMarkerSymbol::createSimple( properties ) );
   refreshSymbol();
 
-  connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [ = ]
+  connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [this]
   {
     updateBoundingRect();
     update();

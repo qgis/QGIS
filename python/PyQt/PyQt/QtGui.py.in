@@ -28,15 +28,15 @@ from PyQt@QT_VERSION_MAJOR@.QtGui import *
 def __qcolor_repr__(self: QColor):
     if not self.isValid():
         return '<QColor: invalid>'
-    elif self.spec() == QColor.Rgb:
+    elif self.spec() == QColor.Spec.Rgb:
         return f'<QColor: RGBA {self.red()}, {self.green()}, {self.blue()}, {self.alpha()}>'
-    elif self.spec() == QColor.Hsv:
+    elif self.spec() == QColor.Spec.Hsv:
         return f'<QColor: HSVA {self.hsvHue()}, {self.hsvSaturation()}, {self.value()}, {self.alpha()}>'
-    elif self.spec() == QColor.Cmyk:
+    elif self.spec() == QColor.Spec.Cmyk:
         return f'<QColor: CMYKA {self.cyan()}, {self.magenta()}, {self.yellow()}, {self.black()}, {self.alpha()}>'
-    elif self.spec() == QColor.Hsl:
+    elif self.spec() == QColor.Spec.Hsl:
         return f'<QColor: HSLA {self.hslHue()}, {self.hslSaturation()}, {self.lightness()}, {self.alpha()}>'
-    elif self.spec() == QColor.ExtendedRgb:
+    elif self.spec() == QColor.Spec.ExtendedRgb:
         return f'<QColor: Extended RGBA {self.redF()}, {self.greenF()}, {self.blueF()}, {self.alphaF()}>'
 
 
@@ -47,3 +47,21 @@ if (QT_VERSION < 0x060000):
   from PyQt5.QtWidgets import QAction as _QAction, QShortcut as _QShortcut
   QAction = _QAction
   QShortcut = _QShortcut
+
+
+if @QT_VERSION_MAJOR@ == 6:
+  # patch back in Qt flags removed in PyQt
+  QFileSystemModel.Options = lambda flags=0: QFileSystemModel.Option(flags)
+  QGlyphRun.GlyphRunFlags = lambda flags=0: QGlyphRun.GlyphRunFlag(flags)
+  QImageIOHandler.Transformations = lambda flags=0: QImageIOHandler.Transformation(flags)
+  QPaintEngine.DirtyFlags = lambda flags=0: QPaintEngine.DirtyFlag(flags)
+  QPaintEngine.PaintEngineFeatures = lambda flags=0: QPaintEngine.PaintEngineFeature(flags)
+  QPainter.PixmapFragmentHints = lambda flags=0: QPainter.PixmapFragmentHint(flags)
+  QPainter.RenderHints = lambda flags=0: QPainter.RenderHint(flags)
+  QRawFont.LayoutFlags = lambda flags=0: QRawFont.LayoutFlag(flags)
+  QSurfaceFormat.FormatOptions = lambda flags=0: QSurfaceFormat.FormatOption(flags)
+  QTextFormat.PageBreakFlags = lambda flags=0: QTextFormat.PageBreakFlag(flags)
+  QTextDocument.FindFlags = lambda flags=0: QTextDocument.FindFlag(flags)
+  QTextDocument.MarkdownFeatures = lambda flags=0: QTextDocument.MarkdownFeature(flags)
+  QTextItem.RenderFlags = lambda flags=0: QTextItem.RenderFlag(flags)
+  QTextOption.Flags = lambda flags=0: QTextOption.Flag(flags)

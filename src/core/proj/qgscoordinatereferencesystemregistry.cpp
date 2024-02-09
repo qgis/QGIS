@@ -27,6 +27,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsexception.h"
 #include "qgsprojoperation.h"
+#include "qgssettings.h"
 
 #include <QFileInfo>
 #include <sqlite3.h>
@@ -95,7 +96,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
   {
     proj4String = crs.toProj();
   }
-  const QString wktString = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  const QString wktString = crs.toWkt( Qgis::CrsWktVariant::Preferred );
 
   // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
@@ -186,7 +187,7 @@ bool QgsCoordinateReferenceSystemRegistry::updateUserCrs( long id, const QgsCoor
                       + ",ellipsoid_acronym=" + ( !crs.ellipsoidAcronym().isEmpty() ? QgsSqliteUtils::quotedString( crs.ellipsoidAcronym() ) : QStringLiteral( "''" ) )
                       + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
                       + ",is_geo=0" // <--shamelessly hard coded for now
-                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) ) : QStringLiteral( "''" ) )
+                      + ",wkt=" + ( nativeFormat == Qgis::CrsDefinitionFormat::Wkt ? QgsSqliteUtils::quotedString( crs.toWkt( Qgis::CrsWktVariant::Preferred, false ) ) : QStringLiteral( "''" ) )
                       + " where srs_id=" + QgsSqliteUtils::quotedString( QString::number( id ) )
                       ;
 
@@ -350,7 +351,7 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
 QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperations() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize PROJ operations" ) );
 
@@ -380,7 +381,7 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 #if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Initialize celestial bodies" ) );
 
@@ -414,7 +415,7 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Initialize authorities" ) );
 
@@ -436,7 +437,7 @@ QSet<QString> QgsCoordinateReferenceSystemRegistry::authorities() const
 QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, [this]
   {
     const QString srsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
     if ( QFileInfo::exists( srsDatabaseFileName ) )
@@ -468,4 +469,140 @@ QList<QgsCrsDbRecord> QgsCoordinateReferenceSystemRegistry::crsDbRecords() const
   } );
 
   return mCrsDbRecords;
+}
+
+QList<QgsCoordinateReferenceSystem> QgsCoordinateReferenceSystemRegistry::recentCrs()
+{
+  QList<QgsCoordinateReferenceSystem> res;
+
+  // Read settings from persistent storage
+  QgsSettings settings;
+  QStringList projectionsProj4  = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
+  QStringList projectionsWkt = settings.value( QStringLiteral( "UI/recentProjectionsWkt" ) ).toStringList();
+  QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
+  int max = std::max( projectionsAuthId.size(), std::max( projectionsProj4.size(), projectionsWkt.size() ) );
+  res.reserve( max );
+  for ( int i = 0; i < max; ++i )
+  {
+    const QString proj = projectionsProj4.value( i );
+    const QString wkt = projectionsWkt.value( i );
+    const QString authid = projectionsAuthId.value( i );
+
+    QgsCoordinateReferenceSystem crs;
+    if ( !authid.isEmpty() )
+      crs = QgsCoordinateReferenceSystem( authid );
+    if ( !crs.isValid() && !wkt.isEmpty() )
+      crs.createFromWkt( wkt );
+    if ( !crs.isValid() && !proj.isEmpty() )
+      crs.createFromProj( wkt );
+
+    if ( crs.isValid() )
+      res << crs;
+  }
+  return res;
+}
+
+void QgsCoordinateReferenceSystemRegistry::clearRecent()
+{
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "UI/recentProjectionsAuthId" ) );
+  settings.remove( QStringLiteral( "UI/recentProjectionsWkt" ) );
+  settings.remove( QStringLiteral( "UI/recentProjectionsProj4" ) );
+
+  emit recentCrsCleared();
+}
+
+void QgsCoordinateReferenceSystemRegistry::pushRecent( const QgsCoordinateReferenceSystem &crs )
+{
+  // we only want saved and standard CRSes in the recent list
+  if ( crs.srsid() == 0 || !crs.isValid() )
+    return;
+
+  QList<QgsCoordinateReferenceSystem> recent = recentCrs();
+  recent.removeAll( crs );
+  recent.insert( 0, crs );
+
+  auto hasVertical = []( const QgsCoordinateReferenceSystem & crs )
+  {
+    switch ( crs.type() )
+    {
+      case Qgis::CrsType::Unknown:
+      case Qgis::CrsType::Geodetic:
+      case Qgis::CrsType::Geocentric:
+      case Qgis::CrsType::Geographic2d:
+      case Qgis::CrsType::Projected:
+      case Qgis::CrsType::Temporal:
+      case Qgis::CrsType::Engineering:
+      case Qgis::CrsType::Bound:
+      case Qgis::CrsType::Other:
+      case Qgis::CrsType::DerivedProjected:
+        return false;
+
+      case Qgis::CrsType::Geographic3d:
+      case Qgis::CrsType::Vertical:
+      case Qgis::CrsType::Compound:
+        return true;
+    }
+    BUILTIN_UNREACHABLE
+  };
+  QList<QgsCoordinateReferenceSystem> recentSameType;
+  std::copy_if( recent.begin(), recent.end(), std::back_inserter( recentSameType ), [crs, &hasVertical]( const QgsCoordinateReferenceSystem & it )
+  {
+    return hasVertical( it ) == hasVertical( crs );
+  } );
+
+  // trim to max 30 items of the same type
+  const QList<QgsCoordinateReferenceSystem> toTrim = recentSameType.mid( 30 );
+  for ( const QgsCoordinateReferenceSystem &crsTrimmed : toTrim )
+  {
+    recent.removeOne( crsTrimmed );
+    emit recentCrsRemoved( crsTrimmed );
+  }
+
+  QStringList authids;
+  authids.reserve( recent.size() );
+  QStringList proj;
+  proj.reserve( recent.size() );
+  QStringList wkt;
+  wkt.reserve( recent.size() );
+  for ( const QgsCoordinateReferenceSystem &c : std::as_const( recent ) )
+  {
+    authids << c.authid();
+    proj << c.toProj();
+    wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
+  }
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
+  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
+  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+
+  emit recentCrsPushed( crs );
+}
+
+void QgsCoordinateReferenceSystemRegistry::removeRecent( const QgsCoordinateReferenceSystem &crs )
+{
+  if ( crs.srsid() == 0 || !crs.isValid() )
+    return;
+
+  QList<QgsCoordinateReferenceSystem> recent = recentCrs();
+  recent.removeAll( crs );
+  QStringList authids;
+  authids.reserve( recent.size() );
+  QStringList proj;
+  proj.reserve( recent.size() );
+  QStringList wkt;
+  wkt.reserve( recent.size() );
+  for ( const QgsCoordinateReferenceSystem &c : std::as_const( recent ) )
+  {
+    authids << c.authid();
+    proj << c.toProj();
+    wkt << c.toWkt( Qgis::CrsWktVariant::Preferred );
+  }
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), authids );
+  settings.setValue( QStringLiteral( "UI/recentProjectionsWkt" ), wkt );
+  settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), proj );
+
+  emit recentCrsRemoved( crs );
 }

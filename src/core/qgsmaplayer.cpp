@@ -95,7 +95,7 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type,
   mID = generateId( lyrname );
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
-  connect( mRefreshTimer, &QTimer::timeout, this, [ = ]
+  connect( mRefreshTimer, &QTimer::timeout, this, [this]
   {
 
     switch ( mAutoRefreshMode )
@@ -128,6 +128,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  QgsDebugMsgLevel( QStringLiteral( "Cloning layer '%1'" ).arg( name() ), 3 );
   layer->setBlendMode( blendMode() );
 
   const auto constStyles = styleManager()->styles();
@@ -138,7 +139,15 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 
   layer->setName( name() );
   layer->setShortName( shortName() );
-  layer->setExtent3D( extent3D() );
+
+  if ( layer->dataProvider() && layer->dataProvider()->elevationProperties() )
+  {
+    if ( layer->dataProvider()->elevationProperties()->containsElevationData() )
+      layer->setExtent3D( extent3D() );
+    else
+      layer->setExtent( extent() );
+  }
+
   layer->setMaximumScale( maximumScale() );
   layer->setMinimumScale( minimumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
@@ -363,14 +372,14 @@ QgsRectangle QgsMapLayer::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mExtent.toRectangle();
+  return mExtent2D.isNull() ? mExtent3D.toRectangle() : mExtent2D;
 }
 
 QgsBox3D QgsMapLayer::extent3D() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mExtent;
+  return mExtent3D;
 }
 
 void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
@@ -433,7 +442,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   // set data source
   mnl = layerElement.namedItem( QStringLiteral( "datasource" ) );
   mne = mnl.toElement();
-  mDataSource = context.pathResolver().readPath( mne.text() );
+  const QString dataSourceRaw = mne.text();
+  mDataSource = provider.isEmpty() ? dataSourceRaw : QgsProviderRegistry::instance()->relativeToAbsoluteUri( provider, dataSourceRaw, context );
 
   // if the layer needs authentication, ensure the master password is set
   const thread_local QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
@@ -621,12 +631,12 @@ bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &cont
       const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
       if ( !extentNode.isNull() )
       {
-        mExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+        mExtent2D = QgsXmlUtils::readRectangle( extentNode.toElement() );
       }
     }
     else
     {
-      mExtent = QgsXmlUtils::readBox3D( extent3DNode.toElement() );
+      mExtent3D = QgsXmlUtils::readBox3D( extent3DNode.toElement() );
     }
   }
 
@@ -638,12 +648,12 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !extent().isNull() )
-  {
-    layerElement.appendChild( QgsXmlUtils::writeBox3D( mExtent, document ) );
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent.toRectangle(), document ) );
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
-  }
+  if ( dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
+    layerElement.appendChild( QgsXmlUtils::writeBox3D( extent3D(), document ) );
+  else
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( extent(), document ) );
+
+  layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
   layerElement.setAttribute( QStringLiteral( "autoRefreshMode" ), qgsEnumValueToKey( mAutoRefreshMode ) );
@@ -659,7 +669,10 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-  const QString src = context.pathResolver().writePath( encodedSource( source(), context ) );
+  const QgsDataProvider *provider = dataProvider();
+  const QString providerKey = provider ? provider->name() : QString();
+  const QString srcRaw = encodedSource( source(), context );
+  const QString src = providerKey.isEmpty() ? srcRaw : QgsProviderRegistry::instance()->absoluteToRelativeUri( providerKey, srcRaw, context );
   const QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
   layerElement.appendChild( dataSource );
@@ -2629,7 +2642,7 @@ void QgsMapLayer::emitStyleChanged()
 
 void QgsMapLayer::setExtent( const QgsRectangle &extent )
 {
-  updateExtent( QgsBox3D( extent ) );
+  updateExtent( extent );
 }
 
 void QgsMapLayer::setExtent3D( const QgsBox3D &extent )
@@ -2776,13 +2789,16 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
   {
     wgs84Extent = mWgs84Extent;
   }
-  else if ( ! mExtent.isNull() )
+  else if ( ! mExtent2D.isNull() || ! mExtent3D.isNull() )
   {
     QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
     transformer.setBallparkTransformsAreAppropriate( true );
     try
     {
-      wgs84Extent = transformer.transformBoundingBox( mExtent.toRectangle() );
+      if ( mExtent2D.isNull() )
+        wgs84Extent = transformer.transformBoundingBox( mExtent3D.toRectangle() );
+      else
+        wgs84Extent = transformer.transformBoundingBox( mExtent2D );
     }
     catch ( const QgsCsException &cse )
     {
@@ -2795,24 +2811,49 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
 
 void QgsMapLayer::updateExtent( const QgsRectangle &extent ) const
 {
-  QgsBox3D box = extent;
-  updateExtent( box );
-}
-
-void QgsMapLayer::updateExtent( const QgsBox3D &extent ) const
-{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( extent == mExtent )
+  if ( extent == mExtent2D )
     return;
 
-  mExtent = extent;
+  mExtent2D = extent;
 
   // do not update the wgs84 extent if we trust layer metadata
   if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
     return;
 
   mWgs84Extent = wgs84Extent( true );
+}
+
+void QgsMapLayer::updateExtent( const QgsBox3D &extent ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( extent == mExtent3D )
+    return;
+
+  if ( extent.isNull() )
+  {
+    if ( !extent.toRectangle().isNull() )
+    {
+      // bad 3D extent param but valid in 2d --> update 2D extent
+      updateExtent( extent.toRectangle() );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Unable to update extent with empty parameter" ), 1 );
+    }
+  }
+  else
+  {
+    mExtent3D = extent;
+
+    // do not update the wgs84 extent if we trust layer metadata
+    if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
+      return;
+
+    mWgs84Extent = wgs84Extent( true );
+  }
 }
 
 void QgsMapLayer::invalidateWgs84Extent()
@@ -2899,7 +2940,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
   if ( const auto keys = customPropertyKeys(); !keys.isEmpty() )
   {
     metadata += QStringLiteral( "<h1>" ) + tr( "Custom Properties" ) + QStringLiteral( "</h1>\n<hr>\n" );
-    metadata += QStringLiteral( "<table class=\"list-view\">\n<tbody>" );
+    metadata += QLatin1String( "<table class=\"list-view\">\n<tbody>" );
     for ( const QString &key : keys )
     {
       // keys prefaced with _ are considered private/internal details
@@ -2909,7 +2950,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
       const QVariant propValue = customProperty( key );
       metadata += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( key.toHtmlEscaped(), propValue.toString().toHtmlEscaped() );
     }
-    metadata += QStringLiteral( "</tbody></table>\n" );
+    metadata += QLatin1String( "</tbody></table>\n" );
     metadata += QLatin1String( "<br><br>\n" );
   }
 
@@ -2929,7 +2970,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
     metadata += QStringLiteral( "<tr><td colspan=\"2\" class=\"highlight\">" ) + tr( "Unknown" ) + QStringLiteral( "</td></tr>\n" );
   else
   {
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + c.userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( "</td></tr>\n" );
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + c.userFriendlyIdentifier( Qgis::CrsIdentifierType::FullString ) + QStringLiteral( "</td></tr>\n" );
 
     // map units
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Units" ) + QStringLiteral( "</td><td>" )

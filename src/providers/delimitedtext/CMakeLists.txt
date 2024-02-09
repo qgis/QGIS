@@ -58,7 +58,7 @@ if (FORCE_STATIC_LIBS)
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_delimitedtext_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   if (WITH_GUI)
-    install (TARGETS provider_delimitedtext_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+    install (TARGETS provider_delimitedtext_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   endif()
 else()
   add_library(provider_delimitedtext MODULE ${DTEXT_SRCS} ${DTEXT_GUI_SRCS})
@@ -71,7 +71,7 @@ else()
   )
 
   if (WITH_GUI)
-    target_link_libraries (provider_delimitedtext
+    target_link_libraries(provider_delimitedtext
       qgis_gui
     )
     add_dependencies(provider_delimitedtext ui)

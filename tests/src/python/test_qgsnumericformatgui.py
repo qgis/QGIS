@@ -178,7 +178,7 @@ class TestQgsNumericFormatGui(QgisTestCase):
         original = QgsBearingNumericFormat()
         original.setNumberDecimalPlaces(4)
         original.setShowTrailingZeros(True)
-        original.setDirectionFormat(QgsBearingNumericFormat.UseRange0To360)
+        original.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
 
         w.setFormat(original)
         new = w.format()
@@ -216,7 +216,7 @@ class TestQgsNumericFormatGui(QgisTestCase):
         original = QgsPercentageNumericFormat()
         original.setNumberDecimalPlaces(4)
         original.setShowTrailingZeros(True)
-        original.setInputValues(QgsPercentageNumericFormat.ValuesAreFractions)
+        original.setInputValues(QgsPercentageNumericFormat.InputValues.ValuesAreFractions)
 
         w.setFormat(original)
         new = w.format()

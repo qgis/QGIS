@@ -160,6 +160,7 @@ class QgsAppGpsConnection;
 class QgsGpsToolBar;
 class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
+class Qgs3DMapCanvas;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -431,6 +432,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Returns a list of all 3D map canvases open in the app.
+     *
+     * \since QGIS 3.36
+     */
+    QList< Qgs3DMapCanvas * > mapCanvases3D();
+
+    /**
+     * Create a new 3D map canvas with the specified unique \a name.
+     *
+     * \since QGIS 3.36
+     */
+    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name );
 
     /**
      * Opens a 3D view canvas for a 3D map view called \a name.
@@ -1893,7 +1908,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates or deactivates actions depending on the selected layers in the layer panel.
     void activateDeactivateMultipleLayersRelatedActions();
 
-    void selectionChanged( QgsMapLayer *layer );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
     void extentChanged();
     void showRotation();
@@ -1947,6 +1962,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows the map styling dock
     void mapStyleDock( bool enabled );
+
+    /**
+     * Sets whether changes to the active layer should be temporarily
+     * blocked.
+     *
+     * This is a low-level method, designed to avoid unnecessary work when adding lots
+     * of layers at once. Clients which will be adding many layers may call blockActiveLayerChanges( TRUE ) upfront,
+     * add all the layers, and then follow up with a call to blockActiveLayerChanges( FALSE ). This will defer emitting
+     * the active layer changed signal until they've added all layers, and only emit the signal once for
+     * the final layer added.
+     *
+     * \warning This must be accompanied by a subsequent call with \a blocked as FALSE.
+     *
+     * \since QGIS 3.36
+     */
+    void blockActiveLayerChanges( bool blocked );
 
     //! diagrams properties
     void diagramProperties();
@@ -2693,8 +2724,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsProxyProgressTask *mProjectLoadingProxyTask = nullptr;
 
-    //! True if we are blocking the activeLayerChanged signal from being emitted
-    bool mBlockActiveLayerChanged = false;
+    // Non-zero if we are blocking the activeLayerChanged signal from being emitted
+    int mBlockActiveLayerChanged = 0;
 
     int mBlockBrowser1Refresh = 0;
     int mBlockBrowser2Refresh = 0;

@@ -51,9 +51,9 @@ class TestQgsProjectBadLayers(QgisTestCase):
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)
-        ms.setFlag(QgsMapSettings.Antialiasing, True)
-        ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
-        ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
+        ms.setFlag(QgsMapSettings.Flag.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.Flag.UseAdvancedEffects, False)
+        ms.setFlag(QgsMapSettings.Flag.ForceVectorOutput, False)  # no caching?
         ms.setDestinationCrs(crs)
         return ms
 
@@ -113,9 +113,9 @@ class TestQgsProjectBadLayers(QgisTestCase):
         vector = list(p.mapLayersByName('lines'))[0]
         raster = list(p.mapLayersByName('raster'))[0]
         raster_copy = list(p.mapLayersByName('raster_copy'))[0]
-        self.assertTrue(vector.originalXmlProperties() != '')
-        self.assertTrue(raster.originalXmlProperties() != '')
-        self.assertTrue(raster_copy.originalXmlProperties() != '')
+        self.assertTrue(vector.originalXmlProperties())
+        self.assertTrue(raster.originalXmlProperties())
+        self.assertTrue(raster_copy.originalXmlProperties())
         # Test setter
         raster.setOriginalXmlProperties('pippo')
         self.assertEqual(raster.originalXmlProperties(), 'pippo')

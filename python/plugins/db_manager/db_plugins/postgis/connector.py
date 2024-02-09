@@ -23,7 +23,7 @@ The content of this file is based on
 from functools import cmp_to_key
 
 from qgis.PyQt.QtCore import (
-    QRegExp,
+    QRegularExpression,
     QFile,
     QVariant,
     QDateTime,
@@ -46,12 +46,6 @@ from ..plugin import DbError, Table
 
 import os
 import re
-import psycopg2
-import psycopg2.extensions
-
-# use unicode!
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 
 def classFactory():
@@ -86,7 +80,7 @@ class CursorAdapter():
                     else:
                         col = str(col)  # force to string
                 if isinstance(col, QDateTime) or isinstance(col, QDate) or isinstance(col, QTime):
-                    col = col.toString(Qt.ISODate)
+                    col = col.toString(Qt.DateFormat.ISODate)
                 newrec.append(col)
             newres.append(newrec)
         return newres
@@ -274,7 +268,7 @@ class PostGisDBConnector(DBConnector):
             # set permission to allow removing on Win.
             # On linux and Mac if file is set with QFile::>ReadUser
             # does not create problem removing certs
-            if not file.setPermissions(QFile.WriteOwner):
+            if not file.setPermissions(QFile.Permission.WriteOwner):
                 raise Exception('Cannot change permissions on {}: error code: {}'.format(file.fileName(), file.error()))
             if not file.remove():
                 raise Exception('Cannot remove {}: error code: {}'.format(file.fileName(), file.error()))
@@ -854,9 +848,10 @@ class PostGisDBConnector(DBConnector):
 
         srtext = sr[0]
         # try to extract just SR name (should be quoted in double quotes)
-        regex = QRegExp('"([^"]+)"')
-        if regex.indexIn(srtext) > -1:
-            srtext = regex.cap(1)
+        regex = QRegularExpression('"([^"]+)"')
+        match = regex.match(srtext)
+        if match.hasMatch():
+            srtext = match.captured(1)
         return srtext
 
     def isVectorTable(self, table):
@@ -1204,12 +1199,6 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId("sidx_%s_%s" % (tablename, geom_column))
         return self.deleteTableIndex(table, idx_name)
-
-    def execution_error_types(self):
-        return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning
-
-    def connection_error_types(self):
-        return psycopg2.InterfaceError, psycopg2.OperationalError
 
     def _execute(self, cursor, sql):
         if cursor is not None:

@@ -50,14 +50,17 @@ class CORE_EXPORT QgsRasterPipe
 {
   public:
 
+    // *INDENT-OFF*
+
     /**
      * Data definable properties.
      * \since QGIS 3.22
      */
-    enum Property
-    {
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, Property ) : int
+      {
       RendererOpacity, //!< Raster renderer global opacity
     };
+    // *INDENT-ON*
 
     /**
      * Constructor for an empty QgsRasterPipe.

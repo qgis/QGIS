@@ -32,7 +32,7 @@ Current context for a report section.
 
     QgsVectorLayer *currentLayer;
 
-    QVariantMap fieldFilters;
+    QMap<QString, QVariant> fieldFilters;
 };
 
 class QgsAbstractReportSection : QgsAbstractLayoutIterator

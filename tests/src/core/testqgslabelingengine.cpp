@@ -430,7 +430,7 @@ void TestQgsLabelingEngine::testRuleBased()
   s2.placementSettings().setAllowDegradedPlacement( true );
   s2.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
-  s2.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromValue( QStringLiteral( "18" ) ) );
+  s2.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromValue( QStringLiteral( "18" ) ) );
 
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
@@ -507,8 +507,8 @@ void TestQgsLabelingEngine::zOrder()
   pls1.setFormat( format );
 
   //use data defined coloring and font size so that stacking order of labels can be determined
-  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ) ) );
-  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ) ) );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then '#ff5500' when \"Class\"='B52' then '#00ffff' else '#ff00ff' end" ) ) );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end" ) ) );
 
   QgsVectorLayerLabelProvider *provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   QgsDefaultLabelingEngine engine;
@@ -525,7 +525,7 @@ void TestQgsLabelingEngine::zOrder()
   img = job.renderedImage();
 
   //test data defined z-index
-  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ) ) );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "case when \"Class\"='Jet' then 3 when \"Class\"='B52' then 1 else 2 end" ) ) );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
   p.begin( &img );
@@ -582,7 +582,7 @@ void TestQgsLabelingEngine::zOrder()
 
   //try mixing layer order and z-index
   engine.removeProvider( provider1 );
-  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "if(\"Class\"='Jet',3,0)" ) ) );
+  pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::ZIndex, QgsProperty::fromExpression( QStringLiteral( "if(\"Class\"='Jet',3,0)" ) ) );
   provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
   engine.addProvider( provider1 );
 
@@ -3685,7 +3685,7 @@ void TestQgsLabelingEngine::testLabelRotationUnit()
   settings.fieldName = QStringLiteral( "Class" );
   setDefaultLabelParams( settings );
 
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QString::number( 3.14 / 2.0 ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QString::number( 3.14 / 2.0 ) ) );
   settings.setRotationUnit( Qgis::AngleUnit::Radians );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -4114,17 +4114,17 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::OverPoint;
   QgsPropertyCollection labelProps;
-  labelProps.setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
-  labelProps.setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
+  labelProps.setProperty( QgsPalLayerSettings::Property::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
+  labelProps.setProperty( QgsPalLayerSettings::Property::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
   settings.setDataDefinedProperties( labelProps );
 
   settings.setCallout( new QgsSimpleLineCallout() );
   settings.callout()->setEnabled( true );
   QgsPropertyCollection calloutProps;
-  calloutProps.setProperty( QgsCallout::OriginX, QgsProperty::fromField( QStringLiteral( "calloutoriginx" ) ) );
-  calloutProps.setProperty( QgsCallout::OriginY, QgsProperty::fromField( QStringLiteral( "calloutoriginy" ) ) );
-  calloutProps.setProperty( QgsCallout::DestinationX, QgsProperty::fromField( QStringLiteral( "calloutdestx" ) ) );
-  calloutProps.setProperty( QgsCallout::DestinationY, QgsProperty::fromField( QStringLiteral( "calloutdesty" ) ) );
+  calloutProps.setProperty( QgsCallout::Property::OriginX, QgsProperty::fromField( QStringLiteral( "calloutoriginx" ) ) );
+  calloutProps.setProperty( QgsCallout::Property::OriginY, QgsProperty::fromField( QStringLiteral( "calloutoriginy" ) ) );
+  calloutProps.setProperty( QgsCallout::Property::DestinationX, QgsProperty::fromField( QStringLiteral( "calloutdestx" ) ) );
+  calloutProps.setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromField( QStringLiteral( "calloutdesty" ) ) );
 
   settings.callout()->setDataDefinedProperties( calloutProps );
 
@@ -4742,7 +4742,7 @@ void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint (190030 5000060, 190080 5000060, 190084 5000060 )" ) ).buffer( 10, 5 ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\" = 2" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\" = 2" ) ) );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
@@ -4798,7 +4798,7 @@ void TestQgsLabelingEngine::testDataDefinedPlacementPositionPoint()
   settings.fieldName = QStringLiteral( "Class" );
   setDefaultLabelParams( settings );
 
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionPoint, QgsProperty::fromExpression( QStringLiteral( "translate($geometry, 1, 0.5)" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::PositionPoint, QgsProperty::fromExpression( QStringLiteral( "translate($geometry, 1, 0.5)" ) ) );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
@@ -4935,7 +4935,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPoint()
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
   setDefaultLabelParams( settings );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "\"Heading\"" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "\"Heading\"" ) ) );
   QgsTextFormat format = settings.format();
   format.setOrientation( Qgis::TextOrientation::RotationBased );
   settings.setFormat( format );
@@ -5183,7 +5183,7 @@ void TestQgsLabelingEngine::testReferencedFields()
 
   QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello" ) << QStringLiteral( "world" ) );
 
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "my_dd_size" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromField( QStringLiteral( "my_dd_size" ) ) );
 
   QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello" ) << QStringLiteral( "world" ) << QStringLiteral( "my_dd_size" ) );
 }
@@ -5533,7 +5533,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   // override hint by strict!
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'strict'" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'strict'" ) ) );
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -5572,7 +5572,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
 
   // override strict by hint
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
-  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'hi' || 'nt'" ) ) );
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LineAnchorType, QgsProperty::fromExpression( QStringLiteral( "'hi' || 'nt'" ) ) );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );

@@ -41,7 +41,7 @@ class SetVectorStyle(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagDeprecated | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading | QgsProcessingAlgorithm.Flag.FlagDeprecated | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,

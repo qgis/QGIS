@@ -37,6 +37,7 @@ from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     QgsApplication,
+    QgsBox3D,
     QgsFeature,
     QgsFeatureRequest,
     QgsFeatureSource,
@@ -85,7 +86,7 @@ try:
 
         def toString(self):
             urlstr = self.url.toString()
-            querystr = self.query.toString(QUrl.FullyDecoded)
+            querystr = self.query.toString(QUrl.ComponentFormattingOption.FullyDecoded)
             if querystr != '':
                 urlstr += '?'
                 urlstr += querystr
@@ -239,9 +240,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
         fr = QgsFeatureRequest()
         if request:
             if 'exact' in request and request['exact']:
-                fr.setFlags(QgsFeatureRequest.ExactIntersect)
+                fr.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
             if 'nogeom' in request and request['nogeom']:
-                fr.setFlags(QgsFeatureRequest.NoGeometry)
+                fr.setFlags(QgsFeatureRequest.Flag.NoGeometry)
             if 'fid' in request:
                 fr.setFilterFid(request['fid'])
             elif 'extents' in request:
@@ -876,8 +877,18 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert vl.isValid(), f"{basetestfile} is invalid"
-        assert vl.wkbType() == QgsWkbTypes.PointZM, "wrong wkb type, should be PointZM"
+        assert vl.wkbType() == QgsWkbTypes.Type.PointZM, "wrong wkb type, should be PointZM"
         assert vl.getFeature(2).geometry().asWkt() == "PointZM (-71.12300000000000466 78.23000000000000398 1 2)", "wrong PointZM geometry"
+        self.assertAlmostEqual(vl.extent().xMinimum(), -71.12300000000000466, places=4)
+        self.assertAlmostEqual(vl.extent().yMinimum(), 66.32999999999999829, places=4)
+        self.assertAlmostEqual(vl.extent().xMaximum(), -65.31999999999999318, places=4)
+        self.assertAlmostEqual(vl.extent().yMaximum(), 78.29999999999999716, places=4)
+        self.assertAlmostEqual(vl.extent3D().xMinimum(), -71.12300000000000466, places=4)
+        self.assertAlmostEqual(vl.extent3D().yMinimum(), 66.32999999999999829, places=4)
+        self.assertEqual(vl.extent3D().zMinimum(), 1)
+        self.assertAlmostEqual(vl.extent3D().xMaximum(), -65.31999999999999318, places=4)
+        self.assertAlmostEqual(vl.extent3D().yMaximum(), 78.29999999999999716, places=4)
+        self.assertEqual(vl.extent3D().zMaximum(), 3)
 
     def test_045_Z(self):
         # Create test layer
@@ -896,8 +907,10 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert vl.isValid(), f"{basetestfile} is invalid"
-        assert vl.wkbType() == QgsWkbTypes.PointZ, "wrong wkb type, should be PointZ"
+        assert vl.wkbType() == QgsWkbTypes.Type.PointZ, "wrong wkb type, should be PointZ"
         assert vl.getFeature(2).geometry().asWkt() == "PointZ (-71.12300000000000466 78.23000000000000398 1)", "wrong PointZ geometry"
+        self.assertEqual(vl.extent(), QgsRectangle(-71.12300000000000466, 66.32999999999999829, -65.31999999999999318, 78.29999999999999716))
+        self.assertEqual(vl.extent3D(), QgsBox3D(-71.12300000000000466, 66.32999999999999829, 1, -65.31999999999999318, 78.29999999999999716, 3))
 
     def test_046_M(self):
         # Create test layer
@@ -916,8 +929,10 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert vl.isValid(), f"{basetestfile} is invalid"
-        assert vl.wkbType() == QgsWkbTypes.PointM, "wrong wkb type, should be PointM"
+        assert vl.wkbType() == QgsWkbTypes.Type.PointM, "wrong wkb type, should be PointM"
         assert vl.getFeature(2).geometry().asWkt() == "PointM (-71.12300000000000466 78.23000000000000398 2)", "wrong PointM geometry"
+        self.assertEqual(vl.extent(), QgsRectangle(-71.12300000000000466, 66.32999999999999829, -65.31999999999999318, 78.29999999999999716))
+        self.assertEqual(vl.extent3D(), QgsBox3D(-71.12300000000000466, 66.32999999999999829, float('nan'), -65.31999999999999318, 78.29999999999999716, float('nan')))
 
     def test_047_datetime(self):
         # Create test layer
@@ -961,9 +976,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
         vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         self.assertTrue(vl.isValid())
 
-        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresence.SpatialIndexNotPresent)
         vl.dataProvider().createSpatialIndex()
-        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresence.SpatialIndexPresent)
 
     def testEncodeDecodeUri(self):
         registry = QgsProviderRegistry.instance()

@@ -31,12 +31,12 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
 
     def testReadWrite(self):
         props = QgsVectorLayerTemporalProperties()
-        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        props.setMode(QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
         props.setFixedTemporalRange(QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10))))
         props.setStartField('start')
         props.setEndField('end')
         props.setDurationField('duration')
-        props.setDurationUnits(QgsUnitTypes.TemporalWeeks)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalWeeks)
         props.setFixedDuration(5.6)
         props.setAccumulateFeatures(True)
         props.setStartExpression('start exp')
@@ -74,25 +74,25 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         self.assertTrue(props.isActive())
         self.assertFalse(props.startField())
         self.assertFalse(props.endField())
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFixedTemporalRange)
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFixedTemporalRange)
         self.assertEqual(props.fixedTemporalRange().begin(), QDateTime(2006, 3, 11, 0, 13, 20))
         self.assertEqual(props.fixedTemporalRange().end(), QDateTime(2017, 2, 14, 1, 33, 20))
 
         caps.setStartField('start_field')
-        caps.setMode(QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeInstantInField)
+        caps.setMode(QgsVectorDataProviderTemporalCapabilities.TemporalMode.ProviderStoresFeatureDateTimeInstantInField)
         props.setDefaultsFromDataProviderTemporalCapabilities(caps)
         self.assertTrue(props.isActive())
         self.assertEqual(props.startField(), 'start_field')
         self.assertFalse(props.endField())
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
 
         caps.setEndField('end_field')
-        caps.setMode(QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields)
+        caps.setMode(QgsVectorDataProviderTemporalCapabilities.TemporalMode.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields)
         props.setDefaultsFromDataProviderTemporalCapabilities(caps)
         self.assertTrue(props.isActive())
         self.assertEqual(props.startField(), 'start_field')
         self.assertEqual(props.endField(), 'end_field')
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromFields)
 
     def testGuessDefaultsFromFields(self):
         layer = QgsVectorLayer("Point?field=start_date:string&field=end_date:integer", "test", "memory")
@@ -118,7 +118,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         self.assertFalse(props.isActive())
         self.assertEqual(props.startField(), 'event_date')
         self.assertFalse(props.endField())
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
 
         # sample table with likely dual fields
         layer = QgsVectorLayer("Point?field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test", "memory")
@@ -127,11 +127,11 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         self.assertFalse(props.isActive())
         self.assertEqual(props.startField(), 'start_date')
         self.assertEqual(props.endField(), 'end_date')
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromFields)
 
     def testFixedRangeMode(self):
         props = QgsVectorLayerTemporalProperties(enabled=True)
-        props.setMode(QgsVectorLayerTemporalProperties.ModeFixedTemporalRange)
+        props.setMode(QgsVectorLayerTemporalProperties.TemporalMode.ModeFixedTemporalRange)
         props.setFixedTemporalRange(QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10))))
 
         self.assertTrue(props.isVisibleInTemporalRange(QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))))
@@ -166,7 +166,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
         props = QgsVectorLayerTemporalProperties(enabled=False)
-        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        props.setMode(QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField)
         props.setStartField('start_field')
         # createFilterString should return QString() (== '' in Python world) in case the QgsVectorLayerTemporalProperties is not yet active
         self.assertEqual('', props.createFilterString(datetime_context, filter_range))
@@ -222,7 +222,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
 
         # with fixed duration
         props.setFixedDuration(3)
-        props.setDurationUnits(QgsUnitTypes.TemporalDays)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalDays)
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
         # map range              [-------------------------]
         # feature ranges         .                         . [-------)  (false)
@@ -307,7 +307,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         props.setLimitMode(Qgis.VectorTemporalLimitMode.IncludeBeginExcludeEnd)  # back to default
 
         # different unit
-        props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalMinutes)
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
         self.assertEqual(props.createFilterString(datetime_context, filter_range), '("start_field" > make_datetime(2019,3,4,11,9,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
         self.assertEqual(props.createFilterString(date_context, filter_range), '(to_datetime( "start_field" ) > make_datetime(2019,3,4,11,9,13) AND to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10)) OR to_datetime( "start_field" ) IS NULL')
@@ -369,7 +369,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
 
         # accumulate mode, with duration
         props.setFixedDuration(3)
-        props.setDurationUnits(QgsUnitTypes.TemporalDays)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalDays)
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
         # with accumulate mode effectively map range starts at -eternity, regardless of what it actually is
         # map range              [-------------------------]
@@ -454,7 +454,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
         props = QgsVectorLayerTemporalProperties(enabled=False)
-        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        props.setMode(QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromFields)
         props.setStartField('start_field')
         props.setEndField('end_field')
         # createFilterString should return QString() (== '' in Python world) in case the QgsVectorLayerTemporalProperties is not yet active
@@ -680,10 +680,10 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
         props = QgsVectorLayerTemporalProperties(enabled=False)
-        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields)
+        props.setMode(QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndDurationFromFields)
         props.setStartField('start_field')
         props.setDurationField('duration')
-        props.setDurationUnits(QgsUnitTypes.TemporalMilliseconds)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalMilliseconds)
         # createFilterString should return QString() (== '' in Python world) in case the QgsVectorLayerTemporalProperties is not yet active
         self.assertEqual('', props.createFilterString(datetime_context, filter_range))
 
@@ -780,55 +780,55 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         filter_range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)),
                                         QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
-        props.setDurationUnits(QgsUnitTypes.TemporalSeconds)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalSeconds)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration") > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(0,0,0,0,0,0,"duration") > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalMinutes)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,"duration",0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(0,0,0,0,0,"duration",0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalHours)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalHours)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,"duration",0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(0,0,0,0,"duration",0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalDays)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalDays)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,"duration",0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(0,0,0,"duration",0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalWeeks)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalWeeks)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,"duration",0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(0,0,"duration",0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalMonths)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalMonths)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,"duration",0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(0,"duration",0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalYears)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalYears)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval("duration",0,0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval("duration",0,0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalDecades)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalDecades)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(10 * "duration",0,0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
                          '(to_datetime( "start_field" ) <= make_datetime(2020,5,6,8,9,10) OR to_datetime( "start_field" ) IS NULL) AND ((to_datetime( "start_field" ) + make_interval(10 * "duration",0,0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
-        props.setDurationUnits(QgsUnitTypes.TemporalCenturies)
+        props.setDurationUnits(QgsUnitTypes.TemporalUnit.TemporalCenturies)
         self.assertEqual(props.createFilterString(datetime_context, filter_range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(100 * "duration",0,0,0,0,0,0) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         self.assertEqual(props.createFilterString(date_context, filter_range),
@@ -845,7 +845,7 @@ class TestQgsVectorLayerTemporalProperties(QgisTestCase):
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
         props = QgsVectorLayerTemporalProperties(enabled=False)
-        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions)
+        props.setMode(QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromExpressions)
         props.setStartExpression('to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')"')
         props.setEndExpression('to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')"')
         self.assertFalse(props.createFilterString(context, range))

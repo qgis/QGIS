@@ -114,7 +114,7 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
   const double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   QgsFeatureIterator fi = featureSource->getFeatures( req, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   QgsFeature f;
   int current = 0;

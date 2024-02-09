@@ -27,6 +27,7 @@
 #include "qgsproperty.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgssvgcache.h"
 #include "qgslogger.h"
 #include "qgsreadwritecontext.h"
@@ -56,7 +57,7 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
 
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [ = ] { refreshPicture(); } );
+  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [this] { refreshPicture(); } );
 
   //connect to layout print resolution changing
   connect( &layout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutItemPicture::recalculateSize );
@@ -345,11 +346,11 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
 
   //data defined source set?
   mHasExpressionError = false;
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::PictureSource ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PictureSource ) )
   {
     mMode = FormatUnknown;
     bool ok = false;
-    const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::PictureSource );
+    const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::PictureSource );
     source = sourceProperty.value( *evalContext, source, &ok );
     if ( !ok || !source.canConvert( QMetaType::QString ) )
     {
@@ -428,9 +429,9 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
     {
       //try to open svg
       const QgsExpressionContext context = createExpressionContext();
-      const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
-      const QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
-      const double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor, context, mSvgFillColor );
+      const QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      const double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
       const QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
 
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
@@ -507,9 +508,9 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
     case FormatSVG:
     {
       const QgsExpressionContext context = createExpressionContext();
-      const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
-      const QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
-      const double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      const QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor, context, mSvgFillColor );
+      const QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      const double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
 
       const QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
 
@@ -752,9 +753,9 @@ void QgsLayoutItemPicture::recalculateSize()
 
 void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
-  if ( property == QgsLayoutObject::PictureSource || property == QgsLayoutObject::PictureSvgBackgroundColor
-       || property == QgsLayoutObject::PictureSvgStrokeColor || property == QgsLayoutObject::PictureSvgStrokeWidth
-       || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::PictureSource || property == QgsLayoutObject::DataDefinedProperty::PictureSvgBackgroundColor
+       || property == QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeColor || property == QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth
+       || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     const QgsExpressionContext context = createExpressionContext();
     refreshPicture( &context );
@@ -792,8 +793,8 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   elem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
   elem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast< int >( mPictureAnchor ) ) );
-  elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
-  elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+  elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( mSvgFillColor ) );
+  elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
   elem.setAttribute( QStringLiteral( "mode" ), mOriginalMode );
 
@@ -820,8 +821,8 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   //when loading from xml, default to anchor point of middle to match pre 2.4 behavior
   mPictureAnchor = static_cast< QgsLayoutItem::ReferencePoint >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsLayoutItem::Middle ) ).toInt() );
 
-  mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
-  mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
+  mSvgFillColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( QColor( 255, 255, 255 ) ) ) );
+  mSvgStrokeColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
   mOriginalMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
   mMode = mOriginalMode;
@@ -848,7 +849,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
     bool expressionActive;
     expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
-    mDataDefinedProperties.setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
+    mDataDefinedProperties.setProperty( QgsLayoutObject::DataDefinedProperty::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
   QString imagePath = itemElem.attribute( QStringLiteral( "file" ) );

@@ -34,7 +34,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr,
+    QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr,
                     Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
 
     QgsPalLayerSettings layerSettings();

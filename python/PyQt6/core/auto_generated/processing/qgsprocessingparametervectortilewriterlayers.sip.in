@@ -48,7 +48,7 @@ Constructor for QgsProcessingParameterVectorTileWriterLayers.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
 
 
     static QString typeName();
@@ -60,13 +60,13 @@ Returns the type name for the parameter class.
 %Docstring
 Converts a QVariant value (a QVariantList) to a list of input layers
 %End
-    static QgsVectorTileWriter::Layer variantMapAsLayer( const QVariantMap &layerVariantMap, QgsProcessingContext &context );
+    static QgsVectorTileWriter::Layer variantMapAsLayer( const QMap<QString, QVariant> &layerVariantMap, QgsProcessingContext &context );
 %Docstring
-Converts a QVariant value (a QVariantMap) to a single input layer
+Converts a QVariant value (a QMap<QString, QVariant>) to a single input layer
 %End
-    static QVariantMap layerAsVariantMap( const QgsVectorTileWriter::Layer &layer );
+    static QMap<QString, QVariant> layerAsVariantMap( const QgsVectorTileWriter::Layer &layer );
 %Docstring
-Converts a single input layer to QVariant representation (a QVariantMap)
+Converts a single input layer to QVariant representation (a QMap<QString, QVariant>)
 %End
 
 };

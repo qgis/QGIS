@@ -123,7 +123,7 @@ Content-Type: text/xml; charset=utf-8
   <WFSLayers>
    <WFSLayer name="testlayer èé"/>
   </WFSLayers>
-  <Layer>
+  <Layer queryable="1">
    <Name>QGIS Test Project</Name>
    <Title>QGIS TestProject</Title>
    <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
@@ -142,7 +142,7 @@ Content-Type: text/xml; charset=utf-8
    <BoundingBox maxy="5606043.446" maxx="913283.462" miny="5605986.581" CRS="EPSG:3857" minx="913170.942"/>
    <BoundingBox maxy="8.204165" maxx="44.901599" miny="8.203154" CRS="EPSG:4326" minx="44.901236"/>
    <TreeName>QGIS Test Project</TreeName>
-   <Layer geometryType="Point" queryable="1" displayField="id" visible="1" visibilityChecked="1" opacity="1" expanded="1">
+   <Layer geometryType="Point" queryable="1" expanded="1" displayField="id" visibilityChecked="1" visible="1" opacity="1">
     <Name>layer_with_short_name</Name>
     <Title>A Layer with a short name</Title>
     <Abstract>A Layer with an abstract</Abstract>
@@ -180,7 +180,7 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer queryable="1" visible="1" visibilityChecked="1" opacity="1" expanded="0">
+   <Layer queryable="1" expanded="0" visibilityChecked="1" visible="1" opacity="1">
     <Name>landsat</Name>
     <Title>landsat</Title>
     <CRS>CRS:84</CRS>
@@ -204,7 +204,7 @@ Content-Type: text/xml; charset=utf-8
     </Style>
     <TreeName>landsat</TreeName>
    </Layer>
-   <Layer geometryType="Point" queryable="1" displayField="name" visible="1" visibilityChecked="1" opacity="1" expanded="1">
+   <Layer geometryType="Point" queryable="1" expanded="1" displayField="name" visibilityChecked="1" visible="1" opacity="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
@@ -234,7 +234,67 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer geometryType="Point" queryable="1" displayField="alias_name" visible="1" visibilityChecked="1" opacity="1" expanded="1">
+   <Layer geometryType="Point" queryable="1" expanded="1" displayField="name" visibilityChecked="1" visible="1" opacity="1">
+    <Name>&lt;test layer name></Name>
+    <Title>&lt;test layer name></Title>
+    <Abstract>A test vector layer with &lt;tag> chars without title</Abstract>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>8.203459</westBoundLongitude>
+     <eastBoundLongitude>8.203547</eastBoundLongitude>
+     <southBoundLatitude>44.901394</southBoundLatitude>
+     <northBoundLatitude>44.901483</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="5606025.238" maxx="913214.675" miny="5606011.456" CRS="EPSG:3857" minx="913204.912"/>
+    <BoundingBox maxy="8.203547" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <TreeName>&lt;test layer name></TreeName>
+    <Attributes>
+     <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" name="id" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="name" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="&lt;name>" comment="" length="10"/>
+    </Attributes>
+   </Layer>
+   <Layer geometryType="Point" queryable="1" expanded="1" displayField="name" visibilityChecked="1" visible="1" opacity="1">
+    <Name>&lt;test layer title></Name>
+    <Title>&lt;title></Title>
+    <Abstract>A test vector layer with &lt;tag> chars with title</Abstract>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>8.203459</westBoundLongitude>
+     <eastBoundLongitude>8.203547</eastBoundLongitude>
+     <southBoundLatitude>44.901394</southBoundLatitude>
+     <northBoundLatitude>44.901483</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="5606025.238" maxx="913214.675" miny="5606011.456" CRS="EPSG:3857" minx="913204.912"/>
+    <BoundingBox maxy="8.203547" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <TreeName>&lt;test layer title></TreeName>
+    <Attributes>
+     <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" name="id" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="name" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="&lt;name>" comment="" length="10"/>
+    </Attributes>
+   </Layer>
+   <Layer geometryType="Point" queryable="1" expanded="1" displayField="alias_name" visibilityChecked="1" visible="1" opacity="1">
     <Name>fields_alias</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
@@ -385,6 +445,6 @@ Content-Type: text/xml; charset=utf-8
     </Layer>
    </Layer>
   </Layer>
-  <LayerDrawingOrder>testlayer3,testlayer2,exclude_attribute,fields_alias,testlayer èé,landsat,layer_with_short_name</LayerDrawingOrder>
- </Capability>
+  <LayerDrawingOrder>testlayer3,testlayer2,exclude_attribute,fields_alias,&lt;test layer title>,&lt;test layer name>,testlayer èé,landsat,layer_with_short_name</LayerDrawingOrder>
+  </Capability>
 </WMS_Capabilities>

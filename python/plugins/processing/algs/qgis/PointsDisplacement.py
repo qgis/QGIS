@@ -52,7 +52,7 @@ class PointsDisplacement(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+                                                              self.tr('Input layer'), [QgsProcessing.SourceType.TypeVectorPoint]))
         param = QgsProcessingParameterDistance(self.PROXIMITY,
                                                self.tr('Minimum distance to other points'), parentParameterName='INPUT',
                                                minValue=0.00001, defaultValue=1.0)
@@ -67,7 +67,7 @@ class PointsDisplacement(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterBoolean(self.HORIZONTAL,
                                                         self.tr('Horizontal distribution for two point case')))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Displaced'), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Displaced'), QgsProcessing.SourceType.TypeVectorPoint))
 
     def name(self):
         return 'pointsdisplacement'
@@ -156,7 +156,7 @@ class PointsDisplacement(QgisAlgorithm):
 
             count = len(group)
             if count == 1:
-                sink.addFeature(group[0], QgsFeatureSink.FastInsert)
+                sink.addFeature(group[0], QgsFeatureSink.Flag.FastInsert)
             else:
                 angleStep = fullPerimeter / count
                 if count == 2 and horizontal:
@@ -181,7 +181,7 @@ class PointsDisplacement(QgisAlgorithm):
                     point.setY(old_point.y() + dy)
                     f.setGeometry(QgsGeometry(point))
 
-                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                    sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
                     currentAngle += angleStep
 
             current += 1

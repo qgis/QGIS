@@ -10,13 +10,11 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-from qgis.PyQt.Qt import Qt
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QItemSelectionModel,
     QModelIndex,
-    QVariant,
-)
+    QVariant, Qt)
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
@@ -75,43 +73,43 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
 
         model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
         self.assertEqual(model.rowCount(QModelIndex()), 3)
-        self.assertIsNone(model.data(model.index(9999, 0), Qt.DisplayRole))
+        self.assertIsNone(model.data(model.index(9999, 0), Qt.ItemDataRole.DisplayRole))
         # We now have this default mapping:
         # source exp        | destination fld
         # -------------------------------------------
         # source_field2     | destination_field1
         # source_field1     | destination_field2
         # NOT SET (NULL)    | destination_field3
-        self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
-        self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
-        self.assertEqual(model.data(model.index(0, 3), Qt.DisplayRole), 10)
-        self.assertEqual(model.data(model.index(0, 4), Qt.DisplayRole), 8)
-        self.assertFalse(model.data(model.index(0, 6), Qt.DisplayRole))
-        self.assertEqual(model.data(model.index(0, 7), Qt.DisplayRole), 'my comment')
+        self.assertEqual(model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), '"source_field2"')
+        self.assertEqual(model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole), 'destination_field1')
+        self.assertEqual(model.data(model.index(0, 3), Qt.ItemDataRole.DisplayRole), 10)
+        self.assertEqual(model.data(model.index(0, 4), Qt.ItemDataRole.DisplayRole), 8)
+        self.assertFalse(model.data(model.index(0, 6), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.data(model.index(0, 7), Qt.ItemDataRole.DisplayRole), 'my comment')
 
-        self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
-        self.assertEqual(model.data(model.index(1, 6), Qt.DisplayRole), 'my alias')
-        self.assertFalse(model.data(model.index(1, 7), Qt.DisplayRole))
+        self.assertEqual(model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), '"source_field1"')
+        self.assertEqual(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole), 'destination_field2 (my alias)')
+        self.assertEqual(model.data(model.index(1, 6), Qt.ItemDataRole.DisplayRole), 'my alias')
+        self.assertFalse(model.data(model.index(1, 7), Qt.ItemDataRole.DisplayRole))
 
-        self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), QVariant())
-        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
-        self.assertFalse(model.data(model.index(2, 6), Qt.DisplayRole))
-        self.assertFalse(model.data(model.index(2, 7), Qt.DisplayRole))
+        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), 'destination_field3')
+        self.assertFalse(model.data(model.index(2, 6), Qt.ItemDataRole.DisplayRole))
+        self.assertFalse(model.data(model.index(2, 7), Qt.ItemDataRole.DisplayRole))
 
         # Test expression scope
         ctx = model.contextGenerator().createExpressionContext()
-        self.assertTrue('source_field1' in ctx.fields().names())
+        self.assertIn('source_field1', ctx.fields().names())
 
         # Test add fields
         model.appendField(QgsField('destination_field4', QVariant.String))
         self.assertEqual(model.rowCount(QModelIndex()), 4)
-        self.assertEqual(model.data(model.index(3, 1), Qt.DisplayRole), 'destination_field4')
+        self.assertEqual(model.data(model.index(3, 1), Qt.ItemDataRole.DisplayRole), 'destination_field4')
 
         # Test remove field
         model.removeField(model.index(3, 0))
         self.assertEqual(model.rowCount(QModelIndex()), 3)
-        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+        self.assertEqual(model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), 'destination_field3')
 
         # Test edit fields
         mapping = model.mapping()
@@ -159,8 +157,8 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         """Test that changing source fields also empty expressions are updated"""
 
         model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
-        self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), QVariant())
-        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), 'destination_field3')
 
         f = QgsField('source_field3', QVariant.String)
         f.setAlias('an alias')
@@ -168,12 +166,12 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         fields = self.source_fields
         fields.append(f)
         model.setSourceFields(fields)
-        self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
-        self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
-        self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
-        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2 (my alias)')
-        self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), '"source_field3"')
-        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+        self.assertEqual(model.data(model.index(0, 0), Qt.ItemDataRole.DisplayRole), '"source_field2"')
+        self.assertEqual(model.data(model.index(0, 1), Qt.ItemDataRole.DisplayRole), 'destination_field1')
+        self.assertEqual(model.data(model.index(1, 0), Qt.ItemDataRole.DisplayRole), '"source_field1"')
+        self.assertEqual(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole), 'destination_field2 (my alias)')
+        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), '"source_field3"')
+        self.assertEqual(model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), 'destination_field3')
 
     def testProperties(self):
         model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
@@ -231,21 +229,21 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         selection_model = widget.selectionModel()
         selection_model.clear()
         for i in range(0, 10, 2):
-            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.Select)
+            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.SelectionFlag.Select)
 
         self.assertTrue(widget.moveSelectedFieldsDown())
         _compare(widget, [1, 0, 3, 2, 5, 4, 7, 6, 9, 8])
 
         selection_model.clear()
         for i in range(1, 10, 2):
-            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.Select)
+            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.SelectionFlag.Select)
 
         self.assertTrue(widget.moveSelectedFieldsUp())
         _compare(widget, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         selection_model.clear()
         for i in range(0, 10, 2):
-            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.Select)
+            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.SelectionFlag.Select)
 
         self.assertTrue(widget.removeSelectedFields())
         _compare(widget, [1, 3, 5, 7, 9])
@@ -264,19 +262,19 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         # Test constraints
         f = QgsField('constraint_field', QVariant.Int)
         constraints = QgsFieldConstraints()
-        constraints.setConstraint(QgsFieldConstraints.ConstraintNotNull, QgsFieldConstraints.ConstraintOriginProvider)
-        constraints.setConstraint(QgsFieldConstraints.ConstraintExpression,
-                                  QgsFieldConstraints.ConstraintOriginProvider)
-        constraints.setConstraint(QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintNotNull, QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintExpression,
+                                  QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintUnique, QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
         f.setConstraints(constraints)
         fields = QgsFields()
         fields.append(f)
         widget.setDestinationFields(fields)
-        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.DisplayRole),
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ItemDataRole.DisplayRole),
                          "Constraints active")
-        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ToolTipRole),
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ItemDataRole.ToolTipRole),
                          "Unique<br>Not null<br>Expression")
-        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.BackgroundColorRole),
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ItemDataRole.BackgroundRole),
                          QColor(255, 224, 178))
 
         # self._showDialog(widget)

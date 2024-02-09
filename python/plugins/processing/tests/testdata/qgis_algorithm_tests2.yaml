@@ -359,6 +359,21 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:extractspecificvertices
+    name: Extract specific vertices points
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+      VERTICES: '0'
+    results:
+      OUTPUT:
+        name: expected/extract_specific_nodes_points.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
   - algorithm: native:fuzzifyrasterlinearmembership
     name: Test (native:fuzzifyrasterlinearmembership)
     params:

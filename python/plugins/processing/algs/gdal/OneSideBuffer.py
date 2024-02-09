@@ -53,7 +53,7 @@ class OneSideBuffer(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
+                                                              [QgsProcessing.SourceType.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
@@ -70,7 +70,7 @@ class OneSideBuffer(GdalAlgorithm):
                                                       self.tr('Dissolve by attribute'),
                                                       None,
                                                       self.INPUT,
-                                                      QgsProcessingParameterField.Any,
+                                                      QgsProcessingParameterField.DataType.Any,
                                                       optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.DISSOLVE,
                                                         self.tr('Dissolve all results'),
@@ -83,12 +83,12 @@ class OneSideBuffer(GdalAlgorithm):
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('One-sided buffer'),
-                                                                  QgsProcessing.TypeVectorPolygon))
+                                                                  QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'onesidebuffer'

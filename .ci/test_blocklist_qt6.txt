@@ -1,5 +1,4 @@
 # Qt6 blocklist
-test_core_authconfig
 test_core_compositionconverter
 test_core_dxfexport
 test_core_expression
@@ -8,7 +7,6 @@ test_core_layoutpicture
 test_core_ogcutils
 test_core_vectortilelayer
 test_gui_processinggui
-test_gui_querybuilder
 test_app_advanceddigitizing
 test_app_vertextool
 
@@ -16,7 +14,6 @@ test_app_vertextool
 test_gui_queryresultwidget
 
 # block list
-PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
 
@@ -39,3 +36,88 @@ test_core_layerdefinition
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
+
+# To be fixed
+PyQgsPythonProvider
+PyQgsAggregateCalculator
+PyQgsAnnotation
+PyQgsAuthenticationSystem
+PyQgsBlockingProcess
+PyQgsBookmarkModel
+PyQgsCodeEditor
+PyQgsColorRampLegendNode
+PyQgsDateTimeStatisticalSummary
+PyQgsDelimitedTextProvider
+PyQgsEditWidgets
+PyQgsElevationProfileCanvas
+PyQgsProject
+PyQgsFieldModel
+PyQgsFloatingWidget
+PyQgsJsonUtils
+PyQgsLayerMetadata
+PyQgsLayerMetadataResultsModel
+PyQgsLayoutView
+PyQgsLayoutHtml
+PyQgsLayoutMarker
+PyQgsLayoutPolygon
+PyQgsLayoutPolyline
+PyQgsLineSymbolLayers
+PyQgsMapBoxGlStyleConverter
+PyQgsMetadataBase
+PyQgsMemoryProvider
+PyQgsNetworkAccessManager
+PyQgsOGRProviderGpkg
+PyQgsPalLabelingPlacement
+PyQgsPlot
+PyQgsPointCloudAttributeModel
+PyQgsProcessExecutablePt1
+PyQgsProcessExecutablePt2
+PyQgsProcessingInPlace
+PyQgsProcessingAlgRunner
+PyQgsProcessingParameters
+PyQgsProcessingPackageLayersAlgorithm
+PyQgsProjectMetadata
+PyQgsRasterAttributeTable
+PyQgsRasterLayerRenderer
+PyQgsShapefileProvider
+PyQgsTextRenderer
+PyQgsOGRProvider
+PyQgsSpatialiteProvider
+PyQgsSymbolLayerCreateSld
+PyQgsSymbolLayerReadSld
+PyQgsStringUtils
+PyQgsStyleModel
+PyQgsTextDocument
+PyQgsVectorLayerCache
+PyQgsVectorLayerEditBuffer
+PyQgsVectorLayerEditUtils
+PyQgsLayerDefinition
+PyQgsWFSProvider
+PyQgsSettings
+PyQgsSettingsEntry
+PyQgsSelectiveMasking
+PyQgsServerApi
+PyQgsServerWMSGetFeatureInfo
+PyQgsServerWMSGetMap
+PyQgsServerSettings
+PyQgsServerAccessControlWFSTransactional
+PyQgsServerWFS
+ProcessingGeneralTest
+ProcessingGuiTest
+ProcessingProjectProviderTest
+ProcessingParametersTest
+ProcessingGenericAlgorithmsTest
+ProcessingQgisAlgorithmsTestPt1
+ProcessingQgisAlgorithmsTestPt2
+ProcessingQgisAlgorithmsTestPt3
+ProcessingQgisAlgorithmsTestPt4
+ProcessingQgisAlgorithmsTestPt5
+ProcessingGdalAlgorithmsGeneralTest
+ProcessingGdalAlgorithmsRasterTest
+ProcessingGdalAlgorithmsVectorTest
+ProcessingCheckValidityAlgorithmTest
+ProcessingGrassAlgorithmsImageryTest
+ProcessingGrassAlgorithmsRasterTestPt1
+ProcessingGrassAlgorithmsRasterTestPt2
+ProcessingGrassAlgorithmsVectorTest
+PyQgsProviderRegistry

@@ -111,7 +111,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     mask_image = imageFromPath(mask_image_path)
     if mask_image.isNull():
         print(f'Mask image does not exist, creating {mask_image_path}')
-        mask_image = QImage(control_image.width(), control_image.height(), QImage.Format_ARGB32)
+        mask_image = QImage(control_image.width(), control_image.height(), QImage.Format.Format_ARGB32)
         mask_image.fill(QColor(0, 0, 0))
 
     # loop through pixels in rendered image and compare

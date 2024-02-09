@@ -51,7 +51,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
 #include "qgsauxiliarystorage.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
@@ -401,28 +401,28 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this, this );
   connect( this, &QgsProject::layersAdded, this, &QgsProject::onMapLayersAdded );
-  connect( this, &QgsProject::layersRemoved, this, [ = ] { cleanTransactionGroups(); } );
+  connect( this, &QgsProject::layersRemoved, this, [this] { cleanTransactionGroups(); } );
   connect( this, qOverload< const QList<QgsMapLayer *> & >( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
 
   // proxy map layer store signals to this
   connect( mLayerStore.get(), qOverload<const QStringList &>( &QgsMapLayerStore::layersWillBeRemoved ),
-  this, [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
+  this, [this]( const QStringList & layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
   connect( mLayerStore.get(), qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersWillBeRemoved ),
-  this, [ = ]( const QList<QgsMapLayer *> &layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
+  this, [this]( const QList<QgsMapLayer *> &layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
   connect( mLayerStore.get(), qOverload< const QString & >( &QgsMapLayerStore::layerWillBeRemoved ),
-  this, [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
+  this, [this]( const QString & layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
   connect( mLayerStore.get(), qOverload< QgsMapLayer * >( &QgsMapLayerStore::layerWillBeRemoved ),
-  this, [ = ]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
+  this, [this]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
   connect( mLayerStore.get(), qOverload<const QStringList & >( &QgsMapLayerStore::layersRemoved ), this,
-  [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersRemoved( layers ); } );
+  [this]( const QStringList & layers ) { mProjectScope.reset(); emit layersRemoved( layers ); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerRemoved, this,
-  [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerRemoved( layer ); } );
+  [this]( const QString & layer ) { mProjectScope.reset(); emit layerRemoved( layer ); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this,
-  [ = ]() { mProjectScope.reset(); emit removeAll(); } );
+  [this]() { mProjectScope.reset(); emit removeAll(); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this,
-  [ = ]( const QList< QgsMapLayer * > &layers ) { mProjectScope.reset(); emit layersAdded( layers ); } );
+  [this]( const QList< QgsMapLayer * > &layers ) { mProjectScope.reset(); emit layersAdded( layers ); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this,
-  [ = ]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWasAdded( layer ); } );
+  [this]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWasAdded( layer ); } );
 
   if ( QgsApplication::instance() )
   {
@@ -430,7 +430,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   }
 
   connect( mLayerStore.get(), qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersWillBeRemoved ), this,
-           [ = ]( const QList<QgsMapLayer *> &layers )
+           [this]( const QList<QgsMapLayer *> &layers )
   {
     for ( const auto &layer : layers )
     {
@@ -439,7 +439,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   }
          );
   connect( mLayerStore.get(),  qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersAdded ), this,
-           [ = ]( const QList<QgsMapLayer *> &layers )
+           [this]( const QList<QgsMapLayer *> &layers )
   {
     for ( const auto &layer : layers )
     {
@@ -484,7 +484,7 @@ QgsProject *QgsProject::instance()
   {
     sProject = new QgsProject;
 
-    connect( sProject, &QgsProject::projectColorsChanged, QgsStyle::defaultStyle(), &QgsStyle::triggerIconRebuild );
+    connect( sProject, &QgsProject::projectColorsChanged, QgsStyle::defaultStyle( false ), &QgsStyle::triggerIconRebuild );
   }
   return sProject;
 }
@@ -2634,7 +2634,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_acronym" ), projectCrs.projectionAcronym(), true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_ellipsoid" ), projectCrs.ellipsoidAcronym(), true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_proj4" ), projectCrs.toProj(), true ) );
-  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_wkt" ), projectCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_wkt" ), projectCrs.toWkt( Qgis::CrsWktVariant::Preferred ), true ) );
 
   // metadata
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), metadata().author(), true, true ) );
@@ -2690,7 +2690,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
             ( bool )( mFlags & Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide ) );
     }
 
-    connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
+    connect( layer, &QgsMapLayer::configChanged, this, [this] { setDirty(); } );
 
     // check if we have to update connections for layers with dependencies
     for ( QMap<QString, QgsMapLayer *>::const_iterator it = existingMaps.cbegin(); it != existingMaps.cend(); ++it )
@@ -4686,7 +4686,7 @@ QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
   static QgsPropertiesDefinition sPropertyDefinitions
   {
     {
-      QgsProject::DataDefinedServerProperty::WMSOnlineResource,
+      static_cast< int >( QgsProject::DataDefinedServerProperty::WMSOnlineResource ),
       QgsPropertyDefinition( "WMSOnlineResource", QObject::tr( "WMS Online Resource" ), QgsPropertyDefinition::String )
     },
   };
@@ -4836,7 +4836,7 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   QgsNamedColorList::const_iterator colorIt = colors.constBegin();
   for ( ; colorIt != colors.constEnd(); ++colorIt )
   {
-    const QString color = QgsSymbolLayerUtils::encodeColor( ( *colorIt ).first );
+    const QString color = QgsColorUtils::colorToString( ( *colorIt ).first );
     const QString label = ( *colorIt ).second;
     customColors.append( color );
     customColorLabels.append( label );
@@ -5025,7 +5025,7 @@ GetNamedProjectColor::GetNamedProjectColor( const QgsProject *project )
   for ( QStringList::iterator it = colorStrings.begin();
         it != colorStrings.end(); ++it )
   {
-    const QColor color = QgsSymbolLayerUtils::decodeColor( *it );
+    const QColor color = QgsColorUtils::colorFromString( *it );
     QString label;
     if ( colorLabels.length() > colorIndex )
     {

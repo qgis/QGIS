@@ -58,7 +58,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mFormat.setSize( 10 );
   mFormat.setSizeUnit( Qgis::RenderUnit::Points );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
   {
     updateBoundingRect();
   } );

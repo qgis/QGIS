@@ -1,0 +1,52 @@
+*****
+Content-Type: text/html; charset=utf-8
+
+<!DOCTYPE html>
+
+<head>
+  <title>Information</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>
+    body {
+      font-family: "Open Sans", "Calluna Sans", "Gill Sans MT", "Calibri", "Trebuchet MS", sans-serif;
+    }
+
+    table,
+    th,
+    td {
+      width: 100%;
+      border: 1px solid black;
+      border-collapse: collapse;
+      text-align: left;
+      padding: 2px;
+    }
+
+    th {
+      width: 25%;
+      font-weight: bold;
+    }
+
+    .layer-title {
+      font-weight: bold;
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='layer-title'>&lt;title&gt;</div>
+  <table>
+    <tr>
+      <th>id</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td>three</td>
+    </tr>
+    <tr>
+      <th>&lt;name&gt;</th>
+      <td>&lt;three&gt;</td>
+    </tr>
+  </table>
+</body>

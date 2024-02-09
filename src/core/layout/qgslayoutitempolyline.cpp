@@ -17,6 +17,7 @@
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutitemregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgssymbol.h"
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
@@ -426,8 +427,8 @@ bool QgsLayoutItemPolyline::writePropertiesToElement( QDomElement &elmt, QDomDoc
   const QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, context.pathResolver() );
 
   elmt.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
-  elmt.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadFillColor ) );
-  elmt.setAttribute( QStringLiteral( "arrowHeadOutlineColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadStrokeColor ) );
+  elmt.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsColorUtils::colorToString( mArrowHeadFillColor ) );
+  elmt.setAttribute( QStringLiteral( "arrowHeadOutlineColor" ), QgsColorUtils::colorToString( mArrowHeadStrokeColor ) );
   elmt.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mArrowHeadStrokeWidth ) );
   elmt.setAttribute( QStringLiteral( "markerMode" ), mEndMarker );
   elmt.setAttribute( QStringLiteral( "startMarkerMode" ), mStartMarker );
@@ -440,8 +441,8 @@ bool QgsLayoutItemPolyline::writePropertiesToElement( QDomElement &elmt, QDomDoc
 bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   mArrowHeadWidth = elmt.attribute( QStringLiteral( "arrowHeadWidth" ), QStringLiteral( "2.0" ) ).toDouble();
-  mArrowHeadFillColor = QgsSymbolLayerUtils::decodeColor( elmt.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );
-  mArrowHeadStrokeColor = QgsSymbolLayerUtils::decodeColor( elmt.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mArrowHeadFillColor = QgsColorUtils::colorFromString( elmt.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mArrowHeadStrokeColor = QgsColorUtils::colorFromString( elmt.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mArrowHeadStrokeWidth = elmt.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
   // relative paths to absolute
   const QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QString() );

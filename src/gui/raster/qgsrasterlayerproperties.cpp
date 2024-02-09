@@ -375,7 +375,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
   temporalLayout->addWidget( mTemporalWidget );
 
-  QgsDebugMsgLevel( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), 2 );
+  QgsDebugMsgLevel( "Setting crs to " + mRasterLayer->crs().toWkt( Qgis::CrsWktVariant::Preferred ), 2 );
   QgsDebugMsgLevel( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier(), 2 );
   mCrsSelector->setCrs( mRasterLayer->crs() );
 
@@ -527,7 +527,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
 #endif
 
-  initializeDataDefinedButton( mRasterTransparencyWidget->mOpacityDDBtn, QgsRasterPipe::RendererOpacity );
+  initializeDataDefinedButton( mRasterTransparencyWidget->mOpacityDDBtn, QgsRasterPipe::Property::RendererOpacity );
 
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
@@ -659,6 +659,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
   int alphaBand = -1;
   double opacity = 1;
   QColor nodataColor;
+  const QList<int> oldBands = oldRenderer ? oldRenderer->usesBands() : QList<int>();
   if ( oldRenderer )
   {
     // Retain alpha band and opacity when switching renderer
@@ -697,11 +698,8 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       if ( oldWidget )
       {
         //compare used bands in new and old renderer and reset transparency dialog if different
-        std::unique_ptr<QgsRasterRenderer> oldRenderer;
-        oldRenderer.reset( oldWidget->renderer() );
         std::unique_ptr<QgsRasterRenderer> newRenderer;
         newRenderer.reset( mRendererWidget->renderer() );
-        const QList<int> oldBands = oldRenderer->usesBands();
         const QList<int> newBands = newRenderer->usesBands();
         if ( oldBands != newBands )
         {
@@ -1472,7 +1470,7 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 void QgsRasterLayerProperties::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
 {
   button->blockSignals( true );
-  button->init( key, mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
+  button->init( static_cast< int >( key ), mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRasterLayerProperties::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );

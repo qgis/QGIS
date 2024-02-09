@@ -281,7 +281,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
 
-      color.getCmykF( &c, &y, &m, &k, &alpha );
+      color.getCmykF( &c, &m, &y, &k, &alpha );
       return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
              qgsDoubleToString( m ),
              qgsDoubleToString( y ),
@@ -301,16 +301,17 @@ QColor QgsColorUtils::colorFromString( const QString &string )
   const QRegularExpressionMatch match = rx.match( string );
   if ( !match.hasMatch() )
   {
-    // try reading older color format
-    const thread_local QRegularExpression rgbArx( QStringLiteral( "^(\\d+),(\\d+),(\\d+),(\\d+)$" ) );
-    const QRegularExpressionMatch match = rgbArx.match( string );
-    if ( !match.hasMatch() )
-      return QColor();
-
-    const int red = match.captured( 1 ).toInt();
-    const int green = match.captured( 2 ).toInt();
-    const int blue = match.captured( 3 ).toInt();
-    const int alpha = match.captured( 4 ).toInt();
+    // try reading older color format and hex strings
+    const QStringList lst = string.split( ',' );
+    if ( lst.count() < 3 )
+    {
+      return QColor( string );
+    }
+    int red, green, blue, alpha;
+    red = lst[0].toInt();
+    green = lst[1].toInt();
+    blue = lst[2].toInt();
+    alpha = lst.count() > 3 ? lst[3].toInt() : 255;
     return QColor( red, green, blue, alpha );
   }
 

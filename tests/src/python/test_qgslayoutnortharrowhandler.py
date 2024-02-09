@@ -46,7 +46,7 @@ class TestQgsLayoutNorthArrowHandler(QgisTestCase):
         self.assertEqual(handler.linkedMap(), map)
         self.assertEqual(len(spy), 0)
 
-        handler.setNorthMode(QgsLayoutNorthArrowHandler.GridNorth)
+        handler.setNorthMode(QgsLayoutNorthArrowHandler.NorthMode.GridNorth)
         map.setItemRotation(45)
         self.assertEqual(handler.arrowRotation(), 45)
         self.assertEqual(len(spy), 1)
@@ -105,7 +105,7 @@ class TestQgsLayoutNorthArrowHandler(QgisTestCase):
         self.assertEqual(handler.linkedMap(), map)
         self.assertEqual(len(spy), 0)
 
-        handler.setNorthMode(QgsLayoutNorthArrowHandler.GridNorth)
+        handler.setNorthMode(QgsLayoutNorthArrowHandler.NorthMode.GridNorth)
         map.setMapRotation(45)
         self.assertEqual(handler.arrowRotation(), 45)
         self.assertEqual(len(spy), 1)
@@ -135,7 +135,7 @@ class TestQgsLayoutNorthArrowHandler(QgisTestCase):
         self.assertEqual(handler.linkedMap(), map)
         self.assertEqual(len(spy), 0)
 
-        handler.setNorthMode(QgsLayoutNorthArrowHandler.TrueNorth)
+        handler.setNorthMode(QgsLayoutNorthArrowHandler.NorthMode.TrueNorth)
         self.assertAlmostEqual(handler.arrowRotation(), 37.20, 1)
         self.assertEqual(len(spy), 1)
         self.assertAlmostEqual(spy[-1][0], 37.20, 1)

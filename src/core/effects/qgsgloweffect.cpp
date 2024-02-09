@@ -17,6 +17,7 @@
 
 #include "qgsgloweffect.h"
 #include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgsimageoperation.h"
 #include "qgscolorrampimpl.h"
 #include "qgsunittypes.h"
@@ -121,7 +122,7 @@ QVariantMap QgsGlowEffect::properties() const
   props.insert( QStringLiteral( "spread_unit" ), QgsUnitTypes::encodeUnit( mSpreadUnit ) );
   props.insert( QStringLiteral( "spread_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mSpreadMapUnitScale ) );
   props.insert( QStringLiteral( "color_type" ), QString::number( static_cast< int >( mColorType ) ) );
-  props.insert( QStringLiteral( "single_color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  props.insert( QStringLiteral( "single_color" ), QgsColorUtils::colorToString( mColor ) );
 
   if ( mRamp )
   {
@@ -183,7 +184,7 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   }
   if ( props.contains( QStringLiteral( "single_color" ) ) )
   {
-    mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "single_color" ) ).toString() );
+    mColor = QgsColorUtils::colorFromString( props.value( QStringLiteral( "single_color" ) ).toString() );
   }
 
   //attempt to create color ramp from props

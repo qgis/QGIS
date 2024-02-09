@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgssimplelinematerialsettings.h"
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgslinematerial_p.h"
+
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
@@ -74,14 +75,14 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
 
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
 void QgsSimpleLineMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
+  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
@@ -127,14 +128,14 @@ QMap<QString, QString> QgsSimpleLineMaterialSettings::toExportParameters() const
 
 void QgsSimpleLineMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
   ambientParameter->setValue( mAmbient );
   effect->addParameter( ambientParameter );
 }
 
 QByteArray QgsSimpleLineMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-  const QColor ambient = dataDefinedProperties().valueAsColor( Ambient, expressionContext, mAmbient );
+  const QColor ambient = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Ambient, expressionContext, mAmbient );
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 3 );

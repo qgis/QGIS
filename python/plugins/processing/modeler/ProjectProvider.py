@@ -161,6 +161,6 @@ class ProjectProvider(QgsProcessingProvider):
             else:
                 QgsMessageLog.logMessage(
                     self.tr('Could not load model from project', 'ProjectProvider'),
-                    self.tr('Processing'), Qgis.Critical)
+                    self.tr('Processing'), Qgis.MessageLevel.Critical)
 
         self.is_loading = False

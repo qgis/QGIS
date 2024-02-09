@@ -138,7 +138,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * \since QGIS 3.22
      */
-    QgsAnnotationItem *item( const QString &id );
+    QgsAnnotationItem *item( const QString &id ) const;
 
     /**
      * Returns a list of the IDs of all annotation items within the specified \a bounds (in layer CRS), when

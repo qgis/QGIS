@@ -59,8 +59,8 @@ class TestQgsProjectTimeSettings(QgisTestCase):
 
         p.setTimeStep(4.8)
         self.assertEqual(p.timeStep(), 4.8)
-        p.setTimeStepUnit(QgsUnitTypes.TemporalDecades)
-        self.assertEqual(p.timeStepUnit(), QgsUnitTypes.TemporalDecades)
+        p.setTimeStepUnit(QgsUnitTypes.TemporalUnit.TemporalDecades)
+        self.assertEqual(p.timeStepUnit(), QgsUnitTypes.TemporalUnit.TemporalDecades)
         p.setFramesPerSecond(90)
         self.assertEqual(p.framesPerSecond(), 90)
         p.setIsTemporalRangeCumulative(True)
@@ -84,7 +84,7 @@ class TestQgsProjectTimeSettings(QgisTestCase):
         )
         p.setTemporalRange(r)
         p.setTimeStep(4.8)
-        p.setTimeStepUnit(QgsUnitTypes.TemporalDecades)
+        p.setTimeStepUnit(QgsUnitTypes.TemporalUnit.TemporalDecades)
         p.setFramesPerSecond(90)
         p.setIsTemporalRangeCumulative(True)
         elem = p.writeXml(doc, QgsReadWriteContext())
@@ -95,7 +95,7 @@ class TestQgsProjectTimeSettings(QgisTestCase):
         self.assertEqual(p2.temporalRange(), r)
         self.assertEqual(len(spy), 1)
         self.assertEqual(p2.timeStep(), 4.8)
-        self.assertEqual(p2.timeStepUnit(), QgsUnitTypes.TemporalDecades)
+        self.assertEqual(p2.timeStepUnit(), QgsUnitTypes.TemporalUnit.TemporalDecades)
         self.assertEqual(p2.framesPerSecond(), 90)
         self.assertTrue(p.isTemporalRangeCumulative())
 

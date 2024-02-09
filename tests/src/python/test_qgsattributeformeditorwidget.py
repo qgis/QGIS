@@ -39,14 +39,14 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, parent)
         af = QgsAttributeFormEditorWidget(wrapper, setup.type(), None)
         af.setSearchWidgetWrapper(w)
-        af.setMode(QgsAttributeFormWidget.SearchMode)
+        af.setMode(QgsAttributeFormWidget.Mode.SearchMode)
 
         # test that filter combines both current value in search widget wrapper and flags from search tool button
         w.lineEdit().setText('5.5')
         sb = af.findChild(QWidget, "SearchWidgetToolButton")
-        sb.setActiveFlags(QgsSearchWidgetWrapper.EqualTo)
+        sb.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         self.assertEqual(af.currentFilterExpression(), '"fldint"=5.5')
-        sb.setActiveFlags(QgsSearchWidgetWrapper.NotEqualTo)
+        sb.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
         self.assertEqual(af.currentFilterExpression(), '"fldint"<>5.5')
 
     def testSetActive(self):
@@ -59,7 +59,7 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, parent)
         af = QgsAttributeFormEditorWidget(wrapper, setup.type(), None)
         af.setSearchWidgetWrapper(w)
-        af.setMode(QgsAttributeFormWidget.SearchMode)
+        af.setMode(QgsAttributeFormWidget.Mode.SearchMode)
 
         sb = af.findChild(QWidget, "SearchWidgetToolButton")
         # start with inactive
@@ -67,7 +67,7 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         # set to inactive
         sb.setActive()
         # check that correct default flag was taken from search widget wrapper
-        self.assertTrue(sb.activeFlags() & QgsSearchWidgetWrapper.Contains)
+        self.assertTrue(sb.activeFlags() & QgsSearchWidgetWrapper.FilterFlag.Contains)
 
         # try again with numeric field - default should be "EqualTo"
         w = QgsDefaultSearchWidgetWrapper(layer, 1, parent)
@@ -77,7 +77,7 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         # set to inactive
         sb.setActive()
         # check that correct default flag was taken from search widget wrapper
-        self.assertTrue(sb.activeFlags() & QgsSearchWidgetWrapper.EqualTo)
+        self.assertTrue(sb.activeFlags() & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
 
     def testBetweenFilter(self):
         """ Test creating a between type filter """
@@ -86,7 +86,7 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         wrapper = QgsGui.editorWidgetRegistry().create(layer, 0, None, form)
         af = QgsAttributeFormEditorWidget(wrapper, 'DateTime', None)
         af.createSearchWidgetWrappers()
-        af.setMode(QgsAttributeFormWidget.SearchMode)
+        af.setMode(QgsAttributeFormWidget.Mode.SearchMode)
 
         d1 = af.findChildren(QDateTimeEdit)[0]
         d2 = af.findChildren(QDateTimeEdit)[1]
@@ -94,9 +94,9 @@ class PyQgsAttributeFormEditorWidget(QgisTestCase):
         d2.setDateTime(QDateTime(QDate(2013, 5, 16), QTime()))
 
         sb = af.findChild(QWidget, "SearchWidgetToolButton")
-        sb.setActiveFlags(QgsSearchWidgetWrapper.Between)
+        sb.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.Between)
         self.assertEqual(af.currentFilterExpression(), '"fldtext">=\'2013-05-06\' AND "fldtext"<=\'2013-05-16\'')
-        sb.setActiveFlags(QgsSearchWidgetWrapper.IsNotBetween)
+        sb.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.IsNotBetween)
         self.assertEqual(af.currentFilterExpression(), '"fldtext"<\'2013-05-06\' OR "fldtext">\'2013-05-16\'')
 
 

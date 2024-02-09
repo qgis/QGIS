@@ -156,7 +156,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( Qgis::WkbType wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
-    bool operator==( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL
+#ifndef SIP_RUN
+  private:
+    bool fuzzyHelper( double epsilon,
+                      const QgsAbstractGeometry &other,
+                      bool is3DFlag,
+                      bool isMeasureFlag,
+                      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
+                      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
+                      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
+                      std::function<bool( double, double, double, double, double )> comparator2D ) const
     {
       const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
       if ( !pt )
@@ -167,46 +176,89 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       if ( pt->wkbType() != type )
         return false;
 
-      const bool nan1X = std::isnan( mX );
-      const bool nan2X = std::isnan( pt->x() );
-      if ( nan1X != nan2X )
-        return false;
-      if ( !nan1X && !qgsDoubleNear( mX, pt->x(), 1E-8 ) )
-        return false;
-
-      const bool nan1Y = std::isnan( mY );
-      const bool nan2Y = std::isnan( pt->y() );
-      if ( nan1Y != nan2Y )
-        return false;
-      if ( !nan1Y && !qgsDoubleNear( mY, pt->y(), 1E-8 ) )
-        return false;
-
-      if ( QgsWkbTypes::hasZ( type ) )
+      if ( is3DFlag && isMeasureFlag )
       {
-        const bool nan1Z = std::isnan( mZ );
-        const bool nan2Z = std::isnan( pt->z() );
-        if ( nan1Z != nan2Z )
-          return false;
-        if ( !nan1Z && !qgsDoubleNear( mZ, pt->z(), 1E-8 ) )
-          return false;
+        return comparator3DMeasure( epsilon, mX, mY, mZ, mM, pt->x(), pt->y(), pt->z(), pt->m() );
       }
-
-      if ( QgsWkbTypes::hasM( type ) )
+      else if ( is3DFlag )
       {
-        const bool nan1M = std::isnan( mM );
-        const bool nan2M = std::isnan( pt->m() );
-        if ( nan1M != nan2M )
-          return false;
-        if ( !nan1M && !qgsDoubleNear( mM, pt->m(), 1E-8 ) )
-          return false;
+        return comparator3D( epsilon, mX, mY, mZ, pt->x(), pt->y(), pt->z() );
       }
+      else if ( isMeasureFlag )
+      {
+        return comparatorMeasure( epsilon, mX, mY, mM, pt->x(), pt->y(), pt->m() );
+      }
+      return comparator2D( epsilon, mX, mY, pt->x(), pt->y() );
+    }
+#endif // !SIP_RUN
 
-      return true;
+  public:
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper(
+               epsilon,
+               other,
+               is3D(),
+               isMeasure(),
+               []( double epsilon, double x1, double y1, double z1, double m1,
+                   double x2, double y2, double z2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
+      },
+      []( double epsilon, double x1, double y1, double z1,
+          double x2, double y2, double z2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, x2, y2, z2 );
+      },
+      []( double epsilon, double x1, double y1, double m1,
+          double x2, double y2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, m1, x2, y2, m2 );
+      },
+      []( double epsilon, double x1, double y1,
+          double x2, double y2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, x2, y2 );
+      } );
+    }
+
+    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    {
+      return fuzzyHelper(
+               epsilon,
+               other,
+               is3D(),
+               isMeasure(),
+               []( double epsilon, double x1, double y1, double z1, double m1,
+                   double x2, double y2, double z2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
+      },
+      []( double epsilon, double x1, double y1, double z1,
+          double x2, double y2, double z2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, x2, y2, z2 );
+      },
+      []( double epsilon, double x1, double y1, double m1,
+          double x2, double y2, double m2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, m1, x2, y2, m2 );
+      },
+      []( double epsilon, double x1, double y1,
+          double x2, double y2 )
+      {
+        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, x2, y2 );
+      } );
+    }
+
+    bool operator==( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL
+    {
+      return fuzzyEqual( other, 1e-8 );
     }
 
     bool operator!=( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL
     {
-      return !operator==( other );
+      return !fuzzyEqual( other, 1e-8 );
     }
 
     /**
@@ -389,7 +441,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared3D()
      * \since QGIS 3.0
     */
-    double distance3D( double x, double y, double z ) const SIP_HOLDGIL;
+    double distance3D( double x, double y, double z ) const SIP_HOLDGIL
+    {
+      if ( is3D() || !std::isnan( z ) )
+      {
+        return QgsGeometryUtilsBase::distance3D( mX, mY, mZ, x, y, z );
+      }
+      return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
+    }
 
     /**
      * Returns the Cartesian 3D distance between this point and another point. In certain
@@ -398,7 +457,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared3D()
      * \since QGIS 3.0
     */
-    double distance3D( const QgsPoint &other ) const SIP_HOLDGIL;
+    double distance3D( const QgsPoint &other ) const SIP_HOLDGIL
+    {
+      if ( is3D() || other.is3D() )
+      {
+        return QgsGeometryUtilsBase::distance3D( mX, mY, mZ, other.x(), other.y(), other.z() );
+      }
+      return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
+    }
 
     /**
      * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
@@ -407,7 +473,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance3D()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL;
+    double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL
+    {
+      if ( is3D() || !std::isnan( z ) )
+      {
+        return QgsGeometryUtilsBase::sqrDistance3D( mX, mY, mZ, x, y, z );
+      }
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
+    }
 
     /**
      * Returns the Cartesian 3D squared distance between this point and another point. Calling
@@ -416,7 +489,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance3D()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL;
+    double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL
+    {
+      if ( is3D() || other.is3D() )
+      {
+        return QgsGeometryUtilsBase::sqrDistance3D( mX, mY, mZ, other.x(), other.y(), other.z() );
+      }
+      return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
+    }
 
     /**
      * Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)

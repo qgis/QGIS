@@ -30,8 +30,6 @@ start_app()
 
 class TestQgsLabelLineSettings(QgisTestCase):
 
-    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
-                     'Python version too old for enum classes to work')
     def test_line_settings(self):
         """
         Test line settings
@@ -67,8 +65,8 @@ class TestQgsLabelLineSettings(QgisTestCase):
 
         settings.setOverrunDistance(5.6)
         self.assertEqual(settings.overrunDistance(), 5.6)
-        settings.setOverrunDistanceUnit(QgsUnitTypes.RenderInches)
-        self.assertEqual(settings.overrunDistanceUnit(), QgsUnitTypes.RenderInches)
+        settings.setOverrunDistanceUnit(QgsUnitTypes.RenderUnit.RenderInches)
+        self.assertEqual(settings.overrunDistanceUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         scale = QgsMapUnitScale(1, 2)
         settings.setOverrunDistanceMapUnitScale(scale)
         self.assertEqual(settings.overrunDistanceMapUnitScale().minScale, 1)
@@ -79,9 +77,9 @@ class TestQgsLabelLineSettings(QgisTestCase):
 
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
-        pal_settings.placementFlags = QgsPalLayerSettings.OnLine | QgsPalLayerSettings.MapOrientation
-        self.assertEqual(pal_settings.placementFlags, 9)
-        self.assertTrue(pal_settings.lineSettings().placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
+        pal_settings.placementFlags = QgsPalLayerSettings.LinePlacementFlags.OnLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
+        self.assertEqual(pal_settings.placementFlags, QgsPalLayerSettings.LinePlacementFlags.OnLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation)
+        self.assertEqual(pal_settings.lineSettings().placementFlags(), QgsLabeling.LinePlacementFlag.OnLine | QgsLabeling.LinePlacementFlag.MapOrientation)
 
         pal_settings.mergeLines = True
         self.assertTrue(pal_settings.mergeLines)
@@ -111,25 +109,23 @@ class TestQgsLabelLineSettings(QgisTestCase):
         self.assertFalse(pal_settings.reverseDirectionSymbol)
         self.assertFalse(pal_settings.lineSettings().reverseDirectionSymbol())
 
-        pal_settings.placeDirectionSymbol = QgsPalLayerSettings.SymbolAbove
+        pal_settings.placeDirectionSymbol = QgsPalLayerSettings.DirectionSymbols.SymbolAbove
         self.assertEqual(pal_settings.placeDirectionSymbol, 1)
-        self.assertTrue(pal_settings.lineSettings().directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
+        self.assertEqual(pal_settings.lineSettings().directionSymbolPlacement(), QgsLabelLineSettings.DirectionSymbolPlacement.SymbolAbove)
 
         pal_settings.overrunDistance = 4.2
         self.assertEqual(pal_settings.overrunDistance, 4.2)
-        self.assertTrue(pal_settings.lineSettings().overrunDistance(), 4.2)
+        self.assertEqual(pal_settings.lineSettings().overrunDistance(), 4.2)
 
-        pal_settings.overrunDistanceUnit = QgsUnitTypes.RenderInches
-        self.assertEqual(pal_settings.overrunDistanceUnit, QgsUnitTypes.RenderInches)
-        self.assertTrue(pal_settings.lineSettings().overrunDistanceUnit(), QgsUnitTypes.RenderInches)
+        pal_settings.overrunDistanceUnit = QgsUnitTypes.RenderUnit.RenderInches
+        self.assertEqual(pal_settings.overrunDistanceUnit, QgsUnitTypes.RenderUnit.RenderInches)
+        self.assertEqual(pal_settings.lineSettings().overrunDistanceUnit(), QgsUnitTypes.RenderUnit.RenderInches)
         pal_settings.overrunDistanceMapUnitScale = scale
         self.assertEqual(pal_settings.overrunDistanceMapUnitScale.minScale, 1)
         self.assertEqual(pal_settings.overrunDistanceMapUnitScale.maxScale, 2)
-        self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().minScale, 1)
-        self.assertTrue(pal_settings.lineSettings().overrunDistanceMapUnitScale().maxScale, 2)
+        self.assertEqual(pal_settings.lineSettings().overrunDistanceMapUnitScale().minScale, 1)
+        self.assertEqual(pal_settings.lineSettings().overrunDistanceMapUnitScale().maxScale, 2)
 
-    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
-                     'Python version too old for enum classes to work')
     def testUpdateDataDefinedProps(self):
         settings = QgsLabelLineSettings()
         settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
@@ -140,9 +136,9 @@ class TestQgsLabelLineSettings(QgisTestCase):
         self.assertEqual(settings.lineAnchorPercent(), 0.3)
 
         props = QgsPropertyCollection()
-        props.setProperty(QgsPalLayerSettings.LinePlacementOptions, QgsProperty.fromExpression('@placement'))
-        props.setProperty(QgsPalLayerSettings.OverrunDistance, QgsProperty.fromExpression('@dist'))
-        props.setProperty(QgsPalLayerSettings.LineAnchorPercent, QgsProperty.fromExpression('@line_anchor'))
+        props.setProperty(QgsPalLayerSettings.Property.LinePlacementOptions, QgsProperty.fromExpression('@placement'))
+        props.setProperty(QgsPalLayerSettings.Property.OverrunDistance, QgsProperty.fromExpression('@dist'))
+        props.setProperty(QgsPalLayerSettings.Property.LineAnchorPercent, QgsProperty.fromExpression('@line_anchor'))
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable('placement', 'AL,LO')

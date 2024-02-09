@@ -1013,7 +1013,7 @@ static MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &driverName
     faceIndex += faceCount;
   }
 
-  MDAL_M_setProjection( mdalMesh, crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ).toStdString().c_str() );
+  MDAL_M_setProjection( mdalMesh, crs.toWkt( Qgis::CrsWktVariant::Preferred ).toStdString().c_str() );
 
   return mdalMesh;
 }

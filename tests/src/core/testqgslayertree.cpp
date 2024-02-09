@@ -978,8 +978,8 @@ void TestQgsLayerTree::testRasterSymbolNode()
   QCOMPARE( rasterNode.ruleKey(), QStringLiteral( "key" ) );
   QCOMPARE( static_cast< int >( rasterNode.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
   QCOMPARE( rasterNode.data( Qt::DisplayRole ).toString(), QStringLiteral( "my node" ) );
-  QCOMPARE( rasterNode.data( QgsLayerTreeModelLegendNode::NodeTypeRole ).toInt(), static_cast< int >( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
-  QCOMPARE( rasterNode.data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString(), QStringLiteral( "key" ) );
+  QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt(), static_cast< int >( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
+  QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(), QStringLiteral( "key" ) );
   QCOMPARE( rasterNode.data( Qt::CheckStateRole ), QVariant() );
   QVERIFY( !rasterNode.setData( true, Qt::CheckStateRole ) );
 

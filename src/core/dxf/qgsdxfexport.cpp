@@ -86,19 +86,16 @@ QgsDxfExport::Flags QgsDxfExport::flags() const
 
 void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 {
-  QList<QgsMapLayer *> layerList;
-
+  mLayerList.clear();
   mLayerNameAttribute.clear();
 
-  layerList.reserve( layers.size() );
+  mLayerList.reserve( layers.size() );
   for ( const DxfLayer &dxfLayer : layers )
   {
-    layerList << dxfLayer.layer();
+    mLayerList << dxfLayer.layer();
     if ( dxfLayer.layerOutputAttributeIndex() >= 0 )
       mLayerNameAttribute.insert( dxfLayer.layer()->id(), dxfLayer.layerOutputAttributeIndex() );
   }
-
-  mMapSettings.setLayers( layerList );
 }
 
 void QgsDxfExport::writeGroup( int code, int i )
@@ -209,8 +206,8 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
 
   if ( mExtent.isEmpty() )
   {
-    const QList< QgsMapLayer * > layers = mMapSettings.layers();
-    for ( QgsMapLayer *ml : layers )
+    QgsRectangle extent;
+    for ( QgsMapLayer *ml : std::as_const( mLayerList ) )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( !vl )
@@ -222,26 +219,61 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
 
       layerExtent = mMapSettings.layerToMapCoordinates( vl, layerExtent );
 
-      if ( mExtent.isEmpty() )
+      if ( extent.isEmpty() )
       {
-        mExtent = layerExtent;
+        extent = layerExtent;
       }
       else
       {
-        mExtent.combineExtentWith( layerExtent );
+        extent.combineExtentWith( layerExtent );
       }
     }
+    mMapSettings.setExtent( extent );
+  }
+  else
+  {
+    mMapSettings.setExtent( mExtent );
   }
 
-  if ( mExtent.isEmpty() )
+  if ( mMapSettings.extent().isEmpty() )
     return ExportResult::EmptyExtentError;
 
   Qgis::DistanceUnit mapUnits = mCrs.mapUnits();
-  mMapSettings.setExtent( mExtent );
+
+  // Empty layer check to avoid adding those in the exported file
+  QList<QgsMapLayer *> layers;
+  QStringList skippedLayers;
+  for ( QgsMapLayer *ml : std::as_const( mLayerList ) )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+    if ( !vl )
+    {
+      continue;
+    }
+
+    QgsFeatureRequest request;
+    request.setLimit( 1 );
+    if ( !mExtent.isEmpty() )
+    {
+      const QgsRectangle extentRect = mMapSettings.mapToLayerCoordinates( vl, mExtent );
+      request.setFilterRect( extentRect );
+    }
+    QgsFeatureIterator featureIt = vl->getFeatures( request );
+    QgsFeature feature;
+    if ( featureIt.nextFeature( feature ) )
+    {
+      layers << ml;
+    }
+    else
+    {
+      skippedLayers << ml->name();
+    }
+  }
+  mMapSettings.setLayers( layers );
 
   int dpi = 96;
   mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, Qgis::DistanceUnit::Meters );
-  mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
+  mMapSettings.setOutputSize( QSize( std::floor( mMapSettings.extent().width() * mFactor ), std::floor( mMapSettings.extent().height() * mFactor ) ) );
   mMapSettings.setOutputDpi( dpi );
 
   writeHeader( dxfEncoding( encoding ) );
@@ -251,6 +283,11 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
   writeEntities();
   writeEndFile();
   stopRenderers();
+
+  if ( !skippedLayers.isEmpty() )
+  {
+    mFeedbackMessage = QObject::tr( "The following empty layers were skipped: %1" ).arg( skippedLayers.join( QStringLiteral( ", " ) ) );
+  }
 
   return ExportResult::Success;
 }
@@ -273,11 +310,11 @@ void QgsDxfExport::writeHeader( const QString &codepage )
 
   // EXTMIN
   writeGroup( 9, QStringLiteral( "$EXTMIN" ) );
-  writeGroup( 0, QgsPoint( Qgis::WkbType::PointZ, mExtent.xMinimum(), mExtent.yMinimum(), 0.0 ) );
+  writeGroup( 0, QgsPoint( Qgis::WkbType::PointZ, mMapSettings.extent().xMinimum(), mMapSettings.extent().yMinimum(), 0.0 ) );
 
   // EXTMAX
   writeGroup( 9, QStringLiteral( "$EXTMAX" ) );
-  writeGroup( 0, QgsPoint( Qgis::WkbType::PointZ, mExtent.xMaximum(), mExtent.yMaximum(), 0.0 ) );
+  writeGroup( 0, QgsPoint( Qgis::WkbType::PointZ, mMapSettings.extent().xMaximum(), mMapSettings.extent().yMaximum(), 0.0 ) );
 
   // Global linetype scale
   writeGroup( 9, QStringLiteral( "$LTSCALE" ) );
@@ -440,10 +477,10 @@ void QgsDxfExport::writeTables()
   writeGroup( 3, QgsPoint( 0.0, 0.0 ) );                            // snap base point
   writeGroup( 4, QgsPoint( 1.0, 1.0 ) );                            // snap spacing
   writeGroup( 5, QgsPoint( 1.0, 1.0 ) );                            // grid spacing
-  writeGroup( 6, QgsPoint( Qgis::WkbType::PointZ, 0.0, 0.0, 1.0 ) );  // view direction from target point
-  writeGroup( 7, QgsPoint( mExtent.center() ) );                    // view target point
-  writeGroup( 40, mExtent.height() );                               // view height
-  writeGroup( 41, mExtent.width() / mExtent.height() );             // view aspect ratio
+  writeGroup( 6, QgsPoint( Qgis::WkbType::PointZ, 0.0, 0.0, 1.0 ) );// view direction from target point
+  writeGroup( 7, QgsPoint( mMapSettings.extent().center() ) );      // view target point
+  writeGroup( 40, mMapSettings.extent().height() );                 // view height
+  writeGroup( 41, mMapSettings.extent().width() / mMapSettings.extent().height() );// view aspect ratio
   writeGroup( 42, 50.0 );                                           // lens length
   writeGroup( 43, 0.0 );                                            // front clipping plane
   writeGroup( 44, 0.0 );                                            // back clipping plane
@@ -682,7 +719,7 @@ void QgsDxfExport::writeEntities()
     QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
     QgsCoordinateTransform extentTransform = ct;
     extentTransform.setBallparkTransformsAreAppropriate( true );
-    request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+    request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
 
     QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
@@ -782,11 +819,14 @@ void QgsDxfExport::prepareRenderers()
 
   mRenderContext = QgsRenderContext();
   mRenderContext.setRendererScale( mSymbologyScale );
-  mRenderContext.setExtent( mExtent );
+  mRenderContext.setExtent( mMapSettings.extent() );
 
   mRenderContext.setScaleFactor( 96.0 / 25.4 );
-  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / mFactor, mExtent.center().x(), mExtent.center().y(), mExtent.width() * mFactor,
-                                mExtent.height() * mFactor, 0 ) );
+  mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / mFactor,
+                                mMapSettings.extent().center().x(),
+                                mMapSettings.extent().center().y(),
+                                std::floor( mMapSettings.extent().width() * mFactor ),
+                                std::floor( mMapSettings.extent().height() * mFactor ), 0 ) );
 
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
@@ -833,7 +873,15 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( job->renderer->usedAttributes( ctx ), job->featureSource.fields() );
   QgsCoordinateTransform ct( mMapSettings.destinationCrs(), job->crs, mMapSettings.transformContext() );
-  req.setFilterRect( ct.transform( mExtent ) );
+  try
+  {
+    req.setFilterRect( ct.transform( mMapSettings.extent() ) );
+  }
+  catch ( const QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "QgsDxfExport::writeEntitiesSymbolLevels(): extent reprojection failed" ) );
+    return;
+  }
 
   QgsFeatureIterator fit = job->featureSource.getFeatures( req );
 
@@ -1329,9 +1377,9 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
     Qgis::LabelQuadrantPosition offsetQuad = layerSettings.quadOffset;
 
-    if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
+    if ( props.isActive( QgsPalLayerSettings::Property::OffsetQuad ) )
     {
-      const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
+      const QVariant exprVal = props.value( QgsPalLayerSettings::Property::OffsetQuad, expressionContext );
       if ( !QgsVariantUtils::isNull( exprVal ) )
       {
         offsetQuad = static_cast<Qgis::LabelQuadrantPosition>( exprVal.toInt() );
@@ -1379,13 +1427,13 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  if ( props.isActive( QgsPalLayerSettings::Hali ) )
+  if ( props.isActive( QgsPalLayerSettings::Property::Hali ) )
   {
     lblX = labelFeature->anchorPosition().x();
     lblY = labelFeature->anchorPosition().y();
 
     hali = HAlign::HLeft;
-    QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
+    QVariant exprVal = props.value( QgsPalLayerSettings::Property::Hali, expressionContext );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString haliString = exprVal.toString();
@@ -1401,10 +1449,10 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   }
 
   //vertical alignment
-  if ( props.isActive( QgsPalLayerSettings::Vali ) )
+  if ( props.isActive( QgsPalLayerSettings::Property::Vali ) )
   {
     vali = VAlign::VBottom;
-    QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
+    QVariant exprVal = props.value( QgsPalLayerSettings::Property::Vali, expressionContext );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString valiString = exprVal.toString();
@@ -2080,8 +2128,8 @@ bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *
   {
     QSet<int> properties = sl->dataDefinedProperties().propertyKeys();
     // Remove data defined properties handled through DXF property codes
-    properties.remove( QgsSymbolLayer::PropertySize );
-    properties.remove( QgsSymbolLayer::PropertyAngle );
+    properties.remove( static_cast< int >( QgsSymbolLayer::Property::Size ) );
+    properties.remove( static_cast< int >( QgsSymbolLayer::Property::Angle ) );
     blockBreak = !properties.isEmpty();
   }
 
@@ -2179,8 +2227,7 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer *layer ) const
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 {
   // TODO: make this thread safe
-  const QList< QgsMapLayer * > layers = mMapSettings.layers();
-  for ( QgsMapLayer *ml : layers )
+  for ( QgsMapLayer *ml : std::as_const( mLayerList ) )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->id() == id )

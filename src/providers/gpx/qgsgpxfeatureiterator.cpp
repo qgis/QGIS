@@ -80,7 +80,7 @@ bool QgsGPXFeatureIterator::rewind()
   if ( mClosed )
     return false;
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid )
   {
     mFetchedFid = false;
   }
@@ -115,7 +115,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
   if ( mClosed )
     return false;
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid )
   {
     bool res = readFid( feature );
     close();
@@ -264,7 +264,7 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint &wpt, QgsFeature &fe
   }
 
   // some wkb voodoo
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) || !mFilterRect.isNull() )
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() )
   {
     QgsGeometry *g = readWaypointGeometry( wpt );
     feature.setGeometry( *g );
@@ -304,7 +304,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute &rte, QgsFeature &feature 
     }
   }
 
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) || !mFilterRect.isNull() )
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() )
   {
     feature.setGeometry( *geometry );
     delete geometry;
@@ -346,7 +346,7 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack &trk, QgsFeature &feature 
     }
   }
 
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) || !mFilterRect.isNull() )
+  if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() )
   {
     feature.setGeometry( *geometry );
     delete geometry;

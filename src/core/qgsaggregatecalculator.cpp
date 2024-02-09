@@ -22,7 +22,9 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsstatisticalsummary.h"
+#include "qgsdatetimestatisticalsummary.h"
+#include "qgsstringstatisticalsummary.h"
 
 
 QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer *layer )
@@ -49,7 +51,7 @@ void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds &fids )
   mFidsFilter = fids;
 }
 
-QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
+QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
     const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok, QgsFeedback *feedback ) const
 {
   mLastError.clear();
@@ -103,8 +105,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   }
 
   request.setFlags( expressionNeedsGeometry ?
-                    QgsFeatureRequest::NoFlags :
-                    QgsFeatureRequest::NoGeometry )
+                    Qgis::FeatureRequestFlag::NoFlags :
+                    Qgis::FeatureRequestFlag::NoGeometry )
   .setSubsetOfAttributes( lst, mLayer->fields() );
 
   if ( mFidsSet )
@@ -122,7 +124,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   int userType = 0;
   if ( attrNum == -1 )
   {
-    if ( aggregate == GeometryCollect )
+    if ( aggregate == Qgis::Aggregate::GeometryCollect )
     {
       // in this case we know the result should be a geometry value, so no need to sniff it out...
       resultType = QVariant::UserType;
@@ -147,41 +149,41 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
         switch ( aggregate )
         {
           // string
-          case StringConcatenate:
-          case StringConcatenateUnique:
-          case StringMinimumLength:
-          case StringMaximumLength:
+          case Qgis::Aggregate::StringConcatenate:
+          case Qgis::Aggregate::StringConcatenateUnique:
+          case Qgis::Aggregate::StringMinimumLength:
+          case Qgis::Aggregate::StringMaximumLength:
             v = QString();
             break;
 
           // numerical
-          case Sum:
-          case Mean:
-          case Median:
-          case StDev:
-          case StDevSample:
-          case Range:
-          case FirstQuartile:
-          case ThirdQuartile:
-          case InterQuartileRange:
+          case Qgis::Aggregate::Sum:
+          case Qgis::Aggregate::Mean:
+          case Qgis::Aggregate::Median:
+          case Qgis::Aggregate::StDev:
+          case Qgis::Aggregate::StDevSample:
+          case Qgis::Aggregate::Range:
+          case Qgis::Aggregate::FirstQuartile:
+          case Qgis::Aggregate::ThirdQuartile:
+          case Qgis::Aggregate::InterQuartileRange:
           // mixed type, fallback to numerical
-          case Count:
-          case CountDistinct:
-          case CountMissing:
-          case Minority:
-          case Majority:
-          case Min:
-          case Max:
+          case Qgis::Aggregate::Count:
+          case Qgis::Aggregate::CountDistinct:
+          case Qgis::Aggregate::CountMissing:
+          case Qgis::Aggregate::Minority:
+          case Qgis::Aggregate::Majority:
+          case Qgis::Aggregate::Min:
+          case Qgis::Aggregate::Max:
             v = 0.0;
             break;
 
           // geometry
-          case GeometryCollect:
+          case Qgis::Aggregate::GeometryCollect:
             v = QgsGeometry();
             break;
 
           // list, fallback to string
-          case ArrayAggregate:
+          case Qgis::Aggregate::ArrayAggregate:
             v = QString();
             break;
         }
@@ -197,7 +199,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
   return calculate( aggregate, fit, resultType, userType, attrNum, expression.get(), mDelimiter, context, ok, &mLastError );
 }
 
-QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( const QString &string, bool *ok )
+Qgis::Aggregate QgsAggregateCalculator::stringToAggregate( const QString &string, bool *ok )
 {
   const QString normalized = string.trimmed().toLower();
 
@@ -205,103 +207,103 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     *ok = true;
 
   if ( normalized == QLatin1String( "count" ) )
-    return Count;
+    return Qgis::Aggregate::Count;
   else if ( normalized == QLatin1String( "count_distinct" ) )
-    return CountDistinct;
+    return Qgis::Aggregate::CountDistinct;
   else if ( normalized == QLatin1String( "count_missing" ) )
-    return CountMissing;
+    return Qgis::Aggregate::CountMissing;
   else if ( normalized == QLatin1String( "min" ) || normalized == QLatin1String( "minimum" ) )
-    return Min;
+    return Qgis::Aggregate::Min;
   else if ( normalized == QLatin1String( "max" ) || normalized == QLatin1String( "maximum" ) )
-    return Max;
+    return Qgis::Aggregate::Max;
   else if ( normalized == QLatin1String( "sum" ) )
-    return Sum;
+    return Qgis::Aggregate::Sum;
   else if ( normalized == QLatin1String( "mean" ) )
-    return Mean;
+    return Qgis::Aggregate::Mean;
   else if ( normalized == QLatin1String( "median" ) )
-    return Median;
+    return Qgis::Aggregate::Median;
   else if ( normalized == QLatin1String( "stdev" ) )
-    return StDev;
+    return Qgis::Aggregate::StDev;
   else if ( normalized == QLatin1String( "stdevsample" ) )
-    return StDevSample;
+    return Qgis::Aggregate::StDevSample;
   else if ( normalized == QLatin1String( "range" ) )
-    return Range;
+    return Qgis::Aggregate::Range;
   else if ( normalized == QLatin1String( "minority" ) )
-    return Minority;
+    return Qgis::Aggregate::Minority;
   else if ( normalized == QLatin1String( "majority" ) )
-    return Majority;
+    return Qgis::Aggregate::Majority;
   else if ( normalized == QLatin1String( "q1" ) )
-    return FirstQuartile;
+    return Qgis::Aggregate::FirstQuartile;
   else if ( normalized == QLatin1String( "q3" ) )
-    return ThirdQuartile;
+    return Qgis::Aggregate::ThirdQuartile;
   else if ( normalized == QLatin1String( "iqr" ) )
-    return InterQuartileRange;
+    return Qgis::Aggregate::InterQuartileRange;
   else if ( normalized == QLatin1String( "min_length" ) )
-    return StringMinimumLength;
+    return Qgis::Aggregate::StringMinimumLength;
   else if ( normalized == QLatin1String( "max_length" ) )
-    return StringMaximumLength;
+    return Qgis::Aggregate::StringMaximumLength;
   else if ( normalized == QLatin1String( "concatenate" ) )
-    return StringConcatenate;
+    return Qgis::Aggregate::StringConcatenate;
   else if ( normalized == QLatin1String( "concatenate_unique" ) )
-    return StringConcatenateUnique;
+    return Qgis::Aggregate::StringConcatenateUnique;
   else if ( normalized == QLatin1String( "collect" ) )
-    return GeometryCollect;
+    return Qgis::Aggregate::GeometryCollect;
   else if ( normalized == QLatin1String( "array_agg" ) )
-    return ArrayAggregate;
+    return Qgis::Aggregate::ArrayAggregate;
 
   if ( ok )
     *ok = false;
 
-  return Count;
+  return Qgis::Aggregate::Count;
 }
 
-QString QgsAggregateCalculator::displayName( Aggregate aggregate )
+QString QgsAggregateCalculator::displayName( Qgis::Aggregate aggregate )
 {
   switch ( aggregate )
   {
-    case QgsAggregateCalculator::Count:
+    case Qgis::Aggregate::Count:
       return QObject::tr( "count" );
-    case QgsAggregateCalculator::CountDistinct:
+    case Qgis::Aggregate::CountDistinct:
       return QObject::tr( "count distinct" );
-    case QgsAggregateCalculator::CountMissing:
+    case Qgis::Aggregate::CountMissing:
       return QObject::tr( "count missing" );
-    case QgsAggregateCalculator::Min:
+    case Qgis::Aggregate::Min:
       return QObject::tr( "minimum" );
-    case QgsAggregateCalculator::Max:
+    case Qgis::Aggregate::Max:
       return QObject::tr( "maximum" );
-    case QgsAggregateCalculator::Sum:
+    case Qgis::Aggregate::Sum:
       return QObject::tr( "sum" );
-    case QgsAggregateCalculator::Mean:
+    case Qgis::Aggregate::Mean:
       return QObject::tr( "mean" );
-    case QgsAggregateCalculator::Median:
+    case Qgis::Aggregate::Median:
       return QObject::tr( "median" );
-    case QgsAggregateCalculator::StDev:
+    case Qgis::Aggregate::StDev:
       return QObject::tr( "standard deviation" );
-    case QgsAggregateCalculator::StDevSample:
+    case Qgis::Aggregate::StDevSample:
       return QObject::tr( "standard deviation (sample)" );
-    case QgsAggregateCalculator::Range:
+    case Qgis::Aggregate::Range:
       return QObject::tr( "range" );
-    case QgsAggregateCalculator::Minority:
+    case Qgis::Aggregate::Minority:
       return QObject::tr( "minority" );
-    case QgsAggregateCalculator::Majority:
+    case Qgis::Aggregate::Majority:
       return QObject::tr( "majority" );
-    case QgsAggregateCalculator::FirstQuartile:
+    case Qgis::Aggregate::FirstQuartile:
       return QObject::tr( "first quartile" );
-    case QgsAggregateCalculator::ThirdQuartile:
+    case Qgis::Aggregate::ThirdQuartile:
       return QObject::tr( "third quartile" );
-    case QgsAggregateCalculator::InterQuartileRange:
+    case Qgis::Aggregate::InterQuartileRange:
       return QObject::tr( "inter quartile range" );
-    case QgsAggregateCalculator::StringMinimumLength:
+    case Qgis::Aggregate::StringMinimumLength:
       return QObject::tr( "minimum length" );
-    case QgsAggregateCalculator::StringMaximumLength:
+    case Qgis::Aggregate::StringMaximumLength:
       return QObject::tr( "maximum length" );
-    case QgsAggregateCalculator::StringConcatenate:
+    case Qgis::Aggregate::StringConcatenate:
       return QObject::tr( "concatenate" );
-    case QgsAggregateCalculator::GeometryCollect:
+    case Qgis::Aggregate::GeometryCollect:
       return QObject::tr( "collection" );
-    case QgsAggregateCalculator::ArrayAggregate:
+    case Qgis::Aggregate::ArrayAggregate:
       return QObject::tr( "array aggregate" );
-    case QgsAggregateCalculator::StringConcatenateUnique:
+    case Qgis::Aggregate::StringConcatenateUnique:
       return QObject::tr( "concatenate (unique)" );
   }
   return QString();
@@ -537,13 +539,13 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
   return aggregates;
 }
 
-QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
+QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
     int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok, QString *error )
 {
   if ( ok )
     *ok = false;
 
-  if ( aggregate == QgsAggregateCalculator::ArrayAggregate )
+  if ( aggregate == Qgis::Aggregate::ArrayAggregate )
   {
     if ( ok )
       *ok = true;
@@ -559,7 +561,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     case QVariant::Double:
     {
       bool statOk = false;
-      const QgsStatisticalSummary::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
+      const Qgis::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
       {
         if ( error )
@@ -577,7 +579,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     case QVariant::DateTime:
     {
       bool statOk = false;
-      const QgsDateTimeStatisticalSummary::Statistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
+      const Qgis::DateTimeStatistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
       {
         if ( error )
@@ -593,7 +595,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
     case QVariant::UserType:
     {
-      if ( aggregate == GeometryCollect )
+      if ( aggregate == Qgis::Aggregate::GeometryCollect )
       {
         if ( ok )
           *ok = true;
@@ -608,14 +610,14 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     default:
     {
       // treat as string
-      if ( aggregate == StringConcatenate )
+      if ( aggregate == Qgis::Aggregate::StringConcatenate )
       {
         //special case
         if ( ok )
           *ok = true;
         return concatenateStrings( fit, attr, expression, context, delimiter );
       }
-      else if ( aggregate == StringConcatenateUnique )
+      else if ( aggregate == Qgis::Aggregate::StringConcatenateUnique )
       {
         //special case
         if ( ok )
@@ -624,7 +626,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       }
 
       bool statOk = false;
-      const QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
+      const Qgis::StringStatistic stat = stringStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
       {
         QString typeString;
@@ -652,164 +654,164 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 #endif
 }
 
-QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregate( QgsAggregateCalculator::Aggregate aggregate, bool *ok )
+Qgis::Statistic QgsAggregateCalculator::numericStatFromAggregate( Qgis::Aggregate aggregate, bool *ok )
 {
   if ( ok )
     *ok = true;
 
   switch ( aggregate )
   {
-    case Count:
-      return QgsStatisticalSummary::Count;
-    case CountDistinct:
-      return QgsStatisticalSummary::Variety;
-    case CountMissing:
-      return QgsStatisticalSummary::CountMissing;
-    case Min:
-      return QgsStatisticalSummary::Min;
-    case Max:
-      return QgsStatisticalSummary::Max;
-    case Sum:
-      return QgsStatisticalSummary::Sum;
-    case Mean:
-      return QgsStatisticalSummary::Mean;
-    case Median:
-      return QgsStatisticalSummary::Median;
-    case StDev:
-      return QgsStatisticalSummary::StDev;
-    case StDevSample:
-      return QgsStatisticalSummary::StDevSample;
-    case Range:
-      return QgsStatisticalSummary::Range;
-    case Minority:
-      return QgsStatisticalSummary::Minority;
-    case Majority:
-      return QgsStatisticalSummary::Majority;
-    case FirstQuartile:
-      return QgsStatisticalSummary::FirstQuartile;
-    case ThirdQuartile:
-      return QgsStatisticalSummary::ThirdQuartile;
-    case InterQuartileRange:
-      return QgsStatisticalSummary::InterQuartileRange;
-    case StringMinimumLength:
-    case StringMaximumLength:
-    case StringConcatenate:
-    case StringConcatenateUnique:
-    case GeometryCollect:
-    case ArrayAggregate:
+    case Qgis::Aggregate::Count:
+      return Qgis::Statistic::Count;
+    case Qgis::Aggregate::CountDistinct:
+      return Qgis::Statistic::Variety;
+    case Qgis::Aggregate::CountMissing:
+      return Qgis::Statistic::CountMissing;
+    case Qgis::Aggregate::Min:
+      return Qgis::Statistic::Min;
+    case Qgis::Aggregate::Max:
+      return Qgis::Statistic::Max;
+    case Qgis::Aggregate::Sum:
+      return Qgis::Statistic::Sum;
+    case Qgis::Aggregate::Mean:
+      return Qgis::Statistic::Mean;
+    case Qgis::Aggregate::Median:
+      return Qgis::Statistic::Median;
+    case Qgis::Aggregate::StDev:
+      return Qgis::Statistic::StDev;
+    case Qgis::Aggregate::StDevSample:
+      return Qgis::Statistic::StDevSample;
+    case Qgis::Aggregate::Range:
+      return Qgis::Statistic::Range;
+    case Qgis::Aggregate::Minority:
+      return Qgis::Statistic::Minority;
+    case Qgis::Aggregate::Majority:
+      return Qgis::Statistic::Majority;
+    case Qgis::Aggregate::FirstQuartile:
+      return Qgis::Statistic::FirstQuartile;
+    case Qgis::Aggregate::ThirdQuartile:
+      return Qgis::Statistic::ThirdQuartile;
+    case Qgis::Aggregate::InterQuartileRange:
+      return Qgis::Statistic::InterQuartileRange;
+    case Qgis::Aggregate::StringMinimumLength:
+    case Qgis::Aggregate::StringMaximumLength:
+    case Qgis::Aggregate::StringConcatenate:
+    case Qgis::Aggregate::StringConcatenateUnique:
+    case Qgis::Aggregate::GeometryCollect:
+    case Qgis::Aggregate::ArrayAggregate:
     {
       if ( ok )
         *ok = false;
-      return QgsStatisticalSummary::Count;
+      return Qgis::Statistic::Count;
     }
   }
 
   if ( ok )
     *ok = false;
-  return QgsStatisticalSummary::Count;
+  return Qgis::Statistic::Count;
 }
 
-QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAggregate( QgsAggregateCalculator::Aggregate aggregate, bool *ok )
+Qgis::StringStatistic QgsAggregateCalculator::stringStatFromAggregate( Qgis::Aggregate aggregate, bool *ok )
 {
   if ( ok )
     *ok = true;
 
   switch ( aggregate )
   {
-    case Count:
-      return QgsStringStatisticalSummary::Count;
-    case CountDistinct:
-      return QgsStringStatisticalSummary::CountDistinct;
-    case CountMissing:
-      return QgsStringStatisticalSummary::CountMissing;
-    case Min:
-      return QgsStringStatisticalSummary::Min;
-    case Max:
-      return QgsStringStatisticalSummary::Max;
-    case StringMinimumLength:
-      return QgsStringStatisticalSummary::MinimumLength;
-    case StringMaximumLength:
-      return QgsStringStatisticalSummary::MaximumLength;
-    case Minority:
-      return QgsStringStatisticalSummary::Minority;
-    case Majority:
-      return QgsStringStatisticalSummary::Majority;
+    case Qgis::Aggregate::Count:
+      return Qgis::StringStatistic::Count;
+    case Qgis::Aggregate::CountDistinct:
+      return Qgis::StringStatistic::CountDistinct;
+    case Qgis::Aggregate::CountMissing:
+      return Qgis::StringStatistic::CountMissing;
+    case Qgis::Aggregate::Min:
+      return Qgis::StringStatistic::Min;
+    case Qgis::Aggregate::Max:
+      return Qgis::StringStatistic::Max;
+    case Qgis::Aggregate::StringMinimumLength:
+      return Qgis::StringStatistic::MinimumLength;
+    case Qgis::Aggregate::StringMaximumLength:
+      return Qgis::StringStatistic::MaximumLength;
+    case Qgis::Aggregate::Minority:
+      return Qgis::StringStatistic::Minority;
+    case Qgis::Aggregate::Majority:
+      return Qgis::StringStatistic::Majority;
 
-    case Sum:
-    case Mean:
-    case Median:
-    case StDev:
-    case StDevSample:
-    case Range:
-    case FirstQuartile:
-    case ThirdQuartile:
-    case InterQuartileRange:
-    case StringConcatenate:
-    case StringConcatenateUnique:
-    case GeometryCollect:
-    case ArrayAggregate:
+    case Qgis::Aggregate::Sum:
+    case Qgis::Aggregate::Mean:
+    case Qgis::Aggregate::Median:
+    case Qgis::Aggregate::StDev:
+    case Qgis::Aggregate::StDevSample:
+    case Qgis::Aggregate::Range:
+    case Qgis::Aggregate::FirstQuartile:
+    case Qgis::Aggregate::ThirdQuartile:
+    case Qgis::Aggregate::InterQuartileRange:
+    case Qgis::Aggregate::StringConcatenate:
+    case Qgis::Aggregate::StringConcatenateUnique:
+    case Qgis::Aggregate::GeometryCollect:
+    case Qgis::Aggregate::ArrayAggregate:
     {
       if ( ok )
         *ok = false;
-      return QgsStringStatisticalSummary::Count;
+      return Qgis::StringStatistic::Count;
     }
   }
 
   if ( ok )
     *ok = false;
-  return QgsStringStatisticalSummary::Count;
+  return Qgis::StringStatistic::Count;
 }
 
-QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFromAggregate( QgsAggregateCalculator::Aggregate aggregate, bool *ok )
+Qgis::DateTimeStatistic QgsAggregateCalculator::dateTimeStatFromAggregate( Qgis::Aggregate aggregate, bool *ok )
 {
   if ( ok )
     *ok = true;
 
   switch ( aggregate )
   {
-    case Count:
-      return QgsDateTimeStatisticalSummary::Count;
-    case CountDistinct:
-      return QgsDateTimeStatisticalSummary::CountDistinct;
-    case CountMissing:
-      return QgsDateTimeStatisticalSummary::CountMissing;
-    case Min:
-      return QgsDateTimeStatisticalSummary::Min;
-    case Max:
-      return QgsDateTimeStatisticalSummary::Max;
-    case Range:
-      return QgsDateTimeStatisticalSummary::Range;
+    case Qgis::Aggregate::Count:
+      return Qgis::DateTimeStatistic::Count;
+    case Qgis::Aggregate::CountDistinct:
+      return Qgis::DateTimeStatistic::CountDistinct;
+    case Qgis::Aggregate::CountMissing:
+      return Qgis::DateTimeStatistic::CountMissing;
+    case Qgis::Aggregate::Min:
+      return Qgis::DateTimeStatistic::Min;
+    case Qgis::Aggregate::Max:
+      return Qgis::DateTimeStatistic::Max;
+    case Qgis::Aggregate::Range:
+      return Qgis::DateTimeStatistic::Range;
 
-    case Sum:
-    case Mean:
-    case Median:
-    case StDev:
-    case StDevSample:
-    case Minority:
-    case Majority:
-    case FirstQuartile:
-    case ThirdQuartile:
-    case InterQuartileRange:
-    case StringMinimumLength:
-    case StringMaximumLength:
-    case StringConcatenate:
-    case StringConcatenateUnique:
-    case GeometryCollect:
-    case ArrayAggregate:
+    case Qgis::Aggregate::Sum:
+    case Qgis::Aggregate::Mean:
+    case Qgis::Aggregate::Median:
+    case Qgis::Aggregate::StDev:
+    case Qgis::Aggregate::StDevSample:
+    case Qgis::Aggregate::Minority:
+    case Qgis::Aggregate::Majority:
+    case Qgis::Aggregate::FirstQuartile:
+    case Qgis::Aggregate::ThirdQuartile:
+    case Qgis::Aggregate::InterQuartileRange:
+    case Qgis::Aggregate::StringMinimumLength:
+    case Qgis::Aggregate::StringMaximumLength:
+    case Qgis::Aggregate::StringConcatenate:
+    case Qgis::Aggregate::StringConcatenateUnique:
+    case Qgis::Aggregate::GeometryCollect:
+    case Qgis::Aggregate::ArrayAggregate:
     {
       if ( ok )
         *ok = false;
-      return QgsDateTimeStatisticalSummary::Count;
+      return Qgis::DateTimeStatistic::Count;
     }
   }
 
   if ( ok )
     *ok = false;
-  return QgsDateTimeStatisticalSummary::Count;
+  return Qgis::DateTimeStatistic::Count;
 }
 
 QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
-    QgsExpressionContext *context, QgsStatisticalSummary::Statistic stat )
+    QgsExpressionContext *context, Qgis::Statistic stat )
 {
   Q_ASSERT( expression || attr >= 0 );
 
@@ -836,7 +838,7 @@ QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &
 }
 
 QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
-    QgsExpressionContext *context, QgsStringStatisticalSummary::Statistic stat )
+    QgsExpressionContext *context, Qgis::StringStatistic stat )
 {
   Q_ASSERT( expression || attr >= 0 );
 
@@ -910,48 +912,48 @@ QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator &fit, in
   return results.join( delimiter );
 }
 
-QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate aggregate ) const
+QVariant QgsAggregateCalculator::defaultValue( Qgis::Aggregate aggregate ) const
 {
   // value to return when NO features are aggregated:
   switch ( aggregate )
   {
     // sensible values:
-    case Count:
-    case CountDistinct:
-    case CountMissing:
+    case Qgis::Aggregate::Count:
+    case Qgis::Aggregate::CountDistinct:
+    case Qgis::Aggregate::CountMissing:
       return 0;
 
-    case StringConcatenate:
-    case StringConcatenateUnique:
+    case Qgis::Aggregate::StringConcatenate:
+    case Qgis::Aggregate::StringConcatenateUnique:
       return ""; // zero length string - not null!
 
-    case ArrayAggregate:
+    case Qgis::Aggregate::ArrayAggregate:
       return QVariantList(); // empty list
 
     // undefined - nothing makes sense here
-    case Sum:
-    case Min:
-    case Max:
-    case Mean:
-    case Median:
-    case StDev:
-    case StDevSample:
-    case Range:
-    case Minority:
-    case Majority:
-    case FirstQuartile:
-    case ThirdQuartile:
-    case InterQuartileRange:
-    case StringMinimumLength:
-    case StringMaximumLength:
-    case GeometryCollect:
+    case Qgis::Aggregate::Sum:
+    case Qgis::Aggregate::Min:
+    case Qgis::Aggregate::Max:
+    case Qgis::Aggregate::Mean:
+    case Qgis::Aggregate::Median:
+    case Qgis::Aggregate::StDev:
+    case Qgis::Aggregate::StDevSample:
+    case Qgis::Aggregate::Range:
+    case Qgis::Aggregate::Minority:
+    case Qgis::Aggregate::Majority:
+    case Qgis::Aggregate::FirstQuartile:
+    case Qgis::Aggregate::ThirdQuartile:
+    case Qgis::Aggregate::InterQuartileRange:
+    case Qgis::Aggregate::StringMinimumLength:
+    case Qgis::Aggregate::StringMaximumLength:
+    case Qgis::Aggregate::GeometryCollect:
       return QVariant();
   }
   return QVariant();
 }
 
 QVariant QgsAggregateCalculator::calculateDateTimeAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
-    QgsExpressionContext *context, QgsDateTimeStatisticalSummary::Statistic stat )
+    QgsExpressionContext *context, Qgis::DateTimeStatistic stat )
 {
   Q_ASSERT( expression || attr >= 0 );
 

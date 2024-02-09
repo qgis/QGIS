@@ -365,7 +365,7 @@ void TestVectorLayerCache::testCacheGeom()
   const QgsFeatureId id2 = f.id();
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry ); // should be ignored by cache
+  req.setFlags( Qgis::FeatureRequestFlag::NoGeometry ); // should be ignored by cache
   req.setFilterFids( QgsFeatureIds() << id1 << id2 );
 
   it = cache.getFeatures( req );

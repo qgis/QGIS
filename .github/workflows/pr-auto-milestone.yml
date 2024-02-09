@@ -5,6 +5,9 @@ on:
     types:
       - opened
 
+permissions:
+  contents: read
+
 env:
   QGIS_MAJOR_VERSION: 3
 
@@ -12,6 +15,9 @@ jobs:
   pr-without-milestones:
     runs-on: ubuntu-latest
     if: github.repository == 'qgis/QGIS'
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       # list the tags and milestones
       - uses: octokit/graphql-action@v2.x

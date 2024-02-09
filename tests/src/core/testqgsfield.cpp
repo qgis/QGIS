@@ -104,8 +104,16 @@ void TestQgsField::copy()
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
+
+  QVariantMap config;
+  config.insert( QStringLiteral( "a" ), "value_a" );
+  const QgsEditorWidgetSetup setup( QStringLiteral( "test" ), config );
+  original.setEditorWidgetSetup( setup );
+
   QgsField copy( original );
   QVERIFY( copy == original );
+  QCOMPARE( copy.editorWidgetSetup().type(), original.editorWidgetSetup().type() );
+  QCOMPARE( copy.editorWidgetSetup().config(), original.editorWidgetSetup().config() );
 
   copy.setName( QStringLiteral( "copy" ) );
   QCOMPARE( original.name(), QString( "original" ) );
@@ -364,6 +372,31 @@ void TestQgsField::equality()
   QVERIFY( !( constraints1 == constraints2 ) );
   constraints2.setDomainName( QStringLiteral( "d" ) );
   QVERIFY( constraints1 == constraints2 );
+
+  QgsEditorWidgetSetup setup1 { QStringLiteral( "TextEdit" ), QVariantMap() };
+  QgsEditorWidgetSetup setup2 { QStringLiteral( "TextEdit" ), QVariantMap() };
+
+  field1.setEditorWidgetSetup( setup1 );
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 == field2 );
+
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "Text" ), QVariantMap() };
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 != field2 );
+  setup1 = QgsEditorWidgetSetup{ QStringLiteral( "Text" ), QVariantMap() };
+  field1.setEditorWidgetSetup( setup1 );
+  QVERIFY( field1 == field2 );
+
+  setup1 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
+  field1.setEditorWidgetSetup( setup1 );
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 == field2 );
+
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "XXXXXX" ) } } };
+  field2.setEditorWidgetSetup( setup2 );
+  QVERIFY( field1 != field2 );
+
 }
 
 void TestQgsField::asVariant()
@@ -976,8 +1009,17 @@ void TestQgsField::editorWidgetSetup()
   const QgsEditorWidgetSetup setup( QStringLiteral( "test" ), config );
   field.setEditorWidgetSetup( setup );
 
+  const QgsField otherField = field;
+
   QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
   QCOMPARE( field.editorWidgetSetup().config(), setup.config() );
+  // trigger copy-on-write with unrelated method call when private pointer is referenced more than once
+  field.setName( QStringLiteral( "original" ) );
+  // verify that editorWidgetSetup still remains
+  QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
+  QCOMPARE( field.editorWidgetSetup().config(), setup.config() );
+  QCOMPARE( otherField.editorWidgetSetup().type(), setup.type() );
+  QCOMPARE( otherField.editorWidgetSetup().config(), setup.config() );
 }
 
 void TestQgsField::collection()

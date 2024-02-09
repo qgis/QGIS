@@ -18,7 +18,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrastertransparency.h"
 
-#include "qgssymbollayerutils.h"
+#include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
 
 #include <QCoreApplication>
@@ -155,7 +155,7 @@ void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendere
   rasterRendererElem.setAttribute( QStringLiteral( "type" ), mType );
   rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), mAlphaBand );
-  rasterRendererElem.setAttribute( QStringLiteral( "nodataColor" ), mNodataColor.isValid() ? QgsSymbolLayerUtils::encodeColor( mNodataColor ) : QString() );
+  rasterRendererElem.setAttribute( QStringLiteral( "nodataColor" ), mNodataColor.isValid() ? QgsColorUtils::colorToString( mNodataColor ) : QString() );
 
   if ( mRasterTransparency )
   {
@@ -186,7 +186,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   mOpacity = rendererElem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
   mAlphaBand = rendererElem.attribute( QStringLiteral( "alphaBand" ), QStringLiteral( "-1" ) ).toInt();
   const QString colorEncoded = rendererElem.attribute( QStringLiteral( "nodataColor" ) );
-  mNodataColor = !colorEncoded.isEmpty() ? QgsSymbolLayerUtils::decodeColor( colorEncoded ) : QColor();
+  mNodataColor = !colorEncoded.isEmpty() ? QgsColorUtils::colorFromString( colorEncoded ) : QColor();
 
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )

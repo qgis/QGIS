@@ -243,18 +243,18 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       // Table type
       if ( dataType == QLatin1String( "tiles" ) || dataType == QLatin1String( "2d-gridded-coverage" ) )
       {
-        property.setFlag( QgsGeoPackageProviderConnection::Raster );
+        property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Raster );
       }
       else if ( dataType == QLatin1String( "features" ) )
       {
-        property.setFlag( QgsGeoPackageProviderConnection::Vector );
+        property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Vector );
         property.setGeometryColumn( row.at( 5 ).toString() );
         property.setGeometryColumnCount( 1 );
       }
 
       if ( aspatialTypes.contains( dataType ) )
       {
-        property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
+        property.setFlag( QgsGeoPackageProviderConnection::TableFlag::Aspatial );
         property.addGeometryColumnType( Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() );
       }
       else
@@ -446,18 +446,31 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           QgsLayerMetadataProviderResult result{ layerMetadata };
 
           QgsRectangle extents;
+          bool extentsValid = false;
 
           const auto cExtents { layerMetadata.extent().spatialExtents() };
           for ( const auto &ext : std::as_const( cExtents ) )
           {
             QgsRectangle bbox {  ext.bounds.toRectangle()  };
             QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), searchContext.transformContext };
-            ct.transform( bbox );
+            try
+            {
+              ct.transform( bbox );
+            }
+            catch ( const QgsCsException & )
+            {
+              QgsDebugError( QStringLiteral( "Layer metadata extent failed to reproject to EPSG:4326" ) );
+              continue;
+            }
+            extentsValid = true;
             extents.combineExtentWith( bbox );
           }
 
           QgsPolygon poly;
-          poly.fromWkt( extents.asWktPolygon() );
+          if ( extentsValid )
+          {
+            poly.fromWkt( extents.asWktPolygon() );
+          }
 
           // Filters
           if ( ! geographicExtent.isEmpty() && ( poly.isEmpty() || ! geographicExtent.intersects( extents ) ) )
@@ -470,7 +483,10 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
             continue;
           }
 
-          result.setGeographicExtent( poly );
+          if ( extentsValid )
+          {
+            result.setGeographicExtent( poly );
+          }
           result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
           result.setDataProviderName( QStringLiteral( "ogr" ) );
           result.setAuthid( layerMetadata.crs().authid() );

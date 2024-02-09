@@ -33,7 +33,7 @@
 #include <QMouseEvent>
 #include <QTextStream>
 #include <QToolBar>
-
+#include <QActionGroup>
 
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
@@ -144,7 +144,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   mMapComboBox = new QgsGrassModuleInputComboBox( QgsGrassObject::Raster, this );
   mMapComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mMapComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsGrassMapcalc::mapChanged );
+  connect( mMapComboBox, qOverload< int >( &QComboBox::activated ), this, [ = ]( int index ) { mapChanged( mMapComboBox->itemText( index ) ); } );
   connect( mMapComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassMapcalc::mapChanged );
   connect( mMapComboBox, &QComboBox::editTextChanged, this, &QgsGrassMapcalc::mapChanged );
   bool firstSet = mMapComboBox->setFirst();

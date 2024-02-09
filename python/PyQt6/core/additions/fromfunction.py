@@ -22,7 +22,7 @@ from qgis._core import QgsTask
 
 
 @staticmethod
-def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.AllFlags, **kwargs):
+def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.Flag.AllFlags, **kwargs):
     """
     Creates a new QgsTask task from a python function.
 

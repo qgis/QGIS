@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import os
 import shutil
 
-from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryFile
+from qgis.PyQt.QtCore import QDateTime, Qt, QTemporaryFile, QTime, QDate
 from qgis.core import QgsExifTools, QgsPointXY
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -39,7 +39,7 @@ class TestQgsExifUtils(QgisTestCase):
 
         # test a converted Xmp datetime value
         dt = QgsExifTools.readTag(os.path.join(photos_folder, '0997.JPG'), 'Xmp.xmp.MetadataDate')
-        self.assertEqual(dt, QDateTime(2023, 2, 5, 10, 16, 5, 0, Qt.TimeSpec(1)))
+        self.assertEqual(dt, QDateTime(QDate(2023, 2, 5), QTime(10, 16, 5, 0), Qt.TimeSpec(1)))
 
     def testGeoTags(self):
         photos_folder = os.path.join(TEST_DATA_DIR, 'photos')

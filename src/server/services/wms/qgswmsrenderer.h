@@ -297,6 +297,7 @@ namespace QgsWms
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
                                        const QgsPointXY *infoPoint,
+                                       const QgsRenderContext &renderContext,
                                        QDomDocument &infoDocument,
                                        QDomElement &layerElement,
                                        const QString &version ) const;

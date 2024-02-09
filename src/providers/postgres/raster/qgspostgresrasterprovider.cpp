@@ -304,7 +304,15 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     bool ok;
-    const QString val { result.PQgetvalue( 0, 0 ) };
+    QString val { result.PQgetvalue( 0, 0 ) };
+
+    if ( val.isNull() && mUseSrcNoDataValue[bandNo - 1] )
+    {
+      // sparse rasters can have null values
+      val = QString::number( mSrcNoDataValue[bandNo - 1] );
+    }
+
+
     const Qgis::DataType dataType { mDataTypes[ static_cast<unsigned int>( bandNo - 1 ) ] };
     switch ( dataType )
     {
@@ -447,9 +455,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 
     if ( tileResponse.tiles.isEmpty() )
     {
-      QgsMessageLog::logMessage( tr( "No tiles available in table %1 for the requested extent: %2" )
-                                 .arg( tableToQuery, rasterExtent.toString( ) ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
-      return false;
+      // rasters can be sparse by omitting some of the blocks/tiles
+      return true;
     }
 
 
@@ -1118,7 +1125,7 @@ bool QgsPostgresRasterProvider::init()
 
         if ( mBandCount != pxTypes.count( ) || mBandCount != noDataValues.count() )
         {
-          throw QgsPostgresRasterProviderException( tr( "Band count and nodata items count differs" ) );
+          throw QgsPostgresRasterProviderException( tr( "Band count and NoData items count differ" ) );
         }
 
         int i = 0;
@@ -1136,7 +1143,7 @@ bool QgsPostgresRasterProvider::init()
           {
             if ( noDataValues.at( i ) != QLatin1String( "NULL" ) )
             {
-              QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double" )
+              QgsMessageLog::logMessage( tr( "Cannot convert NoData value '%1' to double" )
                                          .arg( noDataValues.at( i ) ),
                                          QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
             }
@@ -1422,7 +1429,7 @@ bool QgsPostgresRasterProvider::init()
 
       if ( ! ok )
       {
-        QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double, default to: %2" )
+        QgsMessageLog::logMessage( tr( "Cannot convert NoData value '%1' to double, default to: %2" )
                                    .arg( result.PQgetvalue( rowNumber, 2 ) )
                                    .arg( std::numeric_limits<double>::min() ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
         nodataValue = std::numeric_limits<double>::min();
@@ -1484,9 +1491,10 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
         if ( minTime.isValid() && maxTime.isValid() && !( minTime > maxTime ) )
         {
           mTemporalFieldIndex = temporalFieldIndex;
-          temporalCapabilities()->setHasTemporalCapabilities( true );
-          temporalCapabilities()->setAvailableTemporalRange( { minTime, maxTime } );
-          temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
+          QgsRasterDataProviderTemporalCapabilities *lTemporalCapabilities = temporalCapabilities();
+          lTemporalCapabilities->setHasTemporalCapabilities( true );
+          lTemporalCapabilities->setAvailableTemporalRange( { minTime, maxTime } );
+          lTemporalCapabilities->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange );
           QgsDebugMsgLevel( QStringLiteral( "Raster temporal range for field %1: %2 - %3" ).arg( QString::number( mTemporalFieldIndex ), minTime.toString(), maxTime.toString() ), 3 );
 
           if ( mUri.hasParam( QStringLiteral( "temporalDefaultTime" ) ) )
@@ -1518,7 +1526,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
               const QDateTime date = QDateTime::fromString( result.PQgetvalue( row, 0 ), Qt::DateFormat::ISODate );
               allRanges.push_back( QgsDateTimeRange( date, date ) );
             }
-            temporalCapabilities()->setAllAvailableTemporalRanges( allRanges );
+            lTemporalCapabilities->setAllAvailableTemporalRanges( allRanges );
           }
           else
           {
@@ -2402,7 +2410,7 @@ int QgsPostgresRasterProvider::yBlockSize() const
   }
 }
 
-QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback )
+QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &extent, int sampleSize, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( feedback )
   QgsRasterBandStats rasterBandStats;

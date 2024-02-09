@@ -585,21 +585,21 @@ void TestQgsLayoutScaleBar::dataDefined()
 
   // this is the deprecated way of doing this -- the new way is using data defined properties on the scalebar line symbol.
   // so this test is to ensure old projects/api use works correctly
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor, QgsProperty::fromExpression( QStringLiteral( "'red'" ) ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor2, QgsProperty::fromExpression( QStringLiteral( "'blue'" ) ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineColor, QgsProperty::fromExpression( QStringLiteral( "'yellow'" ) ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineWidth, QgsProperty::fromExpression( QStringLiteral( "1.2*3" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor, QgsProperty::fromExpression( QStringLiteral( "'red'" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2, QgsProperty::fromExpression( QStringLiteral( "'blue'" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor, QgsProperty::fromExpression( QStringLiteral( "'yellow'" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth, QgsProperty::fromExpression( QStringLiteral( "1.2*3" ) ) );
 
   // non-deprecated Data Defined Properties (as of QGIS 3.26)
   // The values should override the manually set values set previous so that we can test that they are correctly being applied
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLeftSegments, QgsProperty::fromExpression( QStringLiteral( "0" ) ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarRightSegments, QgsProperty::fromExpression( QStringLiteral( "length('Hi')" ) ) ); // basic expression -> 2
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarSegmentWidth, QgsProperty::fromExpression( QStringLiteral( "1000.0 * 2.0" ) ) );  // basic math expression -> 2
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMinimumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0')" ) ) );   // basic conversion expression -> 50
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMaximumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0') * 3" ) ) ); // basic conversion with math expression -> 150
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarHeight, QgsProperty::fromExpression( QStringLiteral( "20" ) ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarSubdivisionHeight, QgsProperty::fromExpression( QStringLiteral( "30" ) ) );
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarRightSegmentSubdivisions, QgsProperty::fromExpression( QStringLiteral( "40" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments, QgsProperty::fromExpression( QStringLiteral( "0" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegments, QgsProperty::fromExpression( QStringLiteral( "length('Hi')" ) ) ); // basic expression -> 2
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarSegmentWidth, QgsProperty::fromExpression( QStringLiteral( "1000.0 * 2.0" ) ) );  // basic math expression -> 2
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarMinimumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0')" ) ) );   // basic conversion expression -> 50
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarMaximumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0') * 3" ) ) ); // basic conversion with math expression -> 150
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarHeight, QgsProperty::fromExpression( QStringLiteral( "20" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarSubdivisionHeight, QgsProperty::fromExpression( QStringLiteral( "30" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ScalebarRightSegmentSubdivisions, QgsProperty::fromExpression( QStringLiteral( "40" ) ) );
 
   scalebar->refreshDataDefinedProperty();
 
@@ -629,14 +629,14 @@ void TestQgsLayoutScaleBar::oldDataDefinedProject()
   QgsLineSymbol *ls = scaleBar->lineSymbol();
   QgsSimpleLineSymbolLayer *sll = dynamic_cast< QgsSimpleLineSymbolLayer * >( ls->symbolLayer( 0 ) );
 
-  QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth ).isActive() );
-  QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth ).asExpression(), QStringLiteral( "3" ) );
-  QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeColor ).isActive() );
-  QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeColor ).asExpression(), QStringLiteral( "'red'" ) );
+  QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth ).isActive() );
+  QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeWidth ).asExpression(), QStringLiteral( "3" ) );
+  QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeColor ).isActive() );
+  QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::Property::StrokeColor ).asExpression(), QStringLiteral( "'red'" ) );
 
   // deprecated properties should be gone
-  QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::ScalebarLineColor ).isActive() );
-  QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::ScalebarLineWidth ).isActive() );
+  QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ).isActive() );
+  QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ).isActive() );
 }
 
 void TestQgsLayoutScaleBar::textFormat()
@@ -666,7 +666,7 @@ void TestQgsLayoutScaleBar::textFormat()
 
   QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 16 );
-  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "case when @scale_value = 2000 then '#ff00ff' else '#ffff00' end" ) ) );
+  format.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Color, QgsProperty::fromExpression( QStringLiteral( "case when @scale_value = 2000 then '#ff00ff' else '#ffff00' end" ) ) );
   scalebar->setTextFormat( format );
 
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "layoutscalebar_textformat" ), &l );

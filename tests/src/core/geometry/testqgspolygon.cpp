@@ -2833,6 +2833,27 @@ void TestQgsPolygon::toFromWKT()
   QVERIFY( !pl2.is3D() );
   QVERIFY( !pl2.isMeasure() );
   QCOMPARE( pl2.wkbType(), Qgis::WkbType::Polygon );
+
+  // Test WKT export with compound curve
+  QgsPolygon pl3;
+  QgsLineString *ext3 = new QgsLineString();
+  ext3->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 )
+                   << QgsPoint( Qgis::WkbType::Point, 0, 10 )
+                   << QgsPoint( Qgis::WkbType::Point, 10, 10 )
+                   << QgsPoint( Qgis::WkbType::Point, 10, 0 )
+                   << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
+  pl3.setExteriorRing( ext3 );
+  QgsLineString *ring3 = new QgsLineString();
+  ring3->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 1 )
+                    << QgsPoint( Qgis::WkbType::Point, 1, 9 )
+                    << QgsPoint( Qgis::WkbType::Point, 9, 9 )
+                    << QgsPoint( Qgis::WkbType::Point, 9, 1 )
+                    << QgsPoint( Qgis::WkbType::Point, 1, 1 ) );
+  QgsCompoundCurve *compound = new QgsCompoundCurve();
+  compound->addCurve( ring3 );
+  pl3.addInteriorRing( compound );
+  wkt = pl3.asWkt();
+  QCOMPARE( wkt, QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 1 9, 9 9, 9 1, 1 1))" ) );
 }
 
 void TestQgsPolygon::exportImport()

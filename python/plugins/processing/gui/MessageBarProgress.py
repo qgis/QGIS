@@ -37,10 +37,10 @@ class MessageBarProgress(QgsProcessingFeedback):
         self.progress = QProgressBar()
         self.progressChanged.connect(self.set_progress_bar_value)
         self.progress.setMaximum(100)
-        self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.progress.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
         self.message_bar_item = iface.messageBar().pushWidget(self.progressMessageBar,
-                                                              Qgis.Info)
+                                                              Qgis.MessageLevel.Info)
 
     def set_progress_bar_value(self, progress: float):
         """
@@ -57,7 +57,7 @@ class MessageBarProgress(QgsProcessingFeedback):
             dlg = MessageDialog()
             dlg.setTitle(QCoreApplication.translate('MessageBarProgress', 'Problem executing algorithm'))
             dlg.setMessage("<br>".join(self.msg))
-            dlg.exec_()
+            dlg.exec()
         iface.messageBar().popWidget(self.message_bar_item)
 
     def tr(self, string, context=''):

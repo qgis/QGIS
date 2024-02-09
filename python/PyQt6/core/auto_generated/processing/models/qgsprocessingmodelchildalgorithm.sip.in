@@ -112,7 +112,7 @@ Returns ``True`` if the algorithm was successfully reattached.
 .. seealso:: :py:func:`setAlgorithmId`
 %End
 
-    QVariantMap configuration() const;
+    QMap<QString, QVariant> configuration() const;
 %Docstring
 Returns the child algorithm's configuration map.
 
@@ -124,7 +124,7 @@ to adjust their behavior at run time according to some user configuration.
 .. seealso:: :py:func:`setConfiguration`
 %End
 
-    void setConfiguration( const QVariantMap &configuration );
+    void setConfiguration( const QMap<QString, QVariant> &configuration );
 %Docstring
 Sets the child algorithm's ``configuration`` map.
 

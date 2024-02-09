@@ -35,6 +35,7 @@ class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
+class Qgs3DNavigationWidget;
 class QgsMapTool;
 class QgsMapToolExtent;
 class QgsMapCanvas;
@@ -110,10 +111,11 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     QgsMapTool *mMapToolPrevious = nullptr;
+    QMenu *mExportMenu = nullptr;
     QMenu *mMapThemeMenu = nullptr;
-    QMenu *mOptionsMenu = nullptr;
+    QMenu *mCameraMenu = nullptr;
+    QMenu *mEffectsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
-    QToolButton *mBtnMapThemes = nullptr;
     QAction *mActionEnableShadows = nullptr;
     QAction *mActionEnableEyeDome = nullptr;
     QAction *mActionEnableAmbientOcclusion = nullptr;
@@ -121,7 +123,11 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolyogon = nullptr;
     QAction *mActionAnim = nullptr;
-    QToolButton *mBtnOptions = nullptr;
+    QAction *mActionExport = nullptr;
+    QAction *mActionMapThemes = nullptr;
+    QAction *mActionCamera = nullptr;
+    QAction *mActionEffects = nullptr;
+    QAction *mActionOptions = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
@@ -129,6 +135,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QPointer<QDialog> mConfigureDialog;
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
+
+    //! Container QWidget that encapsulates 3D QWindow
+    QWidget *mContainer = nullptr;
+    //! On-Screen Navigation widget.
+    Qgs3DNavigationWidget *mNavigationWidget = nullptr;
+
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

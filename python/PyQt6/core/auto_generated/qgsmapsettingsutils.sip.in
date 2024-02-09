@@ -23,7 +23,7 @@ Utilities for map settings.
 %End
   public:
 
-    enum class EffectsCheckFlag
+    enum class EffectsCheckFlag /BaseType=IntFlag/
     {
       IgnoreGeoPdfSupportedEffects,
     };

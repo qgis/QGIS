@@ -32,28 +32,28 @@ class TestQgsRasterRendererUtils(QgisTestCase):
         tmp_dir = QTemporaryDir()
         tmp_file = f"{tmp_dir.path()}/ramp.txt"
 
-        self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Interpolated))
+        self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Type.Interpolated))
         res, read_items, type, errors = QgsRasterRendererUtils.parseColorMapFile('')
         self.assertFalse(res)
 
         res, read_items, type, errors = QgsRasterRendererUtils.parseColorMapFile(tmp_file)
         self.assertTrue(res)
-        self.assertEqual(type, QgsColorRampShader.Interpolated)
+        self.assertEqual(type, QgsColorRampShader.Type.Interpolated)
         self.assertFalse(errors)
         self.assertEqual([i.value for i in read_items], [i.value for i in items])
         self.assertEqual([i.color.name() for i in read_items], [i.color.name() for i in items])
         self.assertEqual([i.label for i in read_items], ['my item', 'Color entry 2', 'my, & ^ "\' item', 'my item 3'])
 
-        self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Discrete))
+        self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Type.Discrete))
         res, read_items, type, errors = QgsRasterRendererUtils.parseColorMapFile(tmp_file)
         self.assertTrue(res)
-        self.assertEqual(type, QgsColorRampShader.Discrete)
+        self.assertEqual(type, QgsColorRampShader.Type.Discrete)
         self.assertFalse(errors)
 
-        self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Exact))
+        self.assertTrue(QgsRasterRendererUtils.saveColorMapFile(tmp_file, items, QgsColorRampShader.Type.Exact))
         res, read_items, type, errors = QgsRasterRendererUtils.parseColorMapFile(tmp_file)
         self.assertTrue(res)
-        self.assertEqual(type, QgsColorRampShader.Exact)
+        self.assertEqual(type, QgsColorRampShader.Type.Exact)
         self.assertFalse(errors)
 
 

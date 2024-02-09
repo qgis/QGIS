@@ -2,6 +2,9 @@ name: Remove Labels PR Commit
 
 on: pull_request_target
 
+permissions:
+  contents: read
+
 jobs:
   remove_labels:
     permissions:

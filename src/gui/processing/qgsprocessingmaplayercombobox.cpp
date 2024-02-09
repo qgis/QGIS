@@ -26,6 +26,7 @@
 #include "qgsprocessingfeaturesourceoptionswidget.h"
 #include "qgsdatasourceselectdialog.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingprovider.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -120,6 +121,8 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     vl->addWidget( mUseSelectionCheckBox );
   }
 
+  bool mayBeRaster { false };
+
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
   {
     QList<int> dataTypes;
@@ -141,6 +144,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   }
   else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
   {
+    mayBeRaster = true;
     filters = Qgis::LayerFilter::RasterLayer;
   }
   else if ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName() )
@@ -165,7 +169,10 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     if ( dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
       filters |= Qgis::LayerFilter::PolygonLayer;
     if ( dataTypes.contains( QgsProcessing::TypeRaster ) )
+    {
+      mayBeRaster = true;
       filters |= Qgis::LayerFilter::RasterLayer;
+    }
     if ( dataTypes.contains( QgsProcessing::TypeMesh ) )
       filters |= Qgis::LayerFilter::MeshLayer;
     if ( dataTypes.contains( QgsProcessing::TypePointCloud ) )
@@ -180,7 +187,16 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   if ( filters )
     mCombo->setFilters( filters );
+
   mCombo->setExcludedProviders( QStringList() << QStringLiteral( "grass" ) ); // not sure if this is still required...
+
+  // Check compatibility with virtualraster data provider
+  // see https://github.com/qgis/QGIS/issues/55890
+  if ( mayBeRaster &&
+       ( ! mParameter->provider() || ! mParameter->provider()->flags().testFlag( QgsProcessingProvider::Flag::FlagCompatibleWithVirtualRaster ) ) )
+  {
+    mCombo->setExcludedProviders( mCombo->excludedProviders() << QStringLiteral( "virtualraster" ) );
+  }
 
   if ( mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
   {
@@ -238,10 +254,10 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
     selectedOnly = fromVar.selectedFeaturesOnly;
-    iterate = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature;
+    iterate = fromVar.flags & Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature;
     mFeatureLimit = fromVar.featureLimit;
     mFilterExpression = fromVar.filterExpression;
-    mIsOverridingDefaultGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
+    mIsOverridingDefaultGeometryCheck = fromVar.flags & Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck;
     mGeometryCheck = fromVar.geometryCheck;
   }
   else
@@ -249,7 +265,7 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     mFeatureLimit = -1;
     mFilterExpression.clear();
     mIsOverridingDefaultGeometryCheck = false;
-    mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+    mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
   }
 
   if ( val.userType() == QMetaType::type( "QgsProperty" ) )
@@ -350,8 +366,8 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   {
     if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck || !mFilterExpression.isEmpty() )
       return QgsProcessingFeatureSourceDefinition( layer->id(), selectedOnly, mFeatureLimit,
-             ( iterate ? QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature : QgsProcessingFeatureSourceDefinition::Flags() )
-             | ( mIsOverridingDefaultGeometryCheck ? QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck : QgsProcessingFeatureSourceDefinition::Flags() ),
+             ( iterate ? Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature : Qgis::ProcessingFeatureSourceDefinitionFlags() )
+             | ( mIsOverridingDefaultGeometryCheck ? Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck : Qgis::ProcessingFeatureSourceDefinitionFlags() ),
              mGeometryCheck, mFilterExpression );
     else
       return layer->id();
@@ -362,8 +378,8 @@ QVariant QgsProcessingMapLayerComboBox::value() const
     {
       if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck || !mFilterExpression.isEmpty() )
         return QgsProcessingFeatureSourceDefinition( mCombo->currentText(), selectedOnly, mFeatureLimit,
-               ( iterate ? QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature : QgsProcessingFeatureSourceDefinition::Flags() )
-               | ( mIsOverridingDefaultGeometryCheck ? QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck : QgsProcessingFeatureSourceDefinition::Flags() ),
+               ( iterate ? Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature : Qgis::ProcessingFeatureSourceDefinitionFlags() )
+               | ( mIsOverridingDefaultGeometryCheck ? Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck : Qgis::ProcessingFeatureSourceDefinitionFlags() ),
                mGeometryCheck, mFilterExpression );
       else
         return mCombo->currentText();

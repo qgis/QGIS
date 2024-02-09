@@ -729,8 +729,15 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
     const auto &asset = mTileset[ "asset" ];
     if ( asset.contains( "tilesetVersion" ) )
     {
-      const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
-      mLayerMetadata.setIdentifier( tilesetVersion );
+      try
+      {
+        const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
+        mLayerMetadata.setIdentifier( tilesetVersion );
+      }
+      catch ( json::type_error & )
+      {
+        QgsDebugError( QStringLiteral( "Error when parsing tilesetVersion value" ) );
+      }
     }
   }
 
@@ -1150,8 +1157,15 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
 
     if ( asset.contains( "tilesetVersion" ) )
     {
-      const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( tilesetVersion ) % QStringLiteral( "</td></tr>\n" );
+      try
+      {
+        const QString tilesetVersion = QString::fromStdString( asset["tilesetVersion"].get<std::string>() );
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Tileset Version" ) % QStringLiteral( "</td><td>%1</a>" ).arg( tilesetVersion ) % QStringLiteral( "</td></tr>\n" );
+      }
+      catch ( json::type_error & )
+      {
+        QgsDebugError( QStringLiteral( "Error when parsing tilesetVersion value" ) );
+      }
     }
 
     if ( asset.contains( "generator" ) )

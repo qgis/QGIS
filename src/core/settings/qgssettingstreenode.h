@@ -26,7 +26,6 @@ class QgsSettingsTreeNamedListNode;
 class QgsSettingsEntryBase;
 class QgsSettingsEntryString;
 
-
 /**
  * \ingroup core
  * \class QgsSettingsTreeNode
@@ -144,7 +143,6 @@ class CORE_EXPORT QgsSettingsTreeNode
     void registerChildNode( QgsSettingsTreeNode *node );
 
     Qgis::SettingsTreeNodeType mType = Qgis::SettingsTreeNodeType::Root;
-
 
   private:
 

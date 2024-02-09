@@ -107,7 +107,7 @@ class gdal2tiles(GdalAlgorithm):
                                       optional=True),
             QgsProcessingParameterNumber(self.NODATA,
                                          self.tr('Transparency value to assign to the input data'),
-                                         type=QgsProcessingParameterNumber.Double,
+                                         type=QgsProcessingParameterNumber.Type.Double,
                                          defaultValue=0,
                                          optional=True),
             QgsProcessingParameterString(self.URL,
@@ -130,7 +130,7 @@ class gdal2tiles(GdalAlgorithm):
                                           defaultValue=False)
         ]
         for param in params:
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
             self.addParameter(param)
 
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
@@ -152,7 +152,7 @@ class gdal2tiles(GdalAlgorithm):
         return 'gdal2tiles'
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = [

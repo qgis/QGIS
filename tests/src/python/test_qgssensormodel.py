@@ -49,7 +49,7 @@ class TestSensor(QgsIODeviceSensor):
         return "test_sensor"
 
     def handleConnect(self):
-        self.buffer.open(QIODevice.ReadWrite)
+        self.buffer.open(QIODevice.OpenModeFlag.ReadWrite)
         self.setStatus(Qgis.DeviceConnectionStatus.Connected)
 
     def handleDisconnect(self):
@@ -74,7 +74,7 @@ class TestQgsSensorModel(QgisTestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsSensorManager.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsSensorManager")
-        QLocale.setDefault(QLocale(QLocale.English))
+        QLocale.setDefault(QLocale(QLocale.Language.English))
         start_app()
 
         cls.manager = QgsProject.instance().sensorManager()
@@ -108,11 +108,11 @@ class TestQgsSensorModel(QgisTestCase):
         self.assertEqual(len(model_row_removed_spy), 1)
         self.assertEqual(self.model.rowCount(), 1)
 
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorId), sensor2.id())
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorName), sensor2.name())
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorLastValue), None)
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorLastTimestamp), None)
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Sensor), sensor2)
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorId), sensor2.id())
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorName), sensor2.name())
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorLastValue), None)
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorLastTimestamp), None)
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.Sensor), sensor2)
 
         model_data_changed_spy = QSignalSpy(self.model.dataChanged)
 
@@ -121,9 +121,9 @@ class TestQgsSensorModel(QgisTestCase):
         sensor2.pushData('test string')
         model_data_changed_spy.wait()
         self.assertEqual(len(model_data_changed_spy), 4)  # new name, connecting + connected state, and data change signals
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorName), sensor2.name())
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorLastValue), sensor2.data().lastValue)
-        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.SensorLastTimestamp), sensor2.data().lastTimestamp)
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorName), sensor2.name())
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorLastValue), sensor2.data().lastValue)
+        self.assertEqual(self.model.data(self.model.index(0, 0), QgsSensorModel.Role.SensorLastTimestamp), sensor2.data().lastTimestamp)
 
 
 if __name__ == '__main__':

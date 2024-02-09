@@ -795,6 +795,8 @@ set(QGIS_CORE_SRCS
   mesh/qgstopologicalmesh.cpp
   mesh/qgsmeshadvancedediting.cpp
   mesh/qgsmeshforcebypolylines.cpp
+  mesh/qgsmeshlayerlabeling.cpp
+  mesh/qgsmeshlayerlabelprovider.cpp
 
   pointcloud/qgspointcloudattribute.cpp
   pointcloud/qgspointcloudattributebyramprenderer.cpp
@@ -897,6 +899,7 @@ set(QGIS_CORE_SRCS
   settings/qgssettingsentry.cpp
   settings/qgssettingsentrygroup.cpp
   settings/qgssettingsentryimpl.cpp
+  settings/qgssettingsproxy.cpp
   settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
   settings/qgssettingstree.cpp
@@ -970,8 +973,6 @@ if (WITH_INTERNAL_POLY2TRI)
     ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
   )
   include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
-else ()
-  include_directories(${Poly2Tri_INCLUDE_DIR})
 endif ()
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
@@ -1617,6 +1618,8 @@ set(QGIS_CORE_HDRS
   mesh/qgstopologicalmesh.h
   mesh/qgsmeshadvancedediting.h
   mesh/qgsmeshforcebypolylines.h
+  mesh/qgsmeshlayerlabeling.h
+  mesh/qgsmeshlayerlabelprovider.h
 
   pal/costcalculator.h
   pal/feature.h
@@ -1952,6 +1955,7 @@ set(QGIS_CORE_HDRS
   settings/qgssettingsentrygroup.h
   settings/qgssettingsentryenumflag.h
   settings/qgssettingsentryimpl.h
+  settings/qgssettingsproxy.h
   settings/qgssettingsregistry.h
   settings/qgssettingsregistrycore.h
   settings/qgssettingstree.h
@@ -2139,6 +2143,7 @@ if (WITH_COPC)
       pointcloud/qgscopcpointcloudindex.cpp
       pointcloud/qgsremotecopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
+      pointcloud/qgscachedpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/copc/qgscopcprovider.h
@@ -2146,6 +2151,7 @@ if (WITH_COPC)
       pointcloud/qgscopcpointcloudindex.h
       pointcloud/qgsremotecopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
+      pointcloud/qgscachedpointcloudblockrequest.h
   )
 
   add_definitions( -DWITH_COPC )
@@ -2236,7 +2242,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
@@ -2340,7 +2345,7 @@ if(ENABLE_MODELTEST)
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
-   target_link_libraries(qgis_core ${Poly2Tri_LIBRARY})
+   target_link_libraries(qgis_core poly2tri::poly2tri)
 endif()
 
 if(HAVE_OPENCL)
@@ -2419,12 +2424,13 @@ target_link_libraries(qgis_core
   PROJ::proj
 )
 
-if (WITH_DRACO)
-  target_link_libraries(qgis_core ${DRACO_LIBRARY})
+if (WITH_QTPRINTER)
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+  target_include_directories(qgis_core SYSTEM PUBLIC ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS})
 endif()
 
-if (NOT IOS)
-  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+if (WITH_DRACO)
+  target_link_libraries(qgis_core ${DRACO_LIBRARY})
 endif()
 
 if (WITH_SPATIALITE)

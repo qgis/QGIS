@@ -1199,19 +1199,18 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) co
   return variableWidthBuffer( segments, widthByM );
 }
 
-QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsGeometry &polygon, int count,
+QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( int count,
     const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint )
 {
-  if ( polygon.type() != Qgis::GeometryType::Polygon || count == 0 )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) != Qgis::GeometryType::Polygon || count == 0 )
     return QVector< QgsPointXY >();
 
   // step 1 - tessellate the polygon to triangles
-  QgsRectangle bounds = polygon.boundingBox();
+  QgsRectangle bounds = mGeometry->boundingBox();
   QgsTessellator t( bounds, false, false, false, true );
 
-  if ( polygon.isMultipart() )
+  if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( mGeometry ) )
   {
-    const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( polygon.constGet() );
     for ( int i = 0; i < ms->numGeometries(); ++i )
     {
       if ( feedback && feedback->isCanceled() )
@@ -1230,19 +1229,25 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
   }
   else
   {
-    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( polygon.constGet() ) )
+    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( mGeometry ) )
     {
       t.addPolygon( *poly, 0 );
     }
     else
     {
-      std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( polygon.constGet()->segmentize() ) );
+      std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( mGeometry->segmentize() ) );
       t.addPolygon( *p, 0 );
     }
   }
 
   if ( feedback && feedback->isCanceled() )
     return QVector< QgsPointXY >();
+
+  if ( !t.error().isEmpty() )
+  {
+    mLastError = t.error();
+    return QVector< QgsPointXY >();
+  }
 
   const QVector<float> triangleData = t.data();
   if ( triangleData.empty() )

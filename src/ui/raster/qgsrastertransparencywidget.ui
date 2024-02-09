@@ -70,7 +70,7 @@
    <item row="1" column="0">
     <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
      <property name="title">
-      <string>No Data Value</string>
+      <string>NoData Value</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -82,17 +82,17 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Display no data as</string>
+         <string>Display NoData as</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblUserNoDataValueLabel">
         <property name="toolTip">
-         <string>Additional user defined no data value.</string>
+         <string>Additional user defined NoData value.</string>
         </property>
         <property name="text">
-         <string>Additional no data value</string>
+         <string>Additional NoData value</string>
         </property>
        </widget>
       </item>
@@ -104,10 +104,10 @@
         <item>
          <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
           <property name="toolTip">
-           <string>Use original source no data value.</string>
+           <string>Use original source NoData value.</string>
           </property>
           <property name="text">
-           <string>No data value</string>
+           <string>NoData value</string>
           </property>
          </widget>
         </item>
@@ -120,10 +120,10 @@
            </sizepolicy>
           </property>
           <property name="toolTip">
-           <string>Original data source no data value, if exists.</string>
+           <string>Original data source NoData value, if exists.</string>
           </property>
           <property name="text">
-           <string>&lt;src no data value&gt;</string>
+           <string>&lt;src NoData value&gt;</string>
           </property>
          </widget>
         </item>
@@ -132,7 +132,7 @@
       <item row="1" column="1">
        <widget class="QLineEdit" name="leNoDataValue">
         <property name="toolTip">
-         <string>Additional user defined no data value.</string>
+         <string>Additional user defined NoData value.</string>
         </property>
        </widget>
       </item>

@@ -91,7 +91,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
     map->setOutputDpi( 96 );
   }
 
-  canvas->setMap( map );
+  canvas->setMapSettings( map );
 
   QgsRectangle extent = fullExtent;
   extent.scale( 1.3 );

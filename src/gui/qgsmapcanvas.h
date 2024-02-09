@@ -1365,9 +1365,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! pointer to current map tool
     QgsMapTool *mMapTool = nullptr;
 
-    //! previous tool if current is for zooming/panning
-    QgsMapTool *mLastNonZoomMapTool = nullptr;
-
     //! Pointer to project linked to this canvas
     QgsProject *mProject = nullptr;
 

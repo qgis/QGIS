@@ -1034,7 +1034,7 @@ Emitted whenever the item's map preview has been refreshed.
 Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
 %End
 
-    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 
 
 };

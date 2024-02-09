@@ -446,11 +446,11 @@ void TestQgis::testQgsEnumMapList()
 void TestQgis::testQgsEnumValueToKey()
 {
   bool ok = false;
-  QgsMapLayerModel::ItemDataRole value = QgsMapLayerModel::LayerRole;
-  QgsMapLayerModel::ItemDataRole badValue = static_cast<QgsMapLayerModel::ItemDataRole>( -1 );
-  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::ItemDataRole>();
-  QVERIFY( !metaEnum.valueToKey( badValue ) );
-  QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "LayerRole" ) );
+  QgsMapLayerModel::CustomRole value = QgsMapLayerModel::CustomRole::Layer;
+  QgsMapLayerModel::CustomRole badValue = static_cast<QgsMapLayerModel::CustomRole>( -1 );
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
+  QVERIFY( !metaEnum.valueToKey( static_cast< int >( badValue ) ) );
+  QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "Layer" ) );
   QCOMPARE( ok, true );
   QCOMPARE( qgsEnumValueToKey( badValue, &ok ), QString() );
   QCOMPARE( ok, false );
@@ -458,8 +458,8 @@ void TestQgis::testQgsEnumValueToKey()
 void TestQgis::testQgsEnumKeyToValue()
 {
   bool ok = false;
-  QgsMapLayerModel::ItemDataRole defaultValue = QgsMapLayerModel::LayerIdRole;
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "AdditionalRole" ), defaultValue, false, &ok ), QgsMapLayerModel::AdditionalRole );
+  QgsMapLayerModel::CustomRole defaultValue = QgsMapLayerModel::CustomRole::LayerId;
+  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "Additional" ), defaultValue, false, &ok ), QgsMapLayerModel::CustomRole::Additional );
   QCOMPARE( ok, true );
   QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
@@ -467,13 +467,13 @@ void TestQgis::testQgsEnumKeyToValue()
   QCOMPARE( ok, false );
 
   // try with int values as string keys
-  QCOMPARE( qgsEnumKeyToValue( QString::number( QgsMapLayerModel::AdditionalRole ), defaultValue, true, &ok ), QgsMapLayerModel::AdditionalRole );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ), defaultValue, true, &ok ), QgsMapLayerModel::CustomRole::Additional );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsEnumKeyToValue( QString::number( QgsMapLayerModel::AdditionalRole ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( qgsEnumKeyToValue( QString::number( static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ), defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
   // also try with an invalid int value
-  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::ItemDataRole>();
-  int invalidValue = defaultValue + 7894563;
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
+  int invalidValue = static_cast< int >( defaultValue ) + 7894563;
   QVERIFY( !metaEnum.valueToKey( invalidValue ) );
   QCOMPARE( qgsEnumKeyToValue( QString::number( invalidValue ), defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );

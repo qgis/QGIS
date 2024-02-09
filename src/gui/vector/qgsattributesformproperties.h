@@ -351,8 +351,17 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel = false );
 
     void init();
+
+    /**
+     * Applies the attribute from properties to the vector layer.
+     */
     void apply();
 
+    /**
+     * Stores currently opened widget configuration.
+     * \since QGIS 3.36
+     */
+    void store();
 
     void loadRelations();
 
@@ -379,11 +388,18 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QLabel *mInfoTextWidget = nullptr;
 
   private slots:
+    void addContainer();
+    void removeTabOrGroupButton();
+    void mEditorLayoutComboBox_currentIndexChanged( int index );
+    void pbnSelectEditForm_clicked();
+    void mTbInitCode_clicked();
 
     void onInvertSelectionButtonClicked( bool checked );
     void loadAttributeSpecificEditor( QgsAttributesDnDTree *emitter, QgsAttributesDnDTree *receiver );
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
+
+    void updatedFields();
 
   private:
     //! this will clean the right panel
@@ -407,12 +423,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitFilePath;
     QString mInitCode;
 
-  private slots:
-    void addContainer();
-    void removeTabOrGroupButton();
-    void mEditorLayoutComboBox_currentIndexChanged( int index );
-    void pbnSelectEditForm_clicked();
-    void mTbInitCode_clicked();
 };
 
 

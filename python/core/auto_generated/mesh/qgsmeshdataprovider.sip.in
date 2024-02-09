@@ -84,6 +84,8 @@ Compare two faces, return ``True`` if they are equivalent : same indexes and sam
 
 };
 
+
+
 class QgsMeshDataSourceInterface /Abstract/
 {
 %Docstring(signature="appended")

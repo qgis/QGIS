@@ -119,9 +119,9 @@ class TestQgsCodeEditorPython(QgisTestCase):
             self.assertEqual(editor.getCursorPosition(), (0, 2))
 
             # Pressing backspace while inside an opening/closing pair should remove both characters
-            QTest.keyClick(editor, Qt.Key_Left)
+            QTest.keyClick(editor, Qt.Key.Key_Left)
             self.assertEqual(editor.getCursorPosition(), (0, 1))
-            QTest.keyClick(editor, Qt.Key_Backspace)
+            QTest.keyClick(editor, Qt.Key.Key_Backspace)
             self.assertEqual(editor.text(), "")
 
             editor.clear()
@@ -184,25 +184,25 @@ class TestQgsCodeEditorPython(QgisTestCase):
 
         # Check single line comment
         editor.setText("#Hello World")
-        QTest.keyClick(editor, ':', Qt.ControlModifier)
+        QTest.keyClick(editor, ':', Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "Hello World")
-        QTest.keyClick(editor, ':', Qt.ControlModifier)
+        QTest.keyClick(editor, ':', Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "# Hello World")
 
         # Check multiline comment
         editor.setText("Hello\nQGIS\nWorld")
         editor.setSelection(0, 0, 1, 4)
-        QTest.keyClick(editor, ':', Qt.ControlModifier)
+        QTest.keyClick(editor, ':', Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "# Hello\n# QGIS\nWorld")
-        QTest.keyClick(editor, ':', Qt.ControlModifier)
+        QTest.keyClick(editor, ':', Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "Hello\nQGIS\nWorld")
 
         # Check multiline comment with already commented lines
         editor.setText("Hello\n# QGIS\nWorld")
         editor.setSelection(0, 0, 2, 4)
-        QTest.keyClick(editor, ':', Qt.ControlModifier)
+        QTest.keyClick(editor, ':', Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "# Hello\n# # QGIS\n# World")
-        QTest.keyClick(editor, ':', Qt.ControlModifier)
+        QTest.keyClick(editor, ':', Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "Hello\n# QGIS\nWorld")
 
 

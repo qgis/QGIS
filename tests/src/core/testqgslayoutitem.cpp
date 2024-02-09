@@ -402,23 +402,23 @@ void TestQgsLayoutItem::dataDefinedPosition()
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   // position x
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::PositionX );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::PositionX );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 110.0 ); //mm
 
   //position y
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::PositionY );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::PositionY );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().y(), 50.0 ); //mm
 
   //refreshPosition should also respect data defined positioning
   item->setPos( 0, 0 );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   item->refreshItemPosition();
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
@@ -434,8 +434,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
   QCOMPARE( item->scenePos().y(), 60.0 ); //mm
   //restriction only for x position
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty() );
   item->attemptMove( QgsLayoutPoint( 6.0, 1.5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 1.5 );
@@ -443,8 +443,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
   QCOMPARE( item->scenePos().y(), 15.0 ); //mm
   //restriction only for y position
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   item->attemptMove( QgsLayoutPoint( 7.0, 1.5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 7.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
@@ -453,8 +453,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().y(), 60.0 ); //mm
 
   //check change of units should apply to data defined position
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   //first set to same as existing position, but with different units
   item->attemptMove( QgsLayoutPoint( 120.0, 60.0, Qgis::LayoutUnit::Millimeters ) );
   //data defined position should utilize new units
@@ -475,8 +475,8 @@ void TestQgsLayoutItem::dataDefinedPosition()
 
   //also check setting data defined position AFTER setting reference point
   item->setPos( 0, 0 );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "6+10" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+6" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "6+10" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+6" ) ) );
   item->refreshItemPosition();
   QCOMPARE( item->positionWithUnits().x(), 16.0 ); //cm
   QCOMPARE( item->positionWithUnits().y(), 8.0 ); //cm
@@ -499,23 +499,23 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   //width
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::ItemWidth );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth );
   QCOMPARE( item->sizeWithUnits().width(), 11.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 110.0 ); //mm
 
   //height
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::ItemHeight );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight );
   QCOMPARE( item->sizeWithUnits().height(), 5.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().height(), 50.0 ); //mm
 
   //refreshSize should also respect data defined size
   item->setRect( 0.0, 0.0, 9.0, 8.0 );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   item->refreshItemSize();
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
@@ -531,8 +531,8 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().width(), 120.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
   //restriction only for width
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
   item->attemptResize( QgsLayoutSize( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
   QCOMPARE( item->sizeWithUnits().height(), 1.5 );
@@ -540,8 +540,8 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().width(), 120.0 ); //mm
   QCOMPARE( item->rect().height(), 15.0 ); //mm
   //restriction only for y position
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 7.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
@@ -550,9 +550,9 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().height(), 60.0 ); //mm
 
   // data defined page size
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty::fromValue( QStringLiteral( "A5" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PresetPaperSize, QgsProperty::fromValue( QStringLiteral( "A5" ) ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 14.8 );
   QCOMPARE( item->sizeWithUnits().height(), 21.0 );
@@ -560,14 +560,14 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().width(), 148.0 ); //mm
   QCOMPARE( item->rect().height(), 210.0 ); //mm
   // data defined height/width should override page size
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromValue( "13.0" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromValue( "13.0" ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 21.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 210.0 ); //mm
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromValue( "3.0" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromValue( "3.0" ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 3.0 );
@@ -575,7 +575,7 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 30.0 ); //mm
   // data defined orientation
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty::fromValue( "portrait" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PaperOrientation, QgsProperty::fromValue( "portrait" ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 3.0 );
   QCOMPARE( item->sizeWithUnits().height(), 13.0 );
@@ -583,21 +583,21 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().width(), 30.0 ); //mm
   QCOMPARE( item->rect().height(), 130.0 ); //mm
 
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty::fromValue( "landscape" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PresetPaperSize, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PaperOrientation, QgsProperty::fromValue( "landscape" ) );
   item->attemptResize( QgsLayoutSize( 1.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 1.5 );
   QCOMPARE( item->sizeWithUnits().height(), 1.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 15.0 ); //mm
   QCOMPARE( item->rect().height(), 10.0 ); //mm
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PaperOrientation, QgsProperty() );
 
   //check change of units should apply to data defined size
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
   //first set to same as existing size, but with different units
   item->attemptResize( QgsLayoutSize( 120.0, 60.0, Qgis::LayoutUnit::Millimeters ) );
   //data defined size should utilize new units
@@ -608,26 +608,26 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().height(), 6.0 ); //mm
 
   //test that data defined size applies to item's reference point
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
   item->attemptResize( QgsLayoutSize( 10.0, 5.0, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 20.0, 10.0, Qgis::LayoutUnit::Millimeters ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "6" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "6" ) ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   item->refreshItemSize();
   QCOMPARE( item->scenePos().x(), 25.0 ); //mm
   QCOMPARE( item->scenePos().y(), 9.0 ); //mm
 
   //test that data defined size applied after setting item's reference point respects reference
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
   item->setReferencePoint( QgsLayoutItem::UpperLeft );
   item->attemptResize( QgsLayoutSize( 10.0, 5.0, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 20.0, 10.0, Qgis::LayoutUnit::Millimeters ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "7" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "9" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "7" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "9" ) ) );
   item->refreshItemSize();
   QCOMPARE( item->scenePos().x(), 23.0 ); //mm
   QCOMPARE( item->scenePos().y(), 6.0 ); //mm
@@ -647,11 +647,11 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   //test item with all of data defined x, y, width, height set
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+9" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+9" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::AllProperties );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
@@ -665,11 +665,11 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
 
   //also try with reference point set
   item->setReferencePoint( QgsLayoutItem::Middle );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "3+7" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "1+3" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "3+7" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "1+3" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::AllProperties );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
@@ -1616,8 +1616,8 @@ void TestQgsLayoutItem::rotation()
 
   item->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "90" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::ItemRotation );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "90" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation );
   QCOMPARE( item->itemRotation(), 0.0 ); // should be unchanged
   QCOMPARE( item->rotation(), 90.0 );
   QCOMPARE( spyRotationChanged.count(), 6 );
@@ -1630,8 +1630,8 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item->pos().y(), 6.0 );
 
   //also check when refreshing all properties
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "180" ) ) );
-  item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "180" ) ) );
+  item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::AllProperties );
   QCOMPARE( item->itemRotation(), 0.0 ); // should be unchanged
   QCOMPARE( item->rotation(), 180.0 );
   QCOMPARE( spyRotationChanged.count(), 7 );
@@ -1724,7 +1724,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QgsLayout l( &proj );
   TestItem *original = new TestItem( &l );
 
-  original->dataDefinedProperties().setProperty( QgsLayoutObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
+  original->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
 
   original->setReferencePoint( QgsLayoutItem::MiddleRight );
   original->attemptResize( QgsLayoutSize( 6, 8, Qgis::LayoutUnit::Centimeters ) );
@@ -1748,7 +1748,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
 
   QCOMPARE( copy->uuid(), original->uuid() );
   QCOMPARE( copy->id(), original->id() );
-  const QgsProperty dd = copy->dataDefinedProperties().property( QgsLayoutObject::TestProperty );
+  const QgsProperty dd = copy->dataDefinedProperties().property( QgsLayoutObject::DataDefinedProperty::TestProperty );
   QVERIFY( dd );
   QVERIFY( dd.isActive() );
   QCOMPARE( dd.propertyType(), Qgis::PropertyType::Expression );
@@ -1947,7 +1947,7 @@ void TestQgsLayoutItem::blendMode()
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
   QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::BlendMode, QgsProperty::fromExpression( "'lighten'" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::BlendMode, QgsProperty::fromExpression( "'lighten'" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Lighten );
@@ -2013,7 +2013,7 @@ void TestQgsLayoutItem::opacity()
   mControlPathPrefix = QStringLiteral( "composer_effects" );
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composereffects_transparency75" ), &l );
 
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::Opacity, QgsProperty::fromExpression( "35" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::Opacity, QgsProperty::fromExpression( "35" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
   QCOMPARE( item->opacity(), 1.0 );
@@ -2083,7 +2083,7 @@ void TestQgsLayoutItem::excludeFromExports()
   item->setExcludeFromExports( false );
   QVERIFY( !item->excludeFromExports() );
 
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
   item->refreshDataDefinedProperty();
   QVERIFY( !item->excludeFromExports() ); // should not change
   QVERIFY( item->mEvaluatedExcludeFromExports );

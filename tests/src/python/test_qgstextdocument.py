@@ -201,7 +201,7 @@ class TestQgsTextDocument(QgisTestCase):
 
     def testCapitalize(self):
         doc = QgsTextDocument.fromPlainText(['abc def ghi', 'more text', 'another block'])
-        doc.applyCapitalization(QgsStringUtils.TitleCase)
+        doc.applyCapitalization(QgsStringUtils.Capitalization.TitleCase)
         self.assertEqual(doc.toPlainText(), ['Abc Def Ghi', 'More Text', 'Another Block'])
 
 

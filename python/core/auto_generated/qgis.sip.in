@@ -88,7 +88,7 @@ The development version
     };
 
     enum class LayerFilter
-      {
+    {
       RasterLayer,
       NoGeometry,
       PointLayer,
@@ -231,6 +231,20 @@ The development version
       UnknownCount,
     };
 
+    enum class SpatialIndexPresence
+      {
+      Unknown,
+      NotPresent,
+      Present,
+    };
+
+    enum class FeatureAvailability
+      {
+      NoFeaturesAvailable,
+      FeaturesAvailable,
+      FeaturesMaybeAvailable
+    };
+
     enum class VectorDataProviderAttributeEditCapability
     {
       EditAlias,
@@ -325,7 +339,7 @@ The development version
     };
 
     enum class SnappingType
-      {
+    {
       NoSnap,
       Vertex,
       Segment,
@@ -338,7 +352,7 @@ The development version
 
 
     enum class SymbolRenderHint
-      {
+    {
       DynamicRotation,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
@@ -358,7 +372,7 @@ The development version
 
 
     enum class SymbolPreviewFlag
-      {
+    {
       FlagIncludeCrosshairsForMarkerSymbols,
     };
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
@@ -400,7 +414,7 @@ The development version
     };
 
     enum class BrowserItemCapability
-      {
+    {
       NoCapabilities,
       SetCrs,
       Fertile,
@@ -573,7 +587,7 @@ The development version
     };
 
     enum class LabelLinePlacementFlag
-      {
+    {
       OnLine,
       AboveLine,
       BelowLine,
@@ -584,7 +598,7 @@ The development version
 
 
     enum class LabelPolygonPlacementFlag
-      {
+    {
       AllowPlacementOutsideOfPolygon,
       AllowPlacementInsideOfPolygon,
     };
@@ -936,7 +950,7 @@ The development version
     };
 
     enum class GeometryValidityFlag
-      {
+    {
       AllowSelfTouchingHoles,
     };
     typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
@@ -979,6 +993,34 @@ The development version
     {
       Linework,
       Structure,
+    };
+
+    enum class FeatureRequestFlag
+    {
+      NoFlags,
+      NoGeometry,
+      SubsetOfAttributes,
+      ExactIntersect,
+      IgnoreStaticNodesDuringExpressionCompilation,
+      EmbeddedSymbols,
+    };
+
+    typedef QFlags<Qgis::FeatureRequestFlag> FeatureRequestFlags;
+
+
+    enum class FeatureRequestFilterType
+      {
+      NoFilter,
+      Fid,
+      Expression,
+      Fids
+    };
+
+    enum class InvalidGeometryCheck
+      {
+      NoCheck,
+      SkipInvalid,
+      AbortOnInvalid,
     };
 
     enum class SpatialFilterType
@@ -1084,6 +1126,26 @@ The development version
       Default,
       XY,
       YX,
+    };
+
+    enum class CrsIdentifierType
+      {
+      ShortString,
+      MediumString,
+      FullString,
+    };
+
+    enum class CrsWktVariant
+      {
+      Wkt1Gdal,
+      Wkt1Esri,
+      Wkt2_2015,
+      Wkt2_2015Simplified,
+      Wkt2_2019,
+      Wkt2_2019Simplified,
+      Preferred,
+      PreferredSimplified,
+      PreferredGdal,
     };
 
     enum class Axis
@@ -1208,7 +1270,7 @@ The development version
 
 
     enum class MapSettingsFlag
-      {
+    {
       Antialiasing,
       DrawEditingInfo,
       ForceVectorOutput,
@@ -1232,7 +1294,7 @@ The development version
 
 
     enum class RenderContextFlag
-      {
+    {
       DrawEditingInfo,
       ForceVectorOutput,
       UseAdvancedEffects,
@@ -1274,7 +1336,7 @@ The development version
     };
 
     enum class LabelingFlag
-      {
+    {
       UseAllLabels,
       UsePartialCandidates,
       // TODO QGIS 4.0: remove
@@ -1397,7 +1459,7 @@ The development version
     };
 
     enum class MarkerLinePlacement
-      {
+    {
       Interval,
       Vertex,
       LastVertex,
@@ -1567,6 +1629,15 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
+    enum class ProcessingFeatureSourceDefinitionFlag
+    {
+      OverrideDefaultGeometryCheck,
+      CreateIndividualOutputPerInputFeature,
+    };
+
+    typedef QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> ProcessingFeatureSourceDefinitionFlags;
+
+
     enum class ProcessingModelChildParameterSource
     {
       ModelParameter,
@@ -1669,6 +1740,20 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
+
+    enum class Point3DShape
+    {
+      Cylinder,
+      Sphere,
+      Cone,
+      Cube,
+      Torus,
+      Plane,
+      ExtrudedText,
+      Model,
+      Billboard,
+    };
+
     enum class LightSourceType
     {
       Point,
@@ -1744,7 +1829,7 @@ The development version
     };
 
     enum class ProjectReadFlag
-      {
+    {
       DontResolveLayers,
       DontLoadLayouts,
       TrustLayerMetadata,
@@ -1985,7 +2070,7 @@ The development version
     };
 
     enum class RasterIdentifyFormat
-      {
+    {
       Undefined,
       Value,
       Text,
@@ -2352,6 +2437,139 @@ The development version
       RA_Q3,
     };
 
+
+    enum class ZonalStatistic
+    {
+      Count,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      Variance,
+      All,
+      Default,
+    };
+
+    typedef QFlags<Qgis::ZonalStatistic> ZonalStatistics;
+
+
+    enum class ZonalStatisticResult
+    {
+      Success,
+      LayerTypeWrong,
+      LayerInvalid,
+      RasterInvalid,
+      RasterBandInvalid,
+      FailedToCreateField,
+      Canceled
+    };
+
+    enum class Aggregate
+      {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Range,
+      Minority,
+      Majority,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      StringMinimumLength,
+      StringMaximumLength,
+      StringConcatenate,
+      GeometryCollect,
+      ArrayAggregate,
+      StringConcatenateUnique
+    };
+
+    enum class Statistic
+    {
+      Count,
+      CountMissing,
+      Sum,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
+      Min,
+      Max,
+      Range,
+      Minority,
+      Majority,
+      Variety,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      First,
+      Last,
+      All
+    };
+
+    typedef QFlags<Qgis::Statistic> Statistics;
+
+
+    enum class DateTimeStatistic
+    {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      Range,
+      All,
+    };
+
+    typedef QFlags<Qgis::DateTimeStatistic> DateTimeStatistics;
+
+
+    enum class StringStatistic
+    {
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      MinimumLength,
+      MaximumLength,
+      MeanLength,
+      Minority,
+      Majority,
+      All,
+    };
+
+    typedef QFlags<Qgis::StringStatistic> StringStatistics;
+
+
+    enum class RasterBandStatistic
+    {
+      NoStatistic,
+      Min,
+      Max,
+      Range,
+      Sum,
+      Mean,
+      StdDev,
+      SumOfSquares,
+      All
+    };
+
+    typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -2526,6 +2744,19 @@ QFlags<Qgis::VectorTileProviderCapability> operator|(Qgis::VectorTileProviderCap
 
 QFlags<Qgis::VectorTileProviderFlag> operator|(Qgis::VectorTileProviderFlag f1, QFlags<Qgis::VectorTileProviderFlag> f2);
 
+QFlags<Qgis::FeatureRequestFlag> operator|(Qgis::FeatureRequestFlag f1, QFlags<Qgis::FeatureRequestFlag> f2);
+
+QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> operator|(Qgis::ProcessingFeatureSourceDefinitionFlag f1, QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> f2);
+
+QFlags<Qgis::ZonalStatistic> operator|(Qgis::ZonalStatistic f1, QFlags<Qgis::ZonalStatistic> f2);
+
+QFlags<Qgis::Statistic> operator|(Qgis::Statistic f1, QFlags<Qgis::Statistic> f2);
+
+QFlags<Qgis::DateTimeStatistic> operator|(Qgis::DateTimeStatistic f1, QFlags<Qgis::DateTimeStatistic> f2);
+
+QFlags<Qgis::StringStatistic> operator|(Qgis::StringStatistic f1, QFlags<Qgis::StringStatistic> f2);
+
+QFlags<Qgis::RasterBandStatistic> operator|(Qgis::RasterBandStatistic f1, QFlags<Qgis::RasterBandStatistic> f2);
 
 
 

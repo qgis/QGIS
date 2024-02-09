@@ -27,7 +27,7 @@ based on a transformation method and a list of GCPs.
 
   public:
 
-    enum class TransformMethod /BaseType=IntFlag/
+    enum class TransformMethod /BaseType=IntEnum/
     {
       Linear,
       Helmert,

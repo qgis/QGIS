@@ -115,7 +115,7 @@ class PyServerCache(QgsServerCacheFilter):
 
         ba = QByteArray()
         buff = QBuffer(ba)
-        buff.open(QIODevice.WriteOnly)
+        buff.open(QIODevice.OpenModeFlag.WriteOnly)
         img.save(buff, 'PNG')
         return ba
 

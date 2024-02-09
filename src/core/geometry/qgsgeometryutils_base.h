@@ -32,6 +32,22 @@ class CORE_EXPORT QgsGeometryUtilsBase
   public:
 
     /**
+     * Returns the squared 3D distance between (\a x1, \a y1), (\a x2, \a y2) and (\a z2, \a z2).
+     *
+     * \warning No check is done if z contains NaN value. This is the caller's responsibility.
+     * \since QGIS 3.36
+     */
+    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ) + ( z1 - z2 ) * ( z1 - z2 ); }
+
+    /**
+     * Returns the 3D distance between (\a x1, \a y1), (\a x2, \a y2) and (\a z2, \a z2).
+     *
+     * \warning No check is done if z contains NaN value. This is the caller's responsibility.
+     * \since QGIS 3.36
+     */
+    static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance3D( x1, y1, z1, x2, y2, z2 ) ); }
+
+    /**
      * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
      */
     static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ); }
@@ -505,6 +521,11 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
     /**
      * Compare equality between multiple pairs of values with a specified epsilon.
+     *
+     * Traditionally, the comparison is done by examining the specific values (such as x and y) that define the location of points.
+     * It focuses on the numerical differences or relationships between these values.
+     * On the other hand, comparing distances between points considers the actual spatial separation or length between the points, regardless of their coordinate values.
+     * This comparison involves measuring the distance between two points using formulas like the distance formula. Here, it's the "distance comparison" (fuzzyDistanceEqual).
      *
      * \tparam T Floating-point type (double or float) for the values to be compared.
      * \tparam Args Type of arguments for the values to be compared.

@@ -58,8 +58,8 @@ class QgsExtractZMValuesAlgorithmBase : public QgsProcessingFeatureBasedAlgorith
     QString mDefaultFieldPrefix;
   private:
 
-    QList< QgsStatisticalSummary::Statistic > mSelectedStats;
-    QgsStatisticalSummary::Statistics mStats = QgsStatisticalSummary::All;
+    QList< Qgis::Statistic > mSelectedStats;
+    Qgis::Statistics mStats = Qgis::Statistic::All;
     QString mPrefix;
     QgsFields mNewFields;
 

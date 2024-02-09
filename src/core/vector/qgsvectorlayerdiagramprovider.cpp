@@ -209,11 +209,11 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   }
 
   // data defined show diagram? check this before doing any other processing
-  if ( !mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::Show, context.expressionContext(), true ) )
+  if ( !mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::Property::Show, context.expressionContext(), true ) )
     return nullptr;
 
   // data defined obstacle?
-  bool isObstacle = mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::IsObstacle, context.expressionContext(), mSettings.isObstacle() );
+  bool isObstacle = mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::Property::IsObstacle, context.expressionContext(), mSettings.isObstacle() );
 
   //convert geom to geos
   QgsGeometry geom = feat.geometry();
@@ -266,19 +266,19 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   //  feature to the layer
   bool alwaysShow = mSettings.showAllDiagrams();
   context.expressionContext().setOriginalValueVariable( alwaysShow );
-  alwaysShow = mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::AlwaysShow, context.expressionContext(), alwaysShow );
+  alwaysShow = mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::Property::AlwaysShow, context.expressionContext(), alwaysShow );
 
   // new style data defined position
   bool ddPos = false;
   double ddPosX = 0.0;
   double ddPosY = 0.0;
-  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::PositionX )
-       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::PositionX ).isActive()
-       && mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::PositionY )
-       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::PositionY ).isActive() )
+  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::PositionX )
+       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::PositionX ).isActive()
+       && mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::PositionY )
+       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::PositionY ).isActive() )
   {
-    ddPosX = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
-    ddPosY = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
+    ddPosX = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Property::PositionX, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
+    ddPosY = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Property::PositionY, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
 
     ddPos = !std::isnan( ddPosX ) && !std::isnan( ddPosY );
 
@@ -308,11 +308,11 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   lf->setObstacleSettings( os );
 
   // data defined priority?
-  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Priority )
-       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Priority ).isActive() )
+  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::Priority )
+       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::Priority ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( mSettings.priority() );
-    double priorityD = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Priority, context.expressionContext(), mSettings.priority() );
+    double priorityD = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Property::Priority, context.expressionContext(), mSettings.priority() );
     priorityD = std::clamp( priorityD, 0.0, 10.0 );
     priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
     lf->setPriority( priorityD );
@@ -320,11 +320,11 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
 
   // z-Index
   double zIndex = mSettings.zIndex();
-  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::ZIndex )
-       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::ZIndex ).isActive() )
+  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::ZIndex )
+       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::ZIndex ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( zIndex );
-    zIndex = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::ZIndex, context.expressionContext(), zIndex );
+    zIndex = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Property::ZIndex, context.expressionContext(), zIndex );
   }
   lf->setZIndex( zIndex );
 
@@ -333,11 +333,11 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   QgsPointXY ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
   double dist = mSettings.distance();
 
-  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Distance )
-       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Distance ).isActive() )
+  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::Distance )
+       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::Distance ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( dist );
-    dist = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Distance, context.expressionContext(), dist );
+    dist = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Property::Distance, context.expressionContext(), dist );
   }
 
   dist *= ptOne.distance( ptZero );

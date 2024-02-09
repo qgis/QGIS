@@ -21,6 +21,7 @@
 #include "qgspallabeling.h"
 #include "qgstextrendererutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorutils.h"
 
 QgsTextShadowSettings::QgsTextShadowSettings()
 {
@@ -350,7 +351,7 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
     d->opacity = ( shadowElem.attribute( QStringLiteral( "shadowOpacity" ) ).toDouble() );
   }
   d->scale = shadowElem.attribute( QStringLiteral( "shadowScale" ), QStringLiteral( "100" ) ).toInt();
-  d->color = QgsSymbolLayerUtils::decodeColor( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
+  d->color = QgsColorUtils::colorFromString( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< Qgis::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
@@ -371,21 +372,21 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
   shadowElem.setAttribute( QStringLiteral( "shadowRadiusAlphaOnly" ), d->radiusAlphaOnly );
   shadowElem.setAttribute( QStringLiteral( "shadowOpacity" ), d->opacity );
   shadowElem.setAttribute( QStringLiteral( "shadowScale" ), d->scale );
-  shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsSymbolLayerUtils::encodeColor( d->color ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( d->color ) );
   shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   return shadowElem;
 }
 
 void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {
-  if ( properties.isActive( QgsPalLayerSettings::ShadowDraw ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowDraw ) )
   {
     context.expressionContext().setOriginalValueVariable( d->enabled );
-    d->enabled = properties.valueAsBool( QgsPalLayerSettings::ShadowDraw, context.expressionContext(), d->enabled );
+    d->enabled = properties.valueAsBool( QgsPalLayerSettings::Property::ShadowDraw, context.expressionContext(), d->enabled );
   }
 
   // data defined shadow under type?
-  QVariant exprVal = properties.value( QgsPalLayerSettings::ShadowUnder, context.expressionContext() );
+  QVariant exprVal = properties.value( QgsPalLayerSettings::Property::ShadowUnder, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString str = exprVal.toString().trimmed();
@@ -395,18 +396,18 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::ShadowOffsetAngle ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowOffsetAngle ) )
   {
     context.expressionContext().setOriginalValueVariable( d->offsetAngle );
-    d->offsetAngle = properties.valueAsInt( QgsPalLayerSettings::ShadowOffsetAngle, context.expressionContext(), d->offsetAngle );
+    d->offsetAngle = properties.valueAsInt( QgsPalLayerSettings::Property::ShadowOffsetAngle, context.expressionContext(), d->offsetAngle );
   }
-  if ( properties.isActive( QgsPalLayerSettings::ShadowOffsetDist ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowOffsetDist ) )
   {
     context.expressionContext().setOriginalValueVariable( d->offsetDist );
-    d->offsetDist = properties.valueAsDouble( QgsPalLayerSettings::ShadowOffsetDist, context.expressionContext(), d->offsetDist );
+    d->offsetDist = properties.valueAsDouble( QgsPalLayerSettings::Property::ShadowOffsetDist, context.expressionContext(), d->offsetDist );
   }
 
-  exprVal = properties.value( QgsPalLayerSettings::ShadowOffsetUnits, context.expressionContext() );
+  exprVal = properties.value( QgsPalLayerSettings::Property::ShadowOffsetUnits, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
@@ -419,13 +420,13 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::ShadowRadius ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowRadius ) )
   {
     context.expressionContext().setOriginalValueVariable( d->radius );
-    d->radius = properties.valueAsDouble( QgsPalLayerSettings::ShadowRadius, context.expressionContext(), d->radius );
+    d->radius = properties.valueAsDouble( QgsPalLayerSettings::Property::ShadowRadius, context.expressionContext(), d->radius );
   }
 
-  exprVal = properties.value( QgsPalLayerSettings::ShadowRadiusUnits, context.expressionContext() );
+  exprVal = properties.value( QgsPalLayerSettings::Property::ShadowRadiusUnits, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
@@ -438,31 +439,31 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::ShadowOpacity ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowOpacity ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    const QVariant val = properties.value( QgsPalLayerSettings::ShadowOpacity, context.expressionContext(), d->opacity * 100 );
+    const QVariant val = properties.value( QgsPalLayerSettings::Property::ShadowOpacity, context.expressionContext(), d->opacity * 100 );
     if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::ShadowScale ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowScale ) )
   {
     context.expressionContext().setOriginalValueVariable( d->scale );
-    d->scale = properties.valueAsInt( QgsPalLayerSettings::ShadowScale, context.expressionContext(), d->scale );
+    d->scale = properties.valueAsInt( QgsPalLayerSettings::Property::ShadowScale, context.expressionContext(), d->scale );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::ShadowColor ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowColor ) )
   {
     context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( d->color ) );
-    d->color = properties.valueAsColor( QgsPalLayerSettings::ShadowColor, context.expressionContext(), d->color );
+    d->color = properties.valueAsColor( QgsPalLayerSettings::Property::ShadowColor, context.expressionContext(), d->color );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::ShadowBlendMode ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::ShadowBlendMode ) )
   {
-    exprVal = properties.value( QgsPalLayerSettings::ShadowBlendMode, context.expressionContext() );
+    exprVal = properties.value( QgsPalLayerSettings::Property::ShadowBlendMode, context.expressionContext() );
     const QString blendstr = exprVal.toString().trimmed();
     if ( !blendstr.isEmpty() )
       d->blendMode = QgsSymbolLayerUtils::decodeBlendMode( blendstr );

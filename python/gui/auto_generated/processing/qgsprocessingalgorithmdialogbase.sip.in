@@ -160,6 +160,15 @@ Pushes a warning information string to the dialog's log.
 Pushes an information string to the dialog's log.
 %End
 
+    void pushFormattedMessage( const QString &html );
+%Docstring
+Pushes a pre-formatted message to the dialog's log
+
+This can be used to push formatted HTML messages to the dialog.
+
+.. versionadded:: 3.36
+%End
+
     void pushDebugInfo( const QString &message );
 %Docstring
 Pushes a debug info string to the dialog's log.

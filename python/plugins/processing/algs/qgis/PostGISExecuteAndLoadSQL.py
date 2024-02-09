@@ -53,7 +53,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool | QgsProcessingAlgorithm.FlagRequiresProject
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool | QgsProcessingAlgorithm.Flag.FlagRequiresProject
 
     def initAlgorithm(self, config=None):
         db_param = QgsProcessingParameterProviderConnection(
@@ -76,7 +76,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         self.addOutput(QgsProcessingOutputVectorLayer(
             self.OUTPUT,
             self.tr("Output layer"),
-            QgsProcessing.TypeVectorAnyGeometry))
+            QgsProcessing.SourceType.TypeVectorAnyGeometry))
 
     def name(self):
         return 'postgisexecuteandloadsql'

@@ -54,7 +54,7 @@ from :py:class:`QgsLayoutItemGuiRegistry`.
     virtual void deactivate();
 
 
-    QVariantMap customProperties() const;
+    QMap<QString, QVariant> customProperties() const;
 %Docstring
 Returns any custom properties set for the tool.
 
@@ -63,7 +63,7 @@ Returns any custom properties set for the tool.
 .. versionadded:: 3.18
 %End
 
-    void setCustomProperties( const QVariantMap &properties );
+    void setCustomProperties( const QMap<QString, QVariant> &properties );
 %Docstring
 Sets custom ``properties`` for the tool.
 

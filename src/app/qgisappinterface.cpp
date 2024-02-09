@@ -391,6 +391,21 @@ void QgisAppInterface::closeMapCanvas( const QString &name )
   qgis->closeMapCanvas( name );
 }
 
+QList< Qgs3DMapCanvas * > QgisAppInterface::mapCanvases3D()
+{
+  return qgis->mapCanvases3D();
+}
+
+Qgs3DMapCanvas *QgisAppInterface::createNewMapCanvas3D( const QString &name )
+{
+  return qgis->createNewMapCanvas3D( name );
+}
+
+void QgisAppInterface::closeMapCanvas3D( const QString &name )
+{
+  qgis->close3DMapView( name );
+}
+
 QSize QgisAppInterface::iconSize( bool dockedToolbar ) const
 {
   return qgis->iconSize( dockedToolbar );
@@ -998,5 +1013,10 @@ QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
 QgsUserProfileManager *QgisAppInterface::userProfileManager()
 {
   return qgis->userProfileManager();
+}
+
+void QgisAppInterface::blockActiveLayerChanges( bool blocked )
+{
+  qgis->blockActiveLayerChanges( blocked );
 }
 

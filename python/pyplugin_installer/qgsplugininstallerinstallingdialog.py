@@ -62,7 +62,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     def requestDownloading(self):
         self.request = QNetworkRequest(self.url)
-        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
+        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
         authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
@@ -79,11 +79,11 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
             self.stateChanged(4)
 
-    def exec_(self):
+    def exec(self):
         if self.request is None:
-            return QDialog.Rejected
+            return QDialog.DialogCode.Rejected
 
-        QDialog.exec_(self)
+        QDialog.exec(self)
 
     # ----------------------------------------- #
     def result(self):
@@ -113,15 +113,15 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     def requestFinished(self):
         reply = self.sender()
         self.buttonBox.setEnabled(False)
-        if reply.error() != QNetworkReply.NoError:
+        if reply.error() != QNetworkReply.NetworkError.NoError:
             self.mResult = reply.errorString()
-            if reply.error() == QNetworkReply.OperationCanceledError:
+            if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
                 self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
             self.reject()
             reply.deleteLater()
             return
-        elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) in (301, 302):
-            redirectionUrl = reply.attribute(QNetworkRequest.RedirectionTargetAttribute)
+        elif reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) in (301, 302):
+            redirectionUrl = reply.attribute(QNetworkRequest.Attribute.RedirectionTargetAttribute)
             self.redirectionCounter += 1
             if self.redirectionCounter > 4:
                 self.mResult = QCoreApplication.translate("QgsPluginInstaller", "Too many redirections")
@@ -137,7 +137,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
                 reply.deleteLater()
                 return
 
-        self.file.open(QFile.WriteOnly)
+        self.file.open(QFile.OpenModeFlag.WriteOnly)
         self.file.write(reply.readAll())
         self.file.close()
         self.stateChanged(0)

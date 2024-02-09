@@ -45,15 +45,23 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
   public:
 
-    //! Item data roles
-    enum ItemDataRole
+    // *INDENT-OFF*
+
+    /**
+     * Custom model roles.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsMapLayerModel::ItemDataRole
+     * \since QGIS 3.36
+     */
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerModel, ItemDataRole ) : int
     {
-      LayerIdRole = Qt::UserRole + 1, //!< Stores the map layer ID
-      LayerRole, //!< Stores pointer to the map layer itself
-      EmptyRole, //!< True if index corresponds to the empty (not set) value
-      AdditionalRole, //!< True if index corresponds to an additional (non map layer) item
+      LayerId SIP_MONKEYPATCH_COMPAT_NAME(LayerIdRole) = Qt::UserRole + 1, //!< Stores the map layer ID
+      Layer SIP_MONKEYPATCH_COMPAT_NAME(LayerRole), //!< Stores pointer to the map layer itself
+      Empty SIP_MONKEYPATCH_COMPAT_NAME(EmptyRole), //!< True if index corresponds to the empty (not set) value
+      Additional SIP_MONKEYPATCH_COMPAT_NAME(AdditionalRole), //!< True if index corresponds to an additional (non map layer) item
     };
-    Q_ENUM( ItemDataRole )
+    Q_ENUM( CustomRole )
+    // *INDENT-ON*
 
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.

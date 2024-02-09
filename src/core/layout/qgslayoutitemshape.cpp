@@ -41,7 +41,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   mShapeStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
   refreshSymbol( false );
 
-  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [ = ]
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this]
   {
     updateBoundingRect();
     update();

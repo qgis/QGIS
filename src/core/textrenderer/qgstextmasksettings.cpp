@@ -146,21 +146,21 @@ void QgsTextMaskSettings::setPaintEffect( QgsPaintEffect *effect )
 
 void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {
-  if ( properties.isActive( QgsPalLayerSettings::MaskEnabled ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::MaskEnabled ) )
   {
     context.expressionContext().setOriginalValueVariable( d->enabled );
-    d->enabled = properties.valueAsBool( QgsPalLayerSettings::MaskEnabled, context.expressionContext(), d->enabled );
+    d->enabled = properties.valueAsBool( QgsPalLayerSettings::Property::MaskEnabled, context.expressionContext(), d->enabled );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::MaskBufferSize ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::MaskBufferSize ) )
   {
     context.expressionContext().setOriginalValueVariable( d->size );
-    d->size = properties.valueAsDouble( QgsPalLayerSettings::MaskBufferSize, context.expressionContext(), d->size );
+    d->size = properties.valueAsDouble( QgsPalLayerSettings::Property::MaskBufferSize, context.expressionContext(), d->size );
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::MaskBufferUnit ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::MaskBufferUnit ) )
   {
-    const QVariant exprVal = properties.value( QgsPalLayerSettings::MaskBufferUnit, context.expressionContext() );
+    const QVariant exprVal = properties.value( QgsPalLayerSettings::Property::MaskBufferUnit, context.expressionContext() );
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString units = exprVal.toString();
@@ -174,19 +174,19 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::MaskOpacity ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::MaskOpacity ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    const QVariant val = properties.value( QgsPalLayerSettings::MaskOpacity, context.expressionContext(), d->opacity * 100 );
+    const QVariant val = properties.value( QgsPalLayerSettings::Property::MaskOpacity, context.expressionContext(), d->opacity * 100 );
     if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }
   }
 
-  if ( properties.isActive( QgsPalLayerSettings::MaskJoinStyle ) )
+  if ( properties.isActive( QgsPalLayerSettings::Property::MaskJoinStyle ) )
   {
-    const QVariant exprVal = properties.value( QgsPalLayerSettings::MaskJoinStyle, context.expressionContext() );
+    const QVariant exprVal = properties.value( QgsPalLayerSettings::Property::MaskJoinStyle, context.expressionContext() );
     const QString joinstr = exprVal.toString().trimmed();
     if ( !joinstr.isEmpty() )
     {

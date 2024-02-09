@@ -41,7 +41,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QFileDialog>
-#include <QPrinter>
+#include <QPdfWriter>
 #include <QSvgGenerator>
 #include <QToolButton>
 #include <QCloseEvent>
@@ -718,9 +718,7 @@ void QgsModelDesignerDialog::exportToPdf()
   totalRect.adjust( -10, -10, 10, 10 );
   const QRectF printerRect = QRectF( 0, 0, totalRect.width(), totalRect.height() );
 
-  QPrinter printer;
-  printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( filename );
+  QPdfWriter pdfWriter( filename );
 
   const double scaleFactor = 96 / 25.4; // based on 96 dpi sizes
 
@@ -728,11 +726,9 @@ void QgsModelDesignerDialog::exportToPdf()
                           QPageLayout::Portrait,
                           QMarginsF( 0, 0, 0, 0 ) );
   pageLayout.setMode( QPageLayout::FullPageMode );
-  printer.setPageLayout( pageLayout );
+  pdfWriter.setPageLayout( pageLayout );
 
-  printer.setFullPage( true );
-
-  QPainter painter( &printer );
+  QPainter painter( &pdfWriter );
   mView->scene()->render( &painter, printerRect, totalRect );
   painter.end();
 
@@ -799,7 +795,7 @@ void QgsModelDesignerDialog::exportAsPython()
   const QFileInfo saveFileInfo( filename );
   settings.setValue( QStringLiteral( "lastModelDesignerExportDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
-  const QString text = mModel->asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 4 ).join( '\n' );
+  const QString text = mModel->asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, 4 ).join( '\n' );
 
   QFile outFile( filename );
   if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )

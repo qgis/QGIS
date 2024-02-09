@@ -95,7 +95,7 @@ void QgsVectorLayerLabelProvider::init()
   if ( mLayerGeometryType == Qgis::GeometryType::Point && mRenderer )
   {
     //override obstacle type to treat any intersection of a label with the point symbol as a high cost conflict
-    mObstacleType = QgsLabelObstacleSettings::PolygonWhole;
+    mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonWhole;
   }
   else
   {
@@ -323,10 +323,10 @@ void QgsVectorLayerLabelProvider::drawLabelBackground( QgsRenderContext &context
 void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
   bool enabled = mSettings.callout()->enabled();
-  if ( mSettings.dataDefinedProperties().isActive( QgsPalLayerSettings::CalloutDraw ) )
+  if ( mSettings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::CalloutDraw ) )
   {
     context.expressionContext().setOriginalValueVariable( enabled );
-    enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::CalloutDraw, context.expressionContext(), enabled );
+    enabled = mSettings.dataDefinedProperties().valueAsBool( QgsPalLayerSettings::Property::CalloutDraw, context.expressionContext(), enabled );
   }
   if ( enabled )
   {

@@ -877,6 +877,57 @@ Returns the edges count of the mesh frame
 .. versionadded:: 3.22
 %End
 
+    bool labelsEnabled() const;
+%Docstring
+Returns whether the layer contains labels which are enabled and should be drawn.
+
+:return: ``True`` if layer contains enabled labels
+
+.. seealso:: :py:func:`setLabelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.36
+%End
+
+    void setLabelsEnabled( bool enabled );
+%Docstring
+Sets whether labels should be ``enabled`` for the layer.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsMeshLayer.labelsEnabled` is ``True`` and a labeling
+   object is returned by :py:func:`~QgsMeshLayer.labeling`.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.36
+%End
+
+
+    QgsAbstractMeshLayerLabeling *labeling();
+%Docstring
+Access to labeling configuration. May be ``None`` if labeling is not used.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsMeshLayer.labelsEnabled` returns ``True``.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. versionadded:: 3.36
+%End
+
+    void setLabeling( QgsAbstractMeshLayerLabeling *labeling /Transfer/ );
+%Docstring
+Sets labeling configuration. Takes ownership of the object.
+
+.. versionadded:: 3.36
+%End
+
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

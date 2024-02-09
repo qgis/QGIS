@@ -79,9 +79,10 @@ class CORE_EXPORT QgsCallout
 
   public:
 
+    // *INDENT-OFF*
     //! Data definable properties.
-    enum Property
-    {
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCallout, Property ) : int
+      {
       MinimumCalloutLength, //!< Minimum length of callouts
       OffsetFromAnchor, //!< Distance to offset lines from anchor points
       OffsetFromLabel, //!< Distance to offset lines from label area
@@ -99,6 +100,7 @@ class CORE_EXPORT QgsCallout
       CornerRadius, //!< Balloon callout corner radius (since QGIS 3.20)
       BlendMode, //!< Callout blend mode (since QGIS 3.20)
     };
+    // *INDENT-ON*
 
     //! Options for draw order (stacking) of callouts
     enum DrawOrder

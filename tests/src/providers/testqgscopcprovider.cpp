@@ -319,7 +319,7 @@ void TestQgsCopcProvider::attributes()
   QCOMPARE( attributes.at( 9 ).name(), QStringLiteral( "ScanAngleRank" ) );
   QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Short );
   QCOMPARE( attributes.at( 10 ).name(), QStringLiteral( "UserData" ) );
-  QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
+  QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::UChar );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
   QCOMPARE( attributes.at( 11 ).type(), QgsPointCloudAttribute::UShort );
   QCOMPARE( attributes.at( 12 ).name(), QStringLiteral( "Synthetic" ) );
@@ -902,7 +902,7 @@ void TestQgsCopcProvider::testStatsCalculator()
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Intensity" ), QgsPointCloudAttribute::UShort ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "PointSourceId" ), QgsPointCloudAttribute::UShort ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "ScanDirectionFlag" ), QgsPointCloudAttribute::Char ) );
-  attributes.append( QgsPointCloudAttribute( QStringLiteral( "UserData" ), QgsPointCloudAttribute::Char ) );
+  attributes.append( QgsPointCloudAttribute( QStringLiteral( "UserData" ), QgsPointCloudAttribute::UChar ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "ScanAngleRank" ), QgsPointCloudAttribute::Float ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Reflectance" ), QgsPointCloudAttribute::Float ) );
   attributes.append( QgsPointCloudAttribute( QStringLiteral( "Amplitude" ), QgsPointCloudAttribute::Float ) );

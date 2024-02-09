@@ -225,7 +225,7 @@ bool QgsAnnotationLayer::isEmpty() const
   return mItems.empty();
 }
 
-QgsAnnotationItem *QgsAnnotationLayer::item( const QString &id )
+QgsAnnotationItem *QgsAnnotationLayer::item( const QString &id ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

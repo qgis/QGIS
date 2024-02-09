@@ -72,7 +72,7 @@ class ClipRasterByMask(GdalAlgorithm):
                                                             self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
                                                               self.tr('Mask layer'),
-                                                              [QgsProcessing.TypeVectorPolygon]))
+                                                              [QgsProcessing.SourceType.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterCrs(self.SOURCE_CRS,
                                                     self.tr('Source CRS'),
                                                     optional=True))
@@ -83,8 +83,8 @@ class ClipRasterByMask(GdalAlgorithm):
                                                        self.tr('Target extent'),
                                                        optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
-                                                       self.tr('Assign a specified nodata value to output bands'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       self.tr('Assign a specified NoData value to output bands'),
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        defaultValue=None,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.ALPHA_BAND,
@@ -101,26 +101,26 @@ class ClipRasterByMask(GdalAlgorithm):
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterNumber(self.X_RESOLUTION,
                                                        self.tr('X Resolution to output bands'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        defaultValue=None,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.Y_RESOLUTION,
                                                        self.tr('Y Resolution to output bands'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        defaultValue=None,
                                                        optional=True))
 
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),
                                                              defaultValue=False)
-        multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(multithreading_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
@@ -131,14 +131,14 @@ class ClipRasterByMask(GdalAlgorithm):
                                                     self.TYPES,
                                                     allowMultiple=False,
                                                     defaultValue=0)
-        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(dataType_param)
 
         extra_param = QgsProcessingParameterString(self.EXTRA,
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
                                                    optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(extra_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,

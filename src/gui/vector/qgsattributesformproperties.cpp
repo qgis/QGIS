@@ -83,6 +83,8 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
+
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, &QgsAttributesFormProperties::updatedFields );
 }
 
 void QgsAttributesFormProperties::init()
@@ -937,6 +939,13 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
   mEditFormLineEdit->setText( uifilename );
 }
 
+void QgsAttributesFormProperties::store()
+{
+  storeAttributeWidgetEdit();
+  storeAttributeContainerEdit();
+  storeAttributeTypeDialog();
+}
+
 void QgsAttributesFormProperties::apply()
 {
   storeAttributeWidgetEdit();
@@ -1451,7 +1460,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( qmlCode, QStringLiteral( "expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)" ) );
-        expression.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\"" ) );
+        expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
         QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
 
@@ -1563,7 +1572,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, QStringLiteral( "<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>" ) );
-        expression.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\"" ) );
+        expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
         QgsExpressionBuilderDialog exprDlg( mLayer, expression, this, QStringLiteral( "generic" ), context );
 
@@ -1944,4 +1953,31 @@ QgsAttributesFormProperties::TextElementEditorConfiguration QgsAttributesFormPro
 void QgsAttributesFormProperties::DnDTreeItemData::setTextElementEditorConfiguration( const QgsAttributesFormProperties::TextElementEditorConfiguration &textElementEditorConfiguration )
 {
   mTextElementEditorConfiguration = textElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::updatedFields()
+{
+  // Store configuration to insure changes made are kept after refreshing the list
+  QMap<QString, FieldConfig> fieldConfigs;
+  QTreeWidgetItem *fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
+  for ( int i = 0; i < fieldContainer->childCount(); i++ )
+  {
+    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
+    const QString fieldName = fieldItem->data( 0, FieldNameRole ).toString();
+    const FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<FieldConfig>();
+    fieldConfigs[fieldName] = cfg;
+  }
+
+  initAvailableWidgetsTree();
+
+  fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
+  for ( int i = 0; i < fieldContainer->childCount(); i++ )
+  {
+    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
+    const QString fieldName = fieldItem->data( 0, FieldNameRole ).toString();
+    if ( fieldConfigs.contains( fieldName ) )
+    {
+      fieldItem->setData( 0, FieldConfigRole, fieldConfigs[fieldName] );
+    }
+  }
 }

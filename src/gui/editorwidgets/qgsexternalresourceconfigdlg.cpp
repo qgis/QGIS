@@ -45,7 +45,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
 
   mExternalStorageGroupBox->setVisible( false );
 
-  initializeDataDefinedButton( mStorageUrlPropertyOverrideButton, QgsEditorWidgetWrapper::StorageUrl );
+  initializeDataDefinedButton( mStorageUrlPropertyOverrideButton, QgsEditorWidgetWrapper::Property::StorageUrl );
   mStorageUrlPropertyOverrideButton->registerVisibleWidget( mStorageUrlExpression );
   mStorageUrlPropertyOverrideButton->registerExpressionWidget( mStorageUrlExpression );
   mStorageUrlPropertyOverrideButton->registerVisibleWidget( mStorageUrl, false );
@@ -61,13 +61,13 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
 
   connect( mRootPathButton, &QToolButton::clicked, this, &QgsExternalResourceConfigDlg::chooseDefaultPath );
 
-  initializeDataDefinedButton( mRootPathPropertyOverrideButton, QgsEditorWidgetWrapper::RootPath );
+  initializeDataDefinedButton( mRootPathPropertyOverrideButton, QgsEditorWidgetWrapper::Property::RootPath );
   mRootPathPropertyOverrideButton->registerVisibleWidget( mRootPathExpression );
   mRootPathPropertyOverrideButton->registerExpressionWidget( mRootPathExpression );
   mRootPathPropertyOverrideButton->registerVisibleWidget( mRootPath, false );
   mRootPathPropertyOverrideButton->registerEnabledWidget( mRootPathButton, false );
 
-  initializeDataDefinedButton( mDocumentViewerContentPropertyOverrideButton, QgsEditorWidgetWrapper::DocumentViewerContent );
+  initializeDataDefinedButton( mDocumentViewerContentPropertyOverrideButton, QgsEditorWidgetWrapper::Property::DocumentViewerContent );
   mDocumentViewerContentPropertyOverrideButton->registerVisibleWidget( mDocumentViewerContentExpression );
   mDocumentViewerContentPropertyOverrideButton->registerExpressionWidget( mDocumentViewerContentExpression );
   mDocumentViewerContentPropertyOverrideButton->registerEnabledWidget( mDocumentViewerContentComboBox, false );

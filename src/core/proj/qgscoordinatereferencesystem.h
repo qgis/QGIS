@@ -623,18 +623,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString description() const;
 
     /**
-     * Type of identifier string to create.
-     *
-     * \since QGIS 3.10.3
-     */
-    enum IdentifierType
-    {
-      ShortString, //!< A heavily abbreviated string, for use when a compact representation is required
-      MediumString, //!< A medium-length string, recommended for general purpose use
-      FullString, //!< Full definition -- possibly a very lengthy string, e.g. with no truncation of custom WKT definitions
-    };
-
-    /**
      * Returns a user friendly identifier for the CRS.
      *
      * Depending on the format of the CRS, this may reflect the CRSes registered name, or for
@@ -647,7 +635,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \see description()
      * \since QGIS 3.10.3
      */
-    QString userFriendlyIdentifier( IdentifierType type = MediumString ) const;
+    QString userFriendlyIdentifier( Qgis::CrsIdentifierType type = Qgis::CrsIdentifierType::MediumString ) const;
 
     /**
      * Returns the projection acronym for the projection used by the CRS.
@@ -665,23 +653,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString ellipsoidAcronym() const;
 
-    //! WKT formatting variants, only used for builds based on Proj >= 6
-    enum WktVariant
-    {
-      WKT1_GDAL, //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
-      WKT1_ESRI, //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
-      WKT2_2015, //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
-      WKT2_2015_SIMPLIFIED, //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-      WKT2_2018, //!< Alias for WKT2_2019
-      WKT2_2018_SIMPLIFIED, //!< Alias for WKT2_2019_SIMPLIFIED
-      WKT2_2019 = WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-      WKT2_2019_SIMPLIFIED = WKT2_2018_SIMPLIFIED, //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
-
-      WKT_PREFERRED = WKT2_2019, //!< Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
-      WKT_PREFERRED_SIMPLIFIED = WKT2_2019_SIMPLIFIED, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
-      WKT_PREFERRED_GDAL = WKT2_2019, //!< Preferred format for conversion of CRS to WKT for use with the GDAL library.
-    };
-
     /**
      * Returns a WKT representation of this CRS.
      *
@@ -693,7 +664,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \see toProj()
      */
-    QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;
+    QString toWkt( Qgis::CrsWktVariant variant = Qgis::CrsWktVariant::Wkt1Gdal, bool multiline = false, int indentationWidth = 4 ) const;
 
     /**
      * Returns a Proj string representation of this CRS.
@@ -729,6 +700,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.34
      */
     Qgis::CrsType type() const;
+
+    /**
+     * Returns TRUE if the CRS is considered deprecated.
+     *
+     * \since QGIS 3.36
+     */
+    bool isDeprecated() const;
 
     /**
      * Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
@@ -1015,7 +993,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ),
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),
                         std::isfinite( sipCpp->coordinateEpoch() ) ? QStringLiteral( " @ %1" ).arg( sipCpp->coordinateEpoch() ) : QString() )
                         : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -1061,33 +1039,38 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns a list of recently used projections
      * \returns list of srsid for recently used projections
-     * \deprecated QGIS 3.10 Use recentCoordinateReferenceSystems() instead.
+     *
+     * \deprecated QGIS 3.10 Use QgsApplication::coordinateReferenceSystemRegistry()->recentCrs() instead.
      */
     Q_DECL_DEPRECATED static QStringList recentProjections() SIP_DEPRECATED;
 
     /**
      * Returns a list of recently used CRS.
-     * \since QGIS 3.10.3
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->recentCrs() instead.
     */
-    static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems();
+    Q_DECL_DEPRECATED static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() SIP_DEPRECATED;
 
     /**
      * Pushes a recently used CRS to the top of the recent CRS list.
-     * \since QGIS 3.10.3
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->pushRecent() instead.
      */
-    static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+    Q_DECL_DEPRECATED static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
     /**
      * Removes a CRS from the list of recently used CRS.
-     * \since QGIS 3.32
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->removeRecent() instead.
      */
-    static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs );
+    Q_DECL_DEPRECATED static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
     /**
      * Cleans the list of recently used CRS.
-     * \since QGIS 3.32
+     *
+     * \deprecated QGIS 3.36 Use QgsApplication::coordinateReferenceSystemRegistry()->clearRecent() instead.
      */
-    static void clearRecentCoordinateReferenceSystems();
+    Q_DECL_DEPRECATED static void clearRecentCoordinateReferenceSystems() SIP_DEPRECATED;
 
 #ifndef SIP_RUN
 

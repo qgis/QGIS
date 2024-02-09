@@ -52,4 +52,4 @@ class DlgDbError(QDialog, Ui_Dialog):
     @staticmethod
     def showError(e, parent=None):
         dlg = DlgDbError(e, parent)
-        dlg.exec_()
+        dlg.exec()

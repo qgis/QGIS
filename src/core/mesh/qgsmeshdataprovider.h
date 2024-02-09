@@ -114,6 +114,10 @@ struct CORE_EXPORT QgsMesh
   QVector<QgsMeshFace> faces SIP_SKIP;
 };
 
+// we need to declare metatype so QgsMesh can be passed as QVariant for expressions
+Q_DECLARE_METATYPE( QgsMesh );
+
+
 /**
  * \ingroup core
  *

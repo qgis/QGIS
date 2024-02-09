@@ -14,15 +14,12 @@ __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
-import os
 import sys
 
-from qgis.PyQt.QtCore import qDebug
 from qgis.core import QgsVectorLayerSimpleLabeling
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import TestLineBase, TestPointBase, suiteTests
-from utilities import getTempfilePath, mapSettingsString, renderMapToImage
 
 
 class TestCanvasBase(TestQgsPalLabeling):
@@ -37,54 +34,34 @@ class TestCanvasBase(TestQgsPalLabeling):
 
     @classmethod
     def tearDownClass(cls):
-        TestQgsPalLabeling.tearDownClass()
+        super().tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
 
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
-        self._Mismatch = 0
-        self._ColorTol = 0
-        self._Mismatches.clear()
-        self._ColorTols.clear()
 
     def checkTest(self, **kwargs):
         self.layer.setLabeling(QgsVectorLayerSimpleLabeling(self.lyr))
 
         ms = self._MapSettings  # class settings
-        settings_type = 'Class'
         if self._TestMapSettings is not None:
             ms = self._TestMapSettings  # per test settings
-            settings_type = 'Test'
-        if 'PAL_VERBOSE' in os.environ:
-            qDebug(f'MapSettings type: {settings_type}')
-            qDebug(mapSettingsString(ms))
 
-        img = renderMapToImage(ms, parallel=False)
-        self._TestImage = getTempfilePath('png')
-        if not img.save(self._TestImage, 'png'):
-            os.unlink(self._TestImage)
-            raise OSError('Failed to save output from map render job')
-        self.saveControlImage(self._TestImage)
-
-        mismatch = 0
-        if 'PAL_NO_MISMATCH' not in os.environ:
-            # some mismatch expected
-            mismatch = self._Mismatch if self._Mismatch else 0
-            if self._TestGroup in self._Mismatches:
-                mismatch = self._Mismatches[self._TestGroup]
-        colortol = 0
-        if 'PAL_NO_COLORTOL' not in os.environ:
-            colortol = self._ColorTol if self._ColorTol else 0
-            if self._TestGroup in self._ColorTols:
-                colortol = self._ColorTols[self._TestGroup]
-        self.assertTrue(*self.renderCheck(mismatch=mismatch,
-                                          colortol=colortol,
-                                          imgpath=self._TestImage))
+        self.assertTrue(
+            self.render_map_settings_check(
+                self._Test,
+                self._Test,
+                ms,
+                self._Test,
+                color_tolerance=0,
+                allowed_mismatch=0,
+                control_path_prefix='expected_' + self._TestGroupPrefix
+            )
+        )
 
 
 class TestCanvasBasePoint(TestCanvasBase):

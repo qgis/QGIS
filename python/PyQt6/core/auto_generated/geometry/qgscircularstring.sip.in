@@ -76,6 +76,12 @@ to ``p2`` will be used (i.e. winding the other way around the circle).
 .. versionadded:: 3.2
 %End
 
+
+  public:
+    virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
+    virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
+
     virtual bool equals( const QgsCurve &other ) const;
 
 

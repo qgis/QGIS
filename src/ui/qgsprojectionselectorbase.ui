@@ -105,7 +105,7 @@
         <property name="childrenCollapsible">
          <bool>false</bool>
         </property>
-        <widget class="QTreeWidget" name="lstRecent">
+        <widget class="QTreeView" name="lstRecent">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -121,35 +121,9 @@
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
-         <property name="rootIsDecorated">
-          <bool>false</bool>
-         </property>
          <property name="uniformRowHeights">
           <bool>true</bool>
          </property>
-         <property name="columnCount">
-          <number>4</number>
-         </property>
-         <column>
-          <property name="text">
-           <string>Coordinate Reference System</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Authority ID</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>ID</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string/>
-          </property>
-         </column>
         </widget>
         <widget class="QWidget" name="layoutWidget">
          <layout class="QGridLayout" name="gridLayout">

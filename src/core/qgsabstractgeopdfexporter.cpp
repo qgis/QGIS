@@ -429,7 +429,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       }
       else
       {
-        srs.appendChild( doc.createTextNode( section.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) ) );
+        srs.appendChild( doc.createTextNode( section.crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ) ) );
       }
       georeferencing.appendChild( srs );
     }

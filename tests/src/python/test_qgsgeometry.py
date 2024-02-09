@@ -49,7 +49,6 @@ from qgis.core import (
     QgsPolygon,
     QgsProject,
     QgsRectangle,
-    QgsRenderChecker,
     QgsTriangle,
     QgsVectorLayer,
     QgsVertexId,
@@ -69,7 +68,6 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsGeometry(QgisTestCase):
 
     def setUp(self):
-        self.report = "<h1>Python QgsGeometry Tests</h1>\n"
         self.geos309 = 30900
         self.geos310_4 = 31040
         self.geos311 = 31100
@@ -209,14 +207,14 @@ class TestQgsGeometry(QgisTestCase):
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
-        self.assertEqual(myGeometry.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(myGeometry.wkbType(), QgsWkbTypes.Type.Point)
 
     def testWktMultiPointLoading(self):
         # Standard format
         wkt = 'MultiPoint ((10 15),(20 30))'
         geom = QgsGeometry.fromWkt(wkt)
-        self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPoint,
-                         (f'Expected:\n{QgsWkbTypes.Point}\nGot:\n{geom.type()}\n'))
+        self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.MultiPoint,
+                         (f'Expected:\n{QgsWkbTypes.Type.Point}\nGot:\n{geom.type()}\n'))
         self.assertEqual(geom.constGet().numGeometries(), 2)
         self.assertEqual(geom.constGet().geometryN(0).x(), 10)
         self.assertEqual(geom.constGet().geometryN(0).y(), 15)
@@ -226,8 +224,8 @@ class TestQgsGeometry(QgisTestCase):
         # Check MS SQL format
         wkt = 'MultiPoint (11 16, 21 31)'
         geom = QgsGeometry.fromWkt(wkt)
-        self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPoint,
-                         (f'Expected:\n{QgsWkbTypes.Point}\nGot:\n{geom.type()}\n'))
+        self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.MultiPoint,
+                         (f'Expected:\n{QgsWkbTypes.Type.Point}\nGot:\n{geom.type()}\n'))
         self.assertEqual(geom.constGet().numGeometries(), 2)
         self.assertEqual(geom.constGet().geometryN(0).x(), 11)
         self.assertEqual(geom.constGet().geometryN(0).y(), 16)
@@ -236,11 +234,11 @@ class TestQgsGeometry(QgisTestCase):
 
     def testFromPointXY(self):
         myPoint = QgsGeometry.fromPointXY(QgsPointXY(10, 10))
-        self.assertEqual(myPoint.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(myPoint.wkbType(), QgsWkbTypes.Type.Point)
 
     def testFromPoint(self):
         myPoint = QgsGeometry.fromPoint(QgsPoint(10, 3, 5))
-        self.assertEqual(myPoint.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(myPoint.wkbType(), QgsWkbTypes.Type.PointZ)
         self.assertEqual(myPoint.constGet().x(), 10)
         self.assertEqual(myPoint.constGet().y(), 3)
         self.assertEqual(myPoint.constGet().z(), 5)
@@ -248,21 +246,21 @@ class TestQgsGeometry(QgisTestCase):
     def testFromMultiPoint(self):
         myMultiPoint = QgsGeometry.fromMultiPointXY([
             (QgsPointXY(0, 0)), (QgsPointXY(1, 1))])
-        self.assertEqual(myMultiPoint.wkbType(), QgsWkbTypes.MultiPoint)
+        self.assertEqual(myMultiPoint.wkbType(), QgsWkbTypes.Type.MultiPoint)
 
     def testFromLine(self):
         myLine = QgsGeometry.fromPolylineXY([QgsPointXY(1, 1), QgsPointXY(2, 2)])
-        self.assertEqual(myLine.wkbType(), QgsWkbTypes.LineString)
+        self.assertEqual(myLine.wkbType(), QgsWkbTypes.Type.LineString)
 
     def testFromMultiLine(self):
         myMultiPolyline = QgsGeometry.fromMultiPolylineXY(
             [[QgsPointXY(0, 0), QgsPointXY(1, 1)], [QgsPointXY(0, 1), QgsPointXY(2, 1)]])
-        self.assertEqual(myMultiPolyline.wkbType(), QgsWkbTypes.MultiLineString)
+        self.assertEqual(myMultiPolyline.wkbType(), QgsWkbTypes.Type.MultiLineString)
 
     def testFromPolygon(self):
         myPolygon = QgsGeometry.fromPolygonXY(
             [[QgsPointXY(1, 1), QgsPointXY(2, 2), QgsPointXY(1, 2), QgsPointXY(1, 1)]])
-        self.assertEqual(myPolygon.wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(myPolygon.wkbType(), QgsWkbTypes.Type.Polygon)
 
     def testFromMultiPolygon(self):
         myMultiPolygon = QgsGeometry.fromMultiPolygonXY([
@@ -275,7 +273,7 @@ class TestQgsGeometry(QgisTestCase):
               QgsPointXY(3, 1),
               QgsPointXY(2, 2)]]
         ])
-        self.assertEqual(myMultiPolygon.wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(myMultiPolygon.wkbType(), QgsWkbTypes.Type.MultiPolygon)
 
     def testFromBox3D(self):
         myBox3D = QgsGeometry.fromBox3D(QgsBox3D(1, 2, 3, 4, 5, 6))
@@ -426,11 +424,11 @@ class TestQgsGeometry(QgisTestCase):
 
         # set item, z/m handling
         ls[0] = QgsPoint(66, 67)
-        self.assertEqual(ls[0], QgsPoint(66, 67, None, None, QgsWkbTypes.PointZM))
+        self.assertEqual(ls[0], QgsPoint(66, 67, None, None, QgsWkbTypes.Type.PointZM))
         ls[0] = QgsPoint(77, 78, 79)
-        self.assertEqual(ls[0], QgsPoint(77, 78, 79, None, QgsWkbTypes.PointZM))
-        ls[0] = QgsPoint(77, 78, None, 80, QgsWkbTypes.PointZM)
-        self.assertEqual(ls[0], QgsPoint(77, 78, None, 80, QgsWkbTypes.PointZM))
+        self.assertEqual(ls[0], QgsPoint(77, 78, 79, None, QgsWkbTypes.Type.PointZM))
+        ls[0] = QgsPoint(77, 78, None, 80, QgsWkbTypes.Type.PointZM)
+        self.assertEqual(ls[0], QgsPoint(77, 78, None, 80, QgsWkbTypes.Type.PointZM))
 
         ls = QgsLineString([QgsPoint(1, 2), QgsPoint(11, 12)])
         ls[0] = QgsPoint(66, 67)
@@ -1052,7 +1050,7 @@ class TestQgsGeometry(QgisTestCase):
                 result = geom.constGet().length()
                 self.assertAlmostEqual(result, exp, 5,
                                        f"Length {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n")
-                if geom.type() != QgsWkbTypes.PolygonGeometry:
+                if geom.type() != QgsWkbTypes.GeometryType.PolygonGeometry:
                     result = geom.length()
                     self.assertAlmostEqual(result, exp, 5,
                                            f"Length {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n")
@@ -1062,7 +1060,7 @@ class TestQgsGeometry(QgisTestCase):
                 result = geom.constGet().perimeter()
                 self.assertAlmostEqual(result, exp, 5,
                                        f"Perimeter {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n")
-                if geom.type() == QgsWkbTypes.PolygonGeometry:
+                if geom.type() == QgsWkbTypes.GeometryType.PolygonGeometry:
                     result = geom.length()
                     self.assertAlmostEqual(result, exp, 5,
                                            f"Length {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n")
@@ -1088,7 +1086,7 @@ class TestQgsGeometry(QgisTestCase):
             QgsPointXY(2, 2)])
         myPoint = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         intersectionGeom = QgsGeometry.intersection(myLine, myPoint)
-        self.assertEqual(intersectionGeom.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(intersectionGeom.wkbType(), QgsWkbTypes.Type.Point)
 
         layer = QgsVectorLayer("Point", "intersection", "memory")
         assert layer.isValid(), "Failed to create valid point memory layer"
@@ -1104,7 +1102,7 @@ class TestQgsGeometry(QgisTestCase):
     def testBuffer(self):
         myPoint = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         bufferGeom = myPoint.buffer(10, 5)
-        self.assertEqual(bufferGeom.wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(bufferGeom.wkbType(), QgsWkbTypes.Type.Polygon)
         myTestPoint = QgsGeometry.fromPointXY(QgsPointXY(3, 3))
         self.assertTrue(bufferGeom.intersects(myTestPoint))
 
@@ -1767,7 +1765,7 @@ class TestQgsGeometry(QgisTestCase):
         wkt = "MultiPoint ((10 30),(40 20),(30 10),(20 10))"
         multipoint = QgsGeometry.fromWkt(wkt)
         assert multipoint.isMultipart(), "Expected MultiPoint to be multipart"
-        self.assertEqual(multipoint.wkbType(), QgsWkbTypes.MultiPoint, "Expected wkbType to be WKBMultipoint")
+        self.assertEqual(multipoint.wkbType(), QgsWkbTypes.Type.MultiPoint, "Expected wkbType to be WKBMultipoint")
         i = 0
         for p in multipoint.asMultiPoint():
             self.assertEqual(p, points[i], "Expected %s at %d, got %s" % (points[i].toString(), i, p.toString()))
@@ -2149,26 +2147,26 @@ class TestQgsGeometry(QgisTestCase):
 
         # reverse transform
         point = QgsGeometry.fromWkt("Point (111319 111325)")
-        self.assertEqual(point.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        self.assertEqual(point.transform(ct, QgsCoordinateTransform.TransformDirection.ReverseTransform), 0, "Transform failed")
         expwkt = "Point (1 1)"
         wkt = point.asWkt()
         assert compareWkt(expwkt, wkt, tol=0.01), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         point = QgsGeometry.fromWkt("MultiPoint ((111319 111325),(222638 222684),(333958 334111))")
-        self.assertEqual(point.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        self.assertEqual(point.transform(ct, QgsCoordinateTransform.TransformDirection.ReverseTransform), 0, "Transform failed")
         expwkt = "MultiPoint ((1 1),(2 2),(3 3))"
         wkt = point.asWkt()
         assert compareWkt(expwkt, wkt, tol=0.01), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         linestring = QgsGeometry.fromWkt("LineString (111319 0, 222638 0)")
-        self.assertEqual(linestring.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        self.assertEqual(linestring.transform(ct, QgsCoordinateTransform.TransformDirection.ReverseTransform), 0, "Transform failed")
         expwkt = "LineString (1 0, 2 0)"
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt, tol=0.01), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         polygon = QgsGeometry.fromWkt(
             "MultiPolygon (((0 0, 111319 0, 111319 111325, 222638 111325, 222638 222684, 0 222684, 0 0)),((445277 0, 556597 0, 556597 222684, 333958 222684, 333958 111325, 445277 111325, 445277 0)))")
-        self.assertEqual(polygon.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        self.assertEqual(polygon.transform(ct, QgsCoordinateTransform.TransformDirection.ReverseTransform), 0, "Transform failed")
         expwkt = "MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt, tol=0.01), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2513,13 +2511,13 @@ class TestQgsGeometry(QgisTestCase):
 
         T = 'point_add_point_with_Z'
         geoms[T] = QgsGeometry(QgsPoint(0, 0, 4))
-        parts[T] = [QgsPoint(1, 0, 3, wkbType=QgsWkbTypes.PointZ)]
+        parts[T] = [QgsPoint(1, 0, 3, wkbType=QgsWkbTypes.Type.PointZ)]
         expec[T] = "MultiPointZ ((0 0 4), (1 0 3))"
 
         T = 'line_add_1_point_fails'
         geoms[T] = polyline1_geom()
         parts[T] = line_points[1][0:1]
-        resul[T] = QgsGeometry.InvalidInputGeometryType
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
 
         T = 'line_add_2_point'
         geoms[T] = polyline1_geom()
@@ -2534,7 +2532,7 @@ class TestQgsGeometry(QgisTestCase):
         T = 'line_add_points_with_Z'
         geoms[T] = polyline1_geom()
         geoms[T].get().addZValue(4.0)
-        parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in line_points[1]]
+        parts[T] = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.Type.PointZ) for p in line_points[1]]
         expec[T] = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
 
         T = 'linestring_add_curve'
@@ -2545,22 +2543,22 @@ class TestQgsGeometry(QgisTestCase):
         T = 'polygon_add_ring_1_point'
         geoms[T] = polygon1_geom()
         parts[T] = poly_points[1][0][0:1]
-        resul[T] = QgsGeometry.InvalidInputGeometryType
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
 
         T = 'polygon_add_ring_2_points'
         geoms[T] = polygon1_geom()
         parts[T] = poly_points[1][0][0:2]
-        resul[T] = QgsGeometry.InvalidInputGeometryType
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
 
         T = 'polygon_add_ring_3_points'
         geoms[T] = polygon1_geom()
         parts[T] = poly_points[1][0][0:3]
-        resul[T] = QgsGeometry.InvalidInputGeometryType
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
 
         T = 'polygon_add_ring_3_points_closed'
         geoms[T] = polygon1_geom()
         parts[T] = [QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]
-        resul[T] = QgsGeometry.InvalidInputGeometryType
+        resul[T] = QgsGeometry.OperationResult.InvalidInputGeometryType
 
         T = 'polygon_add_polygon'
         geoms[T] = polygon1_geom()
@@ -2580,7 +2578,7 @@ class TestQgsGeometry(QgisTestCase):
         T = 'polygon_add_point_with_Z'
         geoms[T] = polygon1_geom()
         geoms[T].get().addZValue(4.0)
-        parts[T] = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in poly_points[1][0]]
+        parts[T] = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.Type.PointZ) for pi in poly_points[1][0]]
         expec[T] = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
 
         T = 'multisurface_add_curvepolygon'
@@ -2602,19 +2600,19 @@ class TestQgsGeometry(QgisTestCase):
         T = 'empty_geom_add_point'
         geoms[T] = QgsGeometry()
         parts[T] = [QgsPointXY(4, 0)]
-        types[T] = QgsWkbTypes.PointGeometry
+        types[T] = QgsWkbTypes.GeometryType.PointGeometry
         expec[T] = 'MultiPoint ((4 0))'
 
         T = 'empty_geom_add_line'
         geoms[T] = QgsGeometry()
         parts[T] = poly_points[0][0]
-        types[T] = QgsWkbTypes.LineGeometry
+        types[T] = QgsWkbTypes.GeometryType.LineGeometry
         expec[T] = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))'
 
         T = 'empty_geom_add_polygon'
         geoms[T] = QgsGeometry()
         parts[T] = poly_points[0][0]
-        types[T] = QgsWkbTypes.PolygonGeometry
+        types[T] = QgsWkbTypes.GeometryType.PolygonGeometry
         expec[T] = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))'
 
         T = 'multipolygon_add_curvepolygon'
@@ -2630,9 +2628,9 @@ class TestQgsGeometry(QgisTestCase):
         for t in parts.keys():
             with self.subTest(t=t):
                 expected_result = resul.get(t, Qgis.GeometryOperationResult.Success)
-                geom_type = types.get(t, QgsWkbTypes.UnknownGeometry)
+                geom_type = types.get(t, QgsWkbTypes.GeometryType.UnknownGeometry)
                 message = '\n' + t
-                if expected_result != Qgis.Success:
+                if expected_result != Qgis.MessageLevel.Success:
                     message += ' unexpectedly succeeded'
                 else:
                     message += ' failed'
@@ -2673,38 +2671,38 @@ class TestQgsGeometry(QgisTestCase):
         # ####### TO POINT ########
         # POINT TO POINT
         point = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
-        wkt = point.convertToType(QgsWkbTypes.PointGeometry, False).asWkt()
+        wkt = point.convertToType(QgsWkbTypes.GeometryType.PointGeometry, False).asWkt()
         expWkt = "Point (1 1)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to point. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # POINT TO MultiPoint
-        wkt = point.convertToType(QgsWkbTypes.PointGeometry, True).asWkt()
+        wkt = point.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((1 1))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to multipoint. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # LINE TO MultiPoint
         line = QgsGeometry.fromPolylineXY(points[0][0])
-        wkt = line.convertToType(QgsWkbTypes.PointGeometry, True).asWkt()
+        wkt = line.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multipoint. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MULTILINE TO MultiPoint
         multiLine = QgsGeometry.fromMultiPolylineXY(points[2])
-        wkt = multiLine.convertToType(QgsWkbTypes.PointGeometry, True).asWkt()
+        wkt = multiLine.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multiline to multipoint. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # Polygon TO MultiPoint
         polygon = QgsGeometry.fromPolygonXY(points[0])
-        wkt = polygon.convertToType(QgsWkbTypes.PointGeometry, True).asWkt()
+        wkt = polygon.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from poylgon to multipoint. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MultiPolygon TO MultiPoint
         multiPolygon = QgsGeometry.fromMultiPolygonXY(points)
-        wkt = multiPolygon.convertToType(QgsWkbTypes.PointGeometry, True).asWkt()
+        wkt = multiPolygon.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0),(4 0),(5 0),(5 2),(3 2),(3 1),(4 1),(4 0),(10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multipoylgon to multipoint. Expected:\n{}\nGot:\n{}\n".format(
@@ -2713,62 +2711,62 @@ class TestQgsGeometry(QgisTestCase):
         # ####### TO LINE ########
         # POINT TO LINE
         point = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
-        self.assertFalse(point.convertToType(QgsWkbTypes.LineGeometry,
+        self.assertFalse(point.convertToType(QgsWkbTypes.GeometryType.LineGeometry,
                                              False)), "convertToType with a point should return a null geometry"
         # MultiPoint TO LINE
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
-        wkt = multipoint.convertToType(QgsWkbTypes.LineGeometry, False).asWkt()
+        wkt = multipoint.convertToType(QgsWkbTypes.GeometryType.LineGeometry, False).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multipoint to line. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MultiPoint TO MULTILINE
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
-        wkt = multipoint.convertToType(QgsWkbTypes.LineGeometry, True).asWkt()
+        wkt = multipoint.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multipoint to multiline. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MULTILINE (which has a single part) TO LINE
         multiLine = QgsGeometry.fromMultiPolylineXY(points[0])
-        wkt = multiLine.convertToType(QgsWkbTypes.LineGeometry, False).asWkt()
+        wkt = multiLine.convertToType(QgsWkbTypes.GeometryType.LineGeometry, False).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to line. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # LINE TO MULTILINE
         line = QgsGeometry.fromPolylineXY(points[0][0])
-        wkt = line.convertToType(QgsWkbTypes.LineGeometry, True).asWkt()
+        wkt = line.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multiline. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # Polygon TO LINE
         polygon = QgsGeometry.fromPolygonXY(points[0])
-        wkt = polygon.convertToType(QgsWkbTypes.LineGeometry, False).asWkt()
+        wkt = polygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, False).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from polygon to line. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # Polygon TO MULTILINE
         polygon = QgsGeometry.fromPolygonXY(points[0])
-        wkt = polygon.convertToType(QgsWkbTypes.LineGeometry, True).asWkt()
+        wkt = polygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from polygon to multiline. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # Polygon with ring TO MULTILINE
         polygon = QgsGeometry.fromPolygonXY(points[2])
-        wkt = polygon.convertToType(QgsWkbTypes.LineGeometry, True).asWkt()
+        wkt = polygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from polygon with ring to multiline. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MultiPolygon (which has a single part) TO LINE
         multiPolygon = QgsGeometry.fromMultiPolygonXY([points[0]])
-        wkt = multiPolygon.convertToType(QgsWkbTypes.LineGeometry, False).asWkt()
+        wkt = multiPolygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, False).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multipolygon to multiline. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MultiPolygon TO MULTILINE
         multiPolygon = QgsGeometry.fromMultiPolygonXY(points)
-        wkt = multiPolygon.convertToType(QgsWkbTypes.LineGeometry, True).asWkt()
+        wkt = multiPolygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0), (4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0), (10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multipolygon to multiline. Expected:\n{}\nGot:\n{}\n".format(
@@ -2777,62 +2775,62 @@ class TestQgsGeometry(QgisTestCase):
         # ####### TO Polygon ########
         # MultiPoint TO Polygon
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
-        wkt = multipoint.convertToType(QgsWkbTypes.PolygonGeometry, False).asWkt()
+        wkt = multipoint.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, False).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multipoint to polygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MultiPoint TO MultiPolygon
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
-        wkt = multipoint.convertToType(QgsWkbTypes.PolygonGeometry, True).asWkt()
+        wkt = multipoint.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, True).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multipoint to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # LINE TO Polygon
         line = QgsGeometry.fromPolylineXY(points[0][0])
-        wkt = line.convertToType(QgsWkbTypes.PolygonGeometry, False).asWkt()
+        wkt = line.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, False).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to polygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # LINE ( 3 vertices, with first = last ) TO Polygon
         line = QgsGeometry.fromPolylineXY([QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)])
-        self.assertFalse(line.convertToType(QgsWkbTypes.PolygonGeometry, False),
+        self.assertFalse(line.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, False),
                          "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # MULTILINE ( with a part of 3 vertices, with first = last ) TO MultiPolygon
         multiline = QgsGeometry.fromMultiPolylineXY(
             [points[0][0], [QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)]])
-        self.assertFalse(multiline.convertToType(QgsWkbTypes.PolygonGeometry, True),
+        self.assertFalse(multiline.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, True),
                          "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # LINE TO MultiPolygon
         line = QgsGeometry.fromPolylineXY(points[0][0])
-        wkt = line.convertToType(QgsWkbTypes.PolygonGeometry, True).asWkt()
+        wkt = line.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, True).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MULTILINE (which has a single part) TO Polygon
         multiLine = QgsGeometry.fromMultiPolylineXY(points[0])
-        wkt = multiLine.convertToType(QgsWkbTypes.PolygonGeometry, False).asWkt()
+        wkt = multiLine.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, False).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to polygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MULTILINE TO MultiPolygon
         multiLine = QgsGeometry.fromMultiPolylineXY([points[0][0], points[1][0]])
-        wkt = multiLine.convertToType(QgsWkbTypes.PolygonGeometry, True).asWkt()
+        wkt = multiLine.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, True).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from multiline to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # Polygon TO MultiPolygon
         polygon = QgsGeometry.fromPolygonXY(points[0])
-        wkt = polygon.convertToType(QgsWkbTypes.PolygonGeometry, True).asWkt()
+        wkt = polygon.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, True).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt,
                           wkt), "convertToType failed: from polygon to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
         # MultiPolygon (which has a single part) TO Polygon
         multiPolygon = QgsGeometry.fromMultiPolygonXY([points[0]])
-        wkt = multiPolygon.convertToType(QgsWkbTypes.PolygonGeometry, False).asWkt()
+        wkt = multiPolygon.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, False).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to polygon. Expected:\n{}\nGot:\n{}\n".format(
             expWkt, wkt)
@@ -2905,7 +2903,7 @@ class TestQgsGeometry(QgisTestCase):
         # Test reshape a polygon with a line starting or ending at the polygon's first vertex
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(0.5, 0.5), QgsPoint(0, 1)])),
-                         QgsGeometry.Success)
+                         QgsGeometry.OperationResult.Success)
         expWkt = 'Polygon ((0 0, 1 0, 1 1, 0 1, 0.5 0.5, 0 0))'
         wkt = g.asWkt()
         self.assertTrue(compareWkt(wkt, expWkt),
@@ -3126,7 +3124,7 @@ class TestQgsGeometry(QgisTestCase):
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
         assert geom.get().addZValue(2)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CircularStringZ)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CircularStringZ)
         expWkt = 'CircularStringZ (1 5 2, 6 2 2, 7 3 2)'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addZValue to CircularString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3136,7 +3134,7 @@ class TestQgsGeometry(QgisTestCase):
         geom = QgsGeometry.fromWkt(
             'CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
         assert geom.get().addZValue(2)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CompoundCurveZ)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CompoundCurveZ)
         expWkt = 'CompoundCurveZ ((5 3 2, 5 13 2),CircularStringZ (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringZ (9 3 2, 7 1 2, 5 3 2))'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addZValue to CompoundCurve failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3145,8 +3143,8 @@ class TestQgsGeometry(QgisTestCase):
         # curve polygon
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
         assert geom.get().addZValue(3)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PolygonZ)
-        self.assertEqual(geom.wkbType(), QgsWkbTypes.PolygonZ)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.PolygonZ)
         expWkt = 'PolygonZ ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addZValue to CurvePolygon failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3155,8 +3153,8 @@ class TestQgsGeometry(QgisTestCase):
         # geometry collection
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
         assert geom.get().addZValue(4)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPointZ)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.MultiPointZ)
         expWkt = 'MultiPointZ ((1 2 4),(2 3 4))'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addZValue to GeometryCollection failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3165,8 +3163,8 @@ class TestQgsGeometry(QgisTestCase):
         # LineString
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
         assert geom.get().addZValue(4)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.LineStringZ)
-        self.assertEqual(geom.wkbType(), QgsWkbTypes.LineStringZ)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.LineStringZ)
         expWkt = 'LineStringZ (1 2 4, 2 3 4)'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addZValue to LineString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3175,8 +3173,8 @@ class TestQgsGeometry(QgisTestCase):
         # Point
         geom = QgsGeometry.fromWkt('Point (1 2)')
         assert geom.get().addZValue(4)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PointZ)
-        self.assertEqual(geom.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.PointZ)
         expWkt = 'PointZ (1 2 4)'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), f"addZValue to Point failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
@@ -3187,7 +3185,7 @@ class TestQgsGeometry(QgisTestCase):
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
         assert geom.get().addMValue(2)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CircularStringM)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CircularStringM)
         expWkt = 'CircularStringM (1 5 2, 6 2 2, 7 3 2)'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addMValue to CircularString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3197,7 +3195,7 @@ class TestQgsGeometry(QgisTestCase):
         geom = QgsGeometry.fromWkt(
             'CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
         assert geom.get().addMValue(2)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CompoundCurveM)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CompoundCurveM)
         expWkt = 'CompoundCurveM ((5 3 2, 5 13 2),CircularStringM (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringM (9 3 2, 7 1 2, 5 3 2))'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addMValue to CompoundCurve failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3206,7 +3204,7 @@ class TestQgsGeometry(QgisTestCase):
         # curve polygon
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
         assert geom.get().addMValue(3)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PolygonM)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.PolygonM)
         expWkt = 'PolygonM ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addMValue to CurvePolygon failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3215,7 +3213,7 @@ class TestQgsGeometry(QgisTestCase):
         # geometry collection
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
         assert geom.get().addMValue(4)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.MultiPointM)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.MultiPointM)
         expWkt = 'MultiPointM ((1 2 4),(2 3 4))'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addMValue to GeometryCollection failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3224,7 +3222,7 @@ class TestQgsGeometry(QgisTestCase):
         # LineString
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
         assert geom.get().addMValue(4)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.LineStringM)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.LineStringM)
         expWkt = 'LineStringM (1 2 4, 2 3 4)'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), "addMValue to LineString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
@@ -3233,7 +3231,7 @@ class TestQgsGeometry(QgisTestCase):
         # Point
         geom = QgsGeometry.fromWkt('Point (1 2)')
         assert geom.get().addMValue(4)
-        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PointM)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.PointM)
         expWkt = 'PointM (1 2 4)'
         wkt = geom.asWkt()
         assert compareWkt(expWkt, wkt), f"addMValue to Point failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
@@ -3257,18 +3255,18 @@ class TestQgsGeometry(QgisTestCase):
     def testTypeInformation(self):
         """ Test type information """
         types = [
-            (QgsCircularString, "CircularString", QgsWkbTypes.CircularString),
-            (QgsCompoundCurve, "CompoundCurve", QgsWkbTypes.CompoundCurve),
-            (QgsCurvePolygon, "CurvePolygon", QgsWkbTypes.CurvePolygon),
-            (QgsGeometryCollection, "GeometryCollection", QgsWkbTypes.GeometryCollection),
-            (QgsLineString, "LineString", QgsWkbTypes.LineString),
-            (QgsMultiCurve, "MultiCurve", QgsWkbTypes.MultiCurve),
-            (QgsMultiLineString, "MultiLineString", QgsWkbTypes.MultiLineString),
-            (QgsMultiPoint, "MultiPoint", QgsWkbTypes.MultiPoint),
-            (QgsMultiPolygon, "MultiPolygon", QgsWkbTypes.MultiPolygon),
-            (QgsMultiSurface, "MultiSurface", QgsWkbTypes.MultiSurface),
-            (QgsPoint, "Point", QgsWkbTypes.Point),
-            (QgsPolygon, "Polygon", QgsWkbTypes.Polygon),
+            (QgsCircularString, "CircularString", QgsWkbTypes.Type.CircularString),
+            (QgsCompoundCurve, "CompoundCurve", QgsWkbTypes.Type.CompoundCurve),
+            (QgsCurvePolygon, "CurvePolygon", QgsWkbTypes.Type.CurvePolygon),
+            (QgsGeometryCollection, "GeometryCollection", QgsWkbTypes.Type.GeometryCollection),
+            (QgsLineString, "LineString", QgsWkbTypes.Type.LineString),
+            (QgsMultiCurve, "MultiCurve", QgsWkbTypes.Type.MultiCurve),
+            (QgsMultiLineString, "MultiLineString", QgsWkbTypes.Type.MultiLineString),
+            (QgsMultiPoint, "MultiPoint", QgsWkbTypes.Type.MultiPoint),
+            (QgsMultiPolygon, "MultiPolygon", QgsWkbTypes.Type.MultiPolygon),
+            (QgsMultiSurface, "MultiSurface", QgsWkbTypes.Type.MultiSurface),
+            (QgsPoint, "Point", QgsWkbTypes.Type.Point),
+            (QgsPolygon, "Polygon", QgsWkbTypes.Type.Polygon),
         ]
 
         for geomtype in types:
@@ -3301,1449 +3299,1449 @@ class TestQgsGeometry(QgisTestCase):
         """ Test QgsWkbTypes methods """
 
         # test singleType method
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.PointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.PointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.PointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPoint), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.LineString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.LineStringM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiLineString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Polygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.PolygonZ), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.PolygonM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPolygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.GeometryCollection), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CircularString), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CircularStringM), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CircularStringZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiCurve), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiCurveM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiSurface), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Point25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.Polygon25D)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.singleType(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.Polygon25D)
 
         # test multiType method
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Point), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.PointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.PointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.PointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.LineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.LineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.LineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.LineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Polygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.PolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.PolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.PolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CircularString), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CircularStringZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CircularStringM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CircularStringZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CompoundCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CurvePolygon), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Point25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.LineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Polygon25D), QgsWkbTypes.MultiPolygon25D)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon25D)
         # until we have tin types, these should return multipolygons
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Triangle), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.TriangleZM), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.Triangle), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.TriangleZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.TriangleM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.multiType(QgsWkbTypes.Type.TriangleZM), QgsWkbTypes.Type.MultiPolygonZM)
 
         # test promoteNonPointTypesToMulti method
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.PointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.PointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.PointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.LineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.LineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.LineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.LineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Polygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.PolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.PolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.PolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CircularString), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CircularStringZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CircularStringM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CircularStringZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CompoundCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CurvePolygon), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Point25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.LineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Polygon25D), QgsWkbTypes.MultiPolygon25D)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon25D)
         # until we have tin types, these should return multipolygons
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Triangle), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.TriangleZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.TriangleM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.TriangleZM), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.Triangle), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.TriangleZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.TriangleM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.TriangleZM), QgsWkbTypes.Type.MultiPolygonZM)
 
         # test curveType method
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.PointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.PointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.PointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineString), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineStringZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineStringM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineStringZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Polygon), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.PolygonZ), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.PolygonM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.PolygonZM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CircularString), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CircularStringM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Point25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.LineString25D), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Polygon25D), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.curveType(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiSurfaceZ)
 
         # test linearType method
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.PointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.PointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.PointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.LineString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.LineStringM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Polygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.PolygonZ), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.PolygonM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CircularString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CircularStringZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CircularStringM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CircularStringZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CompoundCurve), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CurvePolygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Point25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.linearType(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon25D)
 
         # test flatType method
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.PointZ), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.PointM), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.PointZM), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.LineString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.LineStringM), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Polygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.PolygonZ), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.PolygonM), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.PolygonZM), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CircularString), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CircularStringM), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Point25D), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.flatType(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon)
 
         # test geometryType method
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Unknown), QgsWkbTypes.UnknownGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Point), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.PointZ), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.PointM), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.PointZM), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPoint), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPointZ), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPointM), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPointZM), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.LineString), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.LineStringM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiLineString), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Polygon), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.PolygonZ), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.PolygonM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPolygon), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.GeometryCollection), QgsWkbTypes.UnknownGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.UnknownGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.UnknownGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.UnknownGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CircularString), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CircularStringZ), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CircularStringM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CircularStringZM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CompoundCurve), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CurvePolygon), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiCurve), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiCurveM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiSurface), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.NoGeometry), QgsWkbTypes.NullGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Point25D), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.LineString25D), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Polygon25D), QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.PointGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.LineGeometry)
-        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.Unknown), QgsWkbTypes.GeometryType.UnknownGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.Point), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.PointZ), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.PointM), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.PointZM), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.LineString), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.Polygon), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.GeometryType.UnknownGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.GeometryType.UnknownGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.GeometryType.UnknownGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.GeometryType.UnknownGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CircularString), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.GeometryType.NullGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.Point25D), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.GeometryType.PolygonGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.GeometryType.PointGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertEqual(QgsWkbTypes.geometryType(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.GeometryType.PolygonGeometry)
 
         # test displayString method
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Unknown), 'Unknown')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Point), 'Point')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.PointZ), 'PointZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.PointM), 'PointM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.PointZM), 'PointZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPoint), 'MultiPoint')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPointZ), 'MultiPointZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPointM), 'MultiPointM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPointZM), 'MultiPointZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.LineString), 'LineString')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.LineStringZ), 'LineStringZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.LineStringM), 'LineStringM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.LineStringZM), 'LineStringZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineString), 'MultiLineString')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineStringZ), 'MultiLineStringZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineStringM), 'MultiLineStringM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineStringZM), 'MultiLineStringZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Polygon), 'Polygon')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.PolygonZ), 'PolygonZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.PolygonM), 'PolygonM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.PolygonZM), 'PolygonZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygon), 'MultiPolygon')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygonZ), 'MultiPolygonZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygonM), 'MultiPolygonM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygonZM), 'MultiPolygonZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.GeometryCollection), 'GeometryCollection')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.GeometryCollectionZ), 'GeometryCollectionZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.GeometryCollectionM), 'GeometryCollectionM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.GeometryCollectionZM), 'GeometryCollectionZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CircularString), 'CircularString')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CircularStringZ), 'CircularStringZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CircularStringM), 'CircularStringM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CircularStringZM), 'CircularStringZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CompoundCurve), 'CompoundCurve')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CompoundCurveZ), 'CompoundCurveZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CompoundCurveM), 'CompoundCurveM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CompoundCurveZM), 'CompoundCurveZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CurvePolygon), 'CurvePolygon')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CurvePolygonZ), 'CurvePolygonZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CurvePolygonM), 'CurvePolygonM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.CurvePolygonZM), 'CurvePolygonZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiCurve), 'MultiCurve')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiCurveZ), 'MultiCurveZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiCurveM), 'MultiCurveM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiCurveZM), 'MultiCurveZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiSurface), 'MultiSurface')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiSurfaceZ), 'MultiSurfaceZ')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiSurfaceM), 'MultiSurfaceM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiSurfaceZM), 'MultiSurfaceZM')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.NoGeometry), 'NoGeometry')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Point25D), 'Point25D')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.LineString25D), 'LineString25D')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Polygon25D), 'Polygon25D')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPoint25D), 'MultiPoint25D')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineString25D), 'MultiLineString25D')
-        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygon25D), 'MultiPolygon25D')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.Unknown), 'Unknown')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.Point), 'Point')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.PointZ), 'PointZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.PointM), 'PointM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.PointZM), 'PointZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPoint), 'MultiPoint')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPointZ), 'MultiPointZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPointM), 'MultiPointM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPointZM), 'MultiPointZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.LineString), 'LineString')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.LineStringZ), 'LineStringZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.LineStringM), 'LineStringM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.LineStringZM), 'LineStringZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiLineString), 'MultiLineString')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiLineStringZ), 'MultiLineStringZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiLineStringM), 'MultiLineStringM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiLineStringZM), 'MultiLineStringZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.Polygon), 'Polygon')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.PolygonZ), 'PolygonZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.PolygonM), 'PolygonM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.PolygonZM), 'PolygonZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPolygon), 'MultiPolygon')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPolygonZ), 'MultiPolygonZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPolygonM), 'MultiPolygonM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPolygonZM), 'MultiPolygonZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.GeometryCollection), 'GeometryCollection')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.GeometryCollectionZ), 'GeometryCollectionZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.GeometryCollectionM), 'GeometryCollectionM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.GeometryCollectionZM), 'GeometryCollectionZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CircularString), 'CircularString')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CircularStringZ), 'CircularStringZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CircularStringM), 'CircularStringM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CircularStringZM), 'CircularStringZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CompoundCurve), 'CompoundCurve')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CompoundCurveZ), 'CompoundCurveZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CompoundCurveM), 'CompoundCurveM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CompoundCurveZM), 'CompoundCurveZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CurvePolygon), 'CurvePolygon')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CurvePolygonZ), 'CurvePolygonZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CurvePolygonM), 'CurvePolygonM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.CurvePolygonZM), 'CurvePolygonZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiCurve), 'MultiCurve')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiCurveZ), 'MultiCurveZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiCurveM), 'MultiCurveM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiCurveZM), 'MultiCurveZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiSurface), 'MultiSurface')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiSurfaceZ), 'MultiSurfaceZ')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiSurfaceM), 'MultiSurfaceM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiSurfaceZM), 'MultiSurfaceZM')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.NoGeometry), 'NoGeometry')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.Point25D), 'Point25D')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.LineString25D), 'LineString25D')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.Polygon25D), 'Polygon25D')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPoint25D), 'MultiPoint25D')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiLineString25D), 'MultiLineString25D')
+        self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.Type.MultiPolygon25D), 'MultiPolygon25D')
 
         # test parseType method
-        self.assertEqual(QgsWkbTypes.parseType('point( 1 2 )'), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.parseType('POINT( 1 2 )'), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.parseType('   point    ( 1 2 )   '), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.parseType('point'), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.parseType('LINE STRING( 1 2, 3 4 )'), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.parseType('POINTZ( 1 2 )'), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.parseType('POINT z m'), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.parseType('bad'), QgsWkbTypes.Unknown)
+        self.assertEqual(QgsWkbTypes.parseType('point( 1 2 )'), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.parseType('POINT( 1 2 )'), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.parseType('   point    ( 1 2 )   '), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.parseType('point'), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.parseType('LINE STRING( 1 2, 3 4 )'), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.parseType('POINTZ( 1 2 )'), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.parseType('POINT z m'), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.parseType('bad'), QgsWkbTypes.Type.Unknown)
 
         # test wkbDimensions method
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Unknown), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Point), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.PointZ), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.PointM), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.PointZM), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPoint), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPointZ), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPointM), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPointZM), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.LineString), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.LineStringZ), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.LineStringM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.LineStringZM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiLineString), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiLineStringZ), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiLineStringM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiLineStringZM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Polygon), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.PolygonZ), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.PolygonM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.PolygonZM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPolygon), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPolygonZ), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPolygonM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPolygonZM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.GeometryCollection), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.GeometryCollectionZ), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.GeometryCollectionM), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.GeometryCollectionZM), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CircularString), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CircularStringZ), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CircularStringM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CircularStringZM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CompoundCurve), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CompoundCurveZ), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CompoundCurveM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CompoundCurveZM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CurvePolygon), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CurvePolygonZ), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CurvePolygonM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.CurvePolygonZM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiCurve), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiCurveZ), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiCurveM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiCurveZM), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiSurface), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiSurfaceZ), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiSurfaceM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiSurfaceZM), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.NoGeometry), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Point25D), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.LineString25D), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Polygon25D), 2)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPoint25D), 0)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiLineString25D), 1)
-        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.MultiPolygon25D), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.Unknown), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.Point), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.PointZ), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.PointM), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.PointZM), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPoint), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPointZ), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPointM), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPointZM), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.LineString), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.LineStringZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.LineStringM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.LineStringZM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiLineString), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiLineStringZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiLineStringM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiLineStringZM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.Polygon), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.PolygonZ), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.PolygonM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.PolygonZM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPolygon), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPolygonZ), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPolygonM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPolygonZM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.GeometryCollection), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.GeometryCollectionZ), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.GeometryCollectionM), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.GeometryCollectionZM), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CircularString), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CircularStringZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CircularStringM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CircularStringZM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurve), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveZM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CurvePolygon), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CurvePolygonZ), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CurvePolygonM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CurvePolygonZM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiCurve), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiCurveZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiCurveM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiCurveZM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiSurface), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiSurfaceZ), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiSurfaceM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiSurfaceZM), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NoGeometry), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.Point25D), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.LineString25D), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.Polygon25D), 2)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPoint25D), 0)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiLineString25D), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.MultiPolygon25D), 2)
 
         # test coordDimensions method
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Unknown), 0)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Point), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.PointZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.PointM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.PointZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPoint), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPointZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPointM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPointZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.LineString), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.LineStringZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.LineStringM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.LineStringZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiLineString), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiLineStringZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiLineStringM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiLineStringZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Polygon), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.PolygonZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.PolygonM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.PolygonZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPolygon), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPolygonZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPolygonM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPolygonZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.GeometryCollection), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.GeometryCollectionZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.GeometryCollectionM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.GeometryCollectionZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CircularString), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CircularStringZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CircularStringM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CircularStringZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CompoundCurve), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CompoundCurveZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CompoundCurveM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CompoundCurveZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CurvePolygon), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CurvePolygonZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CurvePolygonM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.CurvePolygonZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiCurve), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiCurveZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiCurveM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiCurveZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiSurface), 2)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiSurfaceZ), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiSurfaceM), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiSurfaceZM), 4)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.NoGeometry), 0)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Point25D), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.LineString25D), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Polygon25D), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPoint25D), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiLineString25D), 3)
-        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.MultiPolygon25D), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.Unknown), 0)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.Point), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.PointZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.PointM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.PointZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPoint), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPointZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPointM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPointZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.LineString), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.LineStringZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.LineStringM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.LineStringZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiLineString), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiLineStringZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiLineStringM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiLineStringZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.Polygon), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.PolygonZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.PolygonM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.PolygonZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPolygon), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPolygonZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPolygonM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPolygonZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.GeometryCollection), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.GeometryCollectionZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.GeometryCollectionM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.GeometryCollectionZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CircularString), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CircularStringZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CircularStringM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CircularStringZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurve), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurveZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurveM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurveZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CurvePolygon), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CurvePolygonZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CurvePolygonM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CurvePolygonZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiCurve), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiCurveZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiCurveM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiCurveZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiSurface), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiSurfaceZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiSurfaceM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiSurfaceZM), 4)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NoGeometry), 0)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.Point25D), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.LineString25D), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.Polygon25D), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPoint25D), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiLineString25D), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.MultiPolygon25D), 3)
 
         # test isSingleType methods
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Unknown)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Point)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.LineString)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Polygon)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPoint)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiLineString)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPolygon)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.GeometryCollection)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CircularString)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CompoundCurve)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CurvePolygon)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiCurve)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiSurface)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.NoGeometry)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.PointZ)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.LineStringZ)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.PolygonZ)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPointZ)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiLineStringZ)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPolygonZ)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.GeometryCollectionZ)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CircularStringZ)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CompoundCurveZ)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CurvePolygonZ)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiCurveZ)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiSurfaceZ)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.PointM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.LineStringM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.PolygonM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPointM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiLineStringM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPolygonM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.GeometryCollectionM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CircularStringM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CompoundCurveM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CurvePolygonM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiCurveM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiSurfaceM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.PointZM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.LineStringZM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.PolygonZM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPointZM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiLineStringZM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPolygonZM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.GeometryCollectionZM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CircularStringZM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CompoundCurveZM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.CurvePolygonZM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiCurveZM)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiSurfaceZM)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Point25D)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.LineString25D)
-        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Polygon25D)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPoint25D)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiLineString25D)
-        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.MultiPolygon25D)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.Unknown)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.Point)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.LineString)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.Polygon)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPoint)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiLineString)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygon)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollection)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularString)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurve)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygon)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurve)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiSurface)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NoGeometry)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.PointZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.LineStringZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.PolygonZ)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPointZ)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiLineStringZ)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonZ)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonZ)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveZ)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiSurfaceZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.PointM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.LineStringM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.PolygonM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPointM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiLineStringM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiSurfaceM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.PointZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.LineStringZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.PolygonZM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPointZM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiLineStringZM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonZM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonZM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveZM)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiSurfaceZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.Point25D)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.LineString25D)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.Polygon25D)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPoint25D)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiLineString25D)
+        assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygon25D)
 
         # test isMultiType methods
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Unknown)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Point)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.LineString)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Polygon)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPoint)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiLineString)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPolygon)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.GeometryCollection)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CircularString)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CompoundCurve)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CurvePolygon)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiCurve)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiSurface)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.NoGeometry)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.PointZ)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.LineStringZ)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.PolygonZ)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPointZ)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiLineStringZ)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPolygonZ)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.GeometryCollectionZ)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CircularStringZ)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CompoundCurveZ)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CurvePolygonZ)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiCurveZ)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiSurfaceZ)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.PointM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.LineStringM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.PolygonM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPointM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiLineStringM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPolygonM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.GeometryCollectionM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CircularStringM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CompoundCurveM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CurvePolygonM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiCurveM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiSurfaceM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.PointZM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.LineStringZM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.PolygonZM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPointZM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiLineStringZM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPolygonZM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.GeometryCollectionZM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CircularStringZM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CompoundCurveZM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.CurvePolygonZM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiCurveZM)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiSurfaceZM)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Point25D)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.LineString25D)
-        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Polygon25D)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPoint25D)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiLineString25D)
-        assert QgsWkbTypes.isMultiType(QgsWkbTypes.MultiPolygon25D)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.Unknown)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.Point)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.LineString)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.Polygon)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPoint)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiLineString)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygon)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollection)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurve)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygon)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurve)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiSurface)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NoGeometry)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.PointZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.LineStringZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.PolygonZ)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPointZ)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiLineStringZ)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonZ)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonZ)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveZ)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiSurfaceZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.PointM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.LineStringM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.PolygonM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPointM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiLineStringM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiSurfaceM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.PointZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.LineStringZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.PolygonZM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPointZM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiLineStringZM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonZM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonZM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveZM)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiSurfaceZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.Point25D)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.LineString25D)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.Polygon25D)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPoint25D)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiLineString25D)
+        assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygon25D)
 
         # test isCurvedType methods
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Unknown)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Point)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.LineString)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Polygon)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPoint)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiLineString)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPolygon)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.GeometryCollection)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CircularString)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CompoundCurve)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CurvePolygon)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiCurve)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiSurface)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.NoGeometry)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.PointZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.LineStringZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.PolygonZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPointZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiLineStringZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPolygonZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.GeometryCollectionZ)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CircularStringZ)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CompoundCurveZ)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CurvePolygonZ)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiCurveZ)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiSurfaceZ)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.PointM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.LineStringM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.PolygonM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPointM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiLineStringM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPolygonM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.GeometryCollectionM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CircularStringM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CompoundCurveM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CurvePolygonM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiCurveM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiSurfaceM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.PointZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.LineStringZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.PolygonZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPointZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiLineStringZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPolygonZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.GeometryCollectionZM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CircularStringZM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CompoundCurveZM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.CurvePolygonZM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiCurveZM)
-        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiSurfaceZM)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Point25D)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.LineString25D)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Polygon25D)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPoint25D)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiLineString25D)
-        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.MultiPolygon25D)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.Unknown)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.Point)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.LineString)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.Polygon)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPoint)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiLineString)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygon)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollection)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularString)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurve)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygon)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurve)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiSurface)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.NoGeometry)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.PointZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.LineStringZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.PolygonZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPointZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiLineStringZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygonZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollectionZ)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurveZ)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygonZ)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurveZ)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiSurfaceZ)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.PointM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.LineStringM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.PolygonM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPointM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiLineStringM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygonM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollectionM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurveM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygonM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurveM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiSurfaceM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.PointZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.LineStringZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.PolygonZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPointZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiLineStringZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygonZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollectionZM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurveZM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygonZM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurveZM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiSurfaceZM)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.Point25D)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.LineString25D)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.Polygon25D)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPoint25D)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiLineString25D)
+        assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygon25D)
 
         # test hasZ methods
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Unknown)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Point)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.LineString)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Polygon)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiPoint)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiLineString)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiPolygon)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.GeometryCollection)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.CircularString)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.CompoundCurve)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.CurvePolygon)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiCurve)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiSurface)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.NoGeometry)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.PointZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.LineStringZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.PolygonZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiPointZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiLineStringZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiPolygonZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.GeometryCollectionZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.CircularStringZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.CompoundCurveZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.CurvePolygonZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiCurveZ)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiSurfaceZ)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.PointM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.LineStringM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.PolygonM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiPointM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiLineStringM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiPolygonM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.GeometryCollectionM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.CircularStringM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.CompoundCurveM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.CurvePolygonM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiCurveM)
-        assert not QgsWkbTypes.hasZ(QgsWkbTypes.MultiSurfaceM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.PointZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.LineStringZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.PolygonZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiPointZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiLineStringZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiPolygonZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.GeometryCollectionZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.CircularStringZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.CompoundCurveZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.CurvePolygonZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiCurveZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiSurfaceZM)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.Point25D)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.LineString25D)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.Polygon25D)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiPoint25D)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiLineString25D)
-        assert QgsWkbTypes.hasZ(QgsWkbTypes.MultiPolygon25D)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.Unknown)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.Point)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.LineString)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.Polygon)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPoint)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiLineString)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygon)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollection)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurve)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygon)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurve)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiSurface)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.NoGeometry)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.PointZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.LineStringZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.PolygonZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPointZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiLineStringZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiSurfaceZ)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.PointM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.LineStringM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.PolygonM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPointM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiLineStringM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiSurfaceM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.PointZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.LineStringZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.PolygonZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPointZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiLineStringZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiSurfaceZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.Point25D)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.LineString25D)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.Polygon25D)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPoint25D)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiLineString25D)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygon25D)
 
         # test hasM methods
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.Unknown)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.Point)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.LineString)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.Polygon)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiPoint)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiLineString)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiPolygon)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.GeometryCollection)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.CircularString)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.CompoundCurve)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.CurvePolygon)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiCurve)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiSurface)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.NoGeometry)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.PointZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.LineStringZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.PolygonZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiPointZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiLineStringZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiPolygonZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.GeometryCollectionZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.CircularStringZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.CompoundCurveZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.CurvePolygonZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiCurveZ)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiSurfaceZ)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.PointM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.LineStringM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.PolygonM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiPointM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiLineStringM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiPolygonM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.GeometryCollectionM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.CircularStringM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.CompoundCurveM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.CurvePolygonM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiCurveM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiSurfaceM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.PointZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.LineStringZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.PolygonZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiPointZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiLineStringZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiPolygonZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.GeometryCollectionZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.CircularStringZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.CompoundCurveZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.CurvePolygonZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiCurveZM)
-        assert QgsWkbTypes.hasM(QgsWkbTypes.MultiSurfaceZM)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.Point25D)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.LineString25D)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.Polygon25D)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiPoint25D)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiLineString25D)
-        assert not QgsWkbTypes.hasM(QgsWkbTypes.MultiPolygon25D)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.Unknown)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.Point)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.LineString)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.Polygon)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPoint)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiLineString)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygon)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollection)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurve)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygon)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurve)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiSurface)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.NoGeometry)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.PointZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.LineStringZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.PolygonZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPointZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiLineStringZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiSurfaceZ)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.PointM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.LineStringM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.PolygonM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPointM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiLineStringM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiSurfaceM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.PointZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.LineStringZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.PolygonZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPointZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiLineStringZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiSurfaceZM)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.Point25D)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.LineString25D)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.Polygon25D)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPoint25D)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiLineString25D)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygon25D)
 
         # test adding z dimension to types
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Point), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.PointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.PointM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.PointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.LineString), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.LineStringM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Polygon), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.PolygonZ), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.PolygonM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CircularString), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CircularStringM), QgsWkbTypes.CircularStringZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CircularStringZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Point25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.addZ(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon25D)
 
         # test to25D
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Point), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.PointZ), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.PointM), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.PointZM), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.LineString), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.LineStringM), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Polygon), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.PolygonZ), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.PolygonM), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.PolygonZM), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.GeometryCollection), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CircularString), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CircularStringZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CircularStringM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CircularStringZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CompoundCurve), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CurvePolygon), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiCurve), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiCurveM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiSurface), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Point25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.to25D(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon25D)
 
         # test adding m dimension to types
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Point), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.PointZ), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.PointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.PointZM), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.LineString), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.LineStringM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Polygon), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.PolygonZ), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.PolygonM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CircularString), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CircularStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CircularStringM), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CircularStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurveZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
         # we force upgrade 25D types to "Z" before adding the M value
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Point25D), QgsWkbTypes.PointZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.LineString25D), QgsWkbTypes.LineStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Polygon25D), QgsWkbTypes.PolygonZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPointZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineStringZM)
-        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.PointZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.PolygonZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.addM(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygonZM)
 
         # test dropping z dimension from types
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.PointZ), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.PointM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.PointZM), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.LineString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.LineStringM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Polygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.PolygonZ), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.PolygonM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CircularString), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CircularStringM), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Point25D), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.dropZ(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon)
 
         # test dropping m dimension from types
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Unknown), QgsWkbTypes.Unknown)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Point), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.PointZ), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.PointM), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.PointZM), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPoint), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPointZ), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPointM), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPointZM), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.LineString), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.LineStringZ), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.LineStringM), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.LineStringZM), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiLineString), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiLineStringZ), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiLineStringM), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiLineStringZM), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Polygon), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.PolygonZ), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.PolygonM), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.PolygonZM), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPolygon), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPolygonZ), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPolygonM), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPolygonZM), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.GeometryCollection), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.GeometryCollectionZ), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.GeometryCollectionM), QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.GeometryCollectionZM), QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CircularString), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CircularStringZ), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CircularStringM), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CircularStringZM), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CompoundCurve), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CompoundCurveZ), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CompoundCurveM), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CompoundCurveZM), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CurvePolygon), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CurvePolygonZ), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CurvePolygonM), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.CurvePolygonZM), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiCurve), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiCurveZ), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiCurveM), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiCurveZM), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiSurface), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiSurfaceZ), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiSurfaceM), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiSurfaceZM), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.NoGeometry), QgsWkbTypes.NoGeometry)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Point25D), QgsWkbTypes.Point25D)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.LineString25D), QgsWkbTypes.LineString25D)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Polygon25D), QgsWkbTypes.Polygon25D)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPoint25D), QgsWkbTypes.MultiPoint25D)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiLineString25D), QgsWkbTypes.MultiLineString25D)
-        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.MultiPolygon25D), QgsWkbTypes.MultiPolygon25D)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.Unknown), QgsWkbTypes.Type.Unknown)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.Point), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.PointZ), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.PointM), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.PointZM), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPoint), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPointZ), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPointM), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPointZM), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.LineString), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.LineStringZ), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.LineStringM), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.LineStringZM), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiLineString), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiLineStringZ), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiLineStringM), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiLineStringZM), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.Polygon), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.PolygonZ), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.PolygonM), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.PolygonZM), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPolygon), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPolygonZ), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPolygonM), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPolygonZM), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.GeometryCollection), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.GeometryCollectionZ), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.GeometryCollectionM), QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.GeometryCollectionZM), QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CircularString), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CircularStringZ), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CircularStringM), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CircularStringZM), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CompoundCurve), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CompoundCurveZ), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CompoundCurveM), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CompoundCurveZM), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CurvePolygon), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CurvePolygonZ), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CurvePolygonM), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.CurvePolygonZM), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiCurve), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiCurveZ), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiCurveM), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiCurveZM), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiSurface), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiSurfaceZ), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiSurfaceM), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiSurfaceZM), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.NoGeometry), QgsWkbTypes.Type.NoGeometry)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.Point25D), QgsWkbTypes.Type.Point25D)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.LineString25D), QgsWkbTypes.Type.LineString25D)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.Polygon25D), QgsWkbTypes.Type.Polygon25D)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPoint25D), QgsWkbTypes.Type.MultiPoint25D)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiLineString25D), QgsWkbTypes.Type.MultiLineString25D)
+        self.assertEqual(QgsWkbTypes.dropM(QgsWkbTypes.Type.MultiPolygon25D), QgsWkbTypes.Type.MultiPolygon25D)
 
         # Test QgsWkbTypes.zmType
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Point, False, False), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Point, True, False), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Point, False, True), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Point, True, True), QgsWkbTypes.PointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Point, False, False), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Point, True, False), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Point, False, True), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Point, True, True), QgsWkbTypes.Type.PointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZ, False, False), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZ, True, False), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZ, False, True), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZ, True, True), QgsWkbTypes.PointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZ, False, False), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZ, True, False), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZ, False, True), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZ, True, True), QgsWkbTypes.Type.PointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointM, False, False), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointM, True, False), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointM, False, True), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointM, True, True), QgsWkbTypes.PointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointM, False, False), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointM, True, False), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointM, False, True), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointM, True, True), QgsWkbTypes.Type.PointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZM, False, False), QgsWkbTypes.Point)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZM, True, False), QgsWkbTypes.PointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZM, False, True), QgsWkbTypes.PointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PointZM, True, True), QgsWkbTypes.PointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZM, False, False), QgsWkbTypes.Type.Point)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZM, True, False), QgsWkbTypes.Type.PointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZM, False, True), QgsWkbTypes.Type.PointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PointZM, True, True), QgsWkbTypes.Type.PointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineString, False, False), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineString, True, False), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineString, False, True), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineString, True, True), QgsWkbTypes.LineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineString, False, False), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineString, True, False), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineString, False, True), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineString, True, True), QgsWkbTypes.Type.LineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZ, False, False), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZ, True, False), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZ, False, True), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZ, True, True), QgsWkbTypes.LineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZ, False, False), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZ, True, False), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZ, False, True), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZ, True, True), QgsWkbTypes.Type.LineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringM, False, False), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringM, True, False), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringM, False, True), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringM, True, True), QgsWkbTypes.LineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringM, False, False), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringM, True, False), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringM, False, True), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringM, True, True), QgsWkbTypes.Type.LineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZM, False, False), QgsWkbTypes.LineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZM, True, False), QgsWkbTypes.LineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZM, False, True), QgsWkbTypes.LineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.LineStringZM, True, True), QgsWkbTypes.LineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZM, False, False), QgsWkbTypes.Type.LineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZM, True, False), QgsWkbTypes.Type.LineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZM, False, True), QgsWkbTypes.Type.LineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.LineStringZM, True, True), QgsWkbTypes.Type.LineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Polygon, False, False), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Polygon, True, False), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Polygon, False, True), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Polygon, True, True), QgsWkbTypes.PolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Polygon, False, False), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Polygon, True, False), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Polygon, False, True), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.Polygon, True, True), QgsWkbTypes.Type.PolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZ, False, False), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZ, True, False), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZ, False, True), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZ, True, True), QgsWkbTypes.PolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZ, False, False), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZ, True, False), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZ, False, True), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZ, True, True), QgsWkbTypes.Type.PolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonM, False, False), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonM, True, False), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonM, False, True), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonM, True, True), QgsWkbTypes.PolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonM, False, False), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonM, True, False), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonM, False, True), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonM, True, True), QgsWkbTypes.Type.PolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZM, False, False), QgsWkbTypes.Polygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZM, True, False), QgsWkbTypes.PolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZM, False, True), QgsWkbTypes.PolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.PolygonZM, True, True), QgsWkbTypes.PolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZM, False, False), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZM, True, False), QgsWkbTypes.Type.PolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZM, False, True), QgsWkbTypes.Type.PolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.PolygonZM, True, True), QgsWkbTypes.Type.PolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPoint, False, False), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPoint, True, False), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPoint, False, True), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPoint, True, True), QgsWkbTypes.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPoint, False, False), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPoint, True, False), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPoint, False, True), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPoint, True, True), QgsWkbTypes.Type.MultiPointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZ, False, False), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZ, True, False), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZ, False, True), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZ, True, True), QgsWkbTypes.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZ, False, False), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZ, True, False), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZ, False, True), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZ, True, True), QgsWkbTypes.Type.MultiPointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointM, False, False), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointM, True, False), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointM, False, True), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointM, True, True), QgsWkbTypes.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointM, False, False), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointM, True, False), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointM, False, True), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointM, True, True), QgsWkbTypes.Type.MultiPointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZM, False, False), QgsWkbTypes.MultiPoint)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZM, True, False), QgsWkbTypes.MultiPointZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZM, False, True), QgsWkbTypes.MultiPointM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPointZM, True, True), QgsWkbTypes.MultiPointZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZM, False, False), QgsWkbTypes.Type.MultiPoint)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZM, True, False), QgsWkbTypes.Type.MultiPointZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZM, False, True), QgsWkbTypes.Type.MultiPointM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPointZM, True, True), QgsWkbTypes.Type.MultiPointZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineString, False, False), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineString, True, False), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineString, False, True), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineString, True, True), QgsWkbTypes.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineString, False, False), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineString, True, False), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineString, False, True), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineString, True, True), QgsWkbTypes.Type.MultiLineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZ, False, False), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZ, True, False), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZ, False, True), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZ, True, True), QgsWkbTypes.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZ, False, False), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZ, True, False), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZ, False, True), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZ, True, True), QgsWkbTypes.Type.MultiLineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringM, False, False), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringM, True, False), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringM, False, True), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringM, True, True), QgsWkbTypes.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringM, False, False), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringM, True, False), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringM, False, True), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringM, True, True), QgsWkbTypes.Type.MultiLineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZM, False, False), QgsWkbTypes.MultiLineString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZM, True, False), QgsWkbTypes.MultiLineStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZM, False, True), QgsWkbTypes.MultiLineStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiLineStringZM, True, True), QgsWkbTypes.MultiLineStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZM, False, False), QgsWkbTypes.Type.MultiLineString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZM, True, False), QgsWkbTypes.Type.MultiLineStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZM, False, True), QgsWkbTypes.Type.MultiLineStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiLineStringZM, True, True), QgsWkbTypes.Type.MultiLineStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygon, False, False), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygon, True, False), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygon, False, True), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygon, True, True), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygon, False, False), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygon, True, False), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygon, False, True), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygon, True, True), QgsWkbTypes.Type.MultiPolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZ, False, False), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZ, True, False), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZ, False, True), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZ, True, True), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZ, False, False), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZ, True, False), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZ, False, True), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZ, True, True), QgsWkbTypes.Type.MultiPolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonM, False, False), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonM, True, False), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonM, False, True), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonM, True, True), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonM, False, False), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonM, True, False), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonM, False, True), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonM, True, True), QgsWkbTypes.Type.MultiPolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZM, False, False), QgsWkbTypes.MultiPolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZM, True, False), QgsWkbTypes.MultiPolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZM, False, True), QgsWkbTypes.MultiPolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiPolygonZM, True, True), QgsWkbTypes.MultiPolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZM, False, False), QgsWkbTypes.Type.MultiPolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZM, True, False), QgsWkbTypes.Type.MultiPolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZM, False, True), QgsWkbTypes.Type.MultiPolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiPolygonZM, True, True), QgsWkbTypes.Type.MultiPolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollection, False, False),
-                         QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollection, True, False),
-                         QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollection, False, True),
-                         QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollection, True, True),
-                         QgsWkbTypes.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollection, False, False),
+                         QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollection, True, False),
+                         QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollection, False, True),
+                         QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollection, True, True),
+                         QgsWkbTypes.Type.GeometryCollectionZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZ, False, False),
-                         QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZ, True, False),
-                         QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZ, False, True),
-                         QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZ, True, True),
-                         QgsWkbTypes.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZ, False, False),
+                         QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZ, True, False),
+                         QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZ, False, True),
+                         QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZ, True, True),
+                         QgsWkbTypes.Type.GeometryCollectionZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionM, False, False),
-                         QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionM, True, False),
-                         QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionM, False, True),
-                         QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionM, True, True),
-                         QgsWkbTypes.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionM, False, False),
+                         QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionM, True, False),
+                         QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionM, False, True),
+                         QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionM, True, True),
+                         QgsWkbTypes.Type.GeometryCollectionZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZM, False, False),
-                         QgsWkbTypes.GeometryCollection)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZM, True, False),
-                         QgsWkbTypes.GeometryCollectionZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZM, False, True),
-                         QgsWkbTypes.GeometryCollectionM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.GeometryCollectionZM, True, True),
-                         QgsWkbTypes.GeometryCollectionZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZM, False, False),
+                         QgsWkbTypes.Type.GeometryCollection)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZM, True, False),
+                         QgsWkbTypes.Type.GeometryCollectionZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZM, False, True),
+                         QgsWkbTypes.Type.GeometryCollectionM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.GeometryCollectionZM, True, True),
+                         QgsWkbTypes.Type.GeometryCollectionZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularString, False, False), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularString, True, False), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularString, False, True), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularString, True, True), QgsWkbTypes.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularString, False, False), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularString, True, False), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularString, False, True), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularString, True, True), QgsWkbTypes.Type.CircularStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZ, False, False), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZ, True, False), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZ, False, True), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZ, True, True), QgsWkbTypes.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZ, False, False), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZ, True, False), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZ, False, True), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZ, True, True), QgsWkbTypes.Type.CircularStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringM, False, False), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringM, True, False), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringM, False, True), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringM, True, True), QgsWkbTypes.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringM, False, False), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringM, True, False), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringM, False, True), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringM, True, True), QgsWkbTypes.Type.CircularStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZM, False, False), QgsWkbTypes.CircularString)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZM, True, False), QgsWkbTypes.CircularStringZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZM, False, True), QgsWkbTypes.CircularStringM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CircularStringZM, True, True), QgsWkbTypes.CircularStringZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZM, False, False), QgsWkbTypes.Type.CircularString)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZM, True, False), QgsWkbTypes.Type.CircularStringZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZM, False, True), QgsWkbTypes.Type.CircularStringM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZM, True, True), QgsWkbTypes.Type.CircularStringZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurve, False, False), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurve, True, False), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurve, False, True), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurve, True, True), QgsWkbTypes.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurve, False, False), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurve, True, False), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurve, False, True), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurve, True, True), QgsWkbTypes.Type.CompoundCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZ, False, False), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZ, True, False), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZ, False, True), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZ, True, True), QgsWkbTypes.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZ, False, False), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZ, True, False), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZ, False, True), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZ, True, True), QgsWkbTypes.Type.CompoundCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveM, False, False), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveM, True, False), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveM, False, True), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveM, True, True), QgsWkbTypes.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveM, False, False), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveM, True, False), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveM, False, True), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveM, True, True), QgsWkbTypes.Type.CompoundCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZM, False, False), QgsWkbTypes.CompoundCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZM, True, False), QgsWkbTypes.CompoundCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZM, False, True), QgsWkbTypes.CompoundCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CompoundCurveZM, True, True), QgsWkbTypes.CompoundCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZM, False, False), QgsWkbTypes.Type.CompoundCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZM, True, False), QgsWkbTypes.Type.CompoundCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZM, False, True), QgsWkbTypes.Type.CompoundCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CompoundCurveZM, True, True), QgsWkbTypes.Type.CompoundCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurve, False, False), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurve, True, False), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurve, False, True), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurve, True, True), QgsWkbTypes.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurve, False, False), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurve, True, False), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurve, False, True), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurve, True, True), QgsWkbTypes.Type.MultiCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZ, False, False), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZ, True, False), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZ, False, True), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZ, True, True), QgsWkbTypes.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZ, False, False), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZ, True, False), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZ, False, True), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZ, True, True), QgsWkbTypes.Type.MultiCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveM, False, False), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveM, True, False), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveM, False, True), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveM, True, True), QgsWkbTypes.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveM, False, False), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveM, True, False), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveM, False, True), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveM, True, True), QgsWkbTypes.Type.MultiCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZM, False, False), QgsWkbTypes.MultiCurve)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZM, True, False), QgsWkbTypes.MultiCurveZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZM, False, True), QgsWkbTypes.MultiCurveM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiCurveZM, True, True), QgsWkbTypes.MultiCurveZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZM, False, False), QgsWkbTypes.Type.MultiCurve)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZM, True, False), QgsWkbTypes.Type.MultiCurveZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZM, False, True), QgsWkbTypes.Type.MultiCurveM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiCurveZM, True, True), QgsWkbTypes.Type.MultiCurveZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygon, False, False), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygon, True, False), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygon, False, True), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygon, True, True), QgsWkbTypes.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygon, False, False), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygon, True, False), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygon, False, True), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygon, True, True), QgsWkbTypes.Type.CurvePolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZ, False, False), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZ, True, False), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZ, False, True), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZ, True, True), QgsWkbTypes.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZ, False, False), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZ, True, False), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZ, False, True), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZ, True, True), QgsWkbTypes.Type.CurvePolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonM, False, False), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonM, True, False), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonM, False, True), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonM, True, True), QgsWkbTypes.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonM, False, False), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonM, True, False), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonM, False, True), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonM, True, True), QgsWkbTypes.Type.CurvePolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZM, False, False), QgsWkbTypes.CurvePolygon)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZM, True, False), QgsWkbTypes.CurvePolygonZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZM, False, True), QgsWkbTypes.CurvePolygonM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.CurvePolygonZM, True, True), QgsWkbTypes.CurvePolygonZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZM, False, False), QgsWkbTypes.Type.CurvePolygon)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZM, True, False), QgsWkbTypes.Type.CurvePolygonZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZM, False, True), QgsWkbTypes.Type.CurvePolygonM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.CurvePolygonZM, True, True), QgsWkbTypes.Type.CurvePolygonZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurface, False, False), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurface, True, False), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurface, False, True), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurface, True, True), QgsWkbTypes.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurface, False, False), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurface, True, False), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurface, False, True), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurface, True, True), QgsWkbTypes.Type.MultiSurfaceZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZ, False, False), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZ, True, False), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZ, False, True), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZ, True, True), QgsWkbTypes.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZ, False, False), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZ, True, False), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZ, False, True), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZ, True, True), QgsWkbTypes.Type.MultiSurfaceZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceM, False, False), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceM, True, False), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceM, False, True), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceM, True, True), QgsWkbTypes.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceM, False, False), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceM, True, False), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceM, False, True), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceM, True, True), QgsWkbTypes.Type.MultiSurfaceZM)
 
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, False, False), QgsWkbTypes.MultiSurface)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, True, False), QgsWkbTypes.MultiSurfaceZ)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, False, True), QgsWkbTypes.MultiSurfaceM)
-        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, True, True), QgsWkbTypes.MultiSurfaceZM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZM, False, False), QgsWkbTypes.Type.MultiSurface)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZM, True, False), QgsWkbTypes.Type.MultiSurfaceZ)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZM, False, True), QgsWkbTypes.Type.MultiSurfaceM)
+        self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.Type.MultiSurfaceZM, True, True), QgsWkbTypes.Type.MultiSurfaceZM)
 
     def testGeometryDisplayString(self):
-        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PointGeometry), 'Point')
-        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.LineGeometry), 'Line')
-        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PolygonGeometry), 'Polygon')
-        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.UnknownGeometry), 'Unknown geometry')
-        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.NullGeometry), 'No geometry')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.GeometryType.PointGeometry), 'Point')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.GeometryType.LineGeometry), 'Line')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.GeometryType.PolygonGeometry), 'Polygon')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.GeometryType.UnknownGeometry), 'Unknown geometry')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.GeometryType.NullGeometry), 'No geometry')
 
     def testDeleteVertexCircularString(self):
 
@@ -4938,7 +4936,7 @@ class TestQgsGeometry(QgisTestCase):
 
         wkt = "LineString( 0 0, 10 0)"
         geom = QgsGeometry.fromWkt(wkt)
-        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideLeft)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.BufferSide.SideLeft)
         result = out.asWkt()
         expected_wkt = "Polygon ((10 0, 0 0, 0 1, 10 1, 10 0))"
         self.assertTrue(compareWkt(result, expected_wkt, 0.00001),
@@ -4946,7 +4944,7 @@ class TestQgsGeometry(QgisTestCase):
 
         wkt = "LineString( 0 0, 10 0)"
         geom = QgsGeometry.fromWkt(wkt)
-        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.BufferSide.SideRight)
         result = out.asWkt()
         expected_wkt = "Polygon ((0 0, 10 0, 10 -1, 0 -1, 0 0))"
         self.assertTrue(compareWkt(result, expected_wkt, 0.00001),
@@ -4954,7 +4952,7 @@ class TestQgsGeometry(QgisTestCase):
 
         wkt = "LineString( 0 0, 10 0, 10 10)"
         geom = QgsGeometry.fromWkt(wkt)
-        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleMiter)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.BufferSide.SideRight, QgsGeometry.JoinStyle.JoinStyleMiter)
         result = out.asWkt()
         expected_wkt = "Polygon ((0 0, 10 0, 10 10, 11 10, 11 -1, 0 -1, 0 0))"
         self.assertTrue(compareWkt(result, expected_wkt, 0.00001),
@@ -4962,7 +4960,7 @@ class TestQgsGeometry(QgisTestCase):
 
         wkt = "LineString( 0 0, 10 0, 10 10)"
         geom = QgsGeometry.fromWkt(wkt)
-        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleBevel)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.BufferSide.SideRight, QgsGeometry.JoinStyle.JoinStyleBevel)
         result = out.asWkt()
         expected_wkt = "Polygon ((0 0, 10 0, 10 10, 11 10, 11 0, 10 -1, 0 -1, 0 0))"
         self.assertTrue(compareWkt(result, expected_wkt, 0.00001),
@@ -4980,10 +4978,10 @@ class TestQgsGeometry(QgisTestCase):
         geom = QgsGeometry.fromWkt('MultiSurface(((0 0,0 1,1 1,0 0)), CurvePolygon ((0 0,0 1,1 1,0 0)))')
         wkb = geom.asWkb()
         wkb = bytearray(wkb)
-        if wkb[1] == QgsWkbTypes.MultiSurface:
-            wkb[1] = QgsWkbTypes.MultiPolygon
-        elif wkb[1 + 4] == QgsWkbTypes.MultiSurface:
-            wkb[1 + 4] = QgsWkbTypes.MultiPolygon
+        if wkb[1] == QgsWkbTypes.Type.MultiSurface:
+            wkb[1] = QgsWkbTypes.Type.MultiPolygon
+        elif wkb[1 + 4] == QgsWkbTypes.Type.MultiSurface:
+            wkb[1 + 4] = QgsWkbTypes.Type.MultiPolygon
         else:
             self.assertTrue(False)
         geom = QgsGeometry()
@@ -5439,88 +5437,93 @@ class TestQgsGeometry(QgisTestCase):
 
         input = QgsGeometry.fromWkt("MULTIPOINT ((10 10), (10 20), (20 20))")
         o = input.delaunayTriangulation()
-        exp = "GEOMETRYCOLLECTION (POLYGON ((10 20, 10 10, 20 20, 10 20)))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "GeometryCollection (Polygon ((10 10, 10 20, 20 20, 10 10)))")
+
         o = input.delaunayTriangulation(0, True)
-        exp = "MultiLineString ((10 20, 20 20),(10 10, 10 20),(10 10, 20 20))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "MultiLineString ((10 20, 20 20),(10 10, 20 20),(10 10, 10 20))"
+        )
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((50 40), (140 70), (80 100), (130 140), (30 150), (70 180), (190 110), (120 20))")
         o = input.delaunayTriangulation()
-        exp = "GEOMETRYCOLLECTION (POLYGON ((30 150, 50 40, 80 100, 30 150)), POLYGON ((30 150, 80 100, 70 180, 30 150)), POLYGON ((70 180, 80 100, 130 140, 70 180)), POLYGON ((70 180, 130 140, 190 110, 70 180)), POLYGON ((190 110, 130 140, 140 70, 190 110)), POLYGON ((190 110, 140 70, 120 20, 190 110)), POLYGON ((120 20, 140 70, 80 100, 120 20)), POLYGON ((120 20, 80 100, 50 40, 120 20)), POLYGON ((80 100, 140 70, 130 140, 80 100)))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "GeometryCollection (Polygon ((130 140, 190 110, 140 70, 130 140)),Polygon ((120 20, 140 70, 190 110, 120 20)),Polygon ((80 100, 140 70, 120 20, 80 100)),Polygon ((80 100, 130 140, 140 70, 80 100)),Polygon ((70 180, 190 110, 130 140, 70 180)),Polygon ((70 180, 130 140, 80 100, 70 180)),Polygon ((50 40, 80 100, 120 20, 50 40)),Polygon ((30 150, 80 100, 50 40, 30 150)),Polygon ((30 150, 70 180, 80 100, 30 150)))"
+        )
+
         o = input.delaunayTriangulation(0, True)
-        exp = "MultiLineString ((70 180, 190 110),(30 150, 70 180),(30 150, 50 40),(50 40, 120 20),(120 20, 190 110),(120 20, 140 70),(140 70, 190 110),(130 140, 140 70),(130 140, 190 110),(70 180, 130 140),(80 100, 130 140),(70 180, 80 100),(30 150, 80 100),(50 40, 80 100),(80 100, 120 20),(80 100, 140 70))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "MultiLineString ((140 70, 190 110),(130 140, 190 110),(130 140, 140 70),(120 20, 190 110),(120 20, 140 70),(80 100, 140 70),(80 100, 130 140),(80 100, 120 20),(70 180, 190 110),(70 180, 130 140),(70 180, 80 100),(50 40, 120 20),(50 40, 80 100),(30 150, 80 100),(30 150, 70 180),(30 150, 50 40))"
+        )
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((10 10), (10 20), (20 20), (20 10), (20 0), (10 0), (0 0), (0 10), (0 20))")
         o = input.delaunayTriangulation()
-        exp = "GEOMETRYCOLLECTION (POLYGON ((0 20, 0 10, 10 10, 0 20)), POLYGON ((0 20, 10 10, 10 20, 0 20)), POLYGON ((10 20, 10 10, 20 10, 10 20)), POLYGON ((10 20, 20 10, 20 20, 10 20)), POLYGON ((10 0, 20 0, 10 10, 10 0)), POLYGON ((10 0, 10 10, 0 10, 10 0)), POLYGON ((10 0, 0 10, 0 0, 10 0)), POLYGON ((10 10, 20 0, 20 10, 10 10)))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "GeometryCollection (Polygon ((10 20, 20 20, 20 10, 10 20)),Polygon ((10 10, 20 10, 20 0, 10 10)),Polygon ((10 10, 10 20, 20 10, 10 10)),Polygon ((10 0, 10 10, 20 0, 10 0)),Polygon ((0 20, 10 20, 10 10, 0 20)),Polygon ((0 10, 10 10, 10 0, 0 10)),Polygon ((0 10, 0 20, 10 10, 0 10)),Polygon ((0 0, 0 10, 10 0, 0 0)))"
+        )
         o = input.delaunayTriangulation(0, True)
-        exp = "MultiLineString ((10 20, 20 20),(0 20, 10 20),(0 10, 0 20),(0 0, 0 10),(0 0, 10 0),(10 0, 20 0),(20 0, 20 10),(20 10, 20 20),(10 20, 20 10),(10 10, 20 10),(10 10, 10 20),(0 20, 10 10),(0 10, 10 10),(10 0, 10 10),(0 10, 10 0),(10 10, 20 0))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "MultiLineString ((20 10, 20 20),(20 0, 20 10),(10 20, 20 20),(10 20, 20 10),(10 10, 20 10),(10 10, 20 0),(10 10, 10 20),(10 0, 20 0),(10 0, 10 10),(0 20, 10 20),(0 20, 10 10),(0 10, 10 10),(0 10, 10 0),(0 10, 0 20),(0 0, 10 0),(0 0, 0 10))"
+        )
 
         input = QgsGeometry.fromWkt(
             "POLYGON ((42 30, 41.96 29.61, 41.85 29.23, 41.66 28.89, 41.41 28.59, 41.11 28.34, 40.77 28.15, 40.39 28.04, 40 28, 39.61 28.04, 39.23 28.15, 38.89 28.34, 38.59 28.59, 38.34 28.89, 38.15 29.23, 38.04 29.61, 38 30, 38.04 30.39, 38.15 30.77, 38.34 31.11, 38.59 31.41, 38.89 31.66, 39.23 31.85, 39.61 31.96, 40 32, 40.39 31.96, 40.77 31.85, 41.11 31.66, 41.41 31.41, 41.66 31.11, 41.85 30.77, 41.96 30.39, 42 30))")
         o = input.delaunayTriangulation(0, True)
-        # depending on GEOS version, the result will be one of these two. Either is correct.
-        # older GEOS
-        exp = "MULTILINESTRING ((41.66 31.11, 41.85 30.77), (41.41 31.41, 41.66 31.11), (41.11 31.66, 41.41 31.41), (40.77 31.85, 41.11 31.66), (40.39 31.96, 40.77 31.85), (40 32, 40.39 31.96), (39.61 31.96, 40 32), (39.23 31.85, 39.61 31.96), (38.89 31.66, 39.23 31.85), (38.59 31.41, 38.89 31.66), (38.34 31.11, 38.59 31.41), (38.15 30.77, 38.34 31.11), (38.04 30.39, 38.15 30.77), (38 30, 38.04 30.39), (38 30, 38.04 29.61), (38.04 29.61, 38.15 29.23), (38.15 29.23, 38.34 28.89), (38.34 28.89, 38.59 28.59), (38.59 28.59, 38.89 28.34), (38.89 28.34, 39.23 28.15), (39.23 28.15, 39.61 28.04), (39.61 28.04, 40 28), (40 28, 40.39 28.04), (40.39 28.04, 40.77 28.15), (40.77 28.15, 41.11 28.34), (41.11 28.34, 41.41 28.59), (41.41 28.59, 41.66 28.89), (41.66 28.89, 41.85 29.23), (41.85 29.23, 41.96 29.61), (41.96 29.61, 42 30), (41.96 30.39, 42 30), (41.85 30.77, 41.96 30.39), (41.66 31.11, 41.96 30.39), (41.41 31.41, 41.96 30.39), (41.41 28.59, 41.96 30.39), (41.41 28.59, 41.41 31.41), (38.59 28.59, 41.41 28.59), (38.59 28.59, 41.41 31.41), (38.59 28.59, 38.59 31.41), (38.59 31.41, 41.41 31.41), (38.59 31.41, 39.61 31.96), (39.61 31.96, 41.41 31.41), (39.61 31.96, 40.39 31.96), (40.39 31.96, 41.41 31.41), (40.39 31.96, 41.11 31.66), (38.04 30.39, 38.59 28.59), (38.04 30.39, 38.59 31.41), (38.04 30.39, 38.34 31.11), (38.04 29.61, 38.59 28.59), (38.04 29.61, 38.04 30.39), (39.61 28.04, 41.41 28.59), (38.59 28.59, 39.61 28.04), (38.89 28.34, 39.61 28.04), (40.39 28.04, 41.41 28.59), (39.61 28.04, 40.39 28.04), (41.96 29.61, 41.96 30.39), (41.41 28.59, 41.96 29.61), (41.66 28.89, 41.96 29.61), (40.39 28.04, 41.11 28.34), (38.04 29.61, 38.34 28.89), (38.89 31.66, 39.61 31.96))"
-        # newer GEOS
-        exp2 = "MultiLineString ((41.66 31.11, 41.85 30.77),(41.41 31.41, 41.66 31.11),(41.11 31.66, 41.41 31.41),(40.77 31.85, 41.11 31.66),(40.39 31.96, 40.77 31.85),(40 32, 40.39 31.96),(39.61 31.96, 40 32),(39.23 31.85, 39.61 31.96),(38.89 31.66, 39.23 31.85),(38.59 31.41, 38.89 31.66),(38.34 31.11, 38.59 31.41),(38.15 30.77, 38.34 31.11),(38.04 30.39, 38.15 30.77),(38 30, 38.04 30.39),(38 30, 38.04 29.61),(38.04 29.61, 38.15 29.23),(38.15 29.23, 38.34 28.89),(38.34 28.89, 38.59 28.59),(38.59 28.59, 38.89 28.34),(38.89 28.34, 39.23 28.15),(39.23 28.15, 39.61 28.04),(39.61 28.04, 40 28),(40 28, 40.39 28.04),(40.39 28.04, 40.77 28.15),(40.77 28.15, 41.11 28.34),(41.11 28.34, 41.41 28.59),(41.41 28.59, 41.66 28.89),(41.66 28.89, 41.85 29.23),(41.85 29.23, 41.96 29.61),(41.96 29.61, 42 30),(41.96 30.39, 42 30),(41.85 30.77, 41.96 30.39),(41.66 31.11, 41.96 30.39),(41.41 31.41, 41.96 30.39),(41.96 29.61, 41.96 30.39),(41.41 31.41, 41.96 29.61),(41.41 28.59, 41.96 29.61),(41.41 28.59, 41.41 31.41),(38.59 31.41, 41.41 28.59),(38.59 31.41, 41.41 31.41),(38.59 31.41, 40.39 31.96),(40.39 31.96, 41.41 31.41),(40.39 31.96, 41.11 31.66),(38.59 31.41, 39.61 31.96),(39.61 31.96, 40.39 31.96),(38.59 28.59, 41.41 28.59),(38.59 28.59, 38.59 31.41),(38.04 29.61, 38.59 28.59),(38.04 29.61, 38.59 31.41),(38.04 29.61, 38.04 30.39),(38.04 30.39, 38.59 31.41),(38.04 30.39, 38.34 31.11),(40.39 28.04, 41.41 28.59),(38.59 28.59, 40.39 28.04),(39.61 28.04, 40.39 28.04),(38.59 28.59, 39.61 28.04),(38.89 28.34, 39.61 28.04),(41.66 28.89, 41.96 29.61),(40.39 28.04, 41.11 28.34),(38.04 29.61, 38.34 28.89),(38.89 31.66, 39.61 31.96))"
-        result = o.asWkt(2)
-        if compareWkt(result, exp, 0.00001):
-            self.assertTrue(compareWkt(result, exp, 0.00001),
-                            f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
-        else:
-            self.assertTrue(compareWkt(result, exp2, 0.00001),
-                            f"delaunay: mismatch Expected:\n{exp2}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(2),
+            "MultiLineString ((41.96 30.39, 42 30),(41.96 29.61, 42 30),(41.96 29.61, 41.96 30.39),(41.85 30.77, 41.96 30.39),(41.85 29.23, 41.96 29.61),(41.66 31.11, 41.96 30.39),(41.66 31.11, 41.85 30.77),(41.66 28.89, 41.96 29.61),(41.66 28.89, 41.85 29.23),(41.41 31.41, 41.96 30.39),(41.41 31.41, 41.96 29.61),(41.41 31.41, 41.66 31.11),(41.41 28.59, 41.96 29.61),(41.41 28.59, 41.66 28.89),(41.41 28.59, 41.41 31.41),(41.11 31.66, 41.41 31.41),(41.11 28.34, 41.41 28.59),(40.77 31.85, 41.11 31.66),(40.77 28.15, 41.11 28.34),(40.39 31.96, 41.41 31.41),(40.39 31.96, 41.11 31.66),(40.39 31.96, 40.77 31.85),(40.39 28.04, 41.41 28.59),(40.39 28.04, 41.11 28.34),(40.39 28.04, 40.77 28.15),(40 32, 40.39 31.96),(40 28, 40.39 28.04),(39.61 31.96, 40.39 31.96),(39.61 31.96, 40 32),(39.61 28.04, 40.39 28.04),(39.61 28.04, 40 28),(39.23 31.85, 39.61 31.96),(39.23 28.15, 39.61 28.04),(38.89 31.66, 39.61 31.96),(38.89 31.66, 39.23 31.85),(38.89 28.34, 39.61 28.04),(38.89 28.34, 39.23 28.15),(38.59 31.41, 41.41 31.41),(38.59 31.41, 41.41 28.59),(38.59 31.41, 40.39 31.96),(38.59 31.41, 39.61 31.96),(38.59 31.41, 38.89 31.66),(38.59 28.59, 41.41 28.59),(38.59 28.59, 40.39 28.04),(38.59 28.59, 39.61 28.04),(38.59 28.59, 38.89 28.34),(38.59 28.59, 38.59 31.41),(38.34 31.11, 38.59 31.41),(38.34 28.89, 38.59 28.59),(38.15 30.77, 38.34 31.11),(38.15 29.23, 38.34 28.89),(38.04 30.39, 38.59 31.41),(38.04 30.39, 38.34 31.11),(38.04 30.39, 38.15 30.77),(38.04 29.61, 38.59 31.41),(38.04 29.61, 38.59 28.59),(38.04 29.61, 38.34 28.89),(38.04 29.61, 38.15 29.23),(38.04 29.61, 38.04 30.39),(38 30, 38.04 30.39),(38 30, 38.04 29.61))"
+        )
 
         input = QgsGeometry.fromWkt(
             "POLYGON ((0 0, 0 200, 180 200, 180 0, 0 0), (20 180, 160 180, 160 20, 152.625 146.75, 20 180), (30 160, 150 30, 70 90, 30 160))")
         o = input.delaunayTriangulation(0, True)
-        exp = "MultiLineString ((0 200, 180 200),(0 0, 0 200),(0 0, 180 0),(180 0, 180 200),(152.625 146.75, 180 0),(152.625 146.75, 180 200),(152.625 146.75, 160 180),(160 180, 180 200),(0 200, 160 180),(20 180, 160 180),(0 200, 20 180),(20 180, 30 160),(0 200, 30 160),(0 0, 30 160),(30 160, 70 90),(0 0, 70 90),(70 90, 150 30),(0 0, 150 30),(150 30, 160 20),(0 0, 160 20),(160 20, 180 0),(152.625 146.75, 160 20),(150 30, 152.625 146.75),(70 90, 152.625 146.75),(30 160, 152.625 146.75),(30 160, 160 180))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "MultiLineString ((180 0, 180 200),(160 180, 180 200),(160 20, 180 0),(152.625 146.75, 180 200),(152.625 146.75, 180 0),(152.625 146.75, 160 180),(152.625 146.75, 160 20),(150 30, 160 20),(150 30, 152.625 146.75),(70 90, 152.625 146.75),(70 90, 150 30),(30 160, 160 180),(30 160, 152.625 146.75),(30 160, 70 90),(20 180, 160 180),(20 180, 30 160),(0 200, 180 200),(0 200, 160 180),(0 200, 30 160),(0 200, 20 180),(0 0, 180 0),(0 0, 160 20),(0 0, 150 30),(0 0, 70 90),(0 0, 30 160),(0 0, 0 200))"
+        )
 
         input = QgsGeometry.fromWkt(
             "MULTIPOINT ((10 10 1), (10 20 2), (20 20 3), (20 10 1.5), (20 0 2.5), (10 0 3.5), (0 0 0), (0 10 .5), (0 20 .25))")
         o = input.delaunayTriangulation()
-        exp = "GeometryCollection (PolygonZ ((0 20 0.25, 0 10 0.5, 10 10 1, 0 20 0.25)),PolygonZ ((0 20 0.25, 10 10 1, 10 20 2, 0 20 0.25)),PolygonZ ((10 20 2, 10 10 1, 20 10 1.5, 10 20 2)),PolygonZ ((10 20 2, 20 10 1.5, 20 20 3, 10 20 2)),PolygonZ ((10 0 3.5, 20 0 2.5, 10 10 1, 10 0 3.5)),PolygonZ ((10 0 3.5, 10 10 1, 0 10 0.5, 10 0 3.5)),PolygonZ ((10 0 3.5, 0 10 0.5, 0 0 0, 10 0 3.5)),PolygonZ ((10 10 1, 20 0 2.5, 20 10 1.5, 10 10 1)))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "GeometryCollection (PolygonZ ((10 20 2, 20 20 3, 20 10 1.5, 10 20 2)),PolygonZ ((10 10 1, 20 10 1.5, 20 0 2.5, 10 10 1)),PolygonZ ((10 10 1, 10 20 2, 20 10 1.5, 10 10 1)),PolygonZ ((10 0 3.5, 10 10 1, 20 0 2.5, 10 0 3.5)),PolygonZ ((0 20 0.25, 10 20 2, 10 10 1, 0 20 0.25)),PolygonZ ((0 10 0.5, 10 10 1, 10 0 3.5, 0 10 0.5)),PolygonZ ((0 10 0.5, 0 20 0.25, 10 10 1, 0 10 0.5)),PolygonZ ((0 0 0, 0 10 0.5, 10 0 3.5, 0 0 0)))"
+        )
+
         o = input.delaunayTriangulation(0, True)
-        exp = "MultiLineStringZ ((10 20 2, 20 20 3),(0 20 0.25, 10 20 2),(0 10 0.5, 0 20 0.25),(0 0 0, 0 10 0.5),(0 0 0, 10 0 3.5),(10 0 3.5, 20 0 2.5),(20 0 2.5, 20 10 1.5),(20 10 1.5, 20 20 3),(10 20 2, 20 10 1.5),(10 10 1, 20 10 1.5),(10 10 1, 10 20 2),(0 20 0.25, 10 10 1),(0 10 0.5, 10 10 1),(10 0 3.5, 10 10 1),(0 10 0.5, 10 0 3.5),(10 10 1, 20 0 2.5))"
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        o.normalize()
+        self.assertEqual(
+            o.asWkt(5),
+            "MultiLineStringZ ((20 10 1.5, 20 20 3),(20 0 2.5, 20 10 1.5),(10 20 2, 20 20 3),(10 20 2, 20 10 1.5),(10 10 1, 20 10 1.5),(10 10 1, 20 0 2.5),(10 10 1, 10 20 2),(10 0 3.5, 20 0 2.5),(10 0 3.5, 10 10 1),(0 20 0.25, 10 20 2),(0 20 0.25, 10 10 1),(0 10 0.5, 10 10 1),(0 10 0.5, 10 0 3.5),(0 10 0.5, 0 20 0.25),(0 0 0, 10 0 3.5),(0 0 0, 0 10 0.5))"
+        )
+
         input = QgsGeometry.fromWkt(
             "MULTIPOINT((-118.3964065 56.0557),(-118.396406 56.0475),(-118.396407 56.04),(-118.3968 56))")
         o = input.delaunayTriangulation(0.001, True)
+        o.normalize()
         # Delaunay Triangulation computation change. See: https://github.com/libgeos/geos/pull/728
-        if Qgis.geosVersionInt() >= self.geos310_4:
-            exp = "MultiLineString ((-118.39679999999999893 56, -118.39640649999999766 56.05570000000000164),(-118.39679999999999893 56, -118.3964069999999964 56.03999999999999915),(-118.3964069999999964 56.03999999999999915, -118.39640599999999893 56.04749999999999943),(-118.39640649999999766 56.05570000000000164, -118.39640599999999893 56.04749999999999943),(-118.39679999999999893 56, -118.39640599999999893 56.04749999999999943))"
-        else:
-            exp = "MULTILINESTRING ((-118.3964065 56.0557, -118.396406 56.0475), (-118.396407 56.04, -118.396406 56.0475), (-118.3968 56, -118.396407 56.04))"
-
-        result = o.asWkt()
-        self.assertTrue(compareWkt(result, exp, 0.00001),
-                        f"delaunay: mismatch Expected:\n{exp}\nGot:\n{result}\n")
+        self.assertIn(
+            o.asWkt(5),
+            (
+                "MultiLineString ((-118.39641 56.0557, -118.39641 56.0475),(-118.39641 56.04, -118.39641 56.0475),(-118.3968 56, -118.39641 56.0475),(-118.3968 56, -118.39641 56.0557),(-118.3968 56, -118.39641 56.04))",
+                "MultiLineString ((-118.39641 56.0557, -118.39641 56.0475),(-118.39641 56.04, -118.39641 56.0475),(-118.3968 56, -118.39641 56.04))"
+            )
+        )
 
     def testVoronoi(self):
         empty = QgsGeometry()
@@ -5875,35 +5878,35 @@ class TestQgsGeometry(QgisTestCase):
 
     def testPoint(self):
         point = QgsPoint(1, 2)
-        self.assertEqual(point.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(point.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(point.x(), 1)
         self.assertEqual(point.y(), 2)
 
-        point = QgsPoint(1, 2, wkbType=QgsWkbTypes.Point)
-        self.assertEqual(point.wkbType(), QgsWkbTypes.Point)
+        point = QgsPoint(1, 2, wkbType=QgsWkbTypes.Type.Point)
+        self.assertEqual(point.wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(point.x(), 1)
         self.assertEqual(point.y(), 2)
 
         point_z = QgsPoint(1, 2, 3)
-        self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.wkbType(), QgsWkbTypes.Type.PointZ)
         self.assertEqual(point_z.x(), 1)
         self.assertEqual(point_z.y(), 2)
         self.assertEqual(point_z.z(), 3)
 
-        point_z = QgsPoint(1, 2, 3, 4, wkbType=QgsWkbTypes.PointZ)
-        self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
+        point_z = QgsPoint(1, 2, 3, 4, wkbType=QgsWkbTypes.Type.PointZ)
+        self.assertEqual(point_z.wkbType(), QgsWkbTypes.Type.PointZ)
         self.assertEqual(point_z.x(), 1)
         self.assertEqual(point_z.y(), 2)
         self.assertEqual(point_z.z(), 3)
 
         point_m = QgsPoint(1, 2, m=3)
-        self.assertEqual(point_m.wkbType(), QgsWkbTypes.PointM)
+        self.assertEqual(point_m.wkbType(), QgsWkbTypes.Type.PointM)
         self.assertEqual(point_m.x(), 1)
         self.assertEqual(point_m.y(), 2)
         self.assertEqual(point_m.m(), 3)
 
         point_zm = QgsPoint(1, 2, 3, 4)
-        self.assertEqual(point_zm.wkbType(), QgsWkbTypes.PointZM)
+        self.assertEqual(point_zm.wkbType(), QgsWkbTypes.Type.PointZM)
         self.assertEqual(point_zm.x(), 1)
         self.assertEqual(point_zm.y(), 2)
         self.assertEqual(point_zm.z(), 3)
@@ -6172,28 +6175,24 @@ class TestQgsGeometry(QgisTestCase):
                                                                                        t[2], res))
 
     def testOffsetCurve(self):
-        # linestring which becomes multilinestring -- the actual offset curve calculated by GEOS is false.
-        # This is fixed in GEOS 3.11. See: https://github.com/libgeos/geos/issues/477
-        if Qgis.geosVersionInt() >= self.geos311:
-            exp5 = "LineString (259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259307.5 5928273.2)"
-        else:
-            exp5 = "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"
         tests = [
-            ["LINESTRING (0 0, 0 100, 100 100)", 1, "LineString (-1 0, -1 101, 100 101)"],
-            ["LINESTRING (0 0, 0 100, 100 100)", -1, "LineString (1 0, 1 99, 100 99)"],
-            ["LINESTRING (100 100, 0 100, 0 0)", 1, "LineString (100 99, 1 99, 1 0)"],
-            ["LINESTRING (100 100, 0 100, 0 0)", -1, "LineString (100 101, -1 101, -1 0)"],
-            ["LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )", 100, exp5],
+            ["LINESTRING (0 0, 0 100, 100 100)", 1, ["LineString (-1 0, -1 101, 100 101)"]],
+            ["LINESTRING (0 0, 0 100, 100 100)", -1, ["LineString (1 0, 1 99, 100 99)"]],
+            ["LINESTRING (100 100, 0 100, 0 0)", 1, ["LineString (100 99, 1 99, 1 0)"]],
+            ["LINESTRING (100 100, 0 100, 0 0)", -1, ["LineString (100 101, -1 101, -1 0)"]],
+            ["LINESTRING (259329.820 5928370.79, 259324.337 5928371.758, 259319.678 5928372.33, 259317.064 5928372.498 )", 100, ["LineString (259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259307.5 5928273.2)",
+                                                                                                                                 "LineString (259312.5 5928272.6, 259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1, 259313.6 5928322.7, 259313.9 5928322.7)",
+                                                                                                                                 "MultiLineString ((259313.3 5928272.5, 259312.5 5928272.6),(259312.4 5928272.3, 259309.5 5928272.8, 259307.5 5928273.1))"]],
             ["MULTILINESTRING ((0 0, 0 100, 100 100),(100 100, 0 100, 0 0))", 1,
              "MultiLineString ((-1 0, -1 101, 100 101),(100 99, 1 99, 1 0))"]
         ]
         for t in tests:
             g1 = QgsGeometry.fromWkt(t[0])
-            res = g1.offsetCurve(t[1], 2, QgsGeometry.JoinStyleMiter, 5)
+            res = g1.offsetCurve(t[1], 2, QgsGeometry.JoinStyle.JoinStyleMiter, 5)
 
-            self.assertEqual(res.asWkt(1), t[2],
-                             "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
-                                                                                       t[2], res.asWkt(1)))
+            self.assertIn(res.asWkt(1), t[2],
+                          "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
+                                                                                    t[2], res.asWkt(1)))
 
     def testForceRHR(self):
         tests = [
@@ -6310,7 +6309,7 @@ class TestQgsGeometry(QgisTestCase):
                 if not res:
                     self.assertEqual(g1.lastError(), t[3], t[0])
             for i in range(2):
-                res = g1.isGeosValid(QgsGeometry.FlagAllowSelfTouchingHoles)
+                res = g1.isGeosValid(QgsGeometry.ValidityFlag.FlagAllowSelfTouchingHoles)
                 self.assertEqual(res, t[2],
                                  f"mismatch for {t[0]}, expected:\n{t[2]}\nGot:\n{res}\n")
 
@@ -6336,15 +6335,15 @@ class TestQgsGeometry(QgisTestCase):
         ]
         for t in tests:
             g1 = QgsGeometry.fromWkt(t[0])
-            res = g1.validateGeometry(QgsGeometry.ValidatorGeos)
+            res = g1.validateGeometry(QgsGeometry.ValidationMethod.ValidatorGeos)
             self.assertEqual(res, t[1],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
                                                                                  res[0].where() if res else ''))
-            res = g1.validateGeometry(QgsGeometry.ValidatorGeos, QgsGeometry.FlagAllowSelfTouchingHoles)
+            res = g1.validateGeometry(QgsGeometry.ValidationMethod.ValidatorGeos, QgsGeometry.ValidityFlag.FlagAllowSelfTouchingHoles)
             self.assertEqual(res, t[2],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[2],
                                                                                  res[0].where() if res else ''))
-            res = g1.validateGeometry(QgsGeometry.ValidatorQgisInternal)
+            res = g1.validateGeometry(QgsGeometry.ValidationMethod.ValidatorQgisInternal)
             self.assertEqual(res, t[3],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[3],
                                                                                  res[0].where() if res else ''))
@@ -6426,160 +6425,160 @@ class TestQgsGeometry(QgisTestCase):
             else:
                 return [g.asWkt(2) for g in geom.coerceToType(type)]
 
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Point), ['Point (1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.LineString),
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3)'])
-        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 1 2, 1 1))'])
 
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Point),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Type.Point),
                          ['Point (1 1)', 'Point (2 2)', 'Point (3 3)'])
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
-        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Point),
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Type.Point),
                          ['Point (1 1)', 'Point (2 2)', 'Point (1 2)'])
-        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.LineString),
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 1 2, 1 1)'])
 
-        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Point), ['Point (1 1)'])
-        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.PointZ), ['PointZ (1 1 3)'])
+        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Type.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Type.PointZ), ['PointZ (1 1 3)'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ), ['PointZ (1 1 0)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZ), ['PointZ (1 1 0)'])
 
         # Adding Z/M with defaults
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ, defaultZ=222), ['PointZ (1 1 222)'])
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointM, defaultM=333), ['PointM (1 1 333)'])
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZM, defaultZ=222, defaultM=333), ['PointZM (1 1 222 333)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZ, defaultZ=222), ['PointZ (1 1 222)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointM, defaultM=333), ['PointM (1 1 333)'])
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointZM, defaultZ=222, defaultM=333), ['PointZM (1 1 222 333)'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointM), ['PointM (1 1 0)'])
-        self.assertEqual(coerce_to_wkt('Point m (1 1 3)', QgsWkbTypes.Point), ['Point (1 1)'])
-        self.assertEqual(coerce_to_wkt('Point(1 3)', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 3))'])
-        self.assertEqual(coerce_to_wkt('MultiPoint((1 3), (2 2))', QgsWkbTypes.MultiPoint),
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Type.PointM), ['PointM (1 1 0)'])
+        self.assertEqual(coerce_to_wkt('Point m (1 1 3)', QgsWkbTypes.Type.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('Point(1 3)', QgsWkbTypes.Type.MultiPoint), ['MultiPoint ((1 3))'])
+        self.assertEqual(coerce_to_wkt('MultiPoint((1 3), (2 2))', QgsWkbTypes.Type.MultiPoint),
                          ['MultiPoint ((1 3),(2 2))'])
 
-        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
-        self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
-        self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.PolygonZ),
+        self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.PolygonZ),
                          ['PolygonZ ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.PolygonZ),
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.PolygonZ),
                          ['PolygonZ ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.PolygonM),
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.PolygonM),
                          ['PolygonM ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
 
-        self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
-        self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.PolygonM),
+        self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Type.PolygonM),
                          ['PolygonM ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
-        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.MultiPolygon),
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Type.MultiPolygon),
                          ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)))'])
         self.assertEqual(
-            coerce_to_wkt('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', QgsWkbTypes.MultiPolygon),
+            coerce_to_wkt('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', QgsWkbTypes.Type.MultiPolygon),
             ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)),((1 1, 2 2, 3 3, 1 1)))'])
 
-        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineString),
+        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringZ),
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineStringZ),
                          ['LineStringZ (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringM),
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.Type.LineStringM),
                          ['LineStringM (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringZ),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.LineStringZ),
                          ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringM),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.LineStringM),
                          ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
-        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.MultiLineString),
+        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.Type.MultiLineString),
                          ['MultiLineString ((1 1, 2 2, 3 3, 1 1))'])
         self.assertEqual(coerce_to_wkt('MultiLineString((1 1, 2 2, 3 3, 1 1), (1 1, 2 2, 3 3, 1 1))',
-                                       QgsWkbTypes.MultiLineString),
+                                       QgsWkbTypes.Type.MultiLineString),
                          ['MultiLineString ((1 1, 2 2, 3 3, 1 1),(1 1, 2 2, 3 3, 1 1))'])
 
         # Test Multi -> Single
         self.assertEqual(coerce_to_wkt('MultiLineString((1 1, 2 2, 3 3, 1 1), (10 1, 20 2, 30 3, 10 1))',
-                                       QgsWkbTypes.LineString),
+                                       QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 2 2, 3 3, 1 1)', 'LineString (10 1, 20 2, 30 3, 10 1)'])
 
         # line -> points
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Point),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Type.Point),
                          ['Point (1 1)', 'Point (2 2)', 'Point (3 3)'])
 
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.MultiPoint),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Type.MultiPoint),
                          ['MultiPoint ((1 1),(2 2),(3 3))'])
 
-        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 2 2),(4 4, 3 3))', QgsWkbTypes.Point),
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 2 2),(4 4, 3 3))', QgsWkbTypes.Type.Point),
                          ['Point (1 1)', 'Point (2 2)', 'Point (4 4)', 'Point (3 3)'])
 
-        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 2 2),(4 4, 3 3))', QgsWkbTypes.MultiPoint),
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 2 2),(4 4, 3 3))', QgsWkbTypes.Type.MultiPoint),
                          ['MultiPoint ((1 1),(2 2),(4 4),(3 3))'])
 
         # line -> polygon
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 1 2, 2 2)', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 1 2, 2 2)', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 1 2, 2 2, 1 1))'])
 
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 1 2, 2 2)', QgsWkbTypes.MultiPolygon),
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 1 2, 2 2)', QgsWkbTypes.Type.MultiPolygon),
                          ['MultiPolygon (((1 1, 1 2, 2 2, 1 1)))'])
 
-        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', QgsWkbTypes.Polygon),
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', QgsWkbTypes.Type.Polygon),
                          ['Polygon ((1 1, 1 2, 2 2, 1 1))', 'Polygon ((3 3, 4 3, 4 4, 3 3))'])
 
         self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))',
-                                       QgsWkbTypes.MultiPolygon),
+                                       QgsWkbTypes.Type.MultiPolygon),
                          ['MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))'])
 
-        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.CurvePolygon),
+        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.Type.CurvePolygon),
                          ['CurvePolygon (CircularString (1 1, 1 2, 2 2, 2 0, 1 1))'])
-        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.LineString)[0][:100],
+        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.Type.LineString)[0][:100],
                          'LineString (1 1, 0.99 1.01, 0.98 1.02, 0.97 1.03, 0.97 1.04, 0.96 1.05, 0.95 1.06, 0.94 1.06, 0.94 1')
-        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.Polygon)[0][:100],
+        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.Type.Polygon)[0][:100],
                          'Polygon ((1 1, 0.99 1.01, 0.98 1.02, 0.97 1.03, 0.97 1.04, 0.96 1.05, 0.95 1.06, 0.94 1.06, 0.94 1.0')
 
         # polygon -> points
-        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.Point),
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.Type.Point),
                          ['Point (1 1)', 'Point (1 2)', 'Point (2 2)'])
 
-        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.MultiPoint),
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.Type.MultiPoint),
                          ['MultiPoint ((1 1),(1 2),(2 2))'])
 
         self.assertEqual(
-            coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', QgsWkbTypes.Point),
+            coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', QgsWkbTypes.Type.Point),
             ['Point (1 1)', 'Point (1 2)', 'Point (2 2)', 'Point (3 3)', 'Point (4 3)', 'Point (4 4)'])
 
         self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
-                                       QgsWkbTypes.MultiPoint), ['MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))'])
+                                       QgsWkbTypes.Type.MultiPoint), ['MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))'])
 
         # polygon -> lines
-        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.LineString),
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 1 2, 2 2, 1 1)'])
 
-        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.MultiLineString),
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.Type.MultiLineString),
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1))'])
 
         self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
-                                       QgsWkbTypes.LineString),
+                                       QgsWkbTypes.Type.LineString),
                          ['LineString (1 1, 1 2, 2 2, 1 1)', 'LineString (3 3, 4 3, 4 4, 3 3)'])
 
         self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
-                                       QgsWkbTypes.MultiLineString),
+                                       QgsWkbTypes.Type.MultiLineString),
                          ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
 
         # Straight to curve
         self.assertEqual(coerce_to_wkt('LineString (0 0,1 1)',
-                                       QgsWkbTypes.MultiCurve),
+                                       QgsWkbTypes.Type.MultiCurve),
                          ['MultiCurve (LineString (0 0, 1 1))'])
 
     def testTriangularWaves(self):
@@ -7043,7 +7042,7 @@ class TestQgsGeometry(QgisTestCase):
                          'GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))')
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         image.fill(QColor(0, 0, 0))
 
         painter = QPainter(image)
@@ -7104,16 +7103,24 @@ class TestQgsGeometry(QgisTestCase):
             geom = QgsGeometry.fromWkt(test['wkt'])
             self.assertTrue(geom and not geom.isNull(), f"Could not create geometry {test['wkt']}")
             rendered_image = self.renderGeometry(geom, test['use_pen'])
-            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image), test['name'])
+            self.assertTrue(
+                self.image_check(test['name'], test['reference_image'], rendered_image,
+                                 control_path_prefix="geometry"), test['name'])
 
             if hasattr(geom.constGet(), 'addToPainterPath'):
                 # also check using painter path
                 rendered_image = self.renderGeometry(geom, test['use_pen'], as_painter_path=True)
-                assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+                self.assertTrue(
+                    self.image_check(test['name'], test['reference_image'], rendered_image,
+                                     control_path_prefix="geometry")
+                )
 
             if 'as_polygon_reference_image' in test:
                 rendered_image = self.renderGeometry(geom, False, True)
-                self.assertTrue(self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image), test['name'] + '_aspolygon')
+                self.assertTrue(
+                    self.image_check(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image,
+                                     control_path_prefix="geometry")
+                )
 
     def testGeometryAsQPainterPath(self):
         '''Tests conversion of different geometries to QPainterPath, including bad/odd geometries.'''
@@ -7209,7 +7216,7 @@ class TestQgsGeometry(QgisTestCase):
             geom = get_geom()
             rendered_image = self.renderGeometryUsingPath(geom)
             self.assertTrue(
-                self.imageCheck(test['name'], test['reference_image'], rendered_image, control_path="geometry_path"),
+                self.image_check(test['name'], test['reference_image'], rendered_image, control_path_prefix="geometry_path"),
                 test['name'])
 
             # Note - each test is repeated with the same geometry and reference image, but with added
@@ -7219,24 +7226,24 @@ class TestQgsGeometry(QgisTestCase):
             geom_z = get_geom()
             geom_z.get().addZValue(5)
             rendered_image = self.renderGeometryUsingPath(geom_z)
-            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image,
-                                   control_path="geometry_path")
+            self.assertTrue(self.image_check(test['name'] + 'Z', test['reference_image'], rendered_image,
+                                             control_path_prefix="geometry_path"))
 
             # test with ZM
             geom_z.get().addMValue(15)
             rendered_image = self.renderGeometryUsingPath(geom_z)
-            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image,
-                                   control_path="geometry_path")
+            self.assertTrue(self.image_check(test['name'] + 'ZM', test['reference_image'], rendered_image,
+                                             control_path_prefix="geometry_path"))
 
             # test with M
             geom_m = get_geom()
             geom_m.get().addMValue(15)
             rendered_image = self.renderGeometryUsingPath(geom_m)
-            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image,
-                                   control_path="geometry_path")
+            self.assertTrue(self.image_check(test['name'] + 'M', test['reference_image'], rendered_image,
+                                             control_path_prefix="geometry_path"))
 
     def renderGeometryUsingPath(self, geom):
-        image = QImage(200, 200, QImage.Format_RGB32)
+        image = QImage(200, 200, QImage.Format.Format_RGB32)
         dest_bounds = image.rect()
 
         geom = QgsGeometry(geom)
@@ -7268,21 +7275,6 @@ class TestQgsGeometry(QgisTestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image, control_path="geometry"):
-        self.report += f"<h2>Render {name}</h2>\n"
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'geometry_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix(control_path)
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print(self.report)
-        return result
 
     def testFixedPrecision(self):
         a = QgsGeometry.fromWkt('LINESTRING(0 0, 9 0)')

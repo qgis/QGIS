@@ -48,7 +48,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
 
         self.alg = alg
 
-        self.tblStyles.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tblStyles.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.setWindowTitle(self.alg.displayName())
 
         self.valueItems = {}
@@ -67,7 +67,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
             if isinstance(output, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)):
                 item = QTableWidgetItem(output.description() + '<' +
                                         output.__class__.__name__ + '>')
-                item.setFlags(Qt.ItemIsEnabled)
+                item.setFlags(Qt.ItemFlag.ItemIsEnabled)
                 self.tblStyles.setItem(i, 0, item)
                 item = RenderingStyleFilePanel()
                 style = \

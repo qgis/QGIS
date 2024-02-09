@@ -31,26 +31,26 @@ class TestQgsLegendPatchShapeButton(QgisTestCase):
         widget.setDialogTitle('title2')
         self.assertEqual(widget.dialogTitle(), 'title2')
 
-        widget.setSymbolType(QgsSymbol.Fill)
-        self.assertEqual(widget.symbolType(), QgsSymbol.Fill)
+        widget.setSymbolType(QgsSymbol.SymbolType.Fill)
+        self.assertEqual(widget.symbolType(), QgsSymbol.SymbolType.Fill)
         self.assertTrue(widget.shape().isNull())
 
-        shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), False)
+        shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Fill, QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), False)
         widget.setShape(shape)
         self.assertEqual(widget.shape().geometry().asWkt(), 'Polygon ((5 5, 1 2, 3 4, 5 5))')
         self.assertFalse(widget.shape().preserveAspectRatio())
-        self.assertEqual(widget.shape().symbolType(), QgsSymbol.Fill)
+        self.assertEqual(widget.shape().symbolType(), QgsSymbol.SymbolType.Fill)
 
         # try to set incompatible shape
-        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), True)
+        shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), True)
         widget.setShape(shape)
         # should be back to default
         self.assertTrue(widget.shape().isNull())
 
         # change type
-        widget.setSymbolType(QgsSymbol.Line)
-        self.assertEqual(widget.symbolType(), QgsSymbol.Line)
-        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), True)
+        widget.setSymbolType(QgsSymbol.SymbolType.Line)
+        self.assertEqual(widget.symbolType(), QgsSymbol.SymbolType.Line)
+        shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), True)
         widget.setShape(shape)
         self.assertEqual(widget.shape().geometry().asWkt(), 'LineString (0 0, 1 1)')
 
@@ -58,23 +58,23 @@ class TestQgsLegendPatchShapeButton(QgisTestCase):
         self.assertTrue(widget.shape().isNull())
 
     def testSignals(self):
-        shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), False)
+        shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Fill, QgsGeometry.fromWkt('Polygon((5 5, 1 2, 3 4, 5 5))'), False)
 
         widget = QgsLegendPatchShapeButton()
         spy = QSignalSpy(widget.changed)
-        widget.setSymbolType(QgsSymbol.Fill)
+        widget.setSymbolType(QgsSymbol.SymbolType.Fill)
         self.assertEqual(len(spy), 0)
         widget.setShape(shape)
         self.assertEqual(len(spy), 1)
 
-        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), True)
+        shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), True)
         widget.setShape(shape)
         self.assertEqual(len(spy), 2)
         self.assertTrue(widget.shape().isNull())
 
-        widget.setSymbolType(QgsSymbol.Line)
+        widget.setSymbolType(QgsSymbol.SymbolType.Line)
         self.assertEqual(len(spy), 3)
-        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 2)'), True)
+        shape = QgsLegendPatchShape(QgsSymbol.SymbolType.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 2)'), True)
         widget.setShape(shape)
         self.assertEqual(len(spy), 4)
         self.assertEqual(widget.shape().geometry().asWkt(), 'LineString (0 0, 1 2)')

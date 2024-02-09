@@ -56,12 +56,12 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
   {
     return;
   }
-  QgsLayoutObject::DataDefinedProperty key = QgsLayoutObject::NoProperty;
+  QgsLayoutObject::DataDefinedProperty key = QgsLayoutObject::DataDefinedProperty::NoProperty;
 
   if ( ddButton->propertyKey() >= 0 )
     key = static_cast< QgsLayoutObject::DataDefinedProperty >( ddButton->propertyKey() );
 
-  if ( key == QgsLayoutObject::NoProperty )
+  if ( key == QgsLayoutObject::DataDefinedProperty::NoProperty )
   {
     return;
   }
@@ -104,7 +104,7 @@ void QgsLayoutConfigObject::updateDataDefinedButtons()
 void QgsLayoutConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty key )
 {
   button->blockSignals( true );
-  button->init( key, mLayoutObject->dataDefinedProperties(), QgsLayoutObject::propertyDefinitions(), coverageLayer() );
+  button->init( static_cast< int >( key ), mLayoutObject->dataDefinedProperties(), QgsLayoutObject::propertyDefinitions(), coverageLayer() );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty, Qt::UniqueConnection );
   button->registerExpressionContextGenerator( mLayoutObject );
   button->blockSignals( false );
@@ -763,16 +763,16 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
 
 void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
 {
-  mConfigObject->initializeDataDefinedButton( mXPositionDDBtn, QgsLayoutObject::PositionX );
-  mConfigObject->initializeDataDefinedButton( mYPositionDDBtn, QgsLayoutObject::PositionY );
-  mConfigObject->initializeDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
-  mConfigObject->initializeDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
-  mConfigObject->initializeDataDefinedButton( mItemRotationDDBtn, QgsLayoutObject::ItemRotation );
-  mConfigObject->initializeDataDefinedButton( mOpacityDDBtn, QgsLayoutObject::Opacity );
-  mConfigObject->initializeDataDefinedButton( mBlendModeDDBtn, QgsLayoutObject::BlendMode );
-  mConfigObject->initializeDataDefinedButton( mExcludePrintsDDBtn, QgsLayoutObject::ExcludeFromExports );
-  mConfigObject->initializeDataDefinedButton( mItemFrameColorDDBtn, QgsLayoutObject::FrameColor );
-  mConfigObject->initializeDataDefinedButton( mItemBackgroundColorDDBtn, QgsLayoutObject::BackgroundColor );
+  mConfigObject->initializeDataDefinedButton( mXPositionDDBtn, QgsLayoutObject::DataDefinedProperty::PositionX );
+  mConfigObject->initializeDataDefinedButton( mYPositionDDBtn, QgsLayoutObject::DataDefinedProperty::PositionY );
+  mConfigObject->initializeDataDefinedButton( mWidthDDBtn, QgsLayoutObject::DataDefinedProperty::ItemWidth );
+  mConfigObject->initializeDataDefinedButton( mHeightDDBtn, QgsLayoutObject::DataDefinedProperty::ItemHeight );
+  mConfigObject->initializeDataDefinedButton( mItemRotationDDBtn, QgsLayoutObject::DataDefinedProperty::ItemRotation );
+  mConfigObject->initializeDataDefinedButton( mOpacityDDBtn, QgsLayoutObject::DataDefinedProperty::Opacity );
+  mConfigObject->initializeDataDefinedButton( mBlendModeDDBtn, QgsLayoutObject::DataDefinedProperty::BlendMode );
+  mConfigObject->initializeDataDefinedButton( mExcludePrintsDDBtn, QgsLayoutObject::DataDefinedProperty::ExcludeFromExports );
+  mConfigObject->initializeDataDefinedButton( mItemFrameColorDDBtn, QgsLayoutObject::DataDefinedProperty::FrameColor );
+  mConfigObject->initializeDataDefinedButton( mItemBackgroundColorDDBtn, QgsLayoutObject::DataDefinedProperty::BackgroundColor );
 }
 
 void QgsLayoutItemPropertiesWidget::populateDataDefinedButtons()

@@ -94,7 +94,7 @@ class GdalUtils:
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
+        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.MessageLevel.Info)
         feedback.pushInfo(GdalUtils.tr('GDAL command:'))
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo(GdalUtils.tr('GDAL command output:'))
@@ -154,11 +154,11 @@ class GdalUtils:
         res = proc.run(feedback)
         if feedback.isCanceled() and res != 0:
             feedback.pushInfo(GdalUtils.tr('Process was canceled and did not complete'))
-        elif not feedback.isCanceled() and proc.exitStatus() == QProcess.CrashExit:
+        elif not feedback.isCanceled() and proc.exitStatus() == QProcess.ExitStatus.CrashExit:
             raise QgsProcessingException(GdalUtils.tr('Process was unexpectedly terminated'))
         elif res == 0:
             feedback.pushInfo(GdalUtils.tr('Process completed successfully'))
-        elif proc.processError() == QProcess.FailedToStart:
+        elif proc.processError() == QProcess.ProcessError.FailedToStart:
             raise QgsProcessingException(GdalUtils.tr('Process {} failed to start. Either {} is missing, or you may have insufficient permissions to run the program.').format(command, command))
         else:
             feedback.reportError(GdalUtils.tr('Process returned error code {}').format(res))
@@ -484,7 +484,7 @@ class GdalUtils:
         if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
-        return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
+        return crs.toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_GDAL)
 
     @classmethod
     def tr(cls, string, context=''):

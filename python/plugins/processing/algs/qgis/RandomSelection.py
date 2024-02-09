@@ -58,7 +58,7 @@ class RandomSelection(QgisAlgorithm):
         return 'vectorselection'
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
 
     def __init__(self):
         super().__init__()
@@ -72,7 +72,7 @@ class RandomSelection(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Method'), self.methods, False, 0))
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
-                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Integer,
+                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Type.Integer,
                                                        10, False, 0.0))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (random)')))
 

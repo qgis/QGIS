@@ -37,7 +37,7 @@ class CORE_EXPORT QgsProviderUtils
     /**
      * Flags which control how QgsProviderUtils::sublayerDetailsAreIncomplete() tests for completeness.
      */
-    enum class SublayerCompletenessFlag : int
+    enum class SublayerCompletenessFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IgnoreUnknownFeatureCount = 1 << 0, //!< Indicates that an unknown feature count should not be considered as incomplete
       IgnoreUnknownGeometryType = 1 << 1, //!< Indicates that an unknown geometry type should not be considered as incomplete

@@ -83,7 +83,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.TYPE,
                                                      self.tr('Geometry type'), options=self.type_names))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Bounding geometry'),
-                                                            QgsProcessing.TypeVectorPolygon))
+                                                            QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'minimumboundinggeometry'
@@ -138,7 +138,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             fields.append(QgsField('perimeter', QVariant.Double, '', 20, 6))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
+                                               fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -180,7 +180,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     feature = QgsFeature()
                     feature.setGeometry(QgsGeometry.fromRect(rect))
                     feature.setAttributes([current, group, rect.width(), rect.height(), rect.area(), rect.perimeter()])
-                    sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                    sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
                     geometry_dict[group] = None
 
                     feedback.setProgress(50 + int(current * total))
@@ -193,7 +193,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                         break
 
                     feature = self.createFeature(feedback, current, type, geometries, group)
-                    sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                    sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
                     geometry_dict[group] = None
 
                     feedback.setProgress(50 + int(current * total))
@@ -224,7 +224,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     feature.setAttributes([0, bounds.width(), bounds.height(), bounds.area(), bounds.perimeter()])
                 else:
                     feature = self.createFeature(feedback, 0, type, geometry_queue)
-                sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
 
         return {self.OUTPUT: dest_id}
 

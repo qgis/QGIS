@@ -39,6 +39,7 @@
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
+#include "qgsmessagelog.h"
 
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
@@ -144,6 +145,10 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
+  if ( !out.tessellator->error().isEmpty() )
+  {
+    QgsMessageLog::logMessage( out.tessellator->error(), QObject::tr( "3D" ) );
+  }
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
     processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
@@ -173,15 +178,15 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   }
 
   const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
-  const bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
-  const bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
+  const bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::Property::Height );
+  const bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::Property::ExtrusionHeight );
 
   float offset = mSymbol->offset();
   float extrusionHeight = mSymbol->extrusionHeight();
   if ( hasDDHeight )
-    offset = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyHeight, context.expressionContext(), offset ) );
+    offset = static_cast<float>( ddp.valueAsDouble( QgsAbstract3DSymbol::Property::Height, context.expressionContext(), offset ) );
   if ( hasDDExtrusion )
-    extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyExtrusionHeight, context.expressionContext(), extrusionHeight );
+    extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ExtrusionHeight, context.expressionContext(), extrusionHeight );
 
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {

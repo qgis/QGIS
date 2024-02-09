@@ -69,7 +69,7 @@ class TopoColor(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorPolygon]))
+                                                              [QgsProcessing.SourceType.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_COLORS,
                                                        self.tr('Minimum number of colors'), minValue=1, maxValue=1000,
                                                        defaultValue=4))
@@ -86,7 +86,7 @@ class TopoColor(QgisAlgorithm):
             options=balance_by, defaultValue=0))
 
         self.addParameter(
-            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Colored'), QgsProcessing.TypeVectorPolygon))
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Colored'), QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'topologicalcoloring'
@@ -140,7 +140,7 @@ class TopoColor(QgisAlgorithm):
                 attributes.append(NULL)
             output_feature.setAttributes(attributes)
 
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(output_feature, QgsFeatureSink.Flag.FastInsert)
             current += 1
             feedback.setProgress(80 + int(current * total))
 

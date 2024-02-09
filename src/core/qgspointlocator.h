@@ -152,7 +152,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * The type of a snap result or the filter type for a snap request.
      */
-    enum Type
+    enum Type SIP_ENUM_BASETYPE( IntFlag )
     {
       Invalid = 0, //!< Invalid
       Vertex  = 1 << 0, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.

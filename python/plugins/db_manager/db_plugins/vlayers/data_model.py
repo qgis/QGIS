@@ -83,7 +83,7 @@ class LSqlResultModelTask(SqlResultModelTask):
         df.setQuery(sql)
 
         self.subtask = QgsVirtualLayerTask(df)
-        self.addSubTask(self.subtask, [], QgsTask.ParentDependsOnSubTask)
+        self.addSubTask(self.subtask, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask)
 
     def run(self):
         try:
@@ -142,7 +142,7 @@ class LSqlResultModel(BaseTableModel):
         else:
             header = [f.name() for f in layer.fields()]
             has_geometry = False
-            if layer.geometryType() != QgsWkbTypes.NullGeometry:
+            if layer.geometryType() != QgsWkbTypes.GeometryType.NullGeometry:
                 gn = getQueryGeometryName(path)
                 if gn:
                     has_geometry = True

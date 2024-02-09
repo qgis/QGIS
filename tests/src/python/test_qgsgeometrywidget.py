@@ -82,8 +82,8 @@ class TestQgsGeometryWidget(QgisTestCase):
         w = QgsGeometryWidget()
         self.assertFalse(w.acceptedWkbTypes())
 
-        w.setAcceptedWkbTypes([QgsWkbTypes.PointZ, QgsWkbTypes.PointM])
-        self.assertEqual(w.acceptedWkbTypes(), [QgsWkbTypes.PointZ, QgsWkbTypes.PointM])
+        w.setAcceptedWkbTypes([QgsWkbTypes.Type.PointZ, QgsWkbTypes.Type.PointM])
+        self.assertEqual(w.acceptedWkbTypes(), [QgsWkbTypes.Type.PointZ, QgsWkbTypes.Type.PointM])
 
 
 if __name__ == '__main__':

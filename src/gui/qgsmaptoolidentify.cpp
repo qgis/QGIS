@@ -616,7 +616,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
     QgsFeatureRequest featureRequest;
     featureRequest.setFilterRect( r );
-    featureRequest.setFlags( QgsFeatureRequest::ExactIntersect | ( fetchFeatureSymbols ? QgsFeatureRequest::EmbeddedSymbols : QgsFeatureRequest::Flags() ) );
+    featureRequest.setFlags( Qgis::FeatureRequestFlag::ExactIntersect | ( fetchFeatureSymbols ? Qgis::FeatureRequestFlag::EmbeddedSymbols : Qgis::FeatureRequestFlags() ) );
     if ( !temporalFilter.isEmpty() )
       featureRequest.setFilterExpression( temporalFilter );
 
@@ -789,8 +789,6 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       closestPoint = QgsGeometryUtils::closestVertex( *feature.geometry().constGet(), QgsPoint( layerPoint ), vId );
     }
   }
-
-
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {

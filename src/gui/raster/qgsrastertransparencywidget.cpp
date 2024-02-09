@@ -50,7 +50,7 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   connect( pbnRemoveSelectedRow, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked );
 
   mNodataColorButton->setShowNoColor( true );
-  mNodataColorButton->setColorDialogTitle( tr( "Select No Data Color" ) );
+  mNodataColorButton->setColorDialogTitle( tr( "Select NoData Color" ) );
   syncToLayer();
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
@@ -71,7 +71,7 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
     pbnAddValuesFromDisplay->setEnabled( false );
   }
 
-  initializeDataDefinedButton( mOpacityDDBtn, QgsRasterPipe::RendererOpacity );
+  initializeDataDefinedButton( mOpacityDDBtn, QgsRasterPipe::Property::RendererOpacity );
 }
 
 void QgsRasterTransparencyWidget::setContext( const QgsSymbolWidgetContext &context )
@@ -515,7 +515,7 @@ void QgsRasterTransparencyWidget::apply()
 void QgsRasterTransparencyWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
 {
   button->blockSignals( true );
-  button->init( key, mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
+  button->init( static_cast< int >( key ), mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRasterTransparencyWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );

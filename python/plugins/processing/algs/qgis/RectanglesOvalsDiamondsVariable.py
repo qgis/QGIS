@@ -59,14 +59,14 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagDeprecated
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorPoint]))
+                                                              [QgsProcessing.SourceType.TypeVectorPoint]))
 
         self.addParameter(QgsProcessingParameterEnum(self.SHAPE,
                                                      self.tr('Buffer shape'), options=self.shapes))
@@ -74,15 +74,15 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.WIDTH,
                                                       self.tr('Width field'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric))
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
         self.addParameter(QgsProcessingParameterField(self.HEIGHT,
                                                       self.tr('Height field'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric))
+                                                      type=QgsProcessingParameterField.DataType.Numeric))
         self.addParameter(QgsProcessingParameterField(self.ROTATION,
                                                       self.tr('Rotation field'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Numeric,
+                                                      type=QgsProcessingParameterField.DataType.Numeric,
                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
                                                        self.tr('Number of segments'),
@@ -91,7 +91,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Output'),
-                                                            type=QgsProcessing.TypeVectorPolygon))
+                                                            type=QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'rectanglesovalsdiamondsvariable'
@@ -112,7 +112,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
         segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+                                               source.fields(), QgsWkbTypes.Type.Polygon, source.sourceCrs())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -170,7 +170,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                sink.addFeature(ft, QgsFeatureSink.Flag.FastInsert)
 
                 feedback.setProgress(int(current * total))
         else:
@@ -200,7 +200,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                sink.addFeature(ft, QgsFeatureSink.Flag.FastInsert)
 
                 feedback.setProgress(int(current * total))
 
@@ -245,7 +245,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                sink.addFeature(ft, QgsFeatureSink.Flag.FastInsert)
                 feedback.setProgress(int(current * total))
         else:
             for current, feat in enumerate(features):
@@ -274,7 +274,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                sink.addFeature(ft, QgsFeatureSink.Flag.FastInsert)
                 feedback.setProgress(int(current * total))
 
     def ovals(self, sink, source, width, height, rotation, segments, feedback):
@@ -322,7 +322,7 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                sink.addFeature(ft, QgsFeatureSink.Flag.FastInsert)
                 feedback.setProgress(int(current * total))
         else:
             for current, feat in enumerate(features):
@@ -355,5 +355,5 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                sink.addFeature(ft, QgsFeatureSink.Flag.FastInsert)
                 feedback.setProgress(int(current * total))

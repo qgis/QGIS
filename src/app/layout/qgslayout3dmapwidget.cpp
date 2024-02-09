@@ -105,7 +105,7 @@ void QgsLayout3DMapWidget::copy3DMapSettings( Qgs3DMapCanvasWidget *widget )
 {
   if ( !widget )
     return;
-  Qgs3DMapSettings *settings = new Qgs3DMapSettings( *widget->mapCanvas3D()->map() );
+  Qgs3DMapSettings *settings = new Qgs3DMapSettings( *widget->mapCanvas3D()->mapSettings() );
 
   // first setting passed on
   if ( !mMap3D->mapSettings() )

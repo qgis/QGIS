@@ -70,10 +70,10 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QSt
     QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
   }
   mReply->setParent( nullptr ); // we don't want thread locale QgsNetworkAccessManagers to delete the reply - we want ownership of it to belong to this object
-  connect( mReply, &QNetworkReply::finished, this, [ = ] { contentLoaded(); } );
+  connect( mReply, &QNetworkReply::finished, this, [this] { contentLoaded(); } );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 
-  auto onError = [ = ]( QNetworkReply::NetworkError code )
+  auto onError = [this]( QNetworkReply::NetworkError code )
   {
     // could have been canceled in the meantime
     if ( mReply )

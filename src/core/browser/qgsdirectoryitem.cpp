@@ -404,7 +404,7 @@ void QgsDirectoryItem::directoryChanged()
     // this happens when a new file appears in the directory and
     // the item's children thread will try to open the file with
     // GDAL or OGR even if it is still being written.
-    QTimer::singleShot( 100, this, [ = ] { refresh(); } );
+    QTimer::singleShot( 100, this, [this] { refresh(); } );
   }
 }
 

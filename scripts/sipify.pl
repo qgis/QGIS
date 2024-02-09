@@ -5,6 +5,9 @@ use File::Basename;
 use File::Spec;
 use Getopt::Long;
 use YAML::Tiny;
+use List::Util qw(any);
+use List::Util qw(none);
+
 no if $] >= 5.018000, warnings => 'experimental::smartmatch';
 
 use constant PRIVATE => 0;
@@ -58,6 +61,10 @@ my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
+my @ENUM_INT_TYPES = ();
+my @ENUM_INTFLAG_TYPES = ();
+my @ENUM_CLASS_NON_INT_TYPES = ();
+my @ENUM_MONKEY_PATCHED_TYPES = ();
 
 my $INDENT = '';
 my $PREV_INDENT = '';
@@ -84,6 +91,425 @@ my $LINE;
 my @OUTPUT = ();
 my @OUTPUT_PYTHON = ();
 my $DOXY_INSIDE_SIP_RUN = 0;
+my $HAS_PUSHED_FORCE_INT = 0;
+
+my @ALLOWED_NON_CLASS_ENUMS = (
+  "QgsSipifyHeader::MyEnum",
+  "QgsSipifyHeader::OneLiner",
+  "CadConstraint::LockMode",
+  "ColorrampTable",
+  "ElementType",
+  "LabelSettingsTable",
+  "Qgis::MessageLevel",
+  "Qgs3DMapScene::SceneState",
+  "Qgs3DTypes::CullingMode",
+  "Qgs3DTypes::Flag3DRenderer",
+  "QgsAbstractDatabaseProviderConnection::Capability",
+  "QgsAbstractDatabaseProviderConnection::GeometryColumnCapability",
+  "QgsAbstractFeatureIterator::CompileStatus",
+  "QgsAbstractGeometry::AxisOrder",
+  "QgsAbstractGeometry::SegmentationToleranceType",
+  "QgsAbstractGeometry::WkbFlag",
+  "QgsAbstractReportSection::SubSection",
+  "QgsAdvancedDigitizingDockWidget::CadCapacity",
+  "QgsAdvancedDigitizingDockWidget::WidgetSetMode",
+  "QgsApplication::Cursor",
+  "QgsApplication::StyleSheetType",
+  "QgsApplication::endian_t",
+  "QgsArrowSymbolLayer::ArrowType",
+  "QgsArrowSymbolLayer::HeadType",
+  "QgsAttributeEditorContext::FormMode",
+  "QgsAttributeEditorContext::Mode",
+  "QgsAttributeEditorContext::RelationMode",
+  "QgsAttributeEditorRelation::Button",
+  "QgsAttributeForm::FilterType",
+  "QgsAttributeForm::Mode",
+  "QgsAttributeFormWidget::Mode",
+  "QgsAttributeTableConfig::ActionWidgetStyle",
+  "QgsAttributeTableConfig::Type",
+  "QgsAttributeTableFilterModel::ColumnType",
+  "QgsAttributeTableFilterModel::FilterMode",
+  "QgsAuthCertUtils::CaCertSource",
+  "QgsAuthCertUtils::CertTrustPolicy",
+  "QgsAuthCertUtils::CertUsageType",
+  "QgsAuthCertUtils::ConstraintGroup",
+  "QgsAuthImportCertDialog::CertFilter",
+  "QgsAuthImportCertDialog::CertInput",
+  "QgsAuthImportIdentityDialog::BundleTypes",
+  "QgsAuthImportIdentityDialog::IdentityType",
+  "QgsAuthImportIdentityDialog::Validity",
+  "QgsAuthManager::MessageLevel",
+  "QgsAuthMethod::Expansion",
+  "QgsAuthSettingsWidget::WarningType",
+  "QgsBasicNumericFormat::RoundingType",
+  "QgsBearingNumericFormat::FormatDirectionOption",
+  "QgsBlockingNetworkRequest::ErrorCode",
+  "QgsBlurEffect::BlurMethod",
+  "QgsBookmarkManagerModel::Columns",
+  "QgsBrowserProxyModel::FilterSyntax",
+  "QgsCallout::AnchorPoint",
+  "QgsCallout::DrawOrder",
+  "QgsCallout::LabelAnchorPoint",
+  "QgsCheckBoxFieldFormatter::TextDisplayMethod",
+  "QgsClassificationLogarithmic::NegativeValueHandling",
+  "QgsClassificationMethod::ClassPosition",
+  "QgsClassificationMethod::MethodProperty",
+  "QgsClipper::Boundary",
+  "QgsColorButton::Behavior",
+  "QgsColorRampLegendNodeSettings::Direction",
+  "QgsColorRampShader::ClassificationMode",
+  "QgsColorRampShader::Type",
+  "QgsColorRampWidget::Orientation",
+  "QgsColorScheme::SchemeFlag",
+  "QgsColorTextWidget::ColorTextFormat",
+  "QgsColorWidget::ColorComponent",
+  "QgsCompoundColorWidget::Layout",
+  "QgsContrastEnhancement::ContrastEnhancementAlgorithm",
+  "QgsCoordinateFormatter::Format",
+  "QgsCoordinateFormatter::FormatFlag",
+  "QgsCoordinateReferenceSystem::CrsType",
+  "QgsCoordinateReferenceSystemProxyModel::Filter",
+  "QgsCptCityBrowserModel::ViewType",
+  "QgsCptCityDataItem::Type",
+  "QgsCurvedLineCallout::Orientation",
+  "QgsDartMeasurement::Type",
+  "QgsDataDefinedSizeLegend::LegendType",
+  "QgsDataDefinedSizeLegend::VerticalAlignment",
+  "QgsDataProvider::DataCapability",
+  "QgsDataProvider::ProviderProperty",
+  "QgsDataProvider::ReadFlag",
+  "QgsDataSourceUri::SslMode",
+  "QgsDiagramLayerSettings::LinePlacementFlag",
+  "QgsDiagramLayerSettings::Placement",
+  "QgsDiagramSettings::DiagramOrientation",
+  "QgsDiagramSettings::Direction",
+  "QgsDiagramSettings::LabelPlacementMethod",
+  "QgsDoubleSpinBox::ClearValueMode",
+  "QgsDualView::FeatureListBrowsingAction",
+  "QgsDualView::ViewMode",
+  "QgsDxfExport::DxfPolylineFlag",
+  "QgsDxfExport::Flag",
+  "QgsEditorWidgetWrapper::ConstraintResult",
+  "QgsEllipseSymbolLayer::Shape",
+  "QgsErrorMessage::Format",
+  "QgsExpression::ParserErrorType",
+  "QgsExpression::SpatialOperator",
+  "QgsExpressionBuilderWidget::Flag",
+  "QgsExpressionItem::ItemType",
+  "QgsExpressionNode::NodeType",
+  "QgsExpressionNodeBinaryOperator::BinaryOperator",
+  "QgsExpressionNodeUnaryOperator::UnaryOperator",
+  "QgsExtentGroupBox::ExtentState",
+  "QgsExtentWidget::ExtentState",
+  "QgsExtentWidget::WidgetStyle",
+  "QgsExternalResourceWidget::DocumentViewerContent",
+  "QgsFeatureListModel::Role",
+  "QgsFeatureListViewDelegate::Element",
+  "QgsFeatureRenderer::Capability",
+  "QgsFeatureSink::Flag",
+  "QgsFeatureSink::SinkFlag",
+  "QgsFetchedContent::ContentStatus",
+  "QgsFieldConstraints::Constraint",
+  "QgsFieldConstraints::ConstraintOrigin",
+  "QgsFieldConstraints::ConstraintStrength",
+  "QgsFieldFormatter::Flag",
+  "QgsFieldProxyModel::Filter",
+  "QgsFields::FieldOrigin",
+  "QgsFileWidget::RelativeStorage",
+  "QgsFileWidget::StorageMode",
+  "QgsFilterLineEdit::ClearMode",
+  "QgsFloatingWidget::AnchorPoint",
+  "QgsFontButton::Mode",
+  "QgsGeometryCheck::ChangeType",
+  "QgsGeometryCheck::ChangeWhat",
+  "QgsGeometryCheck::CheckType",
+  "QgsGeometryCheck::Flag",
+  "QgsGeometryCheckError::Status",
+  "QgsGeometryCheckError::ValueType",
+  "QgsGeometryEngine::EngineOperationResult",
+  "QgsGeometryRubberBand::IconType",
+  "QgsGeometrySnapper::SnapMode",
+  "QgsGlowEffect::GlowColorType",
+  "QgsGpsConnection::Status",
+  "QgsGraduatedSymbolRenderer::Mode",
+  "QgsGui::HigFlag",
+  "QgsGui::ProjectCrsBehavior",
+  "QgsHueSaturationFilter::GrayscaleMode",
+  "QgsIdentifyMenu::MenuLevel",
+  "QgsImageOperation::FlipType",
+  "QgsImageOperation::GrayscaleMode",
+  "QgsInterpolatedLineColor::ColoringMethod",
+  "QgsInterpolator::Result",
+  "QgsInterpolator::SourceType",
+  "QgsInterpolator::ValueSource",
+  "QgsKernelDensityEstimation::KernelShape",
+  "QgsKernelDensityEstimation::OutputValues",
+  "QgsKernelDensityEstimation::Result",
+  "QgsLabelingEngineSettings::Search",
+  "QgsLayerMetadataResultsModel::Roles",
+  "QgsLayerMetadataResultsModel::Sections",
+  "QgsLayerTreeLayer::LegendNodesSplitBehavior",
+  "QgsLayerTreeModel::Flag",
+  "QgsLayerTreeModelLegendNode::NodeTypes",
+  "QgsLayerTreeNode::NodeType",
+  "QgsLayout::UndoCommand",
+  "QgsLayout::ZValues",
+  "QgsLayoutAligner::Alignment",
+  "QgsLayoutAligner::Distribution",
+  "QgsLayoutAligner::Resize",
+  "QgsLayoutDesignerInterface::StandardTool",
+  "QgsLayoutExporter::ExportResult",
+  "QgsLayoutGridSettings::Style",
+  "QgsLayoutItem::ExportLayerBehavior",
+  "QgsLayoutItem::Flag",
+  "QgsLayoutItem::ReferencePoint",
+  "QgsLayoutItem::UndoCommand",
+  "QgsLayoutItemAbstractGuiMetadata::Flag",
+  "QgsLayoutItemAttributeTable::ContentSource",
+  "QgsLayoutItemHtml::ContentMode",
+  "QgsLayoutItemLabel::Mode",
+  "QgsLayoutItemMap::AtlasScalingMode",
+  "QgsLayoutItemMap::MapItemFlag",
+  "QgsLayoutItemMapGrid::AnnotationCoordinate",
+  "QgsLayoutItemMapGrid::AnnotationDirection",
+  "QgsLayoutItemMapGrid::AnnotationFormat",
+  "QgsLayoutItemMapGrid::AnnotationPosition",
+  "QgsLayoutItemMapGrid::BorderSide",
+  "QgsLayoutItemMapGrid::DisplayMode",
+  "QgsLayoutItemMapGrid::FrameSideFlag",
+  "QgsLayoutItemMapGrid::FrameStyle",
+  "QgsLayoutItemMapGrid::GridStyle",
+  "QgsLayoutItemMapGrid::GridUnit",
+  "QgsLayoutItemMapGrid::TickLengthMode",
+  "QgsLayoutItemMapItem::StackingPosition",
+  "QgsLayoutItemPage::Orientation",
+  "QgsLayoutItemPage::UndoCommand",
+  "QgsLayoutItemPicture::Format",
+  "QgsLayoutItemPicture::NorthMode",
+  "QgsLayoutItemPicture::ResizeMode",
+  "QgsLayoutItemPolyline::MarkerMode",
+  "QgsLayoutItemRegistry::ItemType",
+  "QgsLayoutItemShape::Shape",
+  "QgsLayoutManagerProxyModel::Filter",
+  "QgsLayoutModel::Columns",
+  "QgsLayoutMultiFrame::ResizeMode",
+  "QgsLayoutMultiFrame::UndoCommand",
+  "QgsLayoutNorthArrowHandler::NorthMode",
+  "QgsLayoutObject::PropertyValueType",
+  "QgsLayoutRenderContext::Flag",
+  "QgsLayoutTable::CellStyleGroup",
+  "QgsLayoutTable::EmptyTableMode",
+  "QgsLayoutTable::HeaderHAlignment",
+  "QgsLayoutTable::HeaderMode",
+  "QgsLayoutTable::WrapBehavior",
+  "QgsLayoutView::ClipboardOperation",
+  "QgsLayoutView::PasteMode",
+  "QgsLayoutViewTool::Flag",
+  "QgsLegendStyle::Side",
+  "QgsLegendStyle::Style",
+  "QgsLineSymbolLayer::RenderRingFilter",
+  "QgsLocatorFilter::Flag",
+  "QgsLocatorFilter::Priority",
+  "QgsManageConnectionsDialog::Mode",
+  "QgsManageConnectionsDialog::Type",
+  "QgsMapBoxGlStyleConverter::Result",
+  "QgsMapCanvasAnnotationItem::MouseMoveAction",
+  "QgsMapLayer::LayerFlag",
+  "QgsMapLayer::PropertyType",
+  "QgsMapLayer::ReadFlag",
+  "QgsMapLayer::StyleCategory",
+  "QgsMapLayerDependency::Origin",
+  "QgsMapLayerDependency::Type",
+  "QgsMapLayerElevationProperties::Flag",
+  "QgsMapRendererTask::ErrorType",
+  "QgsMapToPixelSimplifier::SimplifyAlgorithm",
+  "QgsMapToPixelSimplifier::SimplifyFlag",
+  "QgsMapTool::Flag",
+  "QgsMapToolCapture::Capability",
+  "QgsMapToolCapture::CaptureMode",
+  "QgsMapToolEdit::TopologicalResult",
+  "QgsMapToolIdentify::IdentifyMode",
+  "QgsMapToolIdentify::Type",
+  "QgsMarkerSymbolLayer::HorizontalAnchorPoint",
+  "QgsMarkerSymbolLayer::VerticalAnchorPoint",
+  "QgsMasterLayoutInterface::Type",
+  "QgsMediaWidget::Mode",
+  "QgsMergedFeatureRenderer::GeometryOperation",
+  "QgsMesh3DAveragingMethod::Method",
+  "QgsMeshCalculator::Result",
+  "QgsMeshDataBlock::DataType",
+  "QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod",
+  "QgsMeshDatasetGroup::Type",
+  "QgsMeshDatasetGroupMetadata::DataType",
+  "QgsMeshDriverMetadata::MeshDriverCapability",
+  "QgsMeshRendererScalarSettings::DataResamplingMethod",
+  "QgsMeshRendererVectorArrowSettings::ArrowScalingMethod",
+  "QgsMeshRendererVectorSettings::Symbology",
+  "QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod",
+  "QgsMeshTimeSettings::TimeUnit",
+  "QgsMessageOutput::MessageType",
+  "QgsMetadataWidget::Mode",
+  "QgsModelArrowItem::Marker",
+  "QgsModelComponentGraphicItem::Flag",
+  "QgsModelComponentGraphicItem::State",
+  "QgsModelGraphicsScene::Flag",
+  "QgsModelGraphicsScene::ZValues",
+  "QgsModelGraphicsView::ClipboardOperation",
+  "QgsModelGraphicsView::PasteMode",
+  "QgsMultiEditToolButton::State",
+  "QgsNetworkRequestParameters::RequestAttributes",
+  "QgsNewGeoPackageLayerDialog::OverwriteBehavior",
+  "QgsNewHttpConnection::ConnectionType",
+  "QgsNewHttpConnection::Flag",
+  "QgsNewHttpConnection::WfsVersionIndex",
+  "QgsOfflineEditing::ContainerType",
+  "QgsOfflineEditing::ProgressMode",
+  "QgsOgcUtils::FilterVersion",
+  "QgsOgcUtils::GMLVersion",
+  "QgsPaintEffect::DrawMode",
+  "QgsPercentageNumericFormat::InputValues",
+  "QgsPictureSourceLineEditBase::Format",
+  "QgsPointCloud3DSymbol::RenderingStyle",
+  "QgsPointCloudAttribute::DataType",
+  "QgsPointCloudAttributeProxyModel::Filter",
+  "QgsPointCloudDataProvider::Capability",
+  "QgsPointCloudDataProvider::PointCloudIndexGenerationState",
+  "QgsPointDisplacementRenderer::Placement",
+  "QgsPointLocator::Type",
+  "QgsPreviewEffect::PreviewMode",
+  "QgsProcessing::SourceType",
+  "QgsProcessingAlgorithm::Flag",
+  "QgsProcessingAlgorithm::PropertyAvailability",
+  "QgsProcessingAlgorithmDialogBase::LogFormat",
+  "QgsProcessingContext::Flag",
+  "QgsProcessingContext::LogLevel",
+  "QgsProcessingFeatureSource::Flag",
+  "QgsProcessingGui::WidgetType",
+  "QgsProcessingParameterDateTime::Type",
+  "QgsProcessingParameterDefinition::Flag",
+  "QgsProcessingParameterField::DataType",
+  "QgsProcessingParameterFile::Behavior",
+  "QgsProcessingParameterNumber::Type",
+  "QgsProcessingParameterTinInputLayers::Type",
+  "QgsProcessingParameterType::ParameterFlag",
+  "QgsProcessingProvider::Flag",
+  "QgsProcessingToolboxModelNode::NodeType",
+  "QgsProcessingToolboxProxyModel::Filter",
+  "QgsProjectBadLayerHandler::DataType",
+  "QgsProjectBadLayerHandler::ProviderType",
+  "QgsProjectServerValidator::ValidationError",
+  "QgsProjectionSelectionWidget::CrsOption",
+  "QgsPropertyDefinition::DataType",
+  "QgsPropertyDefinition::StandardPropertyTemplate",
+  "QgsPropertyTransformer::Type",
+  "QgsProviderMetadata::ProviderCapability",
+  "QgsProviderMetadata::ProviderMetadataCapability",
+  "QgsProviderRegistry::WidgetMode",
+  "QgsQuadrilateral::ConstructionOption",
+  "QgsQuadrilateral::Point",
+  "QgsRasterCalcNode::Operator",
+  "QgsRasterCalcNode::Type",
+  "QgsRasterCalculator::Result",
+  "QgsRasterDataProvider::ProviderCapability",
+  "QgsRasterDataProvider::TransformType",
+  "QgsRasterFileWriter::RasterFormatOption",
+  "QgsRasterFormatSaveOptionsWidget::Type",
+  "QgsRasterInterface::Capability",
+  "QgsRasterLayerSaveAsDialog::CrsState",
+  "QgsRasterLayerSaveAsDialog::Mode",
+  "QgsRasterLayerSaveAsDialog::ResolutionState",
+  "QgsRasterMatrix::OneArgOperator",
+  "QgsRasterMatrix::TwoArgOperator",
+  "QgsRasterMinMaxOrigin::Extent",
+  "QgsRasterMinMaxOrigin::Limits",
+  "QgsRasterMinMaxOrigin::StatAccuracy",
+  "QgsRasterProjector::Precision",
+  "QgsRasterRange::BoundsType",
+  "QgsReadWriteLocker::Mode",
+  "QgsRegularPolygon::ConstructionOption",
+  "QgsRelationEditorWidget::Button",
+  "QgsRelationReferenceWidget::CanvasExtent",
+  "QgsRendererAbstractMetadata::LayerType",
+  "QgsReportSectionFieldGroup::SectionVisibility",
+  "QgsRubberBand::IconType",
+  "QgsRuleBasedRenderer::FeatureFlags",
+  "QgsSQLStatement::BinaryOperator",
+  "QgsSQLStatement::JoinType",
+  "QgsSQLStatement::NodeType",
+  "QgsSQLStatement::UnaryOperator",
+  "QgsScaleBarSettings::Alignment",
+  "QgsScaleBarSettings::LabelHorizontalPlacement",
+  "QgsScaleBarSettings::LabelVerticalPlacement",
+  "QgsScaleBarSettings::SegmentSizeMode",
+  "QgsSearchWidgetWrapper::FilterFlag",
+  "QgsServerOgcApi::ContentType",
+  "QgsServerOgcApi::Rel",
+  "QgsServerParameter::Name",
+  "QgsServerRequest::Method",
+  "QgsServerRequest::RequestHeader",
+  "QgsServerSettingsEnv::EnvVar",
+  "QgsServerSettingsEnv::Source",
+  "QgsServerWmsDimensionProperties::DefaultDisplay",
+  "QgsServerWmsDimensionProperties::PredefinedWmsDimensionName",
+  "QgsSettings::Section",
+  "QgsSimplifyMethod::MethodType",
+  "QgsSingleBandGrayRenderer::Gradient",
+  "QgsSizeScaleTransformer::ScaleType",
+  "QgsSnappingConfig::ScaleDependencyMode",
+  "QgsSnappingConfig::SnappingType",
+  "QgsSnappingUtils::IndexingStrategy",
+  "QgsSourceSelectProvider::Ordering",
+  "QgsSpatialIndex::Flag",
+  "QgsSpinBox::ClearValueMode",
+  "QgsStatusBar::Anchor",
+  "QgsStoredExpression::Category",
+  "QgsStyle::StyleEntity",
+  "QgsStyleExportImportDialog::Mode",
+  "QgsStyleModel::Column",
+  "QgsSublayersDialog::PromptMode",
+  "QgsSublayersDialog::ProviderType",
+  "QgsTask::Flag",
+  "QgsTask::SubTaskDependency",
+  "QgsTask::TaskStatus",
+  "QgsTemporalProperty::Flag",
+  "QgsTextBackgroundSettings::RotationType",
+  "QgsTextBackgroundSettings::ShapeType",
+  "QgsTextBackgroundSettings::SizeType",
+  "QgsTextDiagram::Orientation",
+  "QgsTextDiagram::Shape",
+  "QgsTextFormatWidget::Mode",
+  "QgsTextMaskSettings::MaskType",
+  "QgsTextShadowSettings::ShadowPlacement",
+  "QgsTicksScaleBarRenderer::TickPosition",
+  "QgsTinInterpolator::TinInterpolation",
+  "QgsTracer::PathError",
+  "QgsValidityCheckContext::ContextType",
+  "QgsValidityCheckResult::Type",
+  "QgsVectorDataProvider::Capability",
+  "QgsVectorFieldSymbolLayer::AngleOrientation",
+  "QgsVectorFieldSymbolLayer::AngleUnits",
+  "QgsVectorFieldSymbolLayer::VectorFieldType",
+  "QgsVectorFileWriter::ActionOnExistingFile",
+  "QgsVectorFileWriter::EditionCapability",
+  "QgsVectorFileWriter::FieldNameSource",
+  "QgsVectorFileWriter::OptionType",
+  "QgsVectorFileWriter::VectorFormatOption",
+  "QgsVectorFileWriter::WriterError",
+  "QgsVectorLayerDirector::Direction",
+  "QgsVectorLayerUtils::CascadedFeatureFlag",
+  "QgsVectorSimplifyMethod::SimplifyAlgorithm",
+  "QgsVectorSimplifyMethod::SimplifyHint",
+  "QgsVertexMarker::IconType",
+  "QgsWeakRelation::WeakRelationType",
+  "QgsWindowManagerInterface::StandardDialog",
+  "Rule::RegisterResult",
+  "Rule::RenderResult",
+  "SmartgroupTable",
+  "SymbolTable",
+  "TagTable",
+  "TagmapTable",
+  "TextFormatTable"
+);
 
 sub read_line {
     my $new_line = $INPUT_LINES[$LINE_IDX];
@@ -475,8 +901,11 @@ sub fix_annotations {
     my $line = $_[0];
 
     # get removed params to be able to drop them out of the API doc
-    if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/ ){
+    if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/){
       my @removed_params = $line =~ m/(\w+)\s+SIP_PYARGREMOVE/g;
+      if ( $is_qt6 ){
+        my @removed_params = $line =~ m/(\w+)\s+SIP_PYARGREMOVE6{0,1}/g;
+      }
       foreach ( @removed_params ) {
         push @SKIPPED_PARAMS_REMOVE, $_;
         dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
@@ -545,7 +974,14 @@ sub fix_annotations {
             $line = "$prev_line $line\n";
         }
         # see https://regex101.com/r/5iNptO/4
-        $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        if ( $is_qt6 ){
+          $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE6{0,1}( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        }
+        else {
+          $line =~ s/SIP_PYARGREMOVE6\s*//g;
+          $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+        }
+
         $line =~ s/\(\s+\)/()/;
     }
     $line =~ s/SIP_FORCE//;
@@ -571,6 +1007,11 @@ sub replace_macros {
     $line =~ s/\bTRUE\b/``True``/g;
     $line =~ s/\bFALSE\b/``False``/g;
     $line =~ s/\bNULLPTR\b/``None``/g;
+    if ( $is_qt6 )
+    {
+        # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
+        $line =~ s/(\s|QList<\s*|QVector<\s*)QVariantMap/$1QMap<QString, QVariant>/g;
+    }
     return $line;
 }
 
@@ -665,6 +1106,14 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $is_qt6 ){
         $LINE =~ s/int\s*__len__\s*\(\s*\)/Py_ssize_t __len__\(\)/;
         $LINE =~ s/long\s*__hash__\s*\(\s*\)/Py_hash_t __hash__\(\)/;
+    }
+
+    # do not PYQT5 code if we are in qt6
+    if ( $is_qt6 && $LINE =~ m/^\s*#ifdef SIP_PYQT5_RUN/){
+        dbg_info("do not process PYQT5 code");
+        while ( $LINE !~ m/^#endif/ ){
+            $LINE = read_line();
+        }
     }
 
     # do not process SIP code %XXXCode
@@ -998,7 +1447,7 @@ while ($LINE_IDX < $LINE_COUNT){
             } else {
               $LINE = "\ntypedef $tpl<$cls1,$cls2,$cls3> ${tpl}${cls1}${cls2}${cls3}Base;\n\n$LINE";
             }
-            if ( not $tpl ~~ @DECLARED_CLASSES ){
+            if ( none { $_ eq $tpl } @DECLARED_CLASSES ){
                 my $tpl_header = lc $tpl . ".h";
                 if ( exists $SIP_CONFIG->{class_headerfile}->{$tpl} ){
                     $tpl_header = $SIP_CONFIG->{class_headerfile}->{$tpl};
@@ -1013,7 +1462,7 @@ while ($LINE_IDX < $LINE_COUNT){
               $LINE .= "\ntypedef $tpl<$cls1,$cls2,$cls3> ${tpl}${cls1}${cls2}${cls3}Base;";
             }
         }
-        if ( PRIVATE ~~ @ACCESS && $#ACCESS != 0){
+        if ( ( any{ $_ == PRIVATE } @ACCESS ) && $#ACCESS != 0){
             # do not write anything in PRIVATE context and not top level
             dbg_info("skipping class in private context");
             next;
@@ -1046,7 +1495,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     pop(@GLOB_BRACKET_NESTING_IDX);
                     pop(@ACCESS);
                     exit_with_error("Class $CLASSNAME[$#CLASSNAME] should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.")
-                        if $EXPORTED[-1] == 0 and not $CLASSNAME[$#CLASSNAME] ~~ $SIP_CONFIG->{no_export_macro};
+                        if $EXPORTED[-1] == 0 and ($CLASSNAME[$#CLASSNAME] ne $SIP_CONFIG->{no_export_macro});
                     pop @EXPORTED;
                 }
                 pop(@CLASSNAME);
@@ -1090,7 +1539,7 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("PRV3", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
         $PRIVATE_SECTION_LINE = '';
     }
-    elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
+    elsif ( ( any{ $_ == PRIVATE } @ACCESS ) && $SIP_RUN == 0 ) {
         $COMMENT = '';
         next;
     }
@@ -1129,22 +1578,52 @@ while ($LINE_IDX < $LINE_COUNT){
     # Enum declaration
     # For scoped and type based enum, the type has to be removed
     if ( $LINE =~ m/^\s*Q_DECLARE_FLAGS\s*\(\s*(?<flags_name>\w+)\s*,\s*(?<flag_name>\w+)\s*\)\s*SIP_MONKEYPATCH_FLAGS_UNNEST\s*\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\)\s*$/ ){
+        if ("$+{emkb}.$+{emkf}" ne "$ACTUAL_CLASS.$+{flags_name}" ) {
+          push @OUTPUT_PYTHON, "$+{emkb}.$+{emkf} = $ACTUAL_CLASS.$+{flags_name}\n";
+        }
+        push @ENUM_MONKEY_PATCHED_TYPES, [$ACTUAL_CLASS, $+{flags_name}, $+{emkb}, $+{emkf}];
 
-        push @OUTPUT_PYTHON, "$+{emkb}.$+{emkf} = $ACTUAL_CLASS.$+{flags_name}\n";
         $LINE =~ s/\s*SIP_MONKEYPATCH_FLAGS_UNNEST\(.*?\)//;
     }
-    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?<oneliner>.*)$/ ){
+    if ( $LINE =~ m/^(\s*enum(\s+Q_DECL_DEPRECATED)?\s+(?<isclass>class\s+)?(?<enum_qualname>\w+))(:?\s+SIP_[^:]*)?(\s*:\s*(?<enum_type>\w+))?(?:\s*SIP_ENUM_BASETYPE\s*\(\s*(?<py_enum_type>\w+)\s*\))?(?<oneliner>.*)$/ ){
         my $enum_decl = $1;
-        $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
-        if ( $is_qt6 eq 1 and defined $+{enum_type} and $+{enum_type} eq "int" ) {
-          $enum_decl .= " /BaseType=IntFlag/"
-        }
-        write_output("ENU1", "$enum_decl");
-        write_output("ENU1", $+{oneliner}) if defined $+{oneliner};
-        write_output("ENU1", "\n");
         my $enum_qualname = $+{enum_qualname};
+        my $enum_type = $+{enum_type};
+        my $isclass = $+{isclass};
+        my $enum_cpp_name = (defined $ACTUAL_CLASS and $ACTUAL_CLASS) ? ($ACTUAL_CLASS."::$enum_qualname") : "$enum_qualname";
+        if (not defined $isclass and none { $_ eq $enum_cpp_name } @ALLOWED_NON_CLASS_ENUMS ) {
+          exit_with_error("Non class enum exposed to Python -- must be a enum class: $enum_cpp_name");
+        }
+        my $oneliner = $+{oneliner};
         my $is_scope_based = "0";
-        $is_scope_based = "1" if defined $+{isclass};
+        $is_scope_based = "1" if defined $isclass;
+        $enum_decl =~ s/\s*\bQ_DECL_DEPRECATED\b//;
+        my $py_enum_type;
+        if ( $LINE =~ m/SIP_ENUM_BASETYPE\(\s*(.*?)\s*\)/ ) {
+           $py_enum_type = $1;
+        }
+        if (defined $py_enum_type and $py_enum_type eq "IntFlag") {
+          push @ENUM_INTFLAG_TYPES, $enum_cpp_name;
+        }
+        if (defined $enum_type and ($enum_type eq "int" or $enum_type eq "quint32")) {
+          push @ENUM_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
+          if ( $is_qt6 eq 1 ) {
+            if (defined $py_enum_type) {
+              $enum_decl .= " /BaseType=$py_enum_type/"
+            } else {
+              $enum_decl .= " /BaseType=IntEnum/"
+            }
+          }
+        } elsif (defined $enum_type) {
+          exit_with_error("Unhandled enum type $enum_type for $enum_cpp_name");
+        } elsif (defined $isclass) {
+          push @ENUM_CLASS_NON_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
+        }
+
+        write_output("ENU1", "$enum_decl");
+        write_output("ENU1", $oneliner) if defined $oneliner;
+        write_output("ENU1", "\n");
+
         my $monkeypatch = "0";
         $monkeypatch = "1" if defined $is_scope_based eq "1" and $LINE =~ m/SIP_MONKEYPATCH_SCOPEENUM(_UNNEST)?(:?\(\s*(?<emkb>\w+)\s*,\s*(?<emkf>\w+)\s*\))?/;
         my $enum_mk_base = "";
@@ -1181,15 +1660,21 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$7/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?<enum_value>(:?[\w\s\d|+-]|::|<<)+))?(?<optional_comma>,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$+{optional_comma}/r;
                     my $enum_member = $+{em};
                     my $comment = $+{co};
                     my $compat_name = $+{compat} ? $+{compat} : $enum_member;
+                    my $enum_value = $+{enum_value};
                     # replace :: with . (changes c++ style namespace/class directives to Python style)
                     $comment =~ s/::/./g;
                     $comment =~ s/\"/\\"/g;
                     $comment =~ s/\\since .*?([\d\.]+)/\\n.. versionadded:: $1\\n/i;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
+                    if ( defined $enum_value and ($enum_value =~ m/.*\<\<.*/ or $enum_value =~ m/.*0x0.*/)) {
+                       if (none { $_ eq "${ACTUAL_CLASS}::$enum_qualname" } @ENUM_INTFLAG_TYPES) {
+                         exit_with_error("${ACTUAL_CLASS}::$enum_qualname is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line");
+                      }
+                    }
                     if ($is_scope_based eq "1" and $enum_member ne "") {
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
                           if ( $ACTUAL_CLASS ne "" ) {
@@ -1323,11 +1808,50 @@ while ($LINE_IDX < $LINE_COUNT){
         dbg_info("Declare flags: $ACTUAL_CLASS");
         $LINE = "$1typedef QFlags<${ACTUAL_CLASS}$3> $2;\n";
         $QFLAG_HASH{"${ACTUAL_CLASS}$2"} = "${ACTUAL_CLASS}$3";
+
+        if ( none { $_ eq "${ACTUAL_CLASS}$3" } @ENUM_INTFLAG_TYPES ){
+           exit_with_error("${ACTUAL_CLASS}$3 is a flags type, but was not declared with IntFlag type. Add 'SIP_ENUM_BASETYPE(IntFlag)' to the enum class declaration line");
+        }
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
-        my $flag = $QFLAG_HASH{$2};
+        my $flags = $2;
+        my $flag = $QFLAG_HASH{$flags};
         $LINE = "$1QFlags<$flag> operator|($flag f1, QFlags<$flag> f2);\n";
+
+        my $py_flag = $flag;
+        $py_flag =~ s/::/./;
+
+        if ( any { $_ eq $py_flag } @ENUM_CLASS_NON_INT_TYPES ){
+          exit_with_error("$flag is a flags type, but was not declared with int type. Add ': int' to the enum class declaration line");
+        }
+        elsif ( none { $_ eq $py_flag } @ENUM_INT_TYPES ){
+          if ( $is_qt6 ) {
+            dbg_info("monkey patching operators for non class enum");
+            if ($HAS_PUSHED_FORCE_INT eq 0) {
+              push @OUTPUT_PYTHON, "def _force_int(v): return v if isinstance(v, int) else int(v.value)\n\n\n";
+              $HAS_PUSHED_FORCE_INT = 1;
+            }
+            push @OUTPUT_PYTHON, "$py_flag.__bool__ = lambda flag: bool(_force_int(flag))\n";
+            push @OUTPUT_PYTHON, "$py_flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n";
+            push @OUTPUT_PYTHON, "$py_flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n";
+            push @OUTPUT_PYTHON, "$py_flag.__or__ = lambda flag1, flag2: $py_flag(_force_int(flag1) | _force_int(flag2))\n";
+          }
+        }
+        if ( !$is_qt6 )
+        {
+           foreach ( @ENUM_MONKEY_PATCHED_TYPES ) {
+             if ( $flags eq "$_->[0]::$_->[1]" )
+             {
+               dbg_info("monkey patching flags");
+               if ($HAS_PUSHED_FORCE_INT eq 0) {
+                 push @OUTPUT_PYTHON, "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n";
+                 $HAS_PUSHED_FORCE_INT = 1;
+               }
+               push @OUTPUT_PYTHON, "$py_flag.__or__ = lambda flag1, flag2: $_->[0].$_->[1](_force_int(flag1) | _force_int(flag2))\n";
+             }
+           }
+        }
     }
 
     # remove Q_INVOKABLE
@@ -1547,8 +2071,8 @@ typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
                   #     $RETURN_TYPE = '';
                   # }
                   if ( $comment_line =~ m/^:param\s+(\w+)/) {
-                    if ( $1 ~~ @SKIPPED_PARAMS_OUT || $1 ~~ @SKIPPED_PARAMS_REMOVE ) {
-                      if ( $1 ~~ @SKIPPED_PARAMS_OUT ) {
+                    if ( (any { $_ eq $1 } @SKIPPED_PARAMS_OUT) || (any { $_ eq $1 } @SKIPPED_PARAMS_REMOVE) ) {
+                      if ( any { $_ eq $1 } @SKIPPED_PARAMS_OUT ) {
                         $comment_line =~ s/^:param\s+(\w+):\s*(.*?)$/$1: $2/;
                         $comment_line =~ s/(?:optional|if specified|if given)[,]?\s*//g;
                         push @out_params, $comment_line ;

@@ -23,7 +23,7 @@
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, [ = ]
+  connect( QgsProject::instance(), &QgsProject::readProject, this, [this]
   {
     beginResetModel();
     endResetModel();

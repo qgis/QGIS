@@ -175,15 +175,15 @@ class TestQgsProject(QgisTestCase):
         prj = QgsProject.instance()
         prj.clear()
 
-        prj.setDistanceUnits(QgsUnitTypes.DistanceFeet)
-        self.assertEqual(prj.distanceUnits(), QgsUnitTypes.DistanceFeet)
+        prj.setDistanceUnits(QgsUnitTypes.DistanceUnit.DistanceFeet)
+        self.assertEqual(prj.distanceUnits(), QgsUnitTypes.DistanceUnit.DistanceFeet)
 
     def testAreaUnits(self):
         prj = QgsProject.instance()
         prj.clear()
 
-        prj.setAreaUnits(QgsUnitTypes.AreaSquareFeet)
-        self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaSquareFeet)
+        prj.setAreaUnits(QgsUnitTypes.AreaUnit.AreaSquareFeet)
+        self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaUnit.AreaSquareFeet)
 
     def testReadEntry(self):
         prj = QgsProject.instance()
@@ -217,7 +217,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_tree_group.findLayerIds()), 2)
         for layer_id in layer_tree_group.findLayerIds():
             name = prj.mapLayer(layer_id).name()
-            self.assertTrue(name in ['polys', 'lines'])
+            self.assertIn(name, ['polys', 'lines'])
             if name == 'polys':
                 self.assertTrue(layer_tree_group.findLayer(layer_id).itemVisibilityChecked())
             elif name == 'lines':
@@ -273,7 +273,7 @@ class TestQgsProject(QgisTestCase):
 
         vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
         self.assertEqual(QgsProject.instance().addMapLayer(vl), vl)
-        self.assertFalse(vl in QgsProject.instance().mapLayers(True).values())
+        self.assertNotIn(vl, QgsProject.instance().mapLayers(True).values())
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
         self.assertEqual(QgsProject.instance().count(), 1)
         self.assertEqual(QgsProject.instance().validCount(), 0)
@@ -342,7 +342,7 @@ class TestQgsProject(QgisTestCase):
 
         vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
         self.assertEqual(QgsProject.instance().addMapLayers([vl]), [vl])
-        self.assertFalse(vl in QgsProject.instance().mapLayers(True).values())
+        self.assertNotIn(vl, QgsProject.instance().mapLayers(True).values())
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
         self.assertEqual(QgsProject.instance().count(), 1)
         self.assertEqual(QgsProject.instance().validCount(), 0)
@@ -784,10 +784,10 @@ class TestQgsProject(QgisTestCase):
 
         project2 = QgsProject()
         self.assertFalse(project2.isZipped())
-        self.assertTrue(project2.fileName() == "")
+        self.assertFalse(project2.fileName())
         self.assertTrue(project2.read(tmpFile))
         self.assertTrue(project2.isZipped())
-        self.assertTrue(project2.fileName() == tmpFile)
+        self.assertEqual(project2.fileName(), tmpFile)
         layers = project2.mapLayers()
 
         self.assertEqual(len(layers.keys()), 2)
@@ -872,9 +872,9 @@ class TestQgsProject(QgisTestCase):
 
         with open(tmpFile) as f:
             content = ''.join(f.readlines())
-            self.assertTrue('source="./lines.shp"' in content)
-            self.assertTrue('source="./points.shp"' in content)
-            self.assertTrue('source="./landsat_4326.tif"' in content)
+            self.assertIn('source="./lines.shp"', content)
+            self.assertIn('source="./points.shp"', content)
+            self.assertIn('source="./landsat_4326.tif"', content)
 
         # Re-read the project and store absolute
         project = QgsProject()
@@ -887,9 +887,9 @@ class TestQgsProject(QgisTestCase):
 
         with open(tmpFile2) as f:
             content = ''.join(f.readlines())
-            self.assertTrue(f'source="{tmpDir.path()}/lines.shp"' in content)
-            self.assertTrue(f'source="{tmpDir.path()}/points.shp"' in content)
-            self.assertTrue(f'source="{tmpDir.path()}/landsat_4326.tif"' in content)
+            self.assertIn(f'source="{tmpDir.path()}/lines.shp"', content)
+            self.assertIn(f'source="{tmpDir.path()}/points.shp"', content)
+            self.assertIn(f'source="{tmpDir.path()}/landsat_4326.tif"', content)
 
         del project
 
@@ -993,9 +993,9 @@ class TestQgsProject(QgisTestCase):
 
         with open(tmpFile) as f:
             content = ''.join(f.readlines())
-            self.assertTrue('source="./lines.shp"' in content)
-            self.assertTrue('source="./points.shp"' in content)
-            self.assertTrue('source="./landsat_4326.tif"' in content)
+            self.assertIn('source="./lines.shp"', content)
+            self.assertIn('source="./points.shp"', content)
+            self.assertIn('source="./landsat_4326.tif"', content)
 
     def testHomePath(self):
         p = QgsProject()
@@ -1588,13 +1588,13 @@ class TestQgsProject(QgisTestCase):
 
         project.addMapLayers([layer])
 
-        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), False)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), False)
         project.setFlags(project.flags() | Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
         self.assertTrue(project.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
-        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
 
         project.addMapLayers([layer2])
-        self.assertEqual(layer2.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layer2.dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
 
         tmp_dir = QTemporaryDir()
         tmp_project_file = f"{tmp_dir.path()}/project.qgs"
@@ -1607,8 +1607,8 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layers), 2)
 
         self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
-        self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
-        self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+        self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
+        self.assertEqual(layers[1].dataProvider().providerProperty(QgsDataProvider.ProviderProperty.EvaluateDefaultValues, None), True)
 
 
 if __name__ == '__main__':

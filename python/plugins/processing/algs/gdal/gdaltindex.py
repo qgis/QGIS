@@ -61,7 +61,7 @@ class gdaltindex(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Input files'),
-                                                               QgsProcessing.TypeRaster))
+                                                               QgsProcessing.SourceType.TypeRaster))
         self.addParameter(QgsProcessingParameterString(self.PATH_FIELD_NAME,
                                                        self.tr('Field name to hold the file path to the indexed rasters'),
                                                        defaultValue='location'))
@@ -75,13 +75,13 @@ class gdaltindex(GdalAlgorithm):
         target_crs_param = QgsProcessingParameterCrs(self.TARGET_CRS,
                                                      self.tr('Transform geometries to the given CRS'),
                                                      optional=True)
-        target_crs_param.setFlags(target_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        target_crs_param.setFlags(target_crs_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(target_crs_param)
 
         crs_field_param = QgsProcessingParameterString(self.CRS_FIELD_NAME,
                                                        self.tr('The name of the field to store the SRS of each tile'),
                                                        optional=True)
-        crs_field_param.setFlags(crs_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        crs_field_param.setFlags(crs_field_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(crs_field_param)
 
         crs_format_param = QgsProcessingParameterEnum(self.CRS_FORMAT,
@@ -89,12 +89,12 @@ class gdaltindex(GdalAlgorithm):
                                                       options=[i[0] for i in self.formats],
                                                       allowMultiple=False,
                                                       defaultValue=0)
-        crs_format_param.setFlags(crs_format_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        crs_format_param.setFlags(crs_format_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(crs_format_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('Tile index'),
-                                                                  QgsProcessing.TypeVectorPolygon))
+                                                                  QgsProcessing.SourceType.TypeVectorPolygon))
 
     def name(self):
         return 'tileindex'

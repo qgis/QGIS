@@ -59,43 +59,43 @@ class GridNearestNeighbor(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Point layer'),
-                                                              [QgsProcessing.TypeVectorPoint]))
+                                                              [QgsProcessing.SourceType.TypeVectorPoint]))
 
         z_field_param = QgsProcessingParameterField(self.Z_FIELD,
                                                     self.tr('Z value from field'),
                                                     None,
                                                     self.INPUT,
-                                                    QgsProcessingParameterField.Numeric,
+                                                    QgsProcessingParameterField.DataType.Numeric,
                                                     optional=True)
-        z_field_param.setFlags(z_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        z_field_param.setFlags(z_field_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(z_field_param)
 
         self.addParameter(QgsProcessingParameterNumber(self.RADIUS_1,
                                                        self.tr('The first radius of search ellipse'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        minValue=0.0,
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.RADIUS_2,
                                                        self.tr('The second radius of search ellipse'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        minValue=0.0,
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.ANGLE,
                                                        self.tr('Angle of search ellipse rotation in degrees (counter clockwise)'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        minValue=0.0,
                                                        maxValue=360.0,
                                                        defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('NODATA marker to fill empty points'),
-                                                       type=QgsProcessingParameterNumber.Double,
+                                                       type=QgsProcessingParameterNumber.Type.Double,
                                                        defaultValue=0.0))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         options_param.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
@@ -105,7 +105,7 @@ class GridNearestNeighbor(GdalAlgorithm):
                                                    self.tr('Additional command-line parameters'),
                                                    defaultValue=None,
                                                    optional=True)
-        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(extra_param)
 
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
@@ -113,7 +113,7 @@ class GridNearestNeighbor(GdalAlgorithm):
                                                     self.TYPES,
                                                     allowMultiple=False,
                                                     defaultValue=5)
-        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
         self.addParameter(dataType_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,

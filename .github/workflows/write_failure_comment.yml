@@ -1,5 +1,9 @@
 name: Write test failure comment
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   workflow_run:
     workflows: [🧪 QGIS tests]
@@ -9,11 +13,17 @@ on:
       - 'master'
       - 'release*'
 
+permissions:
+  contents: read
+
 jobs:
   on-failure:
     strategy:
       matrix:
         qt-version: [ 5, 6 ]
+
+    permissions:
+      pull-requests: write
 
     runs-on: ubuntu-latest
     steps:

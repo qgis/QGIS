@@ -243,11 +243,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, &QgsVectorLayerProperties::loadMetadataFromFile );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsVectorLayerProperties::saveMetadataToFile );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata from File…" ), this, &QgsVectorLayerProperties::loadMetadataFromFile );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata to File…" ), this, &QgsVectorLayerProperties::saveMetadataToFile );
   menuMetadata->addSeparator();
-  menuMetadata->addAction( tr( "Save as Default" ), this, &QgsVectorLayerProperties::saveMetadataAsDefault );
-  menuMetadata->addAction( tr( "Restore Default" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
+  menuMetadata->addAction( tr( "Save to Default Location" ), this, &QgsVectorLayerProperties::saveMetadataAsDefault );
+  menuMetadata->addAction( tr( "Restore from Default Location" ), this, &QgsVectorLayerProperties::loadDefaultMetadata );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
 
@@ -291,7 +291,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     {
       pbnIndex->setEnabled( false );
     }
-    if ( mLayer->dataProvider()->hasSpatialIndex() == QgsFeatureSource::SpatialIndexPresent )
+    if ( mLayer->dataProvider()->hasSpatialIndex() == Qgis::SpatialIndexPresence::Present )
     {
       pbnIndex->setEnabled( false );
       pbnIndex->setText( tr( "Spatial Index Exists" ) );
@@ -742,16 +742,6 @@ void QgsVectorLayerProperties::syncToLayer()
 
 void QgsVectorLayerProperties::apply()
 {
-  if ( mSourceWidget )
-  {
-    const QString newSource = mSourceWidget->sourceUri();
-    if ( newSource != mLayer->source() )
-    {
-      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
-                             QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
-    }
-  }
-
   if ( labelingDialog )
   {
     labelingDialog->writeSettingsToLayer();
@@ -923,7 +913,6 @@ void QgsVectorLayerProperties::apply()
     mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
   }
 
-
   QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
   if ( mSelectionColorButton->color() != mSelectionColorButton->defaultColor() )
     selectionProperties->setSelectionColor( mSelectionColorButton->color() );
@@ -964,6 +953,27 @@ void QgsVectorLayerProperties::apply()
   if ( ! mLayer->setDependencies( deps ) )
   {
     QMessageBox::warning( nullptr, tr( "Save Dependency" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored." ) );
+  }
+
+  // Why is this here? Well, we if we're making changes to the layer's source then potentially
+  // we are changing the geometry type of the layer, or even going from spatial <-> non spatial types.
+  // So we need to ensure that anything from the dialog which sets things like renderer properties
+  // happens BEFORE we change the source, otherwise we might end up with a renderer which is not
+  // compatible with the new geometry type of the layer. (And likewise for other properties like
+  // fields!)
+  if ( mSourceWidget )
+  {
+    const QString newSource = mSourceWidget->sourceUri();
+    if ( newSource != mLayer->source() )
+    {
+      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
+                             QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
+
+      // resync dialog to layer's new state -- this allows any changed layer properties
+      // (such as a forced creation of a new renderer compatible with the new layer, new field configuration, etc)
+      // to show in the dialog correctly
+      syncToLayer();
+    }
   }
 
   mLayer->triggerRepaint();
@@ -1678,10 +1688,15 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 
   if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) && ! mMetadataFilled )
   {
-    //set the metadata contents (which can be expensive)
+    // set the metadata contents (which can be expensive)
     teMetadataViewer->clear();
     teMetadataViewer->setHtml( htmlMetadata() );
     mMetadataFilled = true;
+  }
+  else if ( index == mOptStackedWidget->indexOf( mOptsPage_SourceFields ) || index == mOptStackedWidget->indexOf( mOptsPage_Joins ) )
+  {
+    // store any edited attribute form field configuration to prevent loss of edits when adding/removing fields and/or joins
+    mAttributesFormPropertiesDialog->store();
   }
 
   resizeAlltabs( index );

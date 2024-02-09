@@ -95,7 +95,7 @@ class GPKGDBPlugin(DBPlugin):
             if not filename:
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         conn_name = QFileInfo(filename).fileName()
         uri = QgsDataSourceUri()
@@ -147,10 +147,10 @@ class GPKGDatabase(Database):
         try:
             if not isinstance(item, (DBPlugin, Table)) or item.database() is None:
                 parent.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
-                                           Qgis.Info, parent.iface.messageTimeout())
+                                           Qgis.MessageLevel.Info, parent.iface.messageTimeout())
                 return
         finally:
-            QApplication.setOverrideCursor(Qt.WaitCursor)
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
         self.runVacuum()
 
@@ -312,7 +312,7 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         uri = self.gpkgGdalUri()
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
-            rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
+            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         return rl
 
 

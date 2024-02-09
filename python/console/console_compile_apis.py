@@ -67,7 +67,7 @@ class PrepareAPIDialog(QDialog):
         self.ui.label.setText('{0} {1}'.format(self.ui.label.text(), rslt))
         self._api = None
         self.ui.progressBar.setVisible(False)
-        self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(
+        self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText(
             QCoreApplication.translate("PythonConsole", "Done"))
         self.adjustSize()
 
@@ -88,5 +88,5 @@ class PrepareAPIDialog(QDialog):
             self.ui.progressBar.setVisible(False)
             self.ui.plainTextEdit.setVisible(True)
             self.ui.plainTextEdit.insertPlainText(err)
-            self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(self.tr("Done"))
+            self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText(self.tr("Done"))
             self.adjustSize()

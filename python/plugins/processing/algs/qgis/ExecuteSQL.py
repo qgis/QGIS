@@ -88,7 +88,7 @@ class ExecuteSQL(QgisAlgorithm):
             (Qgis.WkbType.MultiPolygon, self.tr('MultiPolygon'))]
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(name=self.INPUT_DATASOURCES,
@@ -170,7 +170,7 @@ class ExecuteSQL(QgisAlgorithm):
         if not vLayer.isValid():
             raise QgsProcessingException(vLayer.dataProvider().error().message())
 
-        if vLayer.wkbType() == QgsWkbTypes.Unknown:
+        if vLayer.wkbType() == QgsWkbTypes.Type.Unknown:
             raise QgsProcessingException(self.tr("Cannot find geometry field"))
 
         (sink, dest_id) = self.parameterAsSink(parameters,
@@ -188,6 +188,6 @@ class ExecuteSQL(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            sink.addFeature(inFeat, QgsFeatureSink.FastInsert)
+            sink.addFeature(inFeat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(current * total))
         return {self.OUTPUT: dest_id}

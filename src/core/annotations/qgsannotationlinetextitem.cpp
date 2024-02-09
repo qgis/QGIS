@@ -246,7 +246,7 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
   return mCurve->boundingBox().buffered( heightInMapUnits + lineOffsetInMapUnits );
 }
 
-QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::clone()
+QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::clone() const
 {
   std::unique_ptr< QgsAnnotationLineTextItem > item = std::make_unique< QgsAnnotationLineTextItem >( mText, mCurve->clone() );
   item->setFormat( mTextFormat );

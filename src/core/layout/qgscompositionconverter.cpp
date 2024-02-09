@@ -69,50 +69,50 @@ void QgsCompositionConverter::initPropertyDefinitions()
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsCompositionConverter::TestProperty, QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::TestProperty ), QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
     {
-      QgsCompositionConverter::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
+      static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PresetPaperSize ), QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
           "|<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
           "|<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
           "|<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
-                                                                                                                                                                                                            ) )
+                                                                                                                                                                                                                                                       ) )
     },
-    { QgsCompositionConverter::PaperWidth, QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsCompositionConverter::PaperHeight, QgsPropertyDefinition( "dataDefinedPaperHeight", QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsCompositionConverter::NumPages, QgsPropertyDefinition( "dataDefinedNumPages", QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsCompositionConverter::PaperOrientation, QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
-    { QgsCompositionConverter::PageNumber, QgsPropertyDefinition( "dataDefinedPageNumber", QObject::tr( "Page number" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsCompositionConverter::PositionX, QgsPropertyDefinition( "dataDefinedPositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
-    { QgsCompositionConverter::PositionY, QgsPropertyDefinition( "dataDefinedPositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
-    { QgsCompositionConverter::ItemWidth, QgsPropertyDefinition( "dataDefinedWidth", QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsCompositionConverter::ItemHeight, QgsPropertyDefinition( "dataDefinedHeight", QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsCompositionConverter::ItemRotation, QgsPropertyDefinition( "dataDefinedRotation", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation ) },
-    { QgsCompositionConverter::Transparency, QgsPropertyDefinition( "dataDefinedTransparency", QObject::tr( "Transparency" ), QgsPropertyDefinition::Opacity ) },
-    { QgsCompositionConverter::Opacity, QgsPropertyDefinition( "dataDefinedOpacity", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity ) },
-    { QgsCompositionConverter::BlendMode, QgsPropertyDefinition( "dataDefinedBlendMode", QObject::tr( "Blend mode" ), QgsPropertyDefinition::BlendMode ) },
-    { QgsCompositionConverter::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
-    { QgsCompositionConverter::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::BackgroundColor, QgsPropertyDefinition( "dataDefinedBackgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::MapRotation, QgsPropertyDefinition( "dataDefinedMapRotation", QObject::tr( "Map rotation" ), QgsPropertyDefinition::Rotation ) },
-    { QgsCompositionConverter::MapScale, QgsPropertyDefinition( "dataDefinedMapScale", QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsCompositionConverter::MapXMin, QgsPropertyDefinition( "dataDefinedMapXMin", QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
-    { QgsCompositionConverter::MapYMin, QgsPropertyDefinition( "dataDefinedMapYMin", QObject::tr( "Extent minimum Y" ), QgsPropertyDefinition::Double ) },
-    { QgsCompositionConverter::MapXMax, QgsPropertyDefinition( "dataDefinedMapXMax", QObject::tr( "Extent maximum X" ), QgsPropertyDefinition::Double ) },
-    { QgsCompositionConverter::MapYMax, QgsPropertyDefinition( "dataDefinedMapYMax", QObject::tr( "Extent maximum Y" ), QgsPropertyDefinition::Double ) },
-    { QgsCompositionConverter::MapAtlasMargin, QgsPropertyDefinition( "dataDefinedMapAtlasMargin", QObject::tr( "Atlas margin" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsCompositionConverter::MapLayers, QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "list of map layer names separated by | characters" ) ) },
-    { QgsCompositionConverter::MapStylePreset, QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "list of map layer names separated by | characters" ) ) },
-    { QgsCompositionConverter::PictureSource, QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
-    { QgsCompositionConverter::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
-    { QgsCompositionConverter::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::PictureSvgStrokeColor, QgsPropertyDefinition( "dataDefinedSvgStrokeColor", QObject::tr( "SVG stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::PictureSvgStrokeWidth, QgsPropertyDefinition( "dataDefinedSvgStrokeWidth", QObject::tr( "SVG stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
-    { QgsCompositionConverter::LegendTitle, QgsPropertyDefinition( "dataDefinedLegendTitle", QObject::tr( "Legend title" ), QgsPropertyDefinition::String ) },
-    { QgsCompositionConverter::LegendColumnCount, QgsPropertyDefinition( "dataDefinedLegendColumns", QObject::tr( "Number of columns" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },
-    { QgsCompositionConverter::ScalebarFillColor, QgsPropertyDefinition( "dataDefinedScalebarFill", QObject::tr( "Fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::ScalebarFillColor2, QgsPropertyDefinition( "dataDefinedScalebarFill2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsCompositionConverter::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PaperWidth ), QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PaperHeight ), QgsPropertyDefinition( "dataDefinedPaperHeight", QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::NumPages ), QgsPropertyDefinition( "dataDefinedNumPages", QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PaperOrientation ), QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PageNumber ), QgsPropertyDefinition( "dataDefinedPageNumber", QObject::tr( "Page number" ), QgsPropertyDefinition::IntegerPositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PositionX ), QgsPropertyDefinition( "dataDefinedPositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PositionY ), QgsPropertyDefinition( "dataDefinedPositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ItemWidth ), QgsPropertyDefinition( "dataDefinedWidth", QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ItemHeight ), QgsPropertyDefinition( "dataDefinedHeight", QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ItemRotation ), QgsPropertyDefinition( "dataDefinedRotation", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::Transparency ), QgsPropertyDefinition( "dataDefinedTransparency", QObject::tr( "Transparency" ), QgsPropertyDefinition::Opacity ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::Opacity ), QgsPropertyDefinition( "dataDefinedOpacity", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::BlendMode ), QgsPropertyDefinition( "dataDefinedBlendMode", QObject::tr( "Blend mode" ), QgsPropertyDefinition::BlendMode ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ExcludeFromExports ), QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::FrameColor ), QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::BackgroundColor ), QgsPropertyDefinition( "dataDefinedBackgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapRotation ), QgsPropertyDefinition( "dataDefinedMapRotation", QObject::tr( "Map rotation" ), QgsPropertyDefinition::Rotation ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapScale ), QgsPropertyDefinition( "dataDefinedMapScale", QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapXMin ), QgsPropertyDefinition( "dataDefinedMapXMin", QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapYMin ), QgsPropertyDefinition( "dataDefinedMapYMin", QObject::tr( "Extent minimum Y" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapXMax ), QgsPropertyDefinition( "dataDefinedMapXMax", QObject::tr( "Extent maximum X" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapYMax ), QgsPropertyDefinition( "dataDefinedMapYMax", QObject::tr( "Extent maximum Y" ), QgsPropertyDefinition::Double ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapAtlasMargin ), QgsPropertyDefinition( "dataDefinedMapAtlasMargin", QObject::tr( "Atlas margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapLayers ), QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "list of map layer names separated by | characters" ) ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::MapStylePreset ), QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "list of map layer names separated by | characters" ) ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PictureSource ), QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::SourceUrl ), QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PictureSvgBackgroundColor ), QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PictureSvgStrokeColor ), QgsPropertyDefinition( "dataDefinedSvgStrokeColor", QObject::tr( "SVG stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::PictureSvgStrokeWidth ), QgsPropertyDefinition( "dataDefinedSvgStrokeWidth", QObject::tr( "SVG stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::LegendTitle ), QgsPropertyDefinition( "dataDefinedLegendTitle", QObject::tr( "Legend title" ), QgsPropertyDefinition::String ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::LegendColumnCount ), QgsPropertyDefinition( "dataDefinedLegendColumns", QObject::tr( "Number of columns" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ScalebarFillColor ), QgsPropertyDefinition( "dataDefinedScalebarFill", QObject::tr( "Fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ScalebarFillColor2 ), QgsPropertyDefinition( "dataDefinedScalebarFill2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ScalebarLineColor ), QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { static_cast< int >( QgsCompositionConverter::DataDefinedProperty::ScalebarLineWidth ), QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
   };
 }
 
@@ -1785,13 +1785,13 @@ bool QgsCompositionConverter::readOldComposerObjectXml( QgsLayoutObject *layoutI
   {
     layoutItem->mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );
   }
-  if ( layoutItem->mDataDefinedProperties.isActive( QgsCompositionConverter::Transparency ) )
+  if ( layoutItem->mDataDefinedProperties.isActive( QgsCompositionConverter::DataDefinedProperty::Transparency ) )
   {
     // upgrade transparency -> opacity
-    QString exp = layoutItem->mDataDefinedProperties.property( QgsCompositionConverter::Transparency ).asExpression();
+    QString exp = layoutItem->mDataDefinedProperties.property( QgsCompositionConverter::DataDefinedProperty::Transparency ).asExpression();
     exp = QStringLiteral( "100.0 - (%1)" ).arg( exp );
-    layoutItem->mDataDefinedProperties.setProperty( QgsCompositionConverter::Opacity, QgsProperty::fromExpression( exp ) );
-    layoutItem->mDataDefinedProperties.setProperty( QgsCompositionConverter::Transparency, QgsProperty() );
+    layoutItem->mDataDefinedProperties.setProperty( QgsCompositionConverter::DataDefinedProperty::Opacity, QgsProperty::fromExpression( exp ) );
+    layoutItem->mDataDefinedProperties.setProperty( QgsCompositionConverter::DataDefinedProperty::Transparency, QgsProperty() );
   }
 
   //custom properties
@@ -1821,7 +1821,7 @@ void QgsCompositionConverter::readOldDataDefinedPropertyMap( const QDomElement &
 
 QgsProperty QgsCompositionConverter::readOldDataDefinedProperty( const QgsCompositionConverter::DataDefinedProperty property, const QDomElement &ddElem )
 {
-  if ( property == QgsCompositionConverter::AllProperties || property == QgsCompositionConverter::NoProperty )
+  if ( property == QgsCompositionConverter::DataDefinedProperty::AllProperties || property == QgsCompositionConverter::DataDefinedProperty::NoProperty )
   {
     //invalid property
     return QgsProperty();
