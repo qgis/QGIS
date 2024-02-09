@@ -76,9 +76,6 @@ private:
     size_t extraByteSize();
     //
     void createHierarchy();
-    void writeHierarchy();
-    std::deque<VoxelKey> emitRoot(const VoxelKey& root);
-    std::deque<VoxelKey> emit(const VoxelKey& p, int stopLevel, Entries& entries);
 };
 
 } // namespace bu

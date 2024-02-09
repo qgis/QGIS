@@ -28,13 +28,19 @@
  * OF SUCH DAMAGE.
  ****************************************************************************/
 
-// This is here so that things will work with older version of PDAL.
-
 #include "Common.hpp"
-#include "MapFile.hpp"
+
+#ifdef _WIN32
+#include <io.h>
+#endif
+
+#include <fcntl.h>
+#include <filesystem>
 
 namespace untwine
 {
+
+// This is here so that things will work with older version of PDAL.
 
 MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_t size)
 {
@@ -106,6 +112,66 @@ MapContext unmapFile(MapContext ctx)
 #endif
     return ctx;
 }
+
+// PDAL's directoryList had a bug, so we've imported a working
+// version here so that we can still use older PDAL releases.
+
+#ifndef __APPLE_CC__
+std::vector<std::string> directoryList(const std::string& dir)
+{
+    namespace fs = std::filesystem;
+
+    std::vector<std::string> files;
+
+    try
+    {
+        fs::directory_iterator it(untwine::toNative(dir));
+        fs::directory_iterator end;
+        while (it != end)
+        {
+            files.push_back(untwine::fromNative(it->path()));
+            it++;
+        }
+    }
+    catch (fs::filesystem_error&)
+    {
+        files.clear();
+    }
+    return files;
+}
+#else
+
+#include <dirent.h>
+
+// Provide simple opendir/readdir solution for OSX because directory_iterator is
+// not available until OSX 10.15
+std::vector<std::string> directoryList(const std::string& dir)
+{
+    std::vector<std::string> files;
+
+    DIR *dpdf = opendir(dir.c_str());
+    if (dpdf)
+    {
+        while (true)
+        {
+            struct dirent *epdf = readdir(dpdf);
+            if (!epdf)
+                break;
+
+            std::string name = untwine::fromNative(epdf->d_name);
+            // Skip paths
+            if (!pdal::Utils::iequals(name, ".") &&
+                !pdal::Utils::iequals(name, ".."))
+            {
+                // we expect the path + name
+                files.push_back(dir + "/" + untwine::fromNative(epdf->d_name));
+            }
+        }
+        closedir(dpdf);
+    }
+    return files;
+}
+#endif
 
 } // namespace untwine
 

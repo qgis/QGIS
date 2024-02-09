@@ -90,7 +90,8 @@ public:
         }
 
         // We pack all the bitfields into the "untwine bits" field.
-        memcpy(dst.data() + m_fi.untwineBitsOffset, &untwineBits, 1);
+        if (m_fi.untwineBitsOffset > -1)
+            memcpy(dst.data() + m_fi.untwineBitsOffset, &untwineBits, 1);
     }
 };
 
@@ -121,7 +122,8 @@ public:
         }
 
         // We pack all the bitfields into the "untwine bits" field.
-        memcpy(dst.data() + m_fi.untwineBitsOffset, &untwineBits, 1);
+        if (m_fi.untwineBitsOffset > -1)
+            memcpy(dst.data() + m_fi.untwineBitsOffset, &untwineBits, 1);
     }
 };
 
