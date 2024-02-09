@@ -16,6 +16,7 @@ RUN dnf -y --refresh install \
     flex \
     git \
     gdal-devel \
+    gdal-python-tools \
     geos-devel \
     gpsbabel \
     grass \
