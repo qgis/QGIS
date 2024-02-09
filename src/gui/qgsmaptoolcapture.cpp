@@ -1416,7 +1416,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         QgsCurvePolygon *poly = new QgsCurvePolygon();
         poly->setExteriorRing( curveToAdd.release() );
-        g = QgsGeometry( poly );
+        g = QgsGeometry( poly->clone() );
         geometryCaptured( g );
         polygonCaptured( poly );
       }
