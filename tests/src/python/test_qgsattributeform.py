@@ -163,7 +163,7 @@ class TestQgsAttributeForm(QgisTestCase):
 
         layer = QgsVectorLayer("Point?field=age:int", "vl", "memory")
         # set default value for numbers to [1, {age}], it will depend on the field age and should update
-        field = QgsField('numbers', QVariant.List, subType=QVariant.Int)
+        field = QgsField('numbers', QVariant.List, 'array')
         field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
         layer.dataProvider().addAttributes([field])
         layer.updateFields()
