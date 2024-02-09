@@ -160,7 +160,7 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterRange:
                 if len(params) > 2:
                     try:
-                        params[2] = int(params[2])
+                        params[2] = Qgis.ProcessingNumberParameterType(int(params[2]))
                     except ValueError:
                         params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
                 if len(params) > 4:
