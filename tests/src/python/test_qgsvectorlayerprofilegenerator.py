@@ -38,6 +38,7 @@ from qgis.core import (
     QgsRendererCategory,
     QgsSymbolLayer,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -2150,6 +2151,158 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
 
         res = plot_renderer.renderToImage(400, 400, 0, curve.length(), 0, 14)
         self.assertTrue(self.image_check('vector_polygon_layer_symbology', 'vector_polygon_layer_symbology', res))
+
+    def doCheckPoint(self, request: QgsProfileRequest, tolerance: float, layer: QgsVectorLayer, expectedFeatures):
+        request.setTolerance(tolerance)
+
+        profGen = layer.createProfileGenerator(request)
+        self.assertIsNotNone(profGen)
+        self.assertTrue(profGen.generateProfile())
+        results = profGen.takeResults()
+        features = results.asFeatures(Qgis.ProfileExportType.Features3D)
+        self.assertFalse(len(features) == 0)
+
+        expected = sorted(expectedFeatures.copy())
+        actual = [f.attributes['id'] for _, f in enumerate(features)]
+        actualUniqSorted = sorted(list(set(actual)))
+
+        self.assertEqual(actualUniqSorted, expected)
+
+        for k, feat in enumerate(features):
+            hasValidZ = False
+            if QgsWkbTypes.hasZ(feat.geometry.wkbType()):
+                for v in feat.geometry.vertices():
+                    if not math.isnan(v.z()):
+                        hasValidZ = True
+                        break
+                self.assertTrue(hasValidZ, "All vertice are on the ground!")
+            else:
+                self.assertTrue(hasValidZ, "Geometry should have z coordinates!")
+
+        return results
+
+    def doCheckLine(self, request: QgsProfileRequest, tolerance: float, layer: QgsVectorLayer, expectedFeatures, nbSubGeomPerFeature, geomType):
+        results = self.doCheckPoint(request, tolerance, layer, expectedFeatures)
+        features = results.asFeatures(Qgis.ProfileExportType.Features3D)
+
+        actual = [f.attributes['id'] for _, f in enumerate(features)]
+        actualUniqSorted = sorted(list(set(actual)))
+        for idx, fid in enumerate(actualUniqSorted):
+            actual = [1 for _, f in enumerate(features) if f.attributes['id'] == fid]
+            self.assertEqual(len(actual), nbSubGeomPerFeature[idx])
+
+        for k, feat in enumerate(features):
+            self.assertEqual(feat.geometry.type(), geomType)
+
+        for _, height in enumerate(results.distanceToHeightMap()):
+            self.assertTrue(math.isnan(height) or height > 0.0)
+
+        return results
+
+    def testPointGenerationFeature(self):
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), '3d', 'points_with_z.shp'))
+        self.assertTrue(vl.isValid())
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Terrain)
+        vl.elevationProperties().setBinding(Qgis.AltitudeBinding.Vertex)
+
+        dtmLayer = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'))
+        self.assertTrue(dtmLayer.isValid())
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (-346120 6631840, -346550 6632030, -346440 6632140, -347830 6632930)')
+        req = QgsProfileRequest(curve)
+
+        terrain_provider = QgsRasterDemTerrainProvider()
+        terrain_provider.setLayer(dtmLayer)
+
+        req.setTerrainProvider(terrain_provider)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        if (Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() <= 10) or (Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() >= 12):
+            self.doCheckPoint(req, 15, vl, [5, 11, 12, 13, 14, 15, 18, 45, 46])
+        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11:
+            self.doCheckPoint(req, 16, vl, [5, 11, 12, 13, 14, 15, 18, 45, 46])
+
+        self.doCheckPoint(req, 70, vl, [0, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 38, 45, 46, 48])
+
+    def testLineGenerationFeature(self):
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), '3d', 'lines.shp'))
+        self.assertTrue(vl.isValid())
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Terrain)
+        vl.elevationProperties().setBinding(Qgis.AltitudeBinding.Vertex)
+        vl.elevationProperties().setExtrusionEnabled(False)
+
+        dtmLayer = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'))
+        self.assertTrue(dtmLayer.isValid())
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (-346120 6631840, -346550 6632030, -346440 6632140, -347830 6632930)')
+        req = QgsProfileRequest(curve)
+
+        terrain_provider = QgsRasterDemTerrainProvider()
+        terrain_provider.setLayer(dtmLayer)
+
+        req.setTerrainProvider(terrain_provider)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        # check no tolerance
+        self.doCheckLine(req, 0, vl, [0, 2], [1, 5], Qgis.GeometryType.Point)
+
+        # check increased tolerance, terrain, no extrusion
+        self.doCheckLine(req, 1, vl, [0, 2], [1, 5], Qgis.GeometryType.Line)
+
+        # check increased tolerance, terrain, no extrusion
+        self.doCheckLine(req, 20, vl, [0, 2], [1, 3], Qgis.GeometryType.Line)
+
+        # check increased tolerance, terrain, no extrusion
+        self.doCheckLine(req, 50, vl, [1, 0, 2], [1, 1, 1], Qgis.GeometryType.Line)
+
+        # check terrain + extrusion
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Terrain)
+        vl.elevationProperties().setExtrusionEnabled(True)
+        vl.elevationProperties().setExtrusionHeight(17)
+        self.doCheckLine(req, 50, vl, [1, 0, 2], [1, 1, 1], Qgis.GeometryType.Polygon)
+
+        # check no terrain + no extrusion
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(False)
+        vl.elevationProperties().setZOffset(5.0)
+        self.doCheckLine(req, 50, vl, [1, 0, 2], [1, 1, 1], Qgis.GeometryType.Line)
+
+    def testPolygonGenerationFeature(self):
+        vl = QgsVectorLayer(os.path.join(unitTestDataPath(), '3d', 'buildings.shp'))
+        self.assertTrue(vl.isValid())
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Terrain)
+        vl.elevationProperties().setBinding(Qgis.AltitudeBinding.Vertex)
+        vl.elevationProperties().setExtrusionEnabled(False)
+
+        dtmLayer = QgsRasterLayer(os.path.join(unitTestDataPath(), '3d', 'dtm.tif'))
+        self.assertTrue(dtmLayer.isValid())
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            'LineString (-346120 6631840, -346550 6632030, -346440 6632140, -347830 6632930)')
+        req = QgsProfileRequest(curve)
+
+        terrain_provider = QgsRasterDemTerrainProvider()
+        terrain_provider.setLayer(dtmLayer)
+
+        req.setTerrainProvider(terrain_provider)
+        req.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+
+        self.doCheckLine(req, 1, vl, [168, 206, 210, 284, 306, 321], [1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
+
+        if (Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() <= 10) or (Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() >= 12):
+            self.doCheckLine(req, 10, vl, [168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
+            self.doCheckLine(req, 11, vl, [168, 172, 206, 210, 231, 255, 267, 275, 282, 283, 284, 306, 307, 319, 321], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
+        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11:
+            self.doCheckLine(req, 9, vl, [168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
+            self.doCheckLine(req, 10, vl, [168, 172, 206, 210, 231, 267, 275, 282, 283, 284, 306, 307, 319, 321], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], Qgis.GeometryType.Line)
 
 
 if __name__ == '__main__':
