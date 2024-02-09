@@ -156,7 +156,7 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( !model.providerForIndex( model.index( 1, 0, QModelIndex() ) ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
   QVERIFY( model.index2node( QModelIndex() ) ); // root node
-  QCOMPARE( model.index2node( QModelIndex() )->nodeType(), QgsProcessingToolboxModelNode::NodeGroup );
+  QCOMPARE( model.index2node( QModelIndex() )->nodeType(), QgsProcessingToolboxModelNode::NodeType::Group );
   QVERIFY( model.index2node( model.index( -1, 0, QModelIndex() ) ) ); // root node
   QCOMPARE( model.index2node( QModelIndex() ), model.index2node( model.index( -1, 0, QModelIndex() ) ) );
 
@@ -431,13 +431,13 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( alg2Index, Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
 
   // empty providers/groups should not be shown
-  model.setFilters( QgsProcessingToolboxProxyModel::FilterModeler );
+  model.setFilters( QgsProcessingToolboxProxyModel::Filter::Modeler );
   group1Index = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.rowCount(), 1 );
   QCOMPARE( model.rowCount( group1Index ), 1 );
   QCOMPARE( model.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
-  model.setFilters( QgsProcessingToolboxProxyModel::FilterToolbox );
+  model.setFilters( QgsProcessingToolboxProxyModel::Filter::Toolbox );
   group2Index = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.rowCount(), 3 );
   QCOMPARE( model.rowCount( group2Index ), 1 );
@@ -597,8 +597,8 @@ void TestQgsProcessingModel::testView()
   QCOMPARE( view.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p2:a1" ) );
 
   // empty providers/groups should not be shown
-  view.setFilters( QgsProcessingToolboxProxyModel::FilterModeler );
-  QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::FilterModeler );
+  view.setFilters( QgsProcessingToolboxProxyModel::Filter::Modeler );
+  QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filter::Modeler );
   QCOMPARE( view.model()->rowCount(), 1 );
   provider2Index = view.model()->index( 0, 0, QModelIndex() );
   QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
@@ -606,7 +606,7 @@ void TestQgsProcessingModel::testView()
   group2Index = view.model()->index( 0, 0, provider2Index );
   QCOMPARE( view.model()->rowCount( group2Index ), 1 );
   QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p2:a1" ) );
-  view.setFilters( QgsProcessingToolboxProxyModel::FilterToolbox );
+  view.setFilters( QgsProcessingToolboxProxyModel::Filter::Toolbox );
   QCOMPARE( view.model()->rowCount(), 1 );
   provider1Index = view.model()->index( 0, 0, QModelIndex() );
   QCOMPARE( view.model()->data( provider1Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
@@ -683,7 +683,7 @@ void TestQgsProcessingModel::testKnownIssues()
   QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "b1" ) );
   QVERIFY( !proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );
   QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ForegroundRole ).value< QBrush >().color().name(), QStringLiteral( "#000000" ) );
-  proxyModel.setFilters( QgsProcessingToolboxProxyModel::Filters( QgsProcessingToolboxProxyModel::FilterToolbox | QgsProcessingToolboxProxyModel::FilterShowKnownIssues ) );
+  proxyModel.setFilters( QgsProcessingToolboxProxyModel::Filters( QgsProcessingToolboxProxyModel::Filter::Toolbox | QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues ) );
   QCOMPARE( proxyModel.rowCount( group1Index ), 2 );
   QCOMPARE( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
   QVERIFY( proxyModel.data( proxyModel.index( 0, 0, group1Index ), Qt::ToolTipRole ).toString().contains( QStringLiteral( "known issues" ) ) );

@@ -237,10 +237,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmsModel = new QgsModelerToolboxModel( this );
   mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
 
-  QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
+  QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::Filter::Modeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {
-    filters |= QgsProcessingToolboxProxyModel::FilterShowKnownIssues;
+    filters |= QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues;
   }
   mAlgorithmsTree->setFilters( filters );
   mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );

@@ -46,7 +46,7 @@ QgsProcessingToolboxModelGroupNode *QgsProcessingToolboxModelNode::getChildGroup
 {
   for ( QgsProcessingToolboxModelNode *node : std::as_const( mChildren ) )
   {
-    if ( node->nodeType() == NodeGroup )
+    if ( node->nodeType() == NodeType::Group )
     {
       QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast< QgsProcessingToolboxModelGroupNode * >( node );
       if ( groupNode && groupNode->id() == groupId )
@@ -347,14 +347,14 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
   if ( role == static_cast< int >( CustomRole::NodeType ) )
   {
     if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
-      return node->nodeType();
+      return static_cast< int >( node->nodeType() );
     else
       return QVariant();
   }
 
   bool isRecentNode = false;
   if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
-    isRecentNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeRecent;
+    isRecentNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent;
 
   QgsProcessingProvider *provider = providerForIndex( index );
   QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast< QgsProcessingToolboxModelGroupNode * >( index2node( index ) );
@@ -605,7 +605,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
 QgsProcessingProvider *QgsProcessingToolboxModel::providerForIndex( const QModelIndex &index ) const
 {
   QgsProcessingToolboxModelNode *n = index2node( index );
-  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeProvider )
+  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Provider )
     return nullptr;
 
   return qobject_cast< QgsProcessingToolboxModelProviderNode * >( n )->provider();
@@ -614,7 +614,7 @@ QgsProcessingProvider *QgsProcessingToolboxModel::providerForIndex( const QModel
 QString QgsProcessingToolboxModel::providerIdForIndex( const QModelIndex &index ) const
 {
   QgsProcessingToolboxModelNode *n = index2node( index );
-  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeProvider )
+  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Provider )
     return nullptr;
 
   return qobject_cast< QgsProcessingToolboxModelProviderNode * >( n )->providerId();
@@ -623,7 +623,7 @@ QString QgsProcessingToolboxModel::providerIdForIndex( const QModelIndex &index 
 const QgsProcessingAlgorithm *QgsProcessingToolboxModel::algorithmForIndex( const QModelIndex &index ) const
 {
   QgsProcessingToolboxModelNode *n = index2node( index );
-  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeAlgorithm )
+  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Algorithm )
     return nullptr;
 
   return qobject_cast< QgsProcessingToolboxModelAlgorithmNode * >( n )->algorithm();
@@ -632,7 +632,7 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModel::algorithmForIndex( cons
 bool QgsProcessingToolboxModel::isAlgorithm( const QModelIndex &index ) const
 {
   QgsProcessingToolboxModelNode *n = index2node( index );
-  return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm );
+  return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm );
 }
 
 QModelIndex QgsProcessingToolboxModel::indexForProvider( const QString &providerId ) const
@@ -723,7 +723,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
     const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::KnownIssues );
-    if ( hasKnownIssues && !( mFilters & FilterShowKnownIssues ) )
+    if ( hasKnownIssues && !( mFilters & Filter::ShowKnownIssues ) )
       return false;
 
     if ( !mFilterString.trimmed().isEmpty() )
@@ -768,7 +768,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       }
     }
 
-    if ( mFilters & FilterInPlace )
+    if ( mFilters & Filter::InPlace )
     {
       const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits );
       if ( !supportsInPlace )
@@ -780,12 +780,12 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         return false;
       }
     }
-    if ( mFilters & FilterModeler )
+    if ( mFilters & Filter::Modeler )
     {
       bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromModeler );
       return !isHiddenFromModeler;
     }
-    if ( mFilters & FilterToolbox )
+    if ( mFilters & Filter::Toolbox )
     {
       bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
       return !isHiddenFromToolbox;
@@ -813,17 +813,17 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   QgsProcessingToolboxModelNode::NodeType leftType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( left, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
   QgsProcessingToolboxModelNode::NodeType rightType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( right, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
 
-  if ( leftType == QgsProcessingToolboxModelNode::NodeRecent )
+  if ( leftType == QgsProcessingToolboxModelNode::NodeType::Recent )
     return true;
-  else if ( rightType == QgsProcessingToolboxModelNode::NodeRecent )
+  else if ( rightType == QgsProcessingToolboxModelNode::NodeType::Recent )
     return false;
   else if ( leftType != rightType )
   {
-    if ( leftType == QgsProcessingToolboxModelNode::NodeProvider )
+    if ( leftType == QgsProcessingToolboxModelNode::NodeType::Provider )
       return false;
-    else if ( rightType == QgsProcessingToolboxModelNode::NodeProvider )
+    else if ( rightType == QgsProcessingToolboxModelNode::NodeType::Provider )
       return true;
-    else if ( leftType == QgsProcessingToolboxModelNode::NodeGroup )
+    else if ( leftType == QgsProcessingToolboxModelNode::NodeType::Group )
       return false;
     else
       return true;
@@ -834,7 +834,7 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   QModelIndex parent = left.parent();
   while ( parent.isValid() )
   {
-    if ( mModel->data( parent, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() == QgsProcessingToolboxModelNode::NodeRecent )
+    if ( mModel->data( parent, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() == static_cast< int >( QgsProcessingToolboxModelNode::NodeType::Recent ) )
     {
       isRecentNode = true;
       break;
