@@ -1165,15 +1165,13 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
   Qt3DExtras::QSphereMesh *rendererRotationCenter = new Qt3DExtras::QSphereMesh;
   rendererRotationCenter->setRadius( 10 );
   mEntityRotationCenter->addComponent( rendererRotationCenter );
-  mEntityRotationCenter->setEnabled( true );
+  mEntityRotationCenter->setEnabled( false );
   mEntityRotationCenter->setParent( this );
 
   connect( controller, &QgsCameraController::cameraRotationCenterChanged, this, [trRotationCenter]( QVector3D center )
   {
     trRotationCenter->setTranslation( center );
   } );
-
-  mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
 
   connect( &mMap, &Qgs3DMapSettings::showCameraRotationCenterChanged, this, [this]
   {
