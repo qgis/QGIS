@@ -60,7 +60,6 @@ Build-Depends:
  python3-pyqt5.qtserialport,
  python3-pyqt5.qtsql,
  python3-pyqt5.qtsvg,
- python3-pyqt5.qtserialport,
 #bullseye# python3-sip-dev, python3-sip,
 #jammy kinetic lunar mantic noble bookworm sid# python3-pyqtbuild, sip-tools,
  python3-termcolor,
