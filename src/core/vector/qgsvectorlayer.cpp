@@ -999,7 +999,6 @@ void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
     {
       if ( idx < 0 || idx >= size )
         continue;
-
       feature.setAttribute( idx, defaultValue( idx, feature ) );
       updateFeature( feature, true );
     }
