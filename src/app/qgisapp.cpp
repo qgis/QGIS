@@ -15966,13 +15966,13 @@ void QgisApp::manageDigitizingConfig( QgsVectorLayer *vlayer )
   }
   if ( !vlayer->isSpatial() )
   {
-      QgsSnappingConfig config = QgsSnappingConfig();
-      config.setEnabled( false );
-      mMapCanvas->snappingUtils()->setConfig( config );
+    QgsSnappingConfig config = QgsSnappingConfig();
+    config.setEnabled( false );
+    mMapCanvas->snappingUtils()->setConfig( config );
   }
   else
   {
-      mMapCanvas->snappingUtils()->setConfig( QgsProject::instance()->snappingConfig() );
+    mMapCanvas->snappingUtils()->setConfig( QgsProject::instance()->snappingConfig() );
   }
 }
 
