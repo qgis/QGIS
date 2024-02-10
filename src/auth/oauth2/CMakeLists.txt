@@ -104,6 +104,7 @@ target_include_directories(authmethod_oauth2_a PUBLIC ${CMAKE_SOURCE_DIR}/src/au
 
 # require c++17
 target_compile_features(authmethod_oauth2_a PRIVATE cxx_std_17)
+target_compile_definitions(authmethod_oauth2_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries(authmethod_oauth2_a qgis_core)
 
@@ -146,6 +147,7 @@ else()
 
   # require c++17
   target_compile_features(authmethod_oauth2 PRIVATE cxx_std_17)
+  target_compile_definitions(authmethod_oauth2 PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_link_libraries(authmethod_oauth2 qgis_core)
 

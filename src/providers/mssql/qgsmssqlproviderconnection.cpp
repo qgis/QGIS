@@ -28,6 +28,7 @@
 #include "qgsfeedback.h"
 #include "qgsmssqlsqlquerybuilder.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include <QIcon>
 
 #include <chrono>

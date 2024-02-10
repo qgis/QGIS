@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsoracleconn.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 
 QgsOracleTransaction::QgsOracleTransaction( const QString &connString )
   : QgsTransaction( connString )

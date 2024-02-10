@@ -27,6 +27,7 @@ if (ENABLE_TESTS)
     endif()
 
     set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+    target_compile_definitions(${TESTNAME} PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   endmacro()
 
 

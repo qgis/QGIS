@@ -24,6 +24,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgssettings.h"
+#include "qgsabstractcontentcache_p.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -513,3 +514,5 @@ QImage QgsImageCache::getFrameFromReader( QImageReader &reader, int frameNumber 
   }
   return reader.read();
 }
+
+template class QgsAbstractContentCache<QgsImageCacheEntry>; // clazy:exclude=missing-qobject-macro

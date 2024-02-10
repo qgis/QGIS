@@ -38,6 +38,8 @@ email                : sherman at mrcc.com
 #include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 #include "qgsjsonutils.h"
+#include "qgssetrequestinitiator_p.h"
+
 #include <nlohmann/json.hpp>
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok

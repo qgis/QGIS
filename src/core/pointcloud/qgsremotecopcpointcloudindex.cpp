@@ -37,6 +37,7 @@
 #include "qgscachedpointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 
 ///@cond PRIVATE
 

@@ -22,6 +22,7 @@
 #include "qgslazdecoder.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 
 //
 // QgsEptPointCloudBlockRequest

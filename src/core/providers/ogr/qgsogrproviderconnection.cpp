@@ -25,6 +25,7 @@
 #include "qgsfielddomain.h"
 #include "qgsogrproviderutils.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsweakrelation.h"
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)

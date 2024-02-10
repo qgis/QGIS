@@ -20,6 +20,7 @@
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
 #include "qgsgeometryengine.h"

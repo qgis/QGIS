@@ -69,6 +69,9 @@ target_link_libraries(provider_wfs_a
 # require c++17
 target_compile_features(provider_wfs_a PRIVATE cxx_std_17)
 
+
+# We use private headers from core that need this
+target_compile_definitions(provider_wfs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
@@ -117,6 +120,8 @@ else()
   # require c++17
   target_compile_features(provider_wfs PRIVATE cxx_std_17)
 
+  # We use private headers from core that need this
+  target_compile_definitions(provider_wfs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   target_compile_definitions(provider_wfs PRIVATE "-DQT_NO_FOREACH")
 
   target_link_libraries (provider_wfs

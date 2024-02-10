@@ -29,6 +29,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsexception.h"
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"

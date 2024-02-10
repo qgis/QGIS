@@ -17,6 +17,7 @@
 #include "qgsfield.h"
 #include "qgsfields.h"
 #include "qgswkbtypes.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"

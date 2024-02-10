@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 
 #include "lazperf/readers.hpp"
 

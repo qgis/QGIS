@@ -33,6 +33,7 @@
 #include "qgsvectortilerenderer.h"
 #include "qgsmapboxglstyleconverter.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsjsonutils.h"
 

@@ -22,6 +22,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsthreadingutils.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscesiumutils.h"
 #include "qgssphere.h"

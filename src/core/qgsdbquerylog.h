@@ -102,13 +102,6 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
 
 Q_DECLARE_METATYPE( QgsDatabaseQueryLogEntry );
 
-#ifndef SIP_RUN
-#include "qgsconfig.h"
-constexpr int sQueryLoggerFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
-#define QgsSetQueryLogClass(entry, _class) entry.initiatorClass = _class; entry.origin = QString(QString( __FILE__ ).mid( sQueryLoggerFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")");
-#define QGS_QUERY_LOG_ORIGIN QString(QString( __FILE__ ).mid( sQueryLoggerFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")")
-#endif
-
 /**
  * \ingroup core
  * \class QgsDatabaseQueryLog

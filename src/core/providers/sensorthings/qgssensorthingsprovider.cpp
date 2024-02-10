@@ -19,6 +19,7 @@
 #include "qgssensorthingsutils.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsthreadingutils.h"
 #include "qgsreadwritelocker.h"

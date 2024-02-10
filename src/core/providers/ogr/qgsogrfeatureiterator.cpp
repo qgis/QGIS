@@ -27,6 +27,8 @@
 #include "qgssymbol.h"
 #include "qgsgeometryengine.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgssetrequestinitiator_p.h"
 
 #include <sqlite3.h>
 

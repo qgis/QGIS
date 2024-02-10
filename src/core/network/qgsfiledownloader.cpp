@@ -15,6 +15,7 @@
 
 #include "qgsfiledownloader.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsvariantutils.h"

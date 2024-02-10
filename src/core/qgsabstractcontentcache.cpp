@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabstractcontentcache.h"
+#include "qgssetrequestinitiator_p.h"
 
 //
 // QgsAbstractContentCacheEntry
@@ -39,8 +40,3 @@ void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool 
 {
 
 }
-
-
-
-
-

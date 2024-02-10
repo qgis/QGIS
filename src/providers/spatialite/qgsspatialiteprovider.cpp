@@ -31,6 +31,7 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitetransaction.h"
 #include "qgsspatialiteproviderconnection.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"

@@ -28,6 +28,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
