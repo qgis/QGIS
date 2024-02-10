@@ -54,7 +54,7 @@ def algorithmHelp(id):
         print('Input parameters')
         print('----------------')
         for p in alg.parameterDefinitions():
-            if p.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if p.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                 continue
             print(f'\n{p.name()}: {p.description()}')
             if p.help():
