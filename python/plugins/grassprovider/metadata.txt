@@ -5,7 +5,7 @@ about=GRASS GIS Processing provider
 category=Analysis
 version=2.12.99
 qgisMinimumVersion=3.0
-supportsQt6=no
+supportsQt6=yes
 author=Victor Olaya
 
 icon=:/images/themes/default/providerGrass.svg
