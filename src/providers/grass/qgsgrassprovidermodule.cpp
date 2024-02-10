@@ -603,10 +603,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
     }
   }
 
-  QStringList rasterNames = QgsGrass::rasters( mDirPath );
-
-  const auto constRasterNames = rasterNames;
-  for ( const QString &name : constRasterNames )
+  const QStringList rasterNames = QgsGrass::rasters( mDirPath );
+  for ( const QString &name : rasterNames )
   {
     if ( mRefreshLater )
     {
