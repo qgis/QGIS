@@ -701,6 +701,33 @@ class CORE_EXPORT Qgis
     Q_FLAG( BrowserItemCapabilities )
 
     /**
+     * Capabilities for data item providers.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapability
+     *
+     * \since QGIS 3.36
+     */
+    enum class DataItemProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, DataCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoCapabilities SIP_MONKEYPATCH_COMPAT_NAME( NoDataCapabilities ) = 0, //!< No capabilities
+      Files SIP_MONKEYPATCH_COMPAT_NAME( File ) = 1, //!< Can provides items which corresponds to files
+      Directories SIP_MONKEYPATCH_COMPAT_NAME( Dir ) = 1 << 1, //!< Can provides items which corresponds to directories
+      Databases SIP_MONKEYPATCH_COMPAT_NAME( Database ) = 1 << 2, //!< Can provides items which corresponds to databases
+      NetworkSources SIP_MONKEYPATCH_COMPAT_NAME( Net ) = 1 << 3, //!< Network/internet source
+    };
+    Q_ENUM( DataItemProviderCapability )
+
+    /**
+     * Capabilities for data item providers.
+     *
+     * \note Prior to QGIS 3.36 this was available as QgsDataProvider::DataCapabilities
+     *
+     * \since QGIS 3.36
+     */
+    Q_DECLARE_FLAGS( DataItemProviderCapabilities, DataItemProviderCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, DataCapabilities )
+    Q_FLAG( DataItemProviderCapabilities )
+
+    /**
      * Browser item layer types
      *
      * \since QGIS 3.20
@@ -4949,6 +4976,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingFeatureSourceFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterTypeFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingParameterFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataItemProviderCapabilities )
 
 
 // hack to workaround warnings when casting void pointers

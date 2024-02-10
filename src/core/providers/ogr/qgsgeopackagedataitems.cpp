@@ -43,9 +43,9 @@ QString QgsGeoPackageDataItemProvider::dataProviderKey() const
   return QStringLiteral( "ogr" );
 }
 
-int QgsGeoPackageDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsGeoPackageDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Database;
+  return Qgis::DataItemProviderCapability::Databases;
 }
 
 QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

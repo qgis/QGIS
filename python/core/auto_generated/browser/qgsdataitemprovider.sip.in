@@ -45,7 +45,7 @@ the default implementation returns an empty string.
 
 .. versionadded:: 3.14
 %End
-    virtual int capabilities() const = 0;
+    virtual Qgis::DataItemProviderCapabilities capabilities() const = 0;
 %Docstring
 Returns combination of flags from :py:class:`QgsDataProvider`.DataCapabilities
 %End

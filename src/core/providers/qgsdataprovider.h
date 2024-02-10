@@ -69,21 +69,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
   public:
 
-    // TODO QGIS 4: (re)move DataCapability as this enum is really meant for data items rather than data providers
-
-    /**
-     * Used in browser model to understand which items for which providers should be populated
-     */
-    enum DataCapability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoDataCapabilities  = 0,
-      File                = 1,
-      Dir                 = 1 << 1,
-      Database            = 1 << 2,
-      Net                 = 1 << 3  // Internet source
-    };
-    Q_DECLARE_FLAGS( DataCapabilities, DataCapability )
-
     /**
      * Properties are used to pass custom configuration options into data providers.
      * This enum defines a list of custom properties which can be used on different
@@ -96,7 +81,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
       EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
-
 
     /**
      * Setting options for creating vector data providers.

@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QString>
 #include <QVector>
 
@@ -58,7 +59,7 @@ class CORE_EXPORT QgsDataItemProvider
     virtual QString dataProviderKey() const { return QString(); };
 
     //! Returns combination of flags from QgsDataProvider::DataCapabilities
-    virtual int capabilities() const = 0;
+    virtual Qgis::DataItemProviderCapabilities capabilities() const = 0;
 
     /**
      * Create a new instance of QgsDataItem (or NULLPTR) for given path and parent item.

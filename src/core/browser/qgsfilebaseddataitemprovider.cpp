@@ -520,9 +520,9 @@ QString QgsFileBasedDataItemProvider::name()
   return QStringLiteral( "files" );
 }
 
-int QgsFileBasedDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsFileBasedDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::File | QgsDataProvider::Dir;
+  return Qgis::DataItemProviderCapability::Files | Qgis::DataItemProviderCapability::Directories;
 }
 
 QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

@@ -155,7 +155,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 2.6
      * \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
      */
-    Q_DECL_DEPRECATED int providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
+    Q_DECL_DEPRECATED Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
 
     /**
      * Creates new empty vector layer
