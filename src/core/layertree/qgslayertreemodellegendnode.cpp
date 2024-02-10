@@ -1109,7 +1109,7 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
     case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ):
       return mRuleKey;
 
-    case QgsLayerTreeModelLegendNode::ParentRuleKeyRole:
+    case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ):
       return mParentRuleKey;
 
     case Qt::CheckStateRole:

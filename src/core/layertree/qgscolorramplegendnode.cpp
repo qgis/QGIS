@@ -182,9 +182,9 @@ QVariant QgsColorRampLegendNode::data( int role ) const
   {
     return QgsLayerTreeModelLegendNode::ColorRampLegend;
   }
-  else if ( role == QgsLayerTreeModelLegendNode::RuleKeyRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) )
     return mKey;
-  else if ( role == QgsLayerTreeModelLegendNode::ParentRuleKeyRole )
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) )
     return mParentKey;
   return QVariant();
 }
