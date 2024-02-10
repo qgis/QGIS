@@ -18,7 +18,6 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
 #include "qgsarcgisportalutils.h"
-#include "qgsdataprovider.h"
 #include "qgssettingsentryimpl.h"
 
 #ifdef HAVE_GUI
@@ -631,9 +630,9 @@ QString QgsArcGisRestDataItemProvider::name()
   return QStringLiteral( "AFS" );
 }
 
-int QgsArcGisRestDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsArcGisRestDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsArcGisRestDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

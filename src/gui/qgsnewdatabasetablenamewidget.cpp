@@ -71,7 +71,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     {
       continue;
     }
-    if ( provider->capabilities() & QgsDataProvider::DataCapability::Database )
+    if ( provider->capabilities() & Qgis::DataItemProviderCapability::Databases )
     {
       if ( providersFilter.isEmpty() || providersFilter.contains( provider->dataProviderKey() ) )
       {

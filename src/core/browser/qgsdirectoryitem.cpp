@@ -20,7 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
-#include "qgsdataprovider.h"
 #include "qgszipitem.h"
 #include "qgsprojectitem.h"
 #include "qgsfileutils.h"
@@ -317,10 +316,10 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     bool createdItem = false;
     for ( QgsDataItemProvider *provider : providers )
     {
-      const int capabilities = provider->capabilities();
+      const Qgis::DataItemProviderCapabilities capabilities = provider->capabilities();
 
-      if ( !( ( fileInfo.isFile() && ( capabilities & QgsDataProvider::File ) ) ||
-              ( fileInfo.isDir() && ( capabilities & QgsDataProvider::Dir ) ) ) )
+      if ( !( ( fileInfo.isFile() && ( capabilities & Qgis::DataItemProviderCapability::Files ) ) ||
+              ( fileInfo.isDir() && ( capabilities & Qgis::DataItemProviderCapability::Directories ) ) ) )
       {
         continue;
       }

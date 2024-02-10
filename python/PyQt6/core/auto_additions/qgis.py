@@ -757,6 +757,35 @@ Qgis.BrowserItemCapabilities = lambda flags=0: Qgis.BrowserItemCapability(flags)
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
 Qgis.BrowserItemCapabilities.baseClass = Qgis
 BrowserItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsDataProvider.DataCapability = Qgis.DataItemProviderCapability
+# monkey patching scoped based enum
+QgsDataProvider.NoDataCapabilities = Qgis.DataItemProviderCapability.NoCapabilities
+QgsDataProvider.DataCapability.NoDataCapabilities = Qgis.DataItemProviderCapability.NoCapabilities
+QgsDataProvider.NoDataCapabilities.is_monkey_patched = True
+QgsDataProvider.NoDataCapabilities.__doc__ = "No capabilities"
+QgsDataProvider.File = Qgis.DataItemProviderCapability.Files
+QgsDataProvider.DataCapability.File = Qgis.DataItemProviderCapability.Files
+QgsDataProvider.File.is_monkey_patched = True
+QgsDataProvider.File.__doc__ = "Can provides items which corresponds to files"
+QgsDataProvider.Dir = Qgis.DataItemProviderCapability.Directories
+QgsDataProvider.DataCapability.Dir = Qgis.DataItemProviderCapability.Directories
+QgsDataProvider.Dir.is_monkey_patched = True
+QgsDataProvider.Dir.__doc__ = "Can provides items which corresponds to directories"
+QgsDataProvider.Database = Qgis.DataItemProviderCapability.Databases
+QgsDataProvider.DataCapability.Database = Qgis.DataItemProviderCapability.Databases
+QgsDataProvider.Database.is_monkey_patched = True
+QgsDataProvider.Database.__doc__ = "Can provides items which corresponds to databases"
+QgsDataProvider.Net = Qgis.DataItemProviderCapability.NetworkSources
+QgsDataProvider.DataCapability.Net = Qgis.DataItemProviderCapability.NetworkSources
+QgsDataProvider.Net.is_monkey_patched = True
+QgsDataProvider.Net.__doc__ = "Network/internet source"
+Qgis.DataItemProviderCapability.__doc__ = "Capabilities for data item providers.\n\n.. note::\n\n   Prior to QGIS 3.36 this was available as :py:class:`QgsDataProvider`.DataCapability\n\n.. versionadded:: 3.36\n\n" + '* ``NoDataCapabilities``: ' + Qgis.DataItemProviderCapability.NoCapabilities.__doc__ + '\n' + '* ``File``: ' + Qgis.DataItemProviderCapability.Files.__doc__ + '\n' + '* ``Dir``: ' + Qgis.DataItemProviderCapability.Directories.__doc__ + '\n' + '* ``Database``: ' + Qgis.DataItemProviderCapability.Databases.__doc__ + '\n' + '* ``Net``: ' + Qgis.DataItemProviderCapability.NetworkSources.__doc__
+# --
+Qgis.DataItemProviderCapability.baseClass = Qgis
+Qgis.DataItemProviderCapabilities = lambda flags=0: Qgis.DataItemProviderCapability(flags)
+QgsDataProvider.DataCapabilities = Qgis.DataItemProviderCapabilities
+Qgis.DataItemProviderCapabilities.baseClass = Qgis
+DataItemProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
 # monkey patching scoped based enum
 QgsLayerItem.NoType = Qgis.BrowserLayerType.NoType

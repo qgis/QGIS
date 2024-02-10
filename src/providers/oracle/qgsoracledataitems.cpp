@@ -589,9 +589,9 @@ QString QgsOracleDataItemProvider::dataProviderKey() const
   return QStringLiteral( "oracle" );
 }
 
-int QgsOracleDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsOracleDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Database;
+  return Qgis::DataItemProviderCapability::Databases;
 }
 
 

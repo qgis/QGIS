@@ -29,7 +29,6 @@
 #include "qgswfsdatasourceuri.h"
 #include "qgswfsprovider.h"
 #include "qgssettings.h"
-#include "qgsstyle.h"
 
 #ifdef HAVE_GUI
 #include "qgswfssourceselect.h"
@@ -202,9 +201,9 @@ QString QgsWfsDataItemProvider::dataProviderKey() const
   return QStringLiteral( "WFS" );
 }
 
-int QgsWfsDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsWfsDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )

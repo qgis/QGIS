@@ -13,10 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectortiledataitems.h"
-
-#include "qgssettings.h"
 #include "qgsvectortileconnection.h"
-#include "qgsdataprovider.h"
 
 ///@cond PRIVATE
 
@@ -65,9 +62,9 @@ QString QgsVectorTileDataItemProvider::dataProviderKey() const
   return QStringLiteral( "vectortile" );
 }
 
-int QgsVectorTileDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsVectorTileDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsVectorTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
