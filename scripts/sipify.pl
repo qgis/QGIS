@@ -1670,6 +1670,8 @@ while ($LINE_IDX < $LINE_COUNT){
                     $comment =~ s/\"/\\"/g;
                     $comment =~ s/\\since .*?([\d\.]+)/\\n.. versionadded:: $1\\n/i;
                     $comment =~ s/\\deprecated (.*)/\\n.. deprecated:: $1\\n/i;
+                    $comment =~ s/^\\n+//;
+                    $comment =~ s/\\n+$//;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ( defined $enum_value and ($enum_value =~ m/.*\<\<.*/ or $enum_value =~ m/.*0x0.*/)) {
                        if (none { $_ eq "${ACTUAL_CLASS}::$enum_qualname" } @ENUM_INTFLAG_TYPES) {
