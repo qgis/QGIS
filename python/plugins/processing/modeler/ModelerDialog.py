@@ -96,7 +96,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setModelScene(scene)
 
         self.view().ensureVisible(0, 0, 10, 10)
-        self.view().scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
+        self.view().scale(self.logicalDpiX() / 96, self.logicalDpiY() / 96)
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
