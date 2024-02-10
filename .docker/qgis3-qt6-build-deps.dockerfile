@@ -15,6 +15,7 @@ RUN dnf -y --refresh install \
     fcgi-devel \
     flex \
     git \
+    gdal \
     gdal-devel \
     gdal-python-tools \
     geos-devel \
