@@ -2423,13 +2423,13 @@ target_link_libraries(qgis_core
 )
 
 if(BUILD_WITH_QT6)
-target_link_libraries(qgis_core
-  Qt6Keychain::Qt6Keychain
-)
+  target_link_libraries(qgis_core
+    Qt6Keychain::Qt6Keychain
+  )
 else()
-target_link_libraries(qgis_core
-  Qt5Keychain::Qt5Keychain
-)
+  target_link_libraries(qgis_core
+    qt5keychain
+  )
 endif()
 
 if (WITH_QTPRINTER)
