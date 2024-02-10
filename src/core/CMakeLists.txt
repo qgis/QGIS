@@ -2516,11 +2516,6 @@ if (FORCE_STATIC_LIBS)
   endif()
 endif()
 
-if (MSVC)
-  #needed for linking to gdal which needs odbc
-  set(TARGET_LINK_LIBRARIES qgis_core odbc32 odbccp32)
-endif()
-
 if (${QT_VERSION_BASE}SerialPort_FOUND)
   target_link_libraries(qgis_core
     ${QT_VERSION_BASE}::SerialPort
