@@ -207,6 +207,10 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                 if len(_node.args) >= 4:
                     sys.stderr.write(
                         f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: fragile call to addAction. Use my_action = QAction(...), obj.addAction(my_action) instead.\n')
+            if _node.func.attr == 'desktop':
+                if len(_node.args) == 0:
+                    sys.stderr.write(
+                        f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QDesktopWidget is deprecated and removed in Qt6. Replace with alternative approach instead.\n')
 
         if isinstance(_node.func, ast.Name) and _node.func.id == 'QVariant':
             if len(_node.args) == 1 and isinstance(_node.args[0], ast.Attribute) and isinstance(_node.args[0].value, ast.Name) and _node.args[0].value.id == 'QVariant':
