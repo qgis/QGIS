@@ -1196,10 +1196,10 @@ void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstract
       {
         if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterDistance * >( parameterDefinition() )->parentParameterName() )
         {
-          setUnitParameterValue( wrapper->parameterValue() );
+          setUnitParameterValue( wrapper->parameterValue(), wrapper );
           connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
           {
-            setUnitParameterValue( wrapper->parameterValue() );
+            setUnitParameterValue( wrapper->parameterValue(), wrapper );
           } );
           break;
         }
@@ -1213,7 +1213,7 @@ void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstract
   }
 }
 
-void QgsProcessingDistanceWidgetWrapper::setUnitParameterValue( const QVariant &value )
+void QgsProcessingDistanceWidgetWrapper::setUnitParameterValue( const QVariant &value, const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
   Qgis::DistanceUnit units = Qgis::DistanceUnit::Unknown;
 
@@ -1229,7 +1229,9 @@ void QgsProcessingDistanceWidgetWrapper::setUnitParameterValue( const QVariant &
     context = tmpContext.get();
   }
 
-  QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsCrs( parameterDefinition(), value, *context );
+  const QgsCoordinateReferenceSystem crs = wrapper
+      ? QgsProcessingParameters::parameterAsCrs( wrapper->parameterDefinition(), wrapper->parameterValue(), *context )
+      : QgsProcessingUtils::variantToCrs( value, *context );
   if ( crs.isValid() )
   {
     units = crs.mapUnits();
