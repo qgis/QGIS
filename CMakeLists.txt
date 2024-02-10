@@ -568,7 +568,11 @@ if(WITH_CORE)
   endif()
 
   # Password helper
-  find_package(QtKeychain REQUIRED)
+  if(BUILD_WITH_QT6)
+    find_package(Qt6Keychain CONFIG REQUIRED)
+  else()
+    find_package(Qt5Keychain CONFIG REQUIRED)
+  endif()
   # Master password hash and authentication encryption
   find_package(QCA REQUIRED)
   # Check for runtime dependency of qca-ossl plugin

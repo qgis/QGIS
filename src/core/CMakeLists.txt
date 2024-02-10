@@ -2249,7 +2249,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${SQLITE3_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
   ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
@@ -2411,7 +2410,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Concurrent
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
-  ${QTKEYCHAIN_LIBRARY}
   GEOS::geos_c
   GDAL::GDAL
   ${SPATIALINDEX_LIBRARY}
@@ -2423,6 +2421,16 @@ target_link_libraries(qgis_core
   ${EXIV2_LIBRARY}
   PROJ::proj
 )
+
+if(BUILD_WITH_QT6)
+target_link_libraries(qgis_core
+  Qt6Keychain::Qt6Keychain
+)
+else()
+target_link_libraries(qgis_core
+  Qt5Keychain::Qt5Keychain
+)
+endif()
 
 if (WITH_QTPRINTER)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
