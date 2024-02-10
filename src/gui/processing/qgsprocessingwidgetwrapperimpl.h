@@ -387,7 +387,7 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
     void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
 
   public slots:
-    void setUnitParameterValue( const QVariant &value );
+    void setUnitParameterValue( const QVariant &value, const QgsAbstractProcessingParameterWidgetWrapper *unitParameterWrapper = nullptr );
     void setUnits( Qgis::DistanceUnit unit );
 
   protected:
