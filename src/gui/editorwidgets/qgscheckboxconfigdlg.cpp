@@ -47,6 +47,7 @@ QVariantMap QgsCheckBoxConfigDlg::config()
   cfg.insert( QStringLiteral( "CheckedState" ), leCheckedState->text() );
   cfg.insert( QStringLiteral( "UncheckedState" ), leUncheckedState->text() );
   cfg.insert( QStringLiteral( "TextDisplayMethod" ), mDisplayAsTextComboBox->currentData().toInt() );
+  cfg.insert( QStringLiteral( "AllowNullState" ), mAllowNullState->isChecked() );
 
   return cfg;
 }
@@ -59,4 +60,5 @@ void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
     leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
   }
   mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( QStringLiteral( "TextDisplayMethod" ), QString::number( static_cast< int >( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
+  mAllowNullState->setChecked( config.value( QStringLiteral( "AllowNullState" ) ).toBool() );
 }
