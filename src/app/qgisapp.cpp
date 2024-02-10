@@ -9991,7 +9991,23 @@ void QgisApp::reshapeFeatures()
 
 void QgisApp::addFeature()
 {
-  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
+  if ( mMapCanvas->mapTool()->toolName() != tr( "Add feature" ) )
+  {
+    mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddFeature ) );
+    if ( !mMapCanvas->currentLayer()->isSpatial() )
+    {
+      mMapCanvas->setCursor( QCursor( Qt::ArrowCursor ) );
+      mMapCanvas->mapTool()->action()->setChecked( false );
+      mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
+      return;
+    }
+    mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+  }
+  if ( !mMapCanvas->currentLayer()->isSpatial() )
+  {
+    mMapCanvas->mapTool()->activate();
+    mMapCanvas->mapTool()->action()->setChecked( false );
+  }
 }
 
 void QgisApp::setMapTool( QgsMapTool *tool, bool clean )
@@ -15275,6 +15291,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionFeatureAction->setEnabled( layerHasActions );
 
+      manageDigitizingConfig( vlayer );
+
       if ( !isEditable && mMapCanvas && mMapCanvas->mapTool()
            && ( mMapCanvas->mapTool()->flags() & QgsMapTool::EditTool ) && !mSaveRollbackInProgress )
       {
@@ -15929,6 +15947,33 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   }
 
   refreshFeatureActions();
+}
+
+void QgisApp::manageDigitizingConfig( QgsVectorLayer *vlayer )
+{
+  if ( mMapCanvas->mapTool()->toolName() == tr( "Add feature" ) )
+  {
+    if ( vlayer->isSpatial() )
+    {
+      mMapCanvas->mapTool()->action()->setChecked( true );
+      mMapCanvas->setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+    }
+    else
+    {
+      mMapCanvas->mapTool()->action()->setChecked( false );
+      mMapCanvas->mapTool()->setCursor( QCursor( Qt::ArrowCursor ) );
+    }
+  }
+  if ( !vlayer->isSpatial() )
+  {
+      QgsSnappingConfig config = QgsSnappingConfig();
+      config.setEnabled( false );
+      mMapCanvas->snappingUtils()->setConfig( config );
+  }
+  else
+  {
+      mMapCanvas->snappingUtils()->setConfig( QgsProject::instance()->snappingConfig() );
+  }
 }
 
 void QgisApp::refreshActionFeatureAction()
