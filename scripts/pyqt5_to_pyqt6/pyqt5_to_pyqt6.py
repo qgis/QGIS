@@ -351,7 +351,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                                        in ambiguous_enums[
                                            (node.value.id, node.attr)]]
                     sys.stderr.write(f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n')
-            elif (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name)
+            elif (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and not isinstance(parent, ast.Attribute)
                     and (node.value.id, node.attr) in qt_enums):
                 fix_qt_enums[Offset(node.lineno, node.col_offset)] = (node.value.id, qt_enums[(node.value.id, node.attr)], node.attr)
 
