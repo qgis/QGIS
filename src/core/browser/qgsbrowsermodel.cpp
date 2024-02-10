@@ -821,8 +821,8 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
 
 QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
 {
-  Qgis::DataItemProviderCapabilities capabilities = pr->capabilities();
-  if ( capabilities == Qgis::DataItemProviderCapability::NoCapabilities )
+  const Qgis::DataItemProviderCapabilities capabilities = pr->capabilities();
+  if ( capabilities == Qgis::DataItemProviderCapabilities( Qgis::DataItemProviderCapability::NoCapabilities ) )
   {
     QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
     return nullptr;
