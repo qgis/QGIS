@@ -1459,40 +1459,40 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );
 
   QFile::copy( uri_1, uri );
-  QgsMeshLayer* layer = new QgsMeshLayer( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  QgsMeshLayer *layer = new QgsMeshLayer( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->datasetGroupCount(), 4 );
-  
+
   QgsProject::instance()->addMapLayer( layer );
 
   int scalarIndex = 0;
   int vectorIndex = -1;
 
   QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
-  rendererSettings.setActiveScalarDatasetGroup(scalarIndex);
-  rendererSettings.setActiveVectorDatasetGroup(vectorIndex);
-  layer->setRendererSettings(rendererSettings);
+  rendererSettings.setActiveScalarDatasetGroup( scalarIndex );
+  rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
+  layer->setRendererSettings( rendererSettings );
 
   std::unique_ptr< QgsLayerTree > root( std::make_unique<QgsLayerTree>() );
   root->addLayer( layer );
-  std::unique_ptr<QgsLayerTreeModel> legendModel(  std::make_unique<QgsLayerTreeModel>(root.get()) );
+  std::unique_ptr<QgsLayerTreeModel> legendModel( std::make_unique<QgsLayerTreeModel>( root.get() ) );
 
   QgsLegendSettings settings;
 
   QImage res = _renderLegend( legendModel.get(), settings );
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ) ) );
-  
+
   //red vector
-  QgsMeshLayer* layer2 = layer->clone();
+  QgsMeshLayer *layer2 = layer->clone();
   QgsProject::instance()->removeMapLayer( layer );
   QgsProject::instance()->addMapLayer( layer2 );
 
   vectorIndex = 2;
-  rendererSettings.setActiveVectorDatasetGroup(vectorIndex);
-  QgsMeshRendererVectorSettings vectorSettings = rendererSettings.vectorSettings(vectorIndex);
+  rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
+  QgsMeshRendererVectorSettings vectorSettings = rendererSettings.vectorSettings( vectorIndex );
   vectorSettings.setColor( Qt::red );
-  rendererSettings.setVectorSettings(vectorIndex, vectorSettings);
-  layer2->setRendererSettings(rendererSettings);
+  rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
+  layer2->setRendererSettings( rendererSettings );
 
   root = std::make_unique<QgsLayerTree>();
   root->addLayer( layer2 );
@@ -1502,15 +1502,15 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_red_vector" ) ) );
 
   //color ramp vector
-  QgsMeshLayer* layer3 = layer2->clone();
+  QgsMeshLayer *layer3 = layer2->clone();
   QgsProject::instance()->removeMapLayer( layer2 );
   QgsProject::instance()->addMapLayer( layer3 );
 
-  const QgsColorRampShader fcn = rendererSettings.scalarSettings(vectorIndex).colorRampShader();
-  vectorSettings.setColorRampShader(fcn);
-  vectorSettings.setColoringMethod(QgsInterpolatedLineColor::ColorRamp);
-  rendererSettings.setVectorSettings(vectorIndex, vectorSettings);
-  layer3->setRendererSettings(rendererSettings);
+  const QgsColorRampShader fcn = rendererSettings.scalarSettings( vectorIndex ).colorRampShader();
+  vectorSettings.setColorRampShader( fcn );
+  vectorSettings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
+  rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
+  layer3->setRendererSettings( rendererSettings );
 
   root = std::make_unique<QgsLayerTree>();
   root->addLayer( layer3 );

@@ -135,7 +135,7 @@ class TestQgsColorRampLegendNode(QgisTestCase):
         self.assertEqual(node.ramp().color2().name(), '#00c800')
         self.assertEqual(node.data(QgsLayerTreeModelLegendNode.LegendNodeRoles.RuleKeyRole), 'key')
         self.assertEqual(node.data(QgsLayerTreeModelLegendNode.LegendNodeRoles.ParentRuleKeyRole), 'parentKey')
-        
+
         node.setIconSize(QSize(11, 12))
         self.assertEqual(node.iconSize(), QSize(11, 12))
 
