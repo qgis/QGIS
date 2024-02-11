@@ -81,7 +81,7 @@ class TestQgsXmlUtils(QgisTestCase):
 
         prop2 = QgsXmlUtils.readVariant(elem)
 
-        self.assertEqual(my_properties, prop2)
+        self.assertEqual(prop2, {'a': 'a', 'b': 'b', 'c': 'something_else', 'empty': None})
 
     def test_double(self):
         """
@@ -178,7 +178,7 @@ class TestQgsXmlUtils(QgisTestCase):
         elem = QgsXmlUtils.writeVariant(crs, doc)
 
         crs2 = QgsXmlUtils.readVariant(elem)
-        self.assertFalse(crs2.isValid())
+        self.assertIsNone(crs2)
 
     def test_geom(self):
         """
@@ -206,7 +206,7 @@ class TestQgsXmlUtils(QgisTestCase):
         self.assertEqual(c, QColor(100, 200, 210, 50))
         elem = QgsXmlUtils.writeVariant(QColor(), doc)
         c = QgsXmlUtils.readVariant(elem)
-        self.assertFalse(c.isValid())
+        self.assertIsNone(c)
 
     def test_datetime(self):
         """
