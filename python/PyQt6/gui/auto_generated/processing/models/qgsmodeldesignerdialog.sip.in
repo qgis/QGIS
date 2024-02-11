@@ -115,12 +115,12 @@ Checks if there are unsaved changes in the model, and if so, prompts the user to
 Returns ``False`` if the cancel option was selected
 %End
 
-    void setLastRunChildAlgorithmResults( const QMap<QString, QVariant> &results );
+    void setLastRunChildAlgorithmResults( const QVariantMap &results );
 %Docstring
 Sets the results of child algorithms for the last run of the model through the designer window.
 %End
 
-    void setLastRunChildAlgorithmInputs( const QMap<QString, QVariant> &inputs );
+    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
 %Docstring
 Sets the inputs for child algorithms for the last run of the model through the designer window.
 %End

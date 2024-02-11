@@ -327,7 +327,7 @@ Reads property collection state from an XML element.
 
     virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
 %Docstring
-Saves this property collection to a QMap<QString, QVariant>, wrapped in a QVariant.
+Saves this property collection to a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
@@ -335,7 +335,7 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
     virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 %Docstring
-Loads this property collection from a QMap<QString, QVariant>, wrapped in a QVariant.
+Loads this property collection from a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.readVariant to save it to an XML document.
 
 .. seealso:: :py:func:`toVariant`

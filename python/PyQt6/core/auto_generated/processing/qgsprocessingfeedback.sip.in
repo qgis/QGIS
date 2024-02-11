@@ -155,7 +155,7 @@ Pushes a summary of the QGIS (and underlying library) version information to the
 .. versionadded:: 3.4.7
 %End
 
-    void pushFormattedResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QMap<QString, QVariant> &results );
+    void pushFormattedResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &results );
 %Docstring
 Pushes a summary of the execution ``results`` to the log
 

@@ -166,14 +166,14 @@ Sets the vertical ``alignment`` for text in the cell.
 .. versionadded:: 3.16
 %End
 
-    QMap<QString, QVariant> properties( const QgsReadWriteContext &context ) const;
+    QVariantMap properties( const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the properties of the cell.
 
 .. seealso:: :py:func:`setProperties`
 %End
 
-    void setProperties( const QMap<QString, QVariant> &properties, const QgsReadWriteContext &context );
+    void setProperties( const QVariantMap &properties, const QgsReadWriteContext &context );
 %Docstring
 Sets the ``properties`` for the cell.
 

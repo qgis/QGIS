@@ -26,7 +26,7 @@ This class implements simple http header management.
   public:
 
 
-    QgsHttpHeaders( const QMap<QString, QVariant> &headers );
+    QgsHttpHeaders( const QVariantMap &headers );
 %Docstring
 Constructor from map
 
@@ -65,7 +65,7 @@ Constructor from a QDomElement ``element``
 
     virtual ~QgsHttpHeaders();
 
-    QMap<QString, QVariant> headers() const;
+    QVariantMap headers() const;
 %Docstring
 Returns the headers as a variant map
 
@@ -101,7 +101,7 @@ Updates an ``uri`` by adding all the HTTP headers
 :return: ``True`` if the update succeed
 %End
 
-    bool updateMap( QMap<QString, QVariant> &map ) const;
+    bool updateMap( QVariantMap &map ) const;
 %Docstring
 Updates a ``map`` by adding all the HTTP headers
 
@@ -136,7 +136,7 @@ Loads headers from the ``uri``
 :param uri:
 %End
 
-    void setFromMap( const QMap<QString, QVariant> &map );
+    void setFromMap( const QVariantMap &map );
 %Docstring
 Loads headers from the ``map``
 

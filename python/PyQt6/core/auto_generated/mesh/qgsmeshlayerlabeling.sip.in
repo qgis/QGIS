@@ -88,7 +88,7 @@ by ``opacity`` effectively changing the opacity of the whole labeling elements.
 Try to create instance of an implementation based on the XML data
 %End
 
-    virtual void toSld( QDomNode &parent, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 %Docstring
 Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
 %End

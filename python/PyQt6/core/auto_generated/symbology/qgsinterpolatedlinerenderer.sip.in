@@ -312,7 +312,7 @@ The interpolation is done between two values defined at the extremities
 Constructor
 %End
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
 %Docstring
 Creates the symbol layer
 %End
@@ -327,7 +327,7 @@ Creates the symbol layer
 
     virtual QgsInterpolatedLineSymbolLayer *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 

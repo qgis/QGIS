@@ -75,7 +75,7 @@ Determines if this parameter is available in the modeler.
 The default implementation returns ``True``.
 %End
 
-    virtual QMap<QString, QVariant> metadata() const;
+    virtual QVariantMap metadata() const;
 %Docstring
 Metadata for this parameter type. Can be used for example to define custom widgets.
 The default implementation returns an empty map.

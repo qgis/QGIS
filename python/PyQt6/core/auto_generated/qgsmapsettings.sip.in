@@ -323,7 +323,7 @@ Sets the custom rendering flags. Layers might honour these to alter their render
    use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
 %End
 
-    QMap<QString, QVariant> customRenderingFlags() const;
+    QVariantMap customRenderingFlags() const;
 %Docstring
 Returns any custom rendering flags. Layers might honour these to alter their rendering.
 

@@ -1029,14 +1029,14 @@ Returns the current avoid intersections mode.
 .. versionadded:: 3.14
 %End
 
-    QMap<QString, QVariant> customVariables() const;
+    QVariantMap customVariables() const;
 %Docstring
 A map of custom project variables.
 To get all available variables including generated ones
 use :py:func:`QgsExpressionContextUtils.projectScope()` instead.
 %End
 
-    void setCustomVariables( const QMap<QString, QVariant> &customVariables );
+    void setCustomVariables( const QVariantMap &customVariables );
 %Docstring
 A map of custom project variables.
 Be careful not to set generated variables.

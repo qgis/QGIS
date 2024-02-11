@@ -31,7 +31,7 @@ the "url" key is normally the path. Currently supported types:
 
 Currently the writer only support MVT encoding of data.
 
-Metadata support: it is possible to pass a QMap<QString, QVariant> with metadata. This
+Metadata support: it is possible to pass a QVariantMap with metadata. This
 is backend dependent. Currently only "mbtiles" source type supports writing
 of metadata. The key-value pairs will be written to the "metadata" table
 in the MBTiles file. Some useful metadata keys listed here, but see MBTiles spec
@@ -146,7 +146,7 @@ Sets the maximum zoom level of tiles. Allowed values are in interval [0,24]
 Sets vector layers and their configuration for output of vector tiles
 %End
 
-    void setMetadata( const QMap<QString, QVariant> &metadata );
+    void setMetadata( const QVariantMap &metadata );
 %Docstring
 Sets that will be written to the output dataset. See class description for more on metadata support
 %End

@@ -29,7 +29,7 @@ Simple constructor
 
     ~QgsMaskMarkerSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
 
@@ -49,7 +49,7 @@ Create a new QgsMaskMarkerSymbolLayer
     virtual bool hasDataDefinedProperties() const;
 
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual QString layerType() const;

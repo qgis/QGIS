@@ -49,7 +49,7 @@ Will be called when the "Run as Single" button is clicked.
 
   protected slots:
 
-    virtual void algExecuted( bool successful, const QMap<QString, QVariant> &results );
+    virtual void algExecuted( bool successful, const QVariantMap &results );
 
 
   protected:
@@ -70,12 +70,12 @@ Creates a new Processing context.
 (Each step in the batch processing will use a new Processing context)
 %End
 
-    virtual void handleAlgorithmResults( QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QMap<QString, QVariant> &parameters ) = 0;
+    virtual void handleAlgorithmResults( QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QVariantMap &parameters ) = 0;
 %Docstring
 Called when the dialog should handle the results of an algorithm, e.g. by loading layers into the current project.
 %End
 
-    virtual void loadHtmlResults( const QMap<QString, QVariant> &results, int index ) = 0;
+    virtual void loadHtmlResults( const QVariantMap &results, int index ) = 0;
 %Docstring
 Populates the HTML results dialog as a result of a successful algorithm execution.
 %End

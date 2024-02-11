@@ -50,13 +50,13 @@ Constructor for QgsValueRelationFieldFormatter.
 
     virtual QString id() const;
 
-    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config ) const;
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
 
     static QStringList valueToStringList( const QVariant &value );
@@ -66,7 +66,7 @@ Utility to convert a list or a string representation of an (hstore style: {1,2..
 .. versionadded:: 3.2
 %End
 
-    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QMap<QString, QVariant> &config, const QgsFeature &formFeature = QgsFeature(), const QgsFeature &parentFormFeature = QgsFeature() );
+    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature(), const QgsFeature &parentFormFeature = QgsFeature() );
 %Docstring
 Create a cache for a value relation field.
 This can be used to keep the value map in the local memory
@@ -160,7 +160,7 @@ optionally checks for ``parentFeature``
 .. versionadded:: 3.2
 %End
 
-    static QgsVectorLayer *resolveLayer( const QMap<QString, QVariant> &config, const QgsProject *project );
+    static QgsVectorLayer *resolveLayer( const QVariantMap &config, const QgsProject *project );
 %Docstring
 Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
 
@@ -168,7 +168,7 @@ Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
 %End
 
 
-    virtual QVariantList availableValues( const QMap<QString, QVariant> &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 
 };
 

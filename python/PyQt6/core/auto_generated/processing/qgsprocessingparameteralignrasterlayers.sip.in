@@ -66,13 +66,13 @@ Returns the type name for the parameter class.
 %Docstring
 Converts a QVariant value (a QVariantList) to a list of input layers
 %End
-    static QgsAlignRasterData::RasterItem variantMapAsItem( const QMap<QString, QVariant> &layerVariantMap, QgsProcessingContext &context );
+    static QgsAlignRasterData::RasterItem variantMapAsItem( const QVariantMap &layerVariantMap, QgsProcessingContext &context );
 %Docstring
-Converts a QVariant value (a QMap<QString, QVariant>) to a single input layer
+Converts a QVariant value (a QVariantMap) to a single input layer
 %End
-    static QMap<QString, QVariant> itemAsVariantMap( const QgsAlignRasterData::RasterItem &item );
+    static QVariantMap itemAsVariantMap( const QgsAlignRasterData::RasterItem &item );
 %Docstring
-Converts a single input layer to QVariant representation (a QMap<QString, QVariant>)
+Converts a single input layer to QVariant representation (a QVariantMap)
 %End
 };
 

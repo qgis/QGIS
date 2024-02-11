@@ -99,7 +99,7 @@ Returns 3D shape for points
 Sets 3D shape for points
 %End
 
-    QMap<QString, QVariant> shapeProperties() const;
+    QVariantMap shapeProperties() const;
 %Docstring
 Returns a key-value dictionary of point shape properties.
 
@@ -120,7 +120,7 @@ used when the property has not been explicitly set.
 .. versionadded:: 3.36
 %End
 
-    void setShapeProperties( const QMap<QString, QVariant> &properties );
+    void setShapeProperties( const QVariantMap &properties );
 %Docstring
 Sets a key-value dictionary of point shape properties
 %End

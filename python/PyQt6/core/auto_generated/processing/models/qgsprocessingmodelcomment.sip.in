@@ -38,9 +38,9 @@ Saves this comment to a QVariant.
 .. seealso:: :py:func:`loadVariant`
 %End
 
-    bool loadVariant( const QMap<QString, QVariant> &map );
+    bool loadVariant( const QVariantMap &map );
 %Docstring
-Loads this comment from a QMap<QString, QVariant>.
+Loads this comment from a QVariantMap.
 
 .. seealso:: :py:func:`toVariant`
 %End

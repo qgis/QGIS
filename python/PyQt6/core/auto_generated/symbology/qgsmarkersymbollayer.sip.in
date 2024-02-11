@@ -195,7 +195,7 @@ Constructor for QgsSimpleMarkerSymbolLayer.
     ~QgsSimpleMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer.
 
@@ -220,11 +220,11 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsSimpleMarkerSymbolLayer *clone() const /Factory/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -495,7 +495,7 @@ Constructor for QgsFilledMarkerSymbolLayer.
 
     ~QgsFilledMarkerSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayer.
 
@@ -510,7 +510,7 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsFilledMarkerSymbolLayer *clone() const /Factory/;
 
@@ -559,13 +559,13 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
     ~QgsSvgMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates the symbol
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
-    static void resolvePaths( QMap<QString, QVariant> &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -586,7 +586,7 @@ Used internally when reading/writing symbols.
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual bool usesMapUnits() const;
 
@@ -594,7 +594,7 @@ Used internally when reading/writing symbols.
     virtual QgsSvgMarkerSymbolLayer *clone() const /Factory/;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     QString path() const;
@@ -771,14 +771,14 @@ Constructs raster marker symbol layer with picture from given absolute path to a
     ~QgsRasterMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a raster marker symbol layer from a string map of properties.
 
-:param properties: QMap<QString, QVariant> properties object
+:param properties: QVariantMap properties object
 %End
 
-    static void resolvePaths( QMap<QString, QVariant> &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -792,7 +792,7 @@ Used internally when reading/writing symbols.
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsRasterMarkerSymbolLayer *clone() const /Factory/;
 
@@ -906,7 +906,7 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 
   protected:
 
-    void setCommonProperties( const QMap<QString, QVariant> &properties );
+    void setCommonProperties( const QVariantMap &properties );
 %Docstring
 Sets common class properties from a ``properties`` map.
 
@@ -948,7 +948,7 @@ Constructs a font marker symbol layer.
     ~QgsFontMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsFontMarkerSymbolLayer from a property map (see :py:func:`~QgsFontMarkerSymbolLayer.properties`)
 %End
@@ -958,7 +958,7 @@ Creates a new QgsFontMarkerSymbolLayer from a property map (see :py:func:`~QgsFo
 Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
 %End
 
-    static void resolveFonts( const QMap<QString, QVariant> &properties, const QgsReadWriteContext &context );
+    static void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
 %Docstring
 Resolves fonts from a ``properties`` map, raising warnings in the specified ``context`` if the
 required fonts are not available on the system.
@@ -979,13 +979,13 @@ required fonts are not available on the system.
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual QgsFontMarkerSymbolLayer *clone() const /Factory/;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
 
@@ -1170,7 +1170,7 @@ Constructor for animated marker symbol layer using the specified source image ``
     ~QgsAnimatedMarkerSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates an animated marker symbol layer from a string map of ``properties``.
 %End
@@ -1178,7 +1178,7 @@ Creates an animated marker symbol layer from a string map of ``properties``.
 
     virtual QString layerType() const;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsAnimatedMarkerSymbolLayer *clone() const /Factory/;
 
