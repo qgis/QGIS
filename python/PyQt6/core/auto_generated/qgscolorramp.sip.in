@@ -74,7 +74,7 @@ Inverts the ordering of the color ramp.
 Creates a clone of the color ramp.
 %End
 
-    virtual QMap<QString, QVariant> properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 %Docstring
 Returns a string map containing all the color ramp's properties.
 %End

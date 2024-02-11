@@ -55,9 +55,9 @@ Constructor
 
     virtual QStringList dependsOnOtherParameters() const;
 
-    virtual QMap<QString, QVariant> toVariantMap() const;
+    virtual QVariantMap toVariantMap() const;
 
-    virtual bool fromVariantMap( const QMap<QString, QVariant> &map );
+    virtual bool fromVariantMap( const QVariantMap &map );
 
 
     static QString typeName();
@@ -132,9 +132,9 @@ Constructor
 
     virtual QStringList dependsOnOtherParameters() const;
 
-    virtual QMap<QString, QVariant> toVariantMap() const;
+    virtual QVariantMap toVariantMap() const;
 
-    virtual bool fromVariantMap( const QMap<QString, QVariant> &map );
+    virtual bool fromVariantMap( const QVariantMap &map );
 
 
     static QString typeName();

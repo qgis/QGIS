@@ -65,7 +65,7 @@ Sets a global context variable. This variable will be contained within scopes re
 .. seealso:: :py:func:`removeGlobalVariable`
 %End
 
-    static void setGlobalVariables( const QMap<QString, QVariant> &variables );
+    static void setGlobalVariables( const QVariantMap &variables );
 %Docstring
 Sets all global context variables. Existing global variables will be removed and replaced
 with the variables specified.
@@ -118,7 +118,7 @@ Sets a project context variable. This variable will be contained within scopes r
 .. seealso:: :py:func:`projectScope`
 %End
 
-    static void setProjectVariables( QgsProject *project, const QMap<QString, QVariant> &variables );
+    static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
 %Docstring
 Sets all project context variables. Existing project variables will be removed and replaced
 with the variables specified.
@@ -174,7 +174,7 @@ Sets a layer context variable. This variable will be contained within scopes ret
 .. seealso:: :py:func:`layerScope`
 %End
 
-    static void setLayerVariables( QgsMapLayer *layer, const QMap<QString, QVariant> &variables );
+    static void setLayerVariables( QgsMapLayer *layer, const QVariantMap &variables );
 %Docstring
 Sets all layer context variables. Existing layer variables will be removed and replaced
 with the variables specified.
@@ -245,7 +245,7 @@ Sets a layout context variable. This variable will be contained within scopes re
 .. versionadded:: 3.0
 %End
 
-    static void setLayoutVariables( QgsLayout *layout, const QMap<QString, QVariant> &variables );
+    static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
 %Docstring
 Sets all layout context variables. Existing layout variables will be removed and replaced
 with the variables specified.
@@ -293,7 +293,7 @@ This variable will be contained within scopes retrieved via
 .. versionadded:: 3.0
 %End
 
-    static void setLayoutItemVariables( QgsLayoutItem *item, const QMap<QString, QVariant> &variables );
+    static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
 %Docstring
 Sets all layout item context variables for an ``item``. Existing variables will be removed and replaced
 with the ``variables`` specified.
@@ -329,7 +329,7 @@ This variable will be contained within scopes retrieved via
 .. versionadded:: 3.10
 %End
 
-    static void setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QMap<QString, QVariant> &variables );
+    static void setLayoutMultiFrameVariables( QgsLayoutMultiFrame *frame, const QVariantMap &variables );
 %Docstring
 Sets all layout multiframe context variables for an ``frame``. Existing variables will be removed and replaced
 with the ``variables`` specified.
@@ -348,7 +348,7 @@ collection. Generally this method should not be used as the created context does
 standard scopes such as the global and project scopes.
 %End
 
-    static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QMap<QString, QVariant> &parameters, QgsProcessingContext &context ) /Factory/;
+    static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a processing ``algorithm``,
 when used with the specified ``parameters`` and ``context``.
@@ -357,7 +357,7 @@ For instance, algorithm name and parameter functions.
 .. seealso:: :py:func:`processingModelAlgorithmScope`
 %End
 
-    static QgsExpressionContextScope *processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QMap<QString, QVariant> &parameters, QgsProcessingContext &context ) /Factory/;
+    static QgsExpressionContextScope *processingModelAlgorithmScope( const QgsProcessingModelAlgorithm *model, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a processing ``model`` algorithm,
 when used with the specified ``parameters`` and ``context``.

@@ -21,7 +21,7 @@ A marker symbol type, for rendering Point and MultiPoint geometries.
 %End
   public:
 
-    static QgsMarkerSymbol *createSimple( const QMap<QString, QVariant> &properties ) /Factory/;
+    static QgsMarkerSymbol *createSimple( const QVariantMap &properties ) /Factory/;
 %Docstring
 Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
 This is a convenience method for easier creation of marker symbols.

@@ -31,7 +31,7 @@ Model based algorithm with processing.
 Constructor for QgsProcessingModelAlgorithm.
 %End
 
-    virtual void initAlgorithm( const QMap<QString, QVariant> &configuration = QMap<QString, QVariant>() );  //#spellok
+    virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );  //#spellok
 
 
     virtual QString name() const;
@@ -55,9 +55,9 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
 
-    virtual QString asPythonCommand( const QMap<QString, QVariant> &parameters, QgsProcessingContext &context ) const;
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
-    virtual QgsExpressionContext createExpressionContext( const QMap<QString, QVariant> &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
+    virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
 
 
     void setName( const QString &name );
@@ -435,7 +435,7 @@ Reads the model from a file, at the specified ``path``.
 
     QVariant toVariant() const;
 %Docstring
-Saves this model to a QMap<QString, QVariant>, wrapped in a QVariant.
+Saves this model to a QVariantMap, wrapped in a QVariant.
 You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
@@ -445,7 +445,7 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
     bool loadVariant( const QVariant &variant );
 %Docstring
-Loads this model from a QMap<QString, QVariant>, wrapped in a QVariant ``variant``.
+Loads this model from a QVariantMap, wrapped in a QVariant ``variant``.
 You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
@@ -453,7 +453,7 @@ You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 .. versionadded:: 3.4
 %End
 
-    QMap<QString, QVariant> &helpContent();
+    QVariantMap &helpContent();
 %Docstring
 Returns the model's help contents (a free-form map of values describing the algorithm's
 use and metadata).
@@ -462,7 +462,7 @@ use and metadata).
 %End
 
 
-    void setHelpContent( const QMap<QString, QVariant> &contents );
+    void setHelpContent( const QVariantMap &contents );
 %Docstring
 Sets the model's help ``contents`` (a free-form map of values describing the algorithm's
 use and metadata).
@@ -540,8 +540,8 @@ parameter ``source``, and ``description``.
         QString description;
     };
 
-    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext *context = 0, const QMap<QString, QVariant> &modelParameters = QMap<QString, QVariant>(),
-        const QMap<QString, QVariant> &results = QMap<QString, QVariant>() ) const;
+    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext *context = 0, const QVariantMap &modelParameters = QVariantMap(),
+        const QVariantMap &results = QVariantMap() ) const;
 %Docstring
 Returns a map of variable name to variable definition for expression context variables which are available
 for use by child algorithm during model execution.
@@ -557,15 +557,15 @@ algorithm ``results`` must be passed.
 .. seealso:: :py:func:`createExpressionContextScopeForChildAlgorithm`
 %End
 
-    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QMap<QString, QVariant> &modelParameters = QMap<QString, QVariant>(),
-        const QMap<QString, QVariant> &results = QMap<QString, QVariant>() ) const /Factory/;
+    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
+        const QVariantMap &results = QVariantMap() ) const /Factory/;
 %Docstring
 Creates a new expression context scope for a child algorithm within the model.
 
 .. seealso:: :py:func:`variablesForChildAlgorithm`
 %End
 
-    QMap<QString, QVariant> variables() const;
+    QVariantMap variables() const;
 %Docstring
 Returns the map of custom expression context variables defined for this model.
 
@@ -577,7 +577,7 @@ These variables are added to the model's expression context scope, allowing for 
 .. versionadded:: 3.8
 %End
 
-    void setVariables( const QMap<QString, QVariant> &variables );
+    void setVariables( const QVariantMap &variables );
 %Docstring
 Sets the map of custom expression context ``variables`` for this model.
 
@@ -589,7 +589,7 @@ These variables are added to the model's expression context scope, allowing for 
 .. versionadded:: 3.8
 %End
 
-    QMap<QString, QVariant> designerParameterValues() const;
+    QVariantMap designerParameterValues() const;
 %Docstring
 Returns the parameter values to use as default values when running this model through the
 designer dialog.
@@ -602,7 +602,7 @@ run through the designer.
 .. versionadded:: 3.14
 %End
 
-    void setDesignerParameterValues( const QMap<QString, QVariant> &values );
+    void setDesignerParameterValues( const QVariantMap &values );
 %Docstring
 Sets the parameter ``values`` to use as default values when running this model through the
 designer dialog.
@@ -637,7 +637,7 @@ If ``capitalize`` is ``True`` then the string will be converted to a camel case 
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
 
 
-    virtual QMap<QString, QVariant> processAlgorithm( const QMap<QString, QVariant> &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
 
 
 };

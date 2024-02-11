@@ -122,7 +122,7 @@ Constructor for QgsGradientColorRamp
 :param stops: optional list of additional color stops
 %End
 
-    static QgsColorRamp *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new :py:class:`QgsColorRamp` from a map of properties
 %End
@@ -146,7 +146,7 @@ Returns the string identifier for QgsGradientColorRamp.
 
     virtual QgsGradientColorRamp *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
     QColor color1() const;
@@ -352,7 +352,7 @@ Constructor for QgsLimitedRandomColorRamp
 :param valMax: maximum color value
 %End
 
-    static QgsColorRamp *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
 map.
@@ -378,7 +378,7 @@ Returns the string identifier for QgsLimitedRandomColorRamp.
 
     virtual QgsLimitedRandomColorRamp *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual int count() const;
 
@@ -542,7 +542,7 @@ Returns the string identifier for QgsRandomColorRamp.
     virtual QgsRandomColorRamp *clone() const /Factory/;
 
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
   protected:
@@ -578,7 +578,7 @@ Constructor for :py:class:`QgsPresetColorRamp`.
 :param colors: list of named colors in ramp
 %End
 
-    static QgsColorRamp *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
 map.
@@ -622,7 +622,7 @@ Returns the string identifier for QgsPresetSchemeColorRamp.
 
     virtual QgsPresetSchemeColorRamp *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual int count() const;
 
@@ -660,7 +660,7 @@ Constructor for QgsColorBrewerColorRamp
 :param inverted: invert ramp ordering
 %End
 
-    static QgsColorRamp *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
 map.
@@ -687,7 +687,7 @@ Returns the string identifier for QgsColorBrewerColorRamp.
 
     virtual QgsColorBrewerColorRamp *clone() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual int count() const;
 
@@ -788,7 +788,7 @@ Constructor for QgsCptCityColorRamp
 :param doLoadFile: load cpt-city ramp from file
 %End
 
-    static QgsColorRamp *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates the symbol layer
 %End
@@ -811,7 +811,7 @@ Returns the string identifier for QgsCptCityColorRamp.
     void copy( const QgsCptCityColorRamp *other );
     QgsGradientColorRamp *cloneGradientRamp() const /Factory/;
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
 
     QString schemeName() const;

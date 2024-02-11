@@ -25,7 +25,7 @@ Utility functions for working with ArcGIS REST services.
 %End
   public:
 
-    static QMap<QString, QVariant> retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0 );
+    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0 );
 %Docstring
 Retrieves JSON user info for the specified user name.
 
@@ -44,7 +44,7 @@ If ``user`` is blank then the user associated with the current logon details wil
 .. versionadded:: 3.24
 %End
 
- static QMap<QString, QVariant> retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0 ) /Deprecated/;
+ static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0 ) /Deprecated/;
 %Docstring
 Retrieves JSON user info for the specified user name. Only to avoid API break.
 

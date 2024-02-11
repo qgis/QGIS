@@ -23,7 +23,7 @@ scale and rotate) to a picture.
 %End
   public:
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsTransformEffect effect from a properties string map.
 
@@ -38,9 +38,9 @@ Constructor for QgsTransformEffect.
 %End
 
     virtual QString type() const;
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
-    virtual void readProperties( const QMap<QString, QVariant> &props );
+    virtual void readProperties( const QVariantMap &props );
 
     virtual QgsTransformEffect *clone() const /Factory/;
 

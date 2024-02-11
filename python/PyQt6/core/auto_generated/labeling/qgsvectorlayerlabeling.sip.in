@@ -100,7 +100,7 @@ by ``opacity`` effectively changing the opacity of the whole labeling elements.
 Try to create instance of an implementation based on the XML data
 %End
 
-    virtual void toSld( QDomNode &parent, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 %Docstring
 Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
 %End
@@ -125,7 +125,7 @@ Returns the default layer settings to use for the specified vector ``layer``.
 
   protected:
 
-    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QMap<QString, QVariant> &props ) const;
+    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
 %Docstring
 Writes a TextSymbolizer element contents based on the provided labeling settings
 
@@ -181,7 +181,7 @@ Set pal settings (takes ownership).
 
     virtual bool requiresAdvancedEffects() const;
 
-    virtual void toSld( QDomNode &parent, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 
     virtual void multiplyOpacity( double opacityFactor );
 

@@ -50,7 +50,7 @@ Returns a list of names of registered relation widgets
 Gets access to all registered factories
 %End
 
-    QgsAbstractRelationEditorWidget *create( const QString &widgetType, const QMap<QString, QVariant> &config, QWidget *parent = 0 ) const /TransferBack/;
+    QgsAbstractRelationEditorWidget *create( const QString &widgetType, const QVariantMap &config, QWidget *parent = 0 ) const /TransferBack/;
 %Docstring
 Create a relation widget of a given type for a given field.
 

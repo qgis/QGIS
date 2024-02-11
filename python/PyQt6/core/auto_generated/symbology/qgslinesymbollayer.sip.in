@@ -34,7 +34,7 @@ and ``penStyle``.
     ~QgsSimpleLineSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsSimpleLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -56,11 +56,11 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsSimpleLineSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -905,7 +905,7 @@ calculating individual symbol angles.
 
     virtual QgsMapUnitScale mapUnitScale() const ${SIP_FINAL};
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
@@ -955,7 +955,7 @@ style and colors instead of the symbol's normal style.
 Copies all common properties of this layer to another templated symbol layer.
 %End
 
-    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QMap<QString, QVariant> &properties );
+    static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 %Docstring
 Sets all common symbol properties in the ``destLayer``, using the settings
 serialized in the ``properties`` map.
@@ -987,7 +987,7 @@ should be rotated to match the line segment alignment.
     ~QgsMarkerLineSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsMarkerLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -1008,7 +1008,7 @@ Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual QgsMarkerLineSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QMap<QString, QVariant> &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual void setColor( const QColor &color );
 
@@ -1101,7 +1101,7 @@ should be rotated to match the line segment alignment.
 
     ~QgsHashedLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsHashedLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -1114,7 +1114,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsHashedLineSymbolLayer *clone() const /Factory/;
 
@@ -1311,14 +1311,14 @@ Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
 %End
     virtual ~QgsRasterLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsRasterLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
 :py:func:`QgsRasterLineSymbolLayer.properties()` ).
 %End
 
-    static void resolvePaths( QMap<QString, QVariant> &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -1364,7 +1364,7 @@ Set the line opacity.
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsRasterLineSymbolLayer *clone() const /Factory/;
 
@@ -1412,7 +1412,7 @@ Constructor for QgsLineburstSymbolLayer, with the specified start and end gradie
 %End
     ~QgsLineburstSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsLineburstSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -1427,7 +1427,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsLineburstSymbolLayer *clone() const /Factory/;
 
@@ -1523,7 +1523,7 @@ symbol will be used.
 %End
     ~QgsFilledLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QMap<QString, QVariant> &properties = QMap<QString, QVariant>() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsFilledLineSymbolLayer, using the settings
 serialized in the ``properties`` map (corresponding to the output from
@@ -1538,7 +1538,7 @@ serialized in the ``properties`` map (corresponding to the output from
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsFilledLineSymbolLayer *clone() const /Factory/;
 

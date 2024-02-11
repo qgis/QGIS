@@ -25,9 +25,9 @@ Base class for paint effects which offset, blurred shadows
 
     QgsShadowEffect();
 
-    virtual QMap<QString, QVariant> properties() const;
+    virtual QVariantMap properties() const;
 
-    virtual void readProperties( const QMap<QString, QVariant> &props );
+    virtual void readProperties( const QVariantMap &props );
 
 
     void setBlurLevel( const double level );
@@ -309,7 +309,7 @@ A paint effect which draws an offset and optionally blurred drop shadow
 %End
   public:
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsDropShadowEffect effect from a properties string map.
 
@@ -346,7 +346,7 @@ within a picture.
 %End
   public:
 
-    static QgsPaintEffect *create( const QMap<QString, QVariant> &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsInnerShadowEffect effect from a properties string map.
 

@@ -26,12 +26,12 @@ Encapsulates a history entry.
 Constructor for an invalid entry.
 %End
 
-    explicit QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QMap<QString, QVariant> &entry );
+    explicit QgsHistoryEntry( const QString &providerId, const QDateTime &timestamp, const QVariantMap &entry );
 %Docstring
 Constructor for QgsHistoryEntry ``entry``, with the specified ``providerId`` and ``timestamp``.
 %End
 
-    explicit QgsHistoryEntry( const QMap<QString, QVariant> &entry );
+    explicit QgsHistoryEntry( const QVariantMap &entry );
 %Docstring
 Constructor for QgsHistoryEntry ``entry``.
 
@@ -51,7 +51,7 @@ Returns ``True`` if the entry is valid.
 
     QString providerId;
 
-    QMap<QString, QVariant> entry;
+    QVariantMap entry;
 
     SIP_PYOBJECT __repr__();
 %MethodCode

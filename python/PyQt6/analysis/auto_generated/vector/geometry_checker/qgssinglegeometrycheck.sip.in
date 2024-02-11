@@ -131,7 +131,7 @@ Subclasses need to implement the processGeometry method.
   public:
 
     QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
-                            const QMap<QString, QVariant> &configuration );
+                            const QVariantMap &configuration );
 %Docstring
 Creates a new single geometry check.
 %End

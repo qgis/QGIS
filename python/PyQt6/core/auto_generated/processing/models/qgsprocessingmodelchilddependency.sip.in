@@ -40,9 +40,9 @@ Saves this dependency to a QVariant.
 .. seealso:: :py:func:`loadVariant`
 %End
 
-    bool loadVariant( const QMap<QString, QVariant> &map );
+    bool loadVariant( const QVariantMap &map );
 %Docstring
-Loads this dependency from a QMap<QString, QVariant>.
+Loads this dependency from a QVariantMap.
 
 .. seealso:: :py:func:`toVariant`
 %End

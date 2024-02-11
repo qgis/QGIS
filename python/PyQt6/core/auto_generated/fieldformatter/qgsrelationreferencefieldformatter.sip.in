@@ -31,17 +31,17 @@ Default constructor of field formatter for a relation reference field.
     virtual QString id() const;
 
 
-    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
 
-    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QMap<QString, QVariant> &config ) const;
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
 
 
-    virtual QVariantList availableValues( const QMap<QString, QVariant> &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 
 
 

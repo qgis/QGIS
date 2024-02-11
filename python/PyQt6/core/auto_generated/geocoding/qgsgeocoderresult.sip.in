@@ -127,7 +127,7 @@ The viewport CRS must match the CRS of geometry()d.
 .. seealso:: :py:func:`viewport`
 %End
 
-    QMap<QString, QVariant> additionalAttributes() const;
+    QVariantMap additionalAttributes() const;
 %Docstring
 Contains additional attributes generated during the geocode,
 which may be added to features being geocoded.
@@ -135,7 +135,7 @@ which may be added to features being geocoded.
 .. seealso:: :py:func:`setAdditionalAttributes`
 %End
 
-    void setAdditionalAttributes( const QMap<QString, QVariant> &attributes );
+    void setAdditionalAttributes( const QVariantMap &attributes );
 %Docstring
 Setss additional attributes generated during the geocode,
 which may be added to features being geocoded.

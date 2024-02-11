@@ -52,7 +52,7 @@ Creates a new connection with ``name`` by reading its configuration from the set
 If a connection with this name cannot be found, an empty connection will be returned.
 %End
 
-    QgsAbstractProviderConnection( const QString &uri, const QMap<QString, QVariant> &configuration );
+    QgsAbstractProviderConnection( const QString &uri, const QVariantMap &configuration );
 %Docstring
 Creates a new connection from the given ``uri`` and ``configuration``.
 The connection is not automatically stored in the settings.
@@ -89,12 +89,12 @@ Returns the connection data source URI string representation
 Sets the connection data source URI to ``uri``
 %End
 
-    QMap<QString, QVariant> configuration() const;
+    QVariantMap configuration() const;
 %Docstring
 Returns the connection configuration parameters
 %End
 
-    void setConfiguration( const QMap<QString, QVariant> &configuration );
+    void setConfiguration( const QVariantMap &configuration );
 %Docstring
 Sets the connection ``configuration``
 %End

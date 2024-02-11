@@ -403,7 +403,7 @@ Draws a preview of the rasterlayer into a QImage
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QMap<QString, QVariant> &props = QMap<QString, QVariant>() ) const;
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 Writes the symbology of the layer into the document provided in SLD 1.0.0 format
 

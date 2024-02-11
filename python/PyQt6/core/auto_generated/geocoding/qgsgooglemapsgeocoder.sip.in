@@ -60,7 +60,7 @@ e.g. "gb" for Great Britain.
 Returns the URL generated for geocoding the specified ``address``.
 %End
 
-    QgsGeocoderResult jsonToResult( const QMap<QString, QVariant> &json ) const;
+    QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 %Docstring
 Converts a JSON result returned from the Google Maps service to a geocoder result object.
 %End

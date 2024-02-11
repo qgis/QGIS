@@ -32,7 +32,7 @@ A factory for geometry checks.
 
     virtual ~QgsGeometryCheckFactory();
 
-    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QMap<QString, QVariant> &configuration ) const = 0 /Factory/;
+    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 /Factory/;
 %Docstring
 Creates a new geometry check with ``context`` and ``configuration``.
 %End
@@ -78,7 +78,7 @@ Template to create a factory for a geometry check.
 #include "qgsgeometrycheckfactory.h"
 %End
   public:
-    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QMap<QString, QVariant> &configuration ) const;
+    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const;
 
     virtual QString description() const;
 

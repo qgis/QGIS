@@ -80,7 +80,7 @@ Access the widget managed by this wrapper
 %End
 
 
-    void setConfig( const QMap<QString, QVariant> &config );
+    void setConfig( const QVariantMap &config );
 %Docstring
 Will set the config of this wrapper to the specified config.
 
@@ -104,7 +104,7 @@ Use this inside your overridden classes to access the configuration.
 :return: the value assigned to this configuration option
 %End
 
-    QMap<QString, QVariant> config() const;
+    QVariantMap config() const;
 %Docstring
 Returns the whole config
 %End
