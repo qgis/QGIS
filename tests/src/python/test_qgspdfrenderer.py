@@ -37,6 +37,22 @@ class TestQgsPdfRenderer(QgisTestCase):
     def control_path_prefix(cls):
         return "pdf"
 
+    def test_non_pdf(self):
+        """Test an invalid PDF"""
+        pdf_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        renderer = QgsPdfRenderer(pdf_path)
+        self.assertEqual(renderer.pageCount(), 0)
+        self.assertEqual(renderer.pageMediaBox(0), QRectF())
+        # no crash!
+        image = QImage(600, 423, QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(image)
+        renderer.render(
+            painter,
+            QRectF(0, 0, 600, 423),
+            pageIndex=0)
+        painter.end()
+
     def test_pdf_properties(self):
         """Test PDF properties"""
         pdf_path = os.path.join(TEST_DATA_DIR, 'sample_pdf.pdf')
