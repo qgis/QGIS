@@ -1442,7 +1442,7 @@ QVector<QgsPointXY> randomPointsInPolygonGeosBackend( const QgsAbstractGeometry 
     const double cX = vertexData[ triangleIndex * 6 + 4 ];
     const double cY = vertexData[ triangleIndex * 6 + 5 ];
 
-    QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
+    QgsGeometryUtils::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
 
     QgsPointXY candidate( x, y );
     if ( acceptPoint( candidate ) )
