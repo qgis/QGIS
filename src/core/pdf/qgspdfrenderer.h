@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgsconfig.h"
 #include <QString>
+#include <memory>
 
 #ifdef HAVE_PDF4QT
 #endif
