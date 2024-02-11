@@ -31,6 +31,9 @@ bool QgsMbTiles::open()
   if ( mDatabase )
     return true;  // already opened
 
+  if ( mFilename.isEmpty() )
+    return false;
+
   const sqlite3_database_unique_ptr database;
   const int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
