@@ -1385,7 +1385,7 @@ QVector<QgsPointXY> randomPointsInPolygonGeosBackend( const QgsAbstractGeometry 
     const double cX = exterior->xAt( 2 );
     const double cY = exterior->yAt( 2 );
 
-    const double area = QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
+    const double area = QgsGeometryUtils::triangleArea( aX, aY, bX, bY, cX, cY );
     *vertexData++ = aX;
     *vertexData++ = aY;
     *vertexData++ = bX;
