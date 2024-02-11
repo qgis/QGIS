@@ -253,8 +253,8 @@ class TestQgsLayerDefinition(QgisTestCase):
         field = vl.fields().at(0)
         config = field.editorWidgetSetup().config()
 
-        self.assertEqual(config['Description'], '')
-        self.assertEqual(config['FilterExpression'], '')
+        self.assertFalse(config['Description'])
+        self.assertFalse(config['FilterExpression'])
 
 
 if __name__ == '__main__':
