@@ -96,7 +96,6 @@ PyQgsServerWMSGetMap
 PyQgsServerSettings
 PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
-ProcessingQgisAlgorithmsTestPt1
 ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt3
 ProcessingQgisAlgorithmsTestPt4
