@@ -50,7 +50,7 @@ class TestGrassAlgorithmsImageryTest(QgisTestCase, AlgorithmsTestBase.Algorithms
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
-    def test_definition_file(self):
+    def definition_file(self):
         return 'grass_algorithms_imagery_tests.yaml'
 
 

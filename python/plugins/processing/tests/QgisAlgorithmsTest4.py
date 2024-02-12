@@ -61,7 +61,7 @@ class TestQgisAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             shutil.rmtree(path)
         ProcessingConfig.setSettingValue(ModelerUtils.MODELS_FOLDER, cls._original_models_folder)
 
-    def test_definition_file(self):
+    def definition_file(self):
         return 'qgis_algorithm_tests4.yaml'
 
 
