@@ -292,6 +292,14 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         src='')
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
+        elif isinstance(_node.value, ast.Call):
+            if (isinstance(_node.value.func, ast.Attribute) and
+                _node.value.func.attr == 'fontMetrics' and
+                    _node.attr == 'width'):
+                sys.stderr.write(
+                    f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QFontMetrics.width() '
+                    'has been removed in Qt6. Use QFontMetrics.horizontalAdvance() if plugin can '
+                    'safely require Qt >= 5.11, or QFontMetrics.boundingRect().width() otherwise.\n')
 
     def visit_import(_node: ast.ImportFrom, _parent):
         import_offsets[Offset(node.lineno, node.col_offset)] = (
