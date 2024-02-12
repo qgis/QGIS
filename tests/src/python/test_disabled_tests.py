@@ -79,6 +79,12 @@ class TestQgsDisabledTests(QgisTestCase):
         cls.vl = None
         super().tearDownClass()
 
+    def test_dummy(self):
+        """
+        Dummy test so that test suite contains at least one enabled test
+        """
+        pass
+
     @unittest.skipIf(QT_VERSION >= 0x050d00, 'Crashes on newer Qt/PyQt versions')
     def testPythonCreateChildrenCalledFromCplusplus(self):
         """
