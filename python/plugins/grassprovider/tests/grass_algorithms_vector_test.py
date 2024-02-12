@@ -67,7 +67,7 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
-    def test_definition_file(self):
+    def definition_file(self):
         return 'grass_algorithms_vector_tests.yaml'
 
     def testMemoryLayerInput(self):
