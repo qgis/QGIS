@@ -11,7 +11,10 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsStringStatisticalSummary
+from qgis.core import (
+    NULL,
+    QgsStringStatisticalSummary
+)
 from qgis.testing import unittest
 
 
@@ -22,7 +25,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         # added one-at-a-time
         s = QgsStringStatisticalSummary()
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
-        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
+        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', NULL, 'dddd']
         s.calculate(strings)
         s2 = QgsStringStatisticalSummary()
         for string in strings:
@@ -97,7 +100,18 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
     def testVariantStats(self):
         s = QgsStringStatisticalSummary()
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
-        s.calculateFromVariants(['cc', 5, 'bbbb', 'aaaa', 'eeee', 6, 9, '9', ''])
+        s.calculateFromVariants(['cc', 5, 'bbbb', 'aaaa', 'eeee', 6, 9, '9', None])
+        self.assertEqual(s.count(), 6)
+        self.assertEqual(set(s.distinctValues()), {'cc', 'aaaa', 'bbbb', 'eeee', '', '9'})
+        self.assertEqual(s.countMissing(), 1)
+        self.assertEqual(s.min(), '9')
+        self.assertEqual(s.max(), 'eeee')
+
+    def testAddVariantStats(self):
+        s = QgsStringStatisticalSummary()
+        self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
+        for v in ['cc', 5, 'bbbb', 'aaaa', 'eeee', 6, 9, '9', None]:
+            s.addValue(v)
         self.assertEqual(s.count(), 6)
         self.assertEqual(set(s.distinctValues()), {'cc', 'aaaa', 'bbbb', 'eeee', '', '9'})
         self.assertEqual(s.countMissing(), 1)
