@@ -929,7 +929,7 @@ void QgsVectorLayerProfileGenerator::processIntersectionCurve( const QgsLineStri
     }
   }
 
-  mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + 0.000001, qQNaN() );
+  mResults->mDistanceToHeightMap.insert( maxDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
 
   if ( mFeedback->isCanceled() )
     return;
@@ -1111,16 +1111,13 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsP
     *outY++ = y;
     if ( triangle->exteriorRing()->numPoints() <= 4 ) // triangle case
     {
-      QgsPoint tmpPt = interpolatePointOnTriangle( triangle, x, y );
-      if ( ! tmpPt.isEmpty() ) // point x,y inside the triangle
-      {
-        interpolatedPoint = tmpPt;
-      }
+      interpolatedPoint = interpolatePointOnTriangle( triangle, x, y );
     }
-    *outZ++ = std::isnan( interpolatedPoint.z() ) ? 0.0 : interpolatedPoint.z();
+    double tempOutZ = std::isnan( interpolatedPoint.z() ) ? 0.0 : interpolatedPoint.z();
+    *outZ++ = tempOutZ;
 
     if ( mExtrusionEnabled )
-      *extZOut++ = ( std::isnan( interpolatedPoint.z() ) ? 0.0 : interpolatedPoint.z() ) + extrusion;
+      *extZOut++ = tempOutZ + extrusion;
 
     mResults->mRawPoints.append( interpolatedPoint );
     mResults->minZ = std::min( mResults->minZ, interpolatedPoint.z() );
@@ -1139,7 +1136,7 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForLine( const QgsP
   }
 
   // insert nan point to end the line
-  mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.000001, qQNaN() );
+  mResults->mDistanceToHeightMap.insert( lastDistanceAlongProfileCurve + 0.000001, std::numeric_limits<double>::quiet_NaN() );
 
   if ( mFeedback->isCanceled() )
     return;
