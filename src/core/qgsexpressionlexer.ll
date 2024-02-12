@@ -118,7 +118,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QLocale, cLocale, ("C") )
 
 %}
 
-%s BLOCK_COMMENT
+%x BLOCK_COMMENT
 
 line_comment \-\-[^\r\n]*[\r\n]?
 
@@ -152,12 +152,14 @@ string      "'"{str_char}*"'"
 <INITIAL>{
   "/*" BEGIN(BLOCK_COMMENT);
 }
+
 <BLOCK_COMMENT>{
   "*/" BEGIN(INITIAL);
   [^*\n]+   // eat comment in chunks
   "*"       // eat the lone star
   \n        yylineno++;
 }
+
 
 "NOT"               { U_OP(uoNot); return NOT; }
 "AND"               { B_OP(boAnd); return AND; }
