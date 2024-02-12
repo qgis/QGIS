@@ -25,7 +25,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         # added one-at-a-time
         s = QgsStringStatisticalSummary()
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
-        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', NULL, 'dddd']
+        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', None, 'dddd']
         s.calculate(strings)
         s2 = QgsStringStatisticalSummary()
         for string in strings:
