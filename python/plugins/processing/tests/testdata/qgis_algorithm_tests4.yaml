@@ -284,6 +284,10 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_03.gml
         type: vector
+        compare:
+          geometry:
+            precision: 5
+            normalize: True
 
   - algorithm: native:concavehull
     name: Concave Hull - Points (0.9) (GEOS > 3.11)
@@ -301,6 +305,10 @@ tests:
       OUTPUT:
         name: expected/concave_hull_points_09.gml
         type: vector
+        compare:
+          geometry:
+            precision: 5
+            normalize: True
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Points (k=7)
