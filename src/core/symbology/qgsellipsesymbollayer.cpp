@@ -386,7 +386,6 @@ QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setOffsetUnit( mOffsetUnit );
   m->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  m->setOutputUnit( outputUnit() );
   m->setShape( mShape );
   m->setSymbolWidth( mSymbolWidth );
   m->setSymbolHeight( mSymbolHeight );
