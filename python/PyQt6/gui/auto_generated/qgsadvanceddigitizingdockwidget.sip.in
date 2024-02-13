@@ -26,7 +26,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
 %End
   public:
 
-    enum CadCapacity
+    enum CadCapacity /BaseType=IntEnum/
     {
       AbsoluteAngle,
       RelativeAngle,
@@ -36,7 +36,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     typedef QFlags<QgsAdvancedDigitizingDockWidget::CadCapacity> CadCapacities;
 
 
-    enum WidgetSetMode
+    enum WidgetSetMode /BaseType=IntEnum/
     {
       ReturnPressed,
     };
@@ -58,7 +58,7 @@ It contains all values (locked, value, relative) and pointers to corresponding w
 %End
       public:
 
-        enum LockMode
+        enum LockMode /BaseType=IntEnum/
         {
           NoLock,
           SoftLock,

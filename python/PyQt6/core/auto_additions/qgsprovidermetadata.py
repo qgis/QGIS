@@ -7,7 +7,10 @@ QgsMeshDriverMetadata.MeshDriverCapability.baseClass = QgsMeshDriverMetadata
 QgsMeshDriverMetadata.MeshDriverCapabilities = lambda flags=0: QgsMeshDriverMetadata.MeshDriverCapability(flags)
 QgsMeshDriverMetadata.MeshDriverCapabilities.baseClass = QgsMeshDriverMetadata
 MeshDriverCapabilities = QgsMeshDriverMetadata  # dirty hack since SIP seems to introduce the flags in module
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsMeshDriverMetadata.MeshDriverCapability.__bool__ = lambda flag: bool(_force_int(flag))

@@ -39,7 +39,7 @@ model data is a merge of the bookmarks stored in both managers.
       Rotation,
     };
 
-    enum Columns
+    enum Columns /BaseType=IntEnum/
     {
       ColumnName,
       ColumnGroup,

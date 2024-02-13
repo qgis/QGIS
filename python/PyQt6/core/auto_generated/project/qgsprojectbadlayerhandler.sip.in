@@ -36,14 +36,14 @@ log.
 
   protected:
 
-    enum DataType
+    enum DataType /BaseType=IntEnum/
     {
       IS_VECTOR,
       IS_RASTER,
       IS_BOGUS
     };
 
-    enum ProviderType
+    enum ProviderType /BaseType=IntEnum/
     {
       IS_FILE,
       IS_DATABASE,

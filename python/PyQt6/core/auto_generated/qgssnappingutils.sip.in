@@ -95,7 +95,7 @@ The current layer used if mode is SnapCurrentLayer
 %End
 
 
-    enum IndexingStrategy
+    enum IndexingStrategy /BaseType=IntEnum/
     {
       IndexAlwaysFull,
       IndexNeverFull,

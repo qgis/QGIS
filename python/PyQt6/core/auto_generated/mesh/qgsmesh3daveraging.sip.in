@@ -55,7 +55,7 @@ Abstract class to interpolate 3d stacked mesh data to 2d data
     }
 %End
   public:
-    enum Method
+    enum Method /BaseType=IntEnum/
     {
       //! Method to average values from selected vertical layers
       MultiLevelsAveragingMethod,

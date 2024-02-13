@@ -25,7 +25,7 @@ task. This can be used to draw maps without blocking the QGIS interface.
 %End
   public:
 
-    enum ErrorType
+    enum ErrorType /BaseType=IntEnum/
     {
       ImageAllocationFail,
       ImageSaveFail,

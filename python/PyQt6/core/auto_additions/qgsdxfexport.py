@@ -35,7 +35,10 @@ QgsDxfExport.PolygonMesh = QgsDxfExport.DxfPolylineFlag.PolygonMesh
 QgsDxfExport.PolyfaceMesh = QgsDxfExport.DxfPolylineFlag.PolyfaceMesh
 QgsDxfExport.ContinuousPattern = QgsDxfExport.DxfPolylineFlag.ContinuousPattern
 QgsDxfExport.DxfPolylineFlags = lambda flags=0: QgsDxfExport.DxfPolylineFlag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsDxfExport.Flag.__bool__ = lambda flag: bool(_force_int(flag))

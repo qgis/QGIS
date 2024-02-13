@@ -33,7 +33,7 @@ and cannot be translated to :py:class:`QgsRelations` or respected in QGIS relati
 %End
   public:
 
-    enum WeakRelationType
+    enum WeakRelationType /BaseType=IntEnum/
     {
       Referencing,
       Referenced

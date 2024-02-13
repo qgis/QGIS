@@ -23,7 +23,7 @@ This class enables simplify the geometries to be rendered in a MapCanvas target 
 #include "qgsmaptopixelgeometrysimplifier.h"
 %End
   public:
-    enum SimplifyAlgorithm
+    enum SimplifyAlgorithm /BaseType=IntEnum/
     {
       Distance,
       SnapToGrid,
@@ -36,7 +36,7 @@ This class enables simplify the geometries to be rendered in a MapCanvas target 
 Constructor
 %End
 
-    enum SimplifyFlag
+    enum SimplifyFlag /BaseType=IntEnum/
     {
       NoFlags,
       SimplifyGeometry,

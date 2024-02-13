@@ -11,7 +11,10 @@ QgsLayerTreeModel.AllowLegendChangeState = QgsLayerTreeModel.Flag.AllowLegendCha
 QgsLayerTreeModel.ActionHierarchical = QgsLayerTreeModel.Flag.ActionHierarchical
 QgsLayerTreeModel.UseThreadedHitTest = QgsLayerTreeModel.Flag.UseThreadedHitTest
 QgsLayerTreeModel.Flags = lambda flags=0: QgsLayerTreeModel.Flag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsLayerTreeModel.Flag.__bool__ = lambda flag: bool(_force_int(flag))

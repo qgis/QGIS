@@ -22,14 +22,14 @@ A ramp shader will color a raster pixel based on a list of values ranges in a ra
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Interpolated,
       Discrete,
       Exact
     };
 
-    enum ClassificationMode
+    enum ClassificationMode /BaseType=IntEnum/
     {
       Continuous,
       EqualInterval,

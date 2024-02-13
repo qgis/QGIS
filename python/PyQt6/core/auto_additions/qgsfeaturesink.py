@@ -4,7 +4,10 @@ QgsFeatureSink.SinkFlags = lambda flags=0: QgsFeatureSink.SinkFlag(flags)
 QgsFeatureSink.FastInsert = QgsFeatureSink.Flag.FastInsert
 QgsFeatureSink.RollBackOnErrors = QgsFeatureSink.Flag.RollBackOnErrors
 QgsFeatureSink.Flags = lambda flags=0: QgsFeatureSink.Flag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsFeatureSink.Flag.__bool__ = lambda flag: bool(_force_int(flag))

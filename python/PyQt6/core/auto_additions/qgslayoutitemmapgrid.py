@@ -50,7 +50,10 @@ QgsLayoutItemMapGrid.FrameBottom = QgsLayoutItemMapGrid.FrameSideFlag.FrameBotto
 QgsLayoutItemMapGrid.FrameSideFlags = lambda flags=0: QgsLayoutItemMapGrid.FrameSideFlag(flags)
 QgsLayoutItemMapGrid.Longitude = QgsLayoutItemMapGrid.AnnotationCoordinate.Longitude
 QgsLayoutItemMapGrid.Latitude = QgsLayoutItemMapGrid.AnnotationCoordinate.Latitude
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsLayoutItemMapGrid.FrameSideFlag.__bool__ = lambda flag: bool(_force_int(flag))

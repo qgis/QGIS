@@ -55,7 +55,7 @@ Abstract base class for all nodes that can appear in an expression.
 %End
   public:
 
-    enum NodeType
+    enum NodeType /BaseType=IntEnum/
     {
       ntUnaryOperator,
       ntBinaryOperator,

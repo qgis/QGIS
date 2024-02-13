@@ -31,7 +31,7 @@ instead.
 %End
   public:
 
-    enum Column
+    enum Column /BaseType=IntEnum/
     {
       Name,
       Tags,

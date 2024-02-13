@@ -20,20 +20,20 @@ A symbol layer class for displaying displacement arrows based on point layer att
 #include "qgsvectorfieldsymbollayer.h"
 %End
   public:
-    enum VectorFieldType
+    enum VectorFieldType /BaseType=IntEnum/
     {
       Cartesian,
       Polar,
       Height
     };
 
-    enum AngleOrientation
+    enum AngleOrientation /BaseType=IntEnum/
     {
       ClockwiseFromNorth,
       CounterclockwiseFromEast
     };
 
-    enum AngleUnits
+    enum AngleUnits /BaseType=IntEnum/
     {
       Degrees,
       Radians

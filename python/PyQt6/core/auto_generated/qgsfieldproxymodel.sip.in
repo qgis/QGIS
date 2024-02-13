@@ -24,7 +24,7 @@ The :py:class:`QgsFieldProxyModel` class provides an easy to use model to displa
 %End
   public:
 
-    enum Filter
+    enum Filter /BaseType=IntEnum/
     {
       String,
       Int,

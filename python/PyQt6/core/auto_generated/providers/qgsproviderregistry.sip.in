@@ -35,7 +35,7 @@ ogr and postgres.
   public:
 
 
-    enum WidgetMode
+    enum WidgetMode /BaseType=IntEnum/
     {
 
       None,

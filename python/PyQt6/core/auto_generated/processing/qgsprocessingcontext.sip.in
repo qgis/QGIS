@@ -29,7 +29,7 @@ expression context.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused,

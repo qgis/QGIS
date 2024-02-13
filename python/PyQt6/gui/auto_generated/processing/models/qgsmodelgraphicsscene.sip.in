@@ -27,7 +27,7 @@ QGraphicsScene subclass representing the model designer.
 %End
   public:
 
-    enum ZValues
+    enum ZValues /BaseType=IntEnum/
     {
       GroupBox,
       ArrowLink,
@@ -38,7 +38,7 @@ QGraphicsScene subclass representing the model designer.
 
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagHideControls,
       FlagHideComments,

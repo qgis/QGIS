@@ -34,7 +34,7 @@ to :py:class:`QgsLayoutView` widgets.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagSnaps,
     };

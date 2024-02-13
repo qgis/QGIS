@@ -4,7 +4,10 @@ QgsRendererAbstractMetadata.LineLayer = QgsRendererAbstractMetadata.LayerType.Li
 QgsRendererAbstractMetadata.PolygonLayer = QgsRendererAbstractMetadata.LayerType.PolygonLayer
 QgsRendererAbstractMetadata.All = QgsRendererAbstractMetadata.LayerType.All
 QgsRendererAbstractMetadata.LayerTypes = lambda flags=0: QgsRendererAbstractMetadata.LayerType(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsRendererAbstractMetadata.LayerType.__bool__ = lambda flag: bool(_force_int(flag))

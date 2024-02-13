@@ -70,13 +70,13 @@ relevant symbology elements to render them.
       BlendMode,
     };
 
-    enum DrawOrder
+    enum DrawOrder /BaseType=IntEnum/
     {
       OrderBelowAllLabels,
       OrderBelowIndividualLabels,
     };
 
-    enum AnchorPoint
+    enum AnchorPoint /BaseType=IntEnum/
     {
       PoleOfInaccessibility,
       PointOnExterior,
@@ -84,7 +84,7 @@ relevant symbology elements to render them.
       Centroid,
     };
 
-    enum LabelAnchorPoint
+    enum LabelAnchorPoint /BaseType=IntEnum/
     {
       LabelPointOnExterior,
       LabelCentroid,
@@ -788,7 +788,7 @@ Draws curved lines as callouts.
 %End
   public:
 
-    enum Orientation
+    enum Orientation /BaseType=IntEnum/
     {
       Automatic,
       Clockwise,

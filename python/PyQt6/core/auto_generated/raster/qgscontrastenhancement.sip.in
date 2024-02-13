@@ -24,7 +24,7 @@ ContrastEnhancementAlgorithm.
 %End
   public:
 
-    enum ContrastEnhancementAlgorithm
+    enum ContrastEnhancementAlgorithm /BaseType=IntEnum/
     {
       NoEnhancement,
       StretchToMinimumMaximum,

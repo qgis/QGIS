@@ -35,7 +35,7 @@ clean up and terminate at the earliest possible convenience.
 %End
   public:
 
-    enum TaskStatus
+    enum TaskStatus /BaseType=IntEnum/
     {
       Queued,
       OnHold,
@@ -44,7 +44,7 @@ clean up and terminate at the earliest possible convenience.
       Terminated,
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       CanCancel,
       CancelWithoutPrompt,
@@ -144,7 +144,7 @@ task in not currently being held then calling this has no effect.
 .. seealso:: :py:func:`hold`
 %End
 
-    enum SubTaskDependency
+    enum SubTaskDependency /BaseType=IntEnum/
     {
       SubTaskIndependent,
       ParentDependsOnSubTask,

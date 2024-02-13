@@ -98,7 +98,7 @@ Manages QGIS Server properties for Wms dimensions
 
   public:
 
-    enum PredefinedWmsDimensionName
+    enum PredefinedWmsDimensionName /BaseType=IntEnum/
     {
       TIME,
       DATE,
@@ -108,7 +108,7 @@ Manages QGIS Server properties for Wms dimensions
     struct WmsDimensionInfo
     {
 
-      enum DefaultDisplay
+      enum DefaultDisplay /BaseType=IntEnum/
       {
         AllValues,
         MinValue,

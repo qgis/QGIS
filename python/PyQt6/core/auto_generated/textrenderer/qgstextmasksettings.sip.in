@@ -29,7 +29,7 @@ A selective masking only makes sense in contexts where the text is rendered over
 %End
   public:
 
-    enum MaskType
+    enum MaskType /BaseType=IntEnum/
     {
       MaskBuffer
     };

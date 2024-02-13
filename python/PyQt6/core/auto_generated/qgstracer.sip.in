@@ -133,7 +133,7 @@ indicating some input data topology problems
 .. versionadded:: 2.16
 %End
 
-    enum PathError
+    enum PathError /BaseType=IntEnum/
     {
       ErrNone,
       ErrTooManyFeatures,

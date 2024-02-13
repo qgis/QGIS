@@ -25,7 +25,7 @@ the rules and draws features with symbols from rules that match.
 %End
   public:
 
-    enum FeatureFlags
+    enum FeatureFlags /BaseType=IntEnum/
     {
       FeatIsSelected,
       FeatDrawMarkers
@@ -92,7 +92,7 @@ A rule matches if both filter and scale range match.
 #include "qgsrulebasedrenderer.h"
 %End
       public:
-        enum RenderResult
+        enum RenderResult /BaseType=IntEnum/
         {
           Filtered,
           Inactive,

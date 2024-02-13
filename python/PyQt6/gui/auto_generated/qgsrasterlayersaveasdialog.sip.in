@@ -15,18 +15,18 @@ class QgsRasterLayerSaveAsDialog: QDialog
 #include "qgsrasterlayersaveasdialog.h"
 %End
   public:
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       RawDataMode,
       RenderedImageMode
     };
-    enum CrsState
+    enum CrsState /BaseType=IntEnum/
     {
       OriginalCrs,
       CurrentCrs,
       UserCrs
     };
-    enum ResolutionState
+    enum ResolutionState /BaseType=IntEnum/
     {
       OriginalResolution,
       UserResolution

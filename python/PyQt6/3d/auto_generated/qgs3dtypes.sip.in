@@ -26,7 +26,7 @@ Defines enumerations and other auxiliary types for QGIS 3D
 %End
   public:
 
-    enum CullingMode
+    enum CullingMode /BaseType=IntEnum/
     {
       NoCulling,
       Front,
@@ -36,7 +36,7 @@ Defines enumerations and other auxiliary types for QGIS 3D
 
     static const char *PROP_NAME_3D_RENDERER_FLAG;
 
-    enum Flag3DRenderer
+    enum Flag3DRenderer /BaseType=IntEnum/
     {
       Main3DRenderer,
       Selected3DRenderer,

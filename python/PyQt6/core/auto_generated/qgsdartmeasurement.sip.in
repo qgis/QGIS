@@ -16,7 +16,7 @@ class QgsDartMeasurement
 #include "qgsdartmeasurement.h"
 %End
   public:
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Text,
       ImagePng,

@@ -95,7 +95,7 @@ class QgsClassificationMethod /Abstract/
 %End
   public:
 
-    enum MethodProperty
+    enum MethodProperty /BaseType=IntEnum/
     {
       NoFlag,
       ValuesNotRequired,
@@ -106,7 +106,7 @@ class QgsClassificationMethod /Abstract/
 
 
 
-    enum ClassPosition
+    enum ClassPosition /BaseType=IntEnum/
     {
       LowerBound,
       Inner,

@@ -21,7 +21,7 @@ Field formatter for a checkbox field.
 %End
   public:
 
-    enum TextDisplayMethod
+    enum TextDisplayMethod /BaseType=IntEnum/
     {
       ShowTrueFalse,
       ShowStoredValues,

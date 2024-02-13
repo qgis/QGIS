@@ -23,7 +23,7 @@ Settings for a color ramp legend node.
 %End
   public:
 
-    enum Direction
+    enum Direction /BaseType=IntEnum/
     {
       MinimumToMaximum,
       MaximumToMinimum,

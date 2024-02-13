@@ -25,7 +25,7 @@ pair of name and size in bytes
 #include "qgspointcloudattribute.h"
 %End
   public:
-    enum DataType
+    enum DataType /BaseType=IntEnum/
     {
       Char,
       UChar,

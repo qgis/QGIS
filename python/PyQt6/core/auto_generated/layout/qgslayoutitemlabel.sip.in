@@ -22,7 +22,7 @@ A layout item subclass for text labels.
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       ModeFont,
       ModeHtml,

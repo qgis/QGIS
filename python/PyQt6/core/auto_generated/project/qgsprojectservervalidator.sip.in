@@ -28,7 +28,7 @@ Validates the server specific parts of the configuration of a QGIS project.
 Constructor for QgsProjectServerValidator.
 %End
 
-    enum ValidationError
+    enum ValidationError /BaseType=IntEnum/
     {
       DuplicatedNames,
       LayerShortName,

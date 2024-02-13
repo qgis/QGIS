@@ -170,7 +170,7 @@ Base class for processing filters like renderers, reprojector, resampler etc.
       sipType = 0;
 %End
   public:
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       NoCapabilities,
       Size,

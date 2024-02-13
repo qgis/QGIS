@@ -21,7 +21,7 @@ A widget to select format-specific raster saving options
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Default,
       Full,

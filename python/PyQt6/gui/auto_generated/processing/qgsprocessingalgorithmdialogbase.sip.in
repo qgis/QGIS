@@ -29,7 +29,7 @@ Base class for processing algorithm dialogs.
 %End
   public:
 
-    enum LogFormat
+    enum LogFormat /BaseType=IntEnum/
     {
       FormatPlainText,
       FormatHtml,

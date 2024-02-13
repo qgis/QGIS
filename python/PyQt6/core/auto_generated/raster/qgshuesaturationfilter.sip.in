@@ -21,7 +21,7 @@ Color and saturation filter pipe for rasters.
 %End
   public:
 
-    enum GrayscaleMode
+    enum GrayscaleMode /BaseType=IntEnum/
     {
       GrayscaleOff,
       GrayscaleLightness,

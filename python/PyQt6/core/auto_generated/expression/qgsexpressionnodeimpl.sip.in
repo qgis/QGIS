@@ -20,7 +20,7 @@ A unary node is either negative as in boolean (not) or as in numbers (minus).
 %End
   public:
 
-    enum UnaryOperator
+    enum UnaryOperator /BaseType=IntEnum/
     {
       uoNot,
       uoMinus,
@@ -88,7 +88,7 @@ A binary expression operator, which operates on two values.
 %End
   public:
 
-    enum BinaryOperator
+    enum BinaryOperator /BaseType=IntEnum/
     {
       // logical
       boOr,

@@ -24,7 +24,7 @@ FetchedContent holds useful information about a network content being fetched
 #include "qgsnetworkcontentfetcherregistry.h"
 %End
   public:
-    enum ContentStatus
+    enum ContentStatus /BaseType=IntEnum/
     {
       NotStarted,
       Downloading,

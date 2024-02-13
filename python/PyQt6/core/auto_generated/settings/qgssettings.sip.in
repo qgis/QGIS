@@ -51,7 +51,7 @@ static bool setGlobalSettingsPath( QString path );
 %End
   public:
 
-    enum Section
+    enum Section /BaseType=IntEnum/
     {
       NoSection,
       Core,

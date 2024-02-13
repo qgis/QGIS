@@ -73,7 +73,7 @@ Abstract base class for all geometries
 
   public:
 
-    enum SegmentationToleranceType
+    enum SegmentationToleranceType /BaseType=IntEnum/
     {
 
       MaximumAngle,
@@ -81,7 +81,7 @@ Abstract base class for all geometries
       MaximumDifference
     };
 
-    enum AxisOrder
+    enum AxisOrder /BaseType=IntEnum/
     {
 
       XY,
@@ -243,7 +243,7 @@ Sets the geometry from a WKT string.
 %End
 
 
-    enum WkbFlag
+    enum WkbFlag /BaseType=IntEnum/
     {
       FlagExportTrianglesAsPolygons,
       FlagExportNanAsDoubleMin,

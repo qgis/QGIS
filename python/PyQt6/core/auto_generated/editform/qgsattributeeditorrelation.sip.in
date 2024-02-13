@@ -22,7 +22,7 @@ This element will load a relation editor onto the form.
 
   public:
 
-    enum Button
+    enum Button /BaseType=IntEnum/
     {
       Link,
       Unlink,

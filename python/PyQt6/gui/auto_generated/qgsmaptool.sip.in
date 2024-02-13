@@ -67,7 +67,7 @@ implemented as map tools.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       Transient,
       EditTool,

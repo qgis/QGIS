@@ -211,7 +211,7 @@ A base class for objects which belong to a layout.
     };
 
 
-    enum PropertyValueType
+    enum PropertyValueType /BaseType=IntEnum/
     {
       EvaluatedValue,
       OriginalValue

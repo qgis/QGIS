@@ -81,7 +81,7 @@ Ends a macro command, containing a group of interactions in the view.
 %End
 
 
-    enum ClipboardOperation
+    enum ClipboardOperation /BaseType=IntEnum/
     {
       ClipboardCut,
       ClipboardCopy,
@@ -105,7 +105,7 @@ Cuts or copies the a list of ``items``, respecting the specified ``operation``.
 .. seealso:: :py:func:`pasteItems`
 %End
 
-    enum PasteMode
+    enum PasteMode /BaseType=IntEnum/
     {
       PasteModeCursor,
       PasteModeCenter,

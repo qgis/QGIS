@@ -22,7 +22,7 @@ An item which is drawn inside a :py:class:`QgsLayoutItemMap`, e.g., a grid or ma
 %End
   public:
 
-    enum StackingPosition
+    enum StackingPosition /BaseType=IntEnum/
     {
       StackBelowMap,
       StackBelowMapLayer,

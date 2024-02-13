@@ -26,7 +26,7 @@ Stores information about constraints which may be present on a field.
 
   public:
 
-    enum Constraint
+    enum Constraint /BaseType=IntEnum/
     {
       ConstraintNotNull,
       ConstraintUnique,
@@ -35,14 +35,14 @@ Stores information about constraints which may be present on a field.
     typedef QFlags<QgsFieldConstraints::Constraint> Constraints;
 
 
-    enum ConstraintOrigin
+    enum ConstraintOrigin /BaseType=IntEnum/
     {
       ConstraintOriginNotSet,
       ConstraintOriginProvider,
       ConstraintOriginLayer,
     };
 
-    enum ConstraintStrength
+    enum ConstraintStrength /BaseType=IntEnum/
     {
       ConstraintStrengthNotSet,
       ConstraintStrengthHard,

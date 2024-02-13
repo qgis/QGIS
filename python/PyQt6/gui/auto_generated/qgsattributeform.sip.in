@@ -20,7 +20,7 @@ class QgsAttributeForm : QWidget
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       SingleEditMode,
       AddFeatureMode,
@@ -30,7 +30,7 @@ class QgsAttributeForm : QWidget
       IdentifyMode
     };
 
-    enum FilterType
+    enum FilterType /BaseType=IntEnum/
     {
       ReplaceFilter,
       FilterAnd,

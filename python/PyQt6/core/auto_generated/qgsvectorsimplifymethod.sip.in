@@ -29,7 +29,7 @@ This class contains information how to simplify geometries fetched from a vector
 construct a default object
 %End
 
-    enum SimplifyHint
+    enum SimplifyHint /BaseType=IntEnum/
     {
       NoSimplification,
       GeometrySimplification,
@@ -48,7 +48,7 @@ Sets the simplification hints of the vector layer managed
 Gets the simplification hints of the vector layer managed
 %End
 
-    enum SimplifyAlgorithm
+    enum SimplifyAlgorithm /BaseType=IntEnum/
     {
       Distance,
       SnapToGrid,

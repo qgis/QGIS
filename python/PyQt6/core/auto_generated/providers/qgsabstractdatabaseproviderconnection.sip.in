@@ -328,7 +328,7 @@ This information is calculated from the geometry columns types.
       QString geometryColumnName;
     };
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       CreateVectorTable,
       DropRasterTable,
@@ -364,7 +364,7 @@ This information is calculated from the geometry columns types.
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
 
-    enum GeometryColumnCapability
+    enum GeometryColumnCapability /BaseType=IntEnum/
     {
       Z,
       M,

@@ -145,7 +145,7 @@ This will take ownership of the method
 .. versionadded:: 3.10
 %End
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       EqualInterval,
       Quantile,

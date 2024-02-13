@@ -70,7 +70,7 @@ Base class for raster data providers.
 %End
   public:
 
-    enum ProviderCapability
+    enum ProviderCapability /BaseType=IntEnum/
     {
       NoProviderCapabilities,
       ReadLayerMetadata,
@@ -602,7 +602,7 @@ and it's possible that there is renderable content outside of these extents.
 .. versionadded:: 3.10.0
 %End
 
-    enum TransformType
+    enum TransformType /BaseType=IntEnum/
     {
       TransformImageToLayer,
       TransformLayerToImage,

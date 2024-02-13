@@ -38,7 +38,7 @@ Abstract base class for connection to a GPS device
 %End
   public:
 
-    enum Status
+    enum Status /BaseType=IntEnum/
     {
       NotConnected,
       Connected,

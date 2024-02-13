@@ -31,7 +31,7 @@ itself the min/max values.
     static const double DEFAULT_STDDEV_FACTOR;
 
     //! \brief This enumerator describes the limits used to compute min/max values
-    enum Limits
+    enum Limits /BaseType=IntEnum/
     {
       None /PyName=None_/,
       MinMax,
@@ -39,7 +39,7 @@ itself the min/max values.
       CumulativeCut
     };
 
-    enum Extent
+    enum Extent /BaseType=IntEnum/
     {
       //! Whole raster is used to compute statistics.
       WholeRaster,
@@ -49,7 +49,7 @@ itself the min/max values.
       UpdatedCanvas
     };
 
-    enum StatAccuracy
+    enum StatAccuracy /BaseType=IntEnum/
     {
       //! Exact statistics.
       Exact,

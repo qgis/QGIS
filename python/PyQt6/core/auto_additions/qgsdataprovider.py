@@ -10,7 +10,10 @@ QgsDataProvider.ForceReadOnly = QgsDataProvider.ReadFlag.ForceReadOnly
 QgsDataProvider.SkipCredentialsRequest = QgsDataProvider.ReadFlag.SkipCredentialsRequest
 QgsDataProvider.ParallelThreadLoading = QgsDataProvider.ReadFlag.ParallelThreadLoading
 QgsDataProvider.ReadFlags = lambda flags=0: QgsDataProvider.ReadFlag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsDataProvider.ReadFlag.__bool__ = lambda flag: bool(_force_int(flag))

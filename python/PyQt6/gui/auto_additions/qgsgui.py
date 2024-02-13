@@ -5,7 +5,10 @@ QgsGui.ProjectCrsBehavior.baseClass = QgsGui
 QgsGui.HigMenuTextIsTitleCase = QgsGui.HigFlag.HigMenuTextIsTitleCase
 QgsGui.HigDialogTitleIsTitleCase = QgsGui.HigFlag.HigDialogTitleIsTitleCase
 QgsGui.HigFlags = lambda flags=0: QgsGui.HigFlag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsGui.HigFlag.__bool__ = lambda flag: bool(_force_int(flag))

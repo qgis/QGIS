@@ -65,7 +65,7 @@ The development version
 %End
 
 
-    enum MessageLevel
+    enum MessageLevel /BaseType=IntEnum/
     {
       Info,
       Warning,

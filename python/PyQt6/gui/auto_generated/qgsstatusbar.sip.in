@@ -33,7 +33,7 @@ these widgets (and messages) should instead be added into the embedded :py:class
 %End
   public:
 
-    enum Anchor
+    enum Anchor /BaseType=IntEnum/
     {
       AnchorLeft,
       AnchorRight,

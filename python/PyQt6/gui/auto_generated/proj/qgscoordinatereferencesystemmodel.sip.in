@@ -88,7 +88,7 @@ A sort/filter proxy model for coordinate reference systems.
 %End
   public:
 
-    enum Filter
+    enum Filter /BaseType=IntEnum/
     {
       FilterHorizontal,
       FilterVertical,

@@ -24,7 +24,7 @@ Represents a mesh time settings for mesh datasets
 %End
   public:
 
-    enum TimeUnit
+    enum TimeUnit /BaseType=IntEnum/
     {
       //! second unit
       seconds,

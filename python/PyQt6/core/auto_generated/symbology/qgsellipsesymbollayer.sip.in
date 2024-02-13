@@ -20,7 +20,7 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
 %End
   public:
 
-    enum Shape
+    enum Shape /BaseType=IntEnum/
     {
       Circle,
       Rectangle,

@@ -24,7 +24,7 @@ A wizard to edit metadata on a map layer.
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       LayerMetadata,
       ProjectMetadata,

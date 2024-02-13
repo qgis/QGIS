@@ -211,7 +211,7 @@ Parameter common to all services (WMS, WFS, ...)
     static const QMetaObject staticMetaObject;
 
   public:
-    enum Name
+    enum Name /BaseType=IntEnum/
     {
       UNKNOWN,
       SERVICE,

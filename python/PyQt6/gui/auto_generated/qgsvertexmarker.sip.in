@@ -31,7 +31,7 @@ A class for marking vertices of features using e.g. circles or 'x'.
 %End
   public:
 
-    enum IconType
+    enum IconType /BaseType=IntEnum/
     {
       ICON_NONE,
       ICON_CROSS,

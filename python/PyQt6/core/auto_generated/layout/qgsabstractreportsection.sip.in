@@ -357,7 +357,7 @@ should be canceled.
 
   protected:
 
-    enum SubSection
+    enum SubSection /BaseType=IntEnum/
     {
       Header,
       Body,

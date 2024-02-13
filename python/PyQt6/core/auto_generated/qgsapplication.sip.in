@@ -75,7 +75,7 @@ to change due to centralization.
 %End
   public:
 
-    enum StyleSheetType
+    enum StyleSheetType /BaseType=IntEnum/
     {
       Qt,
       WebBrowser,
@@ -355,7 +355,7 @@ Since QGIS 3.20, the optional ``fillColor`` and ``strokeColor`` arguments can be
 control the color of parameter based SVG icons.
 %End
 
-    enum Cursor
+    enum Cursor /BaseType=IntEnum/
     {
       ZoomIn,
       ZoomOut,
@@ -558,7 +558,7 @@ deletes provider registry and map layer registry
 Gets application icon
 %End
 
-    enum endian_t
+    enum endian_t /BaseType=IntEnum/
     {
       XDR,
       NDR

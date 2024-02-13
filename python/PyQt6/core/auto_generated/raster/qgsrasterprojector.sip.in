@@ -29,7 +29,7 @@ which are used to calculate affine transformation matrices.
 
   public:
 
-    enum Precision
+    enum Precision /BaseType=IntEnum/
     {
       Approximate,
       Exact,

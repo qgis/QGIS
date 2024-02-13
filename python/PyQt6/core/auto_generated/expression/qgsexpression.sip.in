@@ -81,7 +81,7 @@ Implicit sharing was added in 2.14
 
     struct ParserError
     {
-      enum ParserErrorType
+      enum ParserErrorType /BaseType=IntEnum/
       {
         Unknown,
         FunctionUnknown,
@@ -494,7 +494,7 @@ value.
 .. versionadded:: 2.7
 %End
 
-    enum SpatialOperator
+    enum SpatialOperator /BaseType=IntEnum/
     {
       soBbox,
       soIntersects,

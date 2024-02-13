@@ -23,7 +23,7 @@ Class for handling properties relating to a mesh data provider's temporal capabi
 %End
   public:
 
-    enum MatchingTemporalDatasetMethod
+    enum MatchingTemporalDatasetMethod /BaseType=IntEnum/
     {
       FindClosestDatasetBeforeStartRangeTime,
       FindClosestDatasetFromStartRangeTime

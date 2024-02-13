@@ -29,7 +29,7 @@ the components related to the GUI behavior of a layout item.
 %End
   public:
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagNoCreationTools,
     };

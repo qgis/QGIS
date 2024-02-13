@@ -28,13 +28,13 @@ The two combinations of type/origin that are currently supported are:
 #include "qgsmaplayerdependency.h"
 %End
   public:
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       PresenceDependency,
       DataDependency
     };
 
-    enum Origin
+    enum Origin /BaseType=IntEnum/
     {
       FromProvider,
       FromUser

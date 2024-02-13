@@ -32,7 +32,7 @@ signal :py:func:`~destroyed` to notify the deletion
 %End
   public:
 
-    enum MessageType { MessageText, MessageHtml };
+    enum MessageType /BaseType=IntEnum/ { MessageText, MessageHtml };
 
     virtual ~QgsMessageOutput();
 
