@@ -1110,6 +1110,9 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QCOMPARE( f.geometry().constGet()->vertexCount( 1 ), 5 );
 
   nextId = testContext.second[errs3[0]->layerId()]->layer()->featureCount();
+  testContext.second[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
+  // depending on ogr version, this feature might have one or two parts!
+  const int previousPartCount = f.geometry().constGet()->partCount();
   QVERIFY( fixCheckError( testContext.second,  errs3[0],
                           QgsGeometrySelfIntersectionCheck::ToSingleObjects, QgsGeometryCheckError::StatusFixed,
   {
@@ -1117,11 +1120,10 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs3[0]->layerId(), nextId, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId()}
   } ) );
   testContext.second[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
-  QCOMPARE( f.geometry().constGet()->partCount(), 1 );
-  QCOMPARE( f.geometry().constGet()->vertexCount(), 6 );
+  QCOMPARE( qgsgeometry_cast< const QgsGeometryCollection * >( f.geometry().constGet() )->partCount(), previousPartCount );
+  QCOMPARE( qgsgeometry_cast< const QgsGeometryCollection * >( f.geometry().constGet() )->geometryN( 0 )->asWkt( 2 ), QStringLiteral( "Polygon ((0.7 0.59, 1.32 0.6, 1.26 0.09, 0.51 0.05, 0.89 0.57, 0.7 0.59))" ) );
   testContext.second[errs3[0]->layerId()]->getFeature( nextId, f );
-  QCOMPARE( f.geometry().constGet()->partCount(), 1 );
-  QCOMPARE( f.geometry().constGet()->vertexCount(), 4 );
+  QCOMPARE( f.geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05))" ) );
 
   QVERIFY( fixCheckError( testContext.second,  errs4[0],
                           QgsGeometrySelfIntersectionCheck::ToMultiObject, QgsGeometryCheckError::StatusFixed,
