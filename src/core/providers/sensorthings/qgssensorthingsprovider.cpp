@@ -286,6 +286,12 @@ QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) con
   {
     components.insert( QStringLiteral( "password" ), dsUri.password() );
   }
+
+  // there's two different ways the referer can be set, so we need to check both. Which way it has been
+  // set depends on the widget used to create the URI. It's messy, but QgsHttpHeaders has a bunch of logic in
+  // it to handle upgrading old referer handling for connections created before QgsHttpHeaders was invented,
+  // and if we rely on that entirely then we get multiple "referer" parameters included in the URI, which is
+  // both ugly and unnecessary for a provider created post QgsHttpHeaders.
   if ( !dsUri.param( QStringLiteral( "referer" ) ).isEmpty() )
   {
     components.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
