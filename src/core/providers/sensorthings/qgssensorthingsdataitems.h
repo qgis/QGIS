@@ -74,7 +74,7 @@ class QgsSensorThingsDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override;
     QString dataProviderKey() const override;
-    int capabilities() const override;
+    Qgis::DataItemProviderCapabilities capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
