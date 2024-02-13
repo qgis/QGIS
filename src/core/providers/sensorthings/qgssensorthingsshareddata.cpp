@@ -143,7 +143,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   const QUrl url = parseUrl( QUrl( QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri ) ) );
 
   QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
   mHeaders.updateNetworkRequest( request );
 
   QgsBlockingNetworkRequest networkRequest;
