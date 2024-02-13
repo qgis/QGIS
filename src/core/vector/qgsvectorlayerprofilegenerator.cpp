@@ -1168,6 +1168,37 @@ void QgsVectorLayerProfileGenerator::processTriangleIntersectForPolygon( const Q
 {
   bool oldExtrusion = mExtrusionEnabled;
 
+  /* Polyone extrusion produces I or C or inverted C shapes because the starting and ending points are the same.
+     We observe the same case with linestrings if the starting and ending points are not at the ends.
+     In the case below, the Z polygon projected onto the curve produces a shape that cannot be used to represent the extrusion ==> we would obtain a 3D volume.
+     In order to avoid having strange shapes that cannot be understood by the end user, extrusion is deactivated in the case of polygons.
+
+                     .^..
+                   ./ |  \..
+                ../   |     \...
+             ../      |         \...
+          ../         |             \..      ....^..
+       ../            |        ........\.../        \...                ^
+    ../         ......|......./           \...          \....       .../ \
+   /,........../      |                       \..            \... /       \
+  v                   |                          \...    ..../   \...      \
+                      |                              \ ./            \...   \
+                      |                               v                  \.. \
+                      |                                                     `v
+                      |
+                     .^..
+                   ./    \..
+                ../         \...
+             ../                \...
+          ../                       \..      ....^..
+       ../                     ........\.../        \...                ^
+    ../         ............../           \...          \....       .../ \
+   /,........../                              \..            \... /       \
+  v                                              \...    ..../   \...      \
+                                                     \ ./            \...   \
+                                                      v                  \.. \
+                                                                            `v
+   */
   mExtrusionEnabled = false;
   if ( mProfileBufferedCurveEngine->contains( sourcePolygon ) ) // sourcePolygon is entirely inside curve buffer, we keep it as whole
   {
