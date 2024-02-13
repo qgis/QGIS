@@ -20,7 +20,7 @@ class QgsErrorMessage
 #include "qgserror.h"
 %End
   public:
-    enum Format
+    enum Format /BaseType=IntEnum/
     {
       Text,
       Html

@@ -127,7 +127,7 @@ Constructor for QgsMergedFeatureRenderer.
 :param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
 %End
 
-    enum GeometryOperation
+    enum GeometryOperation /BaseType=IntEnum/
     {
       Merge,
       InvertOnly,

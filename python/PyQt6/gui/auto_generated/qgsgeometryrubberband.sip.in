@@ -32,7 +32,7 @@ A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geome
       sipType = nullptr;
 %End
   public:
-    enum IconType
+    enum IconType /BaseType=IntEnum/
     {
 
       ICON_NONE,

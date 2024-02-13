@@ -28,7 +28,7 @@ A report section consisting of a features
 %End
   public:
 
-    enum SectionVisibility
+    enum SectionVisibility /BaseType=IntEnum/
     {
       IncludeWhenFeaturesFound,
       AlwaysInclude

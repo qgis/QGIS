@@ -30,13 +30,13 @@ A graphical widget to display and interact with :py:class:`QgsLayouts`.
 %End
   public:
 
-    enum ClipboardOperation
+    enum ClipboardOperation /BaseType=IntEnum/
     {
       ClipboardCut,
       ClipboardCopy,
     };
 
-    enum PasteMode
+    enum PasteMode /BaseType=IntEnum/
     {
       PasteModeCursor,
       PasteModeCenter,

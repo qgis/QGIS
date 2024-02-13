@@ -67,7 +67,7 @@ how an individual :py:class:`QgsMapLayer` behaves with relation to z values or e
       ExtrusionHeight,
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       FlagDontInvalidateCachedRendersWhenRangeChanges
     };

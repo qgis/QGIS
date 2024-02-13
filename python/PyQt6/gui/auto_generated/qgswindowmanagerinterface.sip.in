@@ -30,7 +30,7 @@ the :py:class:`QgsGui` instance, via :py:func:`QgsGui.windowManager()`.
 %End
   public:
 
-    enum StandardDialog
+    enum StandardDialog /BaseType=IntEnum/
     {
       DialogStyleManager,
     };

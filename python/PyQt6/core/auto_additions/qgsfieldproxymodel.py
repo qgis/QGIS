@@ -14,7 +14,10 @@ QgsFieldProxyModel.AllTypes = QgsFieldProxyModel.Filter.AllTypes
 QgsFieldProxyModel.Filters = lambda flags=0: QgsFieldProxyModel.Filter(flags)
 QgsFieldProxyModel.Filters.baseClass = QgsFieldProxyModel
 Filters = QgsFieldProxyModel  # dirty hack since SIP seems to introduce the flags in module
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsFieldProxyModel.Filter.__bool__ = lambda flag: bool(_force_int(flag))

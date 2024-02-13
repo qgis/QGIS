@@ -30,7 +30,7 @@ based formats.
 %End
   public:
 
-    enum Format
+    enum Format /BaseType=IntEnum/
     {
       FormatPair,
       FormatDegreesMinutesSeconds,
@@ -38,7 +38,7 @@ based formats.
       FormatDecimalDegrees,
     };
 
-    enum FormatFlag
+    enum FormatFlag /BaseType=IntEnum/
     {
       FlagDegreesUseStringSuffix,
       FlagDegreesPadMinutesSeconds,

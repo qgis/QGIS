@@ -28,7 +28,7 @@ Stored expression containing name, content (expression text) and a category tag.
 %End
   public:
 
-    enum Category
+    enum Category /BaseType=IntEnum/
     {
       FilterExpression,
       DefaultValueExpression,

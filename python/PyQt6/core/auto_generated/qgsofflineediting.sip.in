@@ -17,7 +17,7 @@ class QgsOfflineEditing : QObject
 #include "qgsofflineediting.h"
 %End
   public:
-    enum ProgressMode
+    enum ProgressMode /BaseType=IntEnum/
     {
       CopyFeatures,
       ProcessFeatures,
@@ -28,7 +28,7 @@ class QgsOfflineEditing : QObject
       UpdateGeometries
     };
 
-    enum ContainerType
+    enum ContainerType /BaseType=IntEnum/
     {
       SpatiaLite,
       GPKG

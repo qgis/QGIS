@@ -24,7 +24,7 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 %End
   public:
 
-    enum KernelShape
+    enum KernelShape /BaseType=IntEnum/
     {
       KernelQuartic,
       KernelTriangular,
@@ -33,13 +33,13 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
       KernelEpanechnikov,
     };
 
-    enum OutputValues
+    enum OutputValues /BaseType=IntEnum/
     {
       OutputRaw,
       OutputScaled,
     };
 
-    enum Result
+    enum Result /BaseType=IntEnum/
     {
       Success,
       DriverError,

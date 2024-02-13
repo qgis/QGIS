@@ -32,7 +32,7 @@ for their corresponding values and emit valuesChanged signal.
 %End
   public:
 
-    enum ConstraintResult
+    enum ConstraintResult /BaseType=IntEnum/
     {
       ConstraintResultPass,
       ConstraintResultFailHard,

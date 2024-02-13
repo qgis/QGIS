@@ -27,7 +27,7 @@ after selecting a point, performs the identification:
 %End
   public:
 
-    enum IdentifyMode
+    enum IdentifyMode /BaseType=IntEnum/
     {
       DefaultQgsSetting,
       ActiveLayer,
@@ -36,7 +36,7 @@ after selecting a point, performs the identification:
       LayerSelection
     };
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       VectorLayer,
       RasterLayer,

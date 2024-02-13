@@ -32,7 +32,7 @@ context, containing a reference to the :py:class:`QgsLayout` to be checked.
 %End
   public:
 
-    enum ContextType
+    enum ContextType /BaseType=IntEnum/
     {
       TypeLayoutContext,
       TypeUserContext,

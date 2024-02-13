@@ -25,7 +25,7 @@ result will be communicated to users, but not prevent them from proceeding.
 %End
   public:
 
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       Warning,
       Critical,

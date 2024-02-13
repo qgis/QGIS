@@ -137,7 +137,7 @@ An individual grid which is drawn above the map content in a
 %End
   public:
 
-    enum GridUnit
+    enum GridUnit /BaseType=IntEnum/
     {
       MapUnit,
       MM,
@@ -145,7 +145,7 @@ An individual grid which is drawn above the map content in a
       DynamicPageSizeBased,
     };
 
-    enum GridStyle
+    enum GridStyle /BaseType=IntEnum/
     {
       Solid,
       Cross,
@@ -153,7 +153,7 @@ An individual grid which is drawn above the map content in a
       FrameAnnotationsOnly
     };
 
-    enum DisplayMode
+    enum DisplayMode /BaseType=IntEnum/
     {
       ShowAll,
       LatitudeOnly,
@@ -161,13 +161,13 @@ An individual grid which is drawn above the map content in a
       HideAll
     };
 
-    enum AnnotationPosition
+    enum AnnotationPosition /BaseType=IntEnum/
     {
       InsideMapFrame,
       OutsideMapFrame,
     };
 
-    enum AnnotationDirection
+    enum AnnotationDirection /BaseType=IntEnum/
     {
       Horizontal,
       Vertical,
@@ -178,7 +178,7 @@ An individual grid which is drawn above the map content in a
       UnderTick,
     };
 
-    enum AnnotationFormat
+    enum AnnotationFormat /BaseType=IntEnum/
     {
       Decimal,
       DegreeMinute,
@@ -191,7 +191,7 @@ An individual grid which is drawn above the map content in a
       CustomFormat
     };
 
-    enum BorderSide
+    enum BorderSide /BaseType=IntEnum/
     {
       Left,
       Right,
@@ -199,7 +199,7 @@ An individual grid which is drawn above the map content in a
       Top,
     };
 
-    enum FrameStyle
+    enum FrameStyle /BaseType=IntEnum/
     {
       NoFrame,
       Zebra,
@@ -211,13 +211,13 @@ An individual grid which is drawn above the map content in a
       ZebraNautical,
     };
 
-    enum TickLengthMode
+    enum TickLengthMode /BaseType=IntEnum/
     {
       OrthogonalTicks,
       NormalizedTicks,
     };
 
-    enum FrameSideFlag
+    enum FrameSideFlag /BaseType=IntEnum/
     {
       FrameLeft,
       FrameRight,
@@ -227,7 +227,7 @@ An individual grid which is drawn above the map content in a
     typedef QFlags<QgsLayoutItemMapGrid::FrameSideFlag> FrameSideFlags;
 
 
-    enum AnnotationCoordinate
+    enum AnnotationCoordinate /BaseType=IntEnum/
     {
       Longitude,
       Latitude

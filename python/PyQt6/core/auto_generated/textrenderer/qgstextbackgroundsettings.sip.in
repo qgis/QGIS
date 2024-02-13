@@ -27,7 +27,7 @@ Container for settings relating to a text background object.
 %End
   public:
 
-    enum ShapeType
+    enum ShapeType /BaseType=IntEnum/
     {
       ShapeRectangle,
       ShapeSquare,
@@ -37,14 +37,14 @@ Container for settings relating to a text background object.
       ShapeMarkerSymbol,
     };
 
-    enum SizeType
+    enum SizeType /BaseType=IntEnum/
     {
       SizeBuffer,
       SizeFixed,
       SizePercent
     };
 
-    enum RotationType
+    enum RotationType /BaseType=IntEnum/
     {
       RotationSync,
       RotationOffset,

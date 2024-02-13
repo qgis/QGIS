@@ -26,7 +26,7 @@ Stores the settings for rendering of all diagrams for a layer.
 %End
   public:
 
-    enum Placement
+    enum Placement /BaseType=IntEnum/
     {
       AroundPoint,
       OverPoint,
@@ -36,7 +36,7 @@ Stores the settings for rendering of all diagrams for a layer.
       Free
     };
 
-    enum LinePlacementFlag
+    enum LinePlacementFlag /BaseType=IntEnum/
     {
       OnLine,
       AboveLine,
@@ -353,13 +353,13 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
 %End
   public:
 
-    enum LabelPlacementMethod
+    enum LabelPlacementMethod /BaseType=IntEnum/
     {
       Height,
       XHeight
     };
 
-    enum DiagramOrientation
+    enum DiagramOrientation /BaseType=IntEnum/
     {
       Up,
       Down,
@@ -367,7 +367,7 @@ QgsDiagramLayerSettings stores settings which control how ALL diagrams within a 
       Right
     };
 
-    enum Direction
+    enum Direction /BaseType=IntEnum/
     {
       Clockwise,
       Counterclockwise,

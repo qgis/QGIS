@@ -32,7 +32,7 @@ between threads without issue.
 %End
   public:
 
-    enum ErrorCode
+    enum ErrorCode /BaseType=IntEnum/
     {
       NoError,
       NetworkError,

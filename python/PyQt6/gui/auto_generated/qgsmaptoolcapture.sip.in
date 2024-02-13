@@ -26,7 +26,7 @@ as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptur
 %End
   public:
 
-    enum CaptureMode
+    enum CaptureMode /BaseType=IntEnum/
     {
       CaptureNone,
       CapturePoint,
@@ -34,7 +34,7 @@ as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptur
       CapturePolygon
     };
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       NoCapabilities,
       SupportsCurves,

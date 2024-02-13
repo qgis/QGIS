@@ -37,7 +37,7 @@ An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
 %End
   public:
 
-    enum MouseMoveAction
+    enum MouseMoveAction /BaseType=IntEnum/
     {
       NoAction,
       MoveMapPosition,

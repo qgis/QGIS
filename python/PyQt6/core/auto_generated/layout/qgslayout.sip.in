@@ -27,7 +27,7 @@ user settings such as the layout context DPI.
 %End
   public:
 
-    enum ZValues
+    enum ZValues /BaseType=IntEnum/
     {
       ZPage,
       ZItem,
@@ -39,7 +39,7 @@ user settings such as the layout context DPI.
       ZSnapIndicator,
     };
 
-    enum UndoCommand
+    enum UndoCommand /BaseType=IntEnum/
     {
       UndoLayoutDpi,
       UndoNone,

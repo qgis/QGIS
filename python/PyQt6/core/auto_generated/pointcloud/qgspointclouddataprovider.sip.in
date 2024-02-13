@@ -29,7 +29,7 @@ Responsible for reading native point cloud data and returning the indexed data.
 %End
   public:
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       NoCapabilities,
       ReadLayerMetadata,
@@ -41,7 +41,7 @@ Responsible for reading native point cloud data and returning the indexed data.
     typedef QFlags<QgsPointCloudDataProvider::Capability> Capabilities;
 
 
-    enum PointCloudIndexGenerationState
+    enum PointCloudIndexGenerationState /BaseType=IntEnum/
     {
       NotIndexed,
       Indexing,

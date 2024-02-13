@@ -44,7 +44,7 @@ open layout designer dialogs.
 %End
   public:
 
-    enum StandardTool
+    enum StandardTool /BaseType=IntEnum/
     {
       ToolMoveItemContent,
       ToolMoveItemNodes,

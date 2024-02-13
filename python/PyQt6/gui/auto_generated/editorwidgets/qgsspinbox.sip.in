@@ -37,7 +37,7 @@ This value can then be handled by a special value text.
 %End
   public:
 
-    enum ClearValueMode
+    enum ClearValueMode /BaseType=IntEnum/
     {
       MinimumValue,
       MaximumValue,

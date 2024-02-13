@@ -61,7 +61,7 @@ several frames (:py:class:`QgsLayoutFrame` items).
 %End
   public:
 
-    enum ResizeMode
+    enum ResizeMode /BaseType=IntEnum/
     {
       UseExistingFrames,
       ExtendToNextPage,
@@ -69,7 +69,7 @@ several frames (:py:class:`QgsLayoutFrame` items).
       RepeatUntilFinished
     };
 
-    enum UndoCommand
+    enum UndoCommand /BaseType=IntEnum/
     {
       UndoHtmlBreakDistance,
       UndoHtmlSource,

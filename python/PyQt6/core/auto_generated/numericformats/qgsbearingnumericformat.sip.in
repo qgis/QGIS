@@ -20,7 +20,7 @@ A numeric formatter which returns a text representation of a direction/bearing.
 %End
   public:
 
-    enum FormatDirectionOption
+    enum FormatDirectionOption /BaseType=IntEnum/
     {
       UseRange0To180WithEWDirectionalSuffix,
       UseRangeNegative180ToPositive180,

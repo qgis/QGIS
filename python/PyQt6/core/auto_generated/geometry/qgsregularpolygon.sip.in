@@ -27,7 +27,7 @@ The regular polygon is defined by a center point with a number of sides/vertices
 %End
   public:
 
-    enum ConstructionOption
+    enum ConstructionOption /BaseType=IntEnum/
     {
       InscribedCircle,
       CircumscribedCircle

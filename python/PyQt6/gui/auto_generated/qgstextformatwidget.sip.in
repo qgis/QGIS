@@ -115,7 +115,7 @@ Emitted when an auxiliary field is created in the widget.
 
   protected:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       Text,
       Labeling,

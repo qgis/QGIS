@@ -20,7 +20,7 @@ A renderer that automatically displaces points with the same geographic location
 %End
   public:
 
-    enum Placement
+    enum Placement /BaseType=IntEnum/
     {
       Ring,
       ConcentricRings,

@@ -20,7 +20,7 @@ Represents a matrix in a raster calculator operation.
 %End
   public:
 
-    enum TwoArgOperator
+    enum TwoArgOperator /BaseType=IntEnum/
     {
       opPLUS,
       opMINUS,
@@ -39,7 +39,7 @@ Represents a matrix in a raster calculator operation.
       opMAX
     };
 
-    enum OneArgOperator
+    enum OneArgOperator /BaseType=IntEnum/
     {
       opSQRT,
       opSIN,

@@ -25,7 +25,7 @@ picture.
 %End
   public:
 
-    enum GlowColorType
+    enum GlowColorType /BaseType=IntEnum/
     {
       SingleColor,
       ColorRamp

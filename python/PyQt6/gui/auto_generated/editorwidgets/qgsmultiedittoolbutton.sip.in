@@ -23,7 +23,7 @@ edit mode.
 %End
   public:
 
-    enum State
+    enum State /BaseType=IntEnum/
     {
       Default,
       MixedValues,

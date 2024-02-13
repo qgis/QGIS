@@ -20,7 +20,7 @@ A numeric formatter which returns a simple text representation of a value.
 %End
   public:
 
-    enum RoundingType
+    enum RoundingType /BaseType=IntEnum/
     {
       DecimalPlaces,
       SignificantFigures,

@@ -24,7 +24,7 @@ sets of layout items, e.g. aligning a group of items to top or left sides.
 %End
   public:
 
-    enum Alignment
+    enum Alignment /BaseType=IntEnum/
     {
       AlignLeft,
       AlignHCenter,
@@ -34,7 +34,7 @@ sets of layout items, e.g. aligning a group of items to top or left sides.
       AlignBottom,
     };
 
-    enum Distribution
+    enum Distribution /BaseType=IntEnum/
     {
       DistributeLeft,
       DistributeHCenter,
@@ -46,7 +46,7 @@ sets of layout items, e.g. aligning a group of items to top or left sides.
       DistributeBottom,
     };
 
-    enum Resize
+    enum Resize /BaseType=IntEnum/
     {
       ResizeNarrowest,
       ResizeWidest,

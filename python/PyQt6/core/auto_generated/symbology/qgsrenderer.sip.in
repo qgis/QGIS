@@ -227,7 +227,7 @@ If layer is not -1, the renderer should draw only a particular layer from symbol
 Returns debug information about this renderer
 %End
 
-    enum Capability
+    enum Capability /BaseType=IntEnum/
     {
       SymbolLevels,
       MoreSymbolsPerFeature,

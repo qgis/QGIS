@@ -20,7 +20,7 @@ A numeric formatter which returns a text representation of a percentage value.
 %End
   public:
 
-    enum InputValues
+    enum InputValues /BaseType=IntEnum/
     {
       ValuesArePercentage,
       ValuesAreFractions,

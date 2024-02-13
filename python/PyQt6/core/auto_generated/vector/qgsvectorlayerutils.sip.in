@@ -342,7 +342,7 @@ feature depending on the join's "upsert on edit" capabilities.
 .. versionadded:: 3.12
 %End
 
-    enum CascadedFeatureFlag
+    enum CascadedFeatureFlag /BaseType=IntEnum/
     {
       IgnoreAuxiliaryLayers,
     };

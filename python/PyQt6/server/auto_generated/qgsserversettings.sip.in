@@ -23,14 +23,14 @@ Provides some enum describing the environment currently supported for configurat
 #include "qgsserversettings.h"
 %End
   public:
-    enum Source
+    enum Source /BaseType=IntEnum/
     {
       DEFAULT_VALUE,
       ENVIRONMENT_VARIABLE,
       INI_FILE
     };
 
-    enum EnvVar
+    enum EnvVar /BaseType=IntEnum/
     {
       QGIS_OPTIONS_PATH,
       QGIS_SERVER_PARALLEL_RENDERING,

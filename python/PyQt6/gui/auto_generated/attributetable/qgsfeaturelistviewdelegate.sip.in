@@ -17,7 +17,7 @@ class QgsFeatureListViewDelegate : QItemDelegate
   public:
     static const int ICON_SIZE;
 
-    enum Element
+    enum Element /BaseType=IntEnum/
     {
       EditElement,
       SelectionElement

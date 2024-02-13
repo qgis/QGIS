@@ -5,7 +5,10 @@ QgsLayoutItemMap.Auto = QgsLayoutItemMap.AtlasScalingMode.Auto
 QgsLayoutItemMap.ShowPartialLabels = QgsLayoutItemMap.MapItemFlag.ShowPartialLabels
 QgsLayoutItemMap.ShowUnplacedLabels = QgsLayoutItemMap.MapItemFlag.ShowUnplacedLabels
 QgsLayoutItemMap.MapItemFlags = lambda flags=0: QgsLayoutItemMap.MapItemFlag(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsLayoutItemMap.MapItemFlag.__bool__ = lambda flag: bool(_force_int(flag))

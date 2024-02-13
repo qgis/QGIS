@@ -21,7 +21,7 @@ Contains detailed styling information relating to how a layout legend should be 
 %End
   public:
 
-    enum Style
+    enum Style /BaseType=IntEnum/
     {
       Undefined,
       Hidden,
@@ -33,7 +33,7 @@ Contains detailed styling information relating to how a layout legend should be 
     };
 
 
-    enum Side
+    enum Side /BaseType=IntEnum/
     {
       Top,
       Bottom,

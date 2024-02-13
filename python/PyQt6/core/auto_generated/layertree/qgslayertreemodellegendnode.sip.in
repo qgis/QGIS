@@ -55,7 +55,7 @@ and customized look.
       NodeType,
     };
 
-    enum NodeTypes
+    enum NodeTypes /BaseType=IntEnum/
     {
       SimpleLegend,
       SymbolLegend,

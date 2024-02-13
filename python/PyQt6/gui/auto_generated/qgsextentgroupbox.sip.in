@@ -32,7 +32,7 @@ When using the group box, make sure to call :py:func:`~setOriginalExtent`, :py:f
   public:
 
 
-    enum ExtentState
+    enum ExtentState /BaseType=IntEnum/
     {
       OriginalExtent,
       CurrentExtent,

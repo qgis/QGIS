@@ -780,14 +780,14 @@ Abstract base class for marker symbol layers.
 %End
   public:
 
-    enum HorizontalAnchorPoint
+    enum HorizontalAnchorPoint /BaseType=IntEnum/
     {
       Left,
       HCenter,
       Right,
     };
 
-    enum VerticalAnchorPoint
+    enum VerticalAnchorPoint /BaseType=IntEnum/
     {
       Top,
       VCenter,
@@ -1158,7 +1158,7 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 %End
   public:
 
-    enum RenderRingFilter
+    enum RenderRingFilter /BaseType=IntEnum/
     {
       AllRings,
       ExteriorRingOnly,

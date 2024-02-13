@@ -32,7 +32,7 @@ used only in a QFont object.
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       ModeTextRenderer,
       ModeQFont,

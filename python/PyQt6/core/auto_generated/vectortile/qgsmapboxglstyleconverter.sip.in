@@ -334,7 +334,7 @@ Constructor for QgsMapBoxGlStyleConverter.
 
     ~QgsMapBoxGlStyleConverter();
 
-    enum Result
+    enum Result /BaseType=IntEnum/
     {
       Success,
       NoLayerList,

@@ -34,7 +34,7 @@ The default relation widget in QGIS.
 %End
   public:
 
-    enum Button
+    enum Button /BaseType=IntEnum/
     {
       NoButton,
       Link,

@@ -27,14 +27,14 @@ Base class for graphic items representing model components in the model designer
 %End
   public:
 
-    enum State
+    enum State /BaseType=IntEnum/
     {
       Normal,
       Selected,
       Hover,
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused,

@@ -21,7 +21,7 @@ Raster renderer pipe for single band gray.
 #include "qgssinglebandgrayrenderer.h"
 %End
   public:
-    enum Gradient
+    enum Gradient /BaseType=IntEnum/
     {
       BlackToWhite,
       WhiteToBlack

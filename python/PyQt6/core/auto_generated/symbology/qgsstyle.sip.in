@@ -22,7 +22,7 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 
-enum SymbolTable
+enum SymbolTable /BaseType=IntEnum/
 {
   SymbolId,
   SymbolName,
@@ -30,19 +30,19 @@ enum SymbolTable
   SymbolFavoriteId,
 };
 
-enum TagTable
+enum TagTable /BaseType=IntEnum/
 {
   TagId,
   TagName,
 };
 
-enum TagmapTable
+enum TagmapTable /BaseType=IntEnum/
 {
   TagmapTagId,
   TagmapSymbolId,
 };
 
-enum ColorrampTable
+enum ColorrampTable /BaseType=IntEnum/
 {
   ColorrampId,
   ColorrampName,
@@ -50,7 +50,7 @@ enum ColorrampTable
   ColorrampFavoriteId,
 };
 
-enum TextFormatTable
+enum TextFormatTable /BaseType=IntEnum/
 {
   TextFormatId,
   TextFormatName,
@@ -58,7 +58,7 @@ enum TextFormatTable
   TextFormatFavoriteId,
 };
 
-enum LabelSettingsTable
+enum LabelSettingsTable /BaseType=IntEnum/
 {
   LabelSettingsId,
   LabelSettingsName,
@@ -66,7 +66,7 @@ enum LabelSettingsTable
   LabelSettingsFavoriteId,
 };
 
-enum SmartgroupTable
+enum SmartgroupTable /BaseType=IntEnum/
 {
   SmartgroupId,
   SmartgroupName,
@@ -87,7 +87,7 @@ Constructor for QgsStyle, with the specified ``parent`` object.
 %End
     ~QgsStyle();
 
-    enum StyleEntity
+    enum StyleEntity /BaseType=IntEnum/
     {
       SymbolEntity,
       TagEntity,

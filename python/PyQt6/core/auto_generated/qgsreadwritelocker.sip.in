@@ -32,7 +32,7 @@ If locked, the lock will be unlocked when the :py:class:`QgsReadWriteLocker` is 
 %End
   public:
 
-    enum Mode
+    enum Mode /BaseType=IntEnum/
     {
       Read,
       Write,

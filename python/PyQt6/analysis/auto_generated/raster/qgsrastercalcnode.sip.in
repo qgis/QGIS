@@ -21,7 +21,7 @@ Represents a node in a raster calculator.
 #include "qgsrastercalcnode.h"
 %End
   public:
-    enum Type
+    enum Type /BaseType=IntEnum/
     {
       tOperator,
       tNumber,
@@ -30,7 +30,7 @@ Represents a node in a raster calculator.
       tFunction
     };
 
-    enum Operator
+    enum Operator /BaseType=IntEnum/
     {
       opPLUS,
       opMINUS,

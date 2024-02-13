@@ -6,7 +6,10 @@ QgsAuthMethod.GenericDataSourceUri = QgsAuthMethod.Expansion.GenericDataSourceUr
 QgsAuthMethod.NetworkProxy = QgsAuthMethod.Expansion.NetworkProxy
 QgsAuthMethod.All = QgsAuthMethod.Expansion.All
 QgsAuthMethod.Expansions = lambda flags=0: QgsAuthMethod.Expansion(flags)
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsAuthMethod.Expansion.__bool__ = lambda flag: bool(_force_int(flag))

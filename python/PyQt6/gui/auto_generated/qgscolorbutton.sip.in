@@ -29,7 +29,7 @@ and pasting colors, picking colors from the screen, and selecting colors from co
 %End
   public:
 
-    enum Behavior
+    enum Behavior /BaseType=IntEnum/
     {
       ShowDialog,
       SignalOnly

@@ -71,7 +71,7 @@ Default constructor
 
     virtual ~QgsFieldFormatter();
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       CanProvideAvailableValues
     };

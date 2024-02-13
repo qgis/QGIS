@@ -23,7 +23,7 @@ An expression item that can be used in the :py:class:`QgsExpressionBuilderWidget
 #include "qgsexpressiontreeview.h"
 %End
   public:
-    enum ItemType
+    enum ItemType /BaseType=IntEnum/
     {
       Header,
       Field,

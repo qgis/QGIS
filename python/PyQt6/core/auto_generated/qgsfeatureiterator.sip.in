@@ -19,7 +19,7 @@ Internal feature iterator to be implemented within data providers
 %End
   public:
 
-    enum CompileStatus
+    enum CompileStatus /BaseType=IntEnum/
     {
       NoCompilation,
       PartiallyCompiled,

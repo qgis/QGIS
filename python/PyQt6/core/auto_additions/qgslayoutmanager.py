@@ -13,7 +13,10 @@ QgsLayoutManagerProxyModel.FilterReports = QgsLayoutManagerProxyModel.Filter.Fil
 QgsLayoutManagerProxyModel.Filters = lambda flags=0: QgsLayoutManagerProxyModel.Filter(flags)
 QgsLayoutManagerProxyModel.Filters.baseClass = QgsLayoutManagerProxyModel
 Filters = QgsLayoutManagerProxyModel  # dirty hack since SIP seems to introduce the flags in module
-def _force_int(v): return v if isinstance(v, int) else int(v.value)
+from enum import Enum
+
+
+def _force_int(v): return int(v.value) if isinstance(v, Enum) else v
 
 
 QgsLayoutManagerProxyModel.Filter.__bool__ = lambda flag: bool(_force_int(flag))

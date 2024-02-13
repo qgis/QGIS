@@ -161,7 +161,7 @@ of layout items.
 %End
   public:
 
-    enum ItemType
+    enum ItemType /BaseType=IntEnum/
     {
       LayoutItem,
       LayoutGroup,

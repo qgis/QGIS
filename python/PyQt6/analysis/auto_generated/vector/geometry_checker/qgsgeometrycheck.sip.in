@@ -89,7 +89,7 @@ is aware of the available geometry checks.
 
     };
 
-    enum ChangeWhat
+    enum ChangeWhat /BaseType=IntEnum/
     {
       ChangeFeature,
       ChangePart,
@@ -97,21 +97,21 @@ is aware of the available geometry checks.
       ChangeNode
     };
 
-    enum ChangeType
+    enum ChangeType /BaseType=IntEnum/
     {
       ChangeAdded,
       ChangeRemoved,
       ChangeChanged
     };
 
-    enum CheckType
+    enum CheckType /BaseType=IntEnum/
     {
       FeatureNodeCheck,
       FeatureCheck,
       LayerCheck
     };
 
-    enum Flag
+    enum Flag /BaseType=IntEnum/
     {
       AvailableInValidation
     };

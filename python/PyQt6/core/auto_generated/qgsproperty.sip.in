@@ -27,7 +27,7 @@ commonly used property types, such as colors and blend modes.
 %End
   public:
 
-    enum StandardPropertyTemplate
+    enum StandardPropertyTemplate /BaseType=IntEnum/
     {
       Boolean,
       Integer,
@@ -59,7 +59,7 @@ commonly used property types, such as colors and blend modes.
       Custom,
     };
 
-    enum DataType
+    enum DataType /BaseType=IntEnum/
     {
 
       DataTypeString,

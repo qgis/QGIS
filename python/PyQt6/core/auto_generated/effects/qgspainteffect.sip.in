@@ -78,7 +78,7 @@ and render the result to the render context's paint device.
 %End
   public:
 
-    enum DrawMode
+    enum DrawMode /BaseType=IntEnum/
     {
       Modifier,
       Render,
