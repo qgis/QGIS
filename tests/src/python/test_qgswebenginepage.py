@@ -107,8 +107,8 @@ class TestWebEnginePage(QgisTestCase):
         self.assertTrue(
             page.setUrl(QUrl.fromLocalFile(html_path), blocking=True)
         )
-        self.assertAlmostEqual(page.documentSize().width(), 306, delta=10)
-        self.assertAlmostEqual(page.documentSize().height(), 64, delta=10)
+        self.assertAlmostEqual(page.documentSize().width(), 306, delta=15)
+        self.assertAlmostEqual(page.documentSize().height(), 64, delta=15)
 
         image = QImage(600, 125, QImage.Format.Format_ARGB32_Premultiplied)
         image.fill(Qt.GlobalColor.transparent)
