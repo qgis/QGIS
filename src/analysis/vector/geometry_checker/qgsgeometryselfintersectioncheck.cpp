@@ -160,22 +160,21 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
       return;
     }
-    QgsLineString *ringGeom1 = new QgsLineString();
+    std::unique_ptr< QgsLineString > ringGeom1 = std::make_unique< QgsLineString >();
     ringGeom1->setPoints( ring1 );
-    QgsLineString *ringGeom2 = new QgsLineString();
+    std::unique_ptr< QgsLineString >ringGeom2 = std::make_unique< QgsLineString >();
     ringGeom2->setPoints( ring2 );
 
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
     // If is a polygon...
-    if ( dynamic_cast<QgsCurvePolygon *>( part ) )
+    if ( QgsCurvePolygon *poly = qgsgeometry_cast<QgsCurvePolygon *>( part ) )
     {
-      QgsCurvePolygon *poly = static_cast<QgsCurvePolygon *>( part );
       // If self-intersecting ring is an interior ring, create separate holes
       if ( vidx.ring > 0 )
       {
         poly->removeInteriorRing( vidx.ring );
-        poly->addInteriorRing( ringGeom1 );
-        poly->addInteriorRing( ringGeom2 );
+        poly->addInteriorRing( ringGeom1.release() );
+        poly->addInteriorRing( ringGeom2.release() );
         changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeRemoved, vidx ) );
         changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeAdded, QgsVertexId( vidx.part, poly->ringCount() - 2 ) ) );
         changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeAdded, QgsVertexId( vidx.part, poly->ringCount() - 1 ) ) );
@@ -185,22 +184,22 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
       else
       {
         // If ring is exterior, build two polygons, and reassign interiors as necessary
-        poly->setExteriorRing( ringGeom1 );
+        poly->setExteriorRing( ringGeom1.release() );
 
         // If original feature was a linear polygon, also create the new part as a linear polygon
-        QgsCurvePolygon *poly2 = dynamic_cast<QgsPolygon *>( part ) ? new QgsPolygon() : new QgsCurvePolygon();
-        poly2->setExteriorRing( ringGeom2 );
+        std::unique_ptr< QgsCurvePolygon > poly2 = qgsgeometry_cast<QgsPolygon *>( part ) ? std::make_unique< QgsPolygon> () : std::make_unique< QgsCurvePolygon >();
+        poly2->setExteriorRing( ringGeom2.release() );
 
         // Reassing interiors as necessary
         std::unique_ptr< QgsGeometryEngine > geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
-        std::unique_ptr< QgsGeometryEngine > geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
+        std::unique_ptr< QgsGeometryEngine > geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2.get(), mContext->tolerance );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )
           {
             if ( geomEnginePoly2->contains( poly->interiorRing( i ) ) )
             {
-              poly2->addInteriorRing( static_cast<QgsCurve *>( poly->interiorRing( i )->clone() ) );
+              poly2->addInteriorRing( qgsgeometry_cast<QgsCurve *>( poly->interiorRing( i )->clone() ) );
               // No point in adding ChangeAdded changes, since the entire poly2 is added anyways later on
             }
             poly->removeInteriorRing( i );
@@ -211,9 +210,9 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         if ( method == ToMultiObject )
         {
           // If is already a geometry collection, just add the new polygon.
-          if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+          if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
           {
-            static_cast<QgsGeometryCollection *>( geom )->addGeometry( poly2 );
+            collection->addGeometry( poly2.release() );
             changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
             changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geom->partCount() - 1 ) ) );
             feature.setGeometry( featureGeom );
@@ -222,10 +221,10 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
           // Otherwise, create multipolygon
           else
           {
-            QgsMultiPolygon *multiPoly = new QgsMultiPolygon();
+            std::unique_ptr< QgsMultiPolygon > multiPoly = std::make_unique< QgsMultiPolygon >();
             multiPoly->addGeometry( poly->clone() );
-            multiPoly->addGeometry( poly2 );
-            feature.setGeometry( QgsGeometry( multiPoly ) );
+            multiPoly->addGeometry( poly2.release() );
+            feature.setGeometry( QgsGeometry( std::move( multiPoly ) ) );
             featurePool->updateFeature( feature );
             changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
           }
@@ -234,7 +233,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         {
           QgsFeature newFeature;
           newFeature.setAttributes( feature.attributes() );
-          newFeature.setGeometry( QgsGeometry( poly2 ) );
+          newFeature.setGeometry( QgsGeometry( std::move( poly2 ) ) );
           feature.setGeometry( featureGeom );
           featurePool->updateFeature( feature );
           featurePool->addFeature( newFeature );
@@ -243,16 +242,15 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         }
       }
     }
-    else if ( dynamic_cast<QgsCurve *>( part ) )
+    else if ( qgsgeometry_cast<QgsCurve *>( part ) )
     {
       if ( method == ToMultiObject )
       {
-        if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+        if ( QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
         {
-          QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
           geomCollection->removeGeometry( vidx.part );
-          geomCollection->addGeometry( ringGeom1 );
-          geomCollection->addGeometry( ringGeom2 );
+          geomCollection->addGeometry( ringGeom1.release() );
+          geomCollection->addGeometry( ringGeom2.release() );
           feature.setGeometry( featureGeom );
           featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( vidx.part ) ) );
@@ -261,21 +259,20 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         }
         else
         {
-          QgsMultiCurve *geomCollection = new QgsMultiLineString();
-          geomCollection->addGeometry( ringGeom1 );
-          geomCollection->addGeometry( ringGeom2 );
-          feature.setGeometry( QgsGeometry( geomCollection ) );
+          std::unique_ptr< QgsMultiCurve > multiCurve = std::make_unique< QgsMultiLineString >();
+          multiCurve->addGeometry( ringGeom1.release() );
+          multiCurve->addGeometry( ringGeom2.release() );
+          feature.setGeometry( QgsGeometry( std::move( multiCurve ) ) );
           featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
         }
       }
       else // if(method == ToSingleObjects)
       {
-        if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+        if ( QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
         {
-          QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
           geomCollection->removeGeometry( vidx.part );
-          geomCollection->addGeometry( ringGeom1 );
+          geomCollection->addGeometry( ringGeom1.release() );
           feature.setGeometry( featureGeom );
           featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( vidx.part ) ) );
@@ -283,21 +280,16 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         }
         else
         {
-          feature.setGeometry( QgsGeometry( ringGeom1 ) );
+          feature.setGeometry( QgsGeometry( std::move( ringGeom1 ) ) );
           featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged, QgsVertexId( vidx.part ) ) );
         }
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
-        newFeature.setGeometry( QgsGeometry( ringGeom2 ) );
+        newFeature.setGeometry( QgsGeometry( std::move( ringGeom2 ) ) );
         featurePool->addFeature( newFeature );
         changes[error->layerId()][newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
-    }
-    else
-    {
-      delete ringGeom1;
-      delete ringGeom2;
     }
     error->setFixed( method );
   }
