@@ -1,6 +1,5 @@
 # Qt6 blocklist
 test_core_compositionconverter
-test_core_dxfexport
 test_core_expression
 test_core_labelingengine
 test_core_layoutpicture
