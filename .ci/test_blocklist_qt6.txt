@@ -52,16 +52,13 @@ PyQgsProject
 PyQgsFieldModel
 PyQgsFloatingWidget
 PyQgsJsonUtils
-PyQgsLayerMetadata
 PyQgsLayoutHtml
 PyQgsLineSymbolLayers
 PyQgsMapBoxGlStyleConverter
-PyQgsMetadataBase
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
 PyQgsPlot
-PyQgsProjectMetadata
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
