@@ -45,7 +45,6 @@ PyQgsAuthenticationSystem
 PyQgsBlockingProcess
 PyQgsBookmarkModel
 PyQgsCodeEditor
-PyQgsColorRampLegendNode
 PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
@@ -55,12 +54,7 @@ PyQgsFieldModel
 PyQgsFloatingWidget
 PyQgsJsonUtils
 PyQgsLayerMetadata
-PyQgsLayerMetadataResultsModel
-PyQgsLayoutView
 PyQgsLayoutHtml
-PyQgsLayoutMarker
-PyQgsLayoutPolygon
-PyQgsLayoutPolyline
 PyQgsLineSymbolLayers
 PyQgsMapBoxGlStyleConverter
 PyQgsMetadataBase
@@ -69,7 +63,6 @@ PyQgsNetworkAccessManager
 PyQgsOGRProviderGpkg
 PyQgsPalLabelingPlacement
 PyQgsPlot
-PyQgsPointCloudAttributeModel
 PyQgsProjectMetadata
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
@@ -77,10 +70,8 @@ PyQgsShapefileProvider
 PyQgsTextRenderer
 PyQgsOGRProvider
 PyQgsSpatialiteProvider
-PyQgsSymbolLayerCreateSld
 PyQgsSymbolLayerReadSld
 PyQgsStringUtils
-PyQgsStyleModel
 PyQgsTextDocument
 PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
@@ -89,10 +80,8 @@ PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsSelectiveMasking
-PyQgsServerApi
 PyQgsServerWMSGetFeatureInfo
 PyQgsServerWMSGetMap
-PyQgsServerSettings
 PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
 ProcessingQgisAlgorithmsTestPt2
