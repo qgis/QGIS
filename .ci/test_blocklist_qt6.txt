@@ -60,7 +60,6 @@ PyQgsMapBoxGlStyleConverter
 PyQgsMetadataBase
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
-PyQgsOGRProviderGpkg
 PyQgsPalLabelingPlacement
 PyQgsPlot
 PyQgsProjectMetadata
