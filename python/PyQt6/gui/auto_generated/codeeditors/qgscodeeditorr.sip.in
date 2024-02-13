@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorr.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsCodeEditorR : QgsCodeEditor
+{
+%Docstring(signature="appended")
+A R stats code editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditorr.h"
+%End
+  public:
+
+    QgsCodeEditorR( QWidget *parent /TransferThis/ = 0, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+%Docstring
+Constructor for QgsCodeEditorR
+%End
+    virtual Qgis::ScriptLanguage language() const;
+
+
+  protected:
+    virtual void initializeLexer();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorr.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,13 @@
+# The following has been generated automatically from src/gui/editorwidgets/core/qgswidgetwrapper.h
+# monkey patching scoped based enum
+QgsWidgetWrapper.RootPath = QgsWidgetWrapper.Property.RootPath
+QgsWidgetWrapper.RootPath.is_monkey_patched = True
+QgsWidgetWrapper.RootPath.__doc__ = "Root path for external resource"
+QgsWidgetWrapper.DocumentViewerContent = QgsWidgetWrapper.Property.DocumentViewerContent
+QgsWidgetWrapper.DocumentViewerContent.is_monkey_patched = True
+QgsWidgetWrapper.DocumentViewerContent.__doc__ = "Document type for external resource"
+QgsWidgetWrapper.StorageUrl = QgsWidgetWrapper.Property.StorageUrl
+QgsWidgetWrapper.StorageUrl.is_monkey_patched = True
+QgsWidgetWrapper.StorageUrl.__doc__ = "Storage URL for external resource"
+QgsWidgetWrapper.Property.__doc__ = "Data defined properties for different editor widgets.\n\n" + '* ``RootPath``: ' + QgsWidgetWrapper.Property.RootPath.__doc__ + '\n' + '* ``DocumentViewerContent``: ' + QgsWidgetWrapper.Property.DocumentViewerContent.__doc__ + '\n' + '* ``StorageUrl``: ' + QgsWidgetWrapper.Property.StorageUrl.__doc__
+# --

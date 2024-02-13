@@ -1,0 +1,101 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottransienttools.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPlotToolTemporaryKeyPan : QgsPlotTool
+{
+%Docstring(signature="appended")
+Plot tool for temporarily panning a plot while a key is depressed.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottransienttools.h"
+%End
+  public:
+
+    QgsPlotToolTemporaryKeyPan( QgsPlotCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor for QgsPlotToolTemporaryKeyPan.
+%End
+
+    virtual void plotMoveEvent( QgsPlotMouseEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void activate();
+
+
+};
+
+class QgsPlotToolTemporaryMousePan : QgsPlotTool
+{
+%Docstring(signature="appended")
+Plot tool for temporarily panning a plot while a mouse button is depressed.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottransienttools.h"
+%End
+  public:
+
+    QgsPlotToolTemporaryMousePan( QgsPlotCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor for QgsPlotToolTemporaryMousePan.
+%End
+
+    virtual void plotMoveEvent( QgsPlotMouseEvent *event );
+
+    virtual void plotReleaseEvent( QgsPlotMouseEvent *event );
+
+    virtual void activate();
+
+
+};
+
+class QgsPlotToolTemporaryKeyZoom : QgsPlotToolZoom
+{
+%Docstring(signature="appended")
+Plot tool for temporarily zooming a plot while a key is depressed.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottransienttools.h"
+%End
+  public:
+
+    QgsPlotToolTemporaryKeyZoom( QgsPlotCanvas *canvas /TransferThis/ );
+%Docstring
+Constructor for QgsPlotToolTemporaryKeyZoom.
+%End
+
+    virtual void plotReleaseEvent( QgsPlotMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+    virtual void activate();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottransienttools.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

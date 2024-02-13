@@ -1,0 +1,142 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgscalloutposition.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsCalloutPosition
+{
+%Docstring(signature="appended")
+Represents the calculated placement of a map label callout line.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgscalloutposition.h"
+%End
+  public:
+
+    QgsCalloutPosition( QgsFeatureId id, const QString &layer, const QString &providerId = QString() );
+%Docstring
+Constructor for QgsCalloutPosition.
+
+:param id: associated feature ID
+:param layer: ID of associated map layer
+:param providerId: ID of associated label provider
+%End
+
+    QgsCalloutPosition();
+%Docstring
+Constructor for QgsCalloutPosition
+%End
+
+    QgsFeatureId featureId;
+
+    QString layerID;
+
+    QString providerID;
+
+    QPointF origin() const;
+%Docstring
+Returns the origin of the callout line, in map coordinates.
+
+The origin of the callout line is the line point associated with the label text.
+
+.. seealso:: :py:func:`setOrigin`
+
+.. seealso:: :py:func:`destination`
+%End
+
+    void setOrigin( const QPointF &origin );
+%Docstring
+Sets the ``origin`` of the callout line, in map coordinates.
+
+The origin of the callout line is the line point associated with the label text.
+
+.. seealso:: :py:func:`origin`
+
+.. seealso:: :py:func:`setDestination`
+%End
+
+    QPointF destination() const;
+%Docstring
+Returns the destination of the callout line, in map coordinates.
+
+The destination of the callout line is the line point associated with the feature's geometry.
+
+.. seealso:: :py:func:`setDestination`
+
+.. seealso:: :py:func:`origin`
+%End
+
+    void setDestination( const QPointF &destination );
+%Docstring
+Sets the ``destination`` of the callout line, in map coordinates.
+
+The destination of the callout line is the line point associated with the feature's geometry.
+
+.. seealso:: :py:func:`destination`
+
+.. seealso:: :py:func:`setOrigin`
+%End
+
+    bool originIsPinned() const;
+%Docstring
+Returns ``True`` if the origin of the callout has pinned (manually placed).
+
+The origin of the callout line is the line point associated with the label text.
+
+.. seealso:: :py:func:`destinationIsPinned`
+
+.. seealso:: :py:func:`setOriginIsPinned`
+%End
+
+    void setOriginIsPinned( bool pinned );
+%Docstring
+Sets whether the origin of the callout has pinned (manually placed).
+
+The origin of the callout line is the line point associated with the label text.
+
+.. seealso:: :py:func:`setDestinationIsPinned`
+
+.. seealso:: :py:func:`originIsPinned`
+%End
+
+    bool destinationIsPinned() const;
+%Docstring
+Returns ``True`` if the destination of the callout has pinned (manually placed).
+
+The destination of the callout line is the line point associated with the feature's geometry.
+
+.. seealso:: :py:func:`originIsPinned`
+
+.. seealso:: :py:func:`setDestinationIsPinned`
+%End
+
+    void setDestinationIsPinned( bool pinned );
+%Docstring
+Sets whether the destination of the callout has pinned (manually placed).
+
+The destination of the callout line is the line point associated with the feature's geometry.
+
+.. seealso:: :py:func:`setOriginIsPinned`
+
+.. seealso:: :py:func:`destinationIsPinned`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgscalloutposition.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

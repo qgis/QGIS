@@ -1,0 +1,116 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsxmlutils.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsXmlUtils
+{
+%Docstring(signature="appended")
+Assorted helper methods for reading and writing chunks of XML
+%End
+
+%TypeHeaderCode
+#include "qgsxmlutils.h"
+%End
+  public:
+
+
+    static Qgis::DistanceUnit readMapUnits( const QDomElement &element );
+%Docstring
+Decodes a distance unit from a DOM element.
+
+:param element: DOM element to decode
+
+:return: distance units
+
+.. seealso:: :py:func:`writeMapUnits`
+%End
+
+    static QgsRectangle readRectangle( const QDomElement &element );
+
+    static QgsBox3D readBox3D( const QDomElement &element );
+%Docstring
+Decodes a DOM element to a 3D box.
+
+:param element: DOM document
+
+:return: decoded 3D box
+
+.. versionadded:: 3.36
+%End
+
+
+    static QDomElement writeMapUnits( Qgis::DistanceUnit units, QDomDocument &doc );
+%Docstring
+Encodes a distance unit to a DOM element.
+
+:param units: units to encode
+:param doc: DOM document
+
+:return: element containing encoded units
+
+.. seealso:: :py:func:`readMapUnits`
+%End
+
+    static QDomElement writeBox3D( const QgsBox3D &box, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent3D" ) );
+%Docstring
+Encodes a 3D box to a DOM element.
+
+:param box: 3D box to encode
+:param doc: DOM document
+:param elementName: name of the DOM element
+
+:return: element containing encoded 3D box
+
+.. versionadded:: 3.36
+%End
+
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent" ) );
+%Docstring
+Encodes a rectangle to a DOM element.
+
+:param rect: rectangle to encode
+:param doc: DOM document
+:param elementName: name of the DOM element
+
+:return: element containing encoded rectangle
+%End
+
+    static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
+%Docstring
+Write a QVariant to a QDomElement.
+
+Supported types are
+
+- QVariant.Map
+- QVariant.Int
+- QVariant.Double
+- QVariant.String
+- :py:class:`QgsProperty` (since QGIS 3.4)
+- :py:class:`QgsCoordinateReferenceSystem` (since QGIS 3.4)
+%End
+
+    static QVariant readVariant( const QDomElement &element );
+%Docstring
+Read a QVariant from a QDomElement.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsxmlutils.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

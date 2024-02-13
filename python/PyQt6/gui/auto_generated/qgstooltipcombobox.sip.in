@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstooltipcombobox.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsToolTipComboBox : QComboBox
+{
+%Docstring(signature="appended")
+QComboBox subclass which features a tooltip when mouse hovering the combobox.
+The tooltip string is taken from the current item's Qt.ToolTipRole data.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgstooltipcombobox.h"
+%End
+  public:
+
+    QgsToolTipComboBox( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsToolTipComboBox.
+%End
+
+    virtual bool event( QEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstooltipcombobox.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

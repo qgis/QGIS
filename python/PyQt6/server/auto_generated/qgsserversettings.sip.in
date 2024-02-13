@@ -1,0 +1,380 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserversettings.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsServerSettingsEnv : QObject
+{
+%Docstring(signature="appended")
+Provides some enum describing the environment currently supported for configuration.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsserversettings.h"
+%End
+  public:
+    enum Source
+    {
+      DEFAULT_VALUE,
+      ENVIRONMENT_VARIABLE,
+      INI_FILE
+    };
+
+    enum EnvVar
+    {
+      QGIS_OPTIONS_PATH,
+      QGIS_SERVER_PARALLEL_RENDERING,
+      QGIS_SERVER_MAX_THREADS,
+      QGIS_SERVER_LOG_LEVEL,
+      QGIS_SERVER_LOG_FILE,
+      QGIS_SERVER_LOG_STDERR,
+      QGIS_PROJECT_FILE,
+      QGIS_SERVER_IGNORE_BAD_LAYERS,
+      QGIS_SERVER_CACHE_DIRECTORY,
+      QGIS_SERVER_CACHE_SIZE,
+      QGIS_SERVER_SHOW_GROUP_SEPARATOR,
+      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,
+      QGIS_SERVER_WMS_MAX_HEIGHT,
+      QGIS_SERVER_WMS_MAX_WIDTH,
+      QGIS_SERVER_API_RESOURCES_DIRECTORY,
+      QGIS_SERVER_API_WFS3_MAX_LIMIT,
+      QGIS_SERVER_TRUST_LAYER_METADATA,
+      QGIS_SERVER_FORCE_READONLY_LAYERS,
+      QGIS_SERVER_DISABLE_GETPRINT,
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
+      QGIS_SERVER_LOG_PROFILE,
+      QGIS_SERVER_SERVICE_URL,
+      QGIS_SERVER_WMS_SERVICE_URL,
+      QGIS_SERVER_WFS_SERVICE_URL,
+      QGIS_SERVER_WCS_SERVICE_URL,
+      QGIS_SERVER_WMTS_SERVICE_URL,
+      QGIS_SERVER_LANDING_PAGE_PREFIX,
+      QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
+      QGIS_SERVER_PROJECT_CACHE_STRATEGY,
+      QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
+      QGIS_SERVER_APPLICATION_NAME,
+      QGIS_SERVER_CAPABILITIES_CACHE_SIZE,
+    };
+};
+
+class QgsServerSettings
+{
+%Docstring(signature="appended")
+Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsserversettings.h"
+%End
+  public:
+
+    QgsServerSettings();
+%Docstring
+Constructor.
+%End
+
+    void load();
+%Docstring
+Load settings according to current environment variables.
+%End
+
+    bool load( const QString &envVarName );
+%Docstring
+Load setting for a specific environment variable name.
+
+:return: ``True`` if loading is successful, ``False`` in case of an invalid name.
+%End
+
+    void logSummary() const;
+%Docstring
+Log a summary of settings currently loaded.
+%End
+
+    QString iniFile() const;
+%Docstring
+Returns the ini file loaded by QSetting.
+
+:return: the path of the ini file or an empty string if none is loaded.
+%End
+
+    bool parallelRendering() const;
+%Docstring
+Returns parallel rendering setting.
+
+:return: ``True`` if parallel rendering is activated, ``False`` otherwise.
+%End
+
+    int maxThreads() const;
+%Docstring
+Returns the maximum number of threads to use.
+
+:return: the number of threads.
+%End
+
+    Qgis::MessageLevel logLevel() const;
+%Docstring
+Returns the log level.
+
+:return: the log level.
+%End
+
+    bool logProfile() const;
+%Docstring
+Returns ``True`` if profile information has to be added to the logs, default value is ``False``.
+
+.. note::
+
+   this flag is only effective when :py:func:`~QgsServerSettings.logLevel` returns :py:class:`Qgis`.MessageLevel.Info (0)
+
+.. seealso:: :py:func:`logLevel`
+
+.. versionadded:: 3.18
+%End
+
+    QString projectFile() const;
+%Docstring
+Returns the QGS project file to use.
+
+:return: the path of the QGS project or an empty string if none is defined.
+%End
+
+    QString logFile() const;
+%Docstring
+Returns the log file.
+
+:return: the path of the log file or an empty string if none is defined.
+%End
+
+    bool logStderr() const;
+%Docstring
+Returns whether logging to stderr is activated.
+
+:return: ``True`` if logging to stderr is activated, ``False`` otherwise.
+
+.. versionadded:: 3.4
+%End
+
+    qint64 cacheSize() const;
+%Docstring
+Returns the cache size.
+
+:return: the cache size.
+%End
+
+    QString cacheDirectory() const;
+%Docstring
+Returns the cache directory.
+
+:return: the directory.
+%End
+
+    QString overrideSystemLocale() const;
+%Docstring
+Overrides system locale
+
+:return: the optional override for system locale.
+
+.. versionadded:: 3.8
+%End
+
+    bool showGroupSeparator() const;
+%Docstring
+Show group (thousand) separator
+
+:return: if group separator must be shown, default to ``False``.
+
+.. versionadded:: 3.8
+%End
+
+    int wmsMaxHeight() const;
+%Docstring
+Returns the server-wide max height of a WMS GetMap request. The lower one of this and the project configuration is used.
+
+:return: the max height of a WMS GetMap request.
+
+.. versionadded:: 3.6.2
+%End
+
+    int wmsMaxWidth() const;
+%Docstring
+Returns the server-wide max width of a WMS GetMap request. The lower one of this and the project configuration is used.
+
+:return: the max width of a WMS GetMap request.
+
+.. versionadded:: 3.6.2
+%End
+
+    QString landingPageProjectsDirectories() const;
+%Docstring
+Returns the directories used by the landing page service to find .qgs
+and .qgz projects. Multiple directories can be specified by separating
+them with '||'.
+
+.. versionadded:: 3.16
+%End
+
+    QString landingPageProjectsPgConnections() const;
+%Docstring
+Returns the PostgreSQL connection strings used by the landing page
+service to find projects. Multiple connections can be specified by
+separating them with '||'.
+
+.. versionadded:: 3.16
+%End
+
+    QString landingPageBaseUrlPrefix() const;
+%Docstring
+Returns the landing page base URL regular expression, defaults to `/`.
+
+.. versionadded:: 3.20
+%End
+
+    QString apiResourcesDirectory() const;
+%Docstring
+Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.
+
+The default path is calculated by joining :py:func:`QgsApplication.pkgDataPath()` with "resources/server/api", this path
+can be changed by setting the environment variable QGIS_SERVER_API_RESOURCES_DIRECTORY.
+
+.. versionadded:: 3.10
+%End
+
+    qlonglong apiWfs3MaxLimit() const;
+%Docstring
+Returns the server-wide maximum allowed value for \"limit\" in a features request.
+
+The default value is 10000, this value can be changed by setting the environment
+variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
+
+.. versionadded:: 3.10
+%End
+
+    bool ignoreBadLayers() const;
+%Docstring
+Returns ``True`` if the bad layers are ignored and ``False`` when the presence of a
+bad layers invalidates the whole project making it unavailable.
+
+The default value is ``True``, this value can be changed by setting the environment
+variable QGIS_SERVER_IGNORE_BAD_LAYERS.
+
+.. versionadded:: 3.10.5
+%End
+
+    bool trustLayerMetadata() const;
+%Docstring
+Returns ``True`` if the reading flag trust layer metadata is activated.
+
+The default value is ``False``, this value can be changed by setting the environment
+variable QGIS_SERVER_TRUST_LAYER_METADATA.
+
+.. versionadded:: 3.16
+%End
+
+    bool forceReadOnlyLayers() const;
+%Docstring
+Returns ``True`` if the reading flag force layer read only is activated.
+
+The default value is ``False``, this value can be changed by setting the environment
+variable QGIS_SERVER_FORCE_READONLY_LAYERS.
+
+.. versionadded:: 3.28
+%End
+
+    bool getPrintDisabled() const;
+%Docstring
+Returns ``True`` if WMS GetPrint request is disabled and the project's
+reading flag :py:class:`QgsProject`.ReadFlag.FlagDontLoadLayouts is activated.
+
+The default value is ``False``, this value can be changed by setting the environment
+variable QGIS_SERVER_DISABLE_GETPRINT.
+
+.. versionadded:: 3.16
+%End
+
+    QString serviceUrl( const QString &service ) const;
+%Docstring
+Returns the service URL from the setting.
+
+.. versionadded:: 3.20
+%End
+
+    int projectCacheCheckInterval() const;
+%Docstring
+Returns the config cache check interval for the 'periodic' strategy.
+
+.. versionadded:: 3.26
+%End
+
+    QString projectCacheStrategy() const;
+%Docstring
+Returns the project's cache strategy
+The default value is 'filesystem', the value can be changed by setting the environment
+variable QGIS_SERVER_PROJECT_CACHE_STRATEGY.
+Possible values are:
+
+- 'filesystem': Use file system watcher for notifying projects change. Note that it works
+  only with projects stored in files and not across mounted NFS volumes on Linux.
+- 'periodic': Timer based periodic check for project's changes. Works with all storage backend.
+- 'off': Disable completely internal project's cache handling
+
+.. versionadded:: 3.26
+%End
+
+    QStringList allowedExtraSqlTokens() const;
+%Docstring
+Returns the list of strings that represent the allowed extra SQL tokens
+accepted as components of a feature filter.
+The default value is an empty string, the value can be changed by setting the environment
+variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
+
+.. versionadded:: 3.28
+%End
+
+    QString applicationName() const;
+%Docstring
+Returns the QGIS Server application name.
+The default value is the concatenation of :py:func:`QgsApplication.applicationName()`
+and :py:func:`QgsApplication.platform()` separated by a space, the value can be changed
+by setting the environment variable QGIS_SERVER_APPLICATION_NAME.
+
+.. versionadded:: 3.30
+%End
+
+    static QString name( QgsServerSettingsEnv::EnvVar env );
+%Docstring
+Returns the string representation of a setting.
+
+.. versionadded:: 3.16
+%End
+
+    int capabilitiesCacheSize() const;
+%Docstring
+Returns the maximum number of project capabilities to cache.
+The default value is 40 and the value can be changed
+by setting the environment variable QGIS_SERVER_CAPABILITIES_CACHE_SIZE.
+
+.. versionadded:: 3.31
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserversettings.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

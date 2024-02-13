@@ -1,0 +1,206 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorelement.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAttributeEditorElement /Abstract/
+{
+%Docstring(signature="appended")
+This is an abstract base class for any elements of a drag and drop form.
+
+This can either be a container which will be represented on the screen
+as a tab widget or a collapsible group box. Or it can be a field which will
+then be represented based on the :py:class:`QgsEditorWidget` type and configuration.
+Or it can be a relation and embed the form of several children of another
+layer.
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->type() )
+    {
+      case Qgis::AttributeEditorType::Container:
+        sipType = sipType_QgsAttributeEditorContainer;
+        break;
+      case Qgis::AttributeEditorType::Field:
+        sipType = sipType_QgsAttributeEditorField;
+        break;
+      case Qgis::AttributeEditorType::Relation:
+        sipType = sipType_QgsAttributeEditorRelation;
+        break;
+      case Qgis::AttributeEditorType::Action:
+        sipType = sipType_QgsAttributeEditorAction;
+        break;
+      default:
+        sipType = nullptr;
+        break;
+    }
+%End
+  public:
+
+    struct LabelStyle
+    {
+
+      QColor color;
+
+      QFont font;
+
+      bool overrideColor;
+
+      bool overrideFont;
+
+
+
+    };
+
+    QgsAttributeEditorElement( Qgis::AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
+%Docstring
+Constructor
+
+:param type: The type of the new element.
+:param name:
+:param parent:
+%End
+
+    virtual ~QgsAttributeEditorElement();
+
+    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 ) /Factory/;
+%Docstring
+Constructs the editor element from the given element
+
+.. versionadded:: 3.18
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of this element
+
+:return: The name for this element
+%End
+
+    Qgis::AttributeEditorType type() const;
+%Docstring
+The type of this element
+
+:return: The type
+%End
+
+    QgsAttributeEditorElement *parent() const;
+%Docstring
+Gets the parent of this element.
+
+.. versionadded:: 3.0
+%End
+
+    QDomElement toDomElement( QDomDocument &doc ) const;
+%Docstring
+Gets the XML Dom element to save this element.
+
+:param doc: The QDomDocument which is used to create new XML elements
+
+:return: A DOM element to serialize this element
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 /Factory/;
+%Docstring
+Returns a clone of this element. To be implemented by subclasses.
+
+.. versionadded:: 3.0
+%End
+
+    bool showLabel() const;
+%Docstring
+Controls if this element should be labeled with a title (field, relation or groupname).
+
+.. versionadded:: 2.18
+%End
+
+    void setShowLabel( bool showLabel );
+%Docstring
+Controls if this element should be labeled with a title (field, relation or groupname).
+
+.. versionadded:: 2.18
+%End
+
+    int horizontalStretch() const;
+%Docstring
+Returns the horizontal stretch factor for the element.
+
+.. seealso:: :py:func:`setHorizontalStretch`
+
+.. seealso:: :py:func:`verticalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    void setHorizontalStretch( int stretch );
+%Docstring
+Sets the horizontal ``stretch`` factor for the element.
+
+.. seealso:: :py:func:`horizontalStretch`
+
+.. seealso:: :py:func:`setVerticalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    int verticalStretch() const;
+%Docstring
+Returns the vertical stretch factor for the element.
+
+.. seealso:: :py:func:`setVerticalStretch`
+
+.. seealso:: :py:func:`horizontalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    void setVerticalStretch( int stretch );
+%Docstring
+Sets the vertical ``stretch`` factor for the element.
+
+.. seealso:: :py:func:`verticalStretch`
+
+.. seealso:: :py:func:`setHorizontalStretch`
+
+.. versionadded:: 3.32
+%End
+
+    LabelStyle labelStyle() const;
+%Docstring
+Returns the label style.
+
+.. seealso:: :py:func:`setLabelStyle`
+
+.. versionadded:: 3.26
+%End
+
+    void setLabelStyle( const LabelStyle &labelStyle );
+%Docstring
+Sets the ``labelStyle``.
+
+.. seealso:: :py:func:`labelStyle`
+
+.. versionadded:: 3.26
+%End
+
+
+  protected:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorelement.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,105 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayermetadataresultsmodel.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsLayerMetadataResultsModel : QAbstractTableModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsLayerMetadataResultsModel` class handles the metadata fetching from
+the registered layer metadata providers.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgslayermetadataresultsmodel.h"
+%End
+  public:
+
+    explicit QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent = 0 );
+%Docstring
+Constructs a QgsLayerMetadataResultsModel from a ``searchContext`` and
+an optional ``parent``.
+%End
+
+    ~QgsLayerMetadataResultsModel();
+
+
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+
+    void reload( );
+%Docstring
+Load/Reload model data synchronously.
+%End
+
+    void reloadAsync( );
+%Docstring
+Load/Reload model data asynchronously using threads.
+%End
+
+    enum Roles
+    {
+      //! Layer metadata role
+      Metadata
+    };
+
+    enum Sections
+    {
+      //! Metadata identifier
+      Identifier,
+      //! Metadata title
+      Title,
+      //! Metadata abstract
+      Abstract,
+      //! Layer data provider name
+      DataProviderName,
+      //! Layer geometry type
+      GeometryType,
+    };
+
+  public slots:
+
+    void resultsReady( const QgsLayerMetadataSearchResults &results );
+%Docstring
+Triggered when metadata ``results`` have been fetched and can be added to the model.
+%End
+
+    void cancel();
+%Docstring
+Cancels the results fetching.
+%End
+
+  signals:
+
+    void progressChanged( int progress );
+%Docstring
+Emitted when the progress changed to ``progress``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayermetadataresultsmodel.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

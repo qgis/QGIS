@@ -1,0 +1,356 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/inputcontroller/qgs3dgamepadcontroller.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgs3dgamepadcontroller.h"
+%End
+
+
+
+class QgsGamepad3DMapController : QgsAbstract3DMapController
+{
+%Docstring(signature="appended")
+Represents a gamepad device used for controlling a 3D map.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgs3dgamepadcontroller.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast< QgsGamepad3DMapController * >( sipCpp ) )
+
+      sipType = sipType_QgsGamepad3DMapController;
+    else
+      sipType = nullptr;
+%End
+  public:
+
+    QgsGamepad3DMapController( int gamepadDeviceId, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsGamepad3DMapController, with the specified ``gamepadDeviceId`` and ``parent`` object.
+%End
+
+    virtual QgsGamepad3DMapController *clone() const /Factory/;
+
+    virtual QString deviceId() const;
+
+
+
+    bool isConnected() const;
+%Docstring
+Returns ``True`` if the gamepad is connected.
+%End
+
+    QString name() const;
+%Docstring
+Returns the reported name of the gamepad if one is available.
+%End
+
+    double axisLeftX() const;
+%Docstring
+Returns the value of the left thumbstick's X axis. The axis values range from -1.0 to 1.0.
+%End
+
+    double axisLeftY() const;
+%Docstring
+Returns the value of the left thumbstick's Y axis. The axis values range from -1.0 to 1.0.
+%End
+
+    double axisRightX() const;
+%Docstring
+Returns the value of the right thumbstick's X axis. The axis values range from -1.0 to 1.0.
+%End
+
+    double axisRightY() const;
+%Docstring
+Returns the value of the right thumbstick's Y axis. The axis values range from -1.0 to 1.0.
+%End
+
+    bool buttonA() const;
+%Docstring
+Returns the state of the A button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonB() const;
+%Docstring
+Returns the state of the B button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonX() const;
+%Docstring
+Returns the state of the X button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonY() const;
+%Docstring
+Returns the state of the Y button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonL1() const;
+%Docstring
+Returns the state of the left shoulder button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonR1() const;
+%Docstring
+Returns the state of the right shoulder button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    double buttonL2() const;
+%Docstring
+Returns the value of the left trigger button. This trigger value ranges from 0.0 when not pressed to 1.0 when pressed completely.
+%End
+
+    double buttonR2() const;
+%Docstring
+Returns the value of the right trigger button. This trigger value ranges from 0.0 when not pressed to 1.0 when pressed completely.
+%End
+
+    bool buttonSelect() const;
+%Docstring
+Returns the state of the select button. The value is ``True`` when pressed, and ``False`` when not pressed.
+
+This button can sometimes be labeled as the Back button on some gamepads.
+%End
+
+    bool buttonStart() const;
+%Docstring
+Returns the state of the start button. The value is ``True`` when pressed, and ``False`` when not pressed.
+
+This button can sometimes be labeled as the Forward button on some gamepads.
+%End
+
+    bool buttonL3() const;
+%Docstring
+Returns the state of the left stick button. The value is ``True`` when pressed, and ``False`` when not pressed.
+
+This button is usually triggered by pressing the left joystick itself.
+%End
+
+    bool buttonR3() const;
+%Docstring
+Returns the state of the right stick button. The value is ``True`` when pressed, and ``False`` when not pressed.
+
+This button is usually triggered by pressing the right joystick itself.
+%End
+
+    bool buttonUp() const;
+%Docstring
+Returns the state of the direction pad up button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonDown() const;
+%Docstring
+Returns the state of the direction pad down button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonLeft() const;
+%Docstring
+Returns the state of the direction pad left button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonRight() const;
+%Docstring
+Returns the state of the direction pad right button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonCenter() const;
+%Docstring
+Returns the state of the center button. The value is ``True`` when pressed, and ``False`` when not pressed.
+%End
+
+    bool buttonGuide() const;
+%Docstring
+Returns the state of the center button. The value is ``True`` when pressed, and ``False`` when not pressed.
+
+This button is typically the one in the center of the gamepad with a logo. Not all gamepads have a guide button.
+%End
+
+
+  signals:
+
+
+    void connectedChanged( bool value );
+%Docstring
+Emitted when the connection state of the gamepad is changed.
+%End
+
+    void axisLeftXChanged( double value );
+%Docstring
+Emitted when the value of the left thumbstick's X axis is changed.
+
+.. seealso:: :py:func:`axisLeftX`
+%End
+
+    void axisLeftYChanged( double value );
+%Docstring
+Emitted when the value of the left thumbstick's Y axis is changed.
+
+.. seealso:: :py:func:`axisLeftY`
+%End
+
+    void axisRightXChanged( double value );
+%Docstring
+Emitted when the value of the right thumbstick's X axis is changed.
+
+.. seealso:: :py:func:`axisRightX`
+%End
+
+    void axisRightYChanged( double value );
+%Docstring
+Emitted when the value of the right thumbstick's Y axis is changed.
+
+.. seealso:: :py:func:`axisRightY`
+%End
+
+    void buttonAChanged( bool value );
+%Docstring
+Emitted when the state of the A button is changed.
+
+.. seealso:: :py:func:`buttonA`
+%End
+
+    void buttonBChanged( bool value );
+%Docstring
+Emitted when the state of the B button is changed.
+
+.. seealso:: :py:func:`buttonB`
+%End
+
+    void buttonXChanged( bool value );
+%Docstring
+Emitted when the state of the X button is changed.
+
+.. seealso:: :py:func:`buttonX`
+%End
+
+    void buttonYChanged( bool value );
+%Docstring
+Emitted when the state of the Y button is changed.
+
+.. seealso:: :py:func:`buttonY`
+%End
+
+    void buttonL1Changed( bool value );
+%Docstring
+Emitted when the state of the left shoulder button is changed.
+
+.. seealso:: :py:func:`buttonL1`
+%End
+
+    void buttonR1Changed( bool value );
+%Docstring
+Emitted when the state of the right shoulder button is changed.
+
+.. seealso:: :py:func:`buttonR1`
+%End
+
+    void buttonL2Changed( double value );
+%Docstring
+Emitted when the state of the left trigger button is changed.
+
+.. seealso:: :py:func:`buttonL2`
+%End
+
+    void buttonR2Changed( double value );
+%Docstring
+Emitted when the state of the right trigger button is changed.
+
+.. seealso:: :py:func:`buttonR2`
+%End
+
+    void buttonSelectChanged( bool value );
+%Docstring
+Emitted when the state of the select button is changed.
+
+.. seealso:: :py:func:`buttonSelect`
+%End
+
+    void buttonStartChanged( bool value );
+%Docstring
+Emitted when the state of the start button is changed.
+
+.. seealso:: :py:func:`buttonStart`
+%End
+
+    void buttonL3Changed( bool value );
+%Docstring
+Emitted when the state of the left stick button is changed.
+
+.. seealso:: :py:func:`buttonL3`
+%End
+
+    void buttonR3Changed( bool value );
+%Docstring
+Emitted when the state of the right stick button is changed.
+
+.. seealso:: :py:func:`buttonR3`
+%End
+
+    void buttonUpChanged( bool value );
+%Docstring
+Emitted when the state of the direction pad up button is changed.
+
+.. seealso:: :py:func:`buttonUp`
+%End
+
+    void buttonDownChanged( bool value );
+%Docstring
+Emitted when the state of the direction pad down button is changed.
+
+.. seealso:: :py:func:`buttonDown`
+%End
+
+    void buttonLeftChanged( bool value );
+%Docstring
+Emitted when the state of the direction pad left button is changed.
+
+.. seealso:: :py:func:`buttonLeft`
+%End
+
+    void buttonRightChanged( bool value );
+%Docstring
+Emitted when the state of the direction pad right button is changed.
+
+.. seealso:: :py:func:`buttonRight`
+%End
+
+    void buttonCenterChanged( bool value );
+%Docstring
+Emitted when the state of the center button is changed.
+
+.. seealso:: :py:func:`buttonCenter`
+%End
+
+    void buttonGuideChanged( bool value );
+%Docstring
+Emitted when the state of the guide button is changed.
+
+.. seealso:: :py:func:`buttonCenter`
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/inputcontroller/qgs3dgamepadcontroller.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

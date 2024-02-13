@@ -1,0 +1,249 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectgpssettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectGpsSettings : QObject
+{
+%Docstring(signature="appended")
+Contains settings and properties relating to how a :py:class:`QgsProject` should interact
+with a GPS device.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsprojectgpssettings.h"
+%End
+  public:
+
+
+    QgsProjectGpsSettings( QObject *parent = 0 );
+%Docstring
+Constructor for QgsProjectGpsSettings with the specified ``parent`` object.
+%End
+
+    ~QgsProjectGpsSettings();
+
+    void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID (if it has not been resolved already)
+%End
+
+    void reset();
+%Docstring
+Resets the settings to a default state.
+%End
+
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads the settings's state from a DOM element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns a DOM element representing the settings.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool automaticallyAddTrackVertices() const;
+%Docstring
+Returns ``True`` if track vertices should be automatically created whenever
+new locations are received from the GPS device.
+
+.. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
+
+.. seealso:: :py:func:`automaticallyAddTrackVerticesChanged`
+%End
+
+    bool automaticallyCommitFeatures() const;
+%Docstring
+Returns ``True`` if features created from GPS locations should be
+immediately committed to their target layers (skipping the usual
+layer edit buffer).
+
+.. seealso:: :py:func:`setAutomaticallyCommitFeatures`
+
+.. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
+%End
+
+    bool destinationFollowsActiveLayer() const;
+%Docstring
+Returns ``True`` if the destination layer for storing features digitized from GPS
+should follow the current active layer automatically.
+
+.. seealso:: :py:func:`setDestinationFollowsActiveLayer`
+
+.. seealso:: :py:func:`destinationFollowsActiveLayerChanged`
+%End
+
+    QgsVectorLayer *destinationLayer() const;
+%Docstring
+Returns the destination layer to be used for storing features digitized from GPS.
+
+.. note::
+
+   If :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` is ``True`` then this layer will be changed
+   whenever the user changes the active layer in the QGIS interface.
+
+.. seealso:: :py:func:`setDestinationLayer`
+
+.. seealso:: :py:func:`destinationLayerChanged`
+%End
+
+    QMap< QString, QString > destinationTimeStampFields() const;
+%Docstring
+Returns the map of destination layer ID to target time stamp field name.
+
+.. seealso:: :py:func:`destinationTimeStampField`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+%End
+
+    QString destinationTimeStampField() const;
+%Docstring
+Returns the destination time stamp field name for the current :py:func:`~QgsProjectGpsSettings.destinationLayer`,
+or an empty string if time stamps should not be automatically saved.
+
+.. seealso:: :py:func:`destinationTimeStampFields`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+%End
+
+  public slots:
+
+    void setAutomaticallyAddTrackVertices( bool enabled );
+%Docstring
+Sets whether track vertices should be automatically created whenever
+new locations are received from the GPS device.
+
+.. seealso:: :py:func:`automaticallyAddTrackVertices`
+
+.. seealso:: :py:func:`automaticallyAddTrackVerticesChanged`
+%End
+
+    void setAutomaticallyCommitFeatures( bool enabled );
+%Docstring
+Sets whether features created from GPS locations should be
+immediately committed to their target layers (skipping the usual
+layer edit buffer).
+
+.. seealso:: :py:func:`automaticallyCommitFeatures`
+
+.. seealso:: :py:func:`automaticallyCommitFeaturesChanged`
+%End
+
+    void setDestinationFollowsActiveLayer( bool follow );
+%Docstring
+Sets whether the destination layer for storing features digitized from GPS
+should follow the current active layer automatically.
+
+.. seealso:: :py:func:`destinationFollowsActiveLayer`
+
+.. seealso:: :py:func:`destinationFollowsActiveLayerChanged`
+%End
+
+    void setDestinationLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the destination ``layer`` to be used for storing features digitized from GPS.
+
+.. note::
+
+   If :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` is ``True`` then this layer will be changed
+   whenever the user changes the active layer in the QGIS interface.
+
+.. seealso:: :py:func:`destinationLayer`
+
+.. seealso:: :py:func:`destinationLayerChanged`
+%End
+
+    void setDestinationTimeStampField( QgsVectorLayer *layer, const QString &field );
+%Docstring
+Sets the destination field name for automatically storing timestamps in the
+specified destination ``layer``.
+
+Set ``field`` argument to an empty string if time stamps should
+not be automatically saved.
+
+.. seealso:: :py:func:`destinationTimeStampFields`
+
+.. seealso:: :py:func:`destinationTimeStampField`
+%End
+
+  signals:
+
+    void automaticallyAddTrackVerticesChanged( bool enabled );
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyAddTrackVertices` setting
+is changed.
+
+.. seealso:: :py:func:`automaticallyAddTrackVertices`
+
+.. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
+%End
+
+    void automaticallyCommitFeaturesChanged( bool enabled );
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyCommitFeatures` setting
+is changed.
+
+.. seealso:: :py:func:`automaticallyCommitFeatures`
+
+.. seealso:: :py:func:`setAutomaticallyCommitFeatures`
+%End
+
+    void destinationFollowsActiveLayerChanged( bool follows );
+%Docstring
+Emitted whenever the :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` setting
+is changed.
+
+.. seealso:: :py:func:`destinationFollowsActiveLayer`
+
+.. seealso:: :py:func:`setDestinationFollowsActiveLayer`
+%End
+
+    void destinationLayerChanged( QgsVectorLayer *layer );
+%Docstring
+Emitted whenever the destination layer for features digitized from GPS
+is changed.
+
+.. seealso:: :py:func:`destinationLayer`
+
+.. seealso:: :py:func:`setDestinationLayer`
+%End
+
+    void destinationTimeStampFieldChanged( const QString &field );
+%Docstring
+Emitted whenever the destination field for automatic time stamps is
+changed.
+
+The ``field`` argument will be an empty string if time stamps should
+not be automatically saved.
+
+.. seealso:: :py:func:`destinationTimeStampFields`
+
+.. seealso:: :py:func:`destinationTimeStampField`
+
+.. seealso:: :py:func:`setDestinationTimeStampField`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectgpssettings.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

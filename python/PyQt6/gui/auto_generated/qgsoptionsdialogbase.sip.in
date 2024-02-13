@@ -1,0 +1,195 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsoptionsdialogbase.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+
+class QgsOptionsDialogBase : QDialog
+{
+%Docstring(signature="appended")
+A base dialog for options and properties dialogs that offers vertical tabs.
+It handles saving/restoring of geometry, splitter and current tab states,
+switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+
+To use:
+
+# Start with copy of qgsoptionsdialog_template.ui and build options/properties dialog.
+# In source file for dialog, inherit this class instead of QDialog, then in constructor:
+  ...
+  setupUi( this ); // set up .ui file objects
+  initOptionsBase( ``False`` ); // set up this class to use .ui objects, optionally restoring base ui
+  ...
+  :py:func:`~restoreOptionsBaseUi`; // restore the base ui with initOptionsBase or use this later on
+%End
+
+%TypeHeaderCode
+#include "qgsoptionsdialogbase.h"
+%End
+  public:
+
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
+%Docstring
+Constructor
+
+:param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+:param parent: parent object (owner)
+:param fl: widget flags
+:param settings: custom :py:class:`QgsSettings` pointer
+%End
+    ~QgsOptionsDialogBase();
+
+    void initOptionsBase( bool restoreUi = true, const QString &title = QString() );
+%Docstring
+Set up the base ui connections for vertical tabs.
+
+:param restoreUi: Whether to restore the base ui at this time.
+:param title: the window title
+%End
+
+    void setSettings( QgsSettings *settings );
+
+    void restoreOptionsBaseUi( const QString &title = QString() );
+%Docstring
+Restore the base ui.
+Sometimes useful to do at end of subclass's constructor.
+
+:param title: the window title (it does not need to be defined if previously given to :py:func:`~QgsOptionsDialogBase.initOptionsBase`;
+%End
+
+    void restoreLastPage();
+%Docstring
+Refocus the active tab from the last time the dialog was shown.
+
+.. versionadded:: 3.14
+%End
+
+    void resizeAlltabs( int index );
+%Docstring
+Resizes all tabs when the dialog is resized
+
+:param index: current tab index
+
+.. versionadded:: 3.10
+%End
+
+    bool iconOnly();
+%Docstring
+Determine if the options list is in icon only mode
+%End
+
+    void setCurrentPage( const QString &page );
+%Docstring
+Sets the dialog ``page`` (by object name) to show.
+
+.. versionadded:: 3.14
+%End
+
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QStringList &path = QStringList(), const QString &key = QString() );
+%Docstring
+Adds a new page to the dialog pages.
+
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+
+The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+
+Since QGIS 3.22, the optional ``path`` argument can be used to set the path of the item's entry in the tree view
+(for dialogs which show a tree view of options pages only).
+
+Since QGIS 3.32, the optional ``key`` argument can be used to set an untranslated key that ``path`` can refer to
+in following calls. Default to ``title``.
+
+.. seealso:: :py:func:`insertPage`
+
+.. versionadded:: 3.14
+%End
+
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget /Transfer/, const QString &before, const QStringList &path = QStringList(), const QString &key = QString() );
+%Docstring
+Inserts a new page into the dialog pages.
+
+The ``title``, ``tooltip`` and ``icon`` arguments dictate the page list item title, tooltip and icon respectively.
+
+The page content is specified via the ``widget`` argument. Ownership of ``widget`` is transferred to the dialog.
+
+The ``before`` argument specifies the object name of an existing page. The new page will be inserted directly
+before the matching page.
+
+Since QGIS 3.22, the optional ``path`` argument can be used to set the path of the item's entry in the tree view
+(for dialogs which show a tree view of options pages only).
+
+Since QGIS 3.32, the optional ``key`` argument can be used to set an untranslated key that ``path`` can refer to
+in following calls. Default to ``title``.
+
+.. seealso:: :py:func:`addPage`
+
+.. versionadded:: 3.14
+%End
+
+  public slots:
+
+    void searchText( const QString &text );
+%Docstring
+searchText searches for a text in all the pages of the stacked widget and highlight the results
+
+:param text: the text to search
+
+.. versionadded:: 3.0
+%End
+
+  protected slots:
+    virtual void updateOptionsListVerticalTabs();
+%Docstring
+Update tabs on the splitter move
+%End
+    virtual void optionsStackedWidget_CurrentChanged( int index );
+%Docstring
+Select relevant tab on current page change
+%End
+    virtual void optionsStackedWidget_WidgetRemoved( int index );
+%Docstring
+Remove tab and unregister widgets on page remove
+%End
+
+    void warnAboutMissingObjects();
+
+  protected:
+    virtual void showEvent( QShowEvent *e );
+
+    virtual void paintEvent( QPaintEvent *e );
+
+
+    virtual void updateWindowTitle();
+
+    void registerTextSearchWidgets();
+%Docstring
+register widgets in the dialog to search for text in it
+it is automatically called if a line edit has "mSearchLineEdit" as object name.
+
+.. versionadded:: 3.0
+%End
+
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsoptionsdialogbase.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,280 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesheditor.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMeshEditingError
+{
+%Docstring(signature="appended")
+
+Class that represents an error during mesh editing
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmesheditor.h"
+%End
+  public:
+
+    QgsMeshEditingError();
+%Docstring
+Constructor of the default error, that is NoError
+%End
+
+    QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex );
+%Docstring
+Constructor with eht error ``type`` and the index of the element ``elementIndex``
+%End
+
+    Qgis::MeshEditingErrorType errorType;
+
+    int elementIndex;
+
+    bool operator==( const QgsMeshEditingError &other ) const;
+    bool operator!=( const QgsMeshEditingError &other ) const;
+};
+
+class QgsMeshEditor : QObject
+{
+%Docstring(signature="appended")
+
+Class that makes edit operation on a mesh
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmesheditor.h"
+%End
+  public:
+
+    QgsMeshEditor( QgsMeshLayer *meshLayer );
+%Docstring
+Constructor with a specified layer ``meshLayer``
+%End
+
+
+    QgsMeshDatasetGroup *createZValueDatasetGroup() /TransferBack/;
+%Docstring
+Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
+The caller takes ownership.
+%End
+
+    QgsMeshEditingError initialize();
+%Docstring
+Initializes the mesh editor and returns first error if the internal native mesh has topological errors
+%End
+
+    QgsMeshEditingError initializeWithErrorsFix();
+%Docstring
+Initializes the mesh editor. If topological errors occur,tries to fix these errors
+and returns error if there is one that couldn't be fixed
+
+.. versionadded:: 3.28
+%End
+
+    bool fixError( const QgsMeshEditingError &error );
+%Docstring
+Tries to fix the topological ``error`` in the mesh. Returns ``False`` if the fix fails
+
+.. versionadded:: 3.28
+%End
+
+    bool faceCanBeAdded( const QgsMeshFace &face ) const;
+%Docstring
+Returns ``True`` if a ``face`` can be added to the mesh
+
+.. note::
+
+   All vertices related to this face must be already in the mesh.
+%End
+
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
+%Docstring
+Returns ``True`` if the face does not intersect or contains any other elements (faces or vertices)
+The topological compatibility is not checked
+%End
+
+    QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
+%Docstring
+Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``, returns topological errors if this operation fails (operation is not realized)
+%End
+
+    QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
+%Docstring
+Removes faces ``faces`` to the mesh, returns topological errors if this operation fails (operation is not realized)
+%End
+
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+%End
+
+    void flipEdge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Flips edge (``vertexIndex1``, ``vertexIndex2``)
+%End
+
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if faces separated by vertices with indexes ``vertexIndex1`` and ``vertexIndex2`` can be merged
+%End
+
+    void merge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Merges faces separated by vertices with indexes ``vertexIndex1`` and ``vertexIndex2``
+%End
+
+    bool faceCanBeSplit( int faceIndex ) const;
+%Docstring
+Returns ``True`` if face with index ``faceIndex`` can be split
+%End
+
+    int splitFaces( const QList<int> &faceIndexes );
+%Docstring
+Splits faces with index ``faceIndexes``. Only faces that can be split are split.
+Returns the count of faces effictively split
+%End
+
+    int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
+%Docstring
+Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
+from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under ``tolerance`` distance).
+The method returns the number of vertices effectivly added.
+
+.. note::
+
+   this operation remove including face if exists and replace it by new faces surrounding the vertex
+   if the mesh hasn't topological error before this operation, the toological operation always succeed
+%End
+
+    QgsMeshEditingError removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes );
+%Docstring
+Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh removing the surrounding faces without filling the freed space.
+
+If removing these vertices leads to a topological errors, the method will return the corresponding error and the operation is canceled
+%End
+
+    QList<int> removeVerticesFillHoles( const QList<int> &verticesToRemoveIndexes );
+%Docstring
+Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh the surrounding faces AND fills the freed space.
+
+This operation fills holes by a Delaunay triangulation using the surrounding vertices.
+Some vertices could no be deleted to avoid topological error even with hole filling (can not be detected before execution).
+A list of the remaining vertex indexes is returned.
+%End
+
+    void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
+%Docstring
+Changes the Z values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``
+%End
+
+    void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+%Docstring
+Changes the (X,Y) coordinates values of the vertices with indexes in ``verticesIndexes`` with the values in ``newValues``.
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors.
+New values are in layer CRS.
+%End
+
+    void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
+%Docstring
+Changes the (X,Y,Z) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+New coordinates are in layer CRS.
+%End
+
+    void advancedEdit( QgsMeshAdvancedEditing *editing );
+%Docstring
+Applies an advance editing on the edited mesh, see :py:class:`QgsMeshAdvancedEditing`
+%End
+
+    void stopEditing();
+%Docstring
+Stops editing
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns the extent of the edited mesh
+%End
+
+    bool isModified() const;
+%Docstring
+Returns whether the mesh has been modified
+%End
+
+    bool reindex( bool renumbering );
+%Docstring
+Reindexes the mesh, that is remove unusued index of face and vertices, this operation void the undo/redo stack.
+
+If ``renumbering`` is true, a renumbering is operated to optimize the vertices indexes.
+
+Returns ``False`` if the operation fail.
+%End
+
+
+    QList<int> freeVerticesIndexes() const;
+%Docstring
+Returns all the free vertices indexes
+%End
+
+    bool isVertexOnBoundary( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex with index ``vertexIndex`` is on a boundary
+%End
+
+    bool isVertexFree( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex with index ``vertexIndex`` is a free vertex
+%End
+
+    bool checkConsistency( QgsMeshEditingError &error ) const;
+%Docstring
+Return ``True`` if the edited mesh is consistent
+%End
+
+    bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
+%Docstring
+Returns ``True`` if an edge of face is closest than the tolerance from the ``point`` in triangular mesh coordinate
+Returns also the face index and the edge position in ``faceIndex`` and ``edgePosition``
+%End
+
+    int validFacesCount() const;
+%Docstring
+Returns the count of valid faces, that is non void faces in the mesh
+%End
+
+    int validVerticesCount() const;
+%Docstring
+Returns the count of valid vertices, that is non void vertices in the mesh
+%End
+
+    int maximumVerticesPerFace() const;
+%Docstring
+Returns the maximum count of vertices per face that the mesh can support
+%End
+
+  signals:
+    void meshEdited();
+%Docstring
+Emitted when the mesh is edited
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesheditor.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

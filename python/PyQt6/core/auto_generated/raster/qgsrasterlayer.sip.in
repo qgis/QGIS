@@ -1,0 +1,481 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayer.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+typedef QList < QPair< QString, QColor > > QgsLegendColorList;
+
+class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
+{
+%Docstring(signature="appended")
+
+Represents a raster layer.
+
+A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a data provider,
+such as "gdal" or "wms", and a url defining the specific data set to connect to.
+The raster layer constructor in turn instantiates a :py:class:`QgsRasterDataProvider` subclass
+corresponding to the provider type, and passes it the url. The data provider
+connects to the data source.
+
+Sample usage of the :py:class:`QgsRasterLayer` class:
+
+.. code-block:: python
+
+         my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
+%End
+
+%TypeHeaderCode
+#include "qgsrasterlayer.h"
+%End
+  public:
+
+
+    static const double SAMPLE_SIZE;
+
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm SINGLE_BAND_ENHANCEMENT_ALGORITHM;
+
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM;
+
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
+
+    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+
+    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+
+    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+
+    QgsRasterLayer();
+%Docstring
+Constructor. Provider is not set.
+%End
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( bool loadDefaultStyle = true,
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+%Docstring
+Constructor for LayerOptions.
+%End
+
+      bool loadDefaultStyle;
+
+      QgsCoordinateTransformContext transformContext;
+
+      bool skipCrsValidation;
+
+    };
+
+    explicit QgsRasterLayer( const QString &uri,
+                             const QString &baseName = QString(),
+                             const QString &providerType = "gdal",
+                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
+%Docstring
+This is the constructor for the RasterLayer class.
+
+The main tasks carried out by the constructor are:
+
+- Load the rasters default style (.qml) file if it exists
+- Populate the RasterStatsVector with initial values for each band.
+- Calculate the layer extents
+- Determine whether the layer is gray, paletted or multiband.
+- Assign sensible defaults for the red, green, blue and gray bands.
+%End
+
+    ~QgsRasterLayer();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QgsRasterLayer *clone() const /Factory/;
+
+%Docstring
+Returns a new instance equivalent to this one. A new provider is
+created for the same data source and renderer is cloned too.
+
+:return: a new layer instance
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
+
+    static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
+%Docstring
+This helper checks to see whether the file name appears to be a valid
+raster file name.  If the file name looks like it could be valid,
+but some sort of error occurs in processing the file, the error is
+returned in ``retError``.
+%End
+
+    static bool isValidRasterFileName( const QString &fileNameQString );
+
+    static QDateTime lastModified( const QString   &name );
+%Docstring
+Returns time stamp for given file name
+%End
+
+ void setDataProvider( const QString &provider ) /Deprecated/;
+%Docstring
+Set the data provider.
+
+.. deprecated::
+   Use the version with ProviderOptions instead.
+%End
+
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+%Docstring
+Set the data provider.
+
+:param provider: provider key string, must match a valid :py:class:`QgsRasterDataProvider` key. E.g. "gdal", "wms", etc.
+:param options: provider options
+:param flags: provider flags since QGIS 3.16
+
+.. versionadded:: 3.2
+%End
+
+    Qgis::RasterLayerType rasterType() const;
+%Docstring
+Returns the raster layer type (which is a read only property).
+%End
+
+    void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
+%Docstring
+Sets the raster's ``renderer``. Takes ownership of the renderer object.
+
+.. seealso:: :py:func:`renderer`
+%End
+
+    QgsRasterRenderer *renderer() const;
+%Docstring
+Returns the raster's renderer.
+
+.. seealso:: :py:func:`setRenderer`
+%End
+
+    QgsRasterResampleFilter *resampleFilter() const;
+%Docstring
+Returns the raster's resample filter.
+
+.. seealso:: :py:func:`brightnessFilter`
+
+.. seealso:: :py:func:`hueSaturationFilter`
+%End
+
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+%Docstring
+Returns the raster's brightness/contrast filter.
+
+.. seealso:: :py:func:`resampleFilter`
+
+.. seealso:: :py:func:`hueSaturationFilter`
+%End
+
+    QgsHueSaturationFilter *hueSaturationFilter() const;
+%Docstring
+Returns the raster's hue/saturation filter.
+
+.. seealso:: :py:func:`resampleFilter`
+
+.. seealso:: :py:func:`brightnessFilter`
+%End
+
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
+%Docstring
+Select which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.setResamplingStage`
+
+.. versionadded:: 3.16
+%End
+
+    Qgis::RasterResamplingStage resamplingStage() const;
+%Docstring
+Returns which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.resamplingStage`
+
+.. versionadded:: 3.16
+%End
+
+    QgsRasterPipe *pipe();
+%Docstring
+Returns the raster pipe.
+%End
+
+    int width() const;
+%Docstring
+Returns the width of the (unclipped) raster.
+
+.. seealso:: :py:func:`height`
+%End
+
+    int height() const;
+%Docstring
+Returns the height of the (unclipped) raster.
+
+.. seealso:: :py:func:`width`
+%End
+
+    int bandCount() const;
+%Docstring
+Returns the number of bands in this layer.
+%End
+
+    QString bandName( int bandNoInt ) const;
+%Docstring
+Returns the name of a band given its number.
+%End
+
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+%Docstring
+Returns the (possibly NULL) raster attribute table for the given band ``bandNumber``.
+
+.. versionadded:: 3.30
+%End
+
+    int attributeTableCount( ) const;
+%Docstring
+Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
+
+.. versionadded:: 3.30
+%End
+
+    bool canCreateRasterAttributeTable( );
+%Docstring
+Returns ``True`` if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are :py:class:`QgsPalettedRasterRenderer` and :py:class:`QgsSingleBandPseudoColorRenderer`.
+
+.. versionadded:: 3.30
+%End
+
+    virtual QgsRasterDataProvider *dataProvider();
+
+%Docstring
+Returns the source data provider.
+
+This will be ``None`` if the layer is invalid.
+%End
+
+    virtual const QgsRasterDataProvider *dataProvider() const /PyName=constDataProvider/;
+
+%Docstring
+Returns the source data provider.
+
+This will be ``None`` if the layer is invalid.
+%End
+
+    virtual void reload();
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+
+    void draw( QPainter *theQPainter,
+               QgsRasterViewPort *myRasterViewPort,
+               const QgsMapToPixel *qgsMapToPixel = 0 );
+%Docstring
+This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function that is called by both :py:func:`~QgsRasterLayer.draw` and thumbnailAsPixmap
+%End
+
+ QgsLegendColorList legendSymbologyItems() const /Deprecated/;
+%Docstring
+Returns a list with classification items (Text and color).
+
+.. deprecated::
+   use :py:func:`QgsRasterRenderer.createLegendNodes()` instead.
+%End
+
+    virtual bool isSpatial() const;
+
+    virtual QString htmlMetadata() const;
+
+    virtual Qgis::MapLayerProperties properties() const;
+
+
+    QPixmap paletteAsPixmap( int bandNumber = 1 );
+%Docstring
+Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+
+:param bandNumber: the number of the band to use for generating a pixmap of the associated palette
+%End
+
+    QString providerType() const;
+%Docstring
+[ data provider interface ] Which provider is being used for this Raster Layer?
+%End
+
+    double rasterUnitsPerPixelX() const;
+%Docstring
+Returns the number of raster units per each raster pixel in X axis.
+
+In a world file, this is normally the first row (without the sign). (E.g.
+the value reported by the GDAL geotransform[1]).
+
+.. seealso:: :py:func:`rasterUnitsPerPixelY`
+%End
+
+    double rasterUnitsPerPixelY() const;
+%Docstring
+Returns the number of raster units per each raster pixel in Y axis.
+
+In a world file, this is normally the first row (without the sign).
+
+.. seealso:: :py:func:`rasterUnitsPerPixelX`
+%End
+
+    virtual void setOpacity( double opacity ) ${SIP_FINAL};
+
+    virtual double opacity() const ${SIP_FINAL};
+
+
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 const QgsRectangle &extent = QgsRectangle(),
+                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
+                                 bool generateLookupTableFlag = true );
+%Docstring
+Set contrast enhancement algorithm
+
+:param algorithm: Contrast enhancement algorithm
+:param limits: Limits
+:param extent: Extent used to calculate limits, if empty, use full layer extent
+:param sampleSize: Size of data sample to calculate limits, if 0, use full resolution
+:param generateLookupTableFlag: Generate lookup table.
+%End
+
+
+
+    virtual QString subsetString() const;
+%Docstring
+Returns the string (typically sql) used to define a subset of the layer.
+
+:return: The subset string or null QString if not implemented by the provider
+
+.. versionadded:: 3.12
+%End
+
+    virtual bool setSubsetString( const QString &subset );
+%Docstring
+Sets the string (typically sql) used to define a subset of the layer
+
+:param subset: The subset string. This may be the where clause of a sql statement
+               or other definition string specific to the underlying dataprovider
+               and data store.
+
+:return: ``True``, when setting the subset string was successful, ``False`` otherwise
+
+.. versionadded:: 3.12
+%End
+
+
+    void setDefaultContrastEnhancement();
+%Docstring
+Sets the default contrast enhancement
+%End
+
+    virtual QStringList subLayers() const;
+
+
+    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
+                           QImage::Format format = QImage::Format_ARGB32_Premultiplied );
+%Docstring
+Draws a preview of the rasterlayer into a QImage
+
+.. versionadded:: 2.4
+%End
+
+    virtual void setLayerOrder( const QStringList &layers );
+
+    virtual void setSubLayerVisibility( const QString &name, bool vis );
+
+    virtual QDateTime timestamp() const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
+%Docstring
+Writes the symbology of the layer into the document provided in SLD 1.0.0 format
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param errorMessage: reference to string that will be updated with any error messages
+:param props: a open ended set of properties that can drive/inform the SLD encoding
+
+:return: ``True`` in case of success
+
+.. versionadded:: 3.6
+%End
+
+    bool ignoreExtents() const;
+%Docstring
+If the ignoreExtent flag is set, the layer will also render outside the
+bounding box reported by the data provider.
+To be used for example for WMS layers with labels or symbology that happens
+to be drawn outside the data extent.
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
+
+  public slots:
+    void showStatusMessage( const QString &message );
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Sets the coordinate transform context to ``transformContext``
+
+.. versionadded:: 3.8
+%End
+
+  signals:
+
+    void subsetStringChanged();
+%Docstring
+Emitted when the layer's subset string has changed.
+
+.. versionadded:: 3.12
+%End
+
+  protected:
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
+
+     virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+
+    virtual QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterlayer.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

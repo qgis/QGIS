@@ -1,0 +1,173 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryentrynode.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsHistoryEntryNode
+{
+%Docstring(signature="appended")
+Base class for nodes representing a :py:class:`QgsHistoryEntry`.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistoryentrynode.h"
+%End
+  public:
+
+    QgsHistoryEntryNode();
+%Docstring
+Constructor for QgsHistoryEntryNode.
+%End
+    virtual ~QgsHistoryEntryNode();
+
+
+    QgsHistoryEntryGroup *parent();
+%Docstring
+Returns the node's parent node.
+
+If parent is ``None``, the node is a root node.
+%End
+
+    virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
+%Docstring
+Returns the node's data for the specified model ``role``.
+%End
+
+    virtual int childCount() const;
+%Docstring
+Returns the number of child nodes owned by this node.
+%End
+
+    virtual QString html( const QgsHistoryWidgetContext &context ) const;
+%Docstring
+Returns a HTML formatted text string which should be shown to a user when
+selecting the node.
+
+Subclasses should implement this method or :py:func:`~QgsHistoryEntryNode.createWidget`, but not both.
+
+.. seealso:: :py:func:`createWidget`
+%End
+
+    virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) /Factory/;
+%Docstring
+Returns a new widget which should be shown to users when selecting the node.
+
+If a ``None`` is returned, the node's :py:func:`~QgsHistoryEntryNode.html` method will be called instead to
+create the node's content.
+
+.. seealso:: :py:func:`html`
+%End
+
+    virtual bool doubleClicked( const QgsHistoryWidgetContext &context );
+%Docstring
+Called when the node is double-clicked. The default implementation does nothing.
+
+Returns ``True`` if the node handled the double-click event and it should not
+be further processed.
+%End
+
+    virtual void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext &context );
+%Docstring
+Allows the node to populate a context ``menu`` before display to the user.
+
+Actions should be parented to the specified ``menu``.
+%End
+
+    virtual bool matchesString( const QString &searchString ) const;
+%Docstring
+Returns true if the node matches the specified ``searchString``, and
+should be shown in filtered results with that search string.
+
+The default implementation returns ``True`` if the string is contained
+within the node's DisplayRole.
+%End
+
+  private:
+    QgsHistoryEntryNode( const QgsHistoryEntryNode &other );
+};
+
+
+class QgsHistoryEntryGroup : QgsHistoryEntryNode
+{
+%Docstring(signature="appended")
+Base class for history entry "group" nodes, which contain children of their own.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgshistoryentrynode.h"
+%End
+  public:
+
+    QgsHistoryEntryGroup();
+%Docstring
+Constructor for QgsHistoryEntryGroup
+%End
+    ~QgsHistoryEntryGroup();
+
+
+    void addChild( QgsHistoryEntryNode *child /Transfer/ );
+%Docstring
+Adds a ``child`` node to this node.
+
+Ownership is transferred to the group.
+%End
+
+    void insertChild( int index, QgsHistoryEntryNode *child /Transfer/ );
+%Docstring
+Inserts a ``child`` node at the specified index.
+
+Ownership is transferred to the group.
+%End
+
+    int indexOf( QgsHistoryEntryNode *child ) const;
+%Docstring
+Returns the index of the specified ``child`` node.
+
+.. warning::
+
+   ``child`` must be a valid child of this node.
+%End
+
+    QgsHistoryEntryNode *childAt( int index );
+%Docstring
+Returns the child at the specified ``index``.
+%End
+
+    void removeChildAt( int index );
+%Docstring
+Removes the child at the specified ``index``.
+%End
+
+    void clear();
+%Docstring
+Clears the group, removing all its children.
+%End
+
+    virtual int childCount() const ${SIP_FINAL};
+
+
+  protected:
+
+  private:
+    QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/history/qgshistoryentrynode.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

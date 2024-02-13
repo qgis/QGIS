@@ -1,0 +1,3 @@
+# The following has been generated automatically from src/gui/layout/qgslayoutdesignerinterface.h
+QgsLayoutDesignerInterface.ToolMoveItemContent = QgsLayoutDesignerInterface.StandardTool.ToolMoveItemContent
+QgsLayoutDesignerInterface.ToolMoveItemNodes = QgsLayoutDesignerInterface.StandardTool.ToolMoveItemNodes

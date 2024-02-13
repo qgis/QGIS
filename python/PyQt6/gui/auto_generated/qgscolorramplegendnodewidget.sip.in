@@ -1,0 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorramplegendnodewidget.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsColorRampLegendNodeWidget: QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget for properties relating to a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
+
+The current settings are set by a call to :py:func:`~setSettings`, and the settings defined by the
+widget are retrieved by calling :py:func:`~settings`.
+
+When changes are made the to settings by a user the :py:func:`~widgetChanged` signal is emitted.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgscolorramplegendnodewidget.h"
+%End
+  public:
+
+    QgsColorRampLegendNodeWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsColorRampLegendNodeWidget, with the specified ``parent`` widget.
+%End
+
+    QgsColorRampLegendNodeSettings settings() const;
+%Docstring
+Returns the legend node settings as defined by the widget.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    void setSettings( const QgsColorRampLegendNodeSettings &settings );
+%Docstring
+Sets the settings to show in the widget.
+
+.. seealso:: :py:func:`settings`
+%End
+
+    void setUseContinuousRampCheckBoxVisibility( bool visible );
+%Docstring
+Sets visibility for the "Use Continuous Legend" checkbox to ``visible``.
+
+This widget is visible and checked by default but in a few cases it does not
+need to be visible because disabling it would not make sense (for instance
+when using single band gray renderer).
+%End
+
+};
+
+class QgsColorRampLegendNodeDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog for configuring a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgscolorramplegendnodewidget.h"
+%End
+  public:
+
+    QgsColorRampLegendNodeDialog( const QgsColorRampLegendNodeSettings &settings, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsColorRampLegendNodeDialog, initially showing the specified ``settings``.
+%End
+
+    QgsColorRampLegendNodeSettings settings() const;
+%Docstring
+Returns the legend node settings as defined by the dialog.
+%End
+
+    QDialogButtonBox *buttonBox() const;
+%Docstring
+Returns a reference to the dialog's button box.
+%End
+
+    void setUseContinuousRampCheckBoxVisibility( bool visible );
+%Docstring
+Sets visibility for the "Use Continuous Legend" checkbox in the legend settings dialog to ``visible``.
+
+This widget is visible and checked by default but in a few cases it does not
+need to be visible because disabling it would not make sense (for instance
+when using single band gray renderer).
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorramplegendnodewidget.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,7 @@
+# The following has been generated automatically from src/core/symbology/qgsgraduatedsymbolrenderer.h
+QgsGraduatedSymbolRenderer.EqualInterval = QgsGraduatedSymbolRenderer.Mode.EqualInterval
+QgsGraduatedSymbolRenderer.Quantile = QgsGraduatedSymbolRenderer.Mode.Quantile
+QgsGraduatedSymbolRenderer.Jenks = QgsGraduatedSymbolRenderer.Mode.Jenks
+QgsGraduatedSymbolRenderer.StdDev = QgsGraduatedSymbolRenderer.Mode.StdDev
+QgsGraduatedSymbolRenderer.Pretty = QgsGraduatedSymbolRenderer.Mode.Pretty
+QgsGraduatedSymbolRenderer.Custom = QgsGraduatedSymbolRenderer.Mode.Custom

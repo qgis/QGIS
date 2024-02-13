@@ -1,0 +1,125 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenelayer.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTiledSceneLayer : QgsMapLayer
+{
+%Docstring(signature="appended")
+
+Represents a map layer supporting display of tiled scene objects.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenelayer.h"
+%End
+  public:
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+%Docstring
+Constructor for LayerOptions with optional ``transformContext``.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+      bool loadDefaultStyle;
+
+      bool skipCrsValidation;
+    };
+
+    explicit QgsTiledSceneLayer( const QString &uri = QString(),
+                                 const QString &baseName = QString(),
+                                 const QString &provider = QString(),
+                                 const QgsTiledSceneLayer::LayerOptions &options = QgsTiledSceneLayer::LayerOptions() );
+%Docstring
+Constructor for QgsTiledSceneLayer.
+%End
+
+    ~QgsTiledSceneLayer();
+
+
+    SIP_PYOBJECT __repr__();
+%Docstring
+QgsTiledSceneLayer cannot be copied.
+%End
+%MethodCode
+    QString str = QStringLiteral( "<QgsTiledSceneLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QgsTiledSceneLayer *clone() const /Factory/;
+
+    virtual QgsRectangle extent() const;
+
+    virtual QgsTiledSceneDataProvider *dataProvider();
+
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
+    virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) ${SIP_FINAL};
+
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const ${SIP_FINAL};
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+
+    virtual QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const;
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
+
+    virtual QString htmlMetadata() const;
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+    virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
+
+
+    QgsTiledSceneRenderer *renderer();
+%Docstring
+Returns the 2D renderer for the tiled scene.
+
+.. seealso:: :py:func:`setRenderer`
+%End
+
+
+    void setRenderer( QgsTiledSceneRenderer *renderer /Transfer/ );
+%Docstring
+Sets the 2D ``renderer`` for the tiled scene.
+
+Ownership of ``renderer`` is transferred to the layer.
+
+.. seealso:: :py:func:`renderer`
+%End
+
+  private:
+    QgsTiledSceneLayer( const QgsTiledSceneLayer &rhs );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenelayer.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

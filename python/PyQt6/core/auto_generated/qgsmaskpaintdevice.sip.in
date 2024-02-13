@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaskpaintdevice.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMaskPaintDevice: QPaintDevice
+{
+%Docstring(signature="appended")
+Mask painter device that can be used to register everything painted into a QPainterPath
+used later as clip path
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsmaskpaintdevice.h"
+%End
+  public:
+
+    QgsMaskPaintDevice( bool usePathStroker = false );
+%Docstring
+!
+Constructor
+If ``usePathStroker`` is ``True``, path will be considered with a stroke regarding QPainter
+pen configuration
+%End
+
+    virtual QPaintEngine *paintEngine() const;
+
+
+    virtual int metric( PaintDeviceMetric metric ) const;
+
+
+    QPainterPath maskPainterPath() const;
+%Docstring
+Returns the mask painter path painted on this paint device
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaskpaintdevice.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

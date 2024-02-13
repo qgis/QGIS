@@ -1,0 +1,133 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsconnection.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+%ModuleHeaderCode
+#include "qgsgpsconnection.h"
+%End
+
+class QgsGpsConnection : QObject
+{
+%Docstring(signature="appended")
+Abstract base class for connection to a GPS device
+%End
+
+%TypeHeaderCode
+#include "qgsgpsconnection.h"
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->inherits( "QgsGpsdConnection" ) )
+      sipType = sipType_QgsGpsdConnection;
+    else if ( sipCpp->inherits( "QgsNmeaConnection" ) )
+      sipType = sipType_QgsNmeaConnection;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    enum Status
+    {
+      NotConnected,
+      Connected,
+      DataReceived,
+      GPSDataReceived
+    };
+
+
+    QgsGpsConnection( QIODevice *dev /Transfer/ );
+%Docstring
+Constructor
+
+:param dev: input device for the connection (e.g. serial device). The class takes ownership of the object
+%End
+    ~QgsGpsConnection();
+    bool connect();
+%Docstring
+Opens connection to device
+%End
+    bool close();
+%Docstring
+Closes connection to device
+%End
+
+    void setSource( QIODevice *source /Transfer/ );
+%Docstring
+Sets the GPS source. The class takes ownership of the device class
+%End
+
+    Status status() const;
+%Docstring
+Returns the status. Possible state are not connected, connected, data received
+%End
+
+    QgsGpsInformation currentGPSInformation() const;
+%Docstring
+Returns the current gps information (lat, lon, etc.)
+%End
+
+    QgsPoint lastValidLocation() const;
+%Docstring
+Returns the last valid location obtained by the device.
+
+.. versionadded:: 3.30
+%End
+
+  signals:
+
+    void stateChanged( const QgsGpsInformation &info );
+%Docstring
+Emitted whenever the GPS state is changed.
+%End
+
+
+    void nmeaSentenceReceived( const QString &substring );
+%Docstring
+Emitted whenever the GPS device receives a raw NMEA sentence.
+%End
+
+    void fixStatusChanged( Qgis::GpsFixStatus status );
+%Docstring
+Emitted when the GPS device fix status is changed.
+
+.. versionadded:: 3.30
+%End
+
+    void positionChanged( const QgsPoint &point );
+%Docstring
+Emitted when the GPS position changes.
+
+This signal is only emitted when the new GPS location is considered valid (see :py:func:`QgsGpsInformation.isValid()`).
+
+.. versionadded:: 3.30
+%End
+
+  protected:
+
+  protected slots:
+    virtual void parseData() = 0;
+%Docstring
+Parse available data source content
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsconnection.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,67 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphbuilder.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGraphBuilder : QgsGraphBuilderInterface /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+This class used for making the :py:class:`QgsGraph` object
+%End
+
+%TypeHeaderCode
+#include "qgsgraphbuilder.h"
+%End
+  public:
+
+    QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
+%Docstring
+Default constructor
+%End
+
+    ~QgsGraphBuilder();
+
+    virtual void addVertex( int id, const QgsPointXY &pt );
+
+%Docstring
+MANDATORY BUILDER PROPERTY DECLARATION
+%End
+
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop );
+
+
+    QgsGraph graph() const;
+%Docstring
+Returns the generated :py:class:`QgsGraph`.
+
+The builder is left in its current state.
+
+.. seealso:: :py:func:`takeGraph`
+%End
+
+    QgsGraph *takeGraph() /Factory/;
+%Docstring
+Takes the generated graph from the builder, resetting the builder back to its initial
+state ready for additional graph construction.
+
+.. versionadded:: 3.22
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphbuilder.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

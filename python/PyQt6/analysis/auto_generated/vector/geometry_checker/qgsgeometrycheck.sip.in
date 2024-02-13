@@ -1,0 +1,249 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGeometryCheck
+{
+%Docstring(signature="appended")
+This class implements a geometry check.
+
+Geometry checks run over a set of features and can detect errors like topological
+or other issues which are reported in the geometry validation panel in QGIS and
+help a user to create valid geometries.
+
+Implementing a custom geometry check consists of the following parts
+
+Writing the check
+-----------------
+
+A new subclass of :py:class:`QgsGeometryCheck` needs to be written and at least the following
+abstract methods need to be implemented:
+
+- :py:func:`~compatibleGeometryTypes`: A list of geometry types to which this check applies
+- :py:func:`~availableResolutionMethods`: A list of resolution methods that can be used to fix errors of this type
+- :py:func:`~description`: A description for the geometry check.
+- :py:func:`~id`: A unique id for this check.
+- :py:func:`~checkType`: One of :py:class:`QgsGeometryCheck`.LayerCheck, :py:class:`QgsGeometryCheck`.FeatureCheck, :py:class:`QgsGeometryCheck`.FeatureNodeCheck
+- :py:func:`~collectErrors`: This method will be called to validate geometries. All geometries which should be validated are passed
+  into this method with the parameter ids and should be retrieved from the available featurePools to make
+  use of caching. New errors should be appended to the error list and other message strings to messages.
+  The method needs to return a tuple (errors, messages).
+
+Creating a geometry check factory
+---------------------------------
+
+A Geometry check factory manages meta information for checks. There will always be one single
+geometry check factory created per check type, but it's possible that multiple :py:class:`QgsGeometryCheck`
+instances are created and used in parallel.
+
+A new subclass of :py:class:`QgsGeometryCheckFactory` needs to be written and at least the following
+abstract methods need to be implemented:
+
+- :py:func:`QgsGeometryCheckFactory.createGeometryCheck()`: Needs to return a new subclassed :py:class:`QgsGeometryCheck` object that has been written in the previous step.
+- :py:func:`QgsGeometryCheckFactory.id()`: A unique id for this geometry check.
+- :py:func:`QgsGeometryCheckFactory.description()`: A description for this geometry check that can be presented to the user for more explanation.
+- :py:func:`QgsGeometryCheckFactory.isCompatible()`: Returns a boolean that determines if this check is available for a given layer. This often
+  checks for the geometry type of the layer.
+- :py:func:`QgsGeometryCheckFactory.flags()`: Returns additional flags for a geometry check. If unsure return :py:class:`QgsGeometryCheck`.AvailableInValidation.
+- :py:func:`QgsGeometryCheckFactory.checkType()`: Returns the type of this geometry check.
+
+Registering the geometry check
+------------------------------
+
+Finally the geometry check factory needs to be registered in QGIS, so the system
+is aware of the available geometry checks.
+
+.. code-block:: python
+
+     # Make sure you always keep a reference
+     checkFactory = MyGeometryCheckFactory()
+     QgsAnalysis.geometryCheckRegistry().registerGeometryCheck(checkFactory)
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheck.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    struct LayerFeatureIds
+    {
+      LayerFeatureIds();
+
+
+    };
+
+    enum ChangeWhat
+    {
+      ChangeFeature,
+      ChangePart,
+      ChangeRing,
+      ChangeNode
+    };
+
+    enum ChangeType
+    {
+      ChangeAdded,
+      ChangeRemoved,
+      ChangeChanged
+    };
+
+    enum CheckType
+    {
+      FeatureNodeCheck,
+      FeatureCheck,
+      LayerCheck
+    };
+
+    enum Flag
+    {
+      AvailableInValidation
+    };
+    typedef QFlags<QgsGeometryCheck::Flag> Flags;
+
+
+    struct Change
+    {
+      Change();
+
+      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
+%Docstring
+Create a new Change
+%End
+
+      QgsGeometryCheck::ChangeWhat what;
+
+      QgsGeometryCheck::ChangeType type;
+
+      QgsVertexId vidx;
+
+      bool operator==( const QgsGeometryCheck::Change &other ) const;
+
+      bool operator!=( const QgsGeometryCheck::Change &other ) const;
+    };
+
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
+
+    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+%Docstring
+Create a new geometry check.
+%End
+    virtual ~QgsGeometryCheck();
+
+    virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+%Docstring
+Will be run in the main thread before :py:func:`~QgsGeometryCheck.collectErrors` is called (which may be run from a background thread).
+
+.. versionadded:: 3.10
+%End
+
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+%Docstring
+Returns if this geometry check is compatible with ``layer``.
+By default it checks for the geometry type in :py:func:`~QgsGeometryCheck.compatibleGeometryTypes`.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const = 0;
+%Docstring
+A list of geometry types for which this check can be performed.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsGeometryCheck::Flags flags() const;
+%Docstring
+Flags for this geometry check.
+%End
+
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+%Docstring
+The main worker method.
+Check all features available from ``featurePools`` and write errors found to ``errors``.
+Other status messages can be written to ``messages``.
+Progress should be reported to ``feedback``. Only features and layers listed in ``ids`` should be checked.
+
+.. versionadded:: 3.4
+%End
+
+
+    virtual QList<QgsGeometryCheckResolutionMethod> availableResolutionMethods() const;
+%Docstring
+Returns a list of available resolution methods.
+
+.. versionadded:: 3.12
+%End
+
+ virtual QStringList resolutionMethods() const /Deprecated/;
+%Docstring
+Returns a list of descriptions for available resolutions for errors.
+The index will be passed as ``method`` to :py:func:`fixError`.
+
+.. deprecated:: QGIS 3.12
+  use :py:func:`~QgsGeometryCheck.availableResolutionMethods` instead
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString description() const = 0;
+%Docstring
+Returns a human readable description for this check.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns an id for this check.
+
+.. versionadded:: 3.4
+%End
+
+    virtual CheckType checkType() const = 0;
+%Docstring
+Returns the check type.
+
+.. versionadded:: 3.4
+%End
+
+    const QgsGeometryCheckContext *context() const;
+%Docstring
+Returns the context
+
+.. versionadded:: 3.4
+%End
+
+  protected:
+
+
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

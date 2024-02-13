@@ -1,0 +1,270 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerserverproperties.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsServerMetadataUrlProperties
+{
+%Docstring(signature="appended")
+Manages QGIS Server properties for a map layer
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerserverproperties.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    struct MetadataUrl
+    {
+
+      MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() );
+%Docstring
+Constructor for MetadataUrl.
+%End
+
+      QString url;
+
+      QString type;
+
+      QString format;
+
+
+      bool operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const;
+    };
+
+    virtual ~QgsServerMetadataUrlProperties();
+
+    QList<QgsServerMetadataUrlProperties::MetadataUrl> metadataUrls() const;
+%Docstring
+Returns a list of metadataUrl resources associated for the layer.
+
+:return: the list of metadata URLs
+
+.. seealso:: :py:func:`setMetadataUrls`
+%End
+    void setMetadataUrls( const QList<QgsServerMetadataUrlProperties::MetadataUrl> &metaUrls );
+%Docstring
+Sets a the list of metadata URL for the layer
+
+.. seealso:: :py:func:`metadataUrls`
+
+.. seealso:: :py:func:`addMetadataUrl`
+%End
+    void addMetadataUrl( const QgsServerMetadataUrlProperties::MetadataUrl &metaUrl );
+%Docstring
+Add a metadataUrl for the layer
+
+.. seealso:: :py:func:`setMetadataUrls`
+%End
+    virtual const QgsMapLayer *layer() const = 0;
+%Docstring
+Gets the parent layer
+%End
+
+  protected:
+
+
+
+
+};
+
+
+class QgsServerWmsDimensionProperties
+{
+%Docstring(signature="appended")
+Manages QGIS Server properties for Wms dimensions
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerserverproperties.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum PredefinedWmsDimensionName
+    {
+      TIME,
+      DATE,
+      ELEVATION
+    };
+
+    struct WmsDimensionInfo
+    {
+
+      enum DefaultDisplay
+      {
+        AllValues,
+        MinValue,
+        MaxValue,
+        ReferenceValue,
+      };
+
+      explicit WmsDimensionInfo( const QString &dimName,
+                                 const QString &dimFieldName,
+                                 const QString &dimEndFieldName = QString(),
+                                 const QString &dimUnits = QString(),
+                                 const QString &dimUnitSymbol = QString(),
+                                 const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+                                 const QVariant &dimReferenceValue = QVariant() );
+%Docstring
+Constructor for WmsDimensionInfo.
+%End
+      QString name;
+      QString fieldName;
+      QString endFieldName;
+      QString units;
+      QString unitSymbol;
+      int defaultDisplayType;
+      QVariant referenceValue;
+    };
+
+    virtual ~QgsServerWmsDimensionProperties();
+
+    static QMap<int, QString> wmsDimensionDefaultDisplayLabels();
+%Docstring
+Returns WMS Dimension default display labels
+
+.. versionadded:: 3.10
+%End
+
+    bool addWmsDimension( const QgsServerWmsDimensionProperties::WmsDimensionInfo &wmsDimInfo );
+%Docstring
+Adds a QGIS Server WMS Dimension
+
+:param wmsDimInfo: QGIS Server WMS Dimension object with, name, field, etc
+
+:return: ``True`` if QGIS Server WMS Dimension has been successfully added
+
+.. versionadded:: 3.10
+%End
+
+    bool removeWmsDimension( const QString &wmsDimName );
+%Docstring
+Removes a QGIS Server WMS Dimension
+
+:return: ``True`` if QGIS Server WMS Dimension was found and successfully removed
+
+.. versionadded:: 3.10
+%End
+
+    void setWmsDimensions( const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> &dimensions );
+%Docstring
+Set WMS Dimensions
+
+:param dimensions: the new dimensions that replace the current ones.
+%End
+
+    const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> wmsDimensions() const;
+%Docstring
+Returns the QGIS Server WMS Dimension list.
+
+.. versionadded:: 3.10
+%End
+
+    virtual const QgsMapLayer *layer() const = 0;
+%Docstring
+Gets the parent layer
+%End
+
+  protected:
+
+
+
+
+
+};
+
+
+class QgsMapLayerServerProperties: QgsServerMetadataUrlProperties, QgsServerWmsDimensionProperties
+{
+%Docstring(signature="appended")
+Manages QGIS Server properties for a map layer
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerserverproperties.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    QgsMapLayerServerProperties( QgsMapLayer *layer = 0 );
+%Docstring
+Constructor - Creates a Map Layer QGIS Server Properties
+
+:param layer: The map layer
+%End
+
+    void copyTo( QgsMapLayerServerProperties *properties ) const;
+%Docstring
+Copy properties to another instance
+
+:param properties: The properties to copy to
+%End
+
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+%Docstring
+Saves server properties to xml under the layer node
+
+.. versionadded:: 3.10
+%End
+
+    void readXml( const QDomNode &layer_node );
+%Docstring
+Reads server properties from project file.
+
+.. versionadded:: 3.10
+%End
+
+    void reset();
+%Docstring
+Reset properties to default
+
+.. versionadded:: 3.22
+%End
+
+    virtual const QgsMapLayer *layer() const;
+%Docstring
+Gets the parent layer
+%End
+};
+
+class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
+{
+
+%TypeHeaderCode
+#include "qgsmaplayerserverproperties.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerserverproperties.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorcolorscheme.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCodeEditorColorScheme
+{
+%Docstring(signature="appended")
+Defines a color scheme for use in :py:class:`QgsCodeEditor` widgets.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditorcolorscheme.h"
+%End
+  public:
+
+    enum class ColorRole
+    {
+      Default,
+      Keyword,
+      Class,
+      Method,
+      Decoration,
+      Number,
+      Comment,
+      CommentLine,
+      CommentBlock,
+      Background,
+      Cursor,
+      CaretLine,
+      SingleQuote,
+      DoubleQuote,
+      TripleSingleQuote,
+      TripleDoubleQuote,
+      Operator,
+      QuotedOperator,
+      Identifier,
+      QuotedIdentifier,
+      Tag,
+      UnknownTag,
+      MarginBackground,
+      MarginForeground,
+      SelectionBackground,
+      SelectionForeground,
+      MatchedBraceBackground,
+      MatchedBraceForeground,
+      Edge,
+      Fold,
+      Error,
+      ErrorBackground,
+      FoldIconForeground,
+      FoldIconHalo,
+      IndentationGuide,
+    };
+
+    QgsCodeEditorColorScheme( const QString &id = QString(), const QString &name = QString() );
+%Docstring
+Constructor for QgsCodeEditorColorScheme.
+
+The ``id`` argument must be set to a unique, non-translated identifier for the color scheme.
+
+The ``name`` argument must be set to a translated, user-visible descriptive name of the scheme.
+%End
+
+
+    QString id() const;
+%Docstring
+Returns the ID of the color scheme, which is a unique, non-translated identifier for the scheme.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of the color scheme, which is the translated, user-visible name of the scheme.
+%End
+
+    QColor color( ColorRole role ) const;
+%Docstring
+Returns the color to use in the editor for the specified ``role``.
+
+.. seealso:: :py:func:`setColor`
+%End
+
+    void setColor( ColorRole role, const QColor &color );
+%Docstring
+Sets the ``color`` to use in the editor for the specified ``role``.
+
+.. seealso:: :py:func:`color`
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditorcolorscheme.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

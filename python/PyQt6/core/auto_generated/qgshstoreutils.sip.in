@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgshstoreutils.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+%ModuleHeaderCode
+#include "qgshstoreutils.h"
+%End
+
+namespace QgsHstoreUtils
+{
+
+  QVariantMap parse( const QString &string );
+%Docstring
+Returns a QVariantMap object containing the key and values from a hstore-formatted string.
+
+:param string: The hstored-formatted string
+
+.. versionadded:: 3.4
+%End
+
+  QString build( const QVariantMap &map );
+%Docstring
+Build a hstore-formatted string from a QVariantMap.
+
+:param map: The map to format as a string
+
+.. versionadded:: 3.4
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgshstoreutils.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

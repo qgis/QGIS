@@ -1,0 +1,142 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotrubberband.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPlotRubberBand : QObject
+{
+%Docstring(signature="appended")
+:py:class:`QgsPlotRubberBand` is an abstract base class for temporary rubber band items
+in various shapes, for use within :py:class:`QgsPlotCanvas` widgets.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplotrubberband.h"
+%End
+  public:
+
+    QgsPlotRubberBand( QgsPlotCanvas *canvas = 0 );
+%Docstring
+Constructor for QgsPlotRubberBand.
+%End
+
+    ~QgsPlotRubberBand();
+
+    virtual void start( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+%Docstring
+Called when a rubber band should be created at the specified
+starting ``position`` (in canvas coordinate space).
+%End
+
+    virtual void update( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+%Docstring
+Called when a rubber band should be updated to reflect a temporary
+ending ``position`` (in canvas coordinate space).
+%End
+
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() ) = 0;
+%Docstring
+Called when a rubber band use has finished and the rubber
+band is no longer required.
+Returns the final bounding box of the rubber band.
+%End
+
+    QgsPlotCanvas *canvas() const;
+%Docstring
+Returns the canvas associated with the rubber band.
+%End
+
+    QBrush brush() const;
+%Docstring
+Returns the brush used for drawing the rubber band.
+
+.. seealso:: :py:func:`setBrush`
+
+.. seealso:: :py:func:`pen`
+%End
+
+    void setBrush( const QBrush &brush );
+%Docstring
+Sets the ``brush`` used for drawing the rubber band.
+
+.. seealso:: :py:func:`brush`
+
+.. seealso:: :py:func:`setPen`
+%End
+
+    QPen pen() const;
+%Docstring
+Returns the pen used for drawing the rubber band.
+
+.. seealso:: :py:func:`setPen`
+
+.. seealso:: :py:func:`brush`
+%End
+
+    void setPen( const QPen &pen );
+%Docstring
+Sets the ``pen`` used for drawing the rubber band.
+
+.. seealso:: :py:func:`pen`
+
+.. seealso:: :py:func:`setBrush`
+%End
+
+  protected:
+
+    QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
+%Docstring
+Calculates an updated bounding box rectangle from a original ``start`` position
+and new ``position``. If ``constrainSquare`` is ``True`` then the bounding box will be
+forced to a square shape. If ``fromCenter`` is ``True`` then the original ``start``
+position will form the center point of the returned rectangle.
+%End
+
+};
+
+class QgsPlotRectangularRubberBand : QgsPlotRubberBand
+{
+%Docstring(signature="appended")
+:py:class:`QgsPlotRectangularRubberBand` is rectangular rubber band for use within :py:class:`QgsPlotCanvas` widgets.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplotrubberband.h"
+%End
+  public:
+
+    QgsPlotRectangularRubberBand( QgsPlotCanvas *canvas = 0 );
+%Docstring
+Constructor for QgsPlotRectangularRubberBand.
+%End
+
+    ~QgsPlotRectangularRubberBand();
+
+    virtual void start( QPointF position, Qt::KeyboardModifiers modifiers );
+
+    virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
+
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotrubberband.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

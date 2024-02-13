@@ -1,0 +1,194 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgssymbollayerregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSymbolLayerWidget /External/;
+
+class QgsSymbolLayerAbstractMetadata
+{
+%Docstring(signature="appended")
+Stores metadata about one symbol layer class.
+
+.. note::
+
+   It's necessary to implement :py:func:`~createSymbolLayer` function.
+   In C++ you can use :py:class:`QgsSymbolLayerMetadata` convenience class.
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerregistry.h"
+%End
+  public:
+
+    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type );
+%Docstring
+Constructor for QgsSymbolLayerAbstractMetadata.
+
+:param name: internal symbol layer name (unique identifier)
+:param visibleName: user visible, translated name for symbol layer
+:param type: associated symbol type
+%End
+
+    virtual ~QgsSymbolLayerAbstractMetadata();
+
+    QString name() const;
+    QString visibleName() const;
+    Qgis::SymbolType type() const;
+
+    virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) = 0 /Factory/;
+%Docstring
+Create a symbol layer of this type given the map of properties.
+%End
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) /Factory/;
+%Docstring
+Create widget for symbol layer of this type. Can return ``None`` if there's no GUI
+%End
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) /Factory/;
+%Docstring
+Create a symbol layer of this type given the map of properties.
+%End
+
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+%Docstring
+Resolve paths in symbol layer's properties (if there are any paths).
+When saving is ``True``, paths are converted from absolute to relative,
+when saving is ``False``, paths are converted from relative to absolute.
+This ensures that paths in project files can be relative, but in symbol layer
+instances the paths are always absolute
+
+.. versionadded:: 3.0
+%End
+
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+%Docstring
+Resolve fonts from the  symbol layer's ``properties``.
+
+This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
+warnings in the ``context`` if not.
+
+.. versionadded:: 3.20
+%End
+
+  protected:
+};
+
+
+class QgsSymbolLayerMetadata : QgsSymbolLayerAbstractMetadata
+{
+%Docstring(signature="appended")
+Convenience metadata class that uses static functions to create symbol layer and its widget.
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerregistry.h"
+%End
+  public:
+
+
+
+    virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) /Factory/;
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) /Factory/;
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+
+  protected:
+
+
+  private:
+    QgsSymbolLayerMetadata();
+};
+
+
+class QgsSymbolLayerRegistry
+{
+%Docstring(signature="appended")
+Registry of available symbol layer classes.
+
+:py:class:`QgsSymbolLayerRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.symbolLayerRegistry()`.
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerregistry.h"
+%End
+  public:
+
+    QgsSymbolLayerRegistry();
+    ~QgsSymbolLayerRegistry();
+
+
+    QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
+%Docstring
+Returns metadata for specified symbol layer. Returns ``None`` if not found
+%End
+
+    bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new symbol layer type. Takes ownership of the metadata instance.
+%End
+
+    bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
+%Docstring
+Removes a symbol layer type
+
+.. versionadded:: 3.22.2
+%End
+
+    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;
+%Docstring
+create a new instance of symbol layer given symbol layer name and properties
+%End
+
+    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const /Factory/;
+%Docstring
+create a new instance of symbol layer given symbol layer name and SLD
+%End
+
+    void resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
+%Docstring
+Resolve paths in properties of a particular symbol layer.
+This normally means converting relative paths to absolute paths when loading
+and converting absolute paths to relative paths when saving.
+
+.. versionadded:: 3.0
+%End
+
+    void resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const;
+%Docstring
+Resolve fonts from the ``properties`` of a particular symbol layer.
+
+This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
+warnings in the ``context`` if not.
+
+.. versionadded:: 3.20
+%End
+
+    QStringList symbolLayersForType( Qgis::SymbolType type );
+%Docstring
+Returns a list of available symbol layers for a specified symbol type
+%End
+
+    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) /Factory/;
+%Docstring
+create a new instance of symbol layer for specified symbol type with default settings
+%End
+
+  private:
+    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgssymbollayerregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

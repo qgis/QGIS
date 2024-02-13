@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/core/project/qgsprojectservervalidator.h
+QgsProjectServerValidator.DuplicatedNames = QgsProjectServerValidator.ValidationError.DuplicatedNames
+QgsProjectServerValidator.LayerShortName = QgsProjectServerValidator.ValidationError.LayerShortName
+QgsProjectServerValidator.LayerEncoding = QgsProjectServerValidator.ValidationError.LayerEncoding
+QgsProjectServerValidator.ProjectShortName = QgsProjectServerValidator.ValidationError.ProjectShortName
+QgsProjectServerValidator.ProjectRootNameConflict = QgsProjectServerValidator.ValidationError.ProjectRootNameConflict

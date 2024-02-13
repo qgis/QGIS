@@ -1,0 +1,22 @@
+# The following has been generated automatically from src/core/auth/qgsauthcertutils.h
+QgsAuthCertUtils.SystemRoot = QgsAuthCertUtils.CaCertSource.SystemRoot
+QgsAuthCertUtils.FromFile = QgsAuthCertUtils.CaCertSource.FromFile
+QgsAuthCertUtils.InDatabase = QgsAuthCertUtils.CaCertSource.InDatabase
+QgsAuthCertUtils.Connection = QgsAuthCertUtils.CaCertSource.Connection
+QgsAuthCertUtils.DefaultTrust = QgsAuthCertUtils.CertTrustPolicy.DefaultTrust
+QgsAuthCertUtils.Trusted = QgsAuthCertUtils.CertTrustPolicy.Trusted
+QgsAuthCertUtils.Untrusted = QgsAuthCertUtils.CertTrustPolicy.Untrusted
+QgsAuthCertUtils.NoPolicy = QgsAuthCertUtils.CertTrustPolicy.NoPolicy
+QgsAuthCertUtils.UndeterminedUsage = QgsAuthCertUtils.CertUsageType.UndeterminedUsage
+QgsAuthCertUtils.AnyOrUnspecifiedUsage = QgsAuthCertUtils.CertUsageType.AnyOrUnspecifiedUsage
+QgsAuthCertUtils.CertAuthorityUsage = QgsAuthCertUtils.CertUsageType.CertAuthorityUsage
+QgsAuthCertUtils.CertIssuerUsage = QgsAuthCertUtils.CertUsageType.CertIssuerUsage
+QgsAuthCertUtils.TlsServerUsage = QgsAuthCertUtils.CertUsageType.TlsServerUsage
+QgsAuthCertUtils.TlsServerEvUsage = QgsAuthCertUtils.CertUsageType.TlsServerEvUsage
+QgsAuthCertUtils.TlsClientUsage = QgsAuthCertUtils.CertUsageType.TlsClientUsage
+QgsAuthCertUtils.CodeSigningUsage = QgsAuthCertUtils.CertUsageType.CodeSigningUsage
+QgsAuthCertUtils.EmailProtectionUsage = QgsAuthCertUtils.CertUsageType.EmailProtectionUsage
+QgsAuthCertUtils.TimeStampingUsage = QgsAuthCertUtils.CertUsageType.TimeStampingUsage
+QgsAuthCertUtils.CRLSigningUsage = QgsAuthCertUtils.CertUsageType.CRLSigningUsage
+QgsAuthCertUtils.KeyUsage = QgsAuthCertUtils.ConstraintGroup.KeyUsage
+QgsAuthCertUtils.ExtendedKeyUsage = QgsAuthCertUtils.ConstraintGroup.ExtendedKeyUsage

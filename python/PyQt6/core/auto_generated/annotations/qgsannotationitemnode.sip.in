@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitemnode.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAnnotationItemNode
+{
+%Docstring(signature="appended")
+Contains information about a node used for editing an annotation item.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitemnode.h"
+%End
+  public:
+
+    QgsAnnotationItemNode();
+%Docstring
+Default constructor
+%End
+
+    QgsAnnotationItemNode( const QgsVertexId &id, const QgsPointXY &point, Qgis::AnnotationItemNodeType type );
+%Docstring
+Constructor for QgsAnnotationItemNode, with the specified ``id``, ``point`` and ``type``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
+                  .arg( qgsEnumValueToKey( sipCpp->type() ) )
+                  .arg( sipCpp->point().x() )
+                  .arg( sipCpp->point().y() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QgsVertexId id() const;
+%Docstring
+Returns the ID number of the node, used for uniquely identifying the node in the item.
+%End
+
+    QgsPointXY point() const;
+%Docstring
+Returns the node's position, in geographic coordinates.
+
+The coordinates will match the annotation item's CRS.
+
+.. seealso:: :py:func:`setPoint`
+%End
+
+    void setPoint( QgsPointXY point );
+%Docstring
+Sets the node's position, in geographic coordinates.
+
+The coordinates will match the annotation item's CRS.
+
+.. seealso:: :py:func:`point`
+%End
+
+    Qgis::AnnotationItemNodeType type() const;
+%Docstring
+Returns the node type.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( Qgis::AnnotationItemNodeType type );
+%Docstring
+Sets the node type.
+
+.. seealso:: :py:func:`type`
+%End
+
+    bool operator==( const QgsAnnotationItemNode &other ) const;
+
+    bool operator!=( const QgsAnnotationItemNode &other ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitemnode.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,227 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingAlgorithmInformation
+{
+%Docstring(signature="appended")
+Contains basic properties for a Processing algorithm.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingregistry.h"
+%End
+  public:
+
+    QString displayName;
+
+    QIcon icon;
+};
+
+
+class QgsProcessingRegistry : QObject
+{
+%Docstring(signature="appended")
+Registry for various processing components, including providers, algorithms
+and various parameters and outputs.
+
+:py:class:`QgsProcessingRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.processingRegistry()`.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingregistry.h"
+%End
+  public:
+
+    QgsProcessingRegistry( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingRegistry.
+%End
+
+    ~QgsProcessingRegistry();
+
+
+    QList<QgsProcessingProvider *> providers() const;
+%Docstring
+Gets list of available providers.
+%End
+
+    bool addProvider( QgsProcessingProvider *provider /Transfer/ );
+%Docstring
+Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
+and the provider's parent will be set to the registry.
+Returns ``False`` if the provider could not be added (eg if a provider with a duplicate ID already exists
+in the registry).
+Adding a provider to the registry automatically triggers the providers :py:func:`QgsProcessingProvider.load()`
+method to populate the provider with algorithms.
+
+.. seealso:: :py:func:`removeProvider`
+%End
+
+    bool removeProvider( QgsProcessingProvider *provider );
+%Docstring
+Removes a provider implementation from the registry (the provider object is deleted).
+Returns ``False`` if the provider could not be removed (eg provider does not exist in the registry).
+
+.. seealso:: :py:func:`addProvider`
+%End
+
+    bool removeProvider( const QString &providerId );
+%Docstring
+Removes a provider implementation from the registry (the provider object is deleted).
+Returns ``False`` if the provider could not be removed (eg provider does not exist in the registry).
+
+.. seealso:: :py:func:`addProvider`
+%End
+
+    QgsProcessingProvider *providerById( const QString &id ) const /HoldGIL/;
+%Docstring
+Returns a matching provider by provider ID.
+%End
+
+    QList< const QgsProcessingAlgorithm *> algorithms() const;
+%Docstring
+Returns a list of all available algorithms from registered providers.
+
+.. seealso:: :py:func:`algorithmById`
+%End
+
+    QgsProcessingAlgorithmInformation algorithmInformation( const QString &id ) const;
+%Docstring
+Returns basic algorithm information for the algorithm with matching ID.
+
+This method uses an internal cache to ensure that information is quickly
+returned and is suitable for calling many times.
+
+.. versionadded:: 3.32
+%End
+
+    const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
+%Docstring
+Finds an algorithm by its ID. If no matching algorithm is found, ``None``
+is returned.
+
+.. seealso:: :py:func:`algorithms`
+
+.. seealso:: :py:func:`createAlgorithmById`
+%End
+
+
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
+%Docstring
+Creates a new instance of an algorithm by its ID. If no matching algorithm is found, ``None``
+is returned. Callers take responsibility for deleting the returned object.
+
+The ``configuration`` argument allows passing of a map of configuration settings
+to the algorithm, allowing it to dynamically adjust its initialized parameters
+and outputs according to this configuration. This is generally used only for
+algorithms in a model, allowing them to adjust their behavior at run time
+according to some user configuration.
+
+.. seealso:: :py:func:`algorithms`
+
+.. seealso:: :py:func:`algorithmById`
+%End
+
+    void addAlgorithmAlias( const QString &aliasId, const QString &actualId );
+%Docstring
+Adds a new alias to an existing algorithm.
+
+This allows algorithms to be referred to by a different provider ID and algorithm name to their actual underlying provider and algorithm name.
+It provides a mechanism to allow algorithms to be moved between providers without breaking existing scripts or plugins.
+
+The ``aliasId`` argument specifies the "fake" algorithm id (eg "fake_provider:fake_alg") by which the algorithm can
+be referred to, and the ``actualId`` argument specifies the real algorithm ID for the algorithm.
+
+.. versionadded:: 3.10
+%End
+
+    bool addParameterType( QgsProcessingParameterType *type /Transfer/ );
+%Docstring
+Register a new parameter type for processing.
+Ownership is transferred to the registry.
+Will emit parameterTypeAdded.
+
+.. seealso:: :py:func:`removeParameterType`
+
+.. versionadded:: 3.2
+%End
+
+    void removeParameterType( QgsProcessingParameterType *type );
+%Docstring
+Unregister a custom parameter type from processing.
+The type will be deleted.
+Will emit parameterTypeRemoved.
+
+.. seealso:: :py:func:`addParameterType`
+
+.. versionadded:: 3.2
+%End
+
+    QgsProcessingParameterType *parameterType( const QString &id ) const;
+%Docstring
+Returns the parameter type registered for ``id``.
+
+.. versionadded:: 3.2
+%End
+
+    QList<QgsProcessingParameterType *> parameterTypes() const;
+%Docstring
+Returns a list with all known parameter types.
+
+.. versionadded:: 3.2
+%End
+
+  signals:
+
+    void providerAdded( const QString &id );
+%Docstring
+Emitted when a provider has been added to the registry.
+%End
+
+    void providerRemoved( const QString &id );
+%Docstring
+Emitted when a provider is removed from the registry
+%End
+
+    void parameterTypeAdded( QgsProcessingParameterType *type );
+%Docstring
+Emitted when a new parameter type has been added to the registry.
+
+.. versionadded:: 3.2
+%End
+
+    void parameterTypeRemoved( QgsProcessingParameterType *type );
+%Docstring
+Emitted when a parameter type has been removed from the
+registry and is about to be deleted.
+
+.. versionadded:: 3.2
+%End
+
+  private:
+    QgsProcessingRegistry( const QgsProcessingRegistry &other );
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

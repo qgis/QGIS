@@ -1,0 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandgrayrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSingleBandGrayRenderer: QgsRasterRenderer
+{
+%Docstring(signature="appended")
+Raster renderer pipe for single band gray.
+%End
+
+%TypeHeaderCode
+#include "qgssinglebandgrayrenderer.h"
+%End
+  public:
+    enum Gradient
+    {
+      BlackToWhite,
+      WhiteToBlack
+    };
+
+    QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand );
+
+
+    virtual QgsSingleBandGrayRenderer *clone() const /Factory/;
+
+%Docstring
+QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRenderer.clone` instead.
+%End
+    virtual Qgis::RasterRendererFlags flags() const;
+
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    int grayBand() const;
+    void setGrayBand( int band );
+    const QgsContrastEnhancement *contrastEnhancement() const;
+    void setContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Takes ownership
+%End
+
+    void setGradient( Gradient gradient );
+    Gradient gradient() const;
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+    virtual QList<int> usesBands() const;
+
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+
+
+    const QgsColorRampLegendNodeSettings *legendSettings() const;
+%Docstring
+Returns the color ramp shader legend settings.
+
+.. seealso:: :py:func:`setLegendSettings`
+
+.. versionadded:: 3.18
+%End
+
+    void setLegendSettings( QgsColorRampLegendNodeSettings *settings /Transfer/ );
+%Docstring
+Sets the color ramp shader legend ``settings``.
+
+Ownership of ``settings`` is transferred.
+
+.. seealso:: :py:func:`legendSettings`
+
+.. versionadded:: 3.18
+%End
+
+  private:
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
+    const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandgrayrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

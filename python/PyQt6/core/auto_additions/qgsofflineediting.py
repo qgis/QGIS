@@ -1,0 +1,10 @@
+# The following has been generated automatically from src/core/qgsofflineediting.h
+QgsOfflineEditing.CopyFeatures = QgsOfflineEditing.ProgressMode.CopyFeatures
+QgsOfflineEditing.ProcessFeatures = QgsOfflineEditing.ProgressMode.ProcessFeatures
+QgsOfflineEditing.AddFields = QgsOfflineEditing.ProgressMode.AddFields
+QgsOfflineEditing.AddFeatures = QgsOfflineEditing.ProgressMode.AddFeatures
+QgsOfflineEditing.RemoveFeatures = QgsOfflineEditing.ProgressMode.RemoveFeatures
+QgsOfflineEditing.UpdateFeatures = QgsOfflineEditing.ProgressMode.UpdateFeatures
+QgsOfflineEditing.UpdateGeometries = QgsOfflineEditing.ProgressMode.UpdateGeometries
+QgsOfflineEditing.SpatiaLite = QgsOfflineEditing.ContainerType.SpatiaLite
+QgsOfflineEditing.GPKG = QgsOfflineEditing.ContainerType.GPKG

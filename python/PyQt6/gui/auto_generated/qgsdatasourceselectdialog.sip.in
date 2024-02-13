@@ -1,0 +1,218 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatasourceselectdialog.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDataSourceSelectWidget: QgsPanelWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
+select an existing data source.
+
+By default any layer type can be chosen, the valid layer
+type can be restricted by setting a layer type filter with
+setLayerTypeFilter(layerType) or by activating the filter
+directly from the constructor.
+
+To retrieve the selected data source, :py:func:`~uri` can be called and it
+will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdatasourceselectdialog.h"
+%End
+  public:
+
+    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0,
+                               bool setFilterByLayerType = false,
+                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
+                               QWidget *parent = 0 );
+%Docstring
+Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
+
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
+:param setFilterByLayerType: activates filtering by layer type
+:param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
+:param parent: the object
+%End
+
+
+    ~QgsDataSourceSelectWidget();
+
+    void setLayerTypeFilter( Qgis::LayerType layerType );
+%Docstring
+Sets layer type filter to ``layerType`` and activates the filtering
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a description label
+
+:param description: a description string
+
+.. note::
+
+   the description will be displayed at the bottom of the dialog
+
+.. versionadded:: 3.8
+%End
+
+    void expandPath( const QString &path );
+%Docstring
+Expands out a file ``path`` in the view.
+
+The ``path`` must correspond to a valid directory existing on the file system.
+
+.. versionadded:: 3.28
+%End
+
+    QgsMimeDataUtils::Uri uri() const;
+%Docstring
+Returns the (possibly invalid) uri of the selected data source
+%End
+
+    void showFilterWidget( bool visible );
+%Docstring
+Show/hide filter widget
+%End
+    void setFilterSyntax( QAction * );
+%Docstring
+Sets filter syntax
+%End
+    void setCaseSensitive( bool caseSensitive );
+%Docstring
+Sets filter case sensitivity
+%End
+    void setFilter();
+%Docstring
+Apply filter to the model
+%End
+    virtual void showEvent( QShowEvent *e );
+
+%Docstring
+Scroll to last selected index and expand it's children
+%End
+
+  signals:
+
+    void validationChanged( bool isValid );
+%Docstring
+This signal is emitted whenever the validation status of the widget changes.
+
+:param isValid: ``True`` if the current status of the widget is valid
+%End
+
+    void selectionChanged();
+%Docstring
+Emitted when the current selection changes in the widget.
+%End
+
+    void itemTriggered( const QgsMimeDataUtils::Uri &uri );
+%Docstring
+Emitted when an item is triggered, e.g. via a double-click.
+%End
+
+};
+
+
+class QgsDataSourceSelectDialog: QDialog
+{
+%Docstring(signature="appended")
+The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
+select an existing data source.
+
+By default any layer type can be chosen, the valid layer
+type can be restricted by setting a layer type filter with
+setLayerTypeFilter(layerType) or by activating the filter
+directly from the constructor.
+
+To retrieve the selected data source, :py:func:`~QgsDataSourceSelectWidget.uri` can be called and it
+will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdatasourceselectdialog.h"
+%End
+  public:
+
+    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0,
+                               bool setFilterByLayerType = false,
+                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
+                               QWidget *parent = 0 );
+%Docstring
+Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
+
+:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
+:param setFilterByLayerType: activates filtering by layer type
+:param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
+:param parent: the object
+%End
+
+    void setLayerTypeFilter( Qgis::LayerType layerType );
+%Docstring
+Sets layer type filter to ``layerType`` and activates the filtering
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a description label
+
+:param description: a description string
+
+.. note::
+
+   the description will be displayed at the bottom of the dialog
+
+.. versionadded:: 3.8
+%End
+
+    void expandPath( const QString &path );
+%Docstring
+Expands out a file ``path`` in the view.
+
+The ``path`` must correspond to a valid directory existing on the file system.
+
+.. versionadded:: 3.28
+%End
+
+    QgsMimeDataUtils::Uri uri() const;
+%Docstring
+Returns the (possibly invalid) uri of the selected data source
+%End
+
+    void showFilterWidget( bool visible );
+%Docstring
+Show/hide filter widget
+%End
+    void setFilterSyntax( QAction * );
+%Docstring
+Sets filter syntax
+%End
+    void setCaseSensitive( bool caseSensitive );
+%Docstring
+Sets filter case sensitivity
+%End
+    void setFilter();
+%Docstring
+Apply filter to the model
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatasourceselectdialog.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

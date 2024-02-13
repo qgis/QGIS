@@ -1,0 +1,10 @@
+# The following has been generated automatically from src/core/pointcloud/qgspointclouddataprovider.h
+QgsPointCloudDataProvider.NoCapabilities = QgsPointCloudDataProvider.Capability.NoCapabilities
+QgsPointCloudDataProvider.ReadLayerMetadata = QgsPointCloudDataProvider.Capability.ReadLayerMetadata
+QgsPointCloudDataProvider.WriteLayerMetadata = QgsPointCloudDataProvider.Capability.WriteLayerMetadata
+QgsPointCloudDataProvider.CreateRenderer = QgsPointCloudDataProvider.Capability.CreateRenderer
+QgsPointCloudDataProvider.ContainSubIndexes = QgsPointCloudDataProvider.Capability.ContainSubIndexes
+QgsPointCloudDataProvider.Capabilities = lambda flags=0: QgsPointCloudDataProvider.Capability(flags)
+QgsPointCloudDataProvider.NotIndexed = QgsPointCloudDataProvider.PointCloudIndexGenerationState.NotIndexed
+QgsPointCloudDataProvider.Indexing = QgsPointCloudDataProvider.PointCloudIndexGenerationState.Indexing
+QgsPointCloudDataProvider.Indexed = QgsPointCloudDataProvider.PointCloudIndexGenerationState.Indexed

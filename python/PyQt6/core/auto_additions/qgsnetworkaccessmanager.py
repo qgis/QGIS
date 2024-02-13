@@ -1,0 +1,3 @@
+# The following has been generated automatically from src/core/network/qgsnetworkaccessmanager.h
+QgsNetworkRequestParameters.AttributeInitiatorClass = QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass
+QgsNetworkRequestParameters.AttributeInitiatorRequestId = QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorRequestId

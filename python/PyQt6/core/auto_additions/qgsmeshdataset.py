@@ -1,0 +1,12 @@
+# The following has been generated automatically from src/core/mesh/qgsmeshdataset.h
+QgsMeshDataBlock.ActiveFlagInteger = QgsMeshDataBlock.DataType.ActiveFlagInteger
+QgsMeshDataBlock.ScalarDouble = QgsMeshDataBlock.DataType.ScalarDouble
+QgsMeshDataBlock.Vector2DDouble = QgsMeshDataBlock.DataType.Vector2DDouble
+QgsMeshDatasetGroupMetadata.DataOnFaces = QgsMeshDatasetGroupMetadata.DataType.DataOnFaces
+QgsMeshDatasetGroupMetadata.DataOnVertices = QgsMeshDatasetGroupMetadata.DataType.DataOnVertices
+QgsMeshDatasetGroupMetadata.DataOnVolumes = QgsMeshDatasetGroupMetadata.DataType.DataOnVolumes
+QgsMeshDatasetGroupMetadata.DataOnEdges = QgsMeshDatasetGroupMetadata.DataType.DataOnEdges
+QgsMeshDatasetGroup.None_ = QgsMeshDatasetGroup.Type.None_
+QgsMeshDatasetGroup.Persistent = QgsMeshDatasetGroup.Type.Persistent
+QgsMeshDatasetGroup.Memory = QgsMeshDatasetGroup.Type.Memory
+QgsMeshDatasetGroup.Virtual = QgsMeshDatasetGroup.Type.Virtual

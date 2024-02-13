@@ -1,0 +1,4 @@
+# The following has been generated automatically from src/core/proj/qgscoordinatereferencesystem.h
+QgsCoordinateReferenceSystem.InternalCrsId = QgsCoordinateReferenceSystem.CrsType.InternalCrsId
+QgsCoordinateReferenceSystem.PostgisCrsId = QgsCoordinateReferenceSystem.CrsType.PostgisCrsId
+QgsCoordinateReferenceSystem.EpsgCrsId = QgsCoordinateReferenceSystem.CrsType.EpsgCrsId
