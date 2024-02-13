@@ -1,0 +1,316 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsterrainprovider.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstractTerrainProvider
+{
+%Docstring(signature="appended")
+Abstract base class for terrain providers
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsterrainprovider.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type().compare( QLatin1String( "flat" ) ) == 0 )
+    {
+      sipType = sipType_QgsFlatTerrainProvider;
+    }
+    else if ( sipCpp->type().compare( QLatin1String( "raster" ) ) == 0 )
+    {
+      sipType = sipType_QgsRasterDemTerrainProvider;
+    }
+    else if ( sipCpp->type().compare( QLatin1String( "mesh" ) ) == 0 )
+    {
+      sipType = sipType_QgsMeshTerrainProvider;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    virtual ~QgsAbstractTerrainProvider();
+
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const = 0;
+%Docstring
+Returns ``True`` if the provider is equal to ``other``.
+%End
+
+    virtual void resolveReferences( const QgsProject *project );
+%Docstring
+Resolves reference to layers from stored layer ID (if it has not been resolved already)
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads the terrain provider state from a DOM ``element``.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Returns a DOM element representing the state of the terrain provider.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique type ID string for the provider.
+%End
+
+    virtual QgsAbstractTerrainProvider *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the provider and returns the new object.
+
+Ownership is transferred to the caller.
+%End
+
+    virtual void prepare() = 0 /Factory/;
+%Docstring
+Called on the main thread prior to accessing the provider from a background thread.
+
+Subclasses must implement suitable logic in order to prepare for thread-safe calculation of
+terrain heights on background threads.
+%End
+
+    virtual QgsCoordinateReferenceSystem crs() const = 0;
+%Docstring
+Returns the native coordinate reference system of the terrain provider.
+%End
+
+    virtual double heightAt( double x, double y ) const = 0;
+%Docstring
+Returns the height at the point (x,y) in the terrain provider's native :py:func:`~QgsAbstractTerrainProvider.crs`.
+
+Returns NaN if the height could not be obtained at the specified point.
+%End
+
+    double scale() const;
+%Docstring
+Returns the vertical scale factor, which can be used to exaggerate vertical heights.
+
+.. seealso:: :py:func:`setScale`
+
+.. seealso:: :py:func:`offset`
+%End
+
+    void setScale( double scale );
+%Docstring
+Sets the vertical ``scale`` factor, which can be used to exaggerate vertical heights.
+
+.. seealso:: :py:func:`scale`
+
+.. seealso:: :py:func:`setOffset`
+%End
+
+    double offset() const;
+%Docstring
+Returns the vertical offset value, used for adjusting the heights from the terrain provider.
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`scale`
+%End
+
+    void setOffset( double offset );
+%Docstring
+Returns the vertical ``offset`` value, used for adjusting the heights from the terrain provider
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setScale`
+%End
+
+  protected:
+
+    QgsAbstractTerrainProvider();
+%Docstring
+Constructor for QgsAbstractTerrainProvider.
+%End
+
+
+    void writeCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes common properties to a DOM ``element``.
+%End
+
+    void readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads common properties from a DOM ``element``.
+%End
+
+
+
+  private:
+    QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other );
+};
+
+
+class QgsFlatTerrainProvider : QgsAbstractTerrainProvider
+{
+%Docstring(signature="appended")
+A terrain provider where the terrain is a simple flat surface.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsterrainprovider.h"
+%End
+  public:
+
+    QgsFlatTerrainProvider();
+%Docstring
+Constructor for QgsFlatTerrainProvider.
+%End
+
+    virtual QString type() const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QgsCoordinateReferenceSystem crs() const;
+
+    virtual double heightAt( double x, double y ) const;
+
+    virtual QgsFlatTerrainProvider *clone() const /Factory/;
+
+    virtual void prepare();
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+};
+
+class QgsRasterDemTerrainProvider : QgsAbstractTerrainProvider
+{
+%Docstring(signature="appended")
+A terrain provider where the terrain source is a raster DEM layer.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsterrainprovider.h"
+%End
+  public:
+
+    QgsRasterDemTerrainProvider();
+%Docstring
+Constructor for QgsRasterDemTerrainProvider.
+%End
+
+
+    virtual QString type() const;
+
+    virtual void resolveReferences( const QgsProject *project );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QgsCoordinateReferenceSystem crs() const;
+
+    virtual double heightAt( double x, double y ) const;
+
+    virtual QgsRasterDemTerrainProvider *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+    virtual void prepare();
+
+
+    void setLayer( QgsRasterLayer *layer );
+%Docstring
+Sets the raster ``layer`` with elevation model to be used as the terrain source.
+
+.. seealso:: :py:func:`layer`
+%End
+
+    QgsRasterLayer *layer() const;
+%Docstring
+Returns the raster layer with elevation model to be used as the terrain source.
+
+.. seealso:: :py:func:`layer`
+%End
+
+
+};
+
+
+class QgsMeshTerrainProvider : QgsAbstractTerrainProvider
+{
+%Docstring(signature="appended")
+A terrain provider that uses the Z values of a mesh layer to build a terrain surface.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsterrainprovider.h"
+%End
+  public:
+
+    QgsMeshTerrainProvider();
+%Docstring
+Constructor for QgsMeshTerrainProvider.
+%End
+
+
+    virtual QString type() const;
+
+    virtual void resolveReferences( const QgsProject *project );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QgsCoordinateReferenceSystem crs() const;
+
+    virtual double heightAt( double x, double y ) const;
+
+    virtual QgsMeshTerrainProvider *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+    virtual void prepare();
+
+
+    void setLayer( QgsMeshLayer *layer );
+%Docstring
+Sets the mesh ``layer`` to be used as the terrain source.
+
+.. seealso:: :py:func:`layer`
+%End
+
+    QgsMeshLayer *layer() const;
+%Docstring
+Returns the mesh layer to be used as the terrain source.
+
+.. seealso:: :py:func:`layer`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsterrainprovider.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

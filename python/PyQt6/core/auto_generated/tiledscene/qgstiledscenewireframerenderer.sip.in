@@ -1,0 +1,124 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenewireframerenderer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTiledSceneWireframeRenderer : QgsTiledSceneRenderer
+{
+%Docstring(signature="appended")
+Renders tiled scene layers using the raw primitive wireframes.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgstiledscenewireframerenderer.h"
+%End
+  public:
+
+    QgsTiledSceneWireframeRenderer();
+%Docstring
+Constructor for QgsTiledSceneWireframeRenderer.
+%End
+    ~QgsTiledSceneWireframeRenderer();
+
+    virtual QString type() const;
+
+    virtual QgsTiledSceneRenderer *clone() const;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle );
+
+    virtual void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line );
+
+    virtual void startRender( QgsTiledSceneRenderContext &context );
+
+    virtual void stopRender( QgsTiledSceneRenderContext &context );
+
+    virtual Qgis::TiledSceneRendererFlags flags() const;
+
+
+    static QgsTiledSceneRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a textured renderer from an XML ``element``.
+%End
+
+    static QgsFillSymbol *createDefaultFillSymbol() /Factory/;
+%Docstring
+Returns a copy of the default fill symbol used to render triangles in the wireframe.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the fill symbol used to render triangles in the wireframe.
+
+.. seealso:: :py:func:`setFillSymbol`
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render triangles in the wireframe.
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`fillSymbol`
+%End
+
+    static QgsLineSymbol *createDefaultLineSymbol() /Factory/;
+%Docstring
+Returns a copy of the default line symbol used to render lines in the wireframe.
+
+.. seealso:: :py:func:`setLineSymbol`
+%End
+
+    QgsLineSymbol *lineSymbol() const;
+%Docstring
+Returns the line symbol used to render lines in the wireframe.
+
+.. seealso:: :py:func:`setLineSymbol`
+%End
+
+    void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render lines in the wireframe.
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`lineSymbol`
+%End
+
+    bool useTextureColors() const;
+%Docstring
+Returns ``True`` if representative colors from the textures will be used to recolor
+the symbols used to render the wireframe.
+
+.. seealso:: :py:func:`setUseTextureColors`
+%End
+
+    void setUseTextureColors( bool enabled );
+%Docstring
+Sets whether representative colors from the textures should be used to recolor
+the symbols used to render the wireframe.
+
+.. seealso:: :py:func:`useTextureColors`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/tiledscene/qgstiledscenewireframerenderer.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

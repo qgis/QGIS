@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsscreenproperties.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsScreenProperties
+{
+%Docstring(signature="appended")
+Stores properties relating to a screen.
+
+This class is designed to be a publicly constructible, copyable store
+for the properties available from a QScreen object.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgsscreenproperties.h"
+%End
+  public:
+
+    QgsScreenProperties();
+%Docstring
+Constructor for invalid properties.
+%End
+
+    explicit QgsScreenProperties( const QScreen *screen );
+%Docstring
+Constructor for QgsScreenProperties, copying
+properties from the specified ``screen``.
+%End
+
+    bool operator==( const QgsScreenProperties &other ) const;
+
+    bool operator!=( const QgsScreenProperties &other ) const;
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the properties are valid.
+%End
+
+    double devicePixelRatio() const;
+%Docstring
+Returns the ratio between physical pixels and device-independent pixels for the screen.
+
+This property holds the screen's ratio between physical pixels and device-independent pixels.
+
+Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher values are also possible.
+
+.. seealso:: :py:func:`setDevicePixelRatio`
+%End
+
+    void setDevicePixelRatio( double ratio );
+%Docstring
+Sets the ``ratio`` between physical pixels and device-independent pixels for the screen.
+
+This property holds the screen's ratio between physical pixels and device-independent pixels.
+
+Common values are 1.0 on normal displays and 2.0 on "retina" displays. Higher values are also possible.
+
+.. seealso:: :py:func:`devicePixelRatio`
+%End
+
+    double physicalDpi() const;
+%Docstring
+This property holds the number of physical dots or pixels per inch.
+
+This value represents the pixel density on the screen's display.
+Depending on what information the underlying system provides the value might not be entirely accurate.
+
+.. note::
+
+   Physical DPI is expressed in device-independent dots. Multiply by :py:func:`~QgsScreenProperties.devicePixelRatio` to get
+   device-dependent density.
+
+.. seealso:: :py:func:`setPhysicalDpi`
+%End
+
+    void setPhysicalDpi( double dpi );
+%Docstring
+Sets number of physical dots or pixels per inch.
+
+This value represents the pixel density on the screen's display.
+Depending on what information the underlying system provides the value might not be entirely accurate.
+
+.. note::
+
+   Physical DPI is expressed in device-independent dots. Multiply by :py:func:`~QgsScreenProperties.devicePixelRatio` to get
+   device-dependent density.
+
+.. seealso:: :py:func:`physicalDpi`
+%End
+
+    void updateRenderContextForScreen( QgsRenderContext &context ) const;
+%Docstring
+Updates the settings in a render ``context``
+to match the screen settings.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsscreenproperties.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

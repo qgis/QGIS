@@ -1,0 +1,8 @@
+# The following has been generated automatically from src/core/qgspropertytransformer.h
+QgsPropertyTransformer.GenericNumericTransformer = QgsPropertyTransformer.Type.GenericNumericTransformer
+QgsPropertyTransformer.SizeScaleTransformer = QgsPropertyTransformer.Type.SizeScaleTransformer
+QgsPropertyTransformer.ColorRampTransformer = QgsPropertyTransformer.Type.ColorRampTransformer
+QgsSizeScaleTransformer.Linear = QgsSizeScaleTransformer.ScaleType.Linear
+QgsSizeScaleTransformer.Area = QgsSizeScaleTransformer.ScaleType.Area
+QgsSizeScaleTransformer.Flannery = QgsSizeScaleTransformer.ScaleType.Flannery
+QgsSizeScaleTransformer.Exponential = QgsSizeScaleTransformer.ScaleType.Exponential

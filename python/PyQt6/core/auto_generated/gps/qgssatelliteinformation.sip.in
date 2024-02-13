@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgssatelliteinformation.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSatelliteInfo
+{
+%Docstring(signature="appended")
+Encapsulates information relating to a GPS satellite.
+%End
+
+%TypeHeaderCode
+#include "qgssatelliteinformation.h"
+%End
+  public:
+
+    int id;
+
+    bool inUse;
+
+
+    double elevation;
+
+
+    double azimuth;
+
+    int signal;
+
+    QChar satType;
+
+    Qgis::GnssConstellation constellation() const;
+%Docstring
+Returns the GNSS constellation associated with the information.
+
+.. versionadded:: 3.30
+%End
+
+    bool operator==( const QgsSatelliteInfo &other ) const;
+
+    bool operator!=( const QgsSatelliteInfo &other ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgssatelliteinformation.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

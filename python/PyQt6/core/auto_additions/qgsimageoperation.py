@@ -1,0 +1,7 @@
+# The following has been generated automatically from src/core/effects/qgsimageoperation.h
+QgsImageOperation.GrayscaleLightness = QgsImageOperation.GrayscaleMode.GrayscaleLightness
+QgsImageOperation.GrayscaleLuminosity = QgsImageOperation.GrayscaleMode.GrayscaleLuminosity
+QgsImageOperation.GrayscaleAverage = QgsImageOperation.GrayscaleMode.GrayscaleAverage
+QgsImageOperation.GrayscaleOff = QgsImageOperation.GrayscaleMode.GrayscaleOff
+QgsImageOperation.FlipHorizontal = QgsImageOperation.FlipType.FlipHorizontal
+QgsImageOperation.FlipVertical = QgsImageOperation.FlipType.FlipVertical

@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsconnectionsitem.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsConnectionsRootItem : QgsDataCollectionItem
+{
+%Docstring(signature="appended")
+A Collection that represents a root group of connections from a single data provider
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsconnectionsitem.h"
+%End
+  public:
+
+    QgsConnectionsRootItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsConnectionsRootItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but :py:class:`QgsSchemaItem` items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+%End
+
+    ~QgsConnectionsRootItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsConnectionsRootItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsconnectionsitem.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

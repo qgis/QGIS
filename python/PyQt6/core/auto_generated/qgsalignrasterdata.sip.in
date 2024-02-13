@@ -1,0 +1,48 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsalignrasterdata.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAlignRasterData
+{
+%Docstring(signature="appended")
+The :py:class:`QgsAlignRasterData` class provides data structures and enums for align raster tool.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgsalignrasterdata.h"
+%End
+  public:
+
+    struct RasterItem
+    {
+      RasterItem( const QString &input, const QString &output );
+
+      virtual ~RasterItem();
+
+      QString inputFilename;
+      QString outputFilename;
+      Qgis::GdalResampleAlgorithm resampleMethod;
+      bool rescaleValues;
+
+
+      double srcCellSizeInDestCRS;
+    };
+    typedef QList<QgsAlignRasterData::RasterItem> RasterItemList;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsalignrasterdata.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

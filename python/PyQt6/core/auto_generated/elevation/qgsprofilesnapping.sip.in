@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilesnapping.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProfileSnapContext
+{
+%Docstring(signature="appended")
+Encapsulates the context of snapping a profile point.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilesnapping.h"
+%End
+  public:
+
+    double maximumSurfaceDistanceDelta;
+
+    double maximumSurfaceElevationDelta;
+
+    double maximumPointDistanceDelta;
+
+    double maximumPointElevationDelta;
+
+    double displayRatioElevationVsDistance;
+
+};
+
+class QgsProfileSnapResult
+{
+%Docstring(signature="appended")
+Encapsulates results of snapping a profile point.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilesnapping.h"
+%End
+  public:
+
+    QgsProfilePoint snappedPoint;
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the result is a valid point.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilesnapping.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

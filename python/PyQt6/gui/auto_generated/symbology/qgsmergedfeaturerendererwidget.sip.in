@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsmergedfeaturerendererwidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMergedFeatureRendererWidget : QgsRendererWidget
+{
+%Docstring(signature="appended")
+A widget used represent options of a :py:class:`QgsMergedFeatureRenderer`
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsmergedfeaturerendererwidget.h"
+%End
+  public:
+
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Static creation method
+
+:param layer: the layer where this renderer is applied
+:param style:
+:param renderer: the merged feature renderer (will not take ownership)
+%End
+
+    QgsMergedFeatureRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+%Docstring
+Constructor
+
+:param layer: the layer where this renderer is applied
+:param style:
+:param renderer: the merged feature renderer (will not take ownership)
+%End
+    ~QgsMergedFeatureRendererWidget();
+
+    virtual QgsFeatureRenderer *renderer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    virtual void setDockMode( bool dockMode );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsmergedfeaturerendererwidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

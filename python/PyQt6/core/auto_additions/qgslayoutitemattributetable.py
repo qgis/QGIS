@@ -1,0 +1,4 @@
+# The following has been generated automatically from src/core/layout/qgslayoutitemattributetable.h
+QgsLayoutItemAttributeTable.LayerAttributes = QgsLayoutItemAttributeTable.ContentSource.LayerAttributes
+QgsLayoutItemAttributeTable.AtlasFeature = QgsLayoutItemAttributeTable.ContentSource.AtlasFeature
+QgsLayoutItemAttributeTable.RelationChildren = QgsLayoutItemAttributeTable.ContentSource.RelationChildren

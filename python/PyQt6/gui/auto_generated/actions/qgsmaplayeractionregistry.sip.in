@@ -1,0 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeractionregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMapLayerActionRegistry : QObject
+{
+%Docstring(signature="appended")
+This class tracks map layer actions.
+
+:py:class:`QgsMapLayerActionRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsGui.mapLayerActionRegistry()`.
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayeractionregistry.h"
+%End
+  public:
+
+    QgsMapLayerActionRegistry( QObject *parent = 0 );
+%Docstring
+Constructor for QgsMapLayerActionRegistry.
+
+QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.mapLayerActionRegistry()`.
+%End
+
+    void addMapLayerAction( QgsMapLayerAction *action );
+%Docstring
+Adds a map layer action to the registry
+%End
+
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QgsMapLayerActionContext &context = QgsMapLayerActionContext() );
+%Docstring
+Returns the map layer actions which can run on the specified layer.
+
+The ``context`` argument was added in QGIS 3.30.
+%End
+
+    bool removeMapLayerAction( QgsMapLayerAction *action );
+%Docstring
+Removes a map layer action from the registry
+%End
+
+    void setDefaultActionForLayer( QgsMapLayer *layer, QgsMapLayerAction *action );
+%Docstring
+Sets the default action for a layer
+%End
+    QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
+%Docstring
+Returns the default action for a layer
+%End
+
+  protected:
+
+
+  signals:
+    void changed();
+%Docstring
+Triggered when an action is added or removed from the registry
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/actions/qgsmaplayeractionregistry.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

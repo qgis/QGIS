@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsembeddedsymbolrenderer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsEmbeddedSymbolRenderer : QgsFeatureRenderer
+{
+%Docstring(signature="appended")
+
+A vector feature renderer which uses embedded feature symbology to render per-feature
+symbols.
+
+This renderer can be used for vector layers with a data provider which supports the
+:py:class:`QgsVectorDataProvider`.FeatureSymbology capability, where the dataset has embedded information
+on how each feature should be rendered.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsembeddedsymbolrenderer.h"
+%End
+  public:
+
+    QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol /Transfer/ );
+%Docstring
+Constructor for QgsEmbeddedSymbolRenderer.
+
+The ``defaultSymbol`` will be used to render any feature without embedded symbology. Ownership
+of ``defaultSymbol`` is transferred to the renderer.
+%End
+    ~QgsEmbeddedSymbolRenderer();
+
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool usesEmbeddedSymbols() const;
+
+    virtual QgsEmbeddedSymbolRenderer *clone() const /Factory/;
+
+    virtual QgsFeatureRenderer::Capabilities capabilities();
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
+
+
+    QgsSymbol *defaultSymbol() const;
+%Docstring
+Returns the default symbol which will be rendered for any feature which does not have embedded symbology.
+
+.. seealso:: :py:func:`setDefaultSymbol`
+%End
+
+    void setDefaultSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the default ``symbol`` which will be rendered for any feature which does not have embedded symbology.
+
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`defaultSymbol`
+%End
+
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a new embedded symbol renderer from an XML ``element``, using the supplied read/write ``context``.
+
+The caller takes ownership of the returned renderer.
+%End
+
+    static QgsEmbeddedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Creates a QgsEmbeddedSymbolRenderer from an existing ``renderer``.
+
+:return: a new renderer if the conversion was possible, otherwise ``None``.
+%End
+
+  private:
+    QgsEmbeddedSymbolRenderer( const QgsEmbeddedSymbolRenderer & );
+    QgsEmbeddedSymbolRenderer &operator=( const QgsEmbeddedSymbolRenderer & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsembeddedsymbolrenderer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

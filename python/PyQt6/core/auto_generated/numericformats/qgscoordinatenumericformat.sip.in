@@ -1,0 +1,124 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgscoordinatenumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsGeographicCoordinateNumericFormat : QgsBasicNumericFormat
+{
+%Docstring(signature="appended")
+A numeric formatter which returns a text representation of a geographic coordinate (latitude or longitude).
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgscoordinatenumericformat.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum class AngleFormat
+    {
+      DegreesMinutesSeconds,
+      DegreesMinutes,
+      DecimalDegrees,
+    };
+
+    QgsGeographicCoordinateNumericFormat();
+%Docstring
+Default constructor
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey();
+
+    virtual double suggestSampleValue() const;
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsGeographicCoordinateNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
+
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+
+
+    AngleFormat angleFormat() const;
+%Docstring
+Returns the angle format, which controls how bearing the angles are formatted
+described in the returned strings.
+
+.. seealso:: :py:func:`setAngleFormat`
+%End
+
+    void setAngleFormat( AngleFormat format );
+%Docstring
+Sets the directional formatting option, which controls how bearing the angles are formatted
+described in the returned strings.
+
+.. seealso:: :py:func:`angleFormat`
+%End
+
+    bool showLeadingZeros() const;
+%Docstring
+Returns ``True`` if leading zeros in the minutes or seconds values should be shown.
+
+.. seealso:: :py:func:`setShowLeadingZeros`
+%End
+
+    void setShowLeadingZeros( bool show );
+%Docstring
+Sets whether leading zeros in the minutes or seconds values should be shown.
+
+.. seealso:: :py:func:`showLeadingZeros`
+%End
+
+    bool showDegreeLeadingZeros() const;
+%Docstring
+Returns ``True`` if leading zeros for the degree values should be shown.
+
+.. seealso:: :py:func:`setShowDegreeLeadingZeros`
+%End
+
+    void setShowDegreeLeadingZeros( bool show );
+%Docstring
+Sets whether leading zeros for the degree values should be shown.
+
+.. seealso:: :py:func:`showDegreeLeadingZeros`
+%End
+
+    bool showDirectionalSuffix() const;
+%Docstring
+Returns ``True`` if directional suffixes (e.g. "N") should be included.
+
+.. seealso:: :py:func:`setShowDirectionalSuffix`
+%End
+
+    void setShowDirectionalSuffix( bool show );
+%Docstring
+Sets whether directional suffixes (e.g. "N") should be included.
+
+.. seealso:: :py:func:`showDirectionalSuffix`
+%End
+
+    virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgscoordinatenumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

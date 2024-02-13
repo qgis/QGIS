@@ -1,0 +1,447 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsinterpolatedlinerenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsInterpolatedLineColor
+{
+%Docstring(signature="appended")
+
+Class defining color to render mesh datasets. The color can vary depending on the dataset value.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+
+    enum ColoringMethod
+    {
+      //! Render with a single color
+      SingleColor,
+      //! Render with a color ramp
+      ColorRamp
+    };
+
+    QgsInterpolatedLineColor();
+%Docstring
+Default constructor
+%End
+    QgsInterpolatedLineColor( const QgsColorRampShader &colorRampShader );
+%Docstring
+Constructor  with variable color depending on magnitude
+%End
+    QgsInterpolatedLineColor( const QColor &color );
+%Docstring
+Constructor  with fixed color
+%End
+
+    void setColor( const QgsColorRampShader &colorRampShader );
+%Docstring
+Sets the color ramp to define the coloring
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Sets the single color to define the coloring
+%End
+
+    QColor color( double magnitude ) const;
+%Docstring
+Returns the color corresponding to the magnitude
+%End
+
+    void setColoringMethod( ColoringMethod coloringMethod );
+%Docstring
+Sets the coloring method used
+
+.. versionadded:: 3.20
+%End
+
+    QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
+%Docstring
+Returns the coloring method used
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader
+%End
+
+    QColor singleColor() const;
+%Docstring
+Returns the single color that is used if SingleColor coloring mode is set
+
+.. versionadded:: 3.20
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+    void graduatedColors( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
+%Docstring
+Returns the break values, graduated colors and the associated gradients between two values
+
+- If the color is fixed or only one color for the interval (value1, value2), returns only one color in ``breakColors``
+  and void lists for  ``breakValues``, ``gradients``
+- If the color ramp is classified with 'exact', returns void ``gradients``
+- If the color ramp is classified with 'discrete', return ``gradients`` with uniform colors
+- if nothing to render (out of range), return all lists void
+%End
+
+};
+
+class QgsInterpolatedLineWidth
+{
+%Docstring(signature="appended")
+
+Represents a width than can vary depending on values
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+    double minimumValue() const;
+%Docstring
+Returns the minimum value used to defined the variable width
+%End
+    void setMinimumValue( double minimumValue );
+%Docstring
+Sets the minimum value used to defined the variable width
+%End
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value used to defined the variable width
+%End
+    void setMaximumValue( double maximumValue );
+%Docstring
+Sets the maximum value used to defined the variable width
+%End
+
+    double minimumWidth() const;
+%Docstring
+Returns the minimum width used to defined the variable width
+%End
+    void setMinimumWidth( double minimumWidth );
+%Docstring
+Sets the minimum width used to defined the variable width
+%End
+
+    double maximumWidth() const;
+%Docstring
+Returns the maximum width used to defined the variable width
+%End
+    void setMaximumWidth( double maximumWidth );
+%Docstring
+Sets the maximum width used to defined the variable width
+%End
+
+    bool ignoreOutOfRange() const;
+%Docstring
+Returns whether the variable width ignores out of range value
+%End
+    void setIgnoreOutOfRange( bool ignoreOutOfRange );
+%Docstring
+Sets whether the variable width ignores out of range value
+%End
+
+    bool useAbsoluteValue() const;
+%Docstring
+Returns whether absolute value are used as input
+%End
+    void setUseAbsoluteValue( bool useAbsoluteValue );
+%Docstring
+Sets whether absolute value are used as input
+%End
+
+    bool isVariableWidth() const;
+%Docstring
+Returns whether the width is variable
+%End
+    void setIsVariableWidth( bool isVariableWidth );
+%Docstring
+Returns whether the width is variable
+%End
+
+    double fixedStrokeWidth() const;
+%Docstring
+Returns the fixed width
+%End
+    void setFixedStrokeWidth( double fixedWidth );
+%Docstring
+Sets the fixed width
+%End
+
+    double strokeWidth( double value ) const;
+%Docstring
+Returns the variable width depending on value, if not varying returns the fixed width
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+class QgsInterpolatedLineRenderer
+{
+%Docstring(signature="appended")
+Represents a simple line renderer with width and color varying depending on values.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+
+    void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
+%Docstring
+Sets the stroke width used to render
+%End
+
+    QgsInterpolatedLineWidth interpolatedLineWidth() const;
+%Docstring
+Returns the stroke width used to render
+
+.. versionadded:: 3.20
+%End
+
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
+%Docstring
+Sets the unit of the stroke width
+%End
+
+    Qgis::RenderUnit widthUnit() const;
+%Docstring
+Returns the unit of the stroke width
+
+.. versionadded:: 3.20
+%End
+
+    void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
+%Docstring
+Sets the stroke color used to render
+%End
+
+    QgsInterpolatedLineColor interpolatedColor() const;
+%Docstring
+Returns the stroke color used to render
+
+.. versionadded:: 3.20
+%End
+
+    void render( double value1, double value2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+%Docstring
+Renders a line in the ``context`` between ``point1`` and ``point2``
+with color and width that vary depending on ``value1`` and ``value2``
+
+This method assumes that ``point1`` and ``point2`` are in map units. See :py:func:`~QgsInterpolatedLineRenderer.renderInDeviceCoordinates` for an equivalent
+method which renders lines in painter coordinates.
+%End
+
+    void render( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+%Docstring
+Renders a line in the ``context`` between ``point1`` and ``point2``
+with color that varies depending on ``valueColor1`` and ``valueColor2`` and and width that varies between ``valueWidth1`` and ``valueWidth2``
+
+This method assumes that ``point1`` and ``point2`` are in map units. See :py:func:`~QgsInterpolatedLineRenderer.renderInDeviceCoordinates` for an equivalent
+method which renders lines in painter coordinates.
+
+.. versionadded:: 3.20
+%End
+
+    void renderInDeviceCoordinates( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, QPointF point1, QPointF point2, QgsRenderContext &context ) const;
+%Docstring
+Renders a line in the ``context`` between ``point1`` and ``point2`` in device (painter) coordinates
+with color that varies depending on ``valueColor1`` and ``valueColor2`` and and width that varies between ``valueWidth1`` and ``valueWidth2``.
+
+.. versionadded:: 3.22
+%End
+
+    void setSelected( bool selected );
+%Docstring
+Sets if the rendering must be done as the element is selected
+
+.. versionadded:: 3.20
+%End
+
+};
+
+class QgsInterpolatedLineSymbolLayer : QgsLineSymbolLayer
+{
+%Docstring(signature="appended")
+A symbol layer that represents vector layer line feature as interpolated line
+The interpolation is done between two values defined at the extremities
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+
+    QgsInterpolatedLineSymbolLayer();
+%Docstring
+Constructor
+%End
+
+    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
+
+    virtual Qgis::SymbolLayerFlags flags() const;
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual QgsInterpolatedLineSymbolLayer *clone() const /Factory/;
+
+    virtual QVariantMap properties() const;
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+    virtual QColor color() const;
+
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+
+
+ void setExpressionsStringForWidth( const QString &start, const QString &end ) /Deprecated/;
+%Docstring
+Sets the expressions (as string) that define the extremety values af the line feature for width.
+
+.. deprecated::
+   use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead
+%End
+
+ QString startValueExpressionForWidth() const /Deprecated/;
+%Docstring
+Returns the epression related to the start extremity value for width.
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) instead.
+%End
+
+ QString endValueExpressionForWidth() const /Deprecated/;
+%Docstring
+Returns the expression related to the end extremity value for width.
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
+%End
+
+    void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
+%Docstring
+Sets the width unit.
+
+.. seealso:: :py:func:`widthUnit`
+%End
+
+    Qgis::RenderUnit widthUnit() const;
+%Docstring
+Returns the width unit.
+
+.. seealso:: :py:func:`setWidthUnit`
+%End
+
+    void setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth );
+%Docstring
+Sets the interpolated width used to render the width of lines, ``see`` :py:class:`QgsInterpolatedLineWidth`.
+
+.. seealso:: :py:func:`interpolatedWidth`
+%End
+
+    QgsInterpolatedLineWidth interpolatedWidth() const;
+%Docstring
+Returns the interpolated width used to render the width of lines, see ``:py:class:`QgsInterpolatedLineWidth```.
+
+.. seealso:: :py:func:`setInterpolatedWidth`
+%End
+
+ void setExpressionsStringForColor( const QString &start, const QString &end ) /Deprecated/;
+%Docstring
+Sets the expressions (as string) that define the extremety values af the line feature for color.
+
+.. deprecated::
+   use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead
+%End
+
+ QString startValueExpressionForColor() const /Deprecated/;
+%Docstring
+Returns the epression related to the start extremity value for width for color
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) instead.
+%End
+
+ QString endValueExpressionForColor() const /Deprecated/;
+%Docstring
+Returns the expression related to the end extremity value for width for color
+
+.. deprecated::
+   use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead.
+%End
+
+    void setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor );
+%Docstring
+Sets the interpolated color used to render the colors of lines, ``see`` :py:class:`QgsInterpolatedLineColor`.
+
+.. seealso:: :py:func:`interpolatedColor`
+%End
+
+    QgsInterpolatedLineColor interpolatedColor() const;
+%Docstring
+Returns the interpolated color used to render the colors of lines, see ``:py:class:`QgsInterpolatedLineColor```.
+
+.. seealso:: :py:func:`setInterpolatedColor`
+%End
+
+  private:
+    QgsInterpolatedLineSymbolLayer( const QgsInterpolatedLineSymbolLayer &copy );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsinterpolatedlinerenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,247 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgsfontmanager.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFontManager : QObject
+{
+%Docstring(signature="appended")
+
+Manages available fonts and font installation for a QGIS instance.
+
+.. note::
+
+   :py:class:`QgsFontManager` is not usually directly created, but rather accessed through :py:func:`QgsApplication.fontManager()`.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsfontmanager.h"
+%End
+  public:
+
+
+    explicit QgsFontManager( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFontManager, with the specified ``parent`` object.
+
+.. note::
+
+   QgsFontManager is not usually directly created, but rather accessed through :py:func:`QgsApplication.fontManager()`.
+%End
+
+    QMap< QString, QString > fontFamilyReplacements() const;
+%Docstring
+Returns the map of automatic font family replacements.
+
+This map is used to transparently map an original font family to an alternative
+font family, e.g. to permit graceful handling of opening projects which reference
+fonts which are not available on the system.
+
+The map keys are the original font family names, and the values are the alternative
+replacement family to use for the font.
+
+.. note::
+
+   This method is thread safe.
+
+.. seealso:: :py:func:`addFontFamilyReplacement`
+
+.. seealso:: :py:func:`setFontFamilyReplacements`
+%End
+
+    void addFontFamilyReplacement( const QString &original, const QString &replacement );
+%Docstring
+Adds a new font replacement from the ``original`` font family to a ``replacement`` font family.
+
+This is used to transparently map an original font family to an alternative
+font family, e.g. to permit graceful handling of opening projects which reference
+fonts which are not available on the system.
+
+The replacement map is stored locally and persists across QGIS sessions.
+
+If ``replacement`` is an empty string then any existing mapping for the ``original``
+family will be removed.
+
+.. note::
+
+   This method is thread safe.
+
+.. seealso:: :py:func:`fontFamilyReplacements`
+
+.. seealso:: :py:func:`setFontFamilyReplacements`
+%End
+
+    void setFontFamilyReplacements( const QMap< QString, QString> &replacements );
+%Docstring
+Sets the map of automatic font family ``replacements``.
+
+This map is used to transparently map an original font family to an alternative
+font family, e.g. to permit graceful handling of opening projects which reference
+fonts which are not available on the system.
+
+The map keys are the original font family names, and the values are the alternative
+replacement family to use for the font.
+
+The replacement map is stored locally and persists across QGIS sessions.
+
+.. note::
+
+   This method is thread safe.
+
+.. seealso:: :py:func:`fontFamilyReplacements`
+
+.. seealso:: :py:func:`addFontFamilyReplacement`
+%End
+
+    QString processFontFamilyName( const QString &name ) const;
+%Docstring
+Processes a font family ``name``, applying any matching :py:func:`~QgsFontManager.fontFamilyReplacements`
+to the name.
+
+.. note::
+
+   This method is thread safe.
+%End
+
+
+    bool tryToDownloadFontFamily( const QString &family, QString &matchedFamily /Out/ );
+%Docstring
+Tries to download and install the specified font ``family``.
+
+This method will attempt to download missing fonts, if the font download URL
+is known and the font is freely licensed.
+
+Returns ``True`` if a download link for the family is known and the
+download has commenced, or ``False`` if the family is not known and cannot be
+automatically downloaded.
+
+The actual download operation occurs in a background task, and this method
+returns immediately. Connect to :py:func:`~QgsFontManager.fontDownloaded` in order to respond when the
+font is installed and available for use.
+
+.. warning::
+
+   Before calling this method a :py:class:`QgsApplication` must be fully initialized
+   and a call to :py:func:`~QgsFontManager.enableFontDownloadsForSession` made.
+
+:param family: input font family name to try to match to known fonts
+
+:return: - ``True`` if match was successful and the download will occur
+         - matchedFamily: will be set to found font family if a match was successful
+%End
+
+    void enableFontDownloadsForSession();
+%Docstring
+Enables font downloads the the current QGIS session.
+
+.. warning::
+
+   Ensure that the :py:class:`QgsApplication` is fully initialized before calling this method.
+%End
+
+    QString urlForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const;
+%Docstring
+Returns the URL at which the font ``family`` can be downloaded.
+
+This method relies on a hardcoded list of available freely licensed fonts, and will
+return an empty string for any font families not present in this list.
+
+:param family: input font family name to try to match to known fonts
+
+:return: - URL to download font, or an empty string if no URL is available
+         - matchedFamily: will be set to found font family if a match was successful
+%End
+
+    void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() );
+%Docstring
+Downloads a font and installs in the user's profile/fonts directory as an application font.
+
+The download will proceed in a background task.
+
+The optional ``identifier`` string can be used to specify a user-friendly name for the download
+tasks, e.g. the font family name if known.
+
+.. seealso:: :py:func:`fontDownloaded`
+
+.. seealso:: :py:func:`fontDownloadErrorOccurred`
+%End
+
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/, const QString &filename = QString() );
+%Docstring
+Installs local user fonts from the specified raw ``data``.
+
+The ``data`` array may correspond to the contents of a TTF or OTF font file,
+or a zipped archive of font files.
+
+:param data: raw font data or zipped font data
+:param filename: filename hint for destination file. Will be ignored for archived content (e.g. zip file data)
+
+:return: - ``True`` if installation was successful.
+         - errorMessage: will be set to a descriptive error message if the installation fails
+         - families: will be populated with a list of font families installed from the data
+         - licenseDetails: will be populated with font license details, if found
+%End
+
+    void addUserFontDirectory( const QString &directory );
+%Docstring
+Adds a ``directory`` to use for user fonts.
+
+This directory will be scanned for any TTF or OTF font files, which will automatically be added and made
+available for use in the QGIS session.
+
+Additionally, if this is the first user font directory added, any fonts downloaded via :py:func:`~QgsFontManager.downloadAndInstallFont` will be
+installed into this directory.
+%End
+
+    QMap< QString, QStringList > userFontToFamilyMap() const;
+%Docstring
+Returns the mapping of installed user fonts to font families.
+
+The map keys are the file names, the values are a list of families provided by the file.
+%End
+
+    bool removeUserFont( const QString &path );
+%Docstring
+Removes the user font at the specified ``path``.
+%End
+
+  signals:
+
+    void fontDownloaded( const QStringList &families, const QString &licenseDetails );
+%Docstring
+Emitted when a font has downloaded and been locally loaded.
+
+The ``families`` list specifies the font families contained in the downloaded font.
+
+If found, the ``licenseDetails`` string will be populated with corresponding font license details.
+
+.. seealso:: :py:func:`downloadAndInstallFont`
+
+.. seealso:: :py:func:`fontDownloadErrorOccurred`
+%End
+
+    void fontDownloadErrorOccurred( const QUrl &url, const QString &identifier, const QString &error );
+%Docstring
+Emitted when an error occurs during font downloading.
+
+.. seealso:: :py:func:`downloadAndInstallFont`
+
+.. seealso:: :py:func:`fontDownloaded`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgsfontmanager.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

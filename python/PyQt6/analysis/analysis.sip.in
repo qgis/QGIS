@@ -1,0 +1,14 @@
+%Module(name=qgis._analysis,
+        keyword_arguments="All")
+
+${DEFAULTDOCSTRINGSIGNATURE}
+
+%Import QtCore/QtCoremod.sip
+%Import QtGui/QtGuimod.sip
+%Import QtXml/QtXmlmod.sip
+
+%Import core/core.sip
+
+%Feature HAVE_PDAL_PROVIDER
+
+%Include analysis_auto.sip

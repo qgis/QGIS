@@ -1,0 +1,1033 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapsettings.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsLabelBlockingRegion
+{
+%Docstring(signature="appended")
+
+Label blocking region (in map coordinates and CRS).
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmapsettings.h"
+%End
+  public:
+
+    explicit QgsLabelBlockingRegion( const QgsGeometry &geometry );
+%Docstring
+Constructor for a label blocking region
+%End
+
+    QgsGeometry geometry;
+
+};
+
+
+class QgsMapSettings : QgsTemporalRangeObject
+{
+%Docstring(signature="appended")
+The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
+The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
+
+In order to set up :py:class:`QgsMapSettings` instance, it is necessary to set at least
+few members: extent, output size and layers.
+
+Some systems use high DPI scaling that is an alternative to the traditional
+DPI scaling. The operating system provides Qt with a scaling ratio and it
+scales window, event, and desktop geometry. The Cocoa platform plugin sets
+the scaling ratio as QWindow.devicePixelRatio().
+To properly render the map on such systems, the map settings device pixel
+ratio shall be set accordingly.
+
+.. versionadded:: 2.4
+%End
+
+%TypeHeaderCode
+#include "qgsmapsettings.h"
+%End
+  public:
+    QgsMapSettings();
+
+    QgsRectangle extent() const;
+%Docstring
+Returns geographical coordinates of the rectangle that should be rendered.
+
+.. warning::
+
+   The actual visible extent used for rendering can be significantly different from this
+   value, since the given extent may be expanded in order to fit the aspect ratio
+   of the :py:func:`~QgsMapSettings.outputSize`. Use :py:func:`~QgsMapSettings.visibleExtent` to get the actual extent which will be rendered.
+
+.. seealso:: :py:func:`visibleExtent`
+
+.. seealso:: :py:func:`setExtent`
+%End
+
+    void setExtent( const QgsRectangle &rect, bool magnified = true );
+%Docstring
+Sets the coordinates of the rectangle which should be rendered.
+
+.. warning::
+
+   The actual visible extent used for rendering can be significantly different
+   from the specified extent, since the given extent may be expanded in order to match the
+   aspect ratio of :py:func:`~QgsMapSettings.outputSize`. Use :py:func:`~QgsMapSettings.visibleExtent` to retrieve the actual extent to be rendered.
+
+.. seealso:: :py:func:`visibleExtent`
+
+.. seealso:: :py:func:`extent`
+%End
+
+    double extentBuffer() const;
+%Docstring
+Returns the buffer in map units to use around the visible extent for rendering
+symbols whose corresponding geometries are outside the visible extent.
+
+.. seealso:: :py:func:`setExtentBuffer`
+
+.. versionadded:: 3.10
+%End
+
+    void setExtentBuffer( double buffer );
+%Docstring
+Sets the buffer in map units to use around the visible extent for rendering
+symbols whose corresponding geometries are outside the visible extent. This
+is useful when using tiles to avoid cut symbols at tile boundaries.
+
+.. versionadded:: 3.10
+%End
+
+    QSize outputSize() const;
+%Docstring
+Returns the size of the resulting map image, in pixels.
+
+.. seealso:: :py:func:`deviceOutputSize`
+
+.. seealso:: :py:func:`setOutputSize`
+%End
+
+    void setOutputSize( QSize size );
+%Docstring
+Sets the ``size`` of the resulting map image, in pixels.
+
+.. seealso:: :py:func:`outputSize`
+%End
+
+    float devicePixelRatio() const;
+%Docstring
+Returns the device pixel ratio.
+
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+
+.. versionadded:: 3.4
+%End
+
+    void setDevicePixelRatio( float dpr );
+%Docstring
+Sets the device pixel ratio.
+
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+
+.. versionadded:: 3.4
+%End
+
+    QSize deviceOutputSize() const;
+%Docstring
+Returns the device output size of the map render.
+
+This is equivalent to the output size multiplicated
+by the device pixel ratio.
+
+.. seealso:: :py:func:`outputSize`
+
+.. seealso:: :py:func:`devicePixelRatio`
+
+.. seealso:: :py:func:`setOutputSize`
+
+.. versionadded:: 3.4
+%End
+
+    double rotation() const;
+%Docstring
+Returns the rotation of the resulting map image, in degrees clockwise.
+
+.. seealso:: :py:func:`setRotation`
+
+.. versionadded:: 2.8
+%End
+
+    void setRotation( double rotation );
+%Docstring
+Sets the ``rotation`` of the resulting map image, in degrees clockwise.
+
+.. seealso:: :py:func:`rotation`
+
+.. versionadded:: 2.8
+%End
+
+    double outputDpi() const;
+%Docstring
+Returns the DPI (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+
+The default value is 96 dpi.
+
+.. seealso:: :py:func:`setOutputDpi`
+%End
+
+    void setOutputDpi( double dpi );
+%Docstring
+Sets the ``dpi`` (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+
+.. seealso:: :py:func:`outputDpi`
+%End
+
+    double dpiTarget() const;
+%Docstring
+Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+
+The default value is -1, which states no DPI target is provided.
+
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
+%End
+
+    void setDpiTarget( double dpi );
+%Docstring
+Sets the target ``dpi`` (dots per inch) to be taken into consideration when rendering.
+
+.. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
+%End
+
+    void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );
+%Docstring
+Set the magnification factor.
+
+:param factor: the factor of magnification
+:param center: optional point to re-center the map
+
+.. seealso:: :py:func:`magnificationFactor`
+
+.. versionadded:: 2.16
+%End
+
+    double magnificationFactor() const;
+%Docstring
+Returns the magnification factor.
+
+.. seealso:: :py:func:`setMagnificationFactor`
+
+.. versionadded:: 2.16
+%End
+
+    QStringList layerIds( bool expandGroupLayers = false ) const;
+%Docstring
+Returns the list of layer IDs which will be rendered in the map.
+
+The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top).
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
+
+.. seealso:: :py:func:`layers`
+
+.. seealso:: :py:func:`setLayers`
+%End
+
+    QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
+%Docstring
+Returns the list of layers which will be rendered in the map.
+
+The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
+all their child layers.
+
+.. seealso:: :py:func:`setLayers`
+
+.. seealso:: :py:func:`layerIds`
+%End
+
+    void setLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets the list of ``layers`` to render in the map.
+
+The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+.. note::
+
+   Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
+
+.. seealso:: :py:func:`layers`
+
+.. seealso:: :py:func:`layerIds`
+%End
+
+    QMap<QString, QString> layerStyleOverrides() const;
+%Docstring
+Returns the map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
+
+.. seealso:: :py:func:`setLayerStyleOverrides`
+
+.. versionadded:: 2.8
+%End
+
+    void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
+%Docstring
+Sets the map of map layer style ``overrides`` (key: layer ID, value: style name) where a different style should be used instead of the current one.
+
+.. seealso:: :py:func:`layerStyleOverrides`
+
+.. versionadded:: 2.8
+%End
+
+ QString customRenderFlags() const;
+%Docstring
+Returns custom rendering flags. Layers might honour these to alter their rendering.
+
+:return: custom flags strings, separated by ';'
+
+.. seealso:: :py:func:`setCustomRenderFlags`
+
+.. versionadded:: 2.16
+
+.. deprecated::
+   use \see :py:func:`~QgsMapSettings.customRenderingFlags`.
+%End
+
+ void setCustomRenderFlags( const QString &customRenderFlags );
+%Docstring
+Sets the custom rendering flags. Layers might honour these to alter their rendering.
+
+:param customRenderFlags: custom flags strings, separated by ';'
+
+.. seealso:: :py:func:`customRenderFlags`
+
+.. versionadded:: 2.16
+
+.. deprecated::
+   use \see :py:func:`~QgsMapSettings.setCustomRenderingFlag` instead.
+%End
+
+    QVariantMap customRenderingFlags() const;
+%Docstring
+Returns any custom rendering flags. Layers might honour these to alter their rendering.
+
+:return: a map of custom flags
+
+.. seealso:: :py:func:`setCustomRenderingFlag`
+
+.. versionadded:: 3.12
+%End
+
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value );
+%Docstring
+Sets a custom rendering ``flag``. Layers might honour these to alter their rendering.
+
+:param flag: the flag name
+:param value: the flag value
+
+.. seealso:: :py:func:`customRenderingFlags`
+
+.. versionadded:: 3.12
+%End
+
+    void clearCustomRenderingFlag( const QString &flag );
+%Docstring
+Clears the specified custom rendering ``flag``.
+
+:param flag: the flag name
+
+.. seealso:: :py:func:`setCustomRenderingFlag`
+
+.. versionadded:: 3.12
+%End
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the destination ``crs`` (coordinate reference system) for the map render.
+
+.. seealso:: :py:func:`destinationCrs`
+%End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Returns the destination coordinate reference system for the map render.
+
+.. seealso:: :py:func:`setDestinationCrs`
+%End
+
+    Qgis::DistanceUnit mapUnits() const;
+%Docstring
+Returns the units of the map's geographical coordinates - used for scale calculation.
+%End
+
+    bool setEllipsoid( const QString &ellipsoid );
+%Docstring
+Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`.
+Calculations will only use the ellipsoid if a valid ellipsoid has been set.
+
+:return: ``True`` if ellipsoid was successfully set
+
+.. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.0
+%End
+
+    QString ellipsoid() const;
+%Docstring
+Returns ellipsoid's acronym. Calculations will only use the
+ellipsoid if a valid ellipsoid has been set.
+
+.. seealso:: :py:func:`setEllipsoid`
+
+.. versionadded:: 3.0
+%End
+
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets the background ``color`` of the map.
+
+.. seealso:: :py:func:`backgroundColor`
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+Returns the background color of the map.
+
+.. seealso:: :py:func:`setBackgroundColor`
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` that is used for drawing of selected vector features.
+
+.. seealso:: :py:func:`selectionColor`
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color that is used for drawing of selected vector features.
+
+.. seealso:: :py:func:`setSelectionColor`
+%End
+
+    void setFlags( Qgis::MapSettingsFlags flags );
+%Docstring
+Sets combination of flags that will be used for rendering
+%End
+    void setFlag( Qgis::MapSettingsFlag flag, bool on = true );
+%Docstring
+Enable or disable a particular flag (other flags are not affected)
+%End
+    Qgis::MapSettingsFlags flags() const;
+%Docstring
+Returns combination of flags used for rendering
+%End
+    bool testFlag( Qgis::MapSettingsFlag flag ) const;
+%Docstring
+Check whether a particular flag is enabled
+%End
+
+    Qgis::TextRenderFormat textRenderFormat() const;
+%Docstring
+Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. seealso:: :py:func:`setTextRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setTextRenderFormat( Qgis::TextRenderFormat format );
+%Docstring
+Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+
+.. warning::
+
+   Calling the :py:func:`~QgsMapSettings.setLabelingEngineSettings` method will reset the text render format to match the default
+   text render format from the label engine settings.
+
+.. seealso:: :py:func:`textRenderFormat`
+
+.. versionadded:: 3.4.3
+%End
+
+    void setOutputImageFormat( QImage::Format format );
+%Docstring
+sets format of internal QImage
+%End
+    QImage::Format outputImageFormat() const;
+%Docstring
+format of internal QImage, default QImage.Format_ARGB32_Premultiplied
+%End
+
+    bool hasValidSettings() const;
+%Docstring
+Check whether the map settings are valid and can be used for rendering
+%End
+    QgsRectangle visibleExtent() const;
+%Docstring
+Returns the actual extent derived from requested extent that takes output image size into account
+%End
+
+    QPolygonF visiblePolygon() const;
+%Docstring
+Returns the visible area as a polygon (may be rotated)
+
+.. versionadded:: 2.8
+%End
+
+    QPolygonF visiblePolygonWithBuffer() const;
+%Docstring
+Returns the visible area as a polygon (may be rotated) with extent buffer included
+
+.. seealso:: :py:func:`extentBuffer`
+
+.. versionadded:: 3.22
+%End
+
+    double mapUnitsPerPixel() const;
+%Docstring
+Returns the distance in geographical coordinates that equals to one pixel in the map
+%End
+
+    double scale() const;
+%Docstring
+Returns the calculated map scale.
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression context. This context is used for all expression evaluation
+associated with this map settings.
+
+.. seealso:: :py:func:`expressionContext`
+
+.. versionadded:: 2.12
+%End
+
+    const QgsExpressionContext &expressionContext() const;
+%Docstring
+Gets the expression context. This context should be used for all expression evaluation
+associated with this map settings.
+
+.. seealso:: :py:func:`setExpressionContext`
+
+.. versionadded:: 2.12
+%End
+
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the coordinate transform context, which stores various
+information regarding which datum transforms should be used when transforming points
+from a source to destination coordinate reference system.
+
+.. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.0
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the coordinate transform ``context``, which stores various
+information regarding which datum transforms should be used when transforming points
+from a source to destination coordinate reference system.
+
+.. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.0
+%End
+
+    const QgsPathResolver &pathResolver() const;
+%Docstring
+Returns the path resolver for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. seealso:: :py:func:`setPathResolver`
+
+.. versionadded:: 3.0
+%End
+
+    void setPathResolver( const QgsPathResolver &resolver );
+%Docstring
+Sets the path ``resolver`` for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. seealso:: :py:func:`pathResolver`
+
+.. versionadded:: 3.0
+%End
+
+    const QgsMapToPixel &mapToPixel() const;
+
+    double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
+%Docstring
+Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+
+:param layer: The layer
+:param referenceExtent: A reference extent based on which to perform the computation. If not specified, the layer extent is used
+
+.. versionadded:: 2.12
+%End
+
+    QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
+%Docstring
+transform bounding box from layer's CRS to output CRS
+
+.. seealso:: :py:func:`layerToMapCoordinates`
+
+:return: a bounding box (aligned rectangle) containing the transformed extent
+%End
+
+    QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
+%Docstring
+transform bounding box from output CRS to layer's CRS
+
+.. seealso:: :py:func:`mapToLayerCoordinates`
+
+:return: a bounding box (aligned rectangle) containing the transformed extent
+%End
+
+    QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
+%Docstring
+transform point coordinates from layer's CRS to output CRS
+
+:return: the transformed point
+%End
+
+    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) const;
+%Docstring
+transform point coordinates from layer's CRS to output CRS
+
+:return: the transformed point
+
+.. versionadded:: 3.16
+%End
+
+    QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
+%Docstring
+transform rectangle from layer's CRS to output CRS
+
+.. seealso:: :py:func:`layerExtentToOutputExtent`
+
+:return: the transformed rectangle
+%End
+
+    QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
+%Docstring
+transform point coordinates from output CRS to layer's CRS
+
+:return: the transformed point
+%End
+
+    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) const;
+%Docstring
+transform point coordinates from output CRS to layer's CRS
+
+:return: the transformed point
+
+.. versionadded:: 3.16
+%End
+
+    QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
+%Docstring
+transform rectangle from output CRS to layer's CRS
+
+.. seealso:: :py:func:`outputExtentToLayerExtent`
+
+:return: the transformed rectangle
+%End
+
+    QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
+%Docstring
+Returns the coordinate transform from layer's CRS to destination CRS
+
+:return: transform - may be invalid if the transform is not needed
+%End
+
+    QgsRectangle computeExtentForScale( const QgsPointXY &center, double scale ) const;
+%Docstring
+Compute the extent such that its ``center`` is at the specified
+position (mapped to the destinatonCrs) and the zoom factor corresponds
+to the specified ``scale``
+
+:param center: the center, in map coordinates
+:param scale: the desired zoom factor (the x part of 1:x)
+
+:return: an extent which can be passed to :py:class:`QgsMapCanvas`.setExtent
+
+.. seealso:: :py:func:`computeScaleForExtent`
+
+.. versionadded:: 3.22
+%End
+
+    double computeScaleForExtent( const QgsRectangle &extent ) const;
+%Docstring
+Compute the scale that corresponds to the specified ``extent``
+
+:param extent: the extent, as passed to :py:func:`QgsMapCanvas.setExtent`
+
+:return: the scale denominator
+
+.. seealso:: :py:func:`computeExtentForScale`
+
+.. note::
+
+   This function does not consider any map rotation
+
+.. versionadded:: 3.22
+%End
+
+    QgsRectangle fullExtent() const;
+%Docstring
+returns current extent of layer set
+%End
+
+
+    void readXml( QDomNode &node );
+%Docstring
+serialization */
+%End
+
+    void writeXml( QDomNode &node, QDomDocument &doc );
+
+    void setSegmentationTolerance( double tolerance );
+%Docstring
+Sets the segmentation tolerance applied when rendering curved geometries
+
+:param tolerance: the segmentation tolerance
+%End
+    double segmentationTolerance() const;
+%Docstring
+Gets the segmentation tolerance applied when rendering curved geometries
+%End
+
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
+%Docstring
+Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
+:param type: the segmentation tolerance typename
+%End
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
+%Docstring
+Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+%End
+
+    void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
+%Docstring
+Sets the global configuration of the labeling engine.
+
+.. note::
+
+   Calling this method will reset the :py:func:`~QgsMapSettings.textRenderFormat` to match the default
+   text render format from the label engine ``settings``.
+
+.. seealso:: :py:func:`labelingEngineSettings`
+
+
+.. versionadded:: 3.0
+%End
+
+    const QgsLabelingEngineSettings &labelingEngineSettings() const;
+%Docstring
+Returns the global configuration of the labeling engine.
+
+.. seealso:: :py:func:`setLabelingEngineSettings`
+
+.. versionadded:: 3.0
+%End
+
+    QgsGeometry labelBoundaryGeometry() const;
+%Docstring
+Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
+placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+the map's :py:func:`~QgsMapSettings.visiblePolygon`.
+
+The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationCrs`.
+
+.. seealso:: :py:func:`setLabelBoundaryGeometry`
+
+.. seealso:: :py:func:`labelBlockingRegions`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelBoundaryGeometry( const QgsGeometry &boundary );
+%Docstring
+Sets the label ``boundary`` geometry, which restricts where in the rendered map labels are permitted to be
+placed.
+
+A null ``boundary`` geometry (the default) indicates that labels can be placed anywhere within
+the map's :py:func:`~QgsMapSettings.visiblePolygon`.
+
+The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationCrs`.
+
+.. seealso:: :py:func:`labelBoundaryGeometry`
+
+.. seealso:: :py:func:`setLabelBlockingRegions`
+
+.. versionadded:: 3.6
+%End
+
+    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions );
+%Docstring
+Sets a list of ``regions`` to avoid placing labels within.
+
+.. seealso:: :py:func:`labelBlockingRegions`
+
+.. seealso:: :py:func:`setLabelBoundaryGeometry`
+
+.. versionadded:: 3.6
+%End
+
+    QList< QgsLabelBlockingRegion > labelBlockingRegions() const;
+%Docstring
+Returns the list of regions to avoid placing labels within.
+
+.. seealso:: :py:func:`setLabelBlockingRegions`
+
+.. seealso:: :py:func:`labelBoundaryGeometry`
+
+.. versionadded:: 3.6
+%End
+
+    void addClippingRegion( const QgsMapClippingRegion &region );
+%Docstring
+Adds a new clipping ``region`` to the map settings.
+
+.. seealso:: :py:func:`clippingRegions`
+
+.. seealso:: :py:func:`setClippingRegions`
+
+.. versionadded:: 3.16
+%End
+
+    void setClippingRegions( const QList< QgsMapClippingRegion > &regions );
+%Docstring
+Sets the list of clipping ``regions`` to apply to the map.
+
+.. seealso:: :py:func:`addClippingRegion`
+
+.. seealso:: :py:func:`clippingRegions`
+
+.. versionadded:: 3.16
+%End
+
+    QList< QgsMapClippingRegion > clippingRegions() const;
+%Docstring
+Returns the list of clipping regions to apply to the map.
+
+.. seealso:: :py:func:`addClippingRegion`
+
+.. seealso:: :py:func:`setClippingRegions`
+
+.. versionadded:: 3.16
+%End
+
+    void setSimplifyMethod( const QgsVectorSimplifyMethod &method );
+%Docstring
+Sets the simplification setting to use when rendering vector layers.
+
+If the simplify ``method`` is enabled, it will override all other layer-specific simplification
+settings and will apply to all vector layers rendered for the map.
+
+This can be used to specify global simplification methods to apply during map exports,
+e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
+during PDF exports.
+
+The default is to use no global simplification, and fallback to individual layer's settings instead.
+
+.. seealso:: :py:func:`simplifyMethod`
+
+.. versionadded:: 3.10
+%End
+
+    const QgsVectorSimplifyMethod &simplifyMethod() const;
+%Docstring
+Returns the simplification settings to use when rendering vector layers.
+
+If enabled, it will override all other layer-specific simplification
+settings and will apply to all vector layers rendered for the map.
+
+The default is to use no global simplification, and fallback to individual layer's settings instead.
+
+.. seealso:: :py:func:`setSimplifyMethod`
+
+.. versionadded:: 3.10
+%End
+
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+%Docstring
+Adds a rendered feature ``handler`` to use while rendering the map settings.
+
+Ownership of ``handler`` is NOT transferred, and it is the caller's responsibility to ensure
+that the handler exists for the lifetime of the map render job.
+
+.. seealso:: :py:func:`renderedFeatureHandlers`
+
+.. versionadded:: 3.10
+%End
+
+    QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
+%Docstring
+Returns the list of rendered feature handlers to use while rendering the map settings.
+
+.. seealso:: :py:func:`addRenderedFeatureHandler`
+
+.. versionadded:: 3.10
+%End
+
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the range of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`setZRange`
+
+.. versionadded:: 3.18
+%End
+
+    void setZRange( const QgsDoubleRange &range );
+%Docstring
+Sets the ``range`` of z-values which will be visible in the map.
+
+.. seealso:: :py:func:`zRange`
+
+.. versionadded:: 3.18
+%End
+
+    Qgis::RendererUsage rendererUsage() const;
+%Docstring
+Returns the rendering usage
+
+.. seealso:: :py:func:`setRendererUsage`
+
+.. versionadded:: 3.24
+%End
+
+    void setRendererUsage( Qgis::RendererUsage rendererUsage );
+%Docstring
+Sets the rendering usage
+
+.. note::
+
+   This usage not alter how the map gets rendered but the intention is that data provider
+   knows the context of rendering and may report that to the backend.
+
+.. seealso:: :py:func:`rendererUsage`
+
+.. versionadded:: 3.24
+%End
+
+    double frameRate() const;
+%Docstring
+Returns the frame rate of the map (in frames per second), for maps which are part of an animation.
+
+Returns -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`setFrameRate`
+
+.. versionadded:: 3.26
+%End
+
+    void setFrameRate( double rate );
+%Docstring
+Sets the frame ``rate`` of the map (in frames per second), for maps which are part of an animation.
+
+Defaults to -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`frameRate`
+
+.. versionadded:: 3.26
+%End
+
+    long long currentFrame() const;
+%Docstring
+Returns the current frame number of the map, for maps which are part of an animation.
+
+Returns -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`setCurrentFrame`
+
+.. versionadded:: 3.26
+%End
+
+    void setCurrentFrame( long long frame );
+%Docstring
+Sets the current ``frame`` of the map, for maps which are part of an animation.
+
+Defaults to -1 if the map is not associated with an animation.
+
+.. seealso:: :py:func:`currentFrame`
+
+.. versionadded:: 3.26
+%End
+
+    const QgsElevationShadingRenderer &elevationShadingRenderer() const;
+%Docstring
+Returns the shading renderer used to render shading on the entire map
+
+.. seealso:: :py:func:`setElevationShadingRenderer`
+
+.. versionadded:: 3.30
+%End
+
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
+%Docstring
+Sets the shading ``renderer`` used to render shading on the entire map
+
+.. seealso:: :py:func:`elevationShadingRenderer`
+
+.. versionadded:: 3.30
+%End
+
+  protected:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    void updateDerived();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapsettings.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

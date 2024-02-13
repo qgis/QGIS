@@ -1,0 +1,205 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationeditorwidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+%ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsrelationeditorwidget.h>
+%End
+
+
+
+
+class QgsRelationEditorWidget : QgsAbstractRelationEditorWidget
+{
+%Docstring(signature="appended")
+The default relation widget in QGIS.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationeditorwidget.h"
+%End
+  public:
+
+    enum Button
+    {
+      NoButton,
+      Link,
+      Unlink,
+      SaveChildEdits,
+      AddChildFeature,
+      DuplicateChildFeature,
+      DeleteChildFeature,
+      ZoomToChildFeature,
+      AllButtons
+    };
+    typedef QFlags<QgsRelationEditorWidget::Button> Buttons;
+
+
+    QgsRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+
+:param config: widget configuration
+:param parent: parent widget
+%End
+
+    void setViewMode( QgsDualView::ViewMode mode );
+%Docstring
+Define the view mode for the dual view
+%End
+
+    QgsDualView::ViewMode viewMode();
+%Docstring
+Gets the view mode for the dual view
+%End
+
+    QgsIFeatureSelectionManager *featureSelectionManager();
+%Docstring
+The feature selection manager is responsible for the selected features
+which are currently being edited.
+%End
+
+    virtual void setEditorContext( const QgsAttributeEditorContext &context );
+
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
+%End
+
+    void setVisibleButtons( const Buttons &buttons );
+%Docstring
+Defines the buttons which are shown
+%End
+
+    Buttons visibleButtons() const;
+%Docstring
+Returns the buttons which are shown
+%End
+
+ void duplicateFeature() /Deprecated/;
+%Docstring
+Duplicates a feature
+
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead
+%End
+
+    void duplicateSelectedFeatures();
+%Docstring
+Duplicates the selected features
+
+.. versionadded:: 3.18
+%End
+
+    void unlinkSelectedFeatures();
+%Docstring
+Unlinks the selected features from the relation
+%End
+
+    void deleteSelectedFeatures();
+%Docstring
+Deletes the currently selected features
+%End
+
+    void zoomToSelectedFeatures();
+%Docstring
+Zooms to the selected features
+%End
+
+    virtual QVariantMap config() const;
+
+%Docstring
+Returns the current configuration
+%End
+
+    virtual void setConfig( const QVariantMap &config );
+
+%Docstring
+Defines the current configuration
+%End
+
+  public slots:
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+
+
+  protected:
+    virtual void updateUi();
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
+
+    virtual void afterSetRelationFeature();
+
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
+
+    virtual void afterSetRelations();
+
+
+};
+
+
+class QgsRelationEditorConfigWidget : QgsAbstractRelationEditorConfigWidget
+{
+%Docstring(signature="appended")
+Creates a new configuration widget for the relation editor widget
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationeditorwidget.h"
+%End
+  public:
+
+    explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
+%Docstring
+Create a new configuration widget
+
+:param relation: The relation for which the configuration dialog will be created
+:param parent: A parent widget
+%End
+
+    virtual QVariantMap config();
+
+%Docstring
+Create a configuration from the current GUI state
+
+:return: A widget configuration
+%End
+
+    virtual void setConfig( const QVariantMap &config );
+
+%Docstring
+Update the configuration widget to represent the given configuration.
+
+:param config: The configuration which should be represented by this widget
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrelationeditorwidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

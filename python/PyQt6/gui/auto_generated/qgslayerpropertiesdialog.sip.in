@@ -1,0 +1,183 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerpropertiesdialog.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerPropertiesDialog : QgsOptionsDialogBase /Abstract/
+{
+%Docstring(signature="appended")
+Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialog.
+
+.. warning::
+
+   This is exposed to SIP bindings for legacy reasons only, and is NOT to be considered as stable API.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgslayerpropertiesdialog.h"
+%End
+  public:
+
+
+    QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
+%Docstring
+Constructor for QgsLayerPropertiesDialog.
+
+:param layer: associated map layer
+:param canvas: associated map canvas
+:param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "VectorLayerProperties".
+:param parent: parent object (owner)
+:param fl: widget flags
+:param settings: custom :py:class:`QgsSettings` pointer
+%End
+
+    void setMetadataWidget( QgsMetadataWidget *widget, QWidget *page );
+%Docstring
+Sets the metadata ``widget`` and ``page`` associated with the dialog.
+
+This must be called in order for the standard metadata loading/saving functionality to be avialable.
+%End
+
+    virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
+%Docstring
+Adds properties page from a ``factory``.
+%End
+
+    void saveDefaultStyle();
+%Docstring
+Saves the default style when appropriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
+    void loadStyle();
+%Docstring
+Triggers a dialog to load a saved style
+
+.. versionadded:: 3.30
+%End
+
+    void saveStyleAs();
+%Docstring
+Saves a style when appriate button is pressed
+
+.. versionadded:: 3.30
+%End
+
+  public slots:
+
+    void loadMetadataFromFile();
+%Docstring
+Allows the user to load layer metadata from a file.
+
+.. seealso:: :py:func:`saveMetadataToFile`
+%End
+
+    void saveMetadataToFile();
+%Docstring
+Allows the user to save the layer's metadata as a file.
+
+.. seealso:: :py:func:`loadMetadataFromFile`
+%End
+
+    void saveMetadataAsDefault();
+%Docstring
+Saves the current layer metadata as the default for the layer.
+
+:py:func:`~QgsLayerPropertiesDialog.loadDefaultMetadata`
+%End
+
+    void loadDefaultMetadata();
+%Docstring
+Reloads the default layer metadata for the layer.
+
+.. seealso:: :py:func:`saveMetadataAsDefault`
+%End
+
+    void loadStyleFromFile();
+%Docstring
+Allows the user to load layer style from a file.
+
+.. seealso:: :py:func:`saveStyleToFile`
+%End
+
+    void saveStyleToFile();
+%Docstring
+Allows the user to save the layer's style to a file.
+
+.. seealso:: :py:func:`loadStyleFromFile`
+%End
+
+    void saveStyleAsDefault();
+%Docstring
+Saves the current layer style as the default for the layer.
+
+:py:func:`~QgsLayerPropertiesDialog.loadDefaultStyle`
+%End
+
+    void loadDefaultStyle();
+%Docstring
+Reloads the default style for the layer.
+%End
+
+  protected:
+
+    void initialize();
+%Docstring
+Initialize the dialog. Must be called in the subclass constructor
+as the final call.
+%End
+
+    void refocusDialog();
+%Docstring
+Ensures the dialog is focused and activated.
+%End
+
+    void storeCurrentStyleForUndo();
+%Docstring
+Stores the current layer style so that undo operations can be performed.
+%End
+
+
+
+
+
+
+  protected slots:
+
+
+
+    virtual void rollback();
+%Docstring
+Rolls back changes made to the layer.
+%End
+
+    virtual void optionsStackedWidget_CurrentChanged( int index );
+
+
+    void openUrl( const QUrl &url );
+%Docstring
+Handles opening a ``url`` from the dialog.
+
+If the ``url`` refers to a local file then a file explorer will be opened pointing to the file.
+If it refers to a remote link then a web browser will be opened instead.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerpropertiesdialog.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,6 @@
+# The following has been generated automatically from src/gui/processing/models/qgsmodelgraphicsview.h
+QgsModelGraphicsView.ClipboardCut = QgsModelGraphicsView.ClipboardOperation.ClipboardCut
+QgsModelGraphicsView.ClipboardCopy = QgsModelGraphicsView.ClipboardOperation.ClipboardCopy
+QgsModelGraphicsView.PasteModeCursor = QgsModelGraphicsView.PasteMode.PasteModeCursor
+QgsModelGraphicsView.PasteModeCenter = QgsModelGraphicsView.PasteMode.PasteModeCenter
+QgsModelGraphicsView.PasteModeInPlace = QgsModelGraphicsView.PasteMode.PasteModeInPlace

@@ -1,0 +1,212 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilebasiclabeling.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsVectorTileBasicLabelingStyle
+{
+%Docstring(signature="appended")
+Configuration of a single style within :py:class:`QgsVectorTileBasicLabeling`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilebasiclabeling.h"
+%End
+  public:
+
+    void setLabelSettings( const QgsPalLayerSettings &settings );
+%Docstring
+Sets labeling configuration of this style
+%End
+    QgsPalLayerSettings labelSettings() const;
+%Docstring
+Returns labeling configuration of this style
+%End
+
+    void setStyleName( const QString &name );
+%Docstring
+Sets human readable name of this style
+%End
+    QString styleName() const;
+%Docstring
+Returns human readable name of this style
+%End
+
+    void setLayerName( const QString &name );
+%Docstring
+Sets name of the sub-layer to render (empty layer means that all layers match)
+%End
+    QString layerName() const;
+%Docstring
+Returns name of the sub-layer to render (empty layer means that all layers match)
+%End
+
+    void setGeometryType( Qgis::GeometryType geomType );
+%Docstring
+Sets type of the geometry that will be used (point / line / polygon)
+%End
+    Qgis::GeometryType geometryType() const;
+%Docstring
+Returns type of the geometry that will be used (point / line / polygon)
+%End
+
+    void setFilterExpression( const QString &expr );
+%Docstring
+Sets filter expression (empty filter means that all features match)
+%End
+    QString filterExpression() const;
+%Docstring
+Returns filter expression (empty filter means that all features match)
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether this style is enabled (used for rendering)
+%End
+    bool isEnabled() const;
+%Docstring
+Returns whether this style is enabled (used for rendering)
+%End
+
+    void setMinZoomLevel( int minZoom );
+%Docstring
+Sets minimum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is greater than or equal
+to ``minZoom``.
+
+.. seealso:: :py:func:`minZoomLevel`
+
+.. seealso:: :py:func:`setMaxZoomLevel`
+%End
+
+    int minZoomLevel() const;
+%Docstring
+Returns the minimum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is greater than or equal
+to the this level.
+
+.. seealso:: :py:func:`setMinZoomLevel`
+
+.. seealso:: :py:func:`maxZoomLevel`
+%End
+
+    void setMaxZoomLevel( int maxZoom );
+%Docstring
+Sets maximum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is less than or equal
+to ``maxZoom``.
+
+.. warning::
+
+   This differs from the handling of the max zoom as defined
+   in the MapBox Style Specifications, where the style is rendered
+   only if the zoom level is less than the maximum zoom.
+
+.. seealso:: :py:func:`maxZoomLevel`
+
+.. seealso:: :py:func:`setMinZoomLevel`
+%End
+
+    int maxZoomLevel() const;
+%Docstring
+Returns the maximum zoom level index (negative number means no limit).
+
+The style will be rendered if the zoom level is less than or equal
+to the maximum zoom.
+
+.. warning::
+
+   This differs from the handling of the max zoom as defined
+   in the MapBox Style Specifications, where the style is rendered
+   only if the zoom level is less than the maximum zoom.
+
+.. seealso:: :py:func:`setMaxZoomLevel`
+
+.. seealso:: :py:func:`minZoomLevel`
+%End
+
+
+    bool isActive( int zoomLevel ) const;
+%Docstring
+Returns whether the style is active at given zoom level (also checks "enabled" flag)
+%End
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes object content to given DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads object content from given DOM element
+%End
+
+};
+
+
+class QgsVectorTileBasicLabeling : QgsVectorTileLabeling
+{
+%Docstring(signature="appended")
+Basic labeling configuration for vector tile layers. It contains a definition
+of a list of labeling styles, where each labeling style is a combination of
+sub-layer name, geometry type, filter expression, zoom range and label settings.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilebasiclabeling.h"
+%End
+  public:
+    QgsVectorTileBasicLabeling();
+
+    virtual QString type() const;
+
+    virtual QgsVectorTileLabeling *clone() const /Factory/;
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    void setStyles( const QList<QgsVectorTileBasicLabelingStyle> &styles );
+%Docstring
+Sets list of styles of the renderer
+%End
+    QList<QgsVectorTileBasicLabelingStyle> styles() const;
+%Docstring
+Returns list of styles of the renderer
+%End
+    void setStyle( int index, const QgsVectorTileBasicLabelingStyle &style );
+%Docstring
+Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+%End
+    QgsVectorTileBasicLabelingStyle style( int index ) const;
+%Docstring
+Returns style definition at the particular index
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilebasiclabeling.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

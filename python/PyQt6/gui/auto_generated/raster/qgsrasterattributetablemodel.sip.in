@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetablemodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsRasterAttributeTableModel : QAbstractTableModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsRasterAttributeTableModel` class manages a :py:class:`QgsRasterAttributeTable`
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetablemodel.h"
+%End
+  public:
+
+    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent  /TransferThis/ = 0 );
+%Docstring
+Creates a new QgsRasterAttributeTableModel from raster attribute table ``rat`` and optional ``parent``.
+%End
+
+    bool editable() const;
+%Docstring
+Returns true if the Raster Attribute Table is editable.
+%End
+
+    void setEditable( bool editable );
+%Docstring
+Sets the Raster Attribute Table editable state to ``editable``.
+%End
+
+    bool hasColor() const;
+%Docstring
+Returns ``True`` if the Raster Attribute Table has color information.
+%End
+
+    bool hasRamp() const;
+%Docstring
+Returns ``True`` if the Raster Attribute Table has ramp information.
+%End
+
+    QStringList headerNames( ) const;
+%Docstring
+Returns all the header names, including the "virtual" color header if the Raster Attribute Table has color or ramp.
+%End
+
+    QString headerTooltip( const int section ) const;
+%Docstring
+Returns the tooltip for the given ``section``.
+%End
+
+    bool isValid( QString *errorMessage /Out/ = 0 );
+%Docstring
+Checks if the Raster Attribute Table is valid, optionally returns validation errors in ``errorMessage``.
+%End
+
+    bool isDirty( );
+%Docstring
+Returns ``True`` if the Raster Attribute Table was modified since it was last saved or read.
+%End
+
+
+    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
+%Docstring
+Inserts a field at the given position.
+
+:param name: field name
+:param usage: field usage
+:param type: field type
+:param position: insertion point (before)
+
+:return: - true on success
+         - errorMessage: error message
+%End
+
+    bool removeField( const int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Remove the field at given ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool removeColorOrRamp( QString *errorMessage /Out/ = 0 );
+%Docstring
+Removes all color or ramp information, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool insertRow( const int position, const QVariantList &rowData, QString *errorMessage /Out/ = 0 );
+%Docstring
+Inserts a new row before ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool insertColor( int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Create RGBA fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool insertRamp( int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Create RGBA minimum and maximum fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool removeRow( const int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Removes the row at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+  public:
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetablemodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

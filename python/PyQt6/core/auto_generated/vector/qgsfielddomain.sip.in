@@ -1,0 +1,447 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsfielddomain.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFieldDomain
+{
+%Docstring(signature="appended")
+
+Base class for field domains.
+
+A field domain is a set of constraints that apply to one or several fields.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomain.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == Qgis::FieldDomainType::Coded )
+    {
+      sipType = sipType_QgsCodedFieldDomain;
+    }
+    else if ( sipCpp->type() == Qgis::FieldDomainType::Range )
+    {
+      sipType = sipType_QgsRangeFieldDomain;
+    }
+    else if ( sipCpp->type() == Qgis::FieldDomainType::Glob )
+    {
+      sipType = sipType_QgsGlobFieldDomain;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsFieldDomain( const QString &name,
+                    const QString &description,
+                    QVariant::Type fieldType );
+%Docstring
+Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+%End
+
+    virtual ~QgsFieldDomain();
+
+    virtual QgsFieldDomain *clone() const = 0 /Factory/;
+%Docstring
+Clones the field domain.
+%End
+
+    virtual Qgis::FieldDomainType type() const = 0;
+%Docstring
+Returns the type of field domain.
+%End
+
+    virtual QString typeName() const = 0;
+%Docstring
+Returns a translated name of the field domain type.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of the field domain.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the ``name`` of the field domain.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QString description() const;
+%Docstring
+Returns the description of the field domain.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets the ``description`` of the field domain.
+
+.. seealso:: :py:func:`description`
+%End
+
+    QVariant::Type fieldType() const;
+%Docstring
+Returns the associated field type.
+
+.. seealso:: :py:func:`setFieldType`
+%End
+
+    void setFieldType( QVariant::Type type );
+%Docstring
+Sets the associated field ``type``.
+
+.. seealso:: :py:func:`fieldType`
+%End
+
+    Qgis::FieldDomainSplitPolicy splitPolicy() const;
+%Docstring
+Returns the split policy.
+
+.. seealso:: :py:func:`setSplitPolicy`
+%End
+
+    void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy );
+%Docstring
+Sets the split ``policy``.
+
+.. seealso:: :py:func:`splitPolicy`
+%End
+
+    Qgis::FieldDomainMergePolicy mergePolicy() const;
+%Docstring
+Returns the merge policy.
+
+.. seealso:: :py:func:`setMergePolicy`
+%End
+
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy );
+%Docstring
+Sets the merge ``policy``.
+
+.. seealso:: :py:func:`mergePolicy`
+%End
+
+  protected:
+
+
+
+};
+
+class QgsCodedValue
+{
+%Docstring(signature="appended")
+Associates a code and a value.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomain.h"
+%End
+  public:
+
+    QgsCodedValue( const QVariant &code, const QString &value );
+%Docstring
+Constructor for QgsCodedValue, with the associated ``code`` and ``value``.
+
+The ``code`` is the underlying value stored in feature attributes, while the
+``value`` is the user-facing string representation.
+%End
+
+    QVariant code() const;
+%Docstring
+Returns the associated code, which is the underlying
+value stored in fields.
+%End
+
+    QString value() const;
+%Docstring
+Returns the associated value, which is the user-friendly
+string representation.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCodedValue: %1 (%2)>" ).arg( sipCpp->code().toString(), sipCpp->value() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    bool operator==( const QgsCodedValue &other ) const;
+    bool operator!=( const QgsCodedValue &other ) const;
+
+};
+
+
+class QgsCodedFieldDomain : QgsFieldDomain
+{
+%Docstring(signature="appended")
+Definition of a coded / enumerated field domain.
+
+A code field domain is a domain for which only a limited set of codes,
+associated with their expanded value, are allowed.
+The type of the code should be the one of the field domain.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomain.h"
+%End
+  public:
+
+    QgsCodedFieldDomain( const QString &name,
+                         const QString &description,
+                         QVariant::Type fieldType,
+                         const QList<QgsCodedValue> &values );
+%Docstring
+Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
+
+The ``values`` list details the coded field values as :py:class:`QgsCodedValue` objects. Each code should
+appear only once, but it is the responsibility of the user to check this.
+%End
+
+
+    virtual Qgis::FieldDomainType type() const;
+
+    virtual QString typeName() const;
+
+    virtual QgsCodedFieldDomain *clone() const /Factory/;
+
+
+    QList< QgsCodedValue> values() const;
+%Docstring
+Returns the enumeration as :py:class:`QgsCodedValue` values.
+
+.. seealso:: :py:func:`setValues`
+%End
+
+    void setValues( const QList< QgsCodedValue> &values );
+%Docstring
+Sets the enumeration as :py:class:`QgsCodedValue` ``values``.
+
+.. seealso:: :py:func:`values`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCodedFieldDomain: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  private:
+    QgsCodedFieldDomain( const QgsCodedFieldDomain & );
+};
+
+
+class QgsRangeFieldDomain : QgsFieldDomain
+{
+%Docstring(signature="appended")
+Definition of a numeric field domain with a range of validity for values.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomain.h"
+%End
+  public:
+
+    QgsRangeFieldDomain( const QString &name,
+                         const QString &description,
+                         QVariant::Type fieldType,
+                         const QVariant &minimum,
+                         bool minimumIsInclusive,
+                         const QVariant &maximum,
+                         bool maximumIsInclusive );
+%Docstring
+Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+
+Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimum or maximum value is desired.
+%End
+
+
+    virtual Qgis::FieldDomainType type() const;
+
+    virtual QString typeName() const;
+
+    virtual QgsRangeFieldDomain *clone() const /Factory/;
+
+
+    QVariant minimum() const;
+%Docstring
+Returns the minimum value.
+
+If no minimum value is set then an invalid variant will be returned.
+
+.. seealso:: :py:func:`minimumIsInclusive`
+
+.. seealso:: :py:func:`setMinimum`
+%End
+
+    void setMinimum( const QVariant &minimum );
+%Docstring
+Sets the ``minimum`` allowed value.
+
+If no minimum value is desired then an invalid variant should be set.
+
+.. seealso:: :py:func:`setMinimumIsInclusive`
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    bool minimumIsInclusive() const;
+%Docstring
+Returns ``True`` if the minimum value is inclusive.
+
+.. seealso:: :py:func:`minimum`
+
+.. seealso:: :py:func:`setMinimumIsInclusive`
+%End
+
+    void setMinimumIsInclusive( bool inclusive );
+%Docstring
+Sets whether the minimum value is ``inclusive``.
+
+.. seealso:: :py:func:`setMinimum`
+
+.. seealso:: :py:func:`minimumIsInclusive`
+%End
+
+    QVariant maximum() const;
+%Docstring
+Returns the maximum value.
+
+If no maximum value is set then an invalid variant will be returned.
+
+.. seealso:: :py:func:`maximumIsInclusive`
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    void setMaximum( const QVariant &maximum );
+%Docstring
+Sets the ``maximum`` allowed value.
+
+If no maximum value is desired then an invalid variant should be set.
+
+.. seealso:: :py:func:`setMaximumIsInclusive`
+
+.. seealso:: :py:func:`maximum`
+%End
+
+    bool maximumIsInclusive() const;
+%Docstring
+Returns ``True`` if the maximum value is inclusive.
+
+.. seealso:: :py:func:`maximum`
+
+.. seealso:: :py:func:`setMaximumIsInclusive`
+%End
+
+    void setMaximumIsInclusive( bool inclusive );
+%Docstring
+Sets whether the maximum value is ``inclusive``.
+
+.. seealso:: :py:func:`setMaximum`
+
+.. seealso:: :py:func:`maximumIsInclusive`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRangeFieldDomain: %1 %2%3, %4%5>" ).arg( sipCpp->name(),
+                  sipCpp->minimumIsInclusive() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
+                  sipCpp->minimum().toString(),
+                  sipCpp->maximum().toString(),
+                  sipCpp->maximumIsInclusive() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  private:
+    QgsRangeFieldDomain( const QgsRangeFieldDomain & );
+};
+
+
+class QgsGlobFieldDomain : QgsFieldDomain
+{
+%Docstring(signature="appended")
+Definition of a field domain for field content validated by a glob.
+
+Globs are matching expression like "*[a-z][0-1]?"
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsfielddomain.h"
+%End
+  public:
+
+    QgsGlobFieldDomain( const QString &name,
+                        const QString &description,
+                        QVariant::Type fieldType,
+                        const QString &glob );
+%Docstring
+Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+
+The ``glob`` argument specifies the content validation glob, e.g. "*[a-z][0-1]?".
+%End
+
+
+    virtual Qgis::FieldDomainType type() const;
+
+    virtual QString typeName() const;
+
+    virtual QgsGlobFieldDomain *clone() const /Factory/;
+
+
+    QString glob() const;
+%Docstring
+Returns the glob expression.
+
+Globs are matching expression like "*[a-z][0-1]?"
+
+.. seealso:: :py:func:`setGlob`
+%End
+
+    void setGlob( const QString &glob );
+%Docstring
+Sets the ``glob`` expression.
+
+Globs are matching expression like "*[a-z][0-1]?"
+
+.. seealso:: :py:func:`glob`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsGlobFieldDomain: %1 '%2'>" ).arg( sipCpp->name(), sipCpp->glob() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  private:
+    QgsGlobFieldDomain( const QgsGlobFieldDomain & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vector/qgsfielddomain.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

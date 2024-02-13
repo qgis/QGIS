@@ -1,0 +1,11 @@
+# The following has been generated automatically from src/core/layout/qgslayoutitempicture.h
+QgsLayoutItemPicture.Zoom = QgsLayoutItemPicture.ResizeMode.Zoom
+QgsLayoutItemPicture.Stretch = QgsLayoutItemPicture.ResizeMode.Stretch
+QgsLayoutItemPicture.Clip = QgsLayoutItemPicture.ResizeMode.Clip
+QgsLayoutItemPicture.ZoomResizeFrame = QgsLayoutItemPicture.ResizeMode.ZoomResizeFrame
+QgsLayoutItemPicture.FrameToImageSize = QgsLayoutItemPicture.ResizeMode.FrameToImageSize
+QgsLayoutItemPicture.FormatSVG = QgsLayoutItemPicture.Format.FormatSVG
+QgsLayoutItemPicture.FormatRaster = QgsLayoutItemPicture.Format.FormatRaster
+QgsLayoutItemPicture.FormatUnknown = QgsLayoutItemPicture.Format.FormatUnknown
+QgsLayoutItemPicture.GridNorth = QgsLayoutItemPicture.NorthMode.GridNorth
+QgsLayoutItemPicture.TrueNorth = QgsLayoutItemPicture.NorthMode.TrueNorth

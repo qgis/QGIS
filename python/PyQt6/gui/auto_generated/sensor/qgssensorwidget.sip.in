@@ -1,0 +1,72 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/sensor/qgssensorwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstractSensorWidget : QWidget
+{
+%Docstring(signature="appended")
+Base class for widgets which allow control over the properties of sensors.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssensorwidget.h"
+%End
+  public:
+
+    QgsAbstractSensorWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAbstractSensorWidget.
+
+:param parent: parent widget
+%End
+
+    virtual QgsAbstractSensor *createSensor() = 0 /Factory/;
+%Docstring
+Creates a new sensor matching the settings defined in the widget.
+%End
+
+    virtual bool updateSensor( QgsAbstractSensor *sensor ) = 0;
+%Docstring
+Updates an existing ``sensor`` to match the settings defined in the widget. If
+``True`` is returned, the ``sensor`` was successfully updated.
+
+If ``False`` is returned, then the widget could not successfully update
+the ``sensor``.
+%End
+
+    virtual bool setSensor( QgsAbstractSensor *sensor ) = 0;
+%Docstring
+Sets the widget settings to match a given ``sensor``. If ``True`` is returned, ``sensor``
+was an acceptable type and the widget has been updated to match
+the ``sensor``'s properties.
+
+If ``False`` is returned, then the widget could not be successfully updated
+to show the properties of ``sensor``.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever configuration changes happened on this sensor configuration.
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/sensor/qgssensorwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

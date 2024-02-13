@@ -1,0 +1,15 @@
+# The following has been generated automatically from src/gui/qgsattributeeditorcontext.h
+QgsAttributeEditorContext.SingleEditMode = QgsAttributeEditorContext.Mode.SingleEditMode
+QgsAttributeEditorContext.AddFeatureMode = QgsAttributeEditorContext.Mode.AddFeatureMode
+QgsAttributeEditorContext.FixAttributeMode = QgsAttributeEditorContext.Mode.FixAttributeMode
+QgsAttributeEditorContext.MultiEditMode = QgsAttributeEditorContext.Mode.MultiEditMode
+QgsAttributeEditorContext.SearchMode = QgsAttributeEditorContext.Mode.SearchMode
+QgsAttributeEditorContext.AggregateSearchMode = QgsAttributeEditorContext.Mode.AggregateSearchMode
+QgsAttributeEditorContext.IdentifyMode = QgsAttributeEditorContext.Mode.IdentifyMode
+QgsAttributeEditorContext.Mode.baseClass = QgsAttributeEditorContext
+QgsAttributeEditorContext.Undefined = QgsAttributeEditorContext.RelationMode.Undefined
+QgsAttributeEditorContext.Multiple = QgsAttributeEditorContext.RelationMode.Multiple
+QgsAttributeEditorContext.Single = QgsAttributeEditorContext.RelationMode.Single
+QgsAttributeEditorContext.Embed = QgsAttributeEditorContext.FormMode.Embed
+QgsAttributeEditorContext.StandaloneDialog = QgsAttributeEditorContext.FormMode.StandaloneDialog
+QgsAttributeEditorContext.Popup = QgsAttributeEditorContext.FormMode.Popup

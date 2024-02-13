@@ -1,0 +1,152 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrunprocess.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRunProcess: QObject /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+A class that executes an external program/script.
+
+It can optionally capture the standard output and error from the
+process and displays them in a dialog box.
+
+On some platforms (e.g. iOS) , the process execution is skipped
+https://lists.qt-project.org/pipermail/development/2015-July/022205.html
+%End
+
+%TypeHeaderCode
+#include "qgsrunprocess.h"
+%End
+  public:
+
+    static QgsRunProcess *create( const QString &action, bool capture ) /Factory/;
+
+    static QStringList splitCommand( const QString &command );
+%Docstring
+Splits the string ``command`` into a list of tokens, and returns
+the list.
+
+Tokens with spaces can be surrounded by double quotes; three
+consecutive double quotes represent the quote character itself.
+
+.. versionadded:: 3.18
+%End
+
+  private:
+    QgsRunProcess( const QString &action, bool capture );
+    ~QgsRunProcess();
+  public slots:
+    void stdoutAvailable();
+    void stderrAvailable();
+    void processError( QProcess::ProcessError );
+    void processExit( int, QProcess::ExitStatus );
+    void dialogGone();
+};
+
+
+class QgsBlockingProcess : QObject
+{
+%Docstring(signature="appended")
+A thread safe class for performing blocking (sync) execution of external processes.
+
+This class should be used whenever a blocking process run is required. Unlike implementations
+which rely on QApplication.processEvents() or creation of a QEventLoop, this class is completely
+thread safe and can be used on either the main thread or background threads without issue.
+
+Not available on some platforms (e.g. iOS)
+https://lists.qt-project.org/pipermail/development/2015-July/022205.html
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrunprocess.h"
+%End
+  public:
+
+    QgsBlockingProcess( const QString &program, const QStringList &arguments );
+%Docstring
+Constructor for the given ``program``, with the specified list of ``arguments``.
+
+After construction, call :py:func:`~QgsBlockingProcess.run` to start the process execution.
+%End
+
+
+    void setStdOutHandler( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a handler function to call whenever content is written by the process to stdout.
+%End
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setStdOutHandler( [a0]( const QByteArray &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+%End
+
+
+    void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a ``handler`` function to call whenever content is written by the process to stderr.
+%End
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setStdErrHandler( [a0]( const QByteArray &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+%End
+
+    int run( QgsFeedback *feedback = 0 );
+%Docstring
+Runs the process, and blocks until execution finishes.
+
+The optional ``feedback`` argument can be used to specify a feedback object for cancellation/process termination.
+
+After execution completes, the process' result code will be returned.
+%End
+
+    QProcess::ExitStatus exitStatus() const;
+%Docstring
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
+%End
+
+    QProcess::ProcessError processError() const;
+%Docstring
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' reported error.
+
+Returns QProcess.UnknownError if no error occurred.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrunprocess.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

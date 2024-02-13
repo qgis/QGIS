@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsfavoritesitem.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsFavoritesItem : QgsDataCollectionItem
+{
+%Docstring(signature="appended")
+Contains various Favorites directories
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfavoritesitem.h"
+%End
+  public:
+
+    QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
+%Docstring
+Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
+the item.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
+    void addDirectory( const QString &directory, const QString &name = QString() );
+%Docstring
+Adds a new ``directory`` to the favorites group.
+
+If ``name`` is specified, it will be used as the favorite's name. Otherwise
+the name will be set to match ``directory``.
+
+.. seealso:: :py:func:`removeDirectory`
+%End
+
+    void removeDirectory( QgsDirectoryItem *item );
+%Docstring
+Removes an existing directory from the favorites group.
+
+.. seealso:: :py:func:`addDirectory`
+%End
+
+    void renameFavorite( const QString &path, const QString &name );
+%Docstring
+Renames the stored favorite with corresponding ``path`` a new ``name``.
+%End
+
+    static QIcon iconFavorites();
+%Docstring
+Icon for favorites group
+%End
+
+    virtual QVariant sortKey() const;
+
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsfavoritesitem.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

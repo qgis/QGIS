@@ -1,0 +1,170 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayerlabeling.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsAbstractMeshLayerLabeling
+{
+%Docstring(signature="appended")
+Abstract base class - its implementations define different approaches to the labeling of a mesh layer.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgsmeshlayerlabeling.h"
+%End
+  public:
+
+    QgsAbstractMeshLayerLabeling();
+%Docstring
+Default constructor
+%End
+    virtual ~QgsAbstractMeshLayerLabeling();
+
+    virtual QString type() const = 0;
+%Docstring
+Unique type string of the labeling configuration implementation
+%End
+
+    virtual QgsAbstractMeshLayerLabeling *clone() const = 0 /Factory/;
+%Docstring
+Returns a new copy of the object
+%End
+
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Returns labeling configuration as XML element
+%End
+
+    virtual QStringList subProviders() const;
+%Docstring
+Gets list of sub-providers within the layer's labeling.
+%End
+
+    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
+%Docstring
+Gets associated label settings. In case of multiple sub-providers with different settings,
+they are identified by their ID.
+%End
+
+    virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() ) = 0;
+%Docstring
+Set pal settings for a specific provider (takes ownership).
+
+:param settings: Pal layer settings
+:param providerId: The id of the provider
+%End
+
+    virtual bool requiresAdvancedEffects() const = 0;
+%Docstring
+Returns ``True`` if drawing labels requires advanced effects like composition
+modes, which could prevent it being used as an isolated cached image
+or exported to a vector format.
+%End
+
+    virtual void multiplyOpacity( double opacityFactor );
+%Docstring
+Multiply opacity by ``opacityFactor``.
+
+This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
+by ``opacity`` effectively changing the opacity of the whole labeling elements.
+%End
+
+
+    static QgsAbstractMeshLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Try to create instance of an implementation based on the XML data
+%End
+
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
+%Docstring
+Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+%End
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
+with the labeling.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+%End
+
+    static QgsPalLayerSettings defaultSettingsForLayer( const QgsMeshLayer *layer );
+%Docstring
+Returns the default layer settings to use for the specified mesh ``layer``.
+%End
+
+  private:
+    QgsAbstractMeshLayerLabeling( const QgsAbstractMeshLayerLabeling &rhs );
+};
+
+class QgsMeshLayerSimpleLabeling : QgsAbstractMeshLayerLabeling
+{
+%Docstring(signature="appended")
+Basic implementation of the labeling interface for mesh layer.
+
+.. versionadded:: 3.36
+%End
+
+%TypeHeaderCode
+#include "qgsmeshlayerlabeling.h"
+%End
+  public:
+
+    explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces = false );
+%Docstring
+Constructs simple labeling configuration with given initial ``settings``.
+Labels are placed on mesh vertices unless ``labelFaces`` is ``True``, when they are placed on mesh faces.
+%End
+
+    virtual QString type() const;
+
+    virtual QgsMeshLayerSimpleLabeling *clone() const /Factory/;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
+    virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );
+
+%Docstring
+Set pal settings (takes ownership).
+
+:param settings: Pal layer settings
+:param providerId: Unused parameter
+%End
+
+    virtual bool requiresAdvancedEffects() const;
+
+    virtual void multiplyOpacity( double opacityFactor );
+
+    static QgsMeshLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Create the instance from a DOM element with saved configuration
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayerlabeling.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

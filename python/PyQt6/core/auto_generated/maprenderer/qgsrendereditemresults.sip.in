@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/maprenderer/qgsrendereditemresults.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRenderedItemResults
+{
+%Docstring(signature="appended")
+Stores collated details of rendered items during a map rendering operation.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsrendereditemresults.h"
+%End
+  public:
+
+    QgsRenderedItemResults( const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Constructor for QgsRenderedItemResults.
+
+The ``extent`` argument can be used to specify an expected maximal extent for items which
+will be stored in the results. This helps to optimise the spatial indices used by the object.
+%End
+    ~QgsRenderedItemResults();
+
+
+    QList< QgsRenderedItemDetails * > renderedItems() const;
+%Docstring
+Returns a list of all rendered items.
+%End
+
+    QList<const QgsRenderedAnnotationItemDetails *> renderedAnnotationItemsInBounds( const QgsRectangle &bounds ) const;
+%Docstring
+Returns a list with details of the rendered annotation items within the specified ``bounds``.
+
+.. versionadded:: 3.22
+%End
+
+    void appendResults( const QList< QgsRenderedItemDetails * > &results /Transfer/, const QgsRenderContext &context );
+%Docstring
+Appends rendered item details to the results object.
+
+Ownership of ``results`` is transferred to the this object.
+
+The render ``context`` argument is used to specify the render context used to render the items. It will be used
+to transform the details to the destination map CRS.
+%End
+
+    void transferResults( QgsRenderedItemResults *other, const QStringList &layerIds );
+%Docstring
+Transfers all results from an ``other`` QgsRenderedItemResults object where the items
+have layer IDs matching the specified list.
+
+Items are removed from ``other`` and transferred to this object.
+
+.. warning::
+
+   After calling this method the ``other`` results will be left in an undefined state.
+%End
+
+    void transferResults( QgsRenderedItemResults *other );
+%Docstring
+Transfers all results from an ``other`` QgsRenderedItemResults object to this one.
+
+Items are removed from ``other`` and transferred to this object.
+
+.. warning::
+
+   After calling this method the ``other`` results will be left in an undefined state.
+%End
+
+    void eraseResultsFromLayers( const QStringList &layerIds );
+%Docstring
+Erases results from layers matching those in the specified list of layers IDs.
+%End
+
+  private:
+    QgsRenderedItemResults( const QgsRenderedItemResults & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/maprenderer/qgsrendereditemresults.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

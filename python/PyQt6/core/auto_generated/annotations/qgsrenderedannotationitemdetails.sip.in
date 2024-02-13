@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsrenderedannotationitemdetails.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsRenderedAnnotationItemDetails : QgsRenderedItemDetails
+{
+%Docstring(signature="appended")
+Contains information about a rendered annotation item.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsrenderedannotationitemdetails.h"
+%End
+  public:
+
+    QgsRenderedAnnotationItemDetails( const QString &layerId, const QString &itemId );
+%Docstring
+Constructor for QgsRenderedAnnotationItemDetails.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRenderedAnnotationItemDetails: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->itemId() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QString itemId() const;
+%Docstring
+Returns the item ID of the associated annotation item.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsrenderedannotationitemdetails.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

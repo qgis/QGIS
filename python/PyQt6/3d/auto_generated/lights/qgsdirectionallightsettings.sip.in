@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgsdirectionallightsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDirectionalLightSettings : QgsLightSource
+{
+%Docstring(signature="appended")
+Definition of a directional light in a 3D map scene
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsdirectionallightsettings.h"
+%End
+  public:
+    QgsDirectionalLightSettings();
+%Docstring
+Construct a directional light with default values
+%End
+
+    virtual Qgis::LightSourceType type() const;
+
+    virtual QgsDirectionalLightSettings *clone() const /Factory/;
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
+
+
+    QgsVector3D direction() const;
+%Docstring
+Returns the direction of the light in degrees
+%End
+    void setDirection( const QgsVector3D &direction );
+%Docstring
+Sets the direction of the light in degrees
+%End
+
+    QColor color() const;
+%Docstring
+Returns color of the light
+%End
+    void setColor( const QColor &color );
+%Docstring
+Sets color of the light
+%End
+
+    float intensity() const;
+%Docstring
+Returns intensity of the light
+%End
+    void setIntensity( float intensity );
+%Docstring
+Sets intensity of the light
+%End
+
+    bool operator==( const QgsDirectionalLightSettings &other );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/lights/qgsdirectionallightsettings.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

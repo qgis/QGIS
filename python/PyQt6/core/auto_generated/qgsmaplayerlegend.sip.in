@@ -1,0 +1,391 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerlegend.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsMapLayerLegend : QObject
+{
+%Docstring(signature="appended")
+The :py:class:`QgsMapLayerLegend` class is abstract interface for implementations
+of legends for one map layer.
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+
+    explicit QgsMapLayerLegend( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMapLayerLegend
+%End
+
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from a DOM element previously written by :py:func:`~QgsMapLayerLegend.writeXml`
+
+.. versionadded:: 3.2
+%End
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a DOM element, to be used later with :py:func:`~QgsMapLayerLegend.readXml`
+
+.. versionadded:: 3.2
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
+%Docstring
+Returns list of legend nodes to be used for a particular layer tree layer node.
+Ownership is transferred to the caller.
+%End
+
+
+    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Create new legend implementation for vector layer
+%End
+
+    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) /Factory/;
+%Docstring
+Create new legend implementation for raster layer
+%End
+
+    static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) /Factory/;
+%Docstring
+Create new legend implementation for mesh layer
+%End
+
+    static QgsMapLayerLegend *defaultPointCloudLegend( QgsPointCloudLayer *layer ) /Factory/;
+%Docstring
+Create new legend implementation for a point cloud ``layer``.
+
+.. versionadded:: 3.18
+%End
+
+  signals:
+    void itemsChanged();
+%Docstring
+Emitted when existing items/nodes got invalid and should be replaced by new ones
+%End
+};
+
+
+class QgsMapLayerLegendUtils
+{
+%Docstring(signature="appended")
+Miscellaneous utility functions for handling of map layer legend
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    static void setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order );
+    static QList<int> legendNodeOrder( QgsLayerTreeLayer *nodeLayer );
+    static bool hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer );
+
+    static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
+    static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+    static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    static void setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape );
+%Docstring
+Sets the legend patch ``shape`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+.. seealso:: :py:func:`legendNodePatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    static QgsLegendPatchShape legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns the legend patch shape for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+.. seealso:: :py:func:`setLegendNodePatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    static void setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size );
+%Docstring
+Sets the legend symbol ``size`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`legendNodeSymbolSize`
+
+.. versionadded:: 3.14
+%End
+
+    static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns the legend node symbol size for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setLegendNodeSymbolSize`
+
+.. versionadded:: 3.14
+%End
+
+    static void setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol );
+%Docstring
+Sets a custom legend ``symbol`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If ``symbol`` is non-``None``, it will be used in place of the default symbol when rendering
+the legend node.
+
+.. seealso:: :py:func:`legendNodeCustomSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
+%Docstring
+Returns the custom legend symbol for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If the symbol is non-``None``, it will be used in place of the default symbol when rendering
+the legend node.
+
+Caller takes ownership of the returned symbol.
+
+.. seealso:: :py:func:`setLegendNodeCustomSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    static void setLegendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsColorRampLegendNodeSettings *settings );
+%Docstring
+Sets a custom legend color ramp ``settings`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If the corresponding legend node is not a :py:class:`QgsColorRampLegendNode` then calling this method will have no effect.
+
+If ``settings`` is non-``None``, they will be used in place of the default settigns when rendering
+the legend node.
+
+.. seealso:: :py:func:`legendNodeColorRampSettings`
+
+.. versionadded:: 3.18
+%End
+
+    static QgsColorRampLegendNodeSettings *legendNodeColorRampSettings( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
+%Docstring
+Returns the custom legend color ramp settings for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If the corresponding legend node is not a :py:class:`QgsColorRampLegendNode` then calling this method will return ``None``.
+
+If the returned value is non-``None``, they will be used in place of the default settings when rendering
+the legend node.
+
+Caller takes ownership of the returned settings.
+
+.. seealso:: :py:func:`setLegendNodeColorRampSettings`
+
+.. versionadded:: 3.18
+%End
+
+
+    static void setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode );
+%Docstring
+Sets whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`legendNodeColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
+    static bool legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`setLegendNodeColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
+    static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
+%Docstring
+update according to layer node's custom properties (order of items, user labels for items)
+%End
+};
+
+
+
+
+class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
+{
+%Docstring(signature="appended")
+Default legend implementation for vector layers
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
+
+    bool textOnSymbolEnabled() const;
+%Docstring
+Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+may have extra text rendered on top. The content of labels and their style is controlled
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolEnabled( bool enabled );
+%Docstring
+Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
+may have extra text rendered on top. The content of labels and their style is controlled
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
+
+.. versionadded:: 3.2
+%End
+
+    bool showLabelLegend() const;
+%Docstring
+Returns whether the legend for the labeling is shown
+
+.. versionadded:: 3.20
+%End
+
+    void setShowLabelLegend( bool enabled );
+%Docstring
+Sets if a legend for the labeling should be shown
+
+:param enabled: true to show label legend entries
+
+.. versionadded:: 3.20
+%End
+
+    QgsTextFormat textOnSymbolTextFormat() const;
+%Docstring
+Returns text format of symbol labels for "text on symbol" functionality.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets text format of symbol labels for "text on symbol" functionality.
+
+.. versionadded:: 3.2
+%End
+
+    QHash<QString, QString> textOnSymbolContent() const;
+%Docstring
+Returns per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+the keys are rule keys of legend items, the values are labels to be shown.
+
+.. versionadded:: 3.2
+%End
+
+    void setTextOnSymbolContent( const QHash<QString, QString> &content );
+%Docstring
+Sets per-symbol content of labels for "text on symbol" functionality. In the passed dictionary
+the keys are rule keys of legend items, the values are labels to be shown.
+
+.. versionadded:: 3.2
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+};
+
+
+class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
+{
+%Docstring(signature="appended")
+Default legend implementation for raster layers
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+
+class QgsDefaultMeshLayerLegend : QgsMapLayerLegend
+{
+%Docstring(signature="appended")
+Default legend implementation for mesh layers
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
+%Docstring
+Creates an instance for the given mesh layer
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+class QgsDefaultPointCloudLayerLegend : QgsMapLayerLegend
+{
+%Docstring(signature="appended")
+Default legend implementation for point cloud layers
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultPointCloudLayerLegend( QgsPointCloudLayer *layer );
+%Docstring
+Creates an instance for the given point cloud layer
+%End
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerlegend.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

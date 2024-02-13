@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/providers/qgsabstractdbsourceselect.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+{
+%Docstring(signature="appended")
+The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database source widget selector
+
+.. versionadded:: 3.24
+%End
+
+%TypeHeaderCode
+#include "qgsabstractdbsourceselect.h"
+%End
+  public:
+    QgsAbstractDbSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+%Docstring
+Constructor
+%End
+
+  protected:
+    void init( QgsAbstractDbTableModel *model, QItemDelegate *delegate = 0 );
+%Docstring
+Sets the source model for the table and optionally a delegate
+%End
+
+    QSortFilterProxyModel *proxyModel();
+%Docstring
+Returns the proxy model used to filter the results
+%End
+
+
+  protected slots:
+
+    virtual void setSql( const QModelIndex &index ) = 0;
+%Docstring
+This is called to define the SQL query and must be re-implemented.
+The implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
+The index is in the source model.
+%End
+
+    virtual void treeviewClicked( const QModelIndex &index );
+%Docstring
+Called on click for the source ``index``
+%End
+
+    virtual void treeviewDoubleClicked( const QModelIndex &index );
+%Docstring
+Called on double-click for the source ``index``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/providers/qgsabstractdbsourceselect.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssldexportcontext.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsSldExportContext
+{
+%Docstring(signature="appended")
+The :py:class:`QgsSldExportContext` class holds SLD export options and other information related to SLD export of a QGIS layer style.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgssldexportcontext.h"
+%End
+  public:
+
+    QgsSldExportContext();
+%Docstring
+Constructs a default SLD export context
+%End
+
+    ~QgsSldExportContext();
+
+    QgsSldExportContext( const QgsSldExportContext &other );
+%Docstring
+Constructs a copy of SLD export context ``other``
+%End
+
+
+    QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
+%Docstring
+/brief Create a new QgsSldExportContext
+/param options SLD export options
+/param vendorExtension SLD export vendor extension
+/param filePath SLD export file path
+%End
+
+    Qgis::SldExportOptions exportOptions() const;
+%Docstring
+Returns the export options
+%End
+
+    void setExportOptions( const Qgis::SldExportOptions &exportOptions );
+%Docstring
+Set export options to ``exportOptions``
+%End
+
+    Qgis::SldExportVendorExtension vendorExtensions() const;
+%Docstring
+Returns the vendor extension enabled for the SLD export
+%End
+
+    void setVendorExtension( const Qgis::SldExportVendorExtension &vendorExtension );
+%Docstring
+Sets the vendor extensions to ``vendorExtension``
+%End
+
+    QString exportFilePath() const;
+%Docstring
+Returns the export file path for the SLD
+%End
+
+    void setExportFilePath( const QString &exportFilePath );
+%Docstring
+Sets the export file path for the SLD to ``exportFilePath``
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssldexportcontext.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

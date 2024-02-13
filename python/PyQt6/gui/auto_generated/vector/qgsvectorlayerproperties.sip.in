@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vector/qgsvectorlayerproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsVectorLayerProperties : QgsLayerPropertiesDialog
+{
+
+%TypeHeaderCode
+#include "qgsvectorlayerproperties.h"
+%End
+  public:
+
+    QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
+
+  protected slots:
+    void optionsStackedWidget_CurrentChanged( int index ) final;
+    virtual void syncToLayer() ${SIP_FINAL};
+
+    virtual void apply() ${SIP_FINAL};
+
+    virtual void rollback() ${SIP_FINAL};
+
+
+  signals:
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/vector/qgsvectorlayerproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

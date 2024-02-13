@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptoolcapturelayergeometry.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapToolCaptureLayerGeometry : QgsMapToolCapture
+{
+%Docstring(signature="appended")
+:py:class:`QgsMapToolCaptureLayerGeometry` is a base class for map tools digitizing layer geometries
+This map tool subclass automatically handles intersection avoidance with other layers in the active project whenever a geometry is digitized by the user.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsmaptoolcapturelayergeometry.h"
+%End
+  public:
+    QgsMapToolCaptureLayerGeometry( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+%Docstring
+Constructor
+%End
+
+  private:
+    virtual void layerGeometryCaptured( const QgsGeometry &geometry );
+%Docstring
+Called when the geometry is captured
+A more specific handler is also called afterwards (layerPointCaptured, layerLineCaptured or layerPolygonCaptured)
+%End
+    virtual void layerPointCaptured( const QgsPoint &point );
+%Docstring
+Called when a point is captured
+The generic :py:func:`~QgsMapToolCaptureLayerGeometry.geometryCaptured` signal will be emitted immediately before this point-specific signal.
+%End
+    virtual void layerLineCaptured( const QgsCurve *line );
+%Docstring
+Called when a line is captured
+The generic :py:func:`~QgsMapToolCaptureLayerGeometry.geometryCaptured` signal will be emitted immediately before this line-specific signal.
+%End
+    virtual void layerPolygonCaptured( const QgsCurvePolygon *polygon );
+%Docstring
+Called when a polygon is captured
+The generic :py:func:`~QgsMapToolCaptureLayerGeometry.geometryCaptured` signal will be emitted immediately before this polygon-specific signal.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/maptools/qgsmaptoolcapturelayergeometry.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

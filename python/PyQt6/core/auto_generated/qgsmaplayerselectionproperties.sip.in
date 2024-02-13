@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerselectionproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapLayerSelectionProperties : QObject
+{
+%Docstring(signature="appended")
+Base class for storage of map layer selection properties.
+
+:py:class:`QgsMapLayerSelectionProperties` exposes settings for controlling
+how an individual :py:class:`QgsMapLayer` behaves with respect to feature selection.
+
+.. versionadded:: 3.34
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerselectionproperties.h"
+#include "qgsvectorlayerselectionproperties.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsVectorLayerSelectionProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerSelectionProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsMapLayerSelectionProperties( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsMapLayerSelectionProperties, with the specified ``parent`` object.
+%End
+
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Writes the properties to a DOM ``element``, to be used later with :py:func:`~QgsMapLayerSelectionProperties.readXml`.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads temporal properties from a DOM ``element`` previously written by :py:func:`~QgsMapLayerSelectionProperties.writeXml`.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    virtual QgsMapLayerSelectionProperties *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the properties.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerselectionproperties.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,197 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessagebaritem.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMessageBarItem : QWidget
+{
+%Docstring(signature="appended")
+Represents an item shown within a :py:class:`QgsMessageBar` widget.
+
+:py:class:`QgsMessageBarItem` represents a single item (or message) which can be shown in a :py:class:`QgsMessageBar` widget.
+%End
+
+%TypeHeaderCode
+#include "qgsmessagebaritem.h"
+%End
+  public:
+
+    QgsMessageBarItem( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMessageBarItem, containing a message with the specified ``text`` to be displayed on the bar.
+
+The ``level`` argument specifies the desired message level (severity) of the message, which controls
+how the message bar is styled when the item is displayed.
+
+The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
+%End
+
+    QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMessageBarItem, containing a ``title`` and message with the specified ``text`` to be displayed on the bar.
+
+The ``level`` argument specifies the desired message level (severity) of the message, which controls
+how the message bar is styled when the item is displayed.
+
+The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
+%End
+
+    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMessageBarItem, containing a ``title``, message with the specified ``text``, and a custom ``widget`` to be displayed on the bar.
+
+The ``level`` argument specifies the desired message level (severity) of the message, which controls
+how the message bar is styled when the item is displayed.
+
+The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
+%End
+
+    QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMessageBarItem, containing a custom ``widget`` to be displayed on the bar.
+
+The ``level`` argument specifies the desired message level (severity) of the message, which controls
+how the message bar is styled when the item is displayed.
+
+The optional ``duration`` argument can be used to specify the message timeout in seconds. If ``duration``
+is set to 0, then the message must be manually dismissed by the user. Since QGIS 3.18, a duration of -1 indicates that
+the default timeout for the message ``level`` should be used.
+%End
+
+    QgsMessageBarItem *setText( const QString &text );
+%Docstring
+Sets the message ``text`` to show in the item.
+
+.. seealso:: :py:func:`text`
+%End
+
+    QString text() const;
+%Docstring
+Returns the text for the message.
+
+.. seealso:: :py:func:`setText`
+%End
+
+    QgsMessageBarItem *setTitle( const QString &title );
+%Docstring
+Sets the ``title`` for in the item.
+
+.. seealso:: :py:func:`title`
+%End
+
+    QString title() const;
+%Docstring
+Returns the title for the message.
+
+.. seealso:: :py:func:`setTitle`
+%End
+
+    QgsMessageBarItem *setLevel( Qgis::MessageLevel level );
+%Docstring
+Sets the message ``level`` for the item, which controls how the message bar is styled
+when the item is displayed.
+
+.. seealso:: :py:func:`level`
+%End
+
+    Qgis::MessageLevel level() const;
+%Docstring
+Returns the message level for the message.
+
+.. seealso:: :py:func:`setLevel`
+%End
+
+    QgsMessageBarItem *setWidget( QWidget *widget );
+%Docstring
+Sets a custom ``widget`` to show in the item.
+
+.. seealso:: :py:func:`widget`
+%End
+
+    QWidget *widget() const;
+%Docstring
+Returns the widget for the message.
+
+.. seealso:: :py:func:`setWidget`
+%End
+
+    QgsMessageBarItem *setIcon( const QIcon &icon );
+%Docstring
+Sets the ``icon`` associated with the message.
+
+.. seealso:: :py:func:`icon`
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns the icon for the message.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+    QgsMessageBarItem *setDuration( int duration );
+%Docstring
+Sets the ``duration`` (in seconds) to show the message for. If ``duration``
+is 0 then the message will not automatically timeout and instead must be
+manually dismissed by the user.
+
+.. seealso:: :py:func:`duration`
+%End
+
+    int duration() const;
+%Docstring
+Returns the duration (in seconds) of the message.
+
+If the duration is 0 then the message will not automatically timeout and instead must be
+manually dismissed by the user.
+
+.. seealso:: :py:func:`setDuration`
+%End
+
+    QString getStyleSheet();
+%Docstring
+Returns the styleSheet which should be used to style a :py:class:`QgsMessageBar` object when
+this item is displayed.
+%End
+
+  public slots:
+
+    void dismiss();
+%Docstring
+Dismisses the item, removing it from the message bar and deleting
+it. Calling this on items which have not been added to a message bar
+has no effect.
+
+.. versionadded:: 3.4
+%End
+
+  signals:
+
+    void styleChanged( const QString &styleSheet );
+%Docstring
+Emitted when the item's message level has changed and the message bar style
+will need to be updated as a result.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessagebaritem.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
