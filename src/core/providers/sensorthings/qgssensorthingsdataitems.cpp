@@ -214,9 +214,9 @@ QString QgsSensorThingsDataItemProvider::dataProviderKey() const
   return QStringLiteral( "sensorthings" );
 }
 
-int QgsSensorThingsDataItemProvider::capabilities() const
+Qgis::DataItemProviderCapabilities QgsSensorThingsDataItemProvider::capabilities() const
 {
-  return QgsDataProvider::Net;
+  return Qgis::DataItemProviderCapability::NetworkSources;
 }
 
 QgsDataItem *QgsSensorThingsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
