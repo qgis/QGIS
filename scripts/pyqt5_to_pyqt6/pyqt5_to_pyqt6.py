@@ -213,7 +213,21 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         f'{filename}:{_node.lineno}:{_node.col_offset} WARNING: QDesktopWidget is deprecated and removed in Qt6. Replace with alternative approach instead.\n')
 
         if isinstance(_node.func, ast.Name) and _node.func.id == 'QVariant':
-            if len(_node.args) == 1 and isinstance(_node.args[0], ast.Attribute) and isinstance(_node.args[0].value, ast.Name) and _node.args[0].value.id == 'QVariant':
+            if not _node.args:
+                extra_imports['qgis.core'].update({'NULL'})
+
+                def _invalid_qvariant_to_null(start_index: int, tokens):
+                    assert tokens[start_index].src == 'QVariant'
+                    assert tokens[start_index + 1].src == '('
+                    assert tokens[start_index + 2].src == ')'
+
+                    tokens[start_index] = tokens[start_index]._replace(src='NULL')
+                    for i in range(start_index + 1, start_index + 3):
+                        tokens[i] = tokens[i]._replace(src='')
+
+                custom_updates[Offset(_node.lineno,
+                                      _node.col_offset)] = _invalid_qvariant_to_null
+            elif len(_node.args) == 1 and isinstance(_node.args[0], ast.Attribute) and isinstance(_node.args[0].value, ast.Name) and _node.args[0].value.id == 'QVariant':
                 extra_imports['qgis.core'].update({'NULL'})
 
                 def _fix_null_qvariant(start_index: int, tokens):
