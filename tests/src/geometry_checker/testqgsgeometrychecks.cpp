@@ -1120,14 +1120,15 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   } ) );
   testContext.second[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
   const QgsGeometryCollection *collectionResult = qgsgeometry_cast< const QgsGeometryCollection * >( f.geometry().constGet() );
-  QCOMPARE( collectionResult->geometryN( 0 )->asWkt( 2 ), QStringLiteral( "Polygon ((0.7 0.59, 1.32 0.6, 1.26 0.09, 0.51 0.05, 0.89 0.57, 0.7 0.59))" ) );
+
+  QCOMPARE( qgsgeometry_cast< const QgsPolygon * >( collectionResult->geometryN( 0 ) )->exteriorRing()->asWkt( 2 ), QStringLiteral( "LineString (0.7 0.59, 1.32 0.6, 1.26 0.09, 0.51 0.05, 0.89 0.57, 0.7 0.59)" ) );
   // make sure the other part of the ring isn't present in this feature. We may have OTHER parts in this feature though, depending on the GDAL version!
   for ( int i = 1; i < collectionResult->numGeometries(); ++i )
   {
-    QVERIFY( collectionResult->geometryN( i )->asWkt( 2 ) != QStringLiteral( "Polygon ((1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05))" ) );
+    QVERIFY( qgsgeometry_cast< const QgsPolygon * >( collectionResult->geometryN( i ) )->exteriorRing()->asWkt( 2 ) != QStringLiteral( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );
   }
   testContext.second[errs3[0]->layerId()]->getFeature( nextId, f );
-  QCOMPARE( f.geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05))" ) );
+  QCOMPARE( qgsgeometry_cast< const QgsPolygon * >( f.geometry().constGet() )->exteriorRing()->asWkt( 2 ), QStringLiteral( "LineString (1.24 -0.05, 1.45 0.1, 1.26 0.09, 1.24 -0.05)" ) );
 
   QVERIFY( fixCheckError( testContext.second,  errs4[0],
                           QgsGeometrySelfIntersectionCheck::ToMultiObject, QgsGeometryCheckError::StatusFixed,
