@@ -14,7 +14,7 @@ import hashlib
 import tempfile
 import unittest
 
-from qgis.PyQt.QtCore import QVariant, QCoreApplication, QDateTime, Qt
+from qgis.PyQt.QtCore import QVariant, QCoreApplication, QDateTime, Qt, QDate, QTime
 from qgis.core import (
     Qgis,
     QgsProviderRegistry,
@@ -734,9 +734,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f["time"] for f in features],
                 [
-                    QDateTime(2020, 3, 20, 16, 35, 23, 384, Qt.TimeSpec(1)),
-                    QDateTime(2021, 3, 20, 16, 35, 23, 384, Qt.TimeSpec(1)),
-                    QDateTime(2022, 3, 20, 16, 35, 23, 384, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 3, 20), QTime(16, 35, 23, 384), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2021, 3, 20), QTime(16, 35, 23, 384), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2022, 3, 20), QTime(16, 35, 23, 384), Qt.TimeSpec(1)),
                 ],
             )
 
@@ -950,33 +950,33 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f["phenomenonTimeStart"] for f in features],
                 [
-                    QDateTime(2017, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2020, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
                 [f["phenomenonTimeEnd"] for f in features],
                 [
-                    QDateTime(2018, 1, 12, 4, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2019, 1, 12, 4, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2021, 1, 12, 4, 0, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 12), QTime(4, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 1, 12), QTime(4, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2021, 1, 12), QTime(4, 0, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
                 [f["resultTimeStart"] for f in features],
                 [
-                    QDateTime(2017, 12, 31, 23, 30, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 12, 31, 23, 30, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2020, 12, 31, 23, 30, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 30, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 30, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 30, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
                 [f["resultTimeEnd"] for f in features],
                 [
-                    QDateTime(2017, 12, 31, 23, 31, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 12, 31, 23, 31, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2020, 12, 31, 23, 31, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 31, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 31, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(23, 31, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
@@ -1473,17 +1473,17 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f["phenomenonTimeStart"] for f in features],
                 [
-                    QDateTime(2017, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 1, 1, 0, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 1, 1, 2, 0, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(2, 0, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
                 [f["phenomenonTimeEnd"] for f in features],
                 [
-                    QDateTime(2018, 1, 1, 0, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 1, 1, 1, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 1, 1, 2, 30, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(1, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(2, 30, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             # TODO -- these should be doubles
@@ -1494,9 +1494,9 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f["resultTime"] for f in features],
                 [
-                    QDateTime(2017, 12, 31, 23, 0, 30, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 1, 1, 0, 30, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 1, 1, 2, 30, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 30, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(0, 30, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 1, 1), QTime(2, 30, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
@@ -1506,17 +1506,17 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f["validTimeStart"] for f in features],
                 [
-                    QDateTime(2017, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2018, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2019, 12, 31, 23, 0, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2017, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 12, 31), QTime(23, 0, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
                 [f["validTimeEnd"] for f in features],
                 [
-                    QDateTime(2018, 12, 31, 0, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2019, 12, 31, 0, 0, 0, 0, Qt.TimeSpec(1)),
-                    QDateTime(2020, 12, 31, 0, 0, 0, 0, Qt.TimeSpec(1)),
+                    QDateTime(QDate(2018, 12, 31), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2019, 12, 31), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
+                    QDateTime(QDate(2020, 12, 31), QTime(0, 0, 0, 0), Qt.TimeSpec(1)),
                 ],
             )
             self.assertEqual(
