@@ -269,8 +269,8 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
                                  bool(vl.fieldConstraints(field_idx) & QgsFieldConstraints.Constraint.ConstraintUnique))
             if fields.count() > 0:
                 if vl.featureCount() == 0:
-                    self.assertEqual(QVariant(), vl.maximumValue(0))
-                    self.assertEqual(QVariant(), vl.minimumValue(0))
+                    self.assertEqual(NULL, vl.maximumValue(0))
+                    self.assertEqual(NULL, vl.minimumValue(0))
                 else:
                     vl.maximumValue(0)
                     vl.minimumValue(0)

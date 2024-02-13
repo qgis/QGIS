@@ -689,15 +689,15 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         f1.setAttributes([])
         QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
         self.assertEqual(len(f1.attributes()), 2)
-        self.assertEqual(f1.attributes()[0], QVariant())
-        self.assertEqual(f1.attributes()[1], QVariant())
+        self.assertEqual(f1.attributes()[0], NULL)
+        self.assertEqual(f1.attributes()[1], NULL)
 
         # Test pad with 0 without fields
         f1 = QgsFeature()
         QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
         self.assertEqual(len(f1.attributes()), 2)
-        self.assertEqual(f1.attributes()[0], QVariant())
-        self.assertEqual(f1.attributes()[1], QVariant())
+        self.assertEqual(f1.attributes()[0], NULL)
+        self.assertEqual(f1.attributes()[1], NULL)
 
         # Test drop extra attrs
         f1 = QgsFeature(fields)
@@ -727,7 +727,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertEqual(len(f1.attributes()), 3)
         self.assertEqual(f1.attributes()[0], 'foo')
         self.assertEqual(f1.attributes()[1], 1)
-        self.assertEqual(f1.attributes()[2], QVariant())
+        self.assertEqual(f1.attributes()[2], NULL)
 
         fields.append(QgsField('extra', QVariant.Int))
         f1.setAttributes([1, 'foo', 'blah'])
@@ -736,7 +736,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertEqual(f1.attributes()[0], 1)
         self.assertEqual(f1.attributes()[1], 'foo')
         self.assertEqual(f1.attributes()[2], 'blah')
-        self.assertEqual(f1.attributes()[3], QVariant())
+        self.assertEqual(f1.attributes()[3], NULL)
 
         # case insensitive
         fields2.append(QgsField('extra3', QVariant.String))
@@ -747,7 +747,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         self.assertEqual(len(f1.attributes()), 5)
         self.assertEqual(f1.attributes()[0], 'foo')
         self.assertEqual(f1.attributes()[1], 1)
-        self.assertEqual(f1.attributes()[2], QVariant())
+        self.assertEqual(f1.attributes()[2], NULL)
         self.assertEqual(f1.attributes()[3], 'blah')
         self.assertEqual(f1.attributes()[4], 'blergh')
 
@@ -778,7 +778,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         features_data.append(
             QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_1', 1: None}))
         features_data.append(
-            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: NULL}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'),
                                                                 {0: 'test_3', 1: NULL}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_4'}))
@@ -793,7 +793,7 @@ class TestQgsVectorLayerUtils(QgisTestCase):
         features_data = []
         context = vl.createExpressionContext()
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: None}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: QVariant()}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: NULL}))
         features_data.append(
             QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: NULL}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {}))

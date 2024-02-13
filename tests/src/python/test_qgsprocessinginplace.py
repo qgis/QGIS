@@ -37,8 +37,7 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
     QgsVectorLayerUtils,
-    QgsWkbTypes,
-)
+    QgsWkbTypes, NULL)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -424,16 +423,16 @@ class TestQgsProcessingInPlace(QgisTestCase):
         f1.setAttributes([])
         new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(len(new_features[0].attributes()), 2)
-        self.assertEqual(new_features[0].attributes()[0], QVariant())
-        self.assertEqual(new_features[0].attributes()[1], QVariant())
+        self.assertEqual(new_features[0].attributes()[0], NULL)
+        self.assertEqual(new_features[0].attributes()[1], NULL)
 
         # Test pad with 0 without fields
         f1 = QgsFeature()
         f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
         new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(len(new_features[0].attributes()), 2)
-        self.assertEqual(new_features[0].attributes()[0], QVariant())
-        self.assertEqual(new_features[0].attributes()[1], QVariant())
+        self.assertEqual(new_features[0].attributes()[0], NULL)
+        self.assertEqual(new_features[0].attributes()[1], NULL)
 
         # Test drop extra attrs
         f1 = QgsFeature(layer.fields())
