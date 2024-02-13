@@ -69,11 +69,11 @@ QgsSensorThingsFeatureIterator::QgsSensorThingsFeatureIterator( QgsSensorThingsF
   }
 
   QgsFeatureIds requestIds;
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fids )
   {
     requestIds = mRequest.filterFids();
   }
-  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+  else if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid )
   {
     requestIds.insert( mRequest.filterFid() );
   }
@@ -163,7 +163,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
 
     mDeferredFeaturesInFilterRectCheck = false;
 
-    if ( !( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) )
+    if ( !( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect ) )
     {
       // discard the filter rect - we know that the features in mRemainingFeatureIds are guaranteed
       // to be intersecting the rect, so avoid any extra unnecessary checks
@@ -187,7 +187,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
 
   switch ( mRequest.filterType() )
   {
-    case QgsFeatureRequest::FilterFid:
+    case Qgis::FeatureRequestFilterType::Fid:
     {
       if ( mRemainingFeatureIds.empty() )
         return false;
@@ -208,9 +208,9 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
       return result;
     }
 
-    case QgsFeatureRequest::FilterFids:
-    case QgsFeatureRequest::FilterExpression:
-    case QgsFeatureRequest::FilterNone:
+    case Qgis::FeatureRequestFilterType::Fids:
+    case Qgis::FeatureRequestFilterType::Expression:
+    case Qgis::FeatureRequestFilterType::NoFilter:
     {
       while ( true )
       {
@@ -253,7 +253,7 @@ bool QgsSensorThingsFeatureIterator::fetchFeature( QgsFeature &f )
             success = false;
           else
           {
-            if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+            if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
             {
               // exact intersection check requested
               if ( !f.geometry().intersects( mGeometryTestFilterRect ) )
