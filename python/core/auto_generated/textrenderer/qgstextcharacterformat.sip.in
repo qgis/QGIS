@@ -47,6 +47,21 @@ Constructor for QgsTextCharacterFormat, based on the specified QTextCharFormat `
       SetFalse,
     };
 
+    void overrideWith( const QgsTextCharacterFormat &other );
+%Docstring
+Override all the default/unset properties of the current character format
+with the settings from another format.
+
+This will replace any default/unset existing settings with the
+settings from ``other``.
+
+Any settings which are default/unset in ``other`` will be left unchanged.
+
+:param other: The format to override with.
+
+.. versionadded:: 3.36
+%End
+
     QColor textColor() const;
 %Docstring
 Returns the character's text color, or an invalid color if no color override
