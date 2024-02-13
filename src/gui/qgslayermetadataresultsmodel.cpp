@@ -101,7 +101,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
         }
         break;
       }
-      case Roles::Metadata:
+      case static_cast< int >( CustomRole::Metadata ):
       {
         return QVariant::fromValue( mResult.metadata().at( index.row() ) );
       }

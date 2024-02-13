@@ -60,11 +60,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
         //! Metadata section which failed the validation
         QString section;
 
-        // TODO QGIS 4.0 - fix this
-
-#ifdef SIP_RUN
-        SIP_PROPERTY( name = identifier, get = _identifier, set = _setIdentifier )
-#endif
+        // TODO QGIS 4.0 - remove compatibility code
 
         /**
          * Returns the optional identifier for the failed metadata item.
@@ -72,7 +68,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
          * will be set to the list index of the failed metadata
          * item.
          */
-        QVariant _identifier() const { return mIdentifier; }
+        QVariant identifier() const SIP_PYNAME( _identifier ) { return mIdentifier; }
 
         /**
          * Sets the optional \a identifier for the failed metadata item.
@@ -80,7 +76,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
          * will be set to the list index of the failed metadata
          * item.
          */
-        void _setIdentifier( QVariant identifier ) { mIdentifier = identifier; }
+        void setIdentifier( const QVariant &identifier ) { mIdentifier = identifier; }
 
         //! The reason behind the validation failure.
         QString note;

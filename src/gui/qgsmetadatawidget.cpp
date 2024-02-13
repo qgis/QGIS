@@ -855,9 +855,9 @@ bool QgsMetadataWidget::checkMetadata()
     for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
-      if ( ! QgsVariantUtils::isNull( result._identifier() ) )
+      if ( ! QgsVariantUtils::isNull( result.identifier() ) )
       {
-        errors += QLatin1Char( ' ' ) % QVariant( result._identifier().toInt() + 1 ).toString();
+        errors += QLatin1Char( ' ' ) % QVariant( result.identifier().toInt() + 1 ).toString();
       }
       errors += QLatin1String( "</b>: " ) % result.note % QLatin1String( "<br />" );
     }
