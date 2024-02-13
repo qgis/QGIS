@@ -2636,7 +2636,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         f.setAttribute('test_string', 'QGIS Rocks')
 
         dp = vl.dataProvider()
-        self.assertNotEqual(dp.defaultValue(0), QVariant())
+        self.assertNotEqual(dp.defaultValue(0), NULL)
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):

@@ -23,8 +23,7 @@ from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QListView, QVBoxLayout
 from qgis.core import (
     QgsProviderRegistry,
-    QgsQueryResultModel,
-)
+    QgsQueryResultModel, NULL)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -92,8 +91,8 @@ class TestPyQgsQgsQueryResultModel(QgisTestCase):
         for i in range(1000):
             self.assertEqual(model.data(model.index(i, 0), Qt.ItemDataRole.DisplayRole), i + 1)
 
-        self.assertEqual(model.data(model.index(1000, 0), Qt.ItemDataRole.DisplayRole), QVariant())
-        self.assertEqual(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(1000, 0), Qt.ItemDataRole.DisplayRole), NULL)
+        self.assertEqual(model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole), NULL)
 
     def test_model_stop(self):
         """Test that when a model is deleted fetching query rows is also interrupted"""

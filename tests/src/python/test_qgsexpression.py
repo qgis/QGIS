@@ -271,13 +271,13 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
 
         # test when value is null
         field = "myfield"
-        value = QVariant()
+        value = NULL
         res = '"myfield" IS NULL'
         self.assertEqual(e.createFieldEqualityExpression(field, value), res)
 
         # test when value is null and field name has a quote
         field = "my'field"
-        value = QVariant()
+        value = NULL
         res = '"my\'field" IS NULL'
         self.assertEqual(e.createFieldEqualityExpression(field, value), res)
 

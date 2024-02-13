@@ -16,7 +16,7 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     QVariant, Qt)
 from qgis.PyQt.QtGui import QColor
-from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty
+from qgis.core import QgsField, QgsFieldConstraints, QgsFields, QgsProperty, NULL
 from qgis.gui import QgsFieldMappingModel, QgsFieldMappingWidget
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -92,7 +92,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         self.assertEqual(model.data(model.index(1, 6), Qt.ItemDataRole.DisplayRole), 'my alias')
         self.assertFalse(model.data(model.index(1, 7), Qt.ItemDataRole.DisplayRole))
 
-        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), NULL)
         self.assertEqual(model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), 'destination_field3')
         self.assertFalse(model.data(model.index(2, 6), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.data(model.index(2, 7), Qt.ItemDataRole.DisplayRole))
@@ -157,7 +157,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         """Test that changing source fields also empty expressions are updated"""
 
         model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
-        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole), NULL)
         self.assertEqual(model.data(model.index(2, 1), Qt.ItemDataRole.DisplayRole), 'destination_field3')
 
         f = QgsField('source_field3', QVariant.String)

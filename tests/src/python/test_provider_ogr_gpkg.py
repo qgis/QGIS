@@ -2814,9 +2814,9 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         vl.commitChanges()
 
         got = [feat["int_field"] for feat in vl.getFeatures()]
-        self.assertEqual(set(got), set([1, QVariant()]))
+        self.assertEqual(set(got), set([1, NULL]))
         got = [feat["int64_field"] for feat in vl.getFeatures()]
-        self.assertEqual(set(got), set([1, QVariant()]))
+        self.assertEqual(set(got), set([1, NULL]))
 
         # Does not trigger the optim: not all features updated
         vl.startEditing()
@@ -2828,7 +2828,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         vl.commitChanges()
 
         got = [feat["real_field"] for feat in vl.getFeatures()]
-        self.assertEqual(set(got), set([1.5, QVariant()]))
+        self.assertEqual(set(got), set([1.5, NULL]))
 
         # Triggers the optim
         for field_name, value in [("str_field", "my_value"),
@@ -2847,7 +2847,7 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             if value:
                 self.assertEqual(set(got), set([value]))
             else:
-                self.assertEqual(set(got), set([QVariant()]))
+                self.assertEqual(set(got), set([NULL]))
 
     def testChangeAttributeValuesErrors(self):
 
