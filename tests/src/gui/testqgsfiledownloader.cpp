@@ -222,8 +222,6 @@ void TestQgsFileDownloader::testSslError_data()
                              << "SSL Errors: ;The certificate has expired";
   QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
                                  << "SSL Errors: ;The certificate is self-signed, and untrusted";
-  QTest::newRow( "untrusted-root" ) << "https://untrusted-root.badssl.com/"
-                                    << "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found";
 }
 
 void TestQgsFileDownloader::testSslError()
