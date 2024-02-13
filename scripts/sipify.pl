@@ -1618,6 +1618,10 @@ while ($LINE_IDX < $LINE_COUNT){
           exit_with_error("Unhandled enum type $enum_type for $enum_cpp_name");
         } elsif (defined $isclass) {
           push @ENUM_CLASS_NON_INT_TYPES, "$ACTUAL_CLASS.$enum_qualname";
+        } elsif ($is_qt6 eq 1) {
+          # non class enum in qt6 -- we always want these to be IntEnums
+          # for compatibility with qt5 code
+          $enum_decl .= " /BaseType=IntEnum/"
         }
 
         write_output("ENU1", "$enum_decl");
@@ -1832,7 +1836,7 @@ while ($LINE_IDX < $LINE_COUNT){
           if ( $is_qt6 ) {
             dbg_info("monkey patching operators for non class enum");
             if ($HAS_PUSHED_FORCE_INT eq 0) {
-              push @OUTPUT_PYTHON, "def _force_int(v): return v if isinstance(v, int) else int(v.value)\n\n\n";
+              push @OUTPUT_PYTHON, "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n";
               $HAS_PUSHED_FORCE_INT = 1;
             }
             push @OUTPUT_PYTHON, "$py_flag.__bool__ = lambda flag: bool(_force_int(flag))\n";
