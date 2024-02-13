@@ -10,4 +10,10 @@ QgsProcessingParameterNumber|yscale|Y scale|QgsProcessingParameterNumber.Double|
 QgsProcessingParameterNumber|zscale|Z scale|QgsProcessingParameterNumber.Double|1.0|True|None|None
 QgsProcessingParameterNumber|zrotation|Rotation around z axis in degrees counterclockwise|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterString|columns|Name of attribute column(s) used as transformation parameters (Format: parameter:column, e.g. xshift:xs,yshift:ys,zrot:zr)|None|True|True
+*QgsProcessingParameterBoolean|-t|Shift all z values to bottom=0|False
+*QgsProcessingParameterBoolean|-w|Swap coordinates x, y and then apply other parameters|False
+*QgsProcessingParameterBoolean|-x|Swap coordinates x, z and then apply other parameters|False
+*QgsProcessingParameterBoolean|-y|Swap coordinates y, z and then apply other parameters|False
+*QgsProcessingParameterBoolean|-a|Swap coordinates after the other transformations|False
+*QgsProcessingParameterBoolean|-b|Do not build topology|False
 QgsProcessingParameterVectorDestination|output|Transformed
