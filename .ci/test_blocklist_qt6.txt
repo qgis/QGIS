@@ -38,13 +38,11 @@ PyQgsStyleStorageMssql
 
 # To be fixed
 PyQgsPythonProvider
-PyQgsAggregateCalculator
 PyQgsAnnotation
 PyQgsAuthenticationSystem
 PyQgsBlockingProcess
 PyQgsBookmarkModel
 PyQgsCodeEditor
-PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
