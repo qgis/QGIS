@@ -159,10 +159,57 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
 
   const QString providerUri = mConnectionWidget->sourceUri();
   const QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
+
+
+  const QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri(
+                                 QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+                                 layerUri
+                               );
+
+  const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( uriParts.value( QStringLiteral( "entity" ) ).toString() );
+
+  QString baseName;
+  if ( QgsSensorThingsUtils::entityTypeHasGeometry( type ) )
+  {
+    const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+    QString geometryNamePart;
+    if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 ||
+         geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+    {
+      geometryNamePart = tr( "Points" );
+    }
+    else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+    {
+      geometryNamePart = tr( "Lines" );
+    }
+    else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+    {
+      geometryNamePart = tr( "Polygons" );
+    }
+
+    if ( !geometryNamePart.isEmpty() )
+    {
+      baseName = QStringLiteral( "%1 - %2 (%3)" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(),
+                 QgsSensorThingsUtils::displayString( type, true ),
+                 geometryNamePart );
+    }
+    else
+    {
+      baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(),
+                 QgsSensorThingsUtils::displayString( type, true ) );
+    }
+  }
+  else
+  {
+    baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(),
+               QgsSensorThingsUtils::displayString( type, true ) );
+  }
+
   Q_NOWARN_DEPRECATED_PUSH
-  emit addVectorLayer( layerUri, isCustom ? tr( "SensorThings Layer" ) : cmbConnections->currentText(), QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
+  emit addVectorLayer( layerUri, baseName, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Vector, layerUri, isCustom ? tr( "SensorThings Layer" ) : cmbConnections->currentText(), QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
+
+  emit addLayer( Qgis::LayerType::Vector, layerUri, baseName, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY );
 }
 
 void QgsSensorThingsSourceSelect::populateConnectionList()
