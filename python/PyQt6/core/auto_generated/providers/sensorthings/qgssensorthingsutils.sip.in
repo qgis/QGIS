@@ -63,6 +63,14 @@ Returns a filter string which restricts results to those matching the specified
 WKB ``type``.
 %End
 
+    static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = 0, const QString &authCfg = QString() );
+%Docstring
+Returns a list of available geometry types for the server at the specified ``uri``
+and entity ``type``.
+
+This method will block while network requests are made to the server.
+%End
+
 };
 
 /************************************************************************

@@ -20,6 +20,7 @@
 #include "qgis.h"
 
 class QgsFields;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -76,6 +77,14 @@ class CORE_EXPORT QgsSensorThingsUtils
      * WKB \a type.
      */
     static QString filterForWkbType( Qgis::WkbType type );
+
+    /**
+     * Returns a list of available geometry types for the server at the specified \a uri
+     * and entity \a type.
+     *
+     * This method will block while network requests are made to the server.
+     */
+    static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = nullptr, const QString &authCfg = QString() );
 
 };
 

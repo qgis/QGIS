@@ -17,6 +17,12 @@
 #include "qgsfield.h"
 #include "qgsfields.h"
 #include "qgswkbtypes.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
+#include <QUrl>
+#include <QNetworkRequest>
+#include <nlohmann/json.hpp>
 
 Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &type )
 {
@@ -235,4 +241,133 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::WkbType type )
       break;
   }
   return QString();
+}
+
+QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback, const QString &authCfg )
+{
+  QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsUtils" ) )
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( authCfg );
+
+  switch ( networkRequest.get( request ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      QgsDebugError( QStringLiteral( "Connection failed: %1" ).arg( networkRequest.errorMessage() ) );
+      return {};
+  }
+
+  QString entityBaseUri;
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  try
+  {
+    auto rootContent = nlohmann::json::parse( content.content().toStdString() );
+    if ( !rootContent.contains( "value" ) )
+    {
+      QgsDebugError( QStringLiteral( "No 'value' array in response" ) );
+      return {};
+    }
+
+    bool foundMatchingEntity = false;
+    for ( const auto &valueJson : rootContent["value"] )
+    {
+      if ( valueJson.contains( "name" ) && valueJson.contains( "url" ) )
+      {
+        const QString name = QString::fromStdString( valueJson["name"].get<std::string>() );
+        Qgis::SensorThingsEntity entityType = QgsSensorThingsUtils::entitySetStringToEntity( name );
+        if ( entityType == type )
+        {
+          const QString url = QString::fromStdString( valueJson["url"].get<std::string>() );
+          if ( !url.isEmpty() )
+          {
+            foundMatchingEntity = true;
+            entityBaseUri = url;
+            break;
+          }
+        }
+      }
+    }
+
+    if ( !foundMatchingEntity )
+    {
+      QgsDebugError( QStringLiteral( "Could not find url for %1" ).arg( qgsEnumValueToKey( type ) ) );
+      return {};
+    }
+  }
+  catch ( const nlohmann::json::parse_error &ex )
+  {
+    QgsDebugError( QStringLiteral( "Error parsing response: %1" ).arg( ex.what() ) );
+    return {};
+  }
+
+  auto getCountForType = [entityBaseUri, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long
+  {
+    // return no features, just the total count
+    QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( entityBaseUri );
+    Qgis::WkbType wkbType = geometryType == Qgis::GeometryType::Polygon ? Qgis::WkbType::Polygon : ( geometryType == Qgis::GeometryType::Line ? Qgis::WkbType::LineString : Qgis::WkbType::Point );
+    const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( wkbType );
+    if ( !typeFilter.isEmpty() )
+      countUri += '&' + typeFilter;
+
+    const QUrl url( countUri );
+
+    QNetworkRequest request( url );
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
+
+    QgsBlockingNetworkRequest networkRequest;
+    networkRequest.setAuthCfg( authCfg );
+    const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.get( request, false, feedback );
+
+    if ( feedback && feedback->isCanceled() )
+      return -1;
+
+    // Handle network errors
+    if ( error != QgsBlockingNetworkRequest::NoError )
+    {
+      QgsDebugError( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+      return -1;
+    }
+    else
+    {
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      try
+      {
+        auto rootContent = nlohmann::json::parse( content.content().toStdString() );
+        if ( !rootContent.contains( "@iot.count" ) )
+        {
+          QgsDebugError( QStringLiteral( "No '@iot.count' value in response" ) );
+          return -1;
+        }
+
+        return rootContent["@iot.count"].get<long long>();
+      }
+      catch ( const nlohmann::json::parse_error &ex )
+      {
+        QgsDebugError( QStringLiteral( "Error parsing response: %1" ).arg( ex.what() ) );
+        return -1;
+      }
+    }
+  };
+
+  QList<Qgis::GeometryType> types;
+  for ( Qgis::GeometryType geometryType :
+        {
+          Qgis::GeometryType::Point,
+          Qgis::GeometryType::Line,
+          Qgis::GeometryType::Polygon
+        } )
+  {
+    const long long matchCount = getCountForType( geometryType );
+    if ( matchCount < 0 )
+      return {};
+    else if ( matchCount > 0 )
+      types.append( geometryType );
+  }
+  return types;
 }
