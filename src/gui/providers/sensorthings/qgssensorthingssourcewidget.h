@@ -21,8 +21,10 @@
 #include "qgis.h"
 #include "ui_qgssensorthingssourcewidgetbase.h"
 #include <QVariantMap>
+#include <QPointer>
 
 class QgsFileWidget;
+class QgsSensorThingsConnectionPropertiesTask;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -33,6 +35,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
 
   public:
     QgsSensorThingsSourceWidget( QWidget *parent = nullptr );
+    ~QgsSensorThingsSourceWidget() override;
 
     void setSourceUri( const QString &uri ) override;
     QString sourceUri() const override;
@@ -49,6 +52,8 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
 
     void entityTypeChanged();
     void validate();
+    void retrieveTypes();
+    void connectionPropertiesTaskCompleted();
 
   private:
     void rebuildGeometryTypes( Qgis::SensorThingsEntity type );
@@ -56,6 +61,7 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
 
     QVariantMap mSourceParts;
     bool mIsValid = false;
+    QPointer< QgsSensorThingsConnectionPropertiesTask > mPropertiesTask;
 };
 
 ///@endcond

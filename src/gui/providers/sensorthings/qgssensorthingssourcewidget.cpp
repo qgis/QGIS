@@ -22,9 +22,11 @@
 #include "qgssensorthingsutils.h"
 #include "qgssensorthingsprovider.h"
 #include "qgsiconutils.h"
+#include "qgssensorthingsconnectionpropertiestask.h"
+#include "qgsapplication.h"
 #include <QHBoxLayout>
 #include <QLabel>
-
+#include <QStandardItemModel>
 
 QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   : QgsProviderSourceWidget( parent )
@@ -54,7 +56,19 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
   connect( mComboEntityType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::entityTypeChanged );
   connect( mComboGeometryType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSensorThingsSourceWidget::validate );
   connect( mSpinPageSize, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsSensorThingsSourceWidget::validate );
+  connect( mRetrieveTypesButton, &QToolButton::clicked, this, &QgsSensorThingsSourceWidget::retrieveTypes );
+  mRetrieveTypesButton->setEnabled( false );
   validate();
+}
+
+QgsSensorThingsSourceWidget::~QgsSensorThingsSourceWidget()
+{
+  if ( mPropertiesTask )
+  {
+    disconnect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
+    mPropertiesTask->cancel();
+    mPropertiesTask = nullptr;
+  }
 }
 
 void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
@@ -65,8 +79,10 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
                  );
 
   const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( mSourceParts.value( QStringLiteral( "entity" ) ).toString() );
-  mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( type ) ) );
-  rebuildGeometryTypes( type );
+  if ( type != Qgis::SensorThingsEntity::Invalid )
+    mComboEntityType->setCurrentIndex( mComboEntityType->findData( QVariant::fromValue( type ) ) );
+
+  rebuildGeometryTypes( mComboEntityType->currentData().value< Qgis::SensorThingsEntity >() );
   setCurrentGeometryTypeFromString( mSourceParts.value( QStringLiteral( "geometryType" ) ).toString() );
 
   bool ok = false;
@@ -74,10 +90,6 @@ void QgsSensorThingsSourceWidget::setSourceUri( const QString &uri )
   if ( ok )
   {
     mSpinPageSize->setValue( maxPageSizeParam );
-  }
-  else
-  {
-    mSpinPageSize->clear();
   }
 
   mIsValid = true;
@@ -169,8 +181,57 @@ void QgsSensorThingsSourceWidget::validate()
   emit validChanged( mIsValid );
 }
 
+void QgsSensorThingsSourceWidget::retrieveTypes()
+{
+  if ( mPropertiesTask )
+  {
+    disconnect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
+    mPropertiesTask->cancel();
+    mPropertiesTask = nullptr;
+  }
+
+  mPropertiesTask = new QgsSensorThingsConnectionPropertiesTask( mSourceParts.value( QStringLiteral( "url" ) ).toString(),
+      mComboEntityType->currentData().value< Qgis::SensorThingsEntity >() );
+  connect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
+  QgsApplication::taskManager()->addTask( mPropertiesTask );
+  mRetrieveTypesButton->setEnabled( false );
+}
+
+void QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted()
+{
+  const QList< Qgis::GeometryType > availableTypes = mPropertiesTask->geometryTypes();
+  const Qgis::WkbType currentWkbType = mComboGeometryType->currentData().value< Qgis::WkbType >();
+  mComboGeometryType->clear();
+
+  if ( availableTypes.contains( Qgis::GeometryType::Point ) )
+  {
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::Point ), tr( "Point" ), QVariant::fromValue( Qgis::WkbType::Point ) );
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPoint ), tr( "Multipoint" ), QVariant::fromValue( Qgis::WkbType::MultiPoint ) );
+  }
+  if ( availableTypes.contains( Qgis::GeometryType::Line ) )
+  {
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiLineString ), tr( "Line" ), QVariant::fromValue( Qgis::WkbType::MultiLineString ) );
+  }
+  if ( availableTypes.contains( Qgis::GeometryType::Polygon ) )
+  {
+    mComboGeometryType->addItem( QgsIconUtils::iconForWkbType( Qgis::WkbType::MultiPolygon ), tr( "Polygon" ), QVariant::fromValue( Qgis::WkbType::MultiPolygon ) );
+  }
+
+  mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( currentWkbType ) ) );
+  if ( mComboGeometryType->currentIndex() < 0 )
+    mComboGeometryType->setCurrentIndex( 0 );
+}
+
 void QgsSensorThingsSourceWidget::rebuildGeometryTypes( Qgis::SensorThingsEntity type )
 {
+  if ( mPropertiesTask )
+  {
+    disconnect( mPropertiesTask, &QgsTask::taskCompleted, this, &QgsSensorThingsSourceWidget::connectionPropertiesTaskCompleted );
+    mPropertiesTask->cancel();
+    mPropertiesTask = nullptr;
+  }
+
+  mRetrieveTypesButton->setEnabled( QgsSensorThingsUtils::entityTypeHasGeometry( type ) && !mSourceParts.value( QStringLiteral( "url" ) ).toString().isEmpty() );
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( type ) && mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::Point ) ) < 0 )
   {
     mComboGeometryType->clear();
@@ -205,7 +266,7 @@ void QgsSensorThingsSourceWidget::setCurrentGeometryTypeFromString( const QStrin
   {
     mComboGeometryType->setCurrentIndex( mComboGeometryType->findData( QVariant::fromValue( Qgis::WkbType::MultiPolygon ) ) );
   }
-  else if ( geometryType.isEmpty() )
+  else if ( geometryType.isEmpty() && mComboGeometryType->currentIndex() < 0 )
   {
     mComboGeometryType->setCurrentIndex( 0 );
   }

@@ -61,7 +61,9 @@ QgsSensorThingsSourceSelect::QgsSensorThingsSourceSelect( QWidget *parent, Qt::W
 
     mBlockChanges++;
     cmbConnections->setCurrentIndex( cmbConnections->findData( QStringLiteral( "~~custom~~" ) ) );
+    mSourceWidget->setSourceUri( mConnectionWidget->sourceUri() );
     mBlockChanges--;
+
   } );
 
   QgsGui::enableAutoGeometryRestore( this );
@@ -213,6 +215,7 @@ void QgsSensorThingsSourceSelect::cmbConnections_currentTextChanged( const QStri
     else
     {
       mConnectionWidget->setSourceUri( QgsSensorThingsProviderConnection::encodedLayerUri( QgsSensorThingsProviderConnection::connection( cmbConnections->currentText() ) ) );
+      mSourceWidget->setSourceUri( mConnectionWidget->sourceUri() );
     }
     mBlockChanges--;
   }
