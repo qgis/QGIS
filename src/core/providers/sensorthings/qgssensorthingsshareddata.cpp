@@ -141,7 +141,7 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
 
   // return no features, just the total count
   QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri );
-  const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mGeometryType );
+  const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
   if ( !typeFilter.isEmpty() )
     countUri += '&' + typeFilter;
 
@@ -214,7 +214,7 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize );
-    const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mGeometryType );
+    const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
     if ( !typeFilter.isEmpty() )
       mNextPage += '&' + typeFilter;
   }
@@ -253,7 +253,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   }
 
   // TODO -- is using 'geography' always correct here?
-  const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mGeometryType );
+  const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mEntityType, mGeometryType );
   QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(%2, geography'%3')&$top=%4&$count=false%5" ).arg( mEntityBaseUri, mGeometryField, extent.asWktPolygon() ).arg( mMaximumPageSize ).arg( typeFilter.isEmpty() ? QString() : ( QStringLiteral( "&" ) + typeFilter ) );
 
   if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
