@@ -42,14 +42,12 @@ PyQgsAggregateCalculator
 PyQgsAnnotation
 PyQgsAuthenticationSystem
 PyQgsBlockingProcess
-PyQgsBookmarkModel
 PyQgsCodeEditor
 PyQgsDateTimeStatisticalSummary
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsProject
-PyQgsFieldModel
 PyQgsFloatingWidget
 PyQgsJsonUtils
 PyQgsLayerMetadata
