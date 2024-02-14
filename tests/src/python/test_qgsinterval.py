@@ -40,6 +40,16 @@ class TestQgsInterval(unittest.TestCase):
         self.assertTrue(i.isValid())
         self.assertEqual(i.seconds(), 0.056)
 
+    def test_repr(self):
+        """
+        Test __repr__ implementation
+        """
+        self.assertEqual(repr(QgsInterval()), '<QgsInterval: invalid>')
+        self.assertEqual(repr(QgsInterval(5)), '<QgsInterval: 5 seconds>')
+        self.assertEqual(repr(QgsInterval(1, QgsUnitTypes.TemporalUnit.TemporalMonths)), '<QgsInterval: 1 months>')
+        self.assertEqual(
+            repr(QgsInterval(720, QgsUnitTypes.TemporalUnit.TemporalHours)), '<QgsInterval: 720 hours>')
+
     def testSettersGetters(self):
         # setters and getters
         i = QgsInterval()

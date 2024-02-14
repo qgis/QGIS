@@ -29,6 +29,11 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsunittypes.h"
+% End
+#endif
 class QString;
 
 /**
@@ -89,6 +94,20 @@ class CORE_EXPORT QgsInterval
      * \since QGIS 3.14
      */
     QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str;
+    if ( ! sipCpp->isValid() )
+      str = QStringLiteral( "<QgsInterval: invalid>" );
+    else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
+      str = QStringLiteral( "<QgsInterval: %1 %2>" ).arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
+    else
+      str = QStringLiteral( "<QgsInterval: %1 seconds>" ).arg( sipCpp->seconds() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the interval duration in years (based on an average year length)
