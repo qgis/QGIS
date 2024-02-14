@@ -284,7 +284,7 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
     locker.changeMode( QgsReadWriteLocker::Write );
     mCachedExtent = QgsGeometry::unaryUnion( { mCachedExtent, extentGeom } );
   }
-  nextPage = noMoreFeatures ? QString() : queryUrl;
+  nextPage = noMoreFeatures || !res ? QString() : queryUrl;
 
   return ids;
 }
