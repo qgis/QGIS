@@ -57,6 +57,12 @@ Returns the geometry field for a specified entity ``type``.
 Returns ``True`` if the specified entity ``type`` can have geometry attached.
 %End
 
+    static QString filterForWkbType( Qgis::WkbType type );
+%Docstring
+Returns a filter string which restricts results to those matching the specified
+WKB ``type``.
+%End
+
 };
 
 /************************************************************************

@@ -68,6 +68,12 @@ class CORE_EXPORT QgsSensorThingsUtils
      */
     static bool entityTypeHasGeometry( Qgis::SensorThingsEntity type );
 
+    /**
+     * Returns a filter string which restricts results to those matching the specified
+     * WKB \a type.
+     */
+    static QString filterForWkbType( Qgis::WkbType type );
+
 };
 
 #endif // QGSSENSORTHINGSUTILS_H
