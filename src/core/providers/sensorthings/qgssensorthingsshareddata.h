@@ -21,6 +21,7 @@
 #include "qgshttpheaders.h"
 #include "qgsfeature.h"
 #include "qgsspatialindex.h"
+#include "qgssensorthingsutils.h"
 
 #include <QReadWriteLock>
 
@@ -92,7 +93,7 @@ class QgsSensorThingsSharedData
     QgsFeatureId mNextFeatureId = 0;
     bool mHasCachedAllFeatures = false;
 
-    int mMaximumPageSize = 200;
+    int mMaximumPageSize = QgsSensorThingsUtils::DEFAULT_PAGE_SIZE;
 
     QgsSpatialIndex mSpatialIndex;
     mutable QString mNextPage;
