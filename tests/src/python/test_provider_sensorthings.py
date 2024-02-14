@@ -21,14 +21,16 @@ from qgis.core import (
     QgsVectorLayer,
     QgsSettings,
     QgsSensorThingsUtils,
+    QgsFeatureRequest,
+    QgsRectangle
 )
 from qgis.testing import start_app, QgisTestCase
 
 
 def sanitize(endpoint, x):
-    if x.startswith("/query"):
-        x = x[len("/query"):]
-        endpoint = endpoint + "_query"
+    if x.startswith("/Locations"):
+        x = x[len("/Locations"):]
+        endpoint = endpoint + "_Locations"
 
     if len(endpoint + x) > 150:
         ret = endpoint + hashlib.md5(x.encode()).hexdigest()
@@ -61,7 +63,6 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
         # On Windows we must make sure that any backslash in the path is
         # replaced by a forward slash so that QUrl can process it
         cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")
-        endpoint = cls.basetestpath + "/fake_qgis_http_endpoint"
 
     @classmethod
     def tearDownClass(cls):
@@ -601,6 +602,300 @@ class TestPyQgsSensorThingsProvider(QgisTestCase):  # , ProviderTestCase):
             self.assertEqual(
                 [f.geometry().asWkt(1) for f in features],
                 ["Point (11.6 52.1)", "Point (12.6 53.1)", "Point (13.6 55.1)"],
+            )
+
+    def test_filter_rect(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir.replace("\\", "/")
+            endpoint = base_path + "/fake_qgis_http_endpoint"
+            with open(sanitize(endpoint, ""), "wt", encoding="utf8") as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "name": "Locations",
+      "url": "endpoint/Locations"
+    }
+  ],
+  "serverSettings": {
+  }
+}""".replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+            with open(
+                sanitize(endpoint, "/Locations?$top=0&$count=true"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write("""{"@iot.count":3,"value":[]}""")
+
+            with open(
+                sanitize(endpoint, "/Locations?$top=2&$count=false"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+{
+  "value": [
+    {
+      "@iot.selfLink": "endpoint/Locations(1)",
+      "@iot.id": 1,
+      "name": "Location 1",
+      "description": "Desc 1",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          1.623373,
+          52.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 1"
+      },
+      "Things@iot.navigationLink": "endpoint/Locations(1)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+    },
+    {
+      "@iot.selfLink": "endpoint/Locations(2)",
+      "@iot.id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          12.623373,
+          53.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@iot.navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+  ],
+  "@iot.nextLink": "endpoint/Locations?$top=2&$skip=2"
+}
+                """.replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+                with open(
+                    sanitize(endpoint, "/Locations?$top=2&$skip=2"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                {
+                  "@iot.selfLink": "endpoint/Locations(3)",
+                  "@iot.id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      3.623373,
+                      55.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@iot.navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }
+                            """.replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
+
+                with open(
+                    sanitize(endpoint, "/Locations?$filter=geo.intersects(location, geography'POLYGON((1 0, 10 0, 10 80, 1 80, 1 0))')&$top=2&$count=false"),
+                    "wt",
+                    encoding="utf8",
+                ) as f:
+                    f.write(
+                        """
+            {
+              "value": [
+                          {
+                  "@iot.selfLink": "endpoint/Locations(1)",
+                  "@iot.id": 1,
+                  "name": "Location 1",
+                  "description": "Desc 1",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      1.623373,
+                      52.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 1"
+                  },
+                  "Things@iot.navigationLink": "endpoint/Locations(1)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Locations(1)/HistoricalLocations"
+                },
+                {
+                  "@iot.selfLink": "endpoint/Locations(3)",
+                  "@iot.id": 3,
+                  "name": "Location 3",
+                  "description": "Desc 3",
+                  "encodingType": "application/geo+json",
+                  "location": {
+                    "type": "Point",
+                    "coordinates": [
+                      3.623373,
+                      55.132017
+                    ]
+                  },
+                  "properties": {
+                    "owner": "owner 3"
+                  },
+                  "Things@iot.navigationLink": "endpoint/Locations(3)/Things",
+                  "HistoricalLocations@iot.navigationLink": "endpoint/Locations(3)/HistoricalLocations"
+                }
+              ]
+            }""".replace(
+                            "endpoint", "http://" + endpoint
+                        )
+                    )
+
+            with open(
+                sanitize(endpoint, "/Locations?$filter=geo.intersects(location, geography'POLYGON((10 0, 20 0, 20 80, 10 80, 10 0))')&$top=2&$count=false"),
+                "wt",
+                encoding="utf8",
+            ) as f:
+                f.write(
+                    """
+            {
+              "value": [
+                              {
+      "@iot.selfLink": "endpoint/Locations(2)",
+      "@iot.id": 2,
+      "name": "Location 2",
+      "description": "Desc 2",
+      "encodingType": "application/geo+json",
+      "location": {
+        "type": "Point",
+        "coordinates": [
+          12.623373,
+          53.132017
+        ]
+      },
+      "properties": {
+        "owner": "owner 2"
+      },
+      "Things@iot.navigationLink": "endpoint/Locations(2)/Things",
+      "HistoricalLocations@iot.navigationLink": "endpoint/Locations(2)/HistoricalLocations"
+
+    }
+              ]
+            }""".replace(
+                        "endpoint", "http://" + endpoint
+                    )
+                )
+
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' type=PointZ pageSize=2 entity='Location'",
+                "test",
+                "sensorthings",
+            )
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.storageType(), "OGC SensorThings API")
+            self.assertEqual(vl.wkbType(), Qgis.WkbType.PointZ)
+            self.assertEqual(vl.featureCount(), 3)
+            self.assertEqual(vl.crs().authid(), "EPSG:4326")
+            self.assertIn("Entity Type</td><td>Location</td>",
+                          vl.htmlMetadata())
+            self.assertIn(f'href="http://{endpoint}/Locations"',
+                          vl.htmlMetadata())
+
+            request = QgsFeatureRequest()
+            request.setFilterRect(
+                QgsRectangle(1, 0, 10, 80)
+            )
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual([f["id"] for f in features], ["1", "3"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(3)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 1", "Location 3"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                ["Desc 1", "Desc 3"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 1"},
+                 {"owner": "owner 3"}],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (1.6 52.1)",
+                 "Point (3.6 55.1)"],
+            )
+
+            request = QgsFeatureRequest()
+            request.setFilterRect(
+                QgsRectangle(10, 0, 20, 80)
+            )
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual([f["id"] for f in features], ["2"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(2)"],
+            )
+            self.assertEqual(
+                [f["name"] for f in features],
+                ["Location 2"],
+            )
+            self.assertEqual(
+                [f["description"] for f in features],
+                ["Desc 2"]
+            )
+            self.assertEqual(
+                [f["properties"] for f in features],
+                [{"owner": "owner 2"}],
+            )
+
+            self.assertEqual(
+                [f.geometry().asWkt(1) for f in features],
+                ["Point (12.6 53.1)"],
+            )
+
+            request = QgsFeatureRequest()
+            request.setFilterRect(
+                QgsRectangle(0, 0, 20, 80)
+            )
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual([f["id"] for f in features], ["1", "3", "2"])
+            self.assertEqual(
+                [f["selfLink"][-13:] for f in features],
+                ["/Locations(1)", "/Locations(3)", "/Locations(2)"],
             )
 
     def test_historical_location(self):
