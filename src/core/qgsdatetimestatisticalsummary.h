@@ -142,7 +142,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /**
      * Returns the range (interval between earliest and latest non-null datetime values).
      */
-    QgsInterval range() const { return mMax - mMin; }
+    QgsInterval range() const;
 
     /**
      * Returns the friendly display name for a statistic
