@@ -251,12 +251,12 @@ QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityT
   switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
     case Qgis::GeometryType::Point:
-      return QStringLiteral( "$filter=%1 eq 'Point'" ).arg( filterTarget );
+      return QStringLiteral( "%1 eq 'Point'" ).arg( filterTarget );
     case Qgis::GeometryType::Polygon:
-      return QStringLiteral( "$filter=%1 eq 'Polygon'" ).arg( filterTarget );
+      return QStringLiteral( "%1 eq 'Polygon'" ).arg( filterTarget );
     case Qgis::GeometryType::Line:
       // TODO -- confirm
-      return QStringLiteral( "$filter=%1 eq 'LineString'" ).arg( filterTarget );
+      return QStringLiteral( "%1 eq 'LineString'" ).arg( filterTarget );
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:
       break;
@@ -334,7 +334,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     Qgis::WkbType wkbType = geometryType == Qgis::GeometryType::Polygon ? Qgis::WkbType::Polygon : ( geometryType == Qgis::GeometryType::Line ? Qgis::WkbType::LineString : Qgis::WkbType::Point );
     const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( type, wkbType );
     if ( !typeFilter.isEmpty() )
-      countUri += '&' + typeFilter;
+      countUri += QStringLiteral( "&$filter=" ) + typeFilter;
 
     const QUrl url( countUri );
 
