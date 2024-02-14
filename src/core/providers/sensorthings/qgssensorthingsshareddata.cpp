@@ -140,7 +140,12 @@ long long QgsSensorThingsSharedData::featureCount( QgsFeedback *feedback ) const
   mError.clear();
 
   // return no features, just the total count
-  const QUrl url = parseUrl( QUrl( QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri ) ) );
+  QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( mEntityBaseUri );
+  const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mGeometryType );
+  if ( !typeFilter.isEmpty() )
+    countUri += '&' + typeFilter;
+
+  const QUrl url = parseUrl( QUrl( countUri ) );
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsSharedData" ) );
@@ -209,6 +214,9 @@ bool QgsSensorThingsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, QgsF
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     mNextPage = QStringLiteral( "%1?$top=%2&$count=false" ).arg( mEntityBaseUri ).arg( mMaximumPageSize );
+    const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mGeometryType );
+    if ( !typeFilter.isEmpty() )
+      mNextPage += '&' + typeFilter;
   }
 
   locker.unlock();
@@ -245,7 +253,8 @@ QgsFeatureIds QgsSensorThingsSharedData::getFeatureIdsInExtent( const QgsRectang
   }
 
   // TODO -- is using 'geography' always correct here?
-  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(%2, geography'%3')&$top=%4&$count=false" ).arg( mEntityBaseUri, mGeometryField, extent.asWktPolygon() ).arg( mMaximumPageSize );
+  const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( mGeometryType );
+  QString queryUrl = !thisPage.isEmpty() ? thisPage : QStringLiteral( "%1?$filter=geo.intersects(%2, geography'%3')&$top=%4&$count=false%5" ).arg( mEntityBaseUri, mGeometryField, extent.asWktPolygon() ).arg( mMaximumPageSize ).arg( typeFilter.isEmpty() ? QString() : ( QStringLiteral( "&" ) + typeFilter ) );
 
   if ( thisPage.isEmpty() && mCachedExtent.intersects( extentGeom ) )
   {

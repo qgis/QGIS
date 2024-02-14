@@ -16,6 +16,7 @@
 #include "qgssensorthingsutils.h"
 #include "qgsfield.h"
 #include "qgsfields.h"
+#include "qgswkbtypes.h"
 
 Qgis::SensorThingsEntity QgsSensorThingsUtils::stringToEntity( const QString &type )
 {
@@ -216,4 +217,22 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
       return true;
   }
   BUILTIN_UNREACHABLE
+}
+
+QString QgsSensorThingsUtils::filterForWkbType( Qgis::WkbType type )
+{
+  switch ( QgsWkbTypes::geometryType( type ) )
+  {
+    case Qgis::GeometryType::Point:
+      return QStringLiteral( "$filter=location/type eq 'Point'" );
+    case Qgis::GeometryType::Polygon:
+      return QStringLiteral( "$filter=location/type eq 'Polygon'" );
+    case Qgis::GeometryType::Line:
+      // TODO -- confirm
+      return QStringLiteral( "$filter=location/type eq 'LineString'" );
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
+      break;
+  }
+  return QString();
 }
