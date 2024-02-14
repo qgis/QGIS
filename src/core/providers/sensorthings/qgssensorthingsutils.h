@@ -32,6 +32,9 @@ class CORE_EXPORT QgsSensorThingsUtils
 
   public:
 
+    //! Default page size
+    static constexpr int DEFAULT_PAGE_SIZE = 200; SIP_SKIP
+
     /**
      * Converts a string value to a Qgis::SensorThingsEntity type.
      *

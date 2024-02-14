@@ -31,7 +31,7 @@ QgsSensorThingsSourceWidget::QgsSensorThingsSourceWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mSpinPageSize->setClearValue( 0, tr( "Default" ) );
+  mSpinPageSize->setClearValue( 0, tr( "Default (%1)" ).arg( QgsSensorThingsUtils::DEFAULT_PAGE_SIZE ) );
 
   for ( Qgis::SensorThingsEntity type :
         {
