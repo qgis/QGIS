@@ -74,9 +74,9 @@ class CORE_EXPORT QgsSensorThingsUtils
 
     /**
      * Returns a filter string which restricts results to those matching the specified
-     * WKB \a type.
+     * \a entityType and \a wkbType.
      */
-    static QString filterForWkbType( Qgis::WkbType type );
+    static QString filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType );
 
     /**
      * Returns a list of available geometry types for the server at the specified \a uri

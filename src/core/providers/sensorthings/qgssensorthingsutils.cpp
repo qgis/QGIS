@@ -225,17 +225,38 @@ bool QgsSensorThingsUtils::entityTypeHasGeometry( Qgis::SensorThingsEntity type 
   BUILTIN_UNREACHABLE
 }
 
-QString QgsSensorThingsUtils::filterForWkbType( Qgis::WkbType type )
+QString QgsSensorThingsUtils::filterForWkbType( Qgis::SensorThingsEntity entityType, Qgis::WkbType wkbType )
 {
-  switch ( QgsWkbTypes::geometryType( type ) )
+  QString filterTarget;
+  switch ( entityType )
+  {
+    case Qgis::SensorThingsEntity::Location:
+      filterTarget = QStringLiteral( "location/type" );
+      break;
+
+    case Qgis::SensorThingsEntity::FeatureOfInterest:
+      filterTarget = QStringLiteral( "feature/type" );
+      break;
+
+    case Qgis::SensorThingsEntity::Invalid:
+    case Qgis::SensorThingsEntity::Thing:
+    case Qgis::SensorThingsEntity::HistoricalLocation:
+    case Qgis::SensorThingsEntity::Datastream:
+    case Qgis::SensorThingsEntity::Sensor:
+    case Qgis::SensorThingsEntity::ObservedProperty:
+    case Qgis::SensorThingsEntity::Observation:
+      break;
+  }
+
+  switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
     case Qgis::GeometryType::Point:
-      return QStringLiteral( "$filter=location/type eq 'Point'" );
+      return QStringLiteral( "$filter=%1 eq 'Point'" ).arg( filterTarget );
     case Qgis::GeometryType::Polygon:
-      return QStringLiteral( "$filter=location/type eq 'Polygon'" );
+      return QStringLiteral( "$filter=%1 eq 'Polygon'" ).arg( filterTarget );
     case Qgis::GeometryType::Line:
       // TODO -- confirm
-      return QStringLiteral( "$filter=location/type eq 'LineString'" );
+      return QStringLiteral( "$filter=%1 eq 'LineString'" ).arg( filterTarget );
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:
       break;
@@ -306,12 +327,12 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     return {};
   }
 
-  auto getCountForType = [entityBaseUri, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long
+  auto getCountForType = [entityBaseUri, type, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long
   {
     // return no features, just the total count
     QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( entityBaseUri );
     Qgis::WkbType wkbType = geometryType == Qgis::GeometryType::Polygon ? Qgis::WkbType::Polygon : ( geometryType == Qgis::GeometryType::Line ? Qgis::WkbType::LineString : Qgis::WkbType::Point );
-    const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( wkbType );
+    const QString typeFilter = QgsSensorThingsUtils::filterForWkbType( type, wkbType );
     if ( !typeFilter.isEmpty() )
       countUri += '&' + typeFilter;
 
