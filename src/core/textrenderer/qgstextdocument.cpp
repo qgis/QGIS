@@ -75,7 +75,7 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
         if ( fragment.isValid() )
         {
           // Search for line breaks in the fragment
-          if ( fragment.text().contains( 0x2028 ) )
+          if ( fragment.text().contains( QStringLiteral( "\u2028" ) ) )
           {
 
             // Flush last block
@@ -86,7 +86,7 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
             }
 
             // Split fragment text into lines
-            const QStringList splitLines = fragment.text().split( 0x2028, Qt::SplitBehaviorFlags::SkipEmptyParts );
+            const QStringList splitLines = fragment.text().split( QStringLiteral( "\u2028" ), Qt::SplitBehaviorFlags::SkipEmptyParts );
 
             for ( const QString &splitLine : std::as_const( splitLines ) )
             {
