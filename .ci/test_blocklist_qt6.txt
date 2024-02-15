@@ -64,7 +64,6 @@ PyQgsTextRenderer
 PyQgsOGRProvider
 PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
-PyQgsTextDocument
 PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
