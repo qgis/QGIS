@@ -2578,6 +2578,10 @@ void QgsDxfExport::createDDBlockInfo()
     {
       ddMaxNumberOfClasses = mLayerDDBlockMaxNumberOfClasses[job->featureSource.id()];
     }
+    else
+    {
+      continue;
+    }
 
     const QgsSymbolList symbols = job->renderer->symbols( mRenderContext );
 
