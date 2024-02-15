@@ -11,9 +11,10 @@ __author__ = 'Nyall Dawson'
 __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
-
+from qgis.PyQt.QtCore import QT_VERSION_STR
 from qgis.core import (
     Qgis,
+    QgsFontUtils,
     QgsStringUtils,
     QgsTextBlock,
     QgsTextCharacterFormat,
@@ -72,7 +73,10 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertEqual(doc[1][0].text(), 'def')
         self.assertEqual(doc[1][0].characterFormat().underline(), QgsTextCharacterFormat.BooleanValue.SetTrue)
         self.assertEqual(doc[1][0].characterFormat().italic(), QgsTextCharacterFormat.BooleanValue.SetTrue)
-        self.assertEqual(doc[1][0].characterFormat().fontWeight(), 75)
+        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+            self.assertEqual(doc[1][0].characterFormat().fontWeight(), 700)
+        else:
+            self.assertEqual(doc[1][0].characterFormat().fontWeight(), 75)
         self.assertEqual(doc[1][0].characterFormat().family(), 'Serif')
         self.assertEqual(doc[1][0].characterFormat().textColor().name(), '#ff0000')
         self.assertEqual(doc[1][0].characterFormat().fontPointSize(), 15)

@@ -48,12 +48,22 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mStyleName( format.font().styleName() )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
-  , mFontFamily( format.hasProperty( QTextFormat::FontFamily ) ? format.fontFamily() : QString() )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
 {
   mVerticalAlign = convertTextCharFormatVAlign( format, mHasVerticalAlignSet );
+
+  if ( format.hasProperty( QTextFormat::FontFamily ) )
+  {
+    mFontFamily = format.fontFamily();
+  }
+  if ( mFontFamily.isEmpty() && format.hasProperty( QTextFormat::FontFamilies ) )
+  {
+    const QStringList families = format.fontFamilies().toStringList();
+    if ( !families.isEmpty() )
+      mFontFamily = families.at( 0 );
+  }
 }
 
 QColor QgsTextCharacterFormat::textColor() const
