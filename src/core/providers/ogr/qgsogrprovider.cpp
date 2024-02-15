@@ -2831,7 +2831,8 @@ bool QgsOgrProvider::createSpatialIndexImpl()
 
     QFileInfo fi( mFilePath );     // to get the base name
     //find out, if the .qix file is there
-    return QFileInfo::exists( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
+    mShapefileHadSpatialIndex = QFileInfo::exists( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
+    return mShapefileHadSpatialIndex;
   }
   else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
             mGDALDriverName == QLatin1String( "SQLite" ) )
