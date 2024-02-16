@@ -649,9 +649,16 @@ long long QgsPostgresProviderResultIterator::rowCountPrivate() const
 void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::Vacuum );
-  executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
-                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
-                           QgsPostgresConn::quotedIdentifier( name ) ), false );
+  if ( ! schema.isEmpty() && ! name.isEmpty() )
+  {
+    executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
+                       .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                             QgsPostgresConn::quotedIdentifier( name ) ), false );
+  }
+  else
+  {
+    executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE" ) );
+  }
 }
 
 void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
