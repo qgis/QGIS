@@ -194,7 +194,6 @@ qint64 QgsCopcPointCloudIndex::pointCount() const
 
 bool QgsCopcPointCloudIndex::loadHierarchy()
 {
-  QMutexLocker locker( &mHierarchyMutex );
   fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
   return true;
 }
@@ -315,6 +314,8 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
     int32_t byteSize;
     int32_t pointCount;
   };
+
+  QMutexLocker locker( &mHierarchyMutex );
 
   for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
   {
