@@ -175,6 +175,7 @@ bool QgsRemoteCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNo
     if ( nodesCount < 0 )
     {
       auto hierarchyNodePos = mHierarchyNodePos.constFind( n );
+      locker.unlock();
       fetchHierarchyPage( hierarchyNodePos->first, hierarchyNodePos->second );
     }
   }
@@ -226,6 +227,8 @@ void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t
     int32_t byteSize;
     int32_t pointCount;
   };
+
+  QMutexLocker locker( &mHierarchyMutex );
 
   for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
   {
