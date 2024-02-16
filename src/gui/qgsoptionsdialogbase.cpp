@@ -400,6 +400,7 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
   QgsScrollArea *scrollArea = new QgsScrollArea();
   scrollArea->setWidgetResizable( true );
   scrollArea->setFrameShape( QFrame::NoFrame );
+  scrollArea->setObjectName( widget->objectName() );
   scrollArea->setWidget( widget );
 
   if ( newPage < 0 )
@@ -502,6 +503,7 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
       scrollArea->setWidgetResizable( true );
       scrollArea->setFrameShape( QFrame::NoFrame );
       scrollArea->setWidget( widget );
+      scrollArea->setObjectName( widget->objectName() );
       mOptStackedWidget->insertWidget( page, scrollArea );
       return;
     }
