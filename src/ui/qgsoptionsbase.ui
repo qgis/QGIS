@@ -2588,6 +2588,9 @@
                       <string>Open layer styling dock</string>
                      </property>
                     </item>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                    </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -2598,7 +2601,11 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QComboBox" name="mLayerTreeInsertionMethod"/>
+                   <widget class="QComboBox" name="mLayerTreeInsertionMethod">
+                    <property name="sizeAdjustPolicy">
+                     <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                    </property>                     
+                   </widget>
                   </item>
                   <item row="2" column="0" colspan="2">
                    <widget class="QCheckBox" name="mShowFeatureCountByDefaultCheckBox">
@@ -5190,6 +5197,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <widget class="QLabel" name="label_64">
                 <property name="text">
                  <string>The following OpenCL devices were found on this system (changing the default device requires QGIS to be restarted).</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
