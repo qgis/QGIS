@@ -64,9 +64,12 @@
         <property name="value">
          <double>1.000000000000000</double>
         </property>
+        <property name="suffix">
+         <string> px</string>
+        </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="mSimplifyAlgorithmLabel">
         <property name="toolTip">
          <string>This algorithm is only applied to simplify on local side</string>
@@ -79,7 +82,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2">
+      <item row="5" column="1">
        <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -89,50 +92,57 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="mSimplifyMaxScaleLabel">
         <property name="text">
-         <string>Maximum scale at which the layer should be simplified (1:1 always simplifies)</string>
+         <string>Maximum scale at which the layer should be simplified</string>
         </property>
         <property name="margin">
          <number>2</number>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
+      <item row="6" column="0" colspan="2">
+       <widget class="QLabel" name="mSimplifyMaxScaleExtraLabel">
+        <property name="text">
+         <string>(1:1 always simplifies)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
         <property name="text">
          <string>Simplify on provider side if possible</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="3">
+      <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label_59">
         <property name="text">
          <string>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</string>
         </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="3" column="1">
        <widget class="QComboBox" name="mSimplifyAlgorithmComboBox"/>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_65">
+       <widget class="QLabel" name="mSimplificationThresholdLabel">
         <property name="text">
-         <string>Simplification threshold (higher values result in more simplification)</string>
+         <string>Simplification threshold</string>
         </property>
         <property name="margin">
          <number>2</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="mSimplifyDrawingPx">
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="mSimplificationThresholdExtraLabel">
         <property name="text">
-         <string>pixels</string>
-        </property>
-        <property name="margin">
-         <number>2</number>
+         <string>(higher values result in more simplification)</string>
         </property>
        </widget>
       </item>
