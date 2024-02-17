@@ -1147,6 +1147,9 @@ bool QgsRasterSymbolLegendNode::setData( const QVariant &value, int role )
     pclayer->emitStyleChanged();
 
     pclayer->triggerRepaint();
+    if ( pclayer->sync3DRendererTo2DRenderer() )
+      pclayer->convertRenderer3DFromRenderer2D();
+
     return true;
   }
   else
