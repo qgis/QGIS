@@ -154,7 +154,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mBackgroundColor = parameterAsColor( parameters, QStringLiteral( "BACKGROUND_COLOR" ), context );
   mAntialias = parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context );
   mTileFormat = parameterAsEnum( parameters, QStringLiteral( "TILE_FORMAT" ), context ) ? QStringLiteral( "JPG" ) : QStringLiteral( "PNG" );
-  mJpgQuality = parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context );
+  mJpgQuality = mTileFormat == QLatin1String( "JPG" ) ? parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context ) : -1;
   mMetaTileSize = parameterAsInt( parameters, QStringLiteral( "METATILESIZE" ), context );
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
