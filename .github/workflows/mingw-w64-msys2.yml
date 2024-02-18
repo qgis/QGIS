@@ -49,9 +49,10 @@ jobs:
           install: base-devel
           pacboy: >-
             draco:p exiv2:p gdal:p gsl:p hdf5:p libxml2:p libzip:p netcdf:p opencl-icd:p pdal:p
-            protobuf:p proj:p qca-qt5:p qscintilla-qt5:p qt5-3d:p qt5-base:p qt5-declarative:p
-            qt5-gamepad:p qt5-location:p qt5-serialport:p qt5-svg:p qtkeychain-qt5:p qtwebkit:p
-            qwt-qt5:p spatialindex:p cc:p cmake:p ninja:p opencl-clhpp:p qt5-tools:p python:p ccache:p
+            protobuf:p proj:p qca-qt6:p qscintilla-qt6:p qt6-3d:p qt6-base:p qt6-declarative:p
+            qt6-location:p qt6-multimedia:p qt6-serialport:p qt6-svg:p qtkeychain-qt6:p qwt-qt6:p
+            spatialindex:p python-pyqt6:p python-gdal:p python-owslib:p python-qscintilla-qt6:p
+            cc:p cmake:p ninja:p opencl-clhpp:p qt6-tools:p ccache:p pyqt-builder:p
           update: true
           release: false
 
@@ -68,16 +69,17 @@ jobs:
           CXXFLAGS="-DQWT_POLAR_VERSION=0x060200" \
           cmake \
             -G"Ninja" \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DPython_EXECUTABLE=${MINGW_PREFIX}/bin/python \
             -DWITH_3D=ON \
             -DWITH_DRACO=ON \
             -DWITH_PDAL=OFF \
             -DWITH_CUSTOM_WIDGETS=ON \
             -DWITH_QWTPOLAR=OFF \
-            -DWITH_BINDINGS=OFF \
+            -DWITH_BINDINGS=ON \
             -DWITH_GRASS=OFF \
             -DUSE_CCACHE=ON \
+            -DBUILD_WITH_QT6=ON \
+            -DWITH_QTWEBKIT=OFF \
             -S . \
             -B build
 
