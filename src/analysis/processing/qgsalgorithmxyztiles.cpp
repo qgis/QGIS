@@ -198,6 +198,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setDestinationCrs( mMercatorCrs );
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );
+    settings.setFlag( MapSettingsFlag.Antialiasing, mAntialias );
     if ( mTileFormat == QLatin1String( "PNG" ) || mBackgroundColor.alpha() == 255 )
     {
       settings.setBackgroundColor( mBackgroundColor );
