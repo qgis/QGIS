@@ -311,7 +311,7 @@ class SERVER_EXPORT QgsServerSettings
     QString serviceUrl( const QString &service ) const;
 
     /**
-     * Returns the config cache check interval for the 'periodic' strategy.
+     * Returns the config cache check interval (in ms) for the 'periodic' strategy.
      * \since QGIS 3.26
      */
     int projectCacheCheckInterval() const;

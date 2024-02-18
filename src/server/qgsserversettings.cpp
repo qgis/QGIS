@@ -350,7 +350,7 @@ void QgsServerSettings::initSettings()
   // the default config cache check interval
   const Setting sConfigCacheCheckInterval = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
                                               QgsServerSettingsEnv::DEFAULT_VALUE,
-                                              QStringLiteral( "The default project cache check interval" ),
+                                              QStringLiteral( "The default project cache check interval (in ms)" ),
                                               QStringLiteral( "/qgis/server_project_cache_check_interval" ),
                                               QVariant::Int,
                                               QVariant( 0 ),
